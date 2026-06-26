@@ -10,7 +10,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  motor: ^1.1.0
+  # Pinned tighter than a caret per docs/PORTING_SPEC.md §1: motor is a
+  # single-maintainer dependency the whole library rests on. Bump deliberately
+  # after re-running fidelity goldens.
+  motor: ">=1.1.0 <1.2.0"
 
 dev_dependencies:
   flutter_test:

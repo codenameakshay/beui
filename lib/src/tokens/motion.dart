@@ -57,12 +57,21 @@ const beuiSpringLayout = SpringMotion(
   SpringDescription(mass: 0.6, stiffness: 360, damping: 32),
 );
 
-/// Cursor-follow physics — magnetic pull, tilt, dock magnify (source
-/// `SPRING_MOUSE`).
+/// Cursor-follow physics — magnetic pull, tilt (source `SPRING_MOUSE`).
 ///
 /// stiffness 200 · damping 15 · mass 0.3 — light and loose so the element
 /// trails the pointer. Build these effects on `MouseRegion` so they never fire
 /// on touch.
+///
+/// **Structurally different from the other four tokens.** In source `ease.ts`
+/// this is the only token that omits `type: "spring"`, and `magnetic.tsx` /
+/// `tilt-card.tsx` consume it via `useSpring(value, SPRING_MOUSE)` — a
+/// **continuous follow-spring** whose target is re-set on every `mousemove`,
+/// *not* a discrete state→state transition. Port it as a `MotionController` /
+/// `SingleMotionBuilder` whose target is re-pointed on each `MouseRegion`
+/// `onHover`. The other four ([beuiSpringPress], [beuiSpringSwap],
+/// [beuiSpringPanel], [beuiSpringLayout]) fire on discrete state changes
+/// (press, swap, open, layout shift); this one tracks the pointer every frame.
 const beuiSpringMouse = SpringMotion(
   SpringDescription(mass: 0.3, stiffness: 200, damping: 15),
 );
@@ -78,6 +87,11 @@ const beuiSpringMouse = SpringMotion(
 /// Default ease-out, `cubic-bezier(0.16, 1, 0.3, 1)` (source `EASE_OUT`).
 ///
 /// Fast start, gentle settle — the workhorse for entrances and UI motion.
+///
+/// The source also exports `EASE_OUT_CSS` (the CSS-string form used for an
+/// inline `width 220ms` transition in `action-swap.tsx`). It is the *same*
+/// cubic as `EASE_OUT`, so it maps here too — there is deliberately no separate
+/// `beuiEaseOutCss` constant.
 const beuiEaseOut = Cubic(0.16, 1, 0.3, 1);
 
 /// Symmetric ease-in-out, `cubic-bezier(0.77, 0, 0.175, 1)` (source
@@ -97,20 +111,48 @@ const beuiEaseDrawer = Cubic(0.32, 0.72, 0, 1);
 
 /// Resolves [motion] against the platform's reduced-motion setting.
 ///
-/// `motor` does **not** honor reduced motion on its own, so route
-/// transform-driven tokens through this resolver. When
-/// [MediaQuery.disableAnimationsOf] is true it returns a movement-free
-/// [NoMotion]; otherwise it returns [motion] unchanged.
+/// `motor` does **not** honor reduced motion on its own, so every animated
+/// component routes its tokens through this one resolver instead of re-checking
+/// the media query. It is the port of the source's `useReducedMotion()` gate.
 ///
-/// Reduced motion drops **movement**, not all animation: keep opacity and
-/// color transitions running normally and only pass the tokens that produce
-/// *translation/scale/rotation* through here. This is the port of the source's
-/// `useReducedMotion()` gate — centralized so individual widgets don't each
-/// re-check the media query.
+/// **The keep-opacity / drop-movement rule is enforced by the signature.** Pass
+/// [isMovement] `true` for tokens that produce *translation, scale, or rotation*
+/// and `false` for tokens that only drive *opacity or color*. The source's
+/// reduce-branches are **heterogeneous**, so this resolver supports three
+/// outcomes rather than one blanket swap:
+///
+/// 1. **Most components** — movement-bearing motion collapses to a movement-free
+///    [NoMotion]. Call `motionFor(context, token, isMovement: true)`.
+/// 2. **drawer / bottom-sheet** — keep a short (~0.18–0.2s) `EASE_OUT` entrance
+///    rather than nothing. Pass it as [reducedFallback], e.g.
+///    `motionFor(context, beuiSpringPanel, isMovement: true, reducedFallback:
+///    const CurvedMotion(Duration(milliseconds: 190), beuiEaseOut))`.
+/// 3. **magnetic / tilt** — the effect is disabled *by the component* (it renders
+///    static); that is a component-level decision, not this resolver's job. The
+///    resolver simply never forces movement onto those widgets.
+///
+/// Opacity/color transitions ([isMovement] `false`) are **never** dropped — they
+/// return [motion] unchanged even under reduced motion. Reduced motion drops
+/// *movement*, it is not a blanket duration-zeroing.
+///
+/// When reduced motion is off, [motion] is always returned unchanged.
 ///
 /// ```dart
-/// final motion = motionFor(context, beuiSpringMouse); // NoMotion if disabled
+/// // movement → NoMotion under reduced motion
+/// final pull = motionFor(context, beuiSpringMouse, isMovement: true);
+/// // movement, but keep a brief curve (drawer/bottom-sheet)
+/// final enter = motionFor(context, beuiSpringPanel, isMovement: true,
+///     reducedFallback: const CurvedMotion(Duration(milliseconds: 190), beuiEaseOut));
+/// // opacity/color → always preserved
+/// final fade = motionFor(context, beuiSpringSwap, isMovement: false);
 /// ```
-Motion motionFor(BuildContext context, Motion motion) {
-  return MediaQuery.disableAnimationsOf(context) ? const NoMotion() : motion;
+Motion motionFor(
+  BuildContext context,
+  Motion motion, {
+  required bool isMovement,
+  Motion? reducedFallback,
+}) {
+  if (!MediaQuery.disableAnimationsOf(context)) return motion;
+  if (!isMovement) return motion;
+  return reducedFallback ?? const NoMotion();
 }

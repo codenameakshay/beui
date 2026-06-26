@@ -4,11 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:motor/motor.dart';
 
 /// Pumps a widget under a [MediaQuery] with the given [disableAnimations] value
-/// and returns whatever [motionFor] resolves [input] to in that context.
+/// and returns whatever [motionFor] resolves [input] to in that context, given
+/// the [isMovement] / [reducedFallback] arguments.
 Future<Motion> _resolve(
   WidgetTester tester, {
   required bool disableAnimations,
   required Motion input,
+  required bool isMovement,
+  Motion? reducedFallback,
 }) async {
   late Motion resolved;
   await tester.pumpWidget(
@@ -16,7 +19,12 @@ Future<Motion> _resolve(
       data: MediaQueryData(disableAnimations: disableAnimations),
       child: Builder(
         builder: (context) {
-          resolved = motionFor(context, input);
+          resolved = motionFor(
+            context,
+            input,
+            isMovement: isMovement,
+            reducedFallback: reducedFallback,
+          );
           return const SizedBox();
         },
       ),
@@ -82,27 +90,56 @@ void main() {
   });
 
   group('motionFor gates movement on reduced motion', () {
-    testWidgets('returns NoMotion when animations are disabled', (
+    testWidgets('movement token → NoMotion when animations are disabled', (
       tester,
     ) async {
       final resolved = await _resolve(
         tester,
         disableAnimations: true,
         input: beuiSpringMouse,
+        isMovement: true,
       );
       expect(resolved, isA<NoMotion>());
     });
 
     testWidgets(
-      'returns the input motion untouched when animations are enabled',
+      'movement token → reducedFallback when one is supplied (drawer case)',
+      (tester) async {
+        const fallback = CurvedMotion(Duration(milliseconds: 190), beuiEaseOut);
+        final resolved = await _resolve(
+          tester,
+          disableAnimations: true,
+          input: beuiSpringPanel,
+          isMovement: true,
+          reducedFallback: fallback,
+        );
+        expect(resolved, same(fallback));
+      },
+    );
+
+    testWidgets(
+      'opacity/color token (isMovement: false) is preserved under reduced motion',
       (tester) async {
         final resolved = await _resolve(
           tester,
-          disableAnimations: false,
-          input: beuiSpringMouse,
+          disableAnimations: true,
+          input: beuiSpringSwap,
+          isMovement: false,
         );
-        expect(resolved, same(beuiSpringMouse));
+        expect(resolved, same(beuiSpringSwap));
       },
     );
+
+    testWidgets('movement token is untouched when animations are enabled', (
+      tester,
+    ) async {
+      final resolved = await _resolve(
+        tester,
+        disableAnimations: false,
+        input: beuiSpringMouse,
+        isMovement: true,
+      );
+      expect(resolved, same(beuiSpringMouse));
+    });
   });
 }
