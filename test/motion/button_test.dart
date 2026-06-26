@@ -204,7 +204,7 @@ void main() {
             .firstMatch(f.imageFilter.toString());
         return m == null ? 0.0 : double.parse(m.group(1)!);
       });
-      expect(sigmas.fold<double>(0, math.max), greaterThan(3.0));
+      expect(sigmas.fold<double>(0, math.max), greaterThan(2.0));
     });
 
     testWidgets('width morphs (does not snap) when toggling busy',

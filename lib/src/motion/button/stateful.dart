@@ -114,17 +114,7 @@ class BeuiStatefulButton extends StatelessWidget {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isBusy = state == BeuiButtonState.loading;
 
-    final textSlot = AnimatedSwitcher(
-      duration: const Duration(milliseconds: 340),
-      switchInCurve: Curves.linear,
-      switchOutCurve: Curves.linear,
-      transitionBuilder: (child, animation) => _rollIn(child, animation, reduce),
-      layoutBuilder: (currentChild, previousChildren) => Stack(
-        alignment: Alignment.centerLeft,
-        children: [...previousChildren, ?currentChild],
-      ),
-      child: Text(_text, key: ValueKey(_text)),
-    );
+    final textSlot = _CascadeText(_text);
 
     return Semantics(
       liveRegion: true,
@@ -161,7 +151,7 @@ Widget _rollIn(Widget child, Animation<double> animation, bool reduce) {
     builder: (context, _) {
       final t = animation.value; // linear progress
       final eased = beuiEaseOut.transform(t);
-      final blur = (1 - t) * 8; // ~blur(6px) at the start, easing to 0
+      final blur = (1 - t) * 4; // gentle blur on the small icon glyphs
       return Opacity(
         opacity: eased,
         child: Transform.translate(
@@ -178,6 +168,151 @@ Widget _rollIn(Widget child, Animation<double> animation, bool reduce) {
       );
     },
   );
+}
+
+/// Per-letter slot cascade with blur — the Flutter port of the source's
+/// StatefulButton text roll (`CASCADE_LETTER_VARIANTS`). On a text change the
+/// old letters roll up and out (blurring) while the new letters roll up from
+/// below into place, staggered left-to-right and clipped to one line.
+///
+/// Replaces a naive whole-text crossfade, which overlapped both strings and
+/// produced a muddy double-image.
+class _CascadeText extends StatefulWidget {
+  const _CascadeText(this.text);
+
+  final String text;
+
+  @override
+  State<_CascadeText> createState() => _CascadeTextState();
+}
+
+class _CascadeTextState extends State<_CascadeText>
+    with SingleTickerProviderStateMixin {
+  static const int _staggerMs = 30; // source CASCADE_STAGGER (0.025s), eased up
+  static const int _enterMs = 360; // per-letter spring-in window
+  static const int _exitMs = 160; // source exit duration
+  static const double _blur = 3.5; // source ROLL_BLUR blur(6px) ≈ sigma 3.5
+
+  late final AnimationController _controller;
+  late String _current = widget.text;
+  String? _previous;
+
+  int _durationMs(String t) => _enterMs + _staggerMs * (t.length - 1).clamp(0, 80);
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: _durationMs(_current)),
+      value: 1,
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed && _previous != null) {
+          setState(() => _previous = null);
+        }
+      });
+  }
+
+  @override
+  void didUpdateWidget(_CascadeText old) {
+    super.didUpdateWidget(old);
+    if (widget.text != _current) {
+      _previous = _current;
+      _current = widget.text;
+      _controller
+        ..duration = Duration(milliseconds: _durationMs(_current))
+        ..forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final style = DefaultTextStyle.of(context).style;
+    final reduce = MediaQuery.disableAnimationsOf(context);
+
+    // At rest (or reduced motion): plain crisp text, no per-letter overhead.
+    if (reduce || _previous == null) {
+      return Text(_current, style: style, maxLines: 1, softWrap: false);
+    }
+
+    return ClipRect(
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          final t = _controller.value;
+          final totalMs = _controller.duration!.inMilliseconds;
+          final roll = (style.fontSize ?? 14) * 1.15; // ~105% of a line
+          return Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.centerLeft,
+            children: [
+              // Exiting text — positioned, so it doesn't drive the slot width.
+              Positioned(
+                left: 0,
+                top: 0,
+                bottom: 0,
+                child: _letters(_previous!, t, totalMs, roll, style, exiting: true),
+              ),
+              // Entering text — sizes the slot to the new label immediately.
+              _letters(_current, t, totalMs, roll, style, exiting: false),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _letters(String text, double t, int totalMs, double roll,
+      TextStyle style, {required bool exiting}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < text.length; i++)
+          _letter(text[i], i, t, totalMs, roll, style, exiting: exiting),
+      ],
+    );
+  }
+
+  Widget _letter(String char, int i, double t, int totalMs, double roll,
+      TextStyle style, {required bool exiting}) {
+    final double dy;
+    final double opacity;
+    final double blur;
+    if (exiting) {
+      final start = (i * _staggerMs * 0.5) / totalMs;
+      final p = ((t - start) / (_exitMs / totalMs)).clamp(0.0, 1.0);
+      final e = Curves.easeOut.transform(p);
+      dy = -e * roll; // roll up and out
+      opacity = 1 - e;
+      blur = e * _blur;
+    } else {
+      final start = (i * _staggerMs) / totalMs;
+      final p = ((t - start) / (_enterMs / totalMs)).clamp(0.0, 1.0);
+      final e = Curves.easeOutCubic.transform(p);
+      dy = (1 - e) * roll; // roll up from below
+      opacity = e;
+      blur = (1 - e) * _blur;
+    }
+
+    Widget glyph = Text(char, style: style, maxLines: 1, softWrap: false);
+    if (blur > 0.05) {
+      glyph = ImageFiltered(
+        imageFilter: ImageFilter.blur(
+            sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),
+        child: glyph,
+      );
+    }
+    return Opacity(
+      opacity: opacity.clamp(0.0, 1.0),
+      child: Transform.translate(offset: Offset(0, dy), child: glyph),
+    );
+  }
 }
 
 /// A continuously spinning loader icon.
