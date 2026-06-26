@@ -175,19 +175,20 @@ class _BeuiButtonState extends State<BeuiButton> {
     }
 
     // Focus ring (keyboard only) — an a11y addition over the source's plain
-    // button; harmless on pointer focus.
-    if (_focusVisible) {
-      box = DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: radius,
-          boxShadow: [
-            BoxShadow(color: colors.ring, spreadRadius: 3),
-            BoxShadow(color: colors.background, spreadRadius: 1),
-          ],
-        ),
-        child: box,
-      );
-    }
+    // button. Always rendered (shadow toggled, not the widget) so toggling
+    // focus never restructures the tree and resets descendant State.
+    box = DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: radius,
+        boxShadow: _focusVisible
+            ? [
+                BoxShadow(color: colors.ring, spreadRadius: 3),
+                BoxShadow(color: colors.background, spreadRadius: 1),
+              ]
+            : null,
+      ),
+      child: box,
+    );
 
     Widget scaled = SingleMotionBuilder(
       value: scaleTarget,
@@ -220,7 +221,15 @@ class _BeuiButtonState extends State<BeuiButton> {
       ),
     );
 
-    if (!_enabled) scaled = Opacity(opacity: 0.5, child: scaled);
+    // Always present (AnimatedOpacity, not a conditional Opacity wrapper) so
+    // enabling/disabling never restructures the tree — a conditional wrapper
+    // would reset the State of descendants (AnimatedSize / AnimatedSwitcher in
+    // StatefulButton), making width/icon/text swaps jump instead of animate.
+    scaled = AnimatedOpacity(
+      opacity: _enabled ? 1.0 : 0.5,
+      duration: const Duration(milliseconds: 150),
+      child: scaled,
+    );
 
     return Semantics(
       button: true,

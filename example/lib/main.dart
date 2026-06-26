@@ -112,6 +112,7 @@ class _ButtonDemoState extends State<_ButtonDemo> {
         Wrap(spacing: 12, runSpacing: 12, children: [
           BeuiButton(ripple: true, onPressed: () {}, child: const Text('Ripple')),
           BeuiButton(
+            ripple: true,
             variant: BeuiButtonVariant.outline,
             onPressed: () {},
             child: const Text('Tap me'),

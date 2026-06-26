@@ -52,11 +52,12 @@ void main() {
       );
       await tester.tap(find.byType(BeuiButton), warnIfMissed: false);
       await tester.pump();
-      final opacity = tester.widget<Opacity>(
+      final dim = tester.widget<AnimatedOpacity>(
         find.descendant(
-            of: find.byType(BeuiButton), matching: find.byType(Opacity)),
+            of: find.byType(BeuiButton),
+            matching: find.byType(AnimatedOpacity)),
       );
-      expect(opacity.opacity, 0.5);
+      expect(dim.opacity, 0.5);
     });
 
     testWidgets('Enter activates when focused', (tester) async {
@@ -204,6 +205,28 @@ void main() {
         return m == null ? 0.0 : double.parse(m.group(1)!);
       });
       expect(sigmas.fold<double>(0, math.max), greaterThan(3.0));
+    });
+
+    testWidgets('width morphs (does not snap) when toggling busy',
+        (tester) async {
+      Widget app(BeuiButtonState s) => _wrap(BeuiStatefulButton(
+          label: 'Save changes',
+          icon: LucideIcons.arrow_right,
+          state: s,
+          onPressed: () {}));
+      await tester.pumpWidget(app(BeuiButtonState.idle));
+      await tester.pumpAndSettle();
+
+      // idle -> loading flips the base button to disabled. The width must
+      // animate across frames, not snap (regression: a conditional Opacity
+      // wrapper used to reset the AnimatedSize's State, jumping the width).
+      await tester.pumpWidget(app(BeuiButtonState.loading));
+      final widths = <double>[];
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 30));
+        widths.add(tester.getSize(find.byType(BeuiStatefulButton)).width);
+      }
+      expect(widths.toSet().length, greaterThan(1)); // distinct => animating
     });
 
     testWidgets('success and error show their text', (tester) async {
