@@ -115,6 +115,42 @@ void main() {
       expect(find.text('content Two'), findsOneWidget);
       expect(find.text('content One'), findsNothing);
     });
+
+    testWidgets('panel stays left-aligned mid-transition', (tester) async {
+      Widget build(String value) => MaterialApp(
+            theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+            home: Scaffold(
+              body: Align(
+                alignment: Alignment.topLeft,
+                child: BeuiTabs<String>(
+                  key: const ValueKey('t'),
+                  value: value,
+                  tabs: const [
+                    BeuiTab(
+                      value: 'a',
+                      label: Text('A'),
+                      content: Text('a very long panel body for tab a'),
+                    ),
+                    BeuiTab(value: 'b', label: Text('B'), content: Text('short b')),
+                  ],
+                ),
+              ),
+            ),
+          );
+      await tester.pumpWidget(build('a'));
+      await tester.pumpAndSettle();
+      final leftA = tester.getTopLeft(find.text('a very long panel body for tab a')).dx;
+
+      await tester.pumpWidget(build('b'));
+      await tester.pump(); // begin transition (both panels stacked)
+      await tester.pump(const Duration(milliseconds: 60));
+      final leftB = tester.getTopLeft(find.text('short b')).dx;
+
+      // The narrow incoming panel must stay at the left, not center within the
+      // wider outgoing panel's footprint.
+      expect(leftB, closeTo(leftA, 0.5));
+      await tester.pumpAndSettle();
+    });
   });
 
   group('BeuiTabs semantics', () {

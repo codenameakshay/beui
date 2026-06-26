@@ -233,7 +233,15 @@ class GalleryHome extends StatelessWidget {
                     MaterialPageRoute<void>(
                       builder: (context) => Scaffold(
                         appBar: AppBar(title: Text(entry.title)),
-                        body: Center(child: Builder(builder: entry.builder)),
+                        body: SafeArea(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.all(24),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Builder(builder: entry.builder),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),

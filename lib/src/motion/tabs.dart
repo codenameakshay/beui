@@ -233,10 +233,11 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       ),
     );
 
+    // The list (TabsList) is `inline-flex` in the source — content-sized and
+    // left-aligned within its block. Keep the widget content-sized; the parent
+    // decides placement (don't be greedy).
     final activeContent = _activeContent();
-    if (activeContent == null) {
-      return Align(alignment: Alignment.centerLeft, child: list);
-    }
+    if (activeContent == null) return list;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -247,6 +248,13 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 180),
           switchInCurve: beuiEaseOut,
+          // Default layoutBuilder stacks children centered, which makes the
+          // panel text drift to center mid-transition then snap left. Keep it
+          // left-aligned throughout.
+          layoutBuilder: (currentChild, previousChildren) => Stack(
+            alignment: Alignment.centerLeft,
+            children: [...previousChildren, ?currentChild],
+          ),
           transitionBuilder: (child, animation) {
             final fade = FadeTransition(opacity: animation, child: child);
             if (reduce) return fade;
@@ -283,7 +291,7 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
         ),
       BeuiTabsVariant.segment => BoxDecoration(
           color: colors.card,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8), // rounded-lg
         ),
       BeuiTabsVariant.underline => BoxDecoration(
           border: Border(bottom: BorderSide(color: colors.border)),
