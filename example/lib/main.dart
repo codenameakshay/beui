@@ -29,6 +29,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Checkbox', _checkboxDemo),
   GalleryEntry('Radio', _radioDemo),
   GalleryEntry('Tabs', _tabsDemo),
+  GalleryEntry('Button', _buttonDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
@@ -38,6 +39,71 @@ Widget _checkboxDemo(BuildContext context) => const _CheckboxDemo();
 Widget _radioDemo(BuildContext context) => const _RadioDemo();
 
 Widget _tabsDemo(BuildContext context) => const _TabsDemo();
+
+Widget _buttonDemo(BuildContext context) => const _ButtonDemo();
+
+/// Exercises button variants, sizes, the stateful lifecycle, and magnetic pull.
+class _ButtonDemo extends StatefulWidget {
+  const _ButtonDemo();
+
+  @override
+  State<_ButtonDemo> createState() => _ButtonDemoState();
+}
+
+class _ButtonDemoState extends State<_ButtonDemo> {
+  BeuiButtonState _state = BeuiButtonState.idle;
+
+  void _runLifecycle() async {
+    setState(() => _state = BeuiButtonState.loading);
+    await Future<void>.delayed(const Duration(seconds: 1));
+    if (mounted) setState(() => _state = BeuiButtonState.success);
+    await Future<void>.delayed(const Duration(seconds: 1));
+    if (mounted) setState(() => _state = BeuiButtonState.idle);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Wrap(spacing: 12, runSpacing: 12, children: [
+          for (final v in BeuiButtonVariant.values)
+            BeuiButton(
+                variant: v, onPressed: () {}, child: Text(v.name)),
+        ]),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            for (final s in [
+              BeuiButtonSize.sm,
+              BeuiButtonSize.md,
+              BeuiButtonSize.lg
+            ])
+              BeuiButton(size: s, onPressed: () {}, child: Text(s.name)),
+            BeuiButton(
+                size: BeuiButtonSize.icon,
+                onPressed: () {},
+                child: const Icon(Icons.add)),
+          ],
+        ),
+        const SizedBox(height: 24),
+        BeuiButton(ripple: true, onPressed: () {}, child: const Text('Ripple')),
+        const SizedBox(height: 24),
+        BeuiStatefulButton(
+          label: 'Save changes',
+          state: _state,
+          onPressed: _runLifecycle,
+        ),
+        const SizedBox(height: 24),
+        BeuiMagneticButton(onPressed: () {}, child: const Text('Magnetic')),
+      ],
+    );
+  }
+}
 
 /// Exercises all three tab variants and a fading content panel.
 class _TabsDemo extends StatefulWidget {

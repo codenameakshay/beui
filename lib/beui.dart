@@ -19,7 +19,13 @@ export 'src/theme/beui_colors.dart';
 export 'src/theme/beui_text_theme.dart';
 
 // Components (lib/src/motion/...). Exported as they are ported.
+export 'src/motion/button/base.dart'
+    show BeuiButton, BeuiButtonSize, BeuiButtonVariant;
+export 'src/motion/button/magnetic.dart' show BeuiMagneticButton;
+export 'src/motion/button/stateful.dart'
+    show BeuiButtonState, BeuiStatefulButton;
 export 'src/motion/checkbox.dart' show BeuiCheckbox, BeuiCheckboxStyle;
+export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
 export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
