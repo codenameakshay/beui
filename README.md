@@ -32,6 +32,10 @@ cd example && fvm flutter run   # the component gallery
 
 See [`CLAUDE.md`](CLAUDE.md) for architecture and conventions, and [`docs/PORTING_SPEC.md`](docs/PORTING_SPEC.md) for the full component catalog and the motion-token mapping.
 
+## Credits
+
+A Flutter port of **beUI** by **Saurabh Chauhan** — [beui.dev](https://beui.dev) (`starc007/ui-components`). All component designs and the original motion work are his; this package brings them to Flutter.
+
 ## License
 
-MIT
+MIT — see [`LICENSE`](LICENSE). Both the upstream copyright (Saurabh Chauhan) and the port's copyright are preserved, as the MIT license requires for derivative works.

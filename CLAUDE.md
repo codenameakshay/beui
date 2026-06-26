@@ -33,17 +33,17 @@ Intended layout for the package:
 
 - `lib/beui.dart` — barrel file; the single public entrypoint that re-exports every component and the theme/token API. Consumers `import 'package:beui/beui.dart'`.
 - `lib/src/tokens/` — **port this first; everything depends on it.** `motion.dart` holds the five spring tokens as `motor.SpringMotion(SpringDescription(...))` constants and the three easings as `Cubic` constants, mirroring the source's `lib/ease.ts` exactly (see the spec's token tables). This file is the only place `motor` types appear directly — see the motion-engine rule below.
-- `lib/src/theme/` — `BeuiColors` as a `ThemeExtension` (the source's design-token palette, light/dark + 11 color themes), plus text/typography. Components read colors from `Theme.of(context).extension<BeuiColors>()`, never hardcoded.
+- `lib/src/theme/` — `BeuiColors` as a `ThemeExtension` (the source's design-token palette, light/dark + a neutral base + 10 color themes (11 ColorTheme values)), plus text/typography. Components read colors from `Theme.of(context).extension<BeuiColors>()`, never hardcoded.
 - `lib/src/motion/` — the components. One widget per file, snake_case filenames matching the source slugs (`switch.dart`, `dock.dart`); multi-file widgets get a folder (`button/`). The source splits primitives (`motion`) from composed widgets (`blocks`) — keep that split as subfolders or a clear grouping.
 - `example/` — Flutter showcase app, one route per component. This is the Flutter analog of the source's docs site and the render target for golden tests. It is the living gallery, not part of the published library surface.
 - `test/` — widget tests + golden tests per component.
 
 ### Non-negotiable motion rules (enforced, mirror the source)
 
-- **Motion engine is [`motor`](https://pub.dev/packages/motor), not raw `AnimationController`.** `motor.SpringMotion` wraps Flutter's `SpringDescription`, so the source's exact spring tokens carry over with zero fidelity loss, and `MotionBuilder` gives independent-per-dimension springs (`Offset`/`Rect`/`Size`/`Alignment`/`Color`) for magnetic/tilt/dock/shared-layout. Do not approximate springs with `Curves.elasticOut`/`bounceOut`; use the token values verbatim.
-- **`motor` stays an implementation detail.** Its types appear only in `lib/src/tokens/motion.dart`; components consume the `beui*` token constants. If `motor` is ever dropped, you rewrite ~8 constants, not every widget.
+- **Motion engine is [`motor`](https://pub.dev/packages/motor), not raw `AnimationController`.** `motor.SpringMotion` wraps Flutter's `SpringDescription`, so the source's exact spring tokens carry over with the same physical parameters (trajectories validated within tolerance, not pixel-identical to Framer — see the spec's Testing & fidelity verification section), and `MotionBuilder` gives independent-per-dimension springs (`Offset`/`Rect`/`Size`/`Alignment`/`Color`) for magnetic/tilt/dock/shared-layout. Do not approximate springs with `Curves.elasticOut`/`bounceOut`; use the token values verbatim.
+- **`motor` stays an implementation detail.** The shared token constants live in `lib/src/tokens/motion.dart`, but `motor`'s builder/controller types are the animation core of nearly every component (plus the component-local bespoke springs in the spec's Motion tokens table). To keep "swap motor → rewrite a few files" true, route builder/controller construction through a thin `lib/src/motion/_engine.dart` facade — otherwise the coupling is real and per-component. Pin `motor` tighter than `^1.1.0`.
 - **Gate transform motion on reduced motion:** `MediaQuery.disableAnimationsOf(context)` → swap to `motor.NoMotion` (movement-free). `motor` does not do this for you. Reduced motion keeps opacity/color transitions and drops *movement* — it is not a blanket duration-zeroing. Centralize the check in one resolver rather than per widget.
-- **Build decorative hover effects (magnetic, tilt, dock magnify) on `MouseRegion`**, never `GestureDetector` — this naturally excludes touch devices, matching the source's `useHoverCapable()` gate.
+- **Build decorative hover effects (magnetic, tilt) on `MouseRegion`**, never `GestureDetector` — this naturally excludes touch devices, matching the source's `useHoverCapable()` gate.
 - Animate transform/opacity only; blur ≤ 10px; exits faster than entrances; UI motion < ~300ms, press feedback ~100–160ms.
 
 ### Naming
@@ -58,7 +58,7 @@ Prefix every public widget with **`Beui`** (`BeuiSwitch`, `BeuiDrawer`, `BeuiToo
 
 ## What NOT to port
 
-The source ships a shadcn registry (`app/r/*`, `lib/registry*.ts`, `llms.txt`), a Next.js docs website, OG/SEO tooling, and Shiki highlighting. None of that has a Flutter analog — the `example/` app replaces the docs site, and pub.dev replaces the registry. See the spec's §5.
+The source ships a shadcn registry (`app/r/*`, `lib/registry*.ts`, `llms.txt`), a Next.js docs website, OG/SEO tooling, and Shiki highlighting. None of that has a Flutter analog — the `example/` app replaces the docs site, and pub.dev replaces the registry. See the spec's §11 ("What the source ships that the Flutter port does NOT need").
 
 ## Commits
 
