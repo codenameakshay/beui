@@ -13,6 +13,7 @@ The port's defining goal is **motion fidelity** — matching the source's spring
 ## Commands
 
 ```bash
+flutter pub add motor                # the motion engine (add when scaffolding; see Architecture)
 flutter pub get                      # install deps
 flutter analyze                      # static analysis + lints (the typecheck+lint gate)
 dart format .                        # format (run before committing)
@@ -31,7 +32,7 @@ Run `flutter analyze && flutter test` before considering work done. Do not run `
 Intended layout for the package:
 
 - `lib/beui.dart` — barrel file; the single public entrypoint that re-exports every component and the theme/token API. Consumers `import 'package:beui/beui.dart'`.
-- `lib/src/tokens/` — **port this first; everything depends on it.** `springs.dart` (the five `SpringDescription` constants), `curves.dart` (the three `Cubic` easings). These mirror the source's `lib/ease.ts` exactly — see the spec's token tables.
+- `lib/src/tokens/` — **port this first; everything depends on it.** `motion.dart` holds the five spring tokens as `motor.SpringMotion(SpringDescription(...))` constants and the three easings as `Cubic` constants, mirroring the source's `lib/ease.ts` exactly (see the spec's token tables). This file is the only place `motor` types appear directly — see the motion-engine rule below.
 - `lib/src/theme/` — `BeuiColors` as a `ThemeExtension` (the source's design-token palette, light/dark + 11 color themes), plus text/typography. Components read colors from `Theme.of(context).extension<BeuiColors>()`, never hardcoded.
 - `lib/src/motion/` — the components. One widget per file, snake_case filenames matching the source slugs (`switch.dart`, `dock.dart`); multi-file widgets get a folder (`button/`). The source splits primitives (`motion`) from composed widgets (`blocks`) — keep that split as subfolders or a clear grouping.
 - `example/` — Flutter showcase app, one route per component. This is the Flutter analog of the source's docs site and the render target for golden tests. It is the living gallery, not part of the published library surface.
@@ -39,8 +40,9 @@ Intended layout for the package:
 
 ### Non-negotiable motion rules (enforced, mirror the source)
 
-- **Springs use `SpringDescription` driven by `AnimationController` + `SpringSimulation`.** Do not approximate the source's springs with `Curves.elasticOut`/`bounceOut`. The token values in the spec are the physics; use them verbatim.
-- **Gate transform motion on reduced motion:** `MediaQuery.disableAnimationsOf(context)`. Reduced motion keeps opacity/color transitions and drops *movement* — it is not a blanket duration-zeroing.
+- **Motion engine is [`motor`](https://pub.dev/packages/motor), not raw `AnimationController`.** `motor.SpringMotion` wraps Flutter's `SpringDescription`, so the source's exact spring tokens carry over with zero fidelity loss, and `MotionBuilder` gives independent-per-dimension springs (`Offset`/`Rect`/`Size`/`Alignment`/`Color`) for magnetic/tilt/dock/shared-layout. Do not approximate springs with `Curves.elasticOut`/`bounceOut`; use the token values verbatim.
+- **`motor` stays an implementation detail.** Its types appear only in `lib/src/tokens/motion.dart`; components consume the `beui*` token constants. If `motor` is ever dropped, you rewrite ~8 constants, not every widget.
+- **Gate transform motion on reduced motion:** `MediaQuery.disableAnimationsOf(context)` → swap to `motor.NoMotion` (movement-free). `motor` does not do this for you. Reduced motion keeps opacity/color transitions and drops *movement* — it is not a blanket duration-zeroing. Centralize the check in one resolver rather than per widget.
 - **Build decorative hover effects (magnetic, tilt, dock magnify) on `MouseRegion`**, never `GestureDetector` — this naturally excludes touch devices, matching the source's `useHoverCapable()` gate.
 - Animate transform/opacity only; blur ≤ 10px; exits faster than entrances; UI motion < ~300ms, press feedback ~100–160ms.
 

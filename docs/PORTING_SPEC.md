@@ -8,9 +8,15 @@ The source of truth is **beUI v2** (`starc007/ui-components`, live at [beui.dev]
 
 ## 1. Motion tokens (port first — everything depends on these)
 
-Source: `lib/ease.ts`. Framer Motion springs are parameterized by `stiffness`, `damping`, `mass` — **the exact same physical parameters as Flutter's `SpringDescription(mass, stiffness, damping)`**. This is a near-perfect 1:1 mapping; do not approximate springs with `Curves.elasticOut` etc.
+Source: `lib/ease.ts`. Framer Motion springs are parameterized by `stiffness`, `damping`, `mass` — the exact same physical parameters as Flutter's `SpringDescription(mass, stiffness, damping)`. This is a near-perfect 1:1 mapping; do not approximate springs with `Curves.elasticOut` etc.
 
-### Springs → `SpringDescription`
+### Animation engine: `motor` (standard, not Flutter defaults)
+
+The port uses the **[`motor`](https://pub.dev/packages/motor)** package as its motion engine instead of raw `AnimationController` + `SpringSimulation`. Rationale: `motor.SpringMotion` wraps Flutter's own `SpringDescription`, so beUI's exact physics tokens carry over byte-for-byte — **zero fidelity loss** — while `MotionBuilder` adds independent-per-dimension spring motion for `Offset`/`Size`/`Rect`/`Alignment`/`Color`, which is exactly what beUI's hardest components need (magnetic pull, dock magnify, shared-layout glides, tilt). It also unifies curves and springs under one builder API, matching beUI's mix of `EASE_*` and `SPRING_*` tokens.
+
+**Keep `motor` an implementation detail.** Define every token as a `motor.Motion` constant in `lib/src/tokens/` and have components consume those — never scatter `SpringMotion(...)` literals across widgets. If `motor` ever stalls, you reimplement ~8 token constants, not 35 components.
+
+### Springs → `motor.SpringMotion(SpringDescription(...))`
 
 | Token | stiffness | damping | mass | Used for |
 |---|---|---|---|---|
@@ -21,30 +27,41 @@ Source: `lib/ease.ts`. Framer Motion springs are parameterized by `stiffness`, `
 | `SPRING_MOUSE` | 200 | 15 | 0.3 | Cursor-follow physics (magnetic, tilt, dock) |
 
 ```dart
-// lib/src/tokens/springs.dart
-const springPress  = SpringDescription(mass: 0.6,  stiffness: 500, damping: 30);
-const springSwap   = SpringDescription(mass: 0.55, stiffness: 460, damping: 30);
-const springPanel  = SpringDescription(mass: 0.5,  stiffness: 420, damping: 40);
-const springLayout = SpringDescription(mass: 0.6,  stiffness: 360, damping: 32);
-const springMouse  = SpringDescription(mass: 0.3,  stiffness: 200, damping: 15);
+// lib/src/tokens/motion.dart
+import 'package:flutter/physics.dart';
+import 'package:motor/motor.dart';
+
+const beuiSpringPress  = SpringMotion(SpringDescription(mass: 0.6,  stiffness: 500, damping: 30));
+const beuiSpringSwap   = SpringMotion(SpringDescription(mass: 0.55, stiffness: 460, damping: 30));
+const beuiSpringPanel  = SpringMotion(SpringDescription(mass: 0.5,  stiffness: 420, damping: 40));
+const beuiSpringLayout = SpringMotion(SpringDescription(mass: 0.6,  stiffness: 360, damping: 32));
+const beuiSpringMouse  = SpringMotion(SpringDescription(mass: 0.3,  stiffness: 200, damping: 15));
 ```
 
-Drive these with `AnimationController` + `SpringSimulation` (or `controller.animateWith(SpringSimulation(...))`). Framer's `layoutId` shared-element transitions map to Flutter `Hero` widgets or a hand-rolled `AnimatedPositioned`/`Stack` with a shared layout key driven by `springLayout`.
+Use `MotionBuilder`/`SingleMotionBuilder` (or a `MotionController`) to animate toward targets — no manual `SpringSimulation` wiring. Multi-dimensional targets (the magnetic `Offset`, a gliding pill's `Rect`) use `MotionBuilder` with the matching converter so each axis springs independently. `SequenceMotionBuilder` with **state sequences** ports state-machine widgets cleanly — `StatefulButton` (idle→loading→success→error), toast status morphs, OTP states. `MotionDraggable` covers drag-with-spring-return (bottom-sheet snap, swipeable-list, swap). Framer's `layoutId` shared-element transitions map to a `Stack` + `MotionBuilder<Rect>` keyed on the active item, driven by `beuiSpringLayout` (or `Hero` for route-level transitions).
 
-### Easing curves → `Cubic`
+### Easing curves → `motor.CurvedMotion(curve: Cubic(...))`
 
-| Token | cubic-bezier | Flutter |
+| Token | cubic-bezier | Flutter `Cubic` |
 |---|---|---|
 | `EASE_OUT` | `0.16, 1, 0.3, 1` | `Cubic(0.16, 1, 0.3, 1)` |
 | `EASE_IN_OUT` | `0.77, 0, 0.175, 1` | `Cubic(0.77, 0, 0.175, 1)` |
 | `EASE_DRAWER` | `0.32, 0.72, 0, 1` | `Cubic(0.32, 0.72, 0, 1)` |
+
+```dart
+// lib/src/tokens/motion.dart (continued) — duration is per-use; these define the curve
+const beuiEaseOut   = Cubic(0.16, 1, 0.3, 1);
+const beuiEaseInOut = Cubic(0.77, 0, 0.175, 1);
+const beuiEaseDrawer = Cubic(0.32, 0.72, 0, 1);
+// e.g. CurvedMotion(duration: Duration(milliseconds: 220), curve: beuiEaseOut)
+```
 
 ### Motion rules (from source `AGENTS.md` + motion-patterns doc) — preserve these
 
 - Animate **transform and opacity only**, never layout-affecting properties. In Flutter that means `Transform`/`Opacity`/`FractionalTranslation`, not animating `Padding`/`width`/`height` where avoidable.
 - Blur ≤ 10px. **Exits faster than entrances.** UI animations under ~300ms; press feedback ~100–160ms.
 - Icon motion should mimic the real action (bell swings from the top, download drops, copy snaps once) — no single generic bounce for every icon.
-- **Reduced motion** (`useReducedMotion()` in source): in Flutter, gate transform-based motion on `MediaQuery.disableAnimationsOf(context)`. Reduced motion keeps opacity/color transitions and drops movement; it must not just zero out duration on everything.
+- **Reduced motion** (`useReducedMotion()` in source): `motor` does **not** handle this automatically — gate it yourself. When `MediaQuery.disableAnimationsOf(context)` is true, swap transform-driven tokens for `NoMotion` (or a zero-duration `CurvedMotion`). Reduced motion keeps opacity/color transitions and drops *movement*; it must not just zero out duration on everything. Centralize this: a token resolver (e.g. `motionFor(context, beuiSpringMouse)` returning `NoMotion` when animations are disabled) keeps the check out of every widget.
 - **Hover-capable gating** (`useHoverCapable()` in source): decorative hover effects (magnetic pull, tilt, dock magnify) must not fire on touch. Flutter's `MouseRegion` only reports real pointer devices, so building hover effects on `MouseRegion`/`onEnter`/`onExit` is the natural gate. Do not drive hover effects from `GestureDetector`.
 
 ---
@@ -120,11 +137,12 @@ Two categories in the source registry: **`motion`** (primitives, shown as "Compo
 |---|---|
 | Named exports, one component per file | One widget per file under `lib/src/`, snake_case filenames, exported from a barrel `lib/beui.dart` |
 | Every component takes `className` merged via `cn()` | Components take optional `style`/`color`/`padding` overrides; lean on `ThemeExtension` for defaults rather than per-call styling |
-| `"use client"` interactive components | All widgets are stateful where they animate; use `StatefulWidget` + `SingleTickerProviderStateMixin` |
+| `"use client"` interactive components | Stateful widgets driving `motor` builders/controllers; use `StatefulWidget` (+ `SequenceMotionController` etc. where a sequence is held) |
 | Controlled + uncontrolled (`value`/`defaultValue`/`onChange`) | Mirror with `value` + `onChanged` (controlled) and an internal-state fallback when `value == null` — Flutter's own `Switch`/`Slider` pattern |
 | Variants via props (e.g. tabs pill/segment/underline) | `enum` + named constructors or a `variant:` parameter |
-| Framer `AnimatePresence` (mount/unmount animation) | `AnimatedSwitcher`, `AnimatedSize`, or explicit controllers with status listeners for exit |
-| Framer `layout` / `layoutId` (shared layout) | `Hero`, or `Stack` + animated alignment/position driven by `springLayout` |
+| Framer `AnimatePresence` (mount/unmount animation) | `AnimatedSwitcher`/`AnimatedSize` for simple cases; `SequenceMotionBuilder` state sequences for status-driven widgets (stateful button, toasts, OTP) |
+| Framer `layout` / `layoutId` (shared layout) | `Stack` + `MotionBuilder<Rect>` keyed on the active item driven by `beuiSpringLayout`; `Hero` for route-level transitions |
+| Framer variants spring per dimension (`x`/`y`/scale) | `MotionBuilder` with the matching converter (`Offset`/`Size`/`Rect`/`Alignment`/`Color`) — each axis springs independently |
 | Lenis smooth scroll | A `ScrollController`-based smooth-scroll wrapper or `scrollable_positioned_list`; `scroll-reveal`/`parallax` read scroll offset via `NotificationListener<ScrollNotification>` |
 
 **Naming — important:** many source names collide with Flutter framework widgets (`Switch`, `Drawer`, `Tooltip`, `Checkbox`, `Radio`, `Tabs`, `Tab`). Prefix every public widget with **`Beui`** (`BeuiSwitch`, `BeuiDrawer`, `BeuiTooltip`, `BeuiButton`, …) to avoid import clashes and make the library legible at call sites. Keep the file/slug names matching the source (`switch.dart`, `drawer.dart`) for traceability.
