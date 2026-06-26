@@ -26,6 +26,9 @@ export 'src/motion/button/stateful.dart'
     show BeuiButtonState, BeuiStatefulButton;
 export 'src/motion/checkbox.dart' show BeuiCheckbox, BeuiCheckboxStyle;
 export 'src/motion/magnetic.dart' show BeuiMagnetic;
+
+// Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
+export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
 export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
