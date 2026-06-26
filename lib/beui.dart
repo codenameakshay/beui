@@ -11,6 +11,9 @@ export 'src/version.dart';
 // Motion tokens (port first — everything depends on these).
 export 'src/tokens/motion.dart';
 
+// Default Lucide icon set (consumer-facing transitive dependency — see README).
+export 'src/tokens/icons.dart';
+
 // Theme (BeuiColors ThemeExtension + typography).
 export 'src/theme/beui_colors.dart';
 export 'src/theme/beui_text_theme.dart';

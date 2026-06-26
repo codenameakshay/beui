@@ -32,7 +32,7 @@ Run `flutter analyze && flutter test` before considering work done. Do not run `
 Intended layout for the package:
 
 - `lib/beui.dart` — barrel file; the single public entrypoint that re-exports every component and the theme/token API. Consumers `import 'package:beui/beui.dart'`.
-- `lib/src/tokens/` — **port this first; everything depends on it.** `motion.dart` holds the five spring tokens as `motor.SpringMotion(SpringDescription(...))` constants and the three easings as `Cubic` constants, mirroring the source's `lib/ease.ts` exactly (see the spec's token tables). This file is the only place `motor` types appear directly — see the motion-engine rule below.
+- `lib/src/tokens/` — **port this first; everything depends on it.** `motion.dart` holds the five spring tokens as `motor.SpringMotion(SpringDescription(...))` constants and the three easings as `Cubic` constants, mirroring the source's `lib/ease.ts` exactly (see the spec's token tables). This file is the only place `motor` types appear directly — see the motion-engine rule below. `icons.dart` is the only place the icon package (`flutter_lucide`) is referenced — see Icons below.
 - `lib/src/theme/` — `BeuiColors` as a `ThemeExtension` (the source's design-token palette, light/dark + a neutral base + 10 color themes (11 ColorTheme values)), plus text/typography. Components read colors from `Theme.of(context).extension<BeuiColors>()`, never hardcoded.
 - `lib/src/motion/` — the components. One widget per file, snake_case filenames matching the source slugs (`switch.dart`, `dock.dart`); multi-file widgets get a folder (`button/`). The source splits primitives (`motion`) from composed widgets (`blocks`) — keep that split as subfolders or a clear grouping.
 - `example/` — Flutter showcase app, one route per component. This is the Flutter analog of the source's docs site and the render target for golden tests. It is the living gallery, not part of the published library surface.
@@ -49,6 +49,10 @@ Intended layout for the package:
 ### Naming
 
 Prefix every public widget with **`Beui`** (`BeuiSwitch`, `BeuiDrawer`, `BeuiTooltip`, `BeuiButton`). Many source names collide with Flutter framework widgets (`Switch`, `Drawer`, `Tooltip`, `Checkbox`, `Radio`, `Tabs`) — the prefix avoids import clashes. Keep filenames matching the source slug for traceability.
+
+### Icons
+
+Default icon set is `flutter_lucide`, re-exported through the barrel (and referenced only in `lib/src/tokens/icons.dart` — same discipline as the `motor` rule; never import it ad hoc in a widget). Icon props on public widgets are framework-native: `IconData? icon` (pick a glyph) or `Widget? icon` (custom content) — never a `flutter_lucide`-specific type, so the icon package can be swapped without touching any widget API. Components with a fixed status set (animated-badge, animated-toast-stack) ship `LucideIcons.*` defaults that consumers can override per status. Hand-drawn marks in the source (otp-input success check, scroll-progress ring) port to `CustomPaint`, **not** bundled assets — the package ships no `assets/` icons of its own. See the spec's §3.
 
 ### Component API conventions
 

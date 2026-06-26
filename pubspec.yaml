@@ -14,6 +14,14 @@ dependencies:
   # single-maintainer dependency the whole library rests on. Bump deliberately
   # after re-running fidelity goldens.
   motor: ">=1.1.0 <1.2.0"
+  # Default Lucide icon set, mirroring the source's lucide-react glyphs
+  # (docs/PORTING_SPEC.md §3). flutter_lucide is chosen over the stale
+  # lucide_icons (2y old, Lucide ~0.257) — it tracks Lucide 1.11+, ships all
+  # six platforms, MIT. Re-exported via lib/src/tokens/icons.dart so it is a
+  # consumer-facing transitive dependency (see README). Capped below the next
+  # major (icon additions in minors are wanted and low-risk; a major could
+  # rename glyphs) — looser than motor's pin because icons aren't motion-core.
+  flutter_lucide: ">=1.11.0 <2.0.0"
 
 dev_dependencies:
   flutter_test:
