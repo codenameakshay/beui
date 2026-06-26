@@ -116,6 +116,13 @@ const beuiEaseDrawer = Cubic(0.32, 0.72, 0, 1);
   - `drawer`/`bottom-sheet` keep a short ~0.18–0.2s `EASE_OUT` entrance → a brief `CurvedMotion`, not nothing.
   - `magnetic`/`tilt` disable the effect entirely → the widget renders static.
   Reduced motion **keeps opacity/color transitions and drops *movement*** — it must not just zero out duration on everything. Encode the movement-vs-opacity distinction in the resolver signature (e.g. `motionFor(context, token, {required bool isMovement})`) so "keep opacity, drop movement" is enforced by the type, and centralize the check there rather than per widget.
+
+> **`NoMotion` freezes at the source value — it does not snap to the target.** (Verified: `motor`'s `NoMotionSimulation.x(t)` always returns `start`.) So you **cannot** pipe the resolver's `NoMotion` into a `SingleMotionBuilder`/`MotionBuilder` that is driving a **discrete position/layout transition** (switch thumb, radio dot, tabs indicator, shared-layout pill) — the element would stay stuck at its *old* position instead of jumping to the new one. The resolver still owns the *decision*; the component honors it per its motion type:
+> - **Discrete state→state transition** → reduced motion should **snap to the new target**. Pattern (proven in `BeuiSwitch`/`BeuiCheckbox`): ask the resolver, then `if (motion is NoMotion) renderAtTarget() else SingleMotionBuilder(...)` — i.e. bypass the builder and place the element at its target alignment/offset. Do **not** reach for a zero-duration `CurvedMotion` to "snap": `CurveSimulation` divides by the duration, so `Duration.zero` yields `NaN` at `t=0` (a ~1ms curve works but adds a frame and is strictly worse than the bypass).
+> - **Continuous follow** (magnetic, tilt) → reduced motion means **don't move at all**; the component disables the effect (renders static / doesn't apply the transform). Here `NoMotion`/no-builder is exactly right.
+> - **Transient press squish** (button/checkbox `whileTap`) → drive the spring directly with a **reduce-gated target** (target = 1 under reduced motion), *not* `motionFor → NoMotion`, which would otherwise freeze a press mid-squish.
+>
+> The fidelity test for any movement-bearing widget asserts this directly: under reduced motion, pump and confirm the element reaches its **target with no intermediate frames** (snap) for transitions, or shows **zero transform delta** for press/follow effects — opacity/color may still settle. See the Testing & fidelity verification section.
 - **Hover-capable gating** (`useHoverCapable()` in source): decorative hover effects (magnetic pull, tilt) must not fire on touch. Flutter's `MouseRegion` only reports real pointer devices, so building hover effects on `MouseRegion`/`onEnter`/`onExit` is the natural gate. Do not drive hover effects from `GestureDetector`.
 
 ---
@@ -458,6 +465,7 @@ test('beuiSpringPress matches source SPRING_PRESS token', () {
 - Press feedback animates **scale** under `beuiSpringPress` — pump partway, assert the `Transform` scale is between 1.0 and the press target and converging.
 - **Per-dimension independence:** for a magnetic/dock target, assert the `Offset`'s `dx` and `dy` springs settle independently (drive one axis, the other stays put).
 - **Reduced motion = no transform delta:** with `disableAnimationsOf` true, pump and assert there is **zero** translation/scale change, while opacity/color transitions *may* still occur. This is the single most important fidelity regression guard.
+- **Reduced motion on a position/layout transition = snap, not freeze:** for a state→state mover (switch thumb, radio dot, tabs indicator), toggle under `disableAnimationsOf` and assert the element is at its **target within one frame** (the bypass pattern; see the `NoMotion` note in the Motion tokens section). A regression that pipes `NoMotion` into the builder shows up here as the element stuck at its *source* position — the test catches it.
 
 ```dart
 testWidgets('press animates scale under beuiSpringPress; none under reduced motion', (t) async {
