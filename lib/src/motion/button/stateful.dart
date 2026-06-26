@@ -77,37 +77,47 @@ class BeuiStatefulButton extends StatelessWidget {
         BeuiButtonState.idle => label,
       };
 
-  IconData? get _icon => switch (state) {
+  /// The leading status icon (spinner / check / ✗) — none while idle.
+  IconData? get _leadingIcon => switch (state) {
         BeuiButtonState.loading => LucideIcons.loader_circle,
         BeuiButtonState.success => LucideIcons.check,
         BeuiButtonState.error => LucideIcons.x,
-        BeuiButtonState.idle => icon,
+        BeuiButtonState.idle => null,
       };
+
+  /// The trailing idle icon — only shown while idle (matching the source).
+  IconData? get _trailingIcon =>
+      state == BeuiButtonState.idle ? icon : null;
+
+  Widget _iconSlot(IconData? data, {required bool leading, required bool reduce}) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 280),
+      switchInCurve: Curves.linear,
+      switchOutCurve: Curves.linear,
+      transitionBuilder: (child, animation) => _rollIn(child, animation, reduce),
+      child: data == null
+          ? SizedBox.shrink(key: ValueKey('none-${leading ? 'L' : 'T'}'))
+          : Padding(
+              key: ValueKey('${leading ? 'L' : 'T'}-$state'),
+              padding: leading
+                  ? const EdgeInsets.only(right: 8)
+                  : const EdgeInsets.only(left: 8),
+              child: leading && state == BeuiButtonState.loading
+                  ? const _Spinner(size: 16)
+                  : Icon(data, size: 16),
+            ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isBusy = state == BeuiButtonState.loading;
-    final iconData = _icon;
-
-    final iconSlot = AnimatedSwitcher(
-      duration: const Duration(milliseconds: 220),
-      switchInCurve: beuiEaseOut,
-      transitionBuilder: (child, animation) => _rollIn(child, animation, reduce),
-      child: iconData == null
-          ? const SizedBox.shrink(key: ValueKey('no-icon'))
-          : Padding(
-              key: ValueKey(state),
-              padding: const EdgeInsets.only(right: 8),
-              child: state == BeuiButtonState.loading
-                  ? const _Spinner(size: 16)
-                  : Icon(iconData, size: 16),
-            ),
-    );
 
     final textSlot = AnimatedSwitcher(
-      duration: const Duration(milliseconds: 260),
-      switchInCurve: beuiEaseOut,
+      duration: const Duration(milliseconds: 340),
+      switchInCurve: Curves.linear,
+      switchOutCurve: Curves.linear,
       transitionBuilder: (child, animation) => _rollIn(child, animation, reduce),
       layoutBuilder: (currentChild, previousChildren) => Stack(
         alignment: Alignment.centerLeft,
@@ -127,7 +137,11 @@ class BeuiStatefulButton extends StatelessWidget {
           curve: beuiEaseOut,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [iconSlot, textSlot],
+            children: [
+              _iconSlot(_leadingIcon, leading: true, reduce: reduce),
+              textSlot,
+              _iconSlot(_trailingIcon, leading: false, reduce: reduce),
+            ],
           ),
         ),
       ),
@@ -135,24 +149,31 @@ class BeuiStatefulButton extends StatelessWidget {
   }
 }
 
-/// Roll-in transition: fade + rise + blur (the source's slot motion). Reduced
+/// Roll-in transition: fade + rise + blur, the source's `blur(6px)` slot roll.
+/// Driven by a *linear* animation (the AnimatedSwitcher curves are linear) so
+/// the blur stays visible across the whole transition instead of being eased
+/// away in the first frames; the fade and rise are eased internally. Reduced
 /// motion collapses to a plain crossfade.
 Widget _rollIn(Widget child, Animation<double> animation, bool reduce) {
-  final fade = FadeTransition(opacity: animation, child: child);
-  if (reduce) return fade;
+  if (reduce) return FadeTransition(opacity: animation, child: child);
   return AnimatedBuilder(
     animation: animation,
     builder: (context, _) {
-      final t = animation.value;
-      return Transform.translate(
-        offset: Offset(0, (1 - t) * 10),
-        child: ImageFiltered(
-          imageFilter: ImageFilter.blur(
-            sigmaX: (1 - t) * 3,
-            sigmaY: (1 - t) * 3,
-            tileMode: TileMode.decal,
+      final t = animation.value; // linear progress
+      final eased = beuiEaseOut.transform(t);
+      final blur = (1 - t) * 8; // ~blur(6px) at the start, easing to 0
+      return Opacity(
+        opacity: eased,
+        child: Transform.translate(
+          offset: Offset(0, (1 - eased) * 14),
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(
+              sigmaX: blur,
+              sigmaY: blur,
+              tileMode: TileMode.decal,
+            ),
+            child: child,
           ),
-          child: fade,
         ),
       );
     },

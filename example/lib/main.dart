@@ -68,9 +68,25 @@ class _ButtonDemoState extends State<_ButtonDemo> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Wrap(spacing: 12, runSpacing: 12, children: [
-          for (final v in BeuiButtonVariant.values)
-            BeuiButton(
-                variant: v, onPressed: () {}, child: Text(v.name)),
+          BeuiButton(
+            onPressed: () {},
+            child: _row(const [Text('Continue'), Icon(LucideIcons.arrow_right)]),
+          ),
+          BeuiButton(
+            variant: BeuiButtonVariant.secondary,
+            onPressed: () {},
+            child: _row(const [Icon(LucideIcons.download), Text('Download')]),
+          ),
+          BeuiButton(
+            variant: BeuiButtonVariant.outline,
+            onPressed: () {},
+            child: const Text('Outline'),
+          ),
+          BeuiButton(
+            variant: BeuiButtonVariant.ghost,
+            onPressed: () {},
+            child: const Text('Ghost'),
+          ),
         ]),
         const SizedBox(height: 24),
         Wrap(
@@ -78,31 +94,76 @@ class _ButtonDemoState extends State<_ButtonDemo> {
           runSpacing: 12,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            for (final s in [
-              BeuiButtonSize.sm,
-              BeuiButtonSize.md,
-              BeuiButtonSize.lg
-            ])
-              BeuiButton(size: s, onPressed: () {}, child: Text(s.name)),
             BeuiButton(
-                size: BeuiButtonSize.icon,
-                onPressed: () {},
-                child: const Icon(Icons.add)),
+                size: BeuiButtonSize.sm, onPressed: () {}, child: const Text('Small')),
+            BeuiButton(
+                size: BeuiButtonSize.md, onPressed: () {}, child: const Text('Medium')),
+            BeuiButton(
+                size: BeuiButtonSize.lg, onPressed: () {}, child: const Text('Large')),
+            BeuiButton(
+              size: BeuiButtonSize.icon,
+              variant: BeuiButtonVariant.outline,
+              onPressed: () {},
+              child: const Icon(LucideIcons.trash_2),
+            ),
           ],
         ),
         const SizedBox(height: 24),
-        BeuiButton(ripple: true, onPressed: () {}, child: const Text('Ripple')),
+        Wrap(spacing: 12, runSpacing: 12, children: [
+          BeuiButton(ripple: true, onPressed: () {}, child: const Text('Ripple')),
+          BeuiButton(
+            variant: BeuiButtonVariant.outline,
+            onPressed: () {},
+            child: const Text('Tap me'),
+          ),
+        ]),
         const SizedBox(height: 24),
-        BeuiStatefulButton(
-          label: 'Save changes',
-          state: _state,
-          onPressed: _runLifecycle,
-        ),
+        Wrap(spacing: 12, runSpacing: 12, crossAxisAlignment: WrapCrossAlignment.center, children: [
+          BeuiStatefulButton(
+            label: 'Save changes',
+            icon: LucideIcons.arrow_right,
+            state: _state,
+            onPressed: _runLifecycle,
+          ),
+          BeuiButton(
+            variant: BeuiButtonVariant.outline,
+            onPressed: () {},
+            child: const Text('Submit'),
+          ),
+        ]),
         const SizedBox(height: 24),
-        BeuiMagneticButton(onPressed: () {}, child: const Text('Magnetic')),
+        Wrap(spacing: 12, runSpacing: 12, children: [
+          BeuiMagneticButton(
+            onPressed: () {},
+            child: _row(const [Text('Hover me'), Icon(LucideIcons.arrow_right)]),
+          ),
+          BeuiMagneticButton(
+            variant: BeuiButtonVariant.outline,
+            strength: 0.15,
+            onPressed: () {},
+            child: const Text('Subtle pull'),
+          ),
+          BeuiMagneticButton(
+            variant: BeuiButtonVariant.outline,
+            strength: 0.4,
+            onPressed: () {},
+            child: const Text('Strong pull'),
+          ),
+        ]),
       ],
     );
   }
+
+  /// A min-width row with the source button's 8px gap between children.
+  Widget _row(List<Widget> children) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            if (i > 0) const SizedBox(width: 8),
+            children[i],
+          ],
+        ],
+      );
 }
 
 /// Exercises all three tab variants and a fading content panel.

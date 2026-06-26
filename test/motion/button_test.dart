@@ -189,6 +189,23 @@ void main() {
       expect(taps, 0);
     });
 
+    testWidgets('text transition applies a visible blur', (tester) async {
+      Widget app(BeuiButtonState s) => _wrap(BeuiStatefulButton(
+          label: 'Save changes', state: s, onPressed: () {}));
+      await tester.pumpWidget(app(BeuiButtonState.idle));
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(app(BeuiButtonState.success));
+      await tester.pump(const Duration(milliseconds: 60)); // mid roll
+      final sigmas = tester
+          .widgetList<ImageFiltered>(find.byType(ImageFiltered))
+          .map((f) {
+        final m = RegExp(r'blur\(([\d.]+)')
+            .firstMatch(f.imageFilter.toString());
+        return m == null ? 0.0 : double.parse(m.group(1)!);
+      });
+      expect(sigmas.fold<double>(0, math.max), greaterThan(3.0));
+    });
+
     testWidgets('success and error show their text', (tester) async {
       await tester.pumpWidget(_wrap(
         const BeuiStatefulButton(label: 'Save', state: BeuiButtonState.success),
