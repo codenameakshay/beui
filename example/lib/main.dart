@@ -26,9 +26,60 @@ class GalleryApp extends StatelessWidget {
 /// lands so it shows up in the list and golden tests can target it.
 const _entries = <GalleryEntry>[
   GalleryEntry('Switch', _switchDemo),
+  GalleryEntry('Checkbox', _checkboxDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
+
+Widget _checkboxDemo(BuildContext context) => const _CheckboxDemo();
+
+/// Exercises the checkbox's states, including indeterminate and disabled.
+class _CheckboxDemo extends StatefulWidget {
+  const _CheckboxDemo();
+
+  @override
+  State<_CheckboxDemo> createState() => _CheckboxDemoState();
+}
+
+class _CheckboxDemoState extends State<_CheckboxDemo> {
+  bool _terms = true;
+  bool _updates = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BeuiCheckbox(
+          value: _terms,
+          label: 'Accept terms and conditions',
+          onChanged: (v) => setState(() => _terms = v),
+        ),
+        const SizedBox(height: 16),
+        BeuiCheckbox(
+          value: _updates,
+          label: 'Email me product updates',
+          onChanged: (v) => setState(() => _updates = v),
+        ),
+        const SizedBox(height: 16),
+        BeuiCheckbox(
+          value: true,
+          indeterminate: true,
+          label: 'Select all (partial)',
+          onChanged: (_) {},
+        ),
+        const SizedBox(height: 16),
+        BeuiCheckbox(
+          value: true,
+          enabled: false,
+          label: 'Disabled',
+          onChanged: (_) {},
+        ),
+      ],
+    );
+  }
+}
 
 /// Exercises the switch's variants and states (the gallery doubles as visual QA).
 class _SwitchDemo extends StatefulWidget {
