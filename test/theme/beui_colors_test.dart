@@ -1,0 +1,195 @@
+import 'package:beui/beui.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('BeuiColors.of resolves every theme × brightness', () {
+    test('there are exactly 11 color themes (neutral + 10 brand)', () {
+      expect(BeuiColorTheme.values.length, 11);
+    });
+
+    test('all 11 themes resolve for both light and dark', () {
+      for (final theme in BeuiColorTheme.values) {
+        for (final brightness in Brightness.values) {
+          final colors = BeuiColors.of(theme, brightness);
+          expect(colors.colorTheme, theme);
+          expect(colors.brightness, brightness);
+          // Sanity: a fully-populated palette (opaque surfaces present).
+          expect(colors.background.a, 1.0);
+          expect(colors.foreground.a, 1.0);
+        }
+      }
+    });
+
+    test('light()/dark() factories are the neutral Mono base', () {
+      expect(BeuiColors.light().colorTheme, BeuiColorTheme.defaultMono);
+      expect(BeuiColors.light().brightness, Brightness.light);
+      expect(BeuiColors.dark().colorTheme, BeuiColorTheme.defaultMono);
+      expect(BeuiColors.dark().brightness, Brightness.dark);
+    });
+  });
+
+  group('known token values match the source palette', () {
+    test('dark background is the raw hex #151515 passed straight through', () {
+      final dark = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.dark);
+      expect(dark.background, const Color(0xFF151515));
+    });
+
+    test('dark card is the raw hex #1c1c1c passed straight through', () {
+      final dark = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.dark);
+      expect(dark.card, const Color(0xFF1C1C1C));
+    });
+
+    test('colored themes keep the neutral surfaces, override only brand', () {
+      final base = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.dark);
+      final violet = BeuiColors.of(BeuiColorTheme.violet, Brightness.dark);
+      // Neutral surfaces unchanged...
+      expect(violet.background, base.background);
+      expect(violet.card, base.card);
+      expect(violet.border, base.border);
+      // ...brand tokens overridden.
+      expect(violet.primary, isNot(base.primary));
+      expect(violet.accent, isNot(base.accent));
+    });
+  });
+
+  group('alpha is preserved through conversion (no dropped / a term)', () {
+    test('light border carries its 0.06 alpha (oklch(15% 0 0 / 0.06))', () {
+      final light = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.light);
+      expect(light.border.a, lessThan(1.0));
+      expect(light.border.a, greaterThan(0.0));
+    });
+
+    test('dark border carries its 0.05 alpha (rgb(255 255 255 / 0.05))', () {
+      final dark = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.dark);
+      expect(dark.border.a, lessThan(1.0));
+      expect(dark.border.a, greaterThan(0.0));
+    });
+
+    test('a brand ring tint is translucent (oklch(... / 0.5) light)', () {
+      final violet = BeuiColors.of(BeuiColorTheme.violet, Brightness.light);
+      expect(violet.ring.a, lessThan(1.0));
+    });
+  });
+
+  group('picker metadata: name + swatch', () {
+    test('every variant exposes a non-empty display name', () {
+      for (final theme in BeuiColorTheme.values) {
+        expect(BeuiColors.of(theme, Brightness.light).name, isNotEmpty);
+      }
+      expect(
+        BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.light).name,
+        'Mono',
+      );
+    });
+
+    test('swatch is brightness-independent picker metadata', () {
+      for (final theme in BeuiColorTheme.values) {
+        final light = BeuiColors.of(theme, Brightness.light);
+        final dark = BeuiColors.of(theme, Brightness.dark);
+        expect(light.swatch, dark.swatch);
+      }
+    });
+
+    test('swatch is distinct from primary (per source THEME_LIST intent)', () {
+      for (final theme in BeuiColorTheme.values) {
+        final dark = BeuiColors.of(theme, Brightness.dark);
+        // The dark brand primary is a lightened hue, never the swatch.
+        expect(
+          dark.swatch,
+          isNot(dark.primary),
+          reason: '${theme.name} dark swatch should differ from primary',
+        );
+
+        final light = BeuiColors.of(theme, Brightness.light);
+        if (theme == BeuiColorTheme.defaultMono) {
+          // Mono picks a mid-gray swatch distinct from its near-black primary.
+          expect(light.swatch, isNot(light.primary));
+        } else {
+          // Colored themes: the swatch IS the light brand primary by design
+          // (source THEME_LIST reuses the light hue), so they coincide in light.
+          expect(
+            light.swatch,
+            light.primary,
+            reason: '${theme.name} swatch mirrors its light primary',
+          );
+        }
+      }
+    });
+  });
+
+  group('ThemeExtension contract: copyWith + lerp', () {
+    test('copyWith overrides only the named field', () {
+      final base = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.light);
+      final modified = base.copyWith(primary: const Color(0xFF123456));
+      expect(modified.primary, const Color(0xFF123456));
+      expect(modified.background, base.background);
+      expect(modified.colorTheme, base.colorTheme);
+      expect(modified.brightness, base.brightness);
+    });
+
+    test('lerp(other, 0) == this and lerp(other, 1) == other for colors', () {
+      final a = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.light);
+      final b = BeuiColors.of(BeuiColorTheme.violet, Brightness.dark);
+
+      final at0 = a.lerp(b, 0.0);
+      final at1 = a.lerp(b, 1.0);
+
+      expect(at0.background, a.background);
+      expect(at0.primary, a.primary);
+      expect(at1.background, b.background);
+      expect(at1.primary, b.primary);
+    });
+
+    test('lerp interpolates the glass surface too', () {
+      final a = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.light);
+      final b = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.dark);
+      final mid = a.lerp(b, 0.5);
+      expect(mid.glass.bg, Color.lerp(a.glass.bg, b.glass.bg, 0.5));
+    });
+
+    test('lerp with a non-BeuiColors extension returns this unchanged', () {
+      final a = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.light);
+      expect(a.lerp(null, 0.5), same(a));
+    });
+  });
+
+  group('glass surface descriptor (documented blur exception)', () {
+    test('blur radii exceed the 10px motion cap by design', () {
+      final glass = BeuiColors.of(
+        BeuiColorTheme.defaultMono,
+        Brightness.dark,
+      ).glass;
+      expect(glass.blur, 20.0);
+      expect(glass.strongBlur, 16.0);
+      expect(glass.thinBlur, 12.0);
+      expect(glass.blur, greaterThan(10.0));
+    });
+
+    test('glass surfaces are translucent on both brightnesses', () {
+      final lightGlass = BeuiColors.of(
+        BeuiColorTheme.defaultMono,
+        Brightness.light,
+      ).glass;
+      final darkGlass = BeuiColors.of(
+        BeuiColorTheme.defaultMono,
+        Brightness.dark,
+      ).glass;
+      expect(lightGlass.bg.a, lessThan(1.0));
+      expect(darkGlass.bg.a, lessThan(1.0));
+    });
+  });
+
+  group('BeuiTextTheme exposes family names only (no bundled fonts)', () {
+    test('sans is Inter, mono is JetBrains Mono (not Geist Mono)', () {
+      const text = BeuiTextTheme();
+      expect(text.sansFamily, 'Inter');
+      expect(text.monoFamily, 'JetBrains Mono');
+    });
+
+    test('mono falls back to the platform monospace family', () {
+      const text = BeuiTextTheme();
+      expect(text.monoFamilyFallback, contains('monospace'));
+    });
+  });
+}

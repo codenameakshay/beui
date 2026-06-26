@@ -12,6 +12,7 @@ export 'src/version.dart';
 export 'src/tokens/motion.dart';
 
 // Theme (BeuiColors ThemeExtension + typography).
-// export 'src/theme/beui_colors.dart';
+export 'src/theme/beui_colors.dart';
+export 'src/theme/beui_text_theme.dart';
 
 // Components (lib/src/motion/...). Exported as they are ported.
