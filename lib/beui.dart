@@ -22,3 +22,4 @@ export 'src/theme/beui_text_theme.dart';
 export 'src/motion/checkbox.dart' show BeuiCheckbox, BeuiCheckboxStyle;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
+export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;

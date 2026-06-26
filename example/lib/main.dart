@@ -28,6 +28,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Switch', _switchDemo),
   GalleryEntry('Checkbox', _checkboxDemo),
   GalleryEntry('Radio', _radioDemo),
+  GalleryEntry('Tabs', _tabsDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
@@ -35,6 +36,59 @@ Widget _switchDemo(BuildContext context) => const _SwitchDemo();
 Widget _checkboxDemo(BuildContext context) => const _CheckboxDemo();
 
 Widget _radioDemo(BuildContext context) => const _RadioDemo();
+
+Widget _tabsDemo(BuildContext context) => const _TabsDemo();
+
+/// Exercises all three tab variants and a fading content panel.
+class _TabsDemo extends StatefulWidget {
+  const _TabsDemo();
+
+  @override
+  State<_TabsDemo> createState() => _TabsDemoState();
+}
+
+class _TabsDemoState extends State<_TabsDemo> {
+  String _tab = 'activity';
+
+  @override
+  Widget build(BuildContext context) {
+    final tabs = [
+      const BeuiTab(
+        value: 'overview',
+        label: Text('Overview'),
+        content: Text('Project overview and summary.'),
+      ),
+      const BeuiTab(
+        value: 'activity',
+        label: Text('Activity'),
+        content: Text('Recent activity feed.'),
+      ),
+      const BeuiTab(
+        value: 'settings',
+        label: Text('Settings'),
+        content: Text('Configuration and preferences.'),
+      ),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final variant in BeuiTabsVariant.values) ...[
+          BeuiTabs<String>(
+            variant: variant,
+            value: _tab,
+            onChanged: (v) => setState(() => _tab = v),
+            tabs: variant == BeuiTabsVariant.pill ? tabs : _barOnly(tabs),
+          ),
+          const SizedBox(height: 24),
+        ],
+      ],
+    );
+  }
+
+  List<BeuiTab<String>> _barOnly(List<BeuiTab<String>> tabs) =>
+      [for (final t in tabs) BeuiTab(value: t.value, label: t.label)];
+}
 
 /// Exercises the radio group's gliding selection dot.
 class _RadioDemo extends StatefulWidget {
