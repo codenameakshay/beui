@@ -1,14 +1,16 @@
 name: beui
-description: "A new Flutter project."
-publish_to: 'none'
-version: 0.1.0+1
+description: "A one-to-one Flutter port of beUI — motion components for Flutter."
+version: 0.0.1
+repository: https://github.com/codenameakshay/beui
 
 environment:
   sdk: ^3.12.2
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  motor: ^1.1.0
 
 dev_dependencies:
   flutter_test:
