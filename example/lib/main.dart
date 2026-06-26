@@ -13,8 +13,10 @@ class GalleryApp extends StatelessWidget {
     return MaterialApp(
       title: 'beUI Gallery',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
+      theme: ThemeData.light(useMaterial3: true)
+          .copyWith(extensions: [BeuiColors.light()]),
+      darkTheme: ThemeData.dark(useMaterial3: true)
+          .copyWith(extensions: [BeuiColors.dark()]),
       home: const GalleryHome(),
     );
   }
@@ -23,8 +25,51 @@ class GalleryApp extends StatelessWidget {
 /// Registry of gallery entries. Add a [GalleryEntry] here as each component
 /// lands so it shows up in the list and golden tests can target it.
 const _entries = <GalleryEntry>[
-  // GalleryEntry('Switch', _buildSwitchDemo),
+  GalleryEntry('Switch', _switchDemo),
 ];
+
+Widget _switchDemo(BuildContext context) => const _SwitchDemo();
+
+/// Exercises the switch's variants and states (the gallery doubles as visual QA).
+class _SwitchDemo extends StatefulWidget {
+  const _SwitchDemo();
+
+  @override
+  State<_SwitchDemo> createState() => _SwitchDemoState();
+}
+
+class _SwitchDemoState extends State<_SwitchDemo> {
+  bool _notifications = true;
+  bool _sounds = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BeuiSwitch(
+          value: _notifications,
+          label: 'Enable notifications',
+          onChanged: (v) => setState(() => _notifications = v),
+        ),
+        const SizedBox(height: 16),
+        BeuiSwitch(
+          value: _sounds,
+          label: 'Sounds',
+          onChanged: (v) => setState(() => _sounds = v),
+        ),
+        const SizedBox(height: 16),
+        BeuiSwitch(
+          value: true,
+          enabled: false,
+          label: 'Disabled',
+          onChanged: (_) {},
+        ),
+      ],
+    );
+  }
+}
 
 class GalleryEntry {
   const GalleryEntry(this.title, this.builder);
