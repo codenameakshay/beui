@@ -27,11 +27,40 @@ class GalleryApp extends StatelessWidget {
 const _entries = <GalleryEntry>[
   GalleryEntry('Switch', _switchDemo),
   GalleryEntry('Checkbox', _checkboxDemo),
+  GalleryEntry('Radio', _radioDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
 
 Widget _checkboxDemo(BuildContext context) => const _CheckboxDemo();
+
+Widget _radioDemo(BuildContext context) => const _RadioDemo();
+
+/// Exercises the radio group's gliding selection dot.
+class _RadioDemo extends StatefulWidget {
+  const _RadioDemo();
+
+  @override
+  State<_RadioDemo> createState() => _RadioDemoState();
+}
+
+class _RadioDemoState extends State<_RadioDemo> {
+  String _plan = 'pro';
+
+  @override
+  Widget build(BuildContext context) {
+    return BeuiRadioGroup<String>(
+      value: _plan,
+      onChanged: (v) => setState(() => _plan = v),
+      items: const [
+        BeuiRadioItem(value: 'starter', label: 'Starter — free'),
+        BeuiRadioItem(value: 'pro', label: 'Pro — \$12/mo'),
+        BeuiRadioItem(value: 'team', label: 'Team — \$29/mo'),
+        BeuiRadioItem(value: 'legacy', label: 'Legacy plan', enabled: false),
+      ],
+    );
+  }
+}
 
 /// Exercises the checkbox's states, including indeterminate and disabled.
 class _CheckboxDemo extends StatefulWidget {
