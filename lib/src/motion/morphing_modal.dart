@@ -76,39 +76,49 @@ class BeuiMorphingModal extends StatelessWidget {
     final enterScale = reduce ? 1.0 : 0.97;
     final scaleOrigin = isBottom ? Alignment.bottomCenter : Alignment.center;
 
-    final surface = Container(
-      key: const ValueKey('beui_modal_panel'),
-      decoration: BoxDecoration(
-        color: colors.card,
-        border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(24), // rounded-3xl
-        boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 40, offset: Offset(0, 16)),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias, // overflow-hidden
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 300),
-        curve: beuiEaseOut,
-        child: Padding(
-          padding: const EdgeInsets.all(20), // p-5
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 240),
-            switchInCurve: beuiEaseOut,
-            switchOutCurve: beuiEaseOut,
-            // popLayout: the entering view sizes the panel (so it morphs to the
-            // new height); the exiting view is pinned and overlaps as it fades.
-            layoutBuilder: (currentChild, previousChildren) => Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.topCenter,
-              children: [
-                for (final c in previousChildren)
-                  Positioned(left: 0, right: 0, top: 0, child: c),
-                ?currentChild,
-              ],
+    // RepaintBoundary isolates the panel's per-frame repaints (morph, view
+    // blur, enter transform) from the full-screen backdrop layer, so the
+    // expensive BackdropFilter isn't re-rasterised while the panel animates.
+    final surface = RepaintBoundary(
+      child: Container(
+        key: const ValueKey('beui_modal_panel'),
+        decoration: BoxDecoration(
+          color: colors.card,
+          border: Border.all(color: colors.border),
+          borderRadius: BorderRadius.circular(24), // rounded-3xl
+          boxShadow: const [
+            BoxShadow(color: Color(0x40000000), blurRadius: 40, offset: Offset(0, 16)),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias, // overflow-hidden
+        child: AnimatedSize(
+          // SPRING_PANEL is overdamped (no overshoot) ≈ a gentle easeOut. Use a
+          // smooth curve here, NOT the source's aggressive EASE_OUT (which is
+          // for its curve-based animations, not the panel's spring).
+          duration: const Duration(milliseconds: 320),
+          curve: Curves.easeOutCubic,
+          child: Padding(
+            padding: const EdgeInsets.all(20), // p-5
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 240), // enter
+              reverseDuration: const Duration(milliseconds: 160), // exit faster
+              switchInCurve: beuiEaseOut,
+              switchOutCurve: beuiEaseOut,
+              // popLayout: the entering view sizes the panel (so it morphs to
+              // the new height); the exiting view is pinned and overlaps as it
+              // fades.
+              layoutBuilder: (currentChild, previousChildren) => Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.topCenter,
+                children: [
+                  for (final c in previousChildren)
+                    Positioned(left: 0, right: 0, top: 0, child: c),
+                  ?currentChild,
+                ],
+              ),
+              transitionBuilder: (child, a) => _viewTransition(child, a, reduce),
+              child: KeyedSubtree(key: ValueKey(viewId), child: child),
             ),
-            transitionBuilder: (child, a) => _viewTransition(child, a, reduce),
-            child: KeyedSubtree(key: ValueKey(viewId), child: child),
           ),
         ),
       ),
@@ -124,7 +134,7 @@ class BeuiMorphingModal extends StatelessWidget {
             animation: animation,
             builder: (context, child) {
               final t = animation.value.clamp(0.0, 1.0);
-              final e = beuiEaseOut.transform(t);
+              final e = Curves.easeOutCubic.transform(t); // ~SPRING_PANEL
               return Opacity(
                 opacity: Curves.easeOut.transform(t),
                 child: Transform.translate(
@@ -150,11 +160,13 @@ class BeuiMorphingModal extends StatelessWidget {
       animation: animation,
       builder: (context, _) {
         final t = animation.value.clamp(0.0, 1.0);
-        final blur = (1 - t) * 4;
+        // Source blur(4px) ≈ sigma ~2.5 (Flutter sigma ≈ CSS px × 0.6); 4 was
+        // ~2× too heavy and per-frame ImageFiltered is costly.
+        final blur = (1 - t) * 2.5;
         return Opacity(
           opacity: t,
           child: Transform.translate(
-            offset: Offset(0, (1 - t) * 8),
+            offset: Offset(0, (1 - t) * 6),
             child: ImageFiltered(
               imageFilter: ImageFilter.blur(
                   sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),

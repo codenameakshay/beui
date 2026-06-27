@@ -153,29 +153,25 @@ class _BeuiOverlayState extends State<BeuiOverlay>
       children: [
         if (widget.barrier)
           Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _controller,
-              builder: (context, _) {
-                final t = _controller.value;
-                Widget scrim = ColoredBox(
-                  color: barrierColor.withValues(
-                      alpha: barrierColor.a * t.clamp(0.0, 1.0)),
-                );
-                if (widget.barrierBlur > 0) {
-                  scrim = BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: widget.barrierBlur * t,
-                      sigmaY: widget.barrierBlur * t,
-                    ),
-                    child: scrim,
-                  );
-                }
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: widget.barrierDismissible ? _dismiss : null,
-                  child: scrim,
-                );
-              },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: widget.barrierDismissible ? _dismiss : null,
+              // Constant-sigma blur faded via opacity (matching the source's
+              // element-opacity fade) — far cheaper than re-blurring with a
+              // changing kernel every frame, and it lets the blur layer cache
+              // once settled.
+              child: FadeTransition(
+                opacity: _controller,
+                child: widget.barrierBlur > 0
+                    ? BackdropFilter(
+                        filter: ImageFilter.blur(
+                          sigmaX: widget.barrierBlur,
+                          sigmaY: widget.barrierBlur,
+                        ),
+                        child: ColoredBox(color: barrierColor),
+                      )
+                    : ColoredBox(color: barrierColor),
+              ),
             ),
           ),
         widget.overlayBuilder(context, _controller, _link),
