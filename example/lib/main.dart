@@ -30,6 +30,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Radio', _radioDemo),
   GalleryEntry('Tabs', _tabsDemo),
   GalleryEntry('Button', _buttonDemo),
+  GalleryEntry('Tooltip', _tooltipDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
@@ -41,6 +42,36 @@ Widget _radioDemo(BuildContext context) => const _RadioDemo();
 Widget _tabsDemo(BuildContext context) => const _TabsDemo();
 
 Widget _buttonDemo(BuildContext context) => const _ButtonDemo();
+
+Widget _tooltipDemo(BuildContext context) => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('Hover (or long-press on touch) a button:'),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: [
+            for (final (side, label) in const [
+              (BeuiTooltipSide.top, 'Top'),
+              (BeuiTooltipSide.bottom, 'Bottom'),
+              (BeuiTooltipSide.left, 'Left'),
+              (BeuiTooltipSide.right, 'Right'),
+            ])
+              BeuiTooltip(
+                side: side,
+                content: Text('Tooltip on $label'),
+                child: BeuiButton(
+                  variant: BeuiButtonVariant.outline,
+                  onPressed: () {},
+                  child: Text(label),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
 
 /// Exercises button variants, sizes, the stateful lifecycle, and magnetic pull.
 class _ButtonDemo extends StatefulWidget {

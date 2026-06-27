@@ -146,33 +146,37 @@ class _BeuiOverlayState extends State<BeuiOverlay>
     final barrierColor =
         widget.barrierColor ?? const Color(0x66000000); // ~40% black scrim
 
+    // The barrier fills explicitly (Positioned.fill); the content sizes itself
+    // — anchored content (e.g. a tooltip) must not be stretched to full screen,
+    // which `StackFit.expand` would do.
     Widget content = Stack(
-      fit: StackFit.expand,
       children: [
         if (widget.barrier)
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, _) {
-              final t = _controller.value;
-              Widget scrim = ColoredBox(
-                color: barrierColor.withValues(
-                    alpha: barrierColor.a * t.clamp(0.0, 1.0)),
-              );
-              if (widget.barrierBlur > 0) {
-                scrim = BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: widget.barrierBlur * t,
-                    sigmaY: widget.barrierBlur * t,
-                  ),
+          Positioned.fill(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) {
+                final t = _controller.value;
+                Widget scrim = ColoredBox(
+                  color: barrierColor.withValues(
+                      alpha: barrierColor.a * t.clamp(0.0, 1.0)),
+                );
+                if (widget.barrierBlur > 0) {
+                  scrim = BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: widget.barrierBlur * t,
+                      sigmaY: widget.barrierBlur * t,
+                    ),
+                    child: scrim,
+                  );
+                }
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: widget.barrierDismissible ? _dismiss : null,
                   child: scrim,
                 );
-              }
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: widget.barrierDismissible ? _dismiss : null,
-                child: scrim,
-              );
-            },
+              },
+            ),
           ),
         widget.overlayBuilder(context, _controller, _link),
       ],
