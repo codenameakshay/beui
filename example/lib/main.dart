@@ -31,6 +31,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Tabs', _tabsDemo),
   GalleryEntry('Button', _buttonDemo),
   GalleryEntry('Tooltip', _tooltipDemo),
+  GalleryEntry('Drawer', _drawerDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
@@ -42,6 +43,72 @@ Widget _radioDemo(BuildContext context) => const _RadioDemo();
 Widget _tabsDemo(BuildContext context) => const _TabsDemo();
 
 Widget _buttonDemo(BuildContext context) => const _ButtonDemo();
+
+Widget _drawerDemo(BuildContext context) => const _DrawerDemo();
+
+/// Exercises the modal drawer from either edge.
+class _DrawerDemo extends StatefulWidget {
+  const _DrawerDemo();
+
+  @override
+  State<_DrawerDemo> createState() => _DrawerDemoState();
+}
+
+class _DrawerDemoState extends State<_DrawerDemo> {
+  bool _open = false;
+  BeuiDrawerSide _side = BeuiDrawerSide.right;
+
+  void _show(BeuiDrawerSide side) => setState(() {
+        _side = side;
+        _open = true;
+      });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Wrap(spacing: 12, runSpacing: 12, children: [
+          BeuiButton(
+            onPressed: () => _show(BeuiDrawerSide.left),
+            child: const Text('Open left'),
+          ),
+          BeuiButton(
+            onPressed: () => _show(BeuiDrawerSide.right),
+            child: const Text('Open right'),
+          ),
+        ]),
+        BeuiDrawer(
+          open: _open,
+          side: _side,
+          label: 'Menu',
+          onOpenChange: (v) => setState(() => _open = v),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Settings',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 24),
+                for (final item in const ['Profile', 'Account', 'Notifications', 'Privacy'])
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(item, style: const TextStyle(fontSize: 16)),
+                  ),
+                const Spacer(),
+                BeuiButton(
+                  variant: BeuiButtonVariant.outline,
+                  onPressed: () => setState(() => _open = false),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 Widget _tooltipDemo(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
