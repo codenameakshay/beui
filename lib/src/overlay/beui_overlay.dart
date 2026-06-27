@@ -153,25 +153,35 @@ class _BeuiOverlayState extends State<BeuiOverlay>
       children: [
         if (widget.barrier)
           Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: widget.barrierDismissible ? _dismiss : null,
-              // Constant-sigma blur faded via opacity (matching the source's
-              // element-opacity fade) — far cheaper than re-blurring with a
-              // changing kernel every frame, and it lets the blur layer cache
-              // once settled.
-              child: FadeTransition(
-                opacity: _controller,
-                child: widget.barrierBlur > 0
-                    ? BackdropFilter(
-                        filter: ImageFilter.blur(
-                          sigmaX: widget.barrierBlur,
-                          sigmaY: widget.barrierBlur,
-                        ),
-                        child: ColoredBox(color: barrierColor),
-                      )
-                    : ColoredBox(color: barrierColor),
-              ),
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) {
+                final t = _controller.value.clamp(0.0, 1.0);
+                // Animate the blur *sigma* (and scrim alpha) so the blur ramps
+                // in progressively. Fading a constant-blur BackdropFilter via
+                // opacity does NOT work in Flutter: the opacity saveLayer
+                // isolates the filter's backdrop, so the blur snaps on only
+                // when fully opaque. Sigma churn costs more, but only during
+                // the brief open/close (the in-place morph keeps sigma fixed,
+                // and the panel's RepaintBoundary keeps it off this layer).
+                Widget scrim = ColoredBox(
+                  color: barrierColor.withValues(alpha: barrierColor.a * t),
+                );
+                if (widget.barrierBlur > 0) {
+                  scrim = BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: widget.barrierBlur * t,
+                      sigmaY: widget.barrierBlur * t,
+                    ),
+                    child: scrim,
+                  );
+                }
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: widget.barrierDismissible ? _dismiss : null,
+                  child: scrim,
+                );
+              },
             ),
           ),
         widget.overlayBuilder(context, _controller, _link),
