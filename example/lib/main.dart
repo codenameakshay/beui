@@ -32,6 +32,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Button', _buttonDemo),
   GalleryEntry('Tooltip', _tooltipDemo),
   GalleryEntry('Drawer', _drawerDemo),
+  GalleryEntry('Morphing Modal', _modalDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
@@ -45,6 +46,81 @@ Widget _tabsDemo(BuildContext context) => const _TabsDemo();
 Widget _buttonDemo(BuildContext context) => const _ButtonDemo();
 
 Widget _drawerDemo(BuildContext context) => const _DrawerDemo();
+
+Widget _modalDemo(BuildContext context) => const _ModalDemo();
+
+/// Exercises the modal's height morph by switching between two views.
+class _ModalDemo extends StatefulWidget {
+  const _ModalDemo();
+
+  @override
+  State<_ModalDemo> createState() => _ModalDemoState();
+}
+
+class _ModalDemoState extends State<_ModalDemo> {
+  String? _view;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        BeuiButton(
+          onPressed: () => setState(() => _view = 'confirm'),
+          child: const Text('Open modal'),
+        ),
+        BeuiMorphingModal(
+          viewId: _view,
+          onClose: () => setState(() => _view = null),
+          child: _view == 'details'
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Details',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 12),
+                    const Text(
+                        'Deleting removes the item, its history, and any shared '
+                        'links. Collaborators lose access immediately. This is '
+                        'permanent and cannot be undone.'),
+                    const SizedBox(height: 20),
+                    Row(children: [
+                      BeuiButton(
+                        variant: BeuiButtonVariant.outline,
+                        onPressed: () => setState(() => _view = 'confirm'),
+                        child: const Text('Back'),
+                      ),
+                    ]),
+                  ],
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Delete item?',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 12),
+                    const Text('This action cannot be undone.'),
+                    const SizedBox(height: 20),
+                    Row(children: [
+                      BeuiButton(
+                        variant: BeuiButtonVariant.ghost,
+                        onPressed: () => setState(() => _view = 'details'),
+                        child: const Text('Details'),
+                      ),
+                      const SizedBox(width: 8),
+                      BeuiButton(
+                        onPressed: () => setState(() => _view = null),
+                        child: const Text('Delete'),
+                      ),
+                    ]),
+                  ],
+                ),
+        ),
+      ],
+    );
+  }
+}
 
 /// Exercises the modal drawer from either edge.
 class _DrawerDemo extends StatefulWidget {
