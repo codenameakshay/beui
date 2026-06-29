@@ -53,20 +53,22 @@ double? _scaleOf(WidgetTester tester, IconData icon) {
   return tester.widget<Transform>(transforms.first).transform.storage[0];
 }
 
-/// Number of active-pill highlights currently rendered (rounded-xl, r=12).
-int _pillCount(WidgetTester tester) => tester
-    .widgetList<DecoratedBox>(
-      find.descendant(
-        of: find.byType(BeuiDock),
-        matching: find.byType(DecoratedBox),
-      ),
-    )
-    .where((d) {
-      final dec = d.decoration;
-      return dec is BoxDecoration &&
-          dec.borderRadius == BorderRadius.circular(12);
-    })
-    .length;
+/// The active pill — the rounded-xl (r=12) highlight behind the active item.
+Finder _pillFinder() => find.descendant(
+      of: find.byType(BeuiDock),
+      matching: find.byWidgetPredicate((w) =>
+          w is DecoratedBox &&
+          w.decoration is BoxDecoration &&
+          (w.decoration as BoxDecoration).borderRadius ==
+              BorderRadius.circular(12)),
+    );
+
+int _pillCount(WidgetTester tester) => _pillFinder().evaluate().length;
+
+double _pillCenterX(WidgetTester tester) => tester.getCenter(_pillFinder()).dx;
+
+double _iconCenterX(WidgetTester tester, IconData icon) =>
+    tester.getCenter(find.byIcon(icon)).dx;
 
 void main() {
   group('default (faithful) dock', () {
@@ -100,12 +102,21 @@ void main() {
       await tester.pumpWidget(_app(activeIndex: 0));
       await tester.pumpAndSettle();
       expect(_pillCount(tester), 1);
+      expect(_pillCenterX(tester),
+          closeTo(_iconCenterX(tester, _icons[0]), 4)); // behind item 0
 
-      // Re-pump with a different active item: still exactly one pill, now behind
-      // the new item (the source's layoutId shared-layout glide).
+      // Make item 3 active. The SAME pill should spring across (not snap): one
+      // pill throughout, still left of item 3 mid-glide, arriving after settle.
       await tester.pumpWidget(_app(activeIndex: 3));
+      await tester.pump(); // measures the new active rect
+      await tester.pump(const Duration(milliseconds: 30)); // mid-glide
+      final item3x = _iconCenterX(tester, _icons[3]);
+      expect(_pillCount(tester), 1);
+      expect(_pillCenterX(tester), lessThan(item3x - 2)); // still gliding
+
       await tester.pumpAndSettle();
       expect(_pillCount(tester), 1);
+      expect(_pillCenterX(tester), closeTo(item3x, 4)); // arrived behind item 3
     });
   });
 
