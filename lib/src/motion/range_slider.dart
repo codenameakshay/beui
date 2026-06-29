@@ -139,6 +139,11 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
   double? _internal;
   bool _grabbed = false;
 
+  /// Continuous finger position (px) during an active drag, so the thumb + fill
+  /// follow the pointer EXACTLY (no glide lag). Null off-drag — then the position
+  /// glides to the snapped step. The reported value still snaps.
+  double? _dragX;
+
   bool get _controlled => widget.value != null;
 
   double get _current =>
@@ -182,21 +187,32 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
     if (isEnd) widget.onChangeEnd?.call(snapped);
   }
 
+  /// Clamps a finger x to the thumb-centre travel range.
+  double _clampThumbX(double dx, double trackWidth) =>
+      _clamp(dx, _thumbWidth / 2, trackWidth - _thumbWidth / 2);
+
   void _onPanStart(DragStartDetails details, double trackWidth) {
     if (!widget.enabled) return;
-    setState(() => _grabbed = true);
     _focus.requestFocus();
+    setState(() {
+      _grabbed = true;
+      _dragX = _clampThumbX(details.localPosition.dx, trackWidth);
+    });
     _commit(_valueFromDx(details.localPosition.dx, trackWidth));
   }
 
   void _onPanUpdate(DragUpdateDetails details, double trackWidth) {
     if (!widget.enabled || !_grabbed) return;
+    setState(() => _dragX = _clampThumbX(details.localPosition.dx, trackWidth));
     _commit(_valueFromDx(details.localPosition.dx, trackWidth));
   }
 
   void _onPanEnd() {
     if (!_grabbed) return;
-    setState(() => _grabbed = false);
+    setState(() {
+      _grabbed = false;
+      _dragX = null; // release → glide to the snapped step
+    });
     _commit(_current, isEnd: true);
   }
 
@@ -241,7 +257,6 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
     // source value rather than snapping to the target, so under reduced motion
     // we place the thumb/fill directly at the step (instant, no glide).
     final glideMotion = motionFor(context, _glideSpring, isMovement: true);
-    final glideInstant = glideMotion is NoMotion;
 
     final steps = ((widget.max - widget.min) / widget.step).floor();
     final showTicks = widget.showTicks && steps > 0 && steps <= 50;
@@ -282,68 +297,70 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
           );
         }
 
-        // Both fill width and thumb position are driven by the same glided
-        // x-position, exactly as the source binds `left` (fill width) and the
-        // thumb's `left` to one spring-smoothed motion value.
+        // Both the fill width and the thumb position are driven by the same
+        // x, so the fill's right edge tracks the thumb exactly (source binds
+        // `left` to one motion value for both).
         Widget buildAt(double x) {
           return Stack(
             clipBehavior: Clip.none,
             children: [
-              // Track.
+              // Track + fill + ticks, clipped to rounded-lg so the fill rounds
+              // at the left corners (source `overflow-hidden rounded-lg`).
               Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.muted,
-                    borderRadius: BorderRadius.circular(8), // `rounded-lg`
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned.fill(child: ColoredBox(color: colors.muted)),
+                      Positioned(
+                        left: 0,
+                        width: x,
+                        top: 0,
+                        bottom: 0,
+                        child: ColoredBox(
+                          color: colors.foreground.withValues(alpha: 0.15),
+                        ),
+                      ),
+                      if (showTicks)
+                        Positioned(
+                          left: _tickInset,
+                          right: _tickInset,
+                          top: 0,
+                          bottom: 0,
+                          child: IgnorePointer(
+                            child: LayoutBuilder(
+                              builder: (context, c) {
+                                final w = c.maxWidth;
+                                return Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    for (var i = 0; i <= steps; i++)
+                                      Positioned(
+                                        left: (i / steps) * w - 2,
+                                        top: _trackHeight / 2 - 2,
+                                        child: Container(
+                                          width: 4,
+                                          height: 4,
+                                          decoration: BoxDecoration(
+                                            color: colors.foreground.withValues(
+                                              alpha: 0.25,
+                                            ),
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
-              // Fill — left edge → thumb centre.
-              Positioned(
-                left: 0,
-                width: x,
-                top: 0,
-                bottom: 0,
-                child: ColoredBox(
-                  color: colors.foreground.withValues(alpha: 0.15),
-                ),
-              ),
-              // Tick dots (inset so the end dots don't clip).
-              if (showTicks)
-                Positioned(
-                  left: _tickInset,
-                  right: _tickInset,
-                  top: 0,
-                  bottom: 0,
-                  child: IgnorePointer(
-                    child: LayoutBuilder(
-                      builder: (context, c) {
-                        final w = c.maxWidth;
-                        return Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            for (var i = 0; i <= steps; i++)
-                              Positioned(
-                                left: (i / steps) * w - 2,
-                                top: _trackHeight / 2 - 2,
-                                child: Container(
-                                  width: 4,
-                                  height: 4,
-                                  decoration: BoxDecoration(
-                                    color: colors.foreground.withValues(
-                                      alpha: 0.25,
-                                    ),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              // Thumb.
+              // Thumb — outside the clip so its shadow isn't shaved.
               Positioned(
                 left: x - _thumbWidth / 2,
                 top: (_trackHeight - _thumbHeight) / 2,
@@ -353,13 +370,21 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
           );
         }
 
-        final body = glideInstant
-            ? buildAt(targetX)
-            : SingleMotionBuilder(
-                value: targetX,
-                motion: glideMotion,
-                builder: (context, x, _) => buildAt(x),
-              );
+        // During an active drag the handle is placed DIRECTLY at the pointer —
+        // no spring — so it follows the finger exactly. Off a drag (keyboard,
+        // and the settle after release) it glides onto the snapped step.
+        final Widget body;
+        if (_dragX != null && enabled) {
+          body = buildAt(_clampThumbX(_dragX!, trackWidth));
+        } else if (glideMotion is NoMotion) {
+          body = buildAt(targetX); // reduced motion
+        } else {
+          body = SingleMotionBuilder(
+            value: targetX,
+            motion: glideMotion,
+            builder: (context, x, _) => buildAt(x),
+          );
+        }
 
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -485,7 +510,14 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
   _Thumb? _dragging;
   _Thumb? _grabbed;
 
+  /// Continuous finger position (px) while a thumb is being dragged, so the
+  /// dragged handle (and the band edge) follow the pointer exactly.
+  double? _dragX;
+
   bool get _controlled => widget.values != null;
+
+  double _clampThumbX(double dx, double trackWidth) =>
+      _clamp(dx, _thumbWidth / 2, trackWidth - _thumbWidth / 2);
 
   double get _step => (widget.max - widget.min) / widget.divisions;
 
@@ -557,6 +589,7 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
     setState(() {
       _dragging = thumb;
       _grabbed = thumb;
+      _dragX = _clampThumbX(details.localPosition.dx, trackWidth);
     });
     (thumb == _Thumb.start ? _startFocus : _endFocus).requestFocus();
     _commit(thumb, value);
@@ -564,6 +597,7 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
 
   void _onPanUpdate(DragUpdateDetails details, double trackWidth) {
     if (!widget.enabled || _dragging == null) return;
+    setState(() => _dragX = _clampThumbX(details.localPosition.dx, trackWidth));
     _commit(_dragging!, _valueFromDx(details.localPosition.dx, trackWidth));
   }
 
@@ -573,6 +607,7 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
     setState(() {
       _dragging = null;
       _grabbed = null;
+      _dragX = null; // release → glide to the snapped step
     });
     final cur = _current;
     _commit(thumb, thumb == _Thumb.start ? cur.start : cur.end, isEnd: true);
@@ -622,7 +657,6 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
     final cur = _current;
 
     final glideMotion = motionFor(context, _glideSpring, isMovement: true);
-    final glideInstant = glideMotion is NoMotion;
 
     final steps = widget.divisions;
     final showTicks = widget.showTicks && steps > 0 && steps <= 50;
@@ -665,34 +699,106 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
           );
         }
 
-        Widget positionedThumb(
-          _Thumb which,
-          double value,
-          FocusNode focus,
-          Key key,
-        ) {
-          final target = centerX(value);
-          Widget at(double x) => Positioned(
-            left: x - _thumbWidth / 2,
-            top: (_trackHeight - _thumbHeight) / 2,
-            child: Focus(
-              focusNode: focus,
-              canRequestFocus: enabled,
-              onKeyEvent: (_, event) => _onKey(which, event),
-              onFocusChange: (_) => setState(() {}),
-              child: thumb(which, focus, key),
+        Widget thumbAt(_Thumb which, double x, FocusNode focus, Key key) =>
+            Positioned(
+              left: x - _thumbWidth / 2,
+              top: (_trackHeight - _thumbHeight) / 2,
+              child: Focus(
+                focusNode: focus,
+                canRequestFocus: enabled,
+                onKeyEvent: (_, event) => _onKey(which, event),
+                onFocusChange: (_) => setState(() {}),
+                child: thumb(which, focus, key),
+              ),
+            );
+
+        // The band + both thumbs read the same live x per side, so the fill
+        // always spans exactly between the handles. The dragged side follows the
+        // pointer (near-instant); the other side glides to its snapped step.
+        Widget buildBand(double sx, double ex) => Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Track + fill band + ticks, clipped to rounded-lg.
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned.fill(child: ColoredBox(color: colors.muted)),
+                    Positioned(
+                      left: math.min(sx, ex),
+                      width: (ex - sx).abs(),
+                      top: 0,
+                      bottom: 0,
+                      child: ColoredBox(
+                        color: colors.foreground.withValues(alpha: 0.15),
+                      ),
+                    ),
+                    if (showTicks)
+                      Positioned(
+                        left: _tickInset,
+                        right: _tickInset,
+                        top: 0,
+                        bottom: 0,
+                        child: IgnorePointer(
+                          child: LayoutBuilder(
+                            builder: (context, c) {
+                              final w = c.maxWidth;
+                              return Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  for (var i = 0; i <= steps; i++)
+                                    Positioned(
+                                      left: (i / steps) * w - 2,
+                                      top: _trackHeight / 2 - 2,
+                                      child: Container(
+                                        width: 4,
+                                        height: 4,
+                                        decoration: BoxDecoration(
+                                          color: colors.foreground.withValues(
+                                            alpha: 0.25,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ),
-          );
-          if (glideInstant) return at(target);
+            // Thumbs — outside the clip so their shadow isn't shaved.
+            thumbAt(_Thumb.end, ex, _endFocus, beuiRangeSliderEndThumbKey),
+            thumbAt(_Thumb.start, sx, _startFocus, beuiRangeSliderStartThumbKey),
+          ],
+        );
+
+        final draggingSide = (_dragX != null && enabled) ? _dragging : null;
+
+        // Resolves one side's x: the dragged side is placed DIRECTLY at the
+        // pointer (exact, no glide); the other side glides to its snapped step.
+        Widget side(_Thumb which, double snapped, Widget Function(double x) b) {
+          if (draggingSide == which) return b(_clampThumbX(_dragX!, trackWidth));
+          if (glideMotion is NoMotion) return b(snapped); // reduced motion
           return SingleMotionBuilder(
-            value: target,
+            value: snapped,
             motion: glideMotion,
-            builder: (context, x, _) => at(x),
+            builder: (context, x, _) => b(x),
           );
         }
 
-        final startX = centerX(cur.start);
-        final endX = centerX(cur.end);
+        final Widget body = side(
+          _Thumb.start,
+          centerX(cur.start),
+          (sx) =>
+              side(_Thumb.end, centerX(cur.end), (ex) => buildBand(sx, ex)),
+        );
 
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -703,74 +809,7 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
           child: SizedBox(
             height: _trackHeight,
             width: double.infinity,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: colors.muted,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: math.min(startX, endX),
-                  width: (endX - startX).abs(),
-                  top: 0,
-                  bottom: 0,
-                  child: ColoredBox(
-                    color: colors.foreground.withValues(alpha: 0.15),
-                  ),
-                ),
-                if (showTicks)
-                  Positioned(
-                    left: _tickInset,
-                    right: _tickInset,
-                    top: 0,
-                    bottom: 0,
-                    child: IgnorePointer(
-                      child: LayoutBuilder(
-                        builder: (context, c) {
-                          final w = c.maxWidth;
-                          return Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              for (var i = 0; i <= steps; i++)
-                                Positioned(
-                                  left: (i / steps) * w - 2,
-                                  top: _trackHeight / 2 - 2,
-                                  child: Container(
-                                    width: 4,
-                                    height: 4,
-                                    decoration: BoxDecoration(
-                                      color: colors.foreground.withValues(
-                                        alpha: 0.25,
-                                      ),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                positionedThumb(
-                  _Thumb.end,
-                  cur.end,
-                  _endFocus,
-                  beuiRangeSliderEndThumbKey,
-                ),
-                positionedThumb(
-                  _Thumb.start,
-                  cur.start,
-                  _startFocus,
-                  beuiRangeSliderStartThumbKey,
-                ),
-              ],
-            ),
+            child: body,
           ),
         );
       },

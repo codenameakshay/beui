@@ -4,20 +4,16 @@ import 'package:flutter/material.dart';
 /// Gallery demo for [BeuiBouncyAccordion] — a faithful port of beUI's
 /// bouncy-accordion preview: a release-workflow list with one row open by
 /// default, panels that spring open by morphing height, and rotating chevrons.
+///
+/// Uncontrolled (`defaultValue: 'calendar'`), exactly like the source preview —
+/// so the row's open state updates synchronously on tap and rapid double-taps
+/// toggle correctly (a controlled parent's `value` only updates after its own
+/// rebuild, which drops the second of two fast taps).
 Widget bouncyAccordionDemo(BuildContext context) =>
     const _BouncyAccordionDemo();
 
-class _BouncyAccordionDemo extends StatefulWidget {
+class _BouncyAccordionDemo extends StatelessWidget {
   const _BouncyAccordionDemo();
-
-  @override
-  State<_BouncyAccordionDemo> createState() => _BouncyAccordionDemoState();
-}
-
-class _BouncyAccordionDemoState extends State<_BouncyAccordionDemo> {
-  // Controlled, seeded to 'calendar' (matches the source preview's
-  // defaultValue). Keeping it controlled here doubles as a usage example.
-  String? _open = 'calendar';
 
   static const _items = <BeuiBouncyAccordionItem>[
     BeuiBouncyAccordionItem(
@@ -81,10 +77,9 @@ class _BouncyAccordionDemoState extends State<_BouncyAccordionDemo> {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 384), // max-w-sm
-        child: BeuiBouncyAccordion(
+        child: const BeuiBouncyAccordion(
           items: _items,
-          value: _open,
-          onChanged: (v) => setState(() => _open = v),
+          defaultValue: 'calendar',
         ),
       ),
     );

@@ -155,6 +155,31 @@ void main() {
       expect(changed! % 5, 0, reason: 'snapped to a step of 5');
     });
 
+    testWidgets('the handle follows the finger exactly while dragging', (
+      tester,
+    ) async {
+      await tester.pumpWidget(const _SingleHost(initial: 10));
+      await tester.pumpAndSettle();
+
+      final start = tester.getCenter(find.byKey(_thumb));
+      final g = await tester.startGesture(start);
+      await g.moveBy(const Offset(50, 0));
+      await g.moveBy(const Offset(50, 0)); // pointer now +100px from start
+      await tester.pump(const Duration(milliseconds: 16)); // one frame
+      // A glide (≈60ms time constant) would still be far behind after one frame.
+
+      // The handle is AT the pointer (+100), not lagging at a glided position.
+      final fingerX = start.dx + 100;
+      expect(
+        (_thumbX(tester) - fingerX).abs(),
+        lessThan(8),
+        reason: 'handle tracks the pointer directly, no glide lag',
+      );
+
+      await g.up();
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('arrow keys move the thumb by one step', (tester) async {
       double? changed;
       await tester.pumpWidget(
