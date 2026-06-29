@@ -27,6 +27,8 @@ export 'src/motion/action_swap.dart'
         BeuiActionSwapText,
         BeuiActionSwapVariant;
 export 'src/motion/animated_number.dart' show BeuiAnimatedNumber;
+export 'src/motion/animated_badge.dart'
+    show BeuiAnimatedBadge, BeuiAnimatedBadgeSize, BeuiAnimatedBadgeStatus;
 export 'src/motion/button/base.dart'
     show BeuiButton, BeuiButtonSize, BeuiButtonVariant;
 export 'src/motion/button/magnetic.dart' show BeuiMagneticButton;

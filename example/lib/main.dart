@@ -4,6 +4,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
 import 'demos/number_demo.dart';
+import 'demos/animated_badge_demo.dart';
 
 void main() => runApp(const GalleryApp());
 
@@ -46,6 +47,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Action Swap', _actionSwapDemo),
   GalleryEntry('Text Animation', _textAnimationDemo),
   GalleryEntry('Number', numberDemo),
+  GalleryEntry('Animated Badge', animatedBadgeDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
