@@ -37,4 +37,5 @@ export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
 export 'src/motion/shared_layout_bg.dart' show BeuiSharedLayoutBg;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
 export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
+export 'src/motion/tilt_card.dart' show BeuiTiltCard;
 export 'src/motion/tooltip.dart' show BeuiTooltip, BeuiTooltipSide;

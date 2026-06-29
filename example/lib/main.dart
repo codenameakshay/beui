@@ -35,6 +35,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Morphing Modal', _modalDemo),
   GalleryEntry('Shared Layout', _sharedLayoutDemo),
   GalleryEntry('Marquee', _marqueeDemo),
+  GalleryEntry('Tilt Card', _tiltCardDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
@@ -50,6 +51,42 @@ Widget _buttonDemo(BuildContext context) => const _ButtonDemo();
 Widget _drawerDemo(BuildContext context) => const _DrawerDemo();
 
 Widget _modalDemo(BuildContext context) => const _ModalDemo();
+
+Widget _tiltCardDemo(BuildContext context) {
+  final colors = Theme.of(context).extension<BeuiColors>()!;
+  return BeuiTiltCard(
+    child: Container(
+      width: 280,
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: colors.card,
+        border: Border.all(color: colors.border),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('PREMIUM',
+              style: TextStyle(
+                  fontSize: 11,
+                  letterSpacing: 1.5,
+                  fontWeight: FontWeight.w500,
+                  color: colors.mutedForeground)),
+          const SizedBox(height: 8),
+          Text('Tilt me',
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  color: colors.foreground)),
+          const SizedBox(height: 12),
+          Text('Move your cursor across the card to see 3D tilt + glare.',
+              style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
+        ],
+      ),
+    ),
+  );
+}
 
 Widget _marqueeDemo(BuildContext context) {
   final colors = Theme.of(context).extension<BeuiColors>()!;
