@@ -33,6 +33,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Tooltip', _tooltipDemo),
   GalleryEntry('Drawer', _drawerDemo),
   GalleryEntry('Morphing Modal', _modalDemo),
+  GalleryEntry('Shared Layout', _sharedLayoutDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
@@ -48,6 +49,47 @@ Widget _buttonDemo(BuildContext context) => const _ButtonDemo();
 Widget _drawerDemo(BuildContext context) => const _DrawerDemo();
 
 Widget _modalDemo(BuildContext context) => const _ModalDemo();
+
+Widget _sharedLayoutDemo(BuildContext context) {
+  final colors = Theme.of(context).extension<BeuiColors>()!;
+  const items = [
+    ('Inbox', '12 unread threads, 3 mentions today.'),
+    ('Drafts', '4 posts waiting for a final pass.'),
+    ('Releases', 'Last shipped 2 days ago, v0.4.1.'),
+    ('Billing', 'Plan renews on the 1st of next month.'),
+  ];
+  return SizedBox(
+    width: 460,
+    child: BeuiSharedLayoutBg(
+      children: [
+        for (final (title, body) in items)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(title,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: colors.foreground)),
+                    Icon(LucideIcons.arrow_up_right,
+                        size: 14, color: colors.mutedForeground),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(body,
+                    style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
+              ],
+            ),
+          ),
+      ],
+    ),
+  );
+}
 
 /// A faithful port of the beUI morphing-modal preview — a wallet-options sheet
 /// that morphs height between three views.
