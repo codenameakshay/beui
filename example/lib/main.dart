@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
@@ -40,9 +42,12 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Tilt Card', _tiltCardDemo),
   GalleryEntry('Dock', _dockDemo),
   GalleryEntry('Action Swap', _actionSwapDemo),
+  GalleryEntry('Text Animation', _textAnimationDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
+
+Widget _textAnimationDemo(BuildContext context) => const _TextAnimationDemo();
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
 
@@ -1160,6 +1165,132 @@ class _ActionSwapDemo extends StatelessWidget {
           items: _modeItems,
           animation: BeuiActionSwapVariant.cascade,
           variant: BeuiButtonVariant.outline,
+        ),
+      ],
+    );
+  }
+}
+
+/// The text-animation showcase — replicates the source preview (reveal ⇄
+/// shimmer auto-swap) and adds an interactive cascade.
+class _TextAnimationDemo extends StatefulWidget {
+  const _TextAnimationDemo();
+
+  @override
+  State<_TextAnimationDemo> createState() => _TextAnimationDemoState();
+}
+
+class _TextAnimationDemoState extends State<_TextAnimationDemo> {
+  static const _words = ['Hello', 'Bonjour', 'Hola', 'Ciao', 'Namaste'];
+  bool _shimmer = false;
+  int _cascadeIndex = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Source preview swaps reveal ⇄ shimmer every 3s.
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (mounted) setState(() => _shimmer = !_shimmer);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Auto-swapping reveal ⇄ shimmer, with a blur/slide swap transition
+        // (source preview's AnimatePresence wrapper).
+        SizedBox(
+          width: 360,
+          height: 80,
+          child: Center(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 220),
+              switchInCurve: beuiEaseOut,
+              switchOutCurve: beuiEaseOut,
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.08),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                ),
+              ),
+              child: _shimmer
+                  ? BeuiTextShimmer(
+                      'Loading with shimmer',
+                      key: const ValueKey('shimmer'),
+                      duration: const Duration(milliseconds: 1800),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: colors.foreground,
+                      ),
+                    )
+                  : BeuiTextReveal(
+                      'Motion in words.',
+                      key: const ValueKey('reveal'),
+                      stagger: const Duration(milliseconds: 45),
+                      blur: 6,
+                      yOffset: 0.18,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                        color: colors.foreground,
+                      ),
+                    ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 32),
+        Text('Per-character reveal',
+            style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+        const SizedBox(height: 8),
+        BeuiTextReveal(
+          'Reveal one letter at a time',
+          split: BeuiTextRevealSplit.char,
+          stagger: const Duration(milliseconds: 28),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            color: colors.foreground,
+          ),
+        ),
+        const SizedBox(height: 32),
+        Text('Cascade (tap to change)',
+            style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DefaultTextStyle(
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w600,
+                color: colors.foreground,
+              ),
+              child: BeuiTextCascade(_words[_cascadeIndex]),
+            ),
+            const SizedBox(width: 16),
+            IconButton(
+              onPressed: () => setState(
+                () => _cascadeIndex = (_cascadeIndex + 1) % _words.length,
+              ),
+              icon: const Icon(LucideIcons.refresh_cw, size: 18),
+            ),
+          ],
         ),
       ],
     );
