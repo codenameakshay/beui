@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'demos/number_demo.dart';
 import 'demos/animated_badge_demo.dart';
+import 'demos/bouncy_accordion_demo.dart';
 
 void main() => runApp(const GalleryApp());
 
@@ -48,6 +49,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Text Animation', _textAnimationDemo),
   GalleryEntry('Number', numberDemo),
   GalleryEntry('Animated Badge', animatedBadgeDemo),
+  GalleryEntry('Bouncy Accordion', bouncyAccordionDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
