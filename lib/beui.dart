@@ -19,6 +19,13 @@ export 'src/theme/beui_colors.dart';
 export 'src/theme/beui_text_theme.dart';
 
 // Components (lib/src/motion/...). Exported as they are ported.
+export 'src/motion/action_swap.dart'
+    show
+        BeuiActionSwapButton,
+        BeuiActionSwapIcon,
+        BeuiActionSwapItem,
+        BeuiActionSwapText,
+        BeuiActionSwapVariant;
 export 'src/motion/button/base.dart'
     show BeuiButton, BeuiButtonSize, BeuiButtonVariant;
 export 'src/motion/button/magnetic.dart' show BeuiMagneticButton;

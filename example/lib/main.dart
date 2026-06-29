@@ -13,10 +13,12 @@ class GalleryApp extends StatelessWidget {
     return MaterialApp(
       title: 'beUI Gallery',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(useMaterial3: true)
-          .copyWith(extensions: [BeuiColors.light()]),
-      darkTheme: ThemeData.dark(useMaterial3: true)
-          .copyWith(extensions: [BeuiColors.dark()]),
+      theme: ThemeData.light(
+        useMaterial3: true,
+      ).copyWith(extensions: [BeuiColors.light()]),
+      darkTheme: ThemeData.dark(
+        useMaterial3: true,
+      ).copyWith(extensions: [BeuiColors.dark()]),
       home: const GalleryHome(),
     );
   }
@@ -37,7 +39,10 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Marquee', _marqueeDemo),
   GalleryEntry('Tilt Card', _tiltCardDemo),
   GalleryEntry('Dock', _dockDemo),
+  GalleryEntry('Action Swap', _actionSwapDemo),
 ];
+
+Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
 
@@ -68,21 +73,29 @@ Widget _tiltCardDemo(BuildContext context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('PREMIUM',
-              style: TextStyle(
-                  fontSize: 11,
-                  letterSpacing: 1.5,
-                  fontWeight: FontWeight.w500,
-                  color: colors.mutedForeground)),
+          Text(
+            'PREMIUM',
+            style: TextStyle(
+              fontSize: 11,
+              letterSpacing: 1.5,
+              fontWeight: FontWeight.w500,
+              color: colors.mutedForeground,
+            ),
+          ),
           const SizedBox(height: 8),
-          Text('Tilt me',
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: colors.foreground)),
+          Text(
+            'Tilt me',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: colors.foreground,
+            ),
+          ),
           const SizedBox(height: 12),
-          Text('Move your cursor across the card to see 3D tilt + glare.',
-              style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
+          Text(
+            'Move your cursor across the card to see 3D tilt + glare.',
+            style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+          ),
         ],
       ),
     ),
@@ -118,11 +131,14 @@ Widget _marqueeDemo(BuildContext context) {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: colors.border),
             ),
-            child: Text(l,
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: colors.foreground)),
+            child: Text(
+              l,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: colors.foreground,
+              ),
+            ),
           ),
       ],
     ),
@@ -174,23 +190,31 @@ class _SharedRowState extends State<_SharedRow> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(widget.title,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: colors.foreground)),
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: colors.foreground,
+                  ),
+                ),
                 AnimatedSlide(
                   offset: _hovered ? const Offset(0.14, -0.14) : Offset.zero,
                   duration: const Duration(milliseconds: 150),
                   curve: Curves.easeOut,
-                  child: Icon(LucideIcons.arrow_up_right,
-                      size: 14, color: colors.mutedForeground),
+                  child: Icon(
+                    LucideIcons.arrow_up_right,
+                    size: 14,
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 4),
-            Text(widget.body,
-                style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
+            Text(
+              widget.body,
+              style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+            ),
           ],
         ),
       ),
@@ -238,28 +262,28 @@ class _ModalDemoState extends State<_ModalDemo> {
           onClose: () => _go(null),
           child: switch (_view) {
             'options' => _OptionsView(
-                onPrivateKey: () => _go('private-key'),
-                onRecovery: () => _go('recovery'),
-                onClose: () => _go(null),
-              ),
+              onPrivateKey: () => _go('private-key'),
+              onRecovery: () => _go('recovery'),
+              onClose: () => _go(null),
+            ),
             'private-key' => _DetailView(
-                icon: LucideIcons.lock,
-                title: 'Private Key',
-                description:
-                    'Your Private Key is the key used to back up your wallet. '
-                    'Keep it secret and secure at all times.',
-                onBack: () => _go('options'),
-                kind: _DetailKind.privateKey,
-              ),
+              icon: LucideIcons.lock,
+              title: 'Private Key',
+              description:
+                  'Your Private Key is the key used to back up your wallet. '
+                  'Keep it secret and secure at all times.',
+              onBack: () => _go('options'),
+              kind: _DetailKind.privateKey,
+            ),
             'recovery' => _DetailView(
-                icon: LucideIcons.scroll_text,
-                title: 'Recovery Phrase',
-                description:
-                    '12 words you can use to restore your wallet on any device. '
-                    'Write them down somewhere safe.',
-                onBack: () => _go('options'),
-                kind: _DetailKind.recovery,
-              ),
+              icon: LucideIcons.scroll_text,
+              title: 'Recovery Phrase',
+              description:
+                  '12 words you can use to restore your wallet on any device. '
+                  'Write them down somewhere safe.',
+              onBack: () => _go('options'),
+              kind: _DetailKind.recovery,
+            ),
             _ => const SizedBox.shrink(),
           },
         ),
@@ -290,7 +314,12 @@ class _OptionsView extends StatelessWidget {
         const SizedBox(height: 8),
         _modalRow(LucideIcons.scroll_text, 'View Recovery Phrase', onRecovery),
         const SizedBox(height: 8),
-        _modalRow(LucideIcons.trash_2, 'Remove Wallet', onClose, destructive: true),
+        _modalRow(
+          LucideIcons.trash_2,
+          'Remove Wallet',
+          onClose,
+          destructive: true,
+        ),
       ],
     );
   }
@@ -333,41 +362,70 @@ class _DetailView extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        Text(title,
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.3,
-                color: colors.foreground)),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+            color: colors.foreground,
+          ),
+        ),
         const SizedBox(height: 8),
-        Text(description, style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
+        Text(
+          description,
+          style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+        ),
         if (kind == _DetailKind.privateKey) ...[
           const SizedBox(height: 16),
           Divider(height: 1, color: colors.border),
           const SizedBox(height: 16),
-          _bullet(LucideIcons.shield_check, 'Keep your private key safe', colors),
+          _bullet(
+            LucideIcons.shield_check,
+            'Keep your private key safe',
+            colors,
+          ),
           const SizedBox(height: 10),
-          _bullet(LucideIcons.scroll_text, "Don't share it with anyone else", colors),
+          _bullet(
+            LucideIcons.scroll_text,
+            "Don't share it with anyone else",
+            colors,
+          ),
           const SizedBox(height: 10),
-          _bullet(LucideIcons.ban, "If you lose it, we can't recover it", colors),
+          _bullet(
+            LucideIcons.ban,
+            "If you lose it, we can't recover it",
+            colors,
+          ),
           const SizedBox(height: 20),
-          Row(children: [
-            Expanded(child: _modalPill('Cancel', onBack, primary: false)),
-            const SizedBox(width: 8),
-            Expanded(
-                child: _modalPill('Reveal', onBack,
-                    primary: true, icon: LucideIcons.scan_face)),
-          ]),
+          Row(
+            children: [
+              Expanded(child: _modalPill('Cancel', onBack, primary: false)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _modalPill(
+                  'Reveal',
+                  onBack,
+                  primary: true,
+                  icon: LucideIcons.scan_face,
+                ),
+              ),
+            ],
+          ),
         ] else ...[
           const SizedBox(height: 16),
           for (var r = 0; r < 4; r++) ...[
             if (r > 0) const SizedBox(height: 8),
-            Row(children: [
-              for (var c = 0; c < 3; c++) ...[
-                if (c > 0) const SizedBox(width: 8),
-                Expanded(child: _wordCell(r * 3 + c, _words[r * 3 + c], colors)),
+            Row(
+              children: [
+                for (var c = 0; c < 3; c++) ...[
+                  if (c > 0) const SizedBox(width: 8),
+                  Expanded(
+                    child: _wordCell(r * 3 + c, _words[r * 3 + c], colors),
+                  ),
+                ],
               ],
-            ]),
+            ),
           ],
           const SizedBox(height: 20),
           _modalPill('Done', onBack, primary: true, fullWidth: true),
@@ -378,120 +436,165 @@ class _DetailView extends StatelessWidget {
 }
 
 Widget _modalHeader(String title, VoidCallback onClose) => Builder(
-      builder: (context) {
-        final colors = Theme.of(context).extension<BeuiColors>()!;
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(title,
-                style: TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w600, color: colors.foreground)),
-            _modalCircleClose(onClose),
-          ],
-        );
-      },
-    );
-
-Widget _modalCircleClose(VoidCallback onTap) => Builder(builder: (context) {
-      final colors = Theme.of(context).extension<BeuiColors>()!;
-      return InkWell(
-        onTap: onTap,
-        customBorder: const CircleBorder(),
-        child: SizedBox(
-          width: 28,
-          height: 28,
-          child: Icon(LucideIcons.x, size: 16, color: colors.mutedForeground),
+  builder: (context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: colors.foreground,
+          ),
         ),
-      );
-    });
+        _modalCircleClose(onClose),
+      ],
+    );
+  },
+);
 
-Widget _modalRow(IconData icon, String label, VoidCallback onTap,
-        {bool destructive = false}) =>
-    Builder(builder: (context) {
-      final colors = Theme.of(context).extension<BeuiColors>()!;
-      final fg = destructive ? colors.destructive : colors.foreground;
-      final bg = destructive
-          ? colors.destructive.withValues(alpha: 0.10)
-          : colors.foreground.withValues(alpha: 0.04);
-      return Material(
-        color: bg,
-        borderRadius: BorderRadius.circular(16), // rounded-2xl
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(children: [
+Widget _modalCircleClose(VoidCallback onTap) => Builder(
+  builder: (context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    return InkWell(
+      onTap: onTap,
+      customBorder: const CircleBorder(),
+      child: SizedBox(
+        width: 28,
+        height: 28,
+        child: Icon(LucideIcons.x, size: 16, color: colors.mutedForeground),
+      ),
+    );
+  },
+);
+
+Widget _modalRow(
+  IconData icon,
+  String label,
+  VoidCallback onTap, {
+  bool destructive = false,
+}) => Builder(
+  builder: (context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final fg = destructive ? colors.destructive : colors.foreground;
+    final bg = destructive
+        ? colors.destructive.withValues(alpha: 0.10)
+        : colors.foreground.withValues(alpha: 0.04);
+    return Material(
+      color: bg,
+      borderRadius: BorderRadius.circular(16), // rounded-2xl
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
               Icon(icon, size: 16, color: fg),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(label,
-                    style: TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500, color: fg)),
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: fg,
+                  ),
+                ),
               ),
-            ]),
+            ],
           ),
         ),
-      );
-    });
+      ),
+    );
+  },
+);
 
 Widget _bullet(IconData icon, String text, BeuiColors colors) => Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Icon(icon, size: 16, color: colors.mutedForeground),
-        const SizedBox(width: 10),
-        Expanded(
-            child: Text(text,
-                style: TextStyle(fontSize: 14, color: colors.mutedForeground))),
-      ],
-    );
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    Icon(icon, size: 16, color: colors.mutedForeground),
+    const SizedBox(width: 10),
+    Expanded(
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+      ),
+    ),
+  ],
+);
 
 Widget _wordCell(int index, String word, BeuiColors colors) => Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(8), // rounded-lg
-        color: colors.background.withValues(alpha: 0.40),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: Text.rich(
-        TextSpan(children: [
-          TextSpan(
-              text: '${index + 1}. ',
-              style: TextStyle(color: colors.mutedForeground)),
-          TextSpan(text: word, style: TextStyle(color: colors.foreground)),
-        ]),
-        style: const TextStyle(fontSize: 12),
-      ),
-    );
+  decoration: BoxDecoration(
+    border: Border.all(color: colors.border),
+    borderRadius: BorderRadius.circular(8), // rounded-lg
+    color: colors.background.withValues(alpha: 0.40),
+  ),
+  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+  child: Text.rich(
+    TextSpan(
+      children: [
+        TextSpan(
+          text: '${index + 1}. ',
+          style: TextStyle(color: colors.mutedForeground),
+        ),
+        TextSpan(
+          text: word,
+          style: TextStyle(color: colors.foreground),
+        ),
+      ],
+    ),
+    style: const TextStyle(fontSize: 12),
+  ),
+);
 
-Widget _modalPill(String label, VoidCallback onTap,
-        {required bool primary, IconData? icon, bool fullWidth = false}) =>
-    Builder(builder: (context) {
-      final colors = Theme.of(context).extension<BeuiColors>()!;
-      final bg = primary ? colors.foreground : colors.foreground.withValues(alpha: 0.06);
-      final fg = primary ? colors.background : colors.foreground;
-      return Material(
-        color: bg,
-        borderRadius: BorderRadius.circular(20), // rounded-full (h-10)
-        child: InkWell(
-          borderRadius: BorderRadius.circular(20),
-          onTap: onTap,
-          child: SizedBox(
-            height: 40,
-            width: fullWidth ? double.infinity : null,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon != null) ...[Icon(icon, size: 16, color: fg), const SizedBox(width: 8)],
-                Text(label,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: fg)),
+Widget _modalPill(
+  String label,
+  VoidCallback onTap, {
+  required bool primary,
+  IconData? icon,
+  bool fullWidth = false,
+}) => Builder(
+  builder: (context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final bg = primary
+        ? colors.foreground
+        : colors.foreground.withValues(alpha: 0.06);
+    final fg = primary ? colors.background : colors.foreground;
+    return Material(
+      color: bg,
+      borderRadius: BorderRadius.circular(20), // rounded-full (h-10)
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: onTap,
+        child: SizedBox(
+          height: 40,
+          width: fullWidth ? double.infinity : null,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 16, color: fg),
+                const SizedBox(width: 8),
               ],
-            ),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: fg,
+                ),
+              ),
+            ],
           ),
         ),
-      );
-    });
+      ),
+    );
+  },
+);
 
 /// Exercises the modal drawer from either edge.
 class _DrawerDemo extends StatefulWidget {
@@ -506,24 +609,28 @@ class _DrawerDemoState extends State<_DrawerDemo> {
   BeuiDrawerSide _side = BeuiDrawerSide.right;
 
   void _show(BeuiDrawerSide side) => setState(() {
-        _side = side;
-        _open = true;
-      });
+    _side = side;
+    _open = true;
+  });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Wrap(spacing: 12, runSpacing: 12, children: [
-          BeuiButton(
-            onPressed: () => _show(BeuiDrawerSide.left),
-            child: const Text('Open left'),
-          ),
-          BeuiButton(
-            onPressed: () => _show(BeuiDrawerSide.right),
-            child: const Text('Open right'),
-          ),
-        ]),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            BeuiButton(
+              onPressed: () => _show(BeuiDrawerSide.left),
+              child: const Text('Open left'),
+            ),
+            BeuiButton(
+              onPressed: () => _show(BeuiDrawerSide.right),
+              child: const Text('Open right'),
+            ),
+          ],
+        ),
         BeuiDrawer(
           open: _open,
           side: _side,
@@ -534,10 +641,17 @@ class _DrawerDemoState extends State<_DrawerDemo> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Settings',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Settings',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 24),
-                for (final item in const ['Profile', 'Account', 'Notifications', 'Privacy'])
+                for (final item in const [
+                  'Profile',
+                  'Account',
+                  'Notifications',
+                  'Privacy',
+                ])
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(item, style: const TextStyle(fontSize: 16)),
@@ -558,34 +672,34 @@ class _DrawerDemoState extends State<_DrawerDemo> {
 }
 
 Widget _tooltipDemo(BuildContext context) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+  crossAxisAlignment: CrossAxisAlignment.start,
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    const Text('Hover (or long-press on touch) a button:'),
+    const SizedBox(height: 24),
+    Wrap(
+      spacing: 16,
+      runSpacing: 16,
       children: [
-        const Text('Hover (or long-press on touch) a button:'),
-        const SizedBox(height: 24),
-        Wrap(
-          spacing: 16,
-          runSpacing: 16,
-          children: [
-            for (final (side, label) in const [
-              (BeuiTooltipSide.top, 'Top'),
-              (BeuiTooltipSide.bottom, 'Bottom'),
-              (BeuiTooltipSide.left, 'Left'),
-              (BeuiTooltipSide.right, 'Right'),
-            ])
-              BeuiTooltip(
-                side: side,
-                content: Text('Tooltip on $label'),
-                child: BeuiButton(
-                  variant: BeuiButtonVariant.outline,
-                  onPressed: () {},
-                  child: Text(label),
-                ),
-              ),
-          ],
-        ),
+        for (final (side, label) in const [
+          (BeuiTooltipSide.top, 'Top'),
+          (BeuiTooltipSide.bottom, 'Bottom'),
+          (BeuiTooltipSide.left, 'Left'),
+          (BeuiTooltipSide.right, 'Right'),
+        ])
+          BeuiTooltip(
+            side: side,
+            content: Text('Tooltip on $label'),
+            child: BeuiButton(
+              variant: BeuiButtonVariant.outline,
+              onPressed: () {},
+              child: Text(label),
+            ),
+          ),
       ],
-    );
+    ),
+  ],
+);
 
 /// Exercises button variants, sizes, the stateful lifecycle, and magnetic pull.
 class _ButtonDemo extends StatefulWidget {
@@ -612,27 +726,34 @@ class _ButtonDemoState extends State<_ButtonDemo> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Wrap(spacing: 12, runSpacing: 12, children: [
-          BeuiButton(
-            onPressed: () {},
-            child: _row(const [Text('Continue'), Icon(LucideIcons.arrow_right)]),
-          ),
-          BeuiButton(
-            variant: BeuiButtonVariant.secondary,
-            onPressed: () {},
-            child: _row(const [Icon(LucideIcons.download), Text('Download')]),
-          ),
-          BeuiButton(
-            variant: BeuiButtonVariant.outline,
-            onPressed: () {},
-            child: const Text('Outline'),
-          ),
-          BeuiButton(
-            variant: BeuiButtonVariant.ghost,
-            onPressed: () {},
-            child: const Text('Ghost'),
-          ),
-        ]),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            BeuiButton(
+              onPressed: () {},
+              child: _row(const [
+                Text('Continue'),
+                Icon(LucideIcons.arrow_right),
+              ]),
+            ),
+            BeuiButton(
+              variant: BeuiButtonVariant.secondary,
+              onPressed: () {},
+              child: _row(const [Icon(LucideIcons.download), Text('Download')]),
+            ),
+            BeuiButton(
+              variant: BeuiButtonVariant.outline,
+              onPressed: () {},
+              child: const Text('Outline'),
+            ),
+            BeuiButton(
+              variant: BeuiButtonVariant.ghost,
+              onPressed: () {},
+              child: const Text('Ghost'),
+            ),
+          ],
+        ),
         const SizedBox(height: 24),
         Wrap(
           spacing: 12,
@@ -640,11 +761,20 @@ class _ButtonDemoState extends State<_ButtonDemo> {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             BeuiButton(
-                size: BeuiButtonSize.sm, onPressed: () {}, child: const Text('Small')),
+              size: BeuiButtonSize.sm,
+              onPressed: () {},
+              child: const Text('Small'),
+            ),
             BeuiButton(
-                size: BeuiButtonSize.md, onPressed: () {}, child: const Text('Medium')),
+              size: BeuiButtonSize.md,
+              onPressed: () {},
+              child: const Text('Medium'),
+            ),
             BeuiButton(
-                size: BeuiButtonSize.lg, onPressed: () {}, child: const Text('Large')),
+              size: BeuiButtonSize.lg,
+              onPressed: () {},
+              child: const Text('Large'),
+            ),
             BeuiButton(
               size: BeuiButtonSize.icon,
               variant: BeuiButtonVariant.outline,
@@ -654,62 +784,82 @@ class _ButtonDemoState extends State<_ButtonDemo> {
           ],
         ),
         const SizedBox(height: 24),
-        Wrap(spacing: 12, runSpacing: 12, children: [
-          BeuiButton(ripple: true, onPressed: () {}, child: const Text('Ripple')),
-          BeuiButton(
-            ripple: true,
-            variant: BeuiButtonVariant.outline,
-            onPressed: () {},
-            child: const Text('Tap me'),
-          ),
-        ]),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            BeuiButton(
+              ripple: true,
+              onPressed: () {},
+              child: const Text('Ripple'),
+            ),
+            BeuiButton(
+              ripple: true,
+              variant: BeuiButtonVariant.outline,
+              onPressed: () {},
+              child: const Text('Tap me'),
+            ),
+          ],
+        ),
         const SizedBox(height: 24),
-        Wrap(spacing: 12, runSpacing: 12, crossAxisAlignment: WrapCrossAlignment.center, children: [
-          BeuiStatefulButton(
-            label: 'Save changes',
-            icon: LucideIcons.arrow_right,
-            state: _state,
-            onPressed: _runLifecycle,
-          ),
-          BeuiButton(
-            variant: BeuiButtonVariant.outline,
-            onPressed: () {},
-            child: const Text('Submit'),
-          ),
-        ]),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            BeuiStatefulButton(
+              label: 'Save changes',
+              icon: LucideIcons.arrow_right,
+              state: _state,
+              onPressed: _runLifecycle,
+            ),
+            BeuiButton(
+              variant: BeuiButtonVariant.outline,
+              onPressed: () {},
+              child: const Text('Submit'),
+            ),
+          ],
+        ),
         const SizedBox(height: 24),
-        Wrap(spacing: 12, runSpacing: 12, children: [
-          BeuiMagneticButton(
-            onPressed: () {},
-            child: _row(const [Text('Hover me'), Icon(LucideIcons.arrow_right)]),
-          ),
-          BeuiMagneticButton(
-            variant: BeuiButtonVariant.outline,
-            strength: 0.15,
-            onPressed: () {},
-            child: const Text('Subtle pull'),
-          ),
-          BeuiMagneticButton(
-            variant: BeuiButtonVariant.outline,
-            strength: 0.4,
-            onPressed: () {},
-            child: const Text('Strong pull'),
-          ),
-        ]),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            BeuiMagneticButton(
+              onPressed: () {},
+              child: _row(const [
+                Text('Hover me'),
+                Icon(LucideIcons.arrow_right),
+              ]),
+            ),
+            BeuiMagneticButton(
+              variant: BeuiButtonVariant.outline,
+              strength: 0.15,
+              onPressed: () {},
+              child: const Text('Subtle pull'),
+            ),
+            BeuiMagneticButton(
+              variant: BeuiButtonVariant.outline,
+              strength: 0.4,
+              onPressed: () {},
+              child: const Text('Strong pull'),
+            ),
+          ],
+        ),
       ],
     );
   }
 
   /// A min-width row with the source button's 8px gap between children.
   Widget _row(List<Widget> children) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < children.length; i++) ...[
-            if (i > 0) const SizedBox(width: 8),
-            children[i],
-          ],
-        ],
-      );
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      for (var i = 0; i < children.length; i++) ...[
+        if (i > 0) const SizedBox(width: 8),
+        children[i],
+      ],
+    ],
+  );
 }
 
 /// Exercises all three tab variants and a fading content panel.
@@ -759,8 +909,9 @@ class _TabsDemoState extends State<_TabsDemo> {
     );
   }
 
-  List<BeuiTab<String>> _barOnly(List<BeuiTab<String>> tabs) =>
-      [for (final t in tabs) BeuiTab(value: t.value, label: t.label)];
+  List<BeuiTab<String>> _barOnly(List<BeuiTab<String>> tabs) => [
+    for (final t in tabs) BeuiTab(value: t.value, label: t.label),
+  ];
 }
 
 /// Exercises the radio group's gliding selection dot.
@@ -944,6 +1095,77 @@ class _DockDemoState extends State<_DockDemo> {
   }
 }
 
+/// Exercises all three action-swap variants. Each button cycles through two
+/// items on tap, swapping its icon + label with the variant's transition while
+/// the width morphs to fit the new label.
+class _ActionSwapDemo extends StatelessWidget {
+  const _ActionSwapDemo();
+
+  static const _copyItems = [
+    BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
+    BeuiActionSwapItem(id: 'copied', label: 'Copied', icon: LucideIcons.check),
+  ];
+
+  static const _sendItems = [
+    BeuiActionSwapItem(id: 'send', label: 'Send', icon: LucideIcons.send),
+    BeuiActionSwapItem(id: 'sent', label: 'Sent', icon: LucideIcons.sparkles),
+  ];
+
+  static const _modeItems = [
+    BeuiActionSwapItem(id: 'follow', label: 'Follow'),
+    BeuiActionSwapItem(id: 'following', label: 'Following'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    Widget caption(String text) => Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.4,
+          color: colors.mutedForeground,
+        ),
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Tap a button to swap its content.',
+          style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+        ),
+        const SizedBox(height: 24),
+        caption('BLUR — blurred cross-fade'),
+        const BeuiActionSwapButton(
+          items: _copyItems,
+          animation: BeuiActionSwapVariant.blur,
+          variant: BeuiButtonVariant.secondary,
+        ),
+        const SizedBox(height: 24),
+        caption('ROLL — old rolls out, new rolls in'),
+        const BeuiActionSwapButton(
+          items: _sendItems,
+          animation: BeuiActionSwapVariant.roll,
+          variant: BeuiButtonVariant.primary,
+        ),
+        const SizedBox(height: 24),
+        caption('CASCADE — per-letter slot roll'),
+        const BeuiActionSwapButton(
+          items: _modeItems,
+          animation: BeuiActionSwapVariant.cascade,
+          variant: BeuiButtonVariant.outline,
+        ),
+      ],
+    );
+  }
+}
+
 class GalleryEntry {
   const GalleryEntry(this.title, this.builder);
   final String title;
@@ -959,7 +1181,9 @@ class GalleryHome extends StatelessWidget {
       appBar: AppBar(title: Text('beUI Gallery · $beuiVersion')),
       body: _entries.isEmpty
           ? const Center(
-              child: Text('No components ported yet — add entries in main.dart.'),
+              child: Text(
+                'No components ported yet — add entries in main.dart.',
+              ),
             )
           : ListView.builder(
               itemCount: _entries.length,
