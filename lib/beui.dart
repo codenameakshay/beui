@@ -26,6 +26,7 @@ export 'src/motion/action_swap.dart'
         BeuiActionSwapItem,
         BeuiActionSwapText,
         BeuiActionSwapVariant;
+export 'src/motion/animated_number.dart' show BeuiAnimatedNumber;
 export 'src/motion/button/base.dart'
     show BeuiButton, BeuiButtonSize, BeuiButtonVariant;
 export 'src/motion/button/magnetic.dart' show BeuiMagneticButton;
@@ -38,6 +39,7 @@ export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'
     show BeuiModalPlacement, BeuiMorphingModal;
+export 'src/motion/number_ticker.dart' show BeuiNumberTicker;
 
 // Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;

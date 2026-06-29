@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import 'demos/number_demo.dart';
+
 void main() => runApp(const GalleryApp());
 
 /// The beUI component gallery — one entry per component as they are ported.
@@ -43,6 +45,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Dock', _dockDemo),
   GalleryEntry('Action Swap', _actionSwapDemo),
   GalleryEntry('Text Animation', _textAnimationDemo),
+  GalleryEntry('Number', numberDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
