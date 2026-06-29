@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
@@ -133,6 +134,9 @@ class BeuiAnimatedBadge extends StatelessWidget {
           _IconSlot(
             icon: icon ?? status.icon,
             status: status,
+            // A custom icon is never spun (source spins only the default
+            // LoaderCircle); the default loading glyph becomes the spinner.
+            customIcon: icon != null,
             color: scheme.foreground,
             size: _iconSize,
             reduce: reduce,
@@ -269,6 +273,7 @@ class _IconSlot extends StatelessWidget {
   const _IconSlot({
     required this.icon,
     required this.status,
+    required this.customIcon,
     required this.color,
     required this.size,
     required this.reduce,
@@ -276,16 +281,22 @@ class _IconSlot extends StatelessWidget {
 
   final IconData icon;
   final BeuiAnimatedBadgeStatus status;
+  final bool customIcon;
   final Color color;
   final double size;
   final bool reduce;
 
   @override
   Widget build(BuildContext context) {
-    Widget glyph = Icon(icon, size: size, color: color);
-    if (status == BeuiAnimatedBadgeStatus.loading && !reduce) {
-      glyph = _Spinner(child: glyph);
-    }
+    // The default loading glyph is a centre-painted arc spun in place — a font
+    // glyph rotated by RotationTransition wobbles (it spins around the widget
+    // box, not the glyph's optical centre). A custom icon, or reduced motion,
+    // renders a static glyph (source: spin only the default LoaderCircle).
+    final spin =
+        status == BeuiAnimatedBadgeStatus.loading && !reduce && !customIcon;
+    final Widget glyph = spin
+        ? _LoaderSpinner(size: size, color: color)
+        : Icon(icon, size: size, color: color);
 
     // ClipRect = the source's per-span `overflow-hidden`: the rolling glyph is
     // clipped to its own box so the exiting icon vanishes the moment it clears.
@@ -305,7 +316,7 @@ class _IconSlot extends StatelessWidget {
         layoutBuilder: (current, previous) => Stack(
             alignment: Alignment.center, children: [...previous, ?current]),
         child: KeyedSubtree(
-          key: ValueKey('icon-${status.name}-${icon.codePoint}'),
+          key: ValueKey('icon-${status.name}-${spin ? 'spin' : icon.codePoint}'),
           child: glyph,
         ),
       ),
@@ -488,18 +499,21 @@ class _PulseState extends State<_Pulse> with SingleTickerProviderStateMixin {
   }
 }
 
-/// A continuously spinning wrapper — the source's loading-icon `rotate: 360`,
-/// 1s linear loop.
-class _Spinner extends StatefulWidget {
-  const _Spinner({required this.child});
+/// The loading spinner — a centre-painted 3/4 arc (matching Lucide's
+/// `loader-circle`) spun in place by a [RotationTransition], 1s linear loop
+/// (source's loading-icon `rotate: 360`). Custom-painted so it stays optically
+/// centred and crisp at any size, instead of orbiting like a rotated font glyph.
+class _LoaderSpinner extends StatefulWidget {
+  const _LoaderSpinner({required this.size, required this.color});
 
-  final Widget child;
+  final double size;
+  final Color color;
 
   @override
-  State<_Spinner> createState() => _SpinnerState();
+  State<_LoaderSpinner> createState() => _LoaderSpinnerState();
 }
 
-class _SpinnerState extends State<_Spinner>
+class _LoaderSpinnerState extends State<_LoaderSpinner>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
@@ -514,6 +528,45 @@ class _SpinnerState extends State<_Spinner>
 
   @override
   Widget build(BuildContext context) {
-    return RotationTransition(turns: _controller, child: widget.child);
+    return RotationTransition(
+      turns: _controller,
+      child: CustomPaint(
+        size: Size.square(widget.size),
+        painter: _SpinnerPainter(
+          color: widget.color,
+          stroke: widget.size * 0.12,
+        ),
+      ),
+    );
   }
+}
+
+class _SpinnerPainter extends CustomPainter {
+  _SpinnerPainter({required this.color, required this.stroke});
+
+  final Color color;
+  final double stroke;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.shortestSide - stroke) / 2;
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.round;
+    // 3/4 arc from the top, like Lucide's loader-circle.
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -math.pi / 2,
+      math.pi * 1.5,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_SpinnerPainter old) =>
+      old.color != color || old.stroke != stroke;
 }
