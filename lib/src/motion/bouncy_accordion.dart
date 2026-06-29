@@ -226,6 +226,10 @@ class _AccordionRowState extends State<_AccordionRow> {
   final GlobalKey _contentKey = GlobalKey();
   double _contentHeight = 0;
 
+  /// Keyboard focus-visible state (source `focus-visible:bg-muted/25`). Hover is
+  /// intentionally NOT tracked — the source button has no hover background.
+  bool _focused = false;
+
   @override
   void initState() {
     super.initState();
@@ -289,13 +293,26 @@ class _AccordionRowState extends State<_AccordionRow> {
       ),
     );
 
+    // Stable inner content: the trigger (tap target) + panel, built once per
+    // open/group change and threaded through the corner/margin springs as their
+    // `child`, so a tap is never lost to the subtree being rebuilt mid-bounce.
+    final inner = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [_trigger(colors, reduce), panel],
+    );
+
     // The surface morphs its corner radii on the row spring (snapped under
     // reduced motion). The two radii share one spring per side.
     final surface = _animDouble(
       topRadius,
       _rowSpring,
       reduce,
-      (tr) => _animDouble(bottomRadius, _rowSpring, reduce, (br) {
+      inner,
+      (tr, child) => _animDouble(bottomRadius, _rowSpring, reduce, child, (
+        br,
+        child,
+      ) {
         // Springs can briefly overshoot below 0; radii must stay ≥ 0.
         final radius = BorderRadius.only(
           topLeft: Radius.circular(tr < 0 ? 0 : tr),
@@ -312,11 +329,7 @@ class _AccordionRowState extends State<_AccordionRow> {
                   borderRadius: radius,
                 )
               : null,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [_trigger(colors, reduce), panel],
-          ),
+          child: child,
         );
       }),
     );
@@ -329,27 +342,31 @@ class _AccordionRowState extends State<_AccordionRow> {
       widget.separatedFromPrevious ? 12.0 : 0.0,
       _rowSpring,
       reduce,
-      (mt) => Padding(
+      surface,
+      (mt, child) => Padding(
         padding: EdgeInsets.only(top: mt < 0 ? 0.0 : mt),
-        child: surface,
+        child: child,
       ),
     );
   }
 
-  /// Spring-drives [target] through [build]; snaps instantly under reduced
-  /// motion (movement → no animation, matching the switch's snap pattern —
-  /// `NoMotion` would *hold* the old value rather than jump).
+  /// Spring-drives [target] through [build], threading a **stable** [child] so
+  /// the wrapped subtree (notably the tap target) is built once, not rebuilt on
+  /// every spring frame. Snaps instantly under reduced motion (movement → no
+  /// animation; `NoMotion` would *hold* the old value rather than jump).
   Widget _animDouble(
     double target,
     Motion motion,
     bool reduce,
-    Widget Function(double value) build,
+    Widget child,
+    Widget Function(double value, Widget child) build,
   ) {
-    if (reduce) return build(target);
+    if (reduce) return build(target, child);
     return SingleMotionBuilder(
       value: target,
       motion: motion,
-      builder: (context, v, _) => build(v),
+      child: child,
+      builder: (context, v, c) => build(v, c!),
     );
   }
 
@@ -390,67 +407,98 @@ class _AccordionRowState extends State<_AccordionRow> {
     final item = widget.item;
     final hasPanel = item.description != null;
 
+    final row = ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 54),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20), // px-5
+        child: Row(
+          children: [
+            if (item.icon != null) ...[
+              SizedBox(
+                width: 28,
+                height: 28,
+                child: Icon(item.icon, size: 16, color: colors.mutedForeground),
+              ),
+              const SizedBox(width: 16), // gap-4
+            ],
+            Expanded(
+              child: DefaultTextStyle.merge(
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: colors.foreground,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                child: item.title,
+              ),
+            ),
+            if (hasPanel) ...[
+              const SizedBox(width: 16),
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: Center(
+                  child: _animDouble(
+                    widget.open ? 180.0 : 0.0,
+                    _chevronSpring,
+                    reduce,
+                    Icon(
+                      LucideIcons.chevron_down,
+                      size: 16,
+                      color: colors.mutedForeground,
+                    ),
+                    (deg, child) => Transform.rotate(
+                      angle: deg * 3.1415926535897932 / 180.0,
+                      child: child,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+
+    // Focus-visible background only (source `focus-visible:bg-muted/25`); no
+    // hover splash — the source button has none, and an InkWell paints its ink
+    // on the ancestor Material (outside this row's rounded clip), so its hover
+    // ignored the corners. This bg is inside the clipped surface, so it rounds
+    // correctly. transition-colors → a short colour tween.
+    final body = AnimatedContainer(
+      duration: const Duration(milliseconds: 120),
+      color: _focused && !item.disabled
+          ? colors.muted.withValues(alpha: 0.25)
+          : Colors.transparent,
+      child: row,
+    );
+
     return Semantics(
       button: true,
       enabled: !item.disabled,
       expanded: hasPanel ? widget.open : null,
-      child: InkWell(
-        onTap: item.disabled ? null : widget.onToggle,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 54),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20), // px-5
-            child: Row(
-              children: [
-                if (item.icon != null) ...[
-                  SizedBox(
-                    width: 28,
-                    height: 28,
-                    child: Icon(
-                      item.icon,
-                      size: 16,
-                      color: colors.mutedForeground,
-                    ),
-                  ),
-                  const SizedBox(width: 16), // gap-4
-                ],
-                Expanded(
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: colors.foreground,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    child: item.title,
-                  ),
-                ),
-                if (hasPanel) ...[
-                  const SizedBox(width: 16),
-                  SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: Center(
-                      child: _animDouble(
-                        widget.open ? 180.0 : 0.0,
-                        _chevronSpring,
-                        reduce,
-                        (deg) => Transform.rotate(
-                          angle: deg * 3.1415926535897932 / 180.0,
-                          child: Icon(
-                            LucideIcons.chevron_down,
-                            size: 16,
-                            color: colors.mutedForeground,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
+      child: FocusableActionDetector(
+        enabled: !item.disabled,
+        mouseCursor:
+            item.disabled ? MouseCursor.defer : SystemMouseCursors.click,
+        onShowFocusHighlight: (focused) {
+          if (mounted) setState(() => _focused = focused);
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onToggle();
+              return null;
+            },
           ),
+        },
+        // A plain opaque tap target — reliable (no ancestor-Material dependency)
+        // and stable across spring frames since it's threaded as a child above.
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: item.disabled ? null : widget.onToggle,
+          child: body,
         ),
       ),
     );

@@ -211,4 +211,33 @@ void main() {
     // Content is intact under reduced motion.
     expect(find.text('Body A'), findsOneWidget);
   });
+
+  testWidgets('a tap mid-bounce still toggles (stable hit target)', (
+    tester,
+  ) async {
+    double clipHeight(String id) => tester
+        .getSize(
+          find.ancestor(
+            of: find.byKey(beuiAccordionPanelKey(id)),
+            matching: find.byType(ClipRect),
+          ),
+        )
+        .height;
+
+    await tester.pumpWidget(_host()); // uncontrolled, nothing open
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Alpha'));
+    await tester.pump(); // start opening 'a'
+    await tester.pump(const Duration(milliseconds: 80)); // mid-bounce
+    expect(clipHeight('a'), greaterThan(2.0)); // 'a' is springing open
+
+    // Tapping another row WHILE 'a' is still animating must register — the tap
+    // target is threaded as a stable child, not rebuilt each spring frame.
+    await tester.tap(find.text('Bravo'));
+    await tester.pumpAndSettle();
+
+    expect(clipHeight('b'), greaterThan(100)); // 'b' opened
+    expect(clipHeight('a'), lessThan(2.0)); // 'a' closed (single-open)
+  });
 }
