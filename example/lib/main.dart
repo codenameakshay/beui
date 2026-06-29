@@ -34,6 +34,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Drawer', _drawerDemo),
   GalleryEntry('Morphing Modal', _modalDemo),
   GalleryEntry('Shared Layout', _sharedLayoutDemo),
+  GalleryEntry('Marquee', _marqueeDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
@@ -49,6 +50,44 @@ Widget _buttonDemo(BuildContext context) => const _ButtonDemo();
 Widget _drawerDemo(BuildContext context) => const _DrawerDemo();
 
 Widget _modalDemo(BuildContext context) => const _ModalDemo();
+
+Widget _marqueeDemo(BuildContext context) {
+  final colors = Theme.of(context).extension<BeuiColors>()!;
+  const logos = [
+    'Vercel',
+    'Linear',
+    'Stripe',
+    'Figma',
+    'GitHub',
+    'Notion',
+    'Loom',
+    'Raycast',
+  ];
+  return SizedBox(
+    width: 460,
+    child: BeuiMarquee(
+      duration: const Duration(seconds: 25),
+      children: [
+        for (final l in logos)
+          Container(
+            height: 48,
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            decoration: BoxDecoration(
+              color: colors.card,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: colors.border),
+            ),
+            child: Text(l,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: colors.foreground)),
+          ),
+      ],
+    ),
+  );
+}
 
 Widget _sharedLayoutDemo(BuildContext context) {
   const items = [
