@@ -36,6 +36,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Shared Layout', _sharedLayoutDemo),
   GalleryEntry('Marquee', _marqueeDemo),
   GalleryEntry('Tilt Card', _tiltCardDemo),
+  GalleryEntry('Dock', _dockDemo),
 ];
 
 Widget _switchDemo(BuildContext context) => const _SwitchDemo();
@@ -87,6 +88,8 @@ Widget _tiltCardDemo(BuildContext context) {
     ),
   );
 }
+
+Widget _dockDemo(BuildContext context) => const _DockDemo();
 
 Widget _marqueeDemo(BuildContext context) {
   final colors = Theme.of(context).extension<BeuiColors>()!;
@@ -871,6 +874,72 @@ class _SwitchDemoState extends State<_SwitchDemo> {
           onChanged: (_) {},
         ),
       ],
+    );
+  }
+}
+
+/// The dock: faithful by default (flat bar + gliding active pill), with an
+/// opt-in `magnify: true` variant below showing the Flutter-only enhancement.
+class _DockDemo extends StatefulWidget {
+  const _DockDemo();
+
+  @override
+  State<_DockDemo> createState() => _DockDemoState();
+}
+
+class _DockDemoState extends State<_DockDemo> {
+  String _active = 'home';
+
+  static const _items = <(String, IconData)>[
+    ('home', LucideIcons.house),
+    ('mail', LucideIcons.mail),
+    ('calendar', LucideIcons.calendar),
+    ('music', LucideIcons.music),
+    ('discover', LucideIcons.sparkles),
+  ];
+
+  List<BeuiDockItem?> _buildItems() => [
+        for (final (id, icon) in _items)
+          BeuiDockItem(
+            icon: icon,
+            tooltip: id,
+            active: _active == id,
+            onTap: () => setState(() => _active = id),
+          ),
+        null, // separator
+        BeuiDockItem(
+          icon: LucideIcons.settings,
+          tooltip: 'settings',
+          active: _active == 'settings',
+          onTap: () => setState(() => _active = 'settings'),
+        ),
+      ];
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    Widget label(String text) => Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Text(text,
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: colors.mutedForeground)),
+        );
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 24),
+          // Primary: the source-faithful flat dock (default).
+          label('Default — faithful port (active pill only)'),
+          BeuiDock(items: _buildItems()),
+          const SizedBox(height: 48),
+          // Opt-in: the Flutter-only macOS magnification.
+          label('magnify: true — Flutter-only enhancement (hover to magnify)'),
+          BeuiDock(magnify: true, items: _buildItems()),
+        ],
+      ),
     );
   }
 }

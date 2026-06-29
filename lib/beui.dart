@@ -25,6 +25,7 @@ export 'src/motion/button/magnetic.dart' show BeuiMagneticButton;
 export 'src/motion/button/stateful.dart'
     show BeuiButtonState, BeuiStatefulButton;
 export 'src/motion/checkbox.dart' show BeuiCheckbox, BeuiCheckboxStyle;
+export 'src/motion/dock.dart' show BeuiDock, BeuiDockItem;
 export 'src/motion/drawer.dart' show BeuiDrawer, BeuiDrawerSide;
 export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
