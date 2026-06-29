@@ -138,8 +138,14 @@ class BeuiActionSwapText extends StatelessWidget {
             alignment: Alignment.centerLeft,
             children: [...previous, ?current],
           ),
-          transitionBuilder: (child, animation) =>
-              _swapTransition(child, animation, _core(variant), reduce),
+          transitionBuilder: (child, animation) => _swapTransition(
+            child,
+            animation,
+            _core(variant),
+            reduce,
+            // ≈115% of the line box, so the text clears the slot as it rolls.
+            textTravel: (style.fontSize ?? 14) * 1.35,
+          ),
           child: Text(
             text,
             key: ValueKey(value),
@@ -366,21 +372,26 @@ class _AnimatedWidth extends StatelessWidget {
 /// motion it collapses to a movement-free crossfade (source's `reduce` branch).
 ///
 /// [AnimatedSwitcher] runs the same builder for entering (animation 0→1) and
-/// exiting (1→0) children, so direction is read off the status.
+/// exiting (1→0) children. Direction is read off the status **inside** the
+/// builder, per frame — capturing it once is unreliable: when the exiting
+/// child's transition is first built its controller can still report
+/// `completed` (the reverse hasn't started), which would mis-detect the old
+/// child as entering and roll it the wrong way (out the bottom instead of the
+/// top). During the visible motion the status is reliably forward / reverse.
 Widget _swapTransition(
   Widget child,
   Animation<double> animation,
   BeuiActionSwapVariant core,
   bool reduce, {
   bool isIcon = false,
+  double textTravel = 18,
 }) {
   if (reduce) return FadeTransition(opacity: animation, child: child);
-
-  final entering = animation.status != AnimationStatus.reverse;
 
   return AnimatedBuilder(
     animation: animation,
     builder: (context, _) {
+      final entering = animation.status != AnimationStatus.reverse;
       final t = animation.value; // linear 0..1
       late final double opacity;
       late final double blur;
@@ -400,13 +411,13 @@ Widget _swapTransition(
             ? beuiEaseOut.transform(t)
             : t; // exit fade is linear-ish under easeInOut switcher
         blur = (1 - t) * _rollBlurSigma;
-        // text: enter from +115%, exit to -115% (relative to line height,
-        // approximated in logical px); icon: ±16px (source ICON_VARIANTS.roll).
-        final travel = isIcon ? 16.0 : 18.0;
+        // text: enter from +115%, exit to -115% of the line box (source
+        // TEXT_VARIANTS.roll, scaled by font size); icon: ±16px.
+        final travel = isIcon ? 16.0 : textTravel;
         final eased = entering
             ? beuiEaseOut.transform(t)
             : beuiEaseInOut.transform(t);
-        // entering rises from below; exiting rises out the top.
+        // entering rises from below (+); exiting rises up and out the top (−).
         dy = entering ? (1 - eased) * travel : (1 - eased) * -travel;
       }
 
