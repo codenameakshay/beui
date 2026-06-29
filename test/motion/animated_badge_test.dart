@@ -284,4 +284,42 @@ void main() {
       expect(live, findsOneWidget);
     });
   });
+
+  group('roll direction (source: old up and out, new from below)', () {
+    List<double> badgeTranslateYs(WidgetTester tester) => tester
+        .widgetList<Transform>(
+          find.descendant(
+            of: find.byType(BeuiAnimatedBadge),
+            matching: find.byType(Transform),
+          ),
+        )
+        .map((w) => w.transform.getTranslation().y)
+        .where((y) => y.abs() > 0.5)
+        .toList();
+
+    testWidgets('mid-swap, one layer rolls UP (exit) and one comes from BELOW',
+        (tester) async {
+      // Constant non-loading status (no spinner/pulse); only the label changes,
+      // so the roll under test is isolated.
+      Widget app(String l) => _wrap(
+            BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
+          );
+      await tester.pumpWidget(app('Alpha'));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      await tester.pumpWidget(app('Bravo'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 120)); // mid-roll
+
+      expect(find.text('Alpha'), findsOneWidget); // old still present
+      expect(find.text('Bravo'), findsOneWidget); // new present
+      final ys = badgeTranslateYs(tester);
+      // The buggy version rolled BOTH layers down (all positive). The fix rolls
+      // the exiting layer UP (negative) and the entering one from BELOW (positive).
+      expect(ys.any((y) => y < 0), isTrue, reason: 'a layer rolls up and out');
+      expect(ys.any((y) => y > 0), isTrue, reason: 'a layer enters from below');
+
+      await tester.pump(const Duration(milliseconds: 600));
+    });
+  });
 }

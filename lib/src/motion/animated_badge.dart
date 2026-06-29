@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
-import '_engine.dart';
 
 /// Status of a [BeuiAnimatedBadge] — a fixed, exhaustive set, mirroring the
 /// source `AnimatedBadgeStatus` union.
@@ -49,23 +48,6 @@ enum BeuiAnimatedBadgeSize {
   /// Default (source `md`: h-8, 12px text, 14px icon).
   md,
 }
-
-// ---------------------------------------------------------------------------
-// Component-local bespoke springs — one-to-one with the source variants in
-// `animated-badge.tsx`. Intentionally distinct from the shared tokens (these
-// are per-component physics, exactly the trade-off `_engine.dart` documents).
-// ---------------------------------------------------------------------------
-
-/// Vertical roll spring for both the icon and the label slot
-/// (source `ICON_ROLL_VARIANTS.y` / `TEXT_ROLL_VARIANTS.y`).
-const _rollSpring = SpringMotion(
-  SpringDescription(mass: 0.85, stiffness: 210, damping: 24),
-);
-
-/// Scale spring for the icon roll (source `ICON_ROLL_VARIANTS.scale`).
-const _scaleSpring = SpringMotion(
-  SpringDescription(mass: 0.75, stiffness: 250, damping: 24),
-);
 
 /// A status badge whose icon and color animate on status change, with an
 /// optional pulse — the Flutter port of beUI's `AnimatedBadge`.
@@ -164,7 +146,8 @@ class BeuiAnimatedBadge extends StatelessWidget {
               fontWeight: FontWeight.w500,
               fontFeatures: const [FontFeature.tabularFigures()],
               color: scheme.foreground,
-              height: 1.0,
+              // Natural line box (no forced height:1.0) so the slot's ClipRect
+              // doesn't shave descenders (y, g) at rest.
             ),
             reduce: reduce,
           ),
@@ -304,18 +287,27 @@ class _IconSlot extends StatelessWidget {
       glyph = _Spinner(child: glyph);
     }
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 420), // longest sub-transition
-      switchInCurve: Curves.linear,
-      switchOutCurve: Curves.linear,
-      transitionBuilder: (child, animation) =>
-          _RollTransition(animation: animation, reduce: reduce, child: child),
-      // popLayout: stack out-going on top of in-coming without reflow.
-      layoutBuilder: (current, previous) =>
-          Stack(alignment: Alignment.center, children: [...previous, ?current]),
-      child: KeyedSubtree(
-        key: ValueKey('icon-${status.name}-${icon.codePoint}'),
-        child: glyph,
+    // ClipRect = the source's per-span `overflow-hidden`: the rolling glyph is
+    // clipped to its own box so the exiting icon vanishes the moment it clears.
+    return ClipRect(
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 420), // enter
+        reverseDuration: const Duration(milliseconds: 200), // exit is faster
+        switchInCurve: Curves.linear,
+        switchOutCurve: Curves.linear,
+        transitionBuilder: (child, animation) => _RollTransition(
+          animation: animation,
+          reduce: reduce,
+          rise: size,
+          child: child,
+        ),
+        // popLayout: stack out-going on top of in-coming without reflow.
+        layoutBuilder: (current, previous) => Stack(
+            alignment: Alignment.center, children: [...previous, ?current]),
+        child: KeyedSubtree(
+          key: ValueKey('icon-${status.name}-${icon.codePoint}'),
+          child: glyph,
+        ),
       ),
     );
   }
@@ -337,97 +329,106 @@ class _LabelSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 420),
-      switchInCurve: Curves.linear,
-      switchOutCurve: Curves.linear,
-      transitionBuilder: (child, animation) => _RollTransition(
-        animation: animation,
-        reduce: reduce,
-        scale: false, // text roll has no scale (source TEXT_ROLL_VARIANTS)
-        child: child,
-      ),
-      layoutBuilder: (current, previous) => Stack(
-        alignment: Alignment.centerLeft,
-        children: [...previous, ?current],
-      ),
-      child: Text(
-        label,
-        key: ValueKey('label-$label'),
-        style: style,
-        maxLines: 1,
-        softWrap: false,
+    return ClipRect(
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 420), // enter
+        reverseDuration: const Duration(milliseconds: 200), // exit is faster
+        switchInCurve: Curves.linear,
+        switchOutCurve: Curves.linear,
+        transitionBuilder: (child, animation) => _RollTransition(
+          animation: animation,
+          reduce: reduce,
+          rise: (style.fontSize ?? 12) * 1.3, // ≈ the natural line box height
+          scale: false, // text roll has no scale (source TEXT_ROLL_VARIANTS)
+          child: child,
+        ),
+        layoutBuilder: (current, previous) => Stack(
+          alignment: Alignment.centerLeft,
+          children: [...previous, ?current],
+        ),
+        child: Text(
+          label,
+          key: ValueKey('label-$label'),
+          style: style,
+          maxLines: 1,
+          softWrap: false,
+        ),
       ),
     );
   }
 }
 
-/// The roll transition shared by the icon and label slots. Drives the entrance
-/// y-rise + scale on the spring tokens (via [SingleMotionBuilder]) and the
-/// blur/opacity on [beuiEaseOut], matching the source's per-channel transitions.
-/// Reduced motion collapses to a plain fade.
+/// The roll transition shared by the icon and label slots — the y-rise, scale,
+/// blur and opacity all ride the live [animation] progress, eased with
+/// [beuiEaseOut] (the source's `EASE_OUT` per-channel transitions; the literal
+/// Framer springs can't track a duration-based switcher, so a single eased roll
+/// is used — the same proven shape as the action-swap roll). Reduced motion
+/// collapses to a plain fade.
 ///
-/// [AnimatedSwitcher] runs both an in-animation (forward) and an out-animation
-/// (reversed). [animation] is the progress for whichever child this is.
+/// [AnimatedSwitcher] runs the same builder for the entering child (forward,
+/// 0→1) and the exiting child (reverse, 1→0). Direction is read off the status
+/// **per frame**. The entering glyph rolls UP from below into place; the
+/// exiting one rolls UP and out the top (source `ICON_ROLL_VARIANTS` /
+/// `TEXT_ROLL_VARIANTS`: `y 80%→0` in, `0→-80%` out). The caller clips each slot
+/// to its glyph box (source `overflow-hidden`), so the exit vanishes cleanly.
 class _RollTransition extends StatelessWidget {
   const _RollTransition({
     required this.animation,
     required this.reduce,
+    required this.rise,
     required this.child,
     this.scale = true,
   });
 
   final Animation<double> animation;
   final bool reduce;
+
+  /// Roll distance — the glyph/line box height, so the content fully clears the
+  /// (clipped) slot on exit and starts fully below on enter.
+  final double rise;
   final bool scale;
   final Widget child;
 
-  static const double _rise = 9; // ~80% of a small glyph/line
   static const double _blur = 3; // source blur(6px) ≈ sigma 3
 
   @override
   Widget build(BuildContext context) {
     if (reduce) return FadeTransition(opacity: animation, child: child);
 
-    // Spring-backed entrance progress (0 → 1). The source rolls the y-rise and
-    // the scale on *separate* springs (`_rollSpring` / `_scaleSpring`); the
-    // blur + opacity ride `beuiEaseOut`. We re-target both springs toward the
-    // switcher's linear progress so they settle as the child enters.
-    return SingleMotionBuilder(
-      value: animation.value, // y-rise spring
-      motion: _rollSpring,
-      builder: (context, ySprung, _) => SingleMotionBuilder(
-        value: scale ? animation.value : 1.0, // scale spring (text has none)
-        motion: _scaleSpring,
-        builder: (context, scaleSprung, _) => AnimatedBuilder(
-          animation: animation,
-          builder: (context, _) {
-            final t = animation.value; // linear switcher progress
-            final eased = beuiEaseOut.transform(t);
-            final dy = (1 - ySprung) * _rise; // roll up from below
-            final sc = scale ? 0.92 + 0.08 * scaleSprung : 1.0;
-            final blur = (1 - eased) * _blur;
-            Widget c = child;
-            if (blur > 0.05) {
-              c = ImageFiltered(
-                imageFilter: ImageFilter.blur(
-                  sigmaX: blur,
-                  sigmaY: blur,
-                  tileMode: TileMode.decal,
-                ),
-                child: c,
-              );
-            }
-            return Opacity(
-              opacity: eased.clamp(0.0, 1.0),
-              child: Transform.translate(
-                offset: Offset(0, dy),
-                child: scale ? Transform.scale(scale: sc, child: c) : c,
-              ),
-            );
-          },
-        ),
-      ),
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final exiting = animation.status == AnimationStatus.reverse;
+        final t = animation.value; // live linear progress (1→0 while exiting)
+        final easedIn = beuiEaseOut.transform(t);
+        final easedOut = beuiEaseInOut.transform(t);
+        // enter: +rise (below) → 0 (easeOut). exit: 0 → -rise up and out
+        // (easeInOut, so it clears steadily rather than lingering at centre).
+        final dy =
+            exiting ? -(1 - easedOut) * rise : (1 - easedIn) * rise;
+        final sc = scale ? 0.92 + 0.08 * easedIn : 1.0;
+        // Exit fades linearly (source exit is fast); enter fades eased.
+        final opacity = exiting ? t : easedIn;
+        final blur = (1 - t) * _blur;
+        Widget c = child;
+        if (blur > 0.05) {
+          c = ImageFiltered(
+            imageFilter: ImageFilter.blur(
+              sigmaX: blur,
+              sigmaY: blur,
+              tileMode: TileMode.decal,
+            ),
+            child: c,
+          );
+        }
+        return Opacity(
+          opacity: opacity.clamp(0.0, 1.0),
+          child: Transform.translate(
+            offset: Offset(0, dy),
+            child: scale ? Transform.scale(scale: sc, child: c) : c,
+          ),
+        );
+      },
     );
   }
 }
