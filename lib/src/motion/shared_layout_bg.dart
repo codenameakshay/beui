@@ -164,10 +164,14 @@ class _Pill extends StatelessWidget {
             borderRadius: BorderRadius.circular(16), // rounded-2xl
           ),
         );
-        if (!reduce) {
+        // Only wrap in a blur layer while actually blurring — an ImageFiltered
+        // at sigma 0 still rasterises through a saveLayer (soft, "low quality"
+        // edges). Source blur(6px) ≈ sigma ~3.5, not 6.
+        final blur = reduce ? 0.0 : (1 - f) * 3.5;
+        if (blur > 0.1) {
           box = ImageFiltered(
             imageFilter: ImageFilter.blur(
-                sigmaX: (1 - f) * 6, sigmaY: (1 - f) * 6, tileMode: TileMode.decal),
+                sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),
             child: box,
           );
         }

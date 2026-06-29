@@ -51,7 +51,6 @@ Widget _drawerDemo(BuildContext context) => const _DrawerDemo();
 Widget _modalDemo(BuildContext context) => const _ModalDemo();
 
 Widget _sharedLayoutDemo(BuildContext context) {
-  final colors = Theme.of(context).extension<BeuiColors>()!;
   const items = [
     ('Inbox', '12 unread threads, 3 mentions today.'),
     ('Drafts', '4 posts waiting for a final pass.'),
@@ -62,33 +61,62 @@ Widget _sharedLayoutDemo(BuildContext context) {
     width: 460,
     child: BeuiSharedLayoutBg(
       children: [
-        for (final (title, body) in items)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(title,
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: colors.foreground)),
-                    Icon(LucideIcons.arrow_up_right,
-                        size: 14, color: colors.mutedForeground),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(body,
-                    style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
-              ],
-            ),
-          ),
+        for (final (title, body) in items) _SharedRow(title: title, body: body),
       ],
     ),
   );
+}
+
+/// A list row whose trailing arrow nudges up-right on hover (the source's
+/// `group-hover:translate-x-0.5 -translate-y-0.5`).
+class _SharedRow extends StatefulWidget {
+  const _SharedRow({required this.title, required this.body});
+  final String title;
+  final String body;
+
+  @override
+  State<_SharedRow> createState() => _SharedRowState();
+}
+
+class _SharedRowState extends State<_SharedRow> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(widget.title,
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: colors.foreground)),
+                AnimatedSlide(
+                  offset: _hovered ? const Offset(0.14, -0.14) : Offset.zero,
+                  duration: const Duration(milliseconds: 150),
+                  curve: Curves.easeOut,
+                  child: Icon(LucideIcons.arrow_up_right,
+                      size: 14, color: colors.mutedForeground),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(widget.body,
+                style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 /// A faithful port of the beUI morphing-modal preview — a wallet-options sheet
