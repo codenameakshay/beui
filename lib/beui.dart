@@ -48,6 +48,8 @@ export 'src/motion/number_ticker.dart' show BeuiNumberTicker;
 // Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
+export 'src/motion/range_slider.dart'
+    show BeuiRangeSlider, BeuiRangeSliderDual;
 export 'src/motion/shared_layout_bg.dart' show BeuiSharedLayoutBg;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
 export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
