@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
-import '../tokens/motion.dart';
 
 /// Where the modal sits in the viewport.
 enum BeuiModalPlacement {
@@ -100,20 +99,23 @@ class BeuiMorphingModal extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(20), // p-5
             child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 240), // enter
-              reverseDuration: const Duration(milliseconds: 160), // exit faster
-              switchInCurve: beuiEaseOut,
-              switchOutCurve: beuiEaseOut,
-              // popLayout: the entering view sizes the panel (so it morphs to
-              // the new height); the exiting view is pinned and overlaps as it
-              // fades.
+              // Linear, equal in/out so the two views blend ~50/50 at the
+              // midpoint (a true cross-fade); the y-roll + blur are eased
+              // inside the transition.
+              duration: const Duration(milliseconds: 220),
+              reverseDuration: const Duration(milliseconds: 220),
+              switchInCurve: Curves.linear,
+              switchOutCurve: Curves.linear,
+              // popLayout: the entering view (behind) sizes the panel so it
+              // morphs to the new height; the exiting view is pinned ON TOP and
+              // lifts away to reveal the new one — a true cross-fade.
               layoutBuilder: (currentChild, previousChildren) => Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.topCenter,
                 children: [
+                  ?currentChild,
                   for (final c in previousChildren)
                     Positioned(left: 0, right: 0, top: 0, child: c),
-                  ?currentChild,
                 ],
               ),
               transitionBuilder: (child, a) => _viewTransition(child, a, reduce),
@@ -160,13 +162,18 @@ class BeuiMorphingModal extends StatelessWidget {
       animation: animation,
       builder: (context, _) {
         final t = animation.value.clamp(0.0, 1.0);
-        // Source blur(4px) ≈ sigma ~2.5 (Flutter sigma ≈ CSS px × 0.6); 4 was
-        // ~2× too heavy and per-frame ImageFiltered is costly.
-        final blur = (1 - t) * 2.5;
+        // Entering views rise from below (y: 8 → 0); exiting views rise up and
+        // out (y: 0 → -8) — one continuous upward roll, the source's
+        // popLayout cross-fade. Source blur(4px) ≈ sigma ~2.5.
+        final exiting = animation.status == AnimationStatus.reverse ||
+            animation.status == AnimationStatus.dismissed;
+        final dir = exiting ? -1.0 : 1.0;
+        final eased = Curves.easeOut.transform(t);
+        final blur = (1 - eased) * 2.5;
         return Opacity(
-          opacity: t,
+          opacity: t, // linear → balanced cross-fade
           child: Transform.translate(
-            offset: Offset(0, (1 - t) * 6),
+            offset: Offset(0, (1 - eased) * 8 * dir),
             child: ImageFiltered(
               imageFilter: ImageFilter.blur(
                   sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),
