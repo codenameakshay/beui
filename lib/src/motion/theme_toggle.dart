@@ -1,0 +1,392 @@
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+import 'dart:ui' show ImageFilter;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
+
+import '../tokens/icons.dart';
+import 'action_swap.dart' show BeuiActionSwapIcon, BeuiActionSwapVariant;
+
+/// How a [BeuiThemeSwitcher] reveals the new theme — the Flutter port of beUI's
+/// `ThemeVariant`. The source drives these with the web-only **View Transition
+/// API**; this port reimplements them as a uniform `ClipPath` animation that
+/// runs on every platform (a snapshot of the old theme is clipped away as the
+/// new theme is revealed underneath).
+enum BeuiThemeRevealVariant {
+  /// An inset rectangle wipes the new theme in (source `rectangle`, 400ms).
+  rectangle,
+
+  /// A circle expands from the origin (source `circle`, 700ms).
+  circle,
+
+  /// A circle expands from the origin, the seam softened with a fading blur
+  /// (source `circle-blur`, 700ms + `blur(8px)`→0).
+  circleBlur,
+}
+
+/// Origin the reveal grows from (source `RectStart`).
+enum BeuiThemeRevealStart {
+  topLeft,
+  topRight,
+  bottomLeft,
+  bottomRight,
+  center,
+  bottomUp,
+}
+
+/// Handle a [BeuiThemeToggle] uses to read the current brightness and request a
+/// switch. Obtain it with `BeuiThemeSwitcher.of(context)`.
+@immutable
+class BeuiThemeSwitcherController {
+  const BeuiThemeSwitcherController(this._onToggle, {required this.brightness});
+
+  /// The brightness the switcher is currently showing.
+  final Brightness brightness;
+
+  final void Function({
+    required BeuiThemeRevealVariant variant,
+    required BeuiThemeRevealStart start,
+  }) _onToggle;
+
+  /// Whether the current brightness is dark.
+  bool get isDark => brightness == Brightness.dark;
+
+  /// Flips the brightness, animating the reveal (unless reduced motion).
+  void toggle({
+    BeuiThemeRevealVariant variant = BeuiThemeRevealVariant.rectangle,
+    BeuiThemeRevealStart start = BeuiThemeRevealStart.bottomUp,
+  }) => _onToggle(variant: variant, start: start);
+}
+
+/// Wraps a subtree and switches its [Brightness] with a full-surface clip-path
+/// reveal — the Flutter port of beUI's `theme-toggle` (the View-Transition
+/// flourish), reimplemented with a snapshot + animated [ClipPath] so it runs
+/// everywhere, not just on the web.
+///
+/// [builder] receives the current [Brightness]; build your theme from it (e.g.
+/// `Theme(data: ThemeData.from(brightness: b), child: ...)`). A descendant
+/// [BeuiThemeToggle] flips it. On toggle the old theme is captured to an image,
+/// the subtree rebuilds with the new brightness, and the snapshot is clipped
+/// away from the chosen origin so the new theme is revealed underneath. Reduced
+/// motion switches instantly (the source's `useReducedMotion` branch).
+class BeuiThemeSwitcher extends StatefulWidget {
+  /// Creates a theme switcher around [builder].
+  const BeuiThemeSwitcher({
+    required this.builder,
+    this.initialBrightness = Brightness.light,
+    super.key,
+  });
+
+  /// Builds the themed subtree for the current brightness.
+  final Widget Function(BuildContext context, Brightness brightness) builder;
+
+  /// Brightness shown before the first toggle.
+  final Brightness initialBrightness;
+
+  /// The nearest switcher's controller (brightness + toggle). Asserts one
+  /// exists above [context].
+  static BeuiThemeSwitcherController of(BuildContext context) {
+    final scope = context.dependOnInheritedWidgetOfExactType<_ThemeScope>();
+    assert(scope != null, 'BeuiThemeToggle must be below a BeuiThemeSwitcher.');
+    return scope!.controller;
+  }
+
+  @override
+  State<BeuiThemeSwitcher> createState() => _BeuiThemeSwitcherState();
+}
+
+class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
+    with SingleTickerProviderStateMixin {
+  final GlobalKey _boundaryKey = GlobalKey();
+  late final AnimationController _controller;
+
+  late Brightness _brightness = widget.initialBrightness;
+  ui.Image? _oldImage;
+  BeuiThemeRevealVariant _variant = BeuiThemeRevealVariant.rectangle;
+  BeuiThemeRevealStart _start = BeuiThemeRevealStart.bottomUp;
+  double _dpr = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    // Eager (not lazy) so a reduced-motion toggle that never animates still has
+    // a constructed controller to dispose without a deactivated-element lookup.
+    _controller = AnimationController(vsync: this)
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) _clearOverlay();
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _oldImage?.dispose();
+    super.dispose();
+  }
+
+  void _clearOverlay() {
+    final img = _oldImage;
+    if (img == null) return;
+    setState(() => _oldImage = null);
+    img.dispose();
+  }
+
+  void _toggle({
+    required BeuiThemeRevealVariant variant,
+    required BeuiThemeRevealStart start,
+  }) {
+    final next = _brightness == Brightness.dark
+        ? Brightness.light
+        : Brightness.dark;
+    final boundary =
+        _boundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+
+    // Reduced motion (or no rendered surface to snapshot): switch instantly.
+    if (MediaQuery.disableAnimationsOf(context) ||
+        boundary == null ||
+        !boundary.hasSize) {
+      setState(() => _brightness = next);
+      return;
+    }
+
+    _dpr = MediaQuery.devicePixelRatioOf(context);
+    final image = boundary.toImageSync(pixelRatio: _dpr);
+    _oldImage?.dispose(); // a toggle mid-reveal supersedes the previous one
+    setState(() {
+      _brightness = next;
+      _oldImage = image;
+      _variant = variant;
+      _start = start;
+    });
+    _controller
+      ..duration = variant == BeuiThemeRevealVariant.rectangle
+          ? const Duration(milliseconds: 400)
+          : const Duration(milliseconds: 700)
+      ..forward(from: 0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller =
+        BeuiThemeSwitcherController(_toggle, brightness: _brightness);
+
+    final surface = RepaintBoundary(
+      key: _boundaryKey,
+      child: _ThemeScope(
+        controller: controller,
+        child: Builder(builder: (c) => widget.builder(c, _brightness)),
+      ),
+    );
+
+    if (_oldImage == null) return surface;
+
+    // rectangle = ease-out; circle = the source's cubic-bezier(.4,0,.2,1).
+    final curve = _variant == BeuiThemeRevealVariant.rectangle
+        ? Curves.easeOut
+        : const Cubic(0.4, 0, 0.2, 1);
+
+    return Stack(
+      children: [
+        surface, // live new theme
+        Positioned.fill(
+          child: IgnorePointer(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) => _RevealOverlay(
+                image: _oldImage!,
+                scale: _dpr,
+                progress: curve.transform(_controller.value),
+                variant: _variant,
+                start: _start,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ThemeScope extends InheritedWidget {
+  const _ThemeScope({required this.controller, required super.child});
+
+  final BeuiThemeSwitcherController controller;
+
+  @override
+  bool updateShouldNotify(_ThemeScope old) =>
+      old.controller.brightness != controller.brightness;
+}
+
+/// A theme-toggle button — a Sun/Moon icon (swapped with the action-swap `blur`
+/// transition) that flips the nearest [BeuiThemeSwitcher]'s brightness, playing
+/// the [variant] reveal from [start]. Bare by design (style it with a parent
+/// border/padding, as the source does via `className`).
+class BeuiThemeToggle extends StatelessWidget {
+  /// Creates a theme-toggle button.
+  const BeuiThemeToggle({
+    this.variant = BeuiThemeRevealVariant.rectangle,
+    this.start = BeuiThemeRevealStart.bottomUp,
+    this.size = 20,
+    this.color,
+    super.key,
+  });
+
+  /// Reveal variant played on toggle.
+  final BeuiThemeRevealVariant variant;
+
+  /// Reveal origin.
+  final BeuiThemeRevealStart start;
+
+  /// Icon size.
+  final double size;
+
+  /// Icon colour. Defaults to the ambient [IconTheme] colour.
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = BeuiThemeSwitcher.of(context);
+    final isDark = controller.isDark;
+    final iconColor = color ??
+        IconTheme.of(context).color ??
+        (isDark ? Colors.white : Colors.black);
+
+    return Semantics(
+      button: true,
+      label: isDark ? 'Switch to light mode' : 'Switch to dark mode',
+      excludeSemantics: true,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => controller.toggle(variant: variant, start: start),
+          child: IconTheme.merge(
+            data: IconThemeData(color: iconColor, size: size),
+            child: BeuiActionSwapIcon(
+              value: isDark ? 'dark' : 'light',
+              icon: isDark ? LucideIcons.sun : LucideIcons.moon,
+              variant: BeuiActionSwapVariant.blur,
+              size: size,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Paints the captured old-theme [image] clipped to *everything except* the
+/// growing reveal shape, so the live new theme shows through the shape.
+class _RevealOverlay extends StatelessWidget {
+  const _RevealOverlay({
+    required this.image,
+    required this.scale,
+    required this.progress,
+    required this.variant,
+    required this.start,
+  });
+
+  final ui.Image image;
+  final double scale;
+  final double progress;
+  final BeuiThemeRevealVariant variant;
+  final BeuiThemeRevealStart start;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget old = RawImage(image: image, scale: scale, fit: BoxFit.fill);
+    if (variant == BeuiThemeRevealVariant.circleBlur) {
+      final sigma = (1 - progress) * 4; // blur(8px) ≈ sigma 4, fading out
+      if (sigma > 0.1) {
+        old = ImageFiltered(
+          imageFilter: ImageFilter.blur(
+            sigmaX: sigma,
+            sigmaY: sigma,
+            tileMode: TileMode.decal,
+          ),
+          child: old,
+        );
+      }
+    }
+    return ClipPath(
+      clipper: _RevealClipper(progress: progress, variant: variant, start: start),
+      child: old,
+    );
+  }
+}
+
+class _RevealClipper extends CustomClipper<Path> {
+  _RevealClipper({
+    required this.progress,
+    required this.variant,
+    required this.start,
+  });
+
+  final double progress;
+  final BeuiThemeRevealVariant variant;
+  final BeuiThemeRevealStart start;
+
+  @override
+  Path getClip(Size size) {
+    final full = Path()..addRect(Offset.zero & size);
+    final Path reveal;
+    if (variant == BeuiThemeRevealVariant.rectangle) {
+      final f = _rectFrom(start); // (top, right, bottom, left) fractions
+      final t = f[0] * (1 - progress);
+      final r = f[1] * (1 - progress);
+      final b = f[2] * (1 - progress);
+      final l = f[3] * (1 - progress);
+      reveal = Path()
+        ..addRect(
+          Rect.fromLTRB(
+            l * size.width,
+            t * size.height,
+            size.width * (1 - r),
+            size.height * (1 - b),
+          ),
+        );
+    } else {
+      final o = _circleOrigin(start);
+      final center = Offset(o.dx * size.width, o.dy * size.height);
+      reveal = Path()
+        ..addOval(
+          Rect.fromCircle(center: center, radius: progress * _maxRadius(center, size)),
+        );
+    }
+    // Old image shows everywhere EXCEPT the reveal → the new theme shows inside.
+    return Path.combine(PathOperation.difference, full, reveal);
+  }
+
+  static double _maxRadius(Offset c, Size s) {
+    final corners = [
+      Offset.zero,
+      Offset(s.width, 0),
+      Offset(0, s.height),
+      Offset(s.width, s.height),
+    ];
+    return corners.map((p) => (p - c).distance).reduce(math.max);
+  }
+
+  static List<double> _rectFrom(BeuiThemeRevealStart s) => switch (s) {
+        BeuiThemeRevealStart.topLeft => [0, 1, 1, 0],
+        BeuiThemeRevealStart.topRight => [0, 0, 1, 1],
+        BeuiThemeRevealStart.bottomLeft => [1, 1, 0, 0],
+        BeuiThemeRevealStart.bottomRight => [1, 0, 0, 1],
+        BeuiThemeRevealStart.center => [0.5, 0.5, 0.5, 0.5],
+        BeuiThemeRevealStart.bottomUp => [1, 0, 0, 0],
+      };
+
+  static Offset _circleOrigin(BeuiThemeRevealStart s) => switch (s) {
+        BeuiThemeRevealStart.topLeft => const Offset(0, 0),
+        BeuiThemeRevealStart.topRight => const Offset(1, 0),
+        BeuiThemeRevealStart.bottomLeft => const Offset(0, 1),
+        BeuiThemeRevealStart.bottomRight => const Offset(1, 1),
+        BeuiThemeRevealStart.center => const Offset(0.5, 0.5),
+        BeuiThemeRevealStart.bottomUp => const Offset(0.5, 1),
+      };
+
+  @override
+  bool shouldReclip(_RevealClipper old) =>
+      old.progress != progress || old.variant != variant || old.start != start;
+}

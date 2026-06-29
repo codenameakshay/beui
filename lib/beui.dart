@@ -56,5 +56,12 @@ export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
 export 'src/motion/text_cascade.dart' show BeuiTextCascade;
 export 'src/motion/text_reveal.dart' show BeuiTextReveal, BeuiTextRevealSplit;
 export 'src/motion/text_shimmer.dart' show BeuiTextShimmer;
+export 'src/motion/theme_toggle.dart'
+    show
+        BeuiThemeRevealStart,
+        BeuiThemeRevealVariant,
+        BeuiThemeSwitcher,
+        BeuiThemeSwitcherController,
+        BeuiThemeToggle;
 export 'src/motion/tilt_card.dart' show BeuiTiltCard;
 export 'src/motion/tooltip.dart' show BeuiTooltip, BeuiTooltipSide;

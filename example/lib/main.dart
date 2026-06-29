@@ -7,6 +7,7 @@ import 'demos/number_demo.dart';
 import 'demos/animated_badge_demo.dart';
 import 'demos/bouncy_accordion_demo.dart';
 import 'demos/range_slider_demo.dart';
+import 'demos/theme_toggle_demo.dart';
 
 void main() => runApp(const GalleryApp());
 
@@ -52,6 +53,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Animated Badge', animatedBadgeDemo),
   GalleryEntry('Bouncy Accordion', bouncyAccordionDemo),
   GalleryEntry('Range Slider', rangeSliderDemo),
+  GalleryEntry('Theme Toggle', themeToggleDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
