@@ -71,15 +71,21 @@ void main() {
       'not a live BackdropFilter)', (tester) async {
     await tester.pumpWidget(_host(variant: BeuiThemeRevealVariant.circleBlur));
     await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Switch to dark mode'), findsOneWidget);
 
     await tester.tap(find.byType(BeuiThemeToggle));
     await tester.pump(); // toggle frame: outgoing snapshot covers, no blur yet
     await tester.pump(); // post-frame: incoming captured, reveal starts
     await tester.pump(const Duration(milliseconds: 120)); // mid-reveal
 
-    // Outgoing + incoming (sharp) + incoming (blurred) are all snapshots —
-    // three RawImages, so the blurred incoming layer is present.
-    expect(find.byType(RawImage), findsNWidgets(3));
+    // The live surface has ALREADY flipped to dark mid-reveal — the switch is
+    // instant, not deferred to the end (the earlier frozen-snapshot bug).
+    expect(find.bySemanticsLabel('Switch to light mode'), findsOneWidget);
+
+    // Two snapshots: the outgoing (outside the circle) and the blurred incoming
+    // (inside it). There is deliberately NO sharp frozen snapshot — the live
+    // surface shows through the circle so its icon swaps in real time.
+    expect(find.byType(RawImage), findsNWidgets(2));
     // The incoming blur is a static ImageFiltered (cached), never a live
     // BackdropFilter — that per-frame blur was the profile-build hang.
     expect(find.byType(ImageFiltered), findsAtLeastNWidgets(1));

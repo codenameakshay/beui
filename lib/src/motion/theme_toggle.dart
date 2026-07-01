@@ -338,13 +338,15 @@ class BeuiThemeToggle extends StatelessWidget {
 }
 
 /// Paints the captured outgoing-theme snapshot clipped to *everything except*
-/// the growing reveal shape, so the new theme shows through the shape.
+/// the growing reveal shape, so the **live** new theme shows through the shape.
 ///
-/// For circle-blur the new theme is also snapshotted ([newImage]) and painted
-/// inside the circle blurred→sharp: the blur is computed **once** (cached in a
-/// [RepaintBoundary]) and merely cross-faded by opacity, so there is no
-/// per-frame Gaussian — unlike a live `BackdropFilter`, which stalled profile
-/// builds. Mirrors the source's `::view-transition-new { filter: blur(8px)→0 }`.
+/// For circle-blur the new theme is *also* snapshotted ([newImage]) but only to
+/// drive a **fading blurred layer** inside the circle — the live surface still
+/// shows through beneath it, so its icon swaps in real time just like the other
+/// variants. The blur is computed **once** (cached in a [RepaintBoundary]) and
+/// merely faded by opacity, so there is no per-frame Gaussian — unlike a live
+/// `BackdropFilter`, which stalled profile builds. Mirrors the source's
+/// `::view-transition-new { filter: blur(8px)→0 }`.
 class _RevealOverlay extends StatelessWidget {
   const _RevealOverlay({
     required this.oldImage,
@@ -384,9 +386,18 @@ class _RevealOverlay extends StatelessWidget {
 
     final incoming = newImage!;
     final blurOpacity = (1 - progress).clamp(0.0, 1.0);
+    // Blur gone → nothing to overlay inside the circle; the live surface (which
+    // shows through) already reads sharp.
+    if (blurOpacity <= 0.001) return outgoing;
     return Stack(
       children: [
         outgoing,
+        // Only the *fading* blurred incoming snapshot, clipped to the circle.
+        // Critically there is NO sharp snapshot beneath it — the live surface
+        // shows through, so its icon (and everything else) swaps the instant the
+        // toggle fires, exactly like the other variants; the blur just masks the
+        // first frames. A static snapshot is blurred (cached once) only because
+        // blurring the moving live content per frame is what hung profile builds.
         ClipPath(
           clipper: _RevealClipper(
             progress: progress,
@@ -394,33 +405,22 @@ class _RevealOverlay extends StatelessWidget {
             start: start,
             inside: true,
           ),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              // Sharp incoming theme.
-              RawImage(image: incoming, scale: scale, fit: BoxFit.fill),
-              // Blurred incoming, faded out over the reveal. The blur lives in a
-              // RepaintBoundary so it rasterises once and is reused every frame;
-              // only the opacity animates.
-              if (blurOpacity > 0.001)
-                Opacity(
-                  opacity: blurOpacity,
-                  child: RepaintBoundary(
-                    child: ImageFiltered(
-                      imageFilter: ImageFilter.blur(
-                        sigmaX: 4,
-                        sigmaY: 4,
-                        tileMode: TileMode.decal,
-                      ),
-                      child: RawImage(
-                        image: incoming,
-                        scale: scale,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
+          child: Opacity(
+            opacity: blurOpacity,
+            child: RepaintBoundary(
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(
+                  sigmaX: 4,
+                  sigmaY: 4,
+                  tileMode: TileMode.decal,
                 ),
-            ],
+                child: RawImage(
+                  image: incoming,
+                  scale: scale,
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
           ),
         ),
       ],
