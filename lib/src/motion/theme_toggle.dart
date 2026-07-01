@@ -47,7 +47,8 @@ class BeuiThemeSwitcherController {
   final void Function({
     required BeuiThemeRevealVariant variant,
     required BeuiThemeRevealStart start,
-  }) _onToggle;
+  })
+  _onToggle;
 
   /// Whether the current brightness is dark.
   bool get isDark => brightness == Brightness.dark;
@@ -102,7 +103,8 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
   late final AnimationController _controller;
 
   late Brightness _brightness = widget.initialBrightness;
-  ui.Image? _oldImage;
+  ui.Image? _oldImage; // snapshot of the outgoing theme
+  ui.Image? _newImage; // snapshot of the incoming theme (circle-blur only)
   BeuiThemeRevealVariant _variant = BeuiThemeRevealVariant.rectangle;
   BeuiThemeRevealStart _start = BeuiThemeRevealStart.bottomUp;
   double _dpr = 1;
@@ -122,14 +124,20 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
   void dispose() {
     _controller.dispose();
     _oldImage?.dispose();
+    _newImage?.dispose();
     super.dispose();
   }
 
   void _clearOverlay() {
-    final img = _oldImage;
-    if (img == null) return;
-    setState(() => _oldImage = null);
-    _disposeAfterFrame(img);
+    final old = _oldImage;
+    final incoming = _newImage;
+    if (old == null && incoming == null) return;
+    setState(() {
+      _oldImage = null;
+      _newImage = null;
+    });
+    _disposeAfterFrame(old);
+    _disposeAfterFrame(incoming);
   }
 
   /// Frees a snapshot only after the next frame, so it outlives any in-flight
@@ -140,15 +148,32 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     WidgetsBinding.instance.addPostFrameCallback((_) => image.dispose());
   }
 
+  ui.Image? _snapshot() {
+    final boundary =
+        _boundaryKey.currentContext?.findRenderObject()
+            as RenderRepaintBoundary?;
+    if (boundary == null || !boundary.hasSize) return null;
+    return boundary.toImageSync(pixelRatio: _dpr);
+  }
+
   void _toggle({
     required BeuiThemeRevealVariant variant,
     required BeuiThemeRevealStart start,
   }) {
+    // While a reveal plays the viewport is frozen — a toggle can't re-enter.
+    // Mirrors the source: the View Transition snapshot locks out interaction
+    // until the animation settles. (`AbsorbPointer` blocks user taps; this
+    // guards programmatic calls too.) `_oldImage != null` for the whole reveal
+    // window, including circle-blur's one-frame incoming-snapshot capture where
+    // the controller is briefly idle.
+    if (_oldImage != null || _controller.isAnimating) return;
+
     final next = _brightness == Brightness.dark
         ? Brightness.light
         : Brightness.dark;
     final boundary =
-        _boundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+        _boundaryKey.currentContext?.findRenderObject()
+            as RenderRepaintBoundary?;
 
     // Reduced motion (or no rendered surface to snapshot): switch instantly.
     if (MediaQuery.disableAnimationsOf(context) ||
@@ -159,70 +184,87 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     }
 
     _dpr = MediaQuery.devicePixelRatioOf(context);
-    // The boundary wraps the current overlay too, so mid-reveal this snapshots
-    // the *composited* screen (partial reveal), not the settled new theme.
-    final image = boundary.toImageSync(pixelRatio: _dpr);
-    final superseded = _oldImage; // its pixels are now baked into `image`
+    // Snapshot the outgoing theme (the boundary wraps only the live surface, so
+    // this is always the settled theme — a reveal can't be in flight here).
+    final outgoing = boundary.toImageSync(pixelRatio: _dpr);
+    // Reset to 0 first so the frame that paints the new brightness is still
+    // fully covered by the outgoing snapshot (no flash of the settled theme).
+    _controller
+      ..stop()
+      ..value = 0
+      ..duration = variant == BeuiThemeRevealVariant.rectangle
+          ? const Duration(milliseconds: 400)
+          : const Duration(milliseconds: 700);
     setState(() {
       _brightness = next;
-      _oldImage = image;
+      _oldImage = outgoing;
+      _newImage = null;
       _variant = variant;
       _start = start;
     });
-    _controller
-      ..duration = variant == BeuiThemeRevealVariant.rectangle
-          ? const Duration(milliseconds: 400)
-          : const Duration(milliseconds: 700)
-      ..forward(from: 0);
-    _disposeAfterFrame(superseded);
+
+    if (variant == BeuiThemeRevealVariant.circleBlur) {
+      // The blur reveals the *incoming* theme, so capture it once the new
+      // brightness has painted, then start. Blurring a static snapshot (cached
+      // in build) is far cheaper than a per-frame `BackdropFilter` — the live
+      // blur was the profile-build hang.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() => _newImage = _snapshot());
+        _controller.forward();
+      });
+    } else {
+      _controller.forward();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller =
-        BeuiThemeSwitcherController(_toggle, brightness: _brightness);
-
-    final live = _ThemeScope(
-      controller: controller,
-      child: Builder(builder: (c) => widget.builder(c, _brightness)),
+    final controller = BeuiThemeSwitcherController(
+      _toggle,
+      brightness: _brightness,
     );
 
-    final Widget content;
-    if (_oldImage == null) {
-      content = live;
-    } else {
-      // rectangle = ease-out; circle = the source's cubic-bezier(.4,0,.2,1).
-      final curve = _variant == BeuiThemeRevealVariant.rectangle
-          ? Curves.easeOut
-          : const Cubic(0.4, 0, 0.2, 1);
-      content = Stack(
-        children: [
-          live, // live new theme
-          Positioned.fill(
-            // Absorb (not ignore) pointers: while the reveal plays the surface
-            // is frozen and unclickable — the source relies on the View
-            // Transition snapshot doing the same to the whole viewport.
-            child: AbsorbPointer(
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, _) => _RevealOverlay(
-                  image: _oldImage!,
-                  scale: _dpr,
-                  progress: curve.transform(_controller.value),
-                  variant: _variant,
-                  start: _start,
-                ),
+    // The boundary wraps ONLY the live surface, so snapshotting it (outgoing at
+    // toggle time, incoming a frame later) captures the clean theme, never the
+    // reveal overlay layered on top.
+    final live = RepaintBoundary(
+      key: _boundaryKey,
+      child: _ThemeScope(
+        controller: controller,
+        child: Builder(builder: (c) => widget.builder(c, _brightness)),
+      ),
+    );
+
+    if (_oldImage == null) return live;
+
+    // rectangle = ease-out; circle = the source's cubic-bezier(.4,0,.2,1).
+    final curve = _variant == BeuiThemeRevealVariant.rectangle
+        ? Curves.easeOut
+        : const Cubic(0.4, 0, 0.2, 1);
+    return Stack(
+      children: [
+        live, // live new theme (revealed as the overlay clips away)
+        Positioned.fill(
+          // Absorb (not ignore) pointers: while the reveal plays the surface is
+          // frozen and unclickable — the source relies on the View Transition
+          // snapshot doing the same to the whole viewport.
+          child: AbsorbPointer(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) => _RevealOverlay(
+                oldImage: _oldImage!,
+                newImage: _newImage,
+                scale: _dpr,
+                progress: curve.transform(_controller.value),
+                variant: _variant,
+                start: _start,
               ),
             ),
           ),
-        ],
-      );
-    }
-
-    // The boundary wraps the overlay too: a toggle mid-reveal then snapshots the
-    // exact composited state on screen, so the next reveal starts from what's
-    // visible (no jump) when the button is spammed.
-    return RepaintBoundary(key: _boundaryKey, child: content);
+        ),
+      ],
+    );
   }
 }
 
@@ -266,7 +308,8 @@ class BeuiThemeToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = BeuiThemeSwitcher.of(context);
     final isDark = controller.isDark;
-    final iconColor = color ??
+    final iconColor =
+        color ??
         IconTheme.of(context).color ??
         (isDark ? Colors.white : Colors.black);
 
@@ -294,18 +337,26 @@ class BeuiThemeToggle extends StatelessWidget {
   }
 }
 
-/// Paints the captured old-theme [image] clipped to *everything except* the
-/// growing reveal shape, so the live new theme shows through the shape.
+/// Paints the captured outgoing-theme snapshot clipped to *everything except*
+/// the growing reveal shape, so the new theme shows through the shape.
+///
+/// For circle-blur the new theme is also snapshotted ([newImage]) and painted
+/// inside the circle blurred→sharp: the blur is computed **once** (cached in a
+/// [RepaintBoundary]) and merely cross-faded by opacity, so there is no
+/// per-frame Gaussian — unlike a live `BackdropFilter`, which stalled profile
+/// builds. Mirrors the source's `::view-transition-new { filter: blur(8px)→0 }`.
 class _RevealOverlay extends StatelessWidget {
   const _RevealOverlay({
-    required this.image,
+    required this.oldImage,
+    required this.newImage,
     required this.scale,
     required this.progress,
     required this.variant,
     required this.start,
   });
 
-  final ui.Image image;
+  final ui.Image oldImage;
+  final ui.Image? newImage;
   final double scale;
   final double progress;
   final BeuiThemeRevealVariant variant;
@@ -317,36 +368,61 @@ class _RevealOverlay extends StatelessWidget {
     // blurred — the source's `::view-transition-old` layer is static). The live
     // new theme shows through the shape.
     final outgoing = ClipPath(
-      clipper: _RevealClipper(progress: progress, variant: variant, start: start),
-      child: RawImage(image: image, scale: scale, fit: BoxFit.fill),
+      clipper: _RevealClipper(
+        progress: progress,
+        variant: variant,
+        start: start,
+      ),
+      child: RawImage(image: oldImage, scale: scale, fit: BoxFit.fill),
     );
 
-    if (variant != BeuiThemeRevealVariant.circleBlur) return outgoing;
+    // Non-blur variants (and the one frame before the incoming snapshot is
+    // ready): just clip the outgoing away and let the live surface show.
+    if (variant != BeuiThemeRevealVariant.circleBlur || newImage == null) {
+      return outgoing;
+    }
 
-    // circle-blur: the source blurs the INCOMING layer (`filter: blur(8px)→0`),
-    // not the old one. Blur the live new theme *inside* the growing circle with
-    // a BackdropFilter clipped to it; the blur fades as the reveal completes.
-    final sigma = (1 - progress) * 4; // blur(8px) ≈ sigma 4
+    final incoming = newImage!;
+    final blurOpacity = (1 - progress).clamp(0.0, 1.0);
     return Stack(
       children: [
         outgoing,
-        if (sigma > 0.05)
-          ClipPath(
-            clipper: _RevealClipper(
-              progress: progress,
-              variant: variant,
-              start: start,
-              inside: true,
-            ),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: sigma,
-                sigmaY: sigma,
-                tileMode: TileMode.decal,
-              ),
-              child: const SizedBox.expand(),
-            ),
+        ClipPath(
+          clipper: _RevealClipper(
+            progress: progress,
+            variant: variant,
+            start: start,
+            inside: true,
           ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Sharp incoming theme.
+              RawImage(image: incoming, scale: scale, fit: BoxFit.fill),
+              // Blurred incoming, faded out over the reveal. The blur lives in a
+              // RepaintBoundary so it rasterises once and is reused every frame;
+              // only the opacity animates.
+              if (blurOpacity > 0.001)
+                Opacity(
+                  opacity: blurOpacity,
+                  child: RepaintBoundary(
+                    child: ImageFiltered(
+                      imageFilter: ImageFilter.blur(
+                        sigmaX: 4,
+                        sigmaY: 4,
+                        tileMode: TileMode.decal,
+                      ),
+                      child: RawImage(
+                        image: incoming,
+                        scale: scale,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -387,22 +463,23 @@ class _RevealClipper extends CustomClipper<Path> {
       final r = f[1] * (1 - progress);
       final b = f[2] * (1 - progress);
       final l = f[3] * (1 - progress);
-      return Path()
-        ..addRect(
-          Rect.fromLTRB(
-            l * size.width,
-            t * size.height,
-            size.width * (1 - r),
-            size.height * (1 - b),
-          ),
-        );
+      return Path()..addRect(
+        Rect.fromLTRB(
+          l * size.width,
+          t * size.height,
+          size.width * (1 - r),
+          size.height * (1 - b),
+        ),
+      );
     }
     final o = _circleOrigin(start);
     final center = Offset(o.dx * size.width, o.dy * size.height);
-    return Path()
-      ..addOval(
-        Rect.fromCircle(center: center, radius: progress * _maxRadius(center, size)),
-      );
+    return Path()..addOval(
+      Rect.fromCircle(
+        center: center,
+        radius: progress * _maxRadius(center, size),
+      ),
+    );
   }
 
   static double _maxRadius(Offset c, Size s) {
@@ -416,22 +493,22 @@ class _RevealClipper extends CustomClipper<Path> {
   }
 
   static List<double> _rectFrom(BeuiThemeRevealStart s) => switch (s) {
-        BeuiThemeRevealStart.topLeft => [0, 1, 1, 0],
-        BeuiThemeRevealStart.topRight => [0, 0, 1, 1],
-        BeuiThemeRevealStart.bottomLeft => [1, 1, 0, 0],
-        BeuiThemeRevealStart.bottomRight => [1, 0, 0, 1],
-        BeuiThemeRevealStart.center => [0.5, 0.5, 0.5, 0.5],
-        BeuiThemeRevealStart.bottomUp => [1, 0, 0, 0],
-      };
+    BeuiThemeRevealStart.topLeft => [0, 1, 1, 0],
+    BeuiThemeRevealStart.topRight => [0, 0, 1, 1],
+    BeuiThemeRevealStart.bottomLeft => [1, 1, 0, 0],
+    BeuiThemeRevealStart.bottomRight => [1, 0, 0, 1],
+    BeuiThemeRevealStart.center => [0.5, 0.5, 0.5, 0.5],
+    BeuiThemeRevealStart.bottomUp => [1, 0, 0, 0],
+  };
 
   static Offset _circleOrigin(BeuiThemeRevealStart s) => switch (s) {
-        BeuiThemeRevealStart.topLeft => const Offset(0, 0),
-        BeuiThemeRevealStart.topRight => const Offset(1, 0),
-        BeuiThemeRevealStart.bottomLeft => const Offset(0, 1),
-        BeuiThemeRevealStart.bottomRight => const Offset(1, 1),
-        BeuiThemeRevealStart.center => const Offset(0.5, 0.5),
-        BeuiThemeRevealStart.bottomUp => const Offset(0.5, 1),
-      };
+    BeuiThemeRevealStart.topLeft => const Offset(0, 0),
+    BeuiThemeRevealStart.topRight => const Offset(1, 0),
+    BeuiThemeRevealStart.bottomLeft => const Offset(0, 1),
+    BeuiThemeRevealStart.bottomRight => const Offset(1, 1),
+    BeuiThemeRevealStart.center => const Offset(0.5, 0.5),
+    BeuiThemeRevealStart.bottomUp => const Offset(0.5, 1),
+  };
 
   @override
   bool shouldReclip(_RevealClipper old) =>

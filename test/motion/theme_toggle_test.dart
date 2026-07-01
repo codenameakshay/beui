@@ -67,6 +67,29 @@ void main() {
     expect(find.byType(ClipPath), findsNothing);
   });
 
+  testWidgets('circle-blur snapshots the incoming theme and blurs it (cached, '
+      'not a live BackdropFilter)', (tester) async {
+    await tester.pumpWidget(_host(variant: BeuiThemeRevealVariant.circleBlur));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(BeuiThemeToggle));
+    await tester.pump(); // toggle frame: outgoing snapshot covers, no blur yet
+    await tester.pump(); // post-frame: incoming captured, reveal starts
+    await tester.pump(const Duration(milliseconds: 120)); // mid-reveal
+
+    // Outgoing + incoming (sharp) + incoming (blurred) are all snapshots —
+    // three RawImages, so the blurred incoming layer is present.
+    expect(find.byType(RawImage), findsNWidgets(3));
+    // The incoming blur is a static ImageFiltered (cached), never a live
+    // BackdropFilter — that per-frame blur was the profile-build hang.
+    expect(find.byType(ImageFiltered), findsAtLeastNWidgets(1));
+    expect(find.byType(BackdropFilter), findsNothing);
+
+    await tester.pumpAndSettle();
+    // Reveal finished → every snapshot layer is gone.
+    expect(find.byType(RawImage), findsNothing);
+  });
+
   testWidgets('the button is blocked while a reveal plays (View-Transition '
       'parity)', (tester) async {
     await tester.pumpWidget(_host()); // rectangle, starts light
