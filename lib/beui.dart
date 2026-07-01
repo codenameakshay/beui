@@ -29,6 +29,7 @@ export 'src/motion/action_swap.dart'
 export 'src/motion/animated_number.dart' show BeuiAnimatedNumber;
 export 'src/motion/animated_badge.dart'
     show BeuiAnimatedBadge, BeuiAnimatedBadgeSize, BeuiAnimatedBadgeStatus;
+export 'src/motion/bottom_sheet.dart' show BeuiBottomSheet;
 export 'src/motion/bouncy_accordion.dart'
     show BeuiBouncyAccordion, BeuiBouncyAccordionItem;
 export 'src/motion/button/base.dart'

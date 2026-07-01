@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'demos/number_demo.dart';
 import 'demos/animated_badge_demo.dart';
+import 'demos/bottom_sheet_demo.dart';
 import 'demos/bouncy_accordion_demo.dart';
 import 'demos/range_slider_demo.dart';
 import 'demos/theme_toggle_demo.dart';
@@ -54,6 +55,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Bouncy Accordion', bouncyAccordionDemo),
   GalleryEntry('Range Slider', rangeSliderDemo),
   GalleryEntry('Theme Toggle', themeToggleDemo),
+  GalleryEntry('Bottom Sheet', bottomSheetDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
