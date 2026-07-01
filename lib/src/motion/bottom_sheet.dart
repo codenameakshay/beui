@@ -5,11 +5,6 @@ import 'package:flutter/material.dart';
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
-import '_engine.dart';
-
-/// The sheet's enter/exit glide and inter-snap height morph — the source's
-/// `DRAWER = { duration: 0.5, ease: EASE_DRAWER }`.
-const _drawerMotion = CurvedMotion(Duration(milliseconds: 500), beuiEaseDrawer);
 
 /// A draggable bottom sheet with snap points — the Flutter port of beUI's
 /// `bottom-sheet`, built on [BeuiOverlay].
@@ -21,9 +16,10 @@ const _drawerMotion = CurvedMotion(Duration(milliseconds: 500), beuiEaseDrawer);
 /// a downward fling/drag snaps to the previous point or dismisses (past
 /// [dismissThreshold]). Backdrop tap and Esc also dismiss; focus is trapped.
 ///
-/// **Controlled** ([open] + [onOpenChange]), the source's API. Enter/exit and
-/// inter-snap morphs use the drawer curve (`EASE_DRAWER`, 500ms); reduced motion
-/// fades opacity instead of sliding and settles instantly.
+/// **Controlled** ([open] + [onOpenChange]), the source's API. Enter/exit use
+/// the drawer curve (`EASE_DRAWER`, 500ms / 180ms under reduced motion, which
+/// fades opacity instead of sliding). The height snaps instantly, matching the
+/// source (it sets `style.height` per snap, only the drag transform animates).
 class BeuiBottomSheet extends StatelessWidget {
   /// Creates a bottom sheet whose [child] is the scrollable content.
   const BeuiBottomSheet({
@@ -69,6 +65,7 @@ class BeuiBottomSheet extends StatelessWidget {
     final colors =
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final reduce = MediaQuery.disableAnimationsOf(context);
 
     return BeuiOverlay(
       open: open,
@@ -78,9 +75,9 @@ class BeuiBottomSheet extends StatelessWidget {
       ), // bg-background/40
       barrierBlur: 4, // backdrop-blur-sm
       onDismiss: () => onOpenChange(false),
-      // Enter and exit both use the 0.5s drawer glide (source `DRAWER`).
-      enterDuration: const Duration(milliseconds: 500),
-      exitDuration: const Duration(milliseconds: 500),
+      // Source `DRAWER` (0.5s) normally; the reduced-motion branch is 0.18s.
+      enterDuration: Duration(milliseconds: reduce ? 180 : 500),
+      exitDuration: Duration(milliseconds: reduce ? 180 : 500),
       overlayBuilder: (context, animation, link) => _BottomSheetPanel(
         animation: animation,
         open: open,
@@ -231,25 +228,16 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
   Widget build(BuildContext context) {
     _reduce = MediaQuery.disableAnimationsOf(context);
     final viewportH = MediaQuery.of(context).size.height;
+    // Height is set directly per snap (source's `style.height`) — no tween; only
+    // the drag `y` transform animates.
     final target = _targetHeight(viewportH);
-
-    final Widget sheet;
-    if (_reduce) {
-      sheet = _buildSheet(target);
-    } else {
-      sheet = SingleMotionBuilder(
-        value: target,
-        motion: _drawerMotion,
-        builder: (context, h, _) => _buildSheet(h),
-      );
-    }
 
     return Positioned.fill(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 512), // max-w-2xl
-          child: sheet,
+          constraints: const BoxConstraints(maxWidth: 672), // max-w-2xl (42rem)
+          child: _buildSheet(target),
         ),
       ),
     );
@@ -264,7 +252,7 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
         final double opacity;
         if (_reduce) {
           translate = _offsetNow();
-          opacity = Curves.easeOut.transform(t);
+          opacity = beuiEaseDrawer.transform(t); // source reduce ease
         } else {
           final e = beuiEaseDrawer.transform(t);
           translate = (1 - e) * height + _offsetNow(); // slide up + drag
@@ -313,11 +301,12 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
             ],
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _dragArea(colors),
-              Flexible(
+              // `flex-1`: the scroll body fills the rest of the fixed-height
+              // sheet (and scrolls when the content overflows it).
+              Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                   child: widget.child ?? const SizedBox.shrink(),
