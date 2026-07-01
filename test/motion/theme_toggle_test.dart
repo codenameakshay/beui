@@ -67,6 +67,26 @@ void main() {
     expect(find.byType(ClipPath), findsNothing);
   });
 
+  testWidgets('spamming the toggle mid-reveal does not crash and settles', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_host()); // rectangle, starts light
+    await tester.pumpAndSettle();
+
+    // Five taps with tiny gaps — each lands while the previous reveal animates.
+    for (var i = 0; i < 5; i++) {
+      await tester.tap(find.byType(BeuiThemeToggle));
+      await tester.pump(const Duration(milliseconds: 30));
+    }
+    await tester.pumpAndSettle();
+
+    // No crash (a disposed-image draw or a lost overlay would throw); 5 flips
+    // from light end on dark, and the overlay is cleared.
+    expect(find.bySemanticsLabel('Switch to light mode'), findsOneWidget);
+    expect(find.byType(RawImage), findsNothing);
+    expect(find.byType(ClipPath), findsNothing);
+  });
+
   testWidgets('reduced motion switches instantly (no reveal overlay)', (
     tester,
   ) async {

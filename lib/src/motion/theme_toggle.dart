@@ -129,7 +129,15 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     final img = _oldImage;
     if (img == null) return;
     setState(() => _oldImage = null);
-    img.dispose();
+    _disposeAfterFrame(img);
+  }
+
+  /// Frees a snapshot only after the next frame, so it outlives any in-flight
+  /// rasterisation (`toImageSync` rasterises on first draw) and is never disposed
+  /// while still referenced by a `RawImage` in the current tree.
+  void _disposeAfterFrame(ui.Image? image) {
+    if (image == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) => image.dispose());
   }
 
   void _toggle({
@@ -151,8 +159,10 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     }
 
     _dpr = MediaQuery.devicePixelRatioOf(context);
+    // The boundary wraps the current overlay too, so mid-reveal this snapshots
+    // the *composited* screen (partial reveal), not the settled new theme.
     final image = boundary.toImageSync(pixelRatio: _dpr);
-    _oldImage?.dispose(); // a toggle mid-reveal supersedes the previous one
+    final superseded = _oldImage; // its pixels are now baked into `image`
     setState(() {
       _brightness = next;
       _oldImage = image;
@@ -164,6 +174,7 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
           ? const Duration(milliseconds: 400)
           : const Duration(milliseconds: 700)
       ..forward(from: 0);
+    _disposeAfterFrame(superseded);
   }
 
   @override
@@ -171,40 +182,44 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     final controller =
         BeuiThemeSwitcherController(_toggle, brightness: _brightness);
 
-    final surface = RepaintBoundary(
-      key: _boundaryKey,
-      child: _ThemeScope(
-        controller: controller,
-        child: Builder(builder: (c) => widget.builder(c, _brightness)),
-      ),
+    final live = _ThemeScope(
+      controller: controller,
+      child: Builder(builder: (c) => widget.builder(c, _brightness)),
     );
 
-    if (_oldImage == null) return surface;
-
-    // rectangle = ease-out; circle = the source's cubic-bezier(.4,0,.2,1).
-    final curve = _variant == BeuiThemeRevealVariant.rectangle
-        ? Curves.easeOut
-        : const Cubic(0.4, 0, 0.2, 1);
-
-    return Stack(
-      children: [
-        surface, // live new theme
-        Positioned.fill(
-          child: IgnorePointer(
-            child: AnimatedBuilder(
-              animation: _controller,
-              builder: (context, _) => _RevealOverlay(
-                image: _oldImage!,
-                scale: _dpr,
-                progress: curve.transform(_controller.value),
-                variant: _variant,
-                start: _start,
+    final Widget content;
+    if (_oldImage == null) {
+      content = live;
+    } else {
+      // rectangle = ease-out; circle = the source's cubic-bezier(.4,0,.2,1).
+      final curve = _variant == BeuiThemeRevealVariant.rectangle
+          ? Curves.easeOut
+          : const Cubic(0.4, 0, 0.2, 1);
+      content = Stack(
+        children: [
+          live, // live new theme
+          Positioned.fill(
+            child: IgnorePointer(
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, _) => _RevealOverlay(
+                  image: _oldImage!,
+                  scale: _dpr,
+                  progress: curve.transform(_controller.value),
+                  variant: _variant,
+                  start: _start,
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    }
+
+    // The boundary wraps the overlay too: a toggle mid-reveal then snapshots the
+    // exact composited state on screen, so the next reveal starts from what's
+    // visible (no jump) when the button is spammed.
+    return RepaintBoundary(key: _boundaryKey, child: content);
   }
 }
 
