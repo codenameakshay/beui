@@ -199,7 +199,10 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
         children: [
           live, // live new theme
           Positioned.fill(
-            child: IgnorePointer(
+            // Absorb (not ignore) pointers: while the reveal plays the surface
+            // is frozen and unclickable — the source relies on the View
+            // Transition snapshot doing the same to the whole viewport.
+            child: AbsorbPointer(
               child: AnimatedBuilder(
                 animation: _controller,
                 builder: (context, _) => _RevealOverlay(
@@ -310,23 +313,41 @@ class _RevealOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget old = RawImage(image: image, scale: scale, fit: BoxFit.fill);
-    if (variant == BeuiThemeRevealVariant.circleBlur) {
-      final sigma = (1 - progress) * 4; // blur(8px) ≈ sigma 4, fading out
-      if (sigma > 0.1) {
-        old = ImageFiltered(
-          imageFilter: ImageFilter.blur(
-            sigmaX: sigma,
-            sigmaY: sigma,
-            tileMode: TileMode.decal,
-          ),
-          child: old,
-        );
-      }
-    }
-    return ClipPath(
+    // The outgoing snapshot, shown everywhere EXCEPT the reveal shape (never
+    // blurred — the source's `::view-transition-old` layer is static). The live
+    // new theme shows through the shape.
+    final outgoing = ClipPath(
       clipper: _RevealClipper(progress: progress, variant: variant, start: start),
-      child: old,
+      child: RawImage(image: image, scale: scale, fit: BoxFit.fill),
+    );
+
+    if (variant != BeuiThemeRevealVariant.circleBlur) return outgoing;
+
+    // circle-blur: the source blurs the INCOMING layer (`filter: blur(8px)→0`),
+    // not the old one. Blur the live new theme *inside* the growing circle with
+    // a BackdropFilter clipped to it; the blur fades as the reveal completes.
+    final sigma = (1 - progress) * 4; // blur(8px) ≈ sigma 4
+    return Stack(
+      children: [
+        outgoing,
+        if (sigma > 0.05)
+          ClipPath(
+            clipper: _RevealClipper(
+              progress: progress,
+              variant: variant,
+              start: start,
+              inside: true,
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: sigma,
+                sigmaY: sigma,
+                tileMode: TileMode.decal,
+              ),
+              child: const SizedBox.expand(),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -336,23 +357,37 @@ class _RevealClipper extends CustomClipper<Path> {
     required this.progress,
     required this.variant,
     required this.start,
+    this.inside = false,
   });
 
   final double progress;
   final BeuiThemeRevealVariant variant;
   final BeuiThemeRevealStart start;
 
+  /// When true, clip *to* the reveal shape (used to blur the incoming theme
+  /// inside the circle); otherwise clip to everything *except* it (the old image).
+  final bool inside;
+
   @override
   Path getClip(Size size) {
-    final full = Path()..addRect(Offset.zero & size);
-    final Path reveal;
+    final reveal = _revealPath(size);
+    if (inside) return reveal;
+    // Old image shows everywhere EXCEPT the reveal → the new theme shows inside.
+    return Path.combine(
+      PathOperation.difference,
+      Path()..addRect(Offset.zero & size),
+      reveal,
+    );
+  }
+
+  Path _revealPath(Size size) {
     if (variant == BeuiThemeRevealVariant.rectangle) {
       final f = _rectFrom(start); // (top, right, bottom, left) fractions
       final t = f[0] * (1 - progress);
       final r = f[1] * (1 - progress);
       final b = f[2] * (1 - progress);
       final l = f[3] * (1 - progress);
-      reveal = Path()
+      return Path()
         ..addRect(
           Rect.fromLTRB(
             l * size.width,
@@ -361,16 +396,13 @@ class _RevealClipper extends CustomClipper<Path> {
             size.height * (1 - b),
           ),
         );
-    } else {
-      final o = _circleOrigin(start);
-      final center = Offset(o.dx * size.width, o.dy * size.height);
-      reveal = Path()
-        ..addOval(
-          Rect.fromCircle(center: center, radius: progress * _maxRadius(center, size)),
-        );
     }
-    // Old image shows everywhere EXCEPT the reveal → the new theme shows inside.
-    return Path.combine(PathOperation.difference, full, reveal);
+    final o = _circleOrigin(start);
+    final center = Offset(o.dx * size.width, o.dy * size.height);
+    return Path()
+      ..addOval(
+        Rect.fromCircle(center: center, radius: progress * _maxRadius(center, size)),
+      );
   }
 
   static double _maxRadius(Offset c, Size s) {
@@ -403,5 +435,8 @@ class _RevealClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(_RevealClipper old) =>
-      old.progress != progress || old.variant != variant || old.start != start;
+      old.progress != progress ||
+      old.variant != variant ||
+      old.start != start ||
+      old.inside != inside;
 }
