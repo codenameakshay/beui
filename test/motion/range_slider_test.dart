@@ -12,11 +12,7 @@ const _endThumb = ValueKey<String>('beui_range_slider_thumb_end');
 // holds the value and feeds each onChanged back so the thumb tracks it.
 // ---------------------------------------------------------------------------
 class _SingleHost extends StatefulWidget {
-  const _SingleHost({
-    required this.initial,
-    this.observe,
-    this.reduce = false,
-  });
+  const _SingleHost({required this.initial, this.observe, this.reduce = false});
 
   final double initial;
   final ValueChanged<double>? observe;
@@ -66,11 +62,7 @@ class _SingleHostState extends State<_SingleHost> {
 // Dual host — same pattern for the two-thumb [BeuiRangeSliderDual].
 // ---------------------------------------------------------------------------
 class _DualHost extends StatefulWidget {
-  const _DualHost({
-    required this.initial,
-    this.observe,
-    this.reduce = false,
-  });
+  const _DualHost({required this.initial, this.observe, this.reduce = false});
 
   final RangeValues initial;
   final ValueChanged<RangeValues>? observe;
@@ -350,9 +342,7 @@ void main() {
     testWidgets('end thumb stays put when the start thumb moves', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        const _DualHost(initial: RangeValues(20, 60)),
-      );
+      await tester.pumpWidget(const _DualHost(initial: RangeValues(20, 60)));
       await tester.pumpAndSettle();
       final endBefore = _endX(tester);
 
@@ -384,9 +374,7 @@ void main() {
     testWidgets('start thumb POSITION glides without overshoot', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        const _DualHost(initial: RangeValues(10, 90)),
-      );
+      await tester.pumpWidget(const _DualHost(initial: RangeValues(10, 90)));
       await tester.pumpAndSettle();
       final beforeX = _startX(tester);
 

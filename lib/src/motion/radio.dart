@@ -5,7 +5,8 @@ import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 
-const double _inset = 4; // source `inset-1` — dot is the circle minus 4px each side.
+const double _inset =
+    4; // source `inset-1` — dot is the circle minus 4px each side.
 
 /// Test handle on the shared selection dot, so motion tests can read its position.
 @visibleForTesting
@@ -100,10 +101,12 @@ class _BeuiRadioGroupState<T> extends State<BeuiRadioGroup<T>> {
     final circleBox = _current == null
         ? null
         : _circleKeys[_current]?.currentContext?.findRenderObject()
-            as RenderBox?;
+              as RenderBox?;
     Rect? next;
     if (stackBox != null && circleBox != null && circleBox.hasSize) {
-      final topLeft = stackBox.globalToLocal(circleBox.localToGlobal(Offset.zero));
+      final topLeft = stackBox.globalToLocal(
+        circleBox.localToGlobal(Offset.zero),
+      );
       next = Rect.fromLTWH(
         topLeft.dx + _inset,
         topLeft.dy + _inset,
@@ -119,7 +122,8 @@ class _BeuiRadioGroupState<T> extends State<BeuiRadioGroup<T>> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
 
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
@@ -243,7 +247,8 @@ class _BeuiRadioItemState<T> extends State<BeuiRadioItem<T>> {
   Widget build(BuildContext context) {
     final scope = _RadioScope.of<T>(context);
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
 
     final enabled = widget.enabled;
@@ -254,8 +259,8 @@ class _BeuiRadioItemState<T> extends State<BeuiRadioItem<T>> {
     final borderColor = selected
         ? colors.primary
         : (_hovered && enabled
-            ? colors.mutedForeground
-            : colors.mutedForeground.withValues(alpha: 0.5));
+              ? colors.mutedForeground
+              : colors.mutedForeground.withValues(alpha: 0.5));
 
     // Press scale: SPRING_PRESS with a reduce-gated target (NoMotion would
     // freeze a press mid-squish — see docs/PORTING_SPEC.md §1).
@@ -299,8 +304,9 @@ class _BeuiRadioItemState<T> extends State<BeuiRadioItem<T>> {
       child: FocusableActionDetector(
         enabled: enabled,
         focusNode: _focusNode,
-        mouseCursor:
-            enabled ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
+        mouseCursor: enabled
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.forbidden,
         shortcuts: const <ShortcutActivator, Intent>{
           SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
           SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
@@ -387,9 +393,9 @@ class _GlidingDot extends StatelessWidget {
     );
 
     Widget at(Offset offset) => Transform.translate(
-          offset: offset,
-          child: Align(alignment: Alignment.topLeft, child: dot),
-        );
+      offset: offset,
+      child: Align(alignment: Alignment.topLeft, child: dot),
+    );
 
     if (reduce) return at(target.topLeft);
 

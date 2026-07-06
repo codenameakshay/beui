@@ -65,15 +65,15 @@ class BeuiDrawer extends StatelessWidget {
       onDismiss: () => onOpenChange(false),
       enterDuration: const Duration(milliseconds: 300),
       exitDuration: const Duration(milliseconds: 220),
-      overlayBuilder: (context, animation, link) =>
-          _panel(context, animation),
+      overlayBuilder: (context, animation, link) => _panel(context, animation),
       child: const SizedBox.shrink(),
     );
   }
 
   Widget _panel(BuildContext context, Animation<double> animation) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isRight = side == BeuiDrawerSide.right;

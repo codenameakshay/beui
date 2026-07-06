@@ -133,13 +133,38 @@ class _BeuiSwitchState extends State<BeuiSwitch>
     vsync: this,
     duration: const Duration(milliseconds: 800),
   );
-  late final Animation<double> _shake = TweenSequence<double>(<TweenSequenceItem<double>>[
-    TweenSequenceItem(tween: ConstantTween<double>(0), weight: 200),
-    TweenSequenceItem(tween: Tween<double>(begin: 0, end: -2).chain(CurveTween(curve: Curves.easeInOut)), weight: 150),
-    TweenSequenceItem(tween: Tween<double>(begin: -2, end: 2).chain(CurveTween(curve: Curves.easeInOut)), weight: 150),
-    TweenSequenceItem(tween: Tween<double>(begin: 2, end: -1).chain(CurveTween(curve: Curves.easeInOut)), weight: 150),
-    TweenSequenceItem(tween: Tween<double>(begin: -1, end: 0).chain(CurveTween(curve: Curves.easeInOut)), weight: 150),
-  ]).animate(_shakeController);
+  late final Animation<double> _shake =
+      TweenSequence<double>(<TweenSequenceItem<double>>[
+        TweenSequenceItem(tween: ConstantTween<double>(0), weight: 200),
+        TweenSequenceItem(
+          tween: Tween<double>(
+            begin: 0,
+            end: -2,
+          ).chain(CurveTween(curve: Curves.easeInOut)),
+          weight: 150,
+        ),
+        TweenSequenceItem(
+          tween: Tween<double>(
+            begin: -2,
+            end: 2,
+          ).chain(CurveTween(curve: Curves.easeInOut)),
+          weight: 150,
+        ),
+        TweenSequenceItem(
+          tween: Tween<double>(
+            begin: 2,
+            end: -1,
+          ).chain(CurveTween(curve: Curves.easeInOut)),
+          weight: 150,
+        ),
+        TweenSequenceItem(
+          tween: Tween<double>(
+            begin: -1,
+            end: 0,
+          ).chain(CurveTween(curve: Curves.easeInOut)),
+          weight: 150,
+        ),
+      ]).animate(_shakeController);
 
   @override
   void dispose() {
@@ -171,7 +196,8 @@ class _BeuiSwitchState extends State<BeuiSwitch>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final style = widget.style;
 
@@ -216,8 +242,16 @@ class _BeuiSwitchState extends State<BeuiSwitch>
           color: thumbColor,
           shape: BoxShape.circle,
           boxShadow: const [
-            BoxShadow(color: Color(0x1A000000), blurRadius: 6, offset: Offset(0, 2)),
-            BoxShadow(color: Color(0x0F000000), blurRadius: 2, offset: Offset(0, 1)),
+            BoxShadow(
+              color: Color(0x1A000000),
+              blurRadius: 6,
+              offset: Offset(0, 2),
+            ),
+            BoxShadow(
+              color: Color(0x0F000000),
+              blurRadius: 2,
+              offset: Offset(0, 1),
+            ),
           ],
         ),
       ),
@@ -225,7 +259,8 @@ class _BeuiSwitchState extends State<BeuiSwitch>
 
     final track = AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      curve: Curves.ease, // CSS `transition-colors` default; a colour change, kept under reduced motion
+      curve: Curves
+          .ease, // CSS `transition-colors` default; a colour change, kept under reduced motion
       width: width,
       height: height,
       padding: EdgeInsets.symmetric(horizontal: pad),
@@ -273,8 +308,9 @@ class _BeuiSwitchState extends State<BeuiSwitch>
       child: FocusableActionDetector(
         enabled: enabled,
         focusNode: _focusNode,
-        mouseCursor:
-            enabled ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
+        mouseCursor: enabled
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.forbidden,
         shortcuts: const <ShortcutActivator, Intent>{
           SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
           SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),

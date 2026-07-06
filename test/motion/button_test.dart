@@ -28,7 +28,9 @@ double _buttonScale(WidgetTester tester) {
   // scale-down leaves the z axis at 1.0, so it would always report 1.0.)
   final transforms = tester.widgetList<Transform>(
     find.descendant(
-        of: find.byType(BeuiButton), matching: find.byType(Transform)),
+      of: find.byType(BeuiButton),
+      matching: find.byType(Transform),
+    ),
   );
   return transforms.map((t) => t.transform.storage[0]).reduce(math.min);
 }
@@ -45,8 +47,9 @@ void main() {
       expect(taps, 1);
     });
 
-    testWidgets('disabled (null onPressed) does not fire and is dimmed',
-        (tester) async {
+    testWidgets('disabled (null onPressed) does not fire and is dimmed', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(const BeuiButton(onPressed: null, child: Text('Go'))),
       );
@@ -54,8 +57,9 @@ void main() {
       await tester.pump();
       final dim = tester.widget<AnimatedOpacity>(
         find.descendant(
-            of: find.byType(BeuiButton),
-            matching: find.byType(AnimatedOpacity)),
+          of: find.byType(BeuiButton),
+          matching: find.byType(AnimatedOpacity),
+        ),
       );
       expect(dim.opacity, 0.5);
     });
@@ -77,20 +81,26 @@ void main() {
       await tester.pumpWidget(
         _wrap(BeuiButton(onPressed: () {}, child: const Text('Go'))),
       );
-      expect(tester.getSemantics(find.text('Go')),
-          isSemantics(isButton: true, isEnabled: true));
+      expect(
+        tester.getSemantics(find.text('Go')),
+        isSemantics(isButton: true, isEnabled: true),
+      );
       handle.dispose();
     });
 
     testWidgets('renders every variant and size', (tester) async {
       for (final variant in BeuiButtonVariant.values) {
         for (final size in BeuiButtonSize.values) {
-          await tester.pumpWidget(_wrap(BeuiButton(
-            onPressed: () {},
-            variant: variant,
-            size: size,
-            child: const Icon(Icons.star),
-          )));
+          await tester.pumpWidget(
+            _wrap(
+              BeuiButton(
+                onPressed: () {},
+                variant: variant,
+                size: size,
+                child: const Icon(Icons.star),
+              ),
+            ),
+          );
           await tester.pumpAndSettle();
           expect(find.byType(BeuiButton), findsOneWidget);
         }
@@ -98,17 +108,22 @@ void main() {
     });
 
     testWidgets('icon size is square 32x32', (tester) async {
-      await tester.pumpWidget(_wrap(BeuiButton(
-        onPressed: () {},
-        size: BeuiButtonSize.icon,
-        child: const Icon(Icons.star),
-      )));
+      await tester.pumpWidget(
+        _wrap(
+          BeuiButton(
+            onPressed: () {},
+            size: BeuiButtonSize.icon,
+            child: const Icon(Icons.star),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(tester.getSize(find.byType(BeuiButton)), const Size(32, 32));
     });
 
-    testWidgets('press scales down then settles back under normal motion',
-        (tester) async {
+    testWidgets('press scales down then settles back under normal motion', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(BeuiButton(onPressed: () {}, child: const Text('Go'))),
       );
@@ -116,7 +131,8 @@ void main() {
       expect(_buttonScale(tester), closeTo(1.0, 0.001));
 
       final gesture = await tester.startGesture(
-          tester.getCenter(find.byType(BeuiButton)));
+        tester.getCenter(find.byType(BeuiButton)),
+      );
       var minScale = 1.0;
       for (var i = 0; i < 8; i++) {
         await tester.pump(const Duration(milliseconds: 16));
@@ -131,12 +147,15 @@ void main() {
 
     testWidgets('no press scale under reduced motion', (tester) async {
       await tester.pumpWidget(
-        _wrap(BeuiButton(onPressed: () {}, child: const Text('Go')),
-            reduce: true),
+        _wrap(
+          BeuiButton(onPressed: () {}, child: const Text('Go')),
+          reduce: true,
+        ),
       );
       await tester.pumpAndSettle();
       final gesture = await tester.startGesture(
-          tester.getCenter(find.byType(BeuiButton)));
+        tester.getCenter(find.byType(BeuiButton)),
+      );
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 16));
       }
@@ -146,11 +165,18 @@ void main() {
 
     testWidgets('ripple mode taps and renders', (tester) async {
       var taps = 0;
-      await tester.pumpWidget(_wrap(
-        BeuiButton(onPressed: () => taps++, ripple: true, child: const Text('Go')),
-      ));
+      await tester.pumpWidget(
+        _wrap(
+          BeuiButton(
+            onPressed: () => taps++,
+            ripple: true,
+            child: const Text('Go'),
+          ),
+        ),
+      );
       final gesture = await tester.startGesture(
-          tester.getCenter(find.byType(BeuiButton)));
+        tester.getCenter(find.byType(BeuiButton)),
+      );
       await tester.pump(const Duration(milliseconds: 100));
       await gesture.up();
       await tester.pump();
@@ -162,9 +188,9 @@ void main() {
   group('BeuiStatefulButton', () {
     testWidgets('idle shows label and fires onPressed', (tester) async {
       var taps = 0;
-      await tester.pumpWidget(_wrap(
-        BeuiStatefulButton(label: 'Save', onPressed: () => taps++),
-      ));
+      await tester.pumpWidget(
+        _wrap(BeuiStatefulButton(label: 'Save', onPressed: () => taps++)),
+      );
       await tester.pumpAndSettle();
       expect(find.text('Save'), findsOneWidget);
       await tester.tap(find.byType(BeuiStatefulButton));
@@ -172,16 +198,19 @@ void main() {
       expect(taps, 1);
     });
 
-    testWidgets('loading shows a spinner, busy lockout blocks taps',
-        (tester) async {
+    testWidgets('loading shows a spinner, busy lockout blocks taps', (
+      tester,
+    ) async {
       var taps = 0;
-      await tester.pumpWidget(_wrap(
-        BeuiStatefulButton(
-          label: 'Save',
-          state: BeuiButtonState.loading,
-          onPressed: () => taps++,
+      await tester.pumpWidget(
+        _wrap(
+          BeuiStatefulButton(
+            label: 'Save',
+            state: BeuiButtonState.loading,
+            onPressed: () => taps++,
+          ),
         ),
-      ));
+      );
       await tester.pump(const Duration(milliseconds: 300));
       expect(find.byType(RotationTransition), findsAtLeastNWidgets(1));
       expect(find.text('Loading'), findsOneWidget);
@@ -191,8 +220,9 @@ void main() {
     });
 
     testWidgets('text transition applies a visible blur', (tester) async {
-      Widget app(BeuiButtonState s) => _wrap(BeuiStatefulButton(
-          label: 'Save changes', state: s, onPressed: () {}));
+      Widget app(BeuiButtonState s) => _wrap(
+        BeuiStatefulButton(label: 'Save changes', state: s, onPressed: () {}),
+      );
       await tester.pumpWidget(app(BeuiButtonState.idle));
       await tester.pumpAndSettle();
       await tester.pumpWidget(app(BeuiButtonState.success));
@@ -200,20 +230,25 @@ void main() {
       final sigmas = tester
           .widgetList<ImageFiltered>(find.byType(ImageFiltered))
           .map((f) {
-        final m = RegExp(r'blur\(([\d.]+)')
-            .firstMatch(f.imageFilter.toString());
-        return m == null ? 0.0 : double.parse(m.group(1)!);
-      });
+            final m = RegExp(
+              r'blur\(([\d.]+)',
+            ).firstMatch(f.imageFilter.toString());
+            return m == null ? 0.0 : double.parse(m.group(1)!);
+          });
       expect(sigmas.fold<double>(0, math.max), greaterThan(2.0));
     });
 
-    testWidgets('width morphs (does not snap) when toggling busy',
-        (tester) async {
-      Widget app(BeuiButtonState s) => _wrap(BeuiStatefulButton(
+    testWidgets('width morphs (does not snap) when toggling busy', (
+      tester,
+    ) async {
+      Widget app(BeuiButtonState s) => _wrap(
+        BeuiStatefulButton(
           label: 'Save changes',
           icon: LucideIcons.arrow_right,
           state: s,
-          onPressed: () {}));
+          onPressed: () {},
+        ),
+      );
       await tester.pumpWidget(app(BeuiButtonState.idle));
       await tester.pumpAndSettle();
 
@@ -230,50 +265,64 @@ void main() {
     });
 
     testWidgets('success and error show their text', (tester) async {
-      await tester.pumpWidget(_wrap(
-        const BeuiStatefulButton(label: 'Save', state: BeuiButtonState.success),
-      ));
+      await tester.pumpWidget(
+        _wrap(
+          const BeuiStatefulButton(
+            label: 'Save',
+            state: BeuiButtonState.success,
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(find.text('Done'), findsOneWidget);
 
-      await tester.pumpWidget(_wrap(
-        const BeuiStatefulButton(label: 'Save', state: BeuiButtonState.error),
-      ));
+      await tester.pumpWidget(
+        _wrap(
+          const BeuiStatefulButton(label: 'Save', state: BeuiButtonState.error),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(find.text('Try again'), findsOneWidget);
     });
   });
 
   group('BeuiMagnetic', () {
-    testWidgets('applies a follow-spring on hover-capable; off under reduce',
-        (tester) async {
-      await tester.pumpWidget(_wrap(
-        const BeuiMagnetic(child: SizedBox(width: 40, height: 40)),
-      ));
+    testWidgets('applies a follow-spring on hover-capable; off under reduce', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(const BeuiMagnetic(child: SizedBox(width: 40, height: 40))),
+      );
       expect(
         find.descendant(
-            of: find.byType(BeuiMagnetic),
-            matching: find.byType(MotionBuilder<Offset>)),
+          of: find.byType(BeuiMagnetic),
+          matching: find.byType(MotionBuilder<Offset>),
+        ),
         findsOneWidget,
       );
 
-      await tester.pumpWidget(_wrap(
-        const BeuiMagnetic(child: SizedBox(width: 40, height: 40)),
-        reduce: true,
-      ));
+      await tester.pumpWidget(
+        _wrap(
+          const BeuiMagnetic(child: SizedBox(width: 40, height: 40)),
+          reduce: true,
+        ),
+      );
       expect(
         find.descendant(
-            of: find.byType(BeuiMagnetic),
-            matching: find.byType(MotionBuilder<Offset>)),
+          of: find.byType(BeuiMagnetic),
+          matching: find.byType(MotionBuilder<Offset>),
+        ),
         findsNothing,
       );
     });
 
     testWidgets('BeuiMagneticButton taps through', (tester) async {
       var taps = 0;
-      await tester.pumpWidget(_wrap(
-        BeuiMagneticButton(onPressed: () => taps++, child: const Text('Go')),
-      ));
+      await tester.pumpWidget(
+        _wrap(
+          BeuiMagneticButton(onPressed: () => taps++, child: const Text('Go')),
+        ),
+      );
       await tester.tap(find.byType(BeuiButton));
       await tester.pump();
       expect(taps, 1);
@@ -281,51 +330,68 @@ void main() {
   });
 
   testWidgets('rest-state golden (variants, sizes, stateful)', (tester) async {
-    await tester.pumpWidget(_wrap(
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: [
-              for (final v in BeuiButtonVariant.values)
-                BeuiButton(onPressed: () {}, variant: v, child: const Text('Button')),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              for (final s in [BeuiButtonSize.sm, BeuiButtonSize.md, BeuiButtonSize.lg])
-                BeuiButton(onPressed: () {}, size: s, child: const Text('Size')),
-              BeuiButton(
+    await tester.pumpWidget(
+      _wrap(
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                for (final v in BeuiButtonVariant.values)
+                  BeuiButton(
+                    onPressed: () {},
+                    variant: v,
+                    child: const Text('Button'),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                for (final s in [
+                  BeuiButtonSize.sm,
+                  BeuiButtonSize.md,
+                  BeuiButtonSize.lg,
+                ])
+                  BeuiButton(
+                    onPressed: () {},
+                    size: s,
+                    child: const Text('Size'),
+                  ),
+                BeuiButton(
                   onPressed: () {},
                   size: BeuiButtonSize.icon,
-                  child: const Icon(Icons.star)),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: [
-              BeuiStatefulButton(label: 'Idle', onPressed: () {}),
-              BeuiStatefulButton(
+                  child: const Icon(Icons.star),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                BeuiStatefulButton(label: 'Idle', onPressed: () {}),
+                BeuiStatefulButton(
                   label: 'Save',
                   state: BeuiButtonState.success,
-                  onPressed: () {}),
-              BeuiStatefulButton(
+                  onPressed: () {},
+                ),
+                BeuiStatefulButton(
                   label: 'Save',
                   state: BeuiButtonState.error,
-                  onPressed: () {}),
-            ],
-          ),
-        ],
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    ));
+    );
     await tester.pumpAndSettle();
     await expectLater(
       find.byType(Column).first,

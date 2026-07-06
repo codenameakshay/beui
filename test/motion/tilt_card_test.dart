@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _app({bool reduce = false}) {
-  Widget card = const BeuiTiltCard(
-    child: SizedBox(width: 200, height: 200),
-  );
+  Widget card = const BeuiTiltCard(child: SizedBox(width: 200, height: 200));
   if (reduce) {
     card = MediaQuery(
       data: const MediaQueryData(disableAnimations: true),
@@ -53,7 +51,10 @@ void main() {
     await tester.pumpAndSettle();
 
     final m = _tilt(tester);
-    expect(_w(m, 0, -100), greaterThan(_w(m, 0, 100))); // top farther than bottom
+    expect(
+      _w(m, 0, -100),
+      greaterThan(_w(m, 0, 100)),
+    ); // top farther than bottom
   });
 
   testWidgets('hovering the right recedes the right edge', (tester) async {
@@ -64,7 +65,10 @@ void main() {
     await tester.pumpAndSettle();
 
     final m = _tilt(tester);
-    expect(_w(m, 100, 0), greaterThan(_w(m, -100, 0))); // right farther than left
+    expect(
+      _w(m, 100, 0),
+      greaterThan(_w(m, -100, 0)),
+    ); // right farther than left
   });
 
   testWidgets('returns to flat after the pointer leaves', (tester) async {
@@ -73,7 +77,10 @@ void main() {
     final rect = tester.getRect(find.byType(BeuiTiltCard));
     await g.moveTo(rect.topLeft + const Offset(6, 6));
     await tester.pumpAndSettle();
-    expect(_w(_tilt(tester), 0, -100), isNot(closeTo(_w(_tilt(tester), 0, 100), 1e-6)));
+    expect(
+      _w(_tilt(tester), 0, -100),
+      isNot(closeTo(_w(_tilt(tester), 0, 100), 1e-6)),
+    );
 
     await g.moveTo(const Offset(2, 2)); // off the card
     await tester.pumpAndSettle();

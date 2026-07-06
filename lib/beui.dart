@@ -56,9 +56,15 @@ export 'src/motion/number_ticker.dart' show BeuiNumberTicker;
 
 // Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
+export 'src/motion/parallax.dart' show BeuiParallax, BeuiParallaxAxis;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
 export 'src/motion/range_slider.dart' show BeuiRangeSlider, BeuiRangeSliderDual;
+export 'src/motion/scroll_progress.dart' show BeuiScrollProgress;
+export 'src/motion/scroll_reveal.dart' show BeuiScrollReveal;
+export 'src/motion/scroll_to.dart' show BeuiScrollTo;
 export 'src/motion/shared_layout_bg.dart' show BeuiSharedLayoutBg;
+export 'src/motion/smooth_scroll.dart'
+    show BeuiSmoothScroll, BeuiSmoothScrollApi, beuiEaseScroll;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
 export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
 export 'src/motion/text_cascade.dart' show BeuiTextCascade;

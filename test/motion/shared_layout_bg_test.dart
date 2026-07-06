@@ -6,24 +6,21 @@ import 'package:flutter_test/flutter_test.dart';
 const _pill = ValueKey<String>('beui_shared_pill');
 
 Widget _app() => MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      home: Scaffold(
-        body: Center(
-          child: SizedBox(
-            width: 300,
-            child: BeuiSharedLayoutBg(
-              children: [
-                for (var i = 0; i < 4; i++)
-                  SizedBox(
-                    height: 56,
-                    child: Center(child: Text('Item $i')),
-                  ),
-              ],
-            ),
-          ),
+  theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+  home: Scaffold(
+    body: Center(
+      child: SizedBox(
+        width: 300,
+        child: BeuiSharedLayoutBg(
+          children: [
+            for (var i = 0; i < 4; i++)
+              SizedBox(height: 56, child: Center(child: Text('Item $i'))),
+          ],
         ),
       ),
-    );
+    ),
+  ),
+);
 
 Future<TestGesture> _mouse(WidgetTester tester) async {
   final g = await tester.createGesture(kind: PointerDeviceKind.mouse);
@@ -57,8 +54,9 @@ void main() {
     expect(yMid, lessThan(y3)); // gliding, not snapping
   });
 
-  testWidgets('pill fades out when the pointer leaves the list',
-      (tester) async {
+  testWidgets('pill fades out when the pointer leaves the list', (
+    tester,
+  ) async {
     await tester.pumpWidget(_app());
     final g = await _mouse(tester);
     await g.moveTo(tester.getCenter(find.text('Item 1')));
@@ -72,26 +70,31 @@ void main() {
 
   testWidgets('rows stay tappable through the pill', (tester) async {
     var tapped = -1;
-    await tester.pumpWidget(MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      home: Scaffold(
-        body: Center(
-          child: SizedBox(
-            width: 300,
-            child: BeuiSharedLayoutBg(
-              children: [
-                for (var i = 0; i < 3; i++)
-                  GestureDetector(
-                    onTap: () => tapped = i,
-                    behavior: HitTestBehavior.opaque,
-                    child: SizedBox(height: 56, child: Center(child: Text('Row $i'))),
-                  ),
-              ],
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 300,
+              child: BeuiSharedLayoutBg(
+                children: [
+                  for (var i = 0; i < 3; i++)
+                    GestureDetector(
+                      onTap: () => tapped = i,
+                      behavior: HitTestBehavior.opaque,
+                      child: SizedBox(
+                        height: 56,
+                        child: Center(child: Text('Row $i')),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ));
+    );
     final g = await _mouse(tester);
     await g.moveTo(tester.getCenter(find.text('Row 1')));
     await tester.pumpAndSettle();

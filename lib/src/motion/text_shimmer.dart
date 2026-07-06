@@ -55,8 +55,10 @@ class BeuiTextShimmer extends StatefulWidget {
 
 class _BeuiTextShimmerState extends State<BeuiTextShimmer>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller =
-      AnimationController(vsync: this, duration: widget.duration);
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: widget.duration,
+  );
   bool _reduce = false;
 
   @override
@@ -92,7 +94,8 @@ class _BeuiTextShimmerState extends State<BeuiTextShimmer>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final base = widget.baseColor ?? colors.mutedForeground;
     final highlight = widget.highlightColor ?? colors.foreground;

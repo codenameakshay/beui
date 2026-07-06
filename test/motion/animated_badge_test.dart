@@ -297,13 +297,14 @@ void main() {
         .where((y) => y.abs() > 0.5)
         .toList();
 
-    testWidgets('mid-swap, one layer rolls UP (exit) and one comes from BELOW',
-        (tester) async {
+    testWidgets('mid-swap, one layer rolls UP (exit) and one comes from BELOW', (
+      tester,
+    ) async {
       // Constant non-loading status (no spinner/pulse); only the label changes,
       // so the roll under test is isolated.
       Widget app(String l) => _wrap(
-            BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
-          );
+        BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
+      );
       await tester.pumpWidget(app('Alpha'));
       await tester.pump(const Duration(milliseconds: 500));
 

@@ -7,11 +7,12 @@ import 'package:flutter/services.dart';
 /// [link] is the anchor's [LayerLink], for positioning relative to the trigger
 /// (e.g. a tooltip via [CompositedTransformFollower]). Modal content can ignore
 /// [link] and position itself full-screen (e.g. `Align`/`Positioned`).
-typedef BeuiOverlayBuilder = Widget Function(
-  BuildContext context,
-  Animation<double> animation,
-  LayerLink link,
-);
+typedef BeuiOverlayBuilder =
+    Widget Function(
+      BuildContext context,
+      Animation<double> animation,
+      LayerLink link,
+    );
 
 /// The shared overlay foundation for beUI — the single seam every floating
 /// surface (tooltip, drawer, bottom-sheet, modal, command-palette, create-menu)
@@ -92,15 +93,16 @@ class _BeuiOverlayState extends State<BeuiOverlay>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.enterDuration,
-      reverseDuration: widget.exitDuration,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.dismissed && _portal.isShowing) {
-          _portal.hide();
-        }
-      });
+    _controller =
+        AnimationController(
+          vsync: this,
+          duration: widget.enterDuration,
+          reverseDuration: widget.exitDuration,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.dismissed && _portal.isShowing) {
+            _portal.hide();
+          }
+        });
     if (widget.open) {
       // OverlayPortalController.show() must not run during build/initState —
       // defer it. forward/reverse are fine in any phase.

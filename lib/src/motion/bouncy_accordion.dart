@@ -480,8 +480,9 @@ class _AccordionRowState extends State<_AccordionRow> {
       expanded: hasPanel ? widget.open : null,
       child: FocusableActionDetector(
         enabled: !item.disabled,
-        mouseCursor:
-            item.disabled ? MouseCursor.defer : SystemMouseCursors.click,
+        mouseCursor: item.disabled
+            ? MouseCursor.defer
+            : SystemMouseCursors.click,
         onShowFocusHighlight: (focused) {
           if (mounted) setState(() => _focused = focused);
         },

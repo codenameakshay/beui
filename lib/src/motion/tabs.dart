@@ -9,8 +9,9 @@ import '_engine.dart';
 /// source `tabs.tsx` `transition` const. A touch of overshoot (low damping,
 /// high mass) so the pill settles with life. Component-local: intentionally
 /// heavier than the shared `beuiSpringLayout`.
-const _indicatorSpring =
-    SpringMotion(SpringDescription(mass: 1.2, stiffness: 170, damping: 24));
+const _indicatorSpring = SpringMotion(
+  SpringDescription(mass: 1.2, stiffness: 170, damping: 24),
+);
 
 /// Test handle on the gliding indicator, so motion tests can read its bounds.
 @visibleForTesting
@@ -152,14 +153,18 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
     final box = _current == null
         ? null
         : _triggerKeys[_current]?.currentContext?.findRenderObject()
-            as RenderBox?;
+              as RenderBox?;
     Rect? next;
     if (stackBox != null && box != null && box.hasSize) {
       final topLeft = stackBox.globalToLocal(box.localToGlobal(Offset.zero));
       final rect = topLeft & box.size;
       next = switch (widget.variant) {
-        BeuiTabsVariant.underline =>
-          Rect.fromLTWH(rect.left, rect.bottom - 2, rect.width, 2),
+        BeuiTabsVariant.underline => Rect.fromLTWH(
+          rect.left,
+          rect.bottom - 2,
+          rect.width,
+          2,
+        ),
         _ => rect,
       };
     }
@@ -171,23 +176,26 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
 
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final variant = widget.variant;
 
     final triggers = <Widget>[];
     for (final tab in widget.tabs) {
-      triggers.add(_TabTrigger<T>(
-        key: ValueKey(tab.value),
-        measureKey: _triggerKeys[tab.value]!,
-        focusNode: _focusNodes[tab.value]!,
-        label: tab.label,
-        variant: variant,
-        active: tab.value == _current,
-        onSelect: () => _select(tab.value),
-        onMove: (delta) => _move(tab.value, delta),
-      ));
+      triggers.add(
+        _TabTrigger<T>(
+          key: ValueKey(tab.value),
+          measureKey: _triggerKeys[tab.value]!,
+          focusNode: _focusNodes[tab.value]!,
+          label: tab.label,
+          variant: variant,
+          active: tab.value == _current,
+          onSelect: () => _select(tab.value),
+          onMove: (delta) => _move(tab.value, delta),
+        ),
+      );
     }
 
     final gap = variant == BeuiTabsVariant.segment ? 0.0 : 4.0;
@@ -226,10 +234,7 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       explicitChildNodes: true,
       child: DecoratedBox(
         decoration: _listDecoration(variant, colors),
-        child: Padding(
-          padding: _listPadding(variant),
-          child: stack,
-        ),
+        child: Padding(padding: _listPadding(variant), child: stack),
       ),
     );
 
@@ -266,10 +271,7 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
               ),
             );
           },
-          child: KeyedSubtree(
-            key: ValueKey(_current),
-            child: activeContent,
-          ),
+          child: KeyedSubtree(key: ValueKey(_current), child: activeContent),
         ),
       ],
     );
@@ -286,16 +288,16 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
   Decoration _listDecoration(BeuiTabsVariant variant, BeuiColors colors) {
     return switch (variant) {
       BeuiTabsVariant.pill => BoxDecoration(
-          color: colors.card,
-          borderRadius: BorderRadius.circular(9999),
-        ),
+        color: colors.card,
+        borderRadius: BorderRadius.circular(9999),
+      ),
       BeuiTabsVariant.segment => BoxDecoration(
-          color: colors.card,
-          borderRadius: BorderRadius.circular(8), // rounded-lg
-        ),
+        color: colors.card,
+        borderRadius: BorderRadius.circular(8), // rounded-lg
+      ),
       BeuiTabsVariant.underline => BoxDecoration(
-          border: Border(bottom: BorderSide(color: colors.border)),
-        ),
+        border: Border(bottom: BorderSide(color: colors.border)),
+      ),
     };
   }
 
@@ -325,23 +327,23 @@ class _Indicator extends StatelessWidget {
   final bool reduce;
 
   BorderRadius _radius(Rect r) => switch (variant) {
-        BeuiTabsVariant.pill => BorderRadius.circular(r.height / 2),
-        BeuiTabsVariant.segment => BorderRadius.circular(8),
-        BeuiTabsVariant.underline => BorderRadius.zero,
-      };
+    BeuiTabsVariant.pill => BorderRadius.circular(r.height / 2),
+    BeuiTabsVariant.segment => BorderRadius.circular(8),
+    BeuiTabsVariant.underline => BorderRadius.zero,
+  };
 
   Widget _at(Rect r) => Transform.translate(
-        offset: r.topLeft,
-        child: Align(
-          alignment: Alignment.topLeft,
-          child: Container(
-            key: beuiTabsIndicatorKey,
-            width: r.width,
-            height: r.height,
-            decoration: BoxDecoration(color: color, borderRadius: _radius(r)),
-          ),
-        ),
-      );
+    offset: r.topLeft,
+    child: Align(
+      alignment: Alignment.topLeft,
+      child: Container(
+        key: beuiTabsIndicatorKey,
+        width: r.width,
+        height: r.height,
+        decoration: BoxDecoration(color: color, borderRadius: _radius(r)),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -399,7 +401,8 @@ class _TabTriggerState<T> extends State<_TabTrigger<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
 
     Widget content = Container(

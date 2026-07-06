@@ -16,11 +16,7 @@ import '../tokens/motion.dart';
 /// Reduced motion shows the text plainly with no per-letter roll or blur.
 class BeuiTextCascade extends StatefulWidget {
   /// Creates a text cascade. Changing [text] triggers the roll.
-  const BeuiTextCascade(
-    this.text, {
-    this.style,
-    super.key,
-  });
+  const BeuiTextCascade(this.text, {this.style, super.key});
 
   /// The current text. Changing it cascades to the new value.
   final String text;
@@ -51,15 +47,16 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: _durationMs(_current)),
-      value: 1,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed && _previous != null) {
-          setState(() => _previous = null);
-        }
-      });
+    _controller =
+        AnimationController(
+          vsync: this,
+          duration: Duration(milliseconds: _durationMs(_current)),
+          value: 1,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed && _previous != null) {
+            setState(() => _previous = null);
+          }
+        });
   }
 
   @override
@@ -106,8 +103,14 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
                 left: 0,
                 top: 0,
                 bottom: 0,
-                child:
-                    _letters(_previous!, t, totalMs, roll, style, exiting: true),
+                child: _letters(
+                  _previous!,
+                  t,
+                  totalMs,
+                  roll,
+                  style,
+                  exiting: true,
+                ),
               ),
               // Entering text — sizes the slot to the new label immediately.
               _letters(_current, t, totalMs, roll, style, exiting: false),
@@ -118,9 +121,14 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
     );
   }
 
-  Widget _letters(String text, double t, int totalMs, double roll,
-      TextStyle style,
-      {required bool exiting}) {
+  Widget _letters(
+    String text,
+    double t,
+    int totalMs,
+    double roll,
+    TextStyle style, {
+    required bool exiting,
+  }) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -130,9 +138,15 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
     );
   }
 
-  Widget _letter(String char, int i, double t, int totalMs, double roll,
-      TextStyle style,
-      {required bool exiting}) {
+  Widget _letter(
+    String char,
+    int i,
+    double t,
+    int totalMs,
+    double roll,
+    TextStyle style, {
+    required bool exiting,
+  }) {
     final double dy;
     final double opacity;
     final double blur;
@@ -157,7 +171,10 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
     if (blur > 0.05) {
       glyph = ImageFiltered(
         imageFilter: ImageFilter.blur(
-            sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),
+          sigmaX: blur,
+          sigmaY: blur,
+          tileMode: TileMode.decal,
+        ),
         child: glyph,
       );
     }

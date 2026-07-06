@@ -9,6 +9,7 @@ import 'demos/animated_toast_stack_demo.dart';
 import 'demos/bottom_sheet_demo.dart';
 import 'demos/bouncy_accordion_demo.dart';
 import 'demos/range_slider_demo.dart';
+import 'demos/scroll_animation_demo.dart';
 import 'demos/theme_toggle_demo.dart';
 
 void main() => runApp(const GalleryApp());
@@ -58,6 +59,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Theme Toggle', themeToggleDemo),
   GalleryEntry('Bottom Sheet', bottomSheetDemo),
   GalleryEntry('Toast Stack', animatedToastStackDemo),
+  GalleryEntry('Scroll Animation', scrollAnimationDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();

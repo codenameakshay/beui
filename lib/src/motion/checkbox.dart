@@ -120,7 +120,8 @@ class _BeuiCheckboxState extends State<BeuiCheckbox> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final style = widget.style;
 
@@ -169,7 +170,9 @@ class _BeuiCheckboxState extends State<BeuiCheckbox> {
         },
         child: showMark
             ? _CheckMark(
-                key: ValueKey(widget.indeterminate ? 'indeterminate' : 'checked'),
+                key: ValueKey(
+                  widget.indeterminate ? 'indeterminate' : 'checked',
+                ),
                 indeterminate: widget.indeterminate,
                 color: markColor,
                 reduce: reduce,
@@ -205,8 +208,9 @@ class _BeuiCheckboxState extends State<BeuiCheckbox> {
       child: FocusableActionDetector(
         enabled: enabled,
         focusNode: _focusNode,
-        mouseCursor:
-            enabled ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
+        mouseCursor: enabled
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.forbidden,
         shortcuts: const <ShortcutActivator, Intent>{
           SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
           SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),

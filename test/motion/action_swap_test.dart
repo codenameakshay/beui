@@ -171,10 +171,7 @@ void main() {
     });
 
     testWidgets('cascade uses vertical translation', (tester) async {
-      expect(
-        await hasTranslate(tester, BeuiActionSwapVariant.cascade),
-        isTrue,
-      );
+      expect(await hasTranslate(tester, BeuiActionSwapVariant.cascade), isTrue);
     });
 
     testWidgets('blur does not translate (scales instead)', (tester) async {
@@ -185,8 +182,10 @@ void main() {
   group('roll direction (source: old out the top, new from below)', () {
     // The non-zero vertical translation applied to [text]'s layer.
     double translateY(WidgetTester tester, String text) {
-      final transforms =
-          find.ancestor(of: find.text(text), matching: find.byType(Transform));
+      final transforms = find.ancestor(
+        of: find.text(text),
+        matching: find.byType(Transform),
+      );
       for (final t in tester.widgetList<Transform>(transforms)) {
         final y = t.transform.getTranslation().y;
         if (y.abs() > 0.01) return y;
@@ -194,12 +193,16 @@ void main() {
       return 0;
     }
 
-    testWidgets('old text rolls UP and out; new text enters from BELOW',
-        (tester) async {
+    testWidgets('old text rolls UP and out; new text enters from BELOW', (
+      tester,
+    ) async {
       Widget app(String v, String t) => _wrap(
-            BeuiActionSwapText(
-                value: v, text: t, variant: BeuiActionSwapVariant.roll),
-          );
+        BeuiActionSwapText(
+          value: v,
+          text: t,
+          variant: BeuiActionSwapVariant.roll,
+        ),
+      );
       await tester.pumpWidget(app('a', 'One'));
       await tester.pumpAndSettle();
 

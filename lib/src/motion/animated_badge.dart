@@ -314,9 +314,13 @@ class _IconSlot extends StatelessWidget {
         ),
         // popLayout: stack out-going on top of in-coming without reflow.
         layoutBuilder: (current, previous) => Stack(
-            alignment: Alignment.center, children: [...previous, ?current]),
+          alignment: Alignment.center,
+          children: [...previous, ?current],
+        ),
         child: KeyedSubtree(
-          key: ValueKey('icon-${status.name}-${spin ? 'spin' : icon.codePoint}'),
+          key: ValueKey(
+            'icon-${status.name}-${spin ? 'spin' : icon.codePoint}',
+          ),
           child: glyph,
         ),
       ),
@@ -415,8 +419,7 @@ class _RollTransition extends StatelessWidget {
         final easedOut = beuiEaseInOut.transform(t);
         // enter: +rise (below) → 0 (easeOut). exit: 0 → -rise up and out
         // (easeInOut, so it clears steadily rather than lingering at centre).
-        final dy =
-            exiting ? -(1 - easedOut) * rise : (1 - easedIn) * rise;
+        final dy = exiting ? -(1 - easedOut) * rise : (1 - easedIn) * rise;
         final sc = scale ? 0.92 + 0.08 * easedIn : 1.0;
         // Exit fades linearly (source exit is fast); enter fades eased.
         final opacity = exiting ? t : easedIn;

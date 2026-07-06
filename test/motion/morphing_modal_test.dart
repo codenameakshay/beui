@@ -21,10 +21,10 @@ class _HostState extends State<_Host> {
   void close() => setState(() => viewId = null);
 
   Widget _view() => switch (viewId) {
-        'a' => const SizedBox(height: 80, child: Center(child: Text('VIEW A'))),
-        'b' => const SizedBox(height: 240, child: Center(child: Text('VIEW B'))),
-        _ => const SizedBox.shrink(),
-      };
+    'a' => const SizedBox(height: 80, child: Center(child: Text('VIEW A'))),
+    'b' => const SizedBox(height: 240, child: Center(child: Text('VIEW B'))),
+    _ => const SizedBox.shrink(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,9 @@ void main() {
     host(tester).open('a');
     await tester.pumpAndSettle();
 
-    await tester.tapAt(const Offset(10, 10)); // backdrop (panel is bottom-center)
+    await tester.tapAt(
+      const Offset(10, 10),
+    ); // backdrop (panel is bottom-center)
     await tester.pump();
     expect(host(tester).closes, 1);
     await tester.pumpAndSettle();
@@ -105,7 +107,9 @@ void main() {
     host(tester).open('a');
     await tester.pumpAndSettle();
     final screen = tester.getSize(find.byType(MaterialApp));
-    expect(tester.getBottomLeft(find.byKey(_panel)).dy,
-        greaterThan(screen.height * 0.6));
+    expect(
+      tester.getBottomLeft(find.byKey(_panel)).dy,
+      greaterThan(screen.height * 0.6),
+    );
   });
 }
