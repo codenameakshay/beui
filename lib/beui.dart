@@ -53,6 +53,7 @@ export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'
     show BeuiModalPlacement, BeuiMorphingModal;
 export 'src/motion/number_ticker.dart' show BeuiNumberTicker;
+export 'src/motion/otp_input.dart' show BeuiOtpInput, BeuiOtpStatus;
 
 // Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
