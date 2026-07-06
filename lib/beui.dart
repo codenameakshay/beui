@@ -48,6 +48,8 @@ export 'src/motion/button/stateful.dart'
 export 'src/motion/checkbox.dart' show BeuiCheckbox, BeuiCheckboxStyle;
 export 'src/motion/command_palette.dart'
     show BeuiCommandItem, BeuiCommandPalette;
+export 'src/motion/create_menu.dart'
+    show BeuiCreateMenu, BeuiCreateMenuItem, beuiDefaultCreateMenuItems;
 export 'src/motion/dock.dart' show BeuiDock, BeuiDockItem;
 export 'src/motion/drawer.dart' show BeuiDrawer, BeuiDrawerSide;
 export 'src/motion/dynamic_island.dart'

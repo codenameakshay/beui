@@ -9,6 +9,7 @@ import 'demos/animated_badge_demo.dart';
 import 'demos/animated_toast_stack_demo.dart';
 import 'demos/bottom_sheet_demo.dart';
 import 'demos/command_palette_demo.dart';
+import 'demos/create_menu_demo.dart';
 import 'demos/dynamic_island_demo.dart';
 import 'demos/expandable_tabs_demo.dart';
 import 'demos/bouncy_accordion_demo.dart';
@@ -72,6 +73,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Action Rails', actionRailsDemo),
   GalleryEntry('Expandable Tabs', expandableTabsDemo),
   GalleryEntry('Swipeable List', swipeableListDemo),
+  GalleryEntry('Create Menu', createMenuDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
