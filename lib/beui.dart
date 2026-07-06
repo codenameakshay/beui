@@ -79,6 +79,15 @@ export 'src/motion/scroll_to.dart' show BeuiScrollTo;
 export 'src/motion/shared_layout_bg.dart' show BeuiSharedLayoutBg;
 export 'src/motion/smooth_scroll.dart'
     show BeuiSmoothScroll, BeuiSmoothScrollApi, beuiEaseScroll;
+export 'src/motion/swipeable_list.dart'
+    show
+        BeuiSwipeAction,
+        BeuiSwipeActionCallback,
+        BeuiSwipeActionTone,
+        BeuiSwipeSide,
+        BeuiSwipeableList,
+        BeuiSwipeableListItem,
+        BeuiSwipeableListValue;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
 export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
 export 'src/motion/text_cascade.dart' show BeuiTextCascade;

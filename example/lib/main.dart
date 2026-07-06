@@ -15,6 +15,7 @@ import 'demos/bouncy_accordion_demo.dart';
 import 'demos/range_slider_demo.dart';
 import 'demos/otp_input_demo.dart';
 import 'demos/scroll_animation_demo.dart';
+import 'demos/swipeable_list_demo.dart';
 import 'demos/theme_toggle_demo.dart';
 
 void main() => runApp(const GalleryApp());
@@ -70,6 +71,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Dynamic Island', dynamicIslandDemo),
   GalleryEntry('Action Rails', actionRailsDemo),
   GalleryEntry('Expandable Tabs', expandableTabsDemo),
+  GalleryEntry('Swipeable List', swipeableListDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
