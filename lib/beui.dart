@@ -57,6 +57,8 @@ export 'src/motion/expandable_action_bar.dart'
         BeuiExpandableActionBar,
         BeuiExpandableActionBarItem,
         BeuiExpandableActionBarSize;
+export 'src/motion/expandable_tabs.dart'
+    show BeuiExpandableTabs, BeuiExpandableTabsItem;
 export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'

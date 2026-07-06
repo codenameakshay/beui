@@ -10,6 +10,7 @@ import 'demos/animated_toast_stack_demo.dart';
 import 'demos/bottom_sheet_demo.dart';
 import 'demos/command_palette_demo.dart';
 import 'demos/dynamic_island_demo.dart';
+import 'demos/expandable_tabs_demo.dart';
 import 'demos/bouncy_accordion_demo.dart';
 import 'demos/range_slider_demo.dart';
 import 'demos/otp_input_demo.dart';
@@ -68,6 +69,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Command Palette', commandPaletteDemo),
   GalleryEntry('Dynamic Island', dynamicIslandDemo),
   GalleryEntry('Action Rails', actionRailsDemo),
+  GalleryEntry('Expandable Tabs', expandableTabsDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
