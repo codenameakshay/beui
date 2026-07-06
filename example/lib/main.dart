@@ -4,6 +4,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
 import 'demos/number_demo.dart';
+import 'demos/action_rails_demo.dart';
 import 'demos/animated_badge_demo.dart';
 import 'demos/animated_toast_stack_demo.dart';
 import 'demos/bottom_sheet_demo.dart';
@@ -66,6 +67,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('OTP Input', otpInputDemo),
   GalleryEntry('Command Palette', commandPaletteDemo),
   GalleryEntry('Dynamic Island', dynamicIslandDemo),
+  GalleryEntry('Action Rails', actionRailsDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();

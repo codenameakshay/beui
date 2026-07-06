@@ -52,12 +52,19 @@ export 'src/motion/dock.dart' show BeuiDock, BeuiDockItem;
 export 'src/motion/drawer.dart' show BeuiDrawer, BeuiDrawerSide;
 export 'src/motion/dynamic_island.dart'
     show BeuiDynamicIsland, BeuiDynamicIslandView;
+export 'src/motion/expandable_action_bar.dart'
+    show
+        BeuiExpandableActionBar,
+        BeuiExpandableActionBarItem,
+        BeuiExpandableActionBarSize;
 export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'
     show BeuiModalPlacement, BeuiMorphingModal;
 export 'src/motion/number_ticker.dart' show BeuiNumberTicker;
 export 'src/motion/otp_input.dart' show BeuiOtpInput, BeuiOtpStatus;
+export 'src/motion/overflow_actions.dart'
+    show BeuiOverflowActionItem, BeuiOverflowActions, BeuiOverflowActionsSize;
 
 // Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
