@@ -1,6 +1,7 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 /// Builds the overlay content. [animation] runs 0→1 on enter and 1→0 on exit;
@@ -100,13 +101,28 @@ class _BeuiOverlayState extends State<BeuiOverlay>
           reverseDuration: widget.exitDuration,
         )..addStatusListener((status) {
           if (status == AnimationStatus.dismissed && _portal.isShowing) {
-            _portal.hide();
+            _scheduleHide();
           }
         });
     if (widget.open) {
       // OverlayPortalController.show() must not run during build/initState —
       // defer it. forward/reverse are fine in any phase.
       _scheduleShow(jumpToEnd: true);
+    }
+  }
+
+  /// Hides the portal, deferring past the build phase when necessary —
+  /// a close during build (didUpdateWidget -> reverse() with the controller
+  /// still at 0) emits `dismissed` synchronously, and
+  /// [OverlayPortalController.hide] asserts outside of it.
+  void _scheduleHide() {
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !widget.open && _portal.isShowing) _portal.hide();
+      });
+    } else {
+      _portal.hide();
     }
   }
 

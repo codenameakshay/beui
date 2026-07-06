@@ -7,6 +7,7 @@ import 'demos/number_demo.dart';
 import 'demos/animated_badge_demo.dart';
 import 'demos/animated_toast_stack_demo.dart';
 import 'demos/bottom_sheet_demo.dart';
+import 'demos/command_palette_demo.dart';
 import 'demos/bouncy_accordion_demo.dart';
 import 'demos/range_slider_demo.dart';
 import 'demos/otp_input_demo.dart';
@@ -62,6 +63,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Toast Stack', animatedToastStackDemo),
   GalleryEntry('Scroll Animation', scrollAnimationDemo),
   GalleryEntry('OTP Input', otpInputDemo),
+  GalleryEntry('Command Palette', commandPaletteDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
