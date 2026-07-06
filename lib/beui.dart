@@ -50,6 +50,8 @@ export 'src/motion/command_palette.dart'
     show BeuiCommandItem, BeuiCommandPalette;
 export 'src/motion/dock.dart' show BeuiDock, BeuiDockItem;
 export 'src/motion/drawer.dart' show BeuiDrawer, BeuiDrawerSide;
+export 'src/motion/dynamic_island.dart'
+    show BeuiDynamicIsland, BeuiDynamicIslandView;
 export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'
