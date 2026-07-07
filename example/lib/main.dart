@@ -12,6 +12,7 @@ import 'demos/command_palette_demo.dart';
 import 'demos/create_menu_demo.dart';
 import 'demos/dynamic_island_demo.dart';
 import 'demos/expandable_tabs_demo.dart';
+import 'demos/file_upload_demo.dart';
 import 'demos/bouncy_accordion_demo.dart';
 import 'demos/range_slider_demo.dart';
 import 'demos/otp_input_demo.dart';
@@ -78,6 +79,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Create Menu', createMenuDemo),
   GalleryEntry('Swap', swapDemo),
   GalleryEntry('Prediction Market', predictionMarketDemo),
+  GalleryEntry('File Upload', fileUploadDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();

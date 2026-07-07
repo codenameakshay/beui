@@ -61,6 +61,13 @@ export 'src/motion/expandable_action_bar.dart'
         BeuiExpandableActionBarSize;
 export 'src/motion/expandable_tabs.dart'
     show BeuiExpandableTabs, BeuiExpandableTabsItem;
+export 'src/motion/file_upload.dart'
+    show
+        BeuiFileUpload,
+        BeuiFileUploadItem,
+        BeuiFileUploadStatus,
+        BeuiFileUploadVariant,
+        beuiFormatBytes;
 export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'
