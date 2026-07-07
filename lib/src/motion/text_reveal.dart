@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_scroll_geometry.dart';
 
 /// How [BeuiTextReveal] splits its text into independently-animated units.
 enum BeuiTextRevealSplit {
@@ -20,13 +21,17 @@ enum BeuiTextRevealSplit {
 /// Each unit (a [BeuiTextRevealSplit.word] or [BeuiTextRevealSplit.char]) rises
 /// from [yOffset] below its slot, fading and de-blurring into place, staggered
 /// left-to-right by [stagger]. The vertical rise rides a soft spring (source
-/// `DEFAULT_SPRING` — stiffness 140 · damping 26 · mass 1.2); the opacity and
-/// blur are eased with [beuiEaseOut] over their own (longer) windows, exactly as
-/// the source drives `y` / `opacity` / `filter` on separate transitions.
+/// `DEFAULT_SPRING` — stiffness 140 · damping 26 · mass 1.2, overridable via
+/// [spring]); the opacity and blur are eased with [beuiEaseOut] over their own
+/// (longer) windows, exactly as the source drives `y` / `opacity` / `filter`
+/// on separate transitions.
 ///
-/// The reveal plays once on mount (matching the source default of
-/// `whileInView: false`). Reduced motion drops the rise and blur, keeping only a
-/// short staggered fade — the source's reduce branch verbatim.
+/// By default the reveal plays once on mount (source `whileInView: false`).
+/// With [whileInView] the units hold hidden until [amount] of the widget is
+/// visible in the nearest enclosing scrollable, then play; [once] `false`
+/// resets and replays on every re-entry. Reduced motion drops the rise and
+/// blur, keeping only a short staggered fade — the source's reduce branch
+/// verbatim.
 class BeuiTextReveal extends StatefulWidget {
   /// Creates a text reveal.
   ///
@@ -39,6 +44,10 @@ class BeuiTextReveal extends StatefulWidget {
     this.delay = Duration.zero,
     this.blur = 12,
     this.yOffset = 0.4,
+    this.spring,
+    this.whileInView = false,
+    this.once = true,
+    this.amount = 0.4,
     this.style,
     this.textAlign,
     super.key,
@@ -57,13 +66,33 @@ class BeuiTextReveal extends StatefulWidget {
   /// Delay before the first unit starts (source `delay`).
   final Duration delay;
 
-  /// Initial blur radius in logical pixels (source `blur`, default 12). Capped
-  /// at the project's 10px motion limit when applied as a sigma.
+  /// Initial blur in CSS pixels (source `blur`, default 12). Applied as a
+  /// Gaussian sigma of `blur / 2` (CSS `blur(Npx)` ≈ sigma N/2), capped at
+  /// sigma 5 per the library's motion-blur budget.
   final double blur;
 
   /// Initial vertical offset as a fraction of the unit's line height (source
   /// `yOffset`, default `"40%"` → 0.4). Positive offsets start below.
   final double yOffset;
+
+  /// Overrides the rise spring (source `spring?: {stiffness, damping, mass}`).
+  /// Defaults to the source `DEFAULT_SPRING` — stiffness 140 · damping 26 ·
+  /// mass 1.2.
+  final SpringDescription? spring;
+
+  /// Hold the reveal until [amount] of the widget is visible in the nearest
+  /// enclosing scrollable (source `whileInView`). Off (default) plays once on
+  /// mount. Without an enclosing scrollable the widget counts as visible and
+  /// plays on first layout.
+  final bool whileInView;
+
+  /// With [whileInView]: play only on the first entry (default), or reset and
+  /// replay on every re-entry when `false` (source `once`).
+  final bool once;
+
+  /// Fraction of the widget that must be visible to trigger [whileInView]
+  /// (source `amount`, default 0.4).
+  final double amount;
 
   /// Text style for every unit. Falls back to the ambient [DefaultTextStyle].
   final TextStyle? style;
@@ -78,8 +107,11 @@ class BeuiTextReveal extends StatefulWidget {
 /// Source `DEFAULT_SPRING` for the vertical rise — stiffness 140 · damping 26 ·
 /// mass 1.2. A component-local spring (not one of the five shared tokens), so it
 /// is constructed by name here, exactly as `stateful.dart`'s heavy springs are.
-const _revealSpring = SpringMotion(
-  SpringDescription(mass: 1.2, stiffness: 140, damping: 26),
+/// [BeuiTextReveal.spring] overrides it wholesale.
+const _defaultRevealSpring = SpringDescription(
+  mass: 1.2,
+  stiffness: 140,
+  damping: 26,
 );
 
 // Source per-transition windows (seconds → ms): opacity 0.7s, blur 0.9s, both
@@ -88,21 +120,66 @@ const int _opacityMs = 700;
 const int _blurMs = 900;
 
 class _BeuiTextRevealState extends State<BeuiTextReveal>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, ScrollGeometryMixin {
   late final AnimationController _controller;
   late List<String> _lines;
   late List<List<String>> _units; // units per line
   late List<List<int>> _delaysMs; // start delay per unit, flattened by line
+
+  // Whether the reveal has been triggered (mount, or in-view arming). A reset
+  // (whileInView + once: false, element left view) bumps the generation so the
+  // units remount at their hidden rest state.
+  bool _played = false;
+  int _generation = 0;
 
   @override
   void initState() {
     super.initState();
     _split();
     _controller = AnimationController(vsync: this, duration: _totalDuration());
-    // Play once on mount (source `whileInView: false` default).
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _controller.forward();
-    });
+    if (!widget.whileInView) {
+      // Play once on mount (source `whileInView: false` default).
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_played) _play();
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // whileInView needs an enclosing scrollable to measure against; without
+    // one the widget counts as fully visible — play on the first layout.
+    if (widget.whileInView && Scrollable.maybeOf(context) == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_played) _play();
+      });
+    }
+  }
+
+  @override
+  void onScrollGeometryChanged() {
+    if (!widget.whileInView) return;
+    final fraction = visibleFraction;
+    if (fraction == null) return;
+    final inView = fraction >= widget.amount;
+    if (inView && !_played) {
+      _play();
+    } else if (!inView && _played && !widget.once) {
+      // Left view with once: false — reset to hidden and re-arm for replay.
+      _controller
+        ..stop()
+        ..value = 0;
+      setState(() {
+        _played = false;
+        _generation++;
+      });
+    }
+  }
+
+  void _play() {
+    _played = true;
+    _controller.forward(from: 0);
   }
 
   @override
@@ -113,9 +190,12 @@ class _BeuiTextRevealState extends State<BeuiTextReveal>
         old.stagger != widget.stagger ||
         old.delay != widget.delay) {
       _split();
-      _controller
-        ..duration = _totalDuration()
-        ..forward(from: 0);
+      _controller.duration = _totalDuration();
+      // New text replays immediately unless it is still waiting to enter view.
+      if (!widget.whileInView || _played) {
+        _played = true;
+        _controller.forward(from: 0);
+      }
     }
   }
 
@@ -167,6 +247,7 @@ class _BeuiTextRevealState extends State<BeuiTextReveal>
     final reduce = MediaQuery.disableAnimationsOf(context);
     final baseStyle = widget.style ?? DefaultTextStyle.of(context).style;
     final lineHeightPx = (baseStyle.fontSize ?? 16) * (baseStyle.height ?? 1.2);
+    final motion = SpringMotion(widget.spring ?? _defaultRevealSpring);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -178,6 +259,9 @@ class _BeuiTextRevealState extends State<BeuiTextReveal>
             children: [
               for (var u = 0; u < _units[l].length; u++)
                 _Unit(
+                  // Generation-keyed so an in-view replay remounts the units
+                  // at their hidden rest state.
+                  key: ValueKey('r$_generation-$l-$u'),
                   controller: _controller,
                   text: widget.split == BeuiTextRevealSplit.word
                       ? (u < _units[l].length - 1
@@ -188,6 +272,7 @@ class _BeuiTextRevealState extends State<BeuiTextReveal>
                   startMs: _delaysMs[l][u],
                   yOffsetPx: widget.yOffset * lineHeightPx,
                   blur: widget.blur,
+                  motion: motion,
                   reduce: reduce,
                 ),
             ],
@@ -209,10 +294,14 @@ class _BeuiTextRevealState extends State<BeuiTextReveal>
   };
 }
 
-/// One revealed unit. The vertical rise is a [_revealSpring] re-targeted from
-/// its `yOffset` to `0` once the shared sweep crosses its [startMs]; the opacity
-/// and blur are computed analytically from the same sweep with [beuiEaseOut],
-/// each on its own window — the source's three independent transitions.
+/// One revealed unit. The vertical rise is a spring ([BeuiTextReveal.spring],
+/// default 140/26/1.2) re-targeted from its `yOffset` to `0` once the shared
+/// sweep crosses its [startMs]; the opacity and blur are computed analytically
+/// from the same sweep with [beuiEaseOut], each on its own window — the
+/// source's three independent transitions.
+///
+/// Once the shared controller has completed, the unit short-circuits to a
+/// plain static [Text] — a long-settled reveal costs nothing per frame.
 class _Unit extends StatelessWidget {
   const _Unit({
     required this.controller,
@@ -221,7 +310,9 @@ class _Unit extends StatelessWidget {
     required this.startMs,
     required this.yOffsetPx,
     required this.blur,
+    required this.motion,
     required this.reduce,
+    super.key,
   });
 
   final AnimationController controller;
@@ -230,15 +321,23 @@ class _Unit extends StatelessWidget {
   final int startMs;
   final double yOffsetPx;
   final double blur;
+  final Motion motion;
   final bool reduce;
 
   @override
   Widget build(BuildContext context) {
+    // Settled short-circuit: no per-frame math, no filter, no spring subtree.
+    if (controller.isCompleted) return Text(text, style: style);
+
     final totalMs = controller.duration!.inMilliseconds;
 
     return AnimatedBuilder(
       animation: controller,
       builder: (context, _) {
+        // Re-check per tick: the final tick lands here before the parent
+        // rebuilds, and every later external rebuild takes the branch above.
+        if (controller.isCompleted) return Text(text, style: style);
+
         final elapsedMs = controller.value * totalMs;
         // Reduced motion: short staggered fade only, no rise/blur. Source uses a
         // 0.25s opacity with delay scaled by 0.3.
@@ -256,8 +355,8 @@ class _Unit extends StatelessWidget {
         final bp = beuiEaseOut.transform(
           ((elapsedMs - startMs) / _blurMs).clamp(0.0, 1.0),
         );
-        // Sigma capped at the 10px motion limit.
-        final sigma = ((1 - bp) * blur).clamp(0.0, 10.0);
+        // CSS blur(Npx) → sigma N/2, capped at the sigma-5 motion-blur budget.
+        final sigma = ((1 - bp) * blur / 2).clamp(0.0, 5.0);
 
         Widget glyph = Text(text, style: style);
         if (sigma > 0.05) {
@@ -276,7 +375,7 @@ class _Unit extends StatelessWidget {
         return SingleMotionBuilder(
           value: released ? 0.0 : yOffsetPx,
           from: yOffsetPx,
-          motion: _revealSpring,
+          motion: motion,
           builder: (context, dy, child) => Opacity(
             opacity: op,
             child: Transform.translate(offset: Offset(0, dy), child: child),

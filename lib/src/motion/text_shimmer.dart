@@ -7,12 +7,14 @@ import '../theme/beui_colors.dart';
 /// A continuous gradient shimmer swept across text — the Flutter port of beUI's
 /// `text-shimmer`.
 ///
-/// A bright highlight band slides through the text from right to left, on an
-/// endless loop. Mirrors the source's `linear-gradient(110deg,
-/// muted-foreground 30%, foreground 50%, muted-foreground 70%)` over a `200%`
-/// background swept from `200% 0` to `-200% 0` — so the resting text is
-/// [BeuiColors.mutedForeground] and the moving highlight is
-/// [BeuiColors.foreground].
+/// A bright highlight band sweeps through the text on an endless loop. Mirrors
+/// the source's `linear-gradient(110deg, muted-foreground 30%, foreground 50%,
+/// muted-foreground 70%)` painted over a `200%`-wide background tile
+/// (`bg-[length:200%_100%]`) whose `background-position` runs from `200% 0` to
+/// `-200% 0` — so the highlight band is 0.8× the text width, sweeps fully
+/// across it once per cycle, and dwells off-text for roughly half of each
+/// cycle. The resting text is [BeuiColors.mutedForeground] and the moving
+/// highlight is [BeuiColors.foreground].
 ///
 /// This is a pure opacity/color effect (no movement), so it is **not** gated on
 /// reduced motion — but it honours the platform setting by holding the band
@@ -79,7 +81,9 @@ class _BeuiTextShimmerState extends State<BeuiTextShimmer>
     // hold a static centred highlight instead.
     if (_reduce) {
       if (_controller.isAnimating) _controller.stop();
-      _controller.value = 0.5;
+      // t = 0.375 puts the highlight band's crest at the middle of the text
+      // (tile left edge at -W/2 → the 50% stop lands at W/2).
+      _controller.value = 0.375;
     } else if (!_controller.isAnimating) {
       _controller.repeat();
     }
@@ -103,56 +107,43 @@ class _BeuiTextShimmerState extends State<BeuiTextShimmer>
 
     final text = Text(widget.text, style: style, textAlign: widget.textAlign);
 
-    return AnimatedBuilder(
-      animation: _controller,
-      child: text,
-      builder: (context, child) {
-        return ShaderMask(
-          blendMode: BlendMode.srcIn,
-          shaderCallback: (rect) => _shimmerShader(rect, base, highlight),
-          child: child,
-        );
-      },
+    // RepaintBoundary: the shimmer repaints every frame forever — isolate it so
+    // the loop never dirties ancestor layers.
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _controller,
+        child: text,
+        builder: (context, child) {
+          return ShaderMask(
+            blendMode: BlendMode.srcIn,
+            shaderCallback: (rect) => _shimmerShader(rect, base, highlight),
+            child: child,
+          );
+        },
+      ),
     );
   }
 
-  /// Builds the swept gradient for [rect]. The gradient tile is `200%` of the
-  /// text width (source `bg-[length:200%_100%]`) and its position runs from
-  /// `200% 0` to `-200% 0` — a 4×-width travel — at a `110deg` angle. The band
-  /// is `muted-foreground 30% → foreground 50% → muted-foreground 70%`.
+  /// Builds the swept gradient for [rect] (the text bounds, width `W`).
+  ///
+  /// The gradient tile is `2W` wide (source `bg-[length:200%_100%]`) with the
+  /// band at stops 30% / 50% / 70% of that tile — a highlight `0.8W` wide. The
+  /// tile's left edge travels from `-2W` to `+2W` over one cycle (CSS
+  /// `background-position: 200% 0 → -200% 0`), so the band sweeps fully across
+  /// the text and dwells off-text ~55% of the cycle. The `110deg` CSS angle is
+  /// the gradient axis rotated 20° past horizontal ([GradientRotation]).
   Shader _shimmerShader(Rect rect, Color base, Color highlight) {
     final t = _controller.value; // 0..1
-    // background-position 200% → -200% across the 200%-wide tile: translate the
-    // gradient by [+2w .. -2w] in CSS terms. Map to [begin/end] offsets.
     final w = rect.width;
-    final shift = (2 - 4 * t) * w; // +2w → -2w
-    // 110deg: mostly horizontal with a slight downward slope.
-    const angle = 110 * math.pi / 180;
-    final dx = math.cos(angle);
-    final dy = math.sin(angle);
+    // Tile left edge: lerp(-2W, +2W, t).
+    final left = rect.left + (4 * t - 2) * w;
+    final tile = Rect.fromLTWH(left, rect.top, 2 * w, rect.height);
     return LinearGradient(
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
-      colors: [base, base, highlight, base, base],
-      stops: const [0.0, 0.30, 0.50, 0.70, 1.0],
-      transform: _ShimmerTransform(shift, dx, dy),
-    ).createShader(rect);
-  }
-}
-
-/// Translates the shimmer gradient horizontally (with a slight vertical slope to
-/// approximate the source's 110deg angle) by [shift] logical pixels.
-class _ShimmerTransform extends GradientTransform {
-  const _ShimmerTransform(this.shift, this.dx, this.dy);
-
-  final double shift;
-  final double dx;
-  final double dy;
-
-  @override
-  Matrix4 transform(Rect bounds, {TextDirection? textDirection}) {
-    // Slope component is gentle — scale the vertical translate down so tall
-    // glyphs don't push the band off the line.
-    return Matrix4.translationValues(shift * dx, shift * dy * 0.15, 0);
+      colors: [base, highlight, base],
+      stops: const [0.30, 0.50, 0.70],
+      transform: const GradientRotation(20 * math.pi / 180),
+    ).createShader(tile);
   }
 }

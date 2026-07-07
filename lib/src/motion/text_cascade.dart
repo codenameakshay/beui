@@ -3,6 +3,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 
 import '../tokens/motion.dart';
+import '_engine.dart';
 
 /// A per-letter slot roll for standalone text — the Flutter port of beUI's
 /// `text-cascade`.
@@ -12,6 +13,12 @@ import '../tokens/motion.dart';
 /// left-to-right and clipped to one line. This is the same mechanic the source's
 /// `ActionSwapText` drives with `animation="cascade"` (`CASCADE_LETTER_VARIANTS`)
 /// — a text-first API over it, mirroring the source `TextCascade` wrapper.
+///
+/// Each entering letter rides the shared [beuiSpringSwap] token (stiffness 460 ·
+/// damping 30 · mass 0.55), released at its `index × 25ms` stagger; the exit is
+/// a 160ms [beuiEaseOut] tween at half that stagger. The slot's width eases to
+/// the new label's width over 220ms [beuiEaseOut] (the source's inherited
+/// `transition: width 220ms EASE_OUT`).
 ///
 /// Reduced motion shows the text plainly with no per-letter roll or blur.
 class BeuiTextCascade extends StatefulWidget {
@@ -30,12 +37,14 @@ class BeuiTextCascade extends StatefulWidget {
 
 class _BeuiTextCascadeState extends State<BeuiTextCascade>
     with SingleTickerProviderStateMixin {
-  // Source CASCADE_STAGGER 0.025s; enter rides SPRING_SWAP, exit is 0.16s
-  // EASE_OUT at half the enter stagger; ROLL_BLUR is blur(6px) ≈ sigma 3.5.
+  // Source CASCADE_STAGGER 0.025s; enter rides SPRING_SWAP (released per
+  // letter), exit is 0.16s EASE_OUT at half the enter stagger; ROLL_BLUR is
+  // blur(6px) → sigma 3; the slot width morphs over 220ms EASE_OUT.
   static const int _staggerMs = 25;
-  static const int _enterMs = 360; // SPRING_SWAP settle window
+  static const int _enterMs = 360; // covers the SPRING_SWAP settle
   static const int _exitMs = 160; // source exit duration (0.16s)
-  static const double _blur = 3.5;
+  static const double _blur = 3; // blur(6px) → sigma 6/2 = 3
+  static const _widthDuration = Duration(milliseconds: 220);
 
   late final AnimationController _controller;
   late String _current = widget.text;
@@ -77,6 +86,20 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
     super.dispose();
   }
 
+  /// Measures [text] laid out on one line with [style] — used to drive the
+  /// slot's width morph.
+  Size _measure(String text, TextStyle style) {
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 1,
+    )..layout();
+    final size = painter.size;
+    painter.dispose();
+    return size;
+  }
+
   @override
   Widget build(BuildContext context) {
     final style = widget.style ?? DefaultTextStyle.of(context).style;
@@ -87,86 +110,154 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
       return Text(_current, style: style, maxLines: 1, softWrap: false);
     }
 
+    final fromSize = _measure(_previous!, style);
+    final toSize = _measure(_current, style);
+    final height = toSize.height > fromSize.height
+        ? toSize.height
+        : fromSize.height;
+
     return ClipRect(
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) {
-          final t = _controller.value;
-          final totalMs = _controller.duration!.inMilliseconds;
-          final roll = (style.fontSize ?? 14) * 1.15; // ~105% of a line
-          return Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.centerLeft,
-            children: [
-              // Exiting text — positioned, so it doesn't drive the slot width.
-              Positioned(
-                left: 0,
-                top: 0,
-                bottom: 0,
-                child: _letters(
-                  _previous!,
-                  t,
-                  totalMs,
-                  roll,
-                  style,
-                  exiting: true,
+      // The slot width eases old → new over 220ms EASE_OUT instead of snapping
+      // (the source's inherited `transition: width 220ms EASE_OUT`).
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: fromSize.width, end: toSize.width),
+        duration: _widthDuration,
+        curve: beuiEaseOut,
+        builder: (context, width, child) =>
+            SizedBox(width: width, height: height, child: child),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            final t = _controller.value;
+            final totalMs = _controller.duration!.inMilliseconds;
+            final roll = (style.fontSize ?? 14) * 1.15; // ~105% of a line
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Exiting letters — the width morph, not this row, drives the
+                // slot size; both rows overflow freely and clip at the edge.
+                Positioned(
+                  key: ValueKey('out-$_previous'),
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: _exitLetters(_previous!, t, totalMs, roll, style),
                 ),
-              ),
-              // Entering text — sizes the slot to the new label immediately.
-              _letters(_current, t, totalMs, roll, style, exiting: false),
-            ],
-          );
-        },
+                Positioned(
+                  key: ValueKey('in-$_current'),
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: _enterLetters(_current, t, totalMs, roll, style),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _letters(
+  Widget _exitLetters(
     String text,
     double t,
     int totalMs,
     double roll,
-    TextStyle style, {
-    required bool exiting,
-  }) {
+    TextStyle style,
+  ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         for (var i = 0; i < text.length; i++)
-          _letter(text[i], i, t, totalMs, roll, style, exiting: exiting),
+          _exitLetter(text[i], i, t, totalMs, roll, style),
       ],
     );
   }
 
-  Widget _letter(
+  Widget _enterLetters(
+    String text,
+    double t,
+    int totalMs,
+    double roll,
+    TextStyle style,
+  ) {
+    final elapsedMs = t * totalMs;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < text.length; i++)
+          _enterLetter(text[i], i, elapsedMs, roll, style),
+      ],
+    );
+  }
+
+  /// Exit: 160ms [beuiEaseOut] tween, staggered at half the enter stagger
+  /// (source `delay * 0.5`) — rolls up and out, fading and blurring.
+  Widget _exitLetter(
     String char,
     int i,
     double t,
     int totalMs,
     double roll,
-    TextStyle style, {
-    required bool exiting,
-  }) {
-    final double dy;
-    final double opacity;
-    final double blur;
-    if (exiting) {
-      // Exit cascades at half the enter stagger (source `delay * 0.5`).
-      final start = (i * _staggerMs * 0.5) / totalMs;
-      final p = ((t - start) / (_exitMs / totalMs)).clamp(0.0, 1.0);
-      final e = beuiEaseOut.transform(p);
-      dy = -e * roll; // roll up and out
-      opacity = 1 - e;
-      blur = e * _blur;
-    } else {
-      final start = (i * _staggerMs) / totalMs;
-      final p = ((t - start) / (_enterMs / totalMs)).clamp(0.0, 1.0);
-      final e = Curves.easeOutCubic.transform(p);
-      dy = (1 - e) * roll; // roll up from below
-      opacity = e;
-      blur = (1 - e) * _blur;
-    }
+    TextStyle style,
+  ) {
+    final start = (i * _staggerMs * 0.5) / totalMs;
+    final p = ((t - start) / (_exitMs / totalMs)).clamp(0.0, 1.0);
+    final e = beuiEaseOut.transform(p);
+    return _glyph(
+      char,
+      style,
+      dy: -e * roll, // roll up and out
+      opacity: 1 - e,
+      blur: e * _blur,
+    );
+  }
 
+  /// Enter: the [beuiSpringSwap] token, released once the shared clock crosses
+  /// the letter's `index × 25ms` stagger — opacity and blur ride the spring's
+  /// own progress.
+  Widget _enterLetter(
+    String char,
+    int i,
+    double elapsedMs,
+    double roll,
+    TextStyle style,
+  ) {
+    final released = elapsedMs >= i * _staggerMs;
+    return SingleMotionBuilder(
+      value: released ? 0.0 : roll,
+      from: roll,
+      motion: beuiSpringSwap,
+      builder: (context, dy, child) {
+        final p = (1 - dy / roll).clamp(0.0, 1.0);
+        Widget glyph = child!;
+        final sigma = (1 - p) * _blur;
+        if (sigma > 0.05) {
+          glyph = ImageFiltered(
+            imageFilter: ImageFilter.blur(
+              sigmaX: sigma,
+              sigmaY: sigma,
+              tileMode: TileMode.decal,
+            ),
+            child: glyph,
+          );
+        }
+        return Opacity(
+          opacity: p,
+          child: Transform.translate(offset: Offset(0, dy), child: glyph),
+        );
+      },
+      child: Text(char, style: style, maxLines: 1, softWrap: false),
+    );
+  }
+
+  Widget _glyph(
+    String char,
+    TextStyle style, {
+    required double dy,
+    required double opacity,
+    required double blur,
+  }) {
     Widget glyph = Text(char, style: style, maxLines: 1, softWrap: false);
     if (blur > 0.05) {
       glyph = ImageFiltered(
