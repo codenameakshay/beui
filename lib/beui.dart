@@ -90,6 +90,15 @@ export 'src/motion/swipeable_list.dart'
         BeuiSwipeableList,
         BeuiSwipeableListItem,
         BeuiSwipeableListValue;
+export 'src/motion/swap/swap.dart'
+    show
+        BeuiChain,
+        BeuiChainTone,
+        BeuiMultiChainSwap,
+        BeuiToken,
+        BeuiTokenSide,
+        beuiDefaultSwapChains,
+        beuiDefaultSwapTokens;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
 export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
 export 'src/motion/text_cascade.dart' show BeuiTextCascade;
