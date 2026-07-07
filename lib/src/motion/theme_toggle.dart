@@ -238,9 +238,11 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
 
     if (_oldImage == null) return live;
 
-    // rectangle = ease-out; circle = the source's cubic-bezier(.4,0,.2,1).
+    // rectangle = the CSS `ease-out` keyword, cubic-bezier(0, 0, 0.58, 1)
+    // (NOT Flutter's Curves.easeOut, which is Material's (0, 0, 0.2, 1));
+    // circle = the source's cubic-bezier(.4,0,.2,1).
     final curve = _variant == BeuiThemeRevealVariant.rectangle
-        ? Curves.easeOut
+        ? const Cubic(0, 0, 0.58, 1)
         : const Cubic(0.4, 0, 0.2, 1);
     return Stack(
       children: [
@@ -475,22 +477,17 @@ class _RevealClipper extends CustomClipper<Path> {
     final o = _circleOrigin(start);
     final center = Offset(o.dx * size.width, o.dy * size.height);
     return Path()..addOval(
-      Rect.fromCircle(
-        center: center,
-        radius: progress * _maxRadius(center, size),
-      ),
+      Rect.fromCircle(center: center, radius: progress * _endRadius(size)),
     );
   }
 
-  static double _maxRadius(Offset c, Size s) {
-    final corners = [
-      Offset.zero,
-      Offset(s.width, 0),
-      Offset(0, s.height),
-      Offset(s.width, s.height),
-    ];
-    return corners.map((p) => (p - c).distance).reduce(math.max);
-  }
+  /// The source grows the clip to `circle(150%)`, and CSS resolves a circle()
+  /// percentage against diagonal/√2 of the reference box. The end radius is
+  /// therefore 1.5 × (diagonal/√2) — always past the farthest corner (which is
+  /// at most one full diagonal away), so full coverage lands *before* t = 1,
+  /// early in the eased timeline, exactly like the source.
+  static double _endRadius(Size s) =>
+      1.5 * math.sqrt(s.width * s.width + s.height * s.height) / math.sqrt2;
 
   static List<double> _rectFrom(BeuiThemeRevealStart s) => switch (s) {
     BeuiThemeRevealStart.topLeft => [0, 1, 1, 0],

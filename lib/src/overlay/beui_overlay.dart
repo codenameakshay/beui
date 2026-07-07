@@ -42,6 +42,10 @@ class BeuiOverlay extends StatefulWidget {
     this.barrierColor,
     this.barrierBlur = 0,
     this.barrierDismissible = true,
+    this.barrierEnterDuration,
+    this.barrierExitDuration,
+    this.barrierCurve = Curves.linear,
+    this.barrierSaturation = 1,
     this.trapFocus = true,
     this.enterDuration = const Duration(milliseconds: 240),
     this.exitDuration = const Duration(milliseconds: 160),
@@ -72,6 +76,22 @@ class BeuiOverlay extends StatefulWidget {
   /// Whether tapping the barrier dismisses.
   final bool barrierDismissible;
 
+  /// How long the barrier fades in. Defaults to [enterDuration] (the barrier
+  /// rides the panel's clock).
+  final Duration? barrierEnterDuration;
+
+  /// How long the barrier fades out. Defaults to [exitDuration].
+  final Duration? barrierExitDuration;
+
+  /// Easing applied to the barrier's scrim alpha and blur-sigma ramp.
+  /// Defaults to [Curves.linear] (the historical behavior).
+  final Curve barrierCurve;
+
+  /// Backdrop saturation at rest (CSS `saturate()`, e.g. `1.4` = 140%),
+  /// composed with [barrierBlur] into a single backdrop pass and ramped
+  /// 1 → [barrierSaturation] along the barrier fade. `1` (default) disables it.
+  final double barrierSaturation;
+
   /// Trap focus within the overlay while open.
   final bool trapFocus;
 
@@ -86,10 +106,13 @@ class BeuiOverlay extends StatefulWidget {
 }
 
 class _BeuiOverlayState extends State<BeuiOverlay>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final OverlayPortalController _portal = OverlayPortalController();
   final LayerLink _link = LayerLink();
   late final AnimationController _controller;
+  // The barrier fade runs on its own clock (it may be shorter than the
+  // panel's, e.g. the drawer's 250ms backdrop under a 400ms panel envelope).
+  late final AnimationController _barrier;
 
   @override
   void initState() {
@@ -104,6 +127,11 @@ class _BeuiOverlayState extends State<BeuiOverlay>
             _scheduleHide();
           }
         });
+    _barrier = AnimationController(
+      vsync: this,
+      duration: widget.barrierEnterDuration ?? widget.enterDuration,
+      reverseDuration: widget.barrierExitDuration ?? widget.exitDuration,
+    );
     if (widget.open) {
       // OverlayPortalController.show() must not run during build/initState —
       // defer it. forward/reverse are fine in any phase.
@@ -129,6 +157,7 @@ class _BeuiOverlayState extends State<BeuiOverlay>
   void _scheduleShow({bool jumpToEnd = false}) {
     if (_portal.isShowing) {
       _controller.forward();
+      _barrier.forward();
       return;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -136,8 +165,10 @@ class _BeuiOverlayState extends State<BeuiOverlay>
       _portal.show();
       if (jumpToEnd) {
         _controller.value = 1;
+        _barrier.value = 1;
       } else {
         _controller.forward(from: 0);
+        _barrier.forward(from: 0);
       }
     });
   }
@@ -145,16 +176,23 @@ class _BeuiOverlayState extends State<BeuiOverlay>
   @override
   void didUpdateWidget(BeuiOverlay old) {
     super.didUpdateWidget(old);
+    _controller.duration = widget.enterDuration;
+    _controller.reverseDuration = widget.exitDuration;
+    _barrier.duration = widget.barrierEnterDuration ?? widget.enterDuration;
+    _barrier.reverseDuration =
+        widget.barrierExitDuration ?? widget.exitDuration;
     if (widget.open && !old.open) {
       _scheduleShow();
     } else if (!widget.open && old.open) {
       _controller.reverse();
+      _barrier.reverse();
     }
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _barrier.dispose();
     super.dispose();
   }
 
@@ -172,9 +210,11 @@ class _BeuiOverlayState extends State<BeuiOverlay>
         if (widget.barrier)
           Positioned.fill(
             child: AnimatedBuilder(
-              animation: _controller,
+              animation: _barrier,
               builder: (context, _) {
-                final t = _controller.value.clamp(0.0, 1.0);
+                final t = widget.barrierCurve.transform(
+                  _barrier.value.clamp(0.0, 1.0),
+                );
                 // Animate the blur *sigma* (and scrim alpha) so the blur ramps
                 // in progressively. Fading a constant-blur BackdropFilter via
                 // opacity does NOT work in Flutter: the opacity saveLayer
@@ -185,14 +225,21 @@ class _BeuiOverlayState extends State<BeuiOverlay>
                 Widget scrim = ColoredBox(
                   color: barrierColor.withValues(alpha: barrierColor.a * t),
                 );
-                if (widget.barrierBlur > 0) {
-                  scrim = BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: widget.barrierBlur * t,
-                      sigmaY: widget.barrierBlur * t,
-                    ),
-                    child: scrim,
+                if (widget.barrierBlur > 0 || widget.barrierSaturation != 1) {
+                  ImageFilter filter = ImageFilter.blur(
+                    sigmaX: widget.barrierBlur * t,
+                    sigmaY: widget.barrierBlur * t,
                   );
+                  if (widget.barrierSaturation != 1) {
+                    // CSS saturate(): ramps 1 → target with the fade and
+                    // composes with the blur into one backdrop pass.
+                    final s = 1 + (widget.barrierSaturation - 1) * t;
+                    filter = ImageFilter.compose(
+                      outer: _saturationFilter(s),
+                      inner: filter,
+                    );
+                  }
+                  scrim = BackdropFilter(filter: filter, child: scrim);
                 }
                 return GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -214,6 +261,21 @@ class _BeuiOverlayState extends State<BeuiOverlay>
       bindings: {const SingleActivator(LogicalKeyboardKey.escape): _dismiss},
       child: Focus(autofocus: widget.trapFocus, child: content),
     );
+  }
+
+  /// CSS `saturate(s)` as a color-matrix filter (Rec. 709 luma weights).
+  /// [ColorFilter] implements [ImageFilter], so it composes with the blur.
+  static ImageFilter _saturationFilter(double s) {
+    final inv = 1 - s;
+    final r = 0.2126 * inv;
+    final g = 0.7152 * inv;
+    final b = 0.0722 * inv;
+    return ColorFilter.matrix(<double>[
+      r + s, g, b, 0, 0, //
+      r, g + s, b, 0, 0, //
+      r, g, b + s, 0, 0, //
+      0, 0, 0, 1, 0, //
+    ]);
   }
 
   @override

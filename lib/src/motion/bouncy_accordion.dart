@@ -47,39 +47,41 @@ class BeuiBouncyAccordionItem {
 // SPRING_* tokens (lib/src/tokens/motion.dart); they are bespoke to this
 // component, exactly the localized-coupling case the spec allows.
 //
-// Conversion (Framer's underdamped duration+bounce resolver):
+// Conversion (Framer's `findSpring` duration+bounce resolver):
 //   mass        = 1
 //   ζ (zeta)    = 1 - bounce                       (damping ratio)
-//   ω_d         = 2π / duration                    (damped angular freq)
-//   ω₀          = ω_d / √(1 - ζ²)                   (undamped natural freq)
+//   solve ω₀:     (ζ / √(1 - ζ²)) · e^(−ζ·ω₀·d) = 0.001
+//                 → ζ·ω₀·d = ln( ζ / (0.001·√(1 - ζ²)) )
 //   stiffness   = ω₀² · mass
 //   damping     = ζ · 2 · √(stiffness · mass)
-// `duration` is the *perceptual* reach time (≈ first crossing of target), not
-// the full settle — matching how Framer interprets the spec. Lower bounce →
-// less overshoot; the values below were validated by simulation.
+// Framer treats `duration` d as the moment the oscillation's *decay envelope*
+// shrinks to 0.001 of the travel — its rest threshold — NOT one damped period
+// (ω_d = 2π/d). Solving the envelope yields noticeably stiffer springs; the
+// values below reproduce `findSpring`'s output for each duration/bounce pair
+// (ζ preserved exactly).
 // ---------------------------------------------------------------------------
 
 /// Connected-group morph: row margin-top + corner radii (source `ROW_TRANSITION`,
 /// duration 0.55 / bounce 0.38). The springiest of the four.
 const _rowSpring = SpringMotion(
-  SpringDescription(mass: 1, stiffness: 212.0, damping: 18.05),
+  SpringDescription(mass: 1, stiffness: 382.9, damping: 24.26),
 );
 
 /// Panel height **opening** (source `CONTENT_OPEN_TRANSITION`, 0.58 / 0.32) —
 /// a weighted, gently-bouncy expand.
 const _contentOpenSpring = SpringMotion(
-  SpringDescription(mass: 1, stiffness: 218.3, damping: 20.09),
+  SpringDescription(mass: 1, stiffness: 300.1, damping: 23.56),
 );
 
 /// Panel height **closing** (source `CONTENT_CLOSE_TRANSITION`, 0.46 / 0.26) —
 /// quicker and tighter than the open, so exits beat entrances.
 const _contentCloseSpring = SpringMotion(
-  SpringDescription(mass: 1, stiffness: 412.4, damping: 30.06),
+  SpringDescription(mass: 1, stiffness: 423.3, damping: 30.45),
 );
 
 /// Chevron rotation (source `CHEVRON_TRANSITION`, 0.42 / 0.28).
 const _chevronSpring = SpringMotion(
-  SpringDescription(mass: 1, stiffness: 464.7, damping: 31.04),
+  SpringDescription(mass: 1, stiffness: 527.4, damping: 33.07),
 );
 
 /// The description fade (source `DESCRIPTION_TRANSITION`, 0.18s EASE_OUT). A
@@ -372,11 +374,17 @@ class _AccordionRowState extends State<_AccordionRow> {
 
   /// The clipped height morph over the measured [child]. Reduced motion snaps to
   /// the open/closed height; otherwise the height springs and the clip follows.
+  ///
+  /// The open spring is allowed to **overshoot past 100%** (capped at 125%) —
+  /// the component's namesake bounce: the panel briefly grows taller than its
+  /// natural height (the row's surface stretches downward, as in the source)
+  /// and settles back. Only the negative side is hard-clamped, so a bouncy
+  /// close never produces a negative height.
   Widget _morph(double target, Motion motion, bool reduce, Widget child) {
     Widget clip(double h) => Align(
       alignment: Alignment.topCenter,
       heightFactor: _contentHeight > 0
-          ? (h / _contentHeight).clamp(0.0, 1.0)
+          ? (h / _contentHeight).clamp(0.0, 1.25)
           : (h > 0 ? 1.0 : 0.0),
       child: child,
     );
