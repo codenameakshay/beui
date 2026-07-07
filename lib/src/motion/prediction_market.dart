@@ -576,6 +576,9 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
                             duration: const Duration(milliseconds: 450),
                             stagger: Duration.zero,
                             blur: true,
+                            // The payout lives inside the card, not a feed —
+                            // roll immediately (source `startOnView={false}`).
+                            startOnView: false,
                             format: (cents) => _formatCurrency(cents / 100),
                             style: TextStyle(
                               fontSize: _payoutFontSize(quote.payout),

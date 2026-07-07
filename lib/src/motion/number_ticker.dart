@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_scroll_geometry.dart';
 
 /// A slot-machine number — the Flutter port of beUI's `number-ticker`.
 ///
@@ -16,13 +17,18 @@ import '_engine.dart';
 /// The roll rides an [EASE_OUT][beuiEaseOut] curve over [duration] (source
 /// default `0.9s`), driven through `motor` — matching the source's
 /// `transition: { duration, ease: EASE_OUT }` exactly, not a spring overshoot
-/// (an odometer must never bounce past its number). On the entrance the digits
+/// (an odometer must never bounce past its number). Every column starts at `0`
+/// (the source's `initial: y 0`) and holds there until the ticker **arms**: on
+/// mount, or — with [startOnView] (the source default) — once 60% of the
+/// widget is visible in the nearest enclosing scrollable. On arming the digits
 /// roll in staggered left-to-right by [stagger]; once that reveal has played,
 /// live value changes roll every digit immediately (a per-digit delay on live
 /// updates reads as lag — the source's `entered` gate).
 ///
-/// With [blur] true a short blur rides each roll (the source's
-/// `blur(10px) → blur(0px)`), capped at 10px per the library's blur budget.
+/// With [blur] true, each roll carries a fixed-window blur — `blur(10px) →
+/// blur(0)` over `min(duration × 0.75, 320ms)`, the source's transition — so
+/// the sharpening is time-based, not tied to how far the column happens to
+/// travel.
 ///
 /// Reduced motion snaps every digit straight to its target with no roll or
 /// blur.
@@ -37,6 +43,7 @@ class BeuiNumberTicker extends StatefulWidget {
     this.suffix,
     this.blur = false,
     this.locale = false,
+    this.startOnView = true,
     this.format,
     this.style,
     super.key,
@@ -66,6 +73,12 @@ class BeuiNumberTicker extends StatefulWidget {
   /// Insert locale group separators (thousands commas).
   final bool locale;
 
+  /// Hold the entrance until 60% of the ticker is visible in the nearest
+  /// enclosing scrollable (source `startOnView`, default true; `amount: 0.6`,
+  /// once only). Without an enclosing scrollable the ticker counts as visible
+  /// and arms on the first layout.
+  final bool startOnView;
+
   /// Custom formatter. Takes precedence over [locale]. Receives the rounded int.
   final String Function(int value)? format;
 
@@ -76,7 +89,15 @@ class BeuiNumberTicker extends StatefulWidget {
   State<BeuiNumberTicker> createState() => _BeuiNumberTickerState();
 }
 
-class _BeuiNumberTickerState extends State<BeuiNumberTicker> {
+class _BeuiNumberTickerState extends State<BeuiNumberTicker>
+    with ScrollGeometryMixin {
+  // Source `useInView(..., { amount: 0.6 })`.
+  static const double _inViewAmount = 0.6;
+
+  // Whether the entrance has been triggered (mount, or in-view arming). Until
+  // then every digit column holds at 0 — the source's gated `animate`.
+  late bool _armed = !widget.startOnView;
+
   // Whether the staggered entrance reveal has already played. After it has,
   // live value changes roll every digit with no per-digit delay (source).
   bool _entered = false;
@@ -85,9 +106,36 @@ class _BeuiNumberTickerState extends State<BeuiNumberTicker> {
   @override
   void initState() {
     super.initState();
-    // The stagger is a one-shot entrance flourish; arm a single timer to drop
-    // the per-digit delay once the reveal window has passed. Scheduling it here
-    // (not in build) keeps it cancellable and timer-leak free.
+    if (_armed) _startEnterWindow();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // startOnView needs an enclosing scrollable to measure against; without
+    // one the widget counts as fully visible — arm on the first layout.
+    if (!_armed && Scrollable.maybeOf(context) == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _arm();
+      });
+    }
+  }
+
+  @override
+  void onScrollGeometryChanged() {
+    if (_armed) return;
+    if ((visibleFraction ?? 0) >= _inViewAmount) _arm();
+  }
+
+  void _arm() {
+    if (_armed) return;
+    setState(() => _armed = true);
+    _startEnterWindow();
+  }
+
+  /// The stagger is a one-shot entrance flourish; a single timer drops the
+  /// per-digit delay once the reveal window has passed.
+  void _startEnterWindow() {
     final text = _format();
     final total = widget.duration + widget.stagger * (text.length - 1);
     _enterTimer = Timer(total, () {
@@ -157,10 +205,12 @@ class _BeuiNumberTickerState extends State<BeuiNumberTicker> {
           _Digit(
             key: ValueKey('d-$place'),
             digit: digit,
+            // Entrance only: `delay = entered ? 0 : i * stagger` (source).
             delay: (reduce || _entered) ? Duration.zero : widget.stagger * i,
             duration: widget.duration,
             blur: widget.blur,
             reduce: reduce,
+            armed: reduce || _armed,
             style: style,
           ),
         );
@@ -186,13 +236,20 @@ class _BeuiNumberTickerState extends State<BeuiNumberTicker> {
 
 /// One digit column: glyphs 0–9 stacked vertically, clipped to a single digit's
 /// height, translated to bring the target digit into the window.
-class _Digit extends StatelessWidget {
+///
+/// The column rests at `0` (source `initial`) until [armed], then rolls to
+/// [digit] once its entrance [delay] has elapsed — the source's per-digit
+/// `delay: i * stagger`, wired into a release [Timer] here because motor
+/// motions carry no delay of their own. Each roll (re)starts the fixed
+/// blur window.
+class _Digit extends StatefulWidget {
   const _Digit({
     required this.digit,
     required this.delay,
     required this.duration,
     required this.blur,
     required this.reduce,
+    required this.armed,
     required this.style,
     super.key,
   });
@@ -202,21 +259,76 @@ class _Digit extends StatelessWidget {
   final Duration duration;
   final bool blur;
   final bool reduce;
+  final bool armed;
   final TextStyle style;
 
+  @override
+  State<_Digit> createState() => _DigitState();
+}
+
+class _DigitState extends State<_Digit> {
   // Source DIGIT_HEIGHT_EM 1.1 — the slot is 1.1× the font size tall.
   static const double _heightEm = 1.1;
-  // Source blur(10px); the library blur budget caps at 10px.
-  static const double _maxBlurSigma = 5.0; // ~10px CSS blur
+  // Source `blur(10px)` → sigma 5 (the beuiBlurSigma px/2 convention; also the
+  // library's motion-blur budget cap).
+  static const double _maxBlurSigma = 5.0;
+
+  Timer? _releaseTimer;
+
+  // Whether the entrance delay has elapsed and the column may leave 0.
+  late bool _released = widget.armed && widget.delay == Duration.zero;
+
+  // Roll bookkeeping for the blur window: [_prevTarget] is where the column
+  // was last told to sit; each change is a new roll and bumps [_rollGen],
+  // which re-keys (restarts) the blur's fixed time window.
+  int _prevTarget = 0;
+  int _rollGen = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduleRelease();
+  }
+
+  @override
+  void didUpdateWidget(_Digit old) {
+    super.didUpdateWidget(old);
+    if (widget.armed && !old.armed) _scheduleRelease();
+  }
+
+  void _scheduleRelease() {
+    if (!widget.armed || _released) return;
+    if (widget.delay == Duration.zero) {
+      _released = true;
+      return;
+    }
+    _releaseTimer?.cancel();
+    _releaseTimer = Timer(widget.delay, () {
+      if (mounted) setState(() => _released = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _releaseTimer?.cancel();
+    super.dispose();
+  }
+
+  /// The fixed blur window — the source's dedicated filter transition:
+  /// `duration: min(duration * 0.75, 0.32)`.
+  Duration get _blurWindow {
+    final ms = (widget.duration.inMilliseconds * 0.75).round();
+    return Duration(milliseconds: ms < 320 ? ms : 320);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final fontSize = style.fontSize ?? 14;
+    final fontSize = widget.style.fontSize ?? 14;
     final slot = fontSize * _heightEm;
     final width = fontSize * 0.62; // ~1ch for tabular figures
 
-    Widget column(double y, {double blurSigma = 0}) {
-      Widget col = Transform.translate(
+    Widget column(double y) {
+      return Transform.translate(
         offset: Offset(0, -y * slot),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -225,23 +337,17 @@ class _Digit extends StatelessWidget {
               SizedBox(
                 height: slot,
                 child: Center(
-                  child: Text('$n', style: style, maxLines: 1, softWrap: false),
+                  child: Text(
+                    '$n',
+                    style: widget.style,
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
                 ),
               ),
           ],
         ),
       );
-      if (blurSigma > 0.05) {
-        col = ImageFiltered(
-          imageFilter: ImageFilter.blur(
-            sigmaX: blurSigma,
-            sigmaY: blurSigma,
-            tileMode: TileMode.decal,
-          ),
-          child: col,
-        );
-      }
-      return col;
     }
 
     Widget slotBox(Widget child) => ClipRect(
@@ -257,30 +363,59 @@ class _Digit extends StatelessWidget {
     );
 
     // Reduced motion: jump straight to the target digit, no roll, no blur.
-    if (reduce) {
-      return slotBox(column(digit.toDouble()));
+    if (widget.reduce) {
+      return slotBox(column(widget.digit.toDouble()));
+    }
+
+    // Where the column should sit: held at 0 until released (source
+    // `initial: y 0` + gated animate), then the live digit.
+    final target = _released ? widget.digit : 0;
+    if (target != _prevTarget) {
+      // A new roll starts this frame — restart the blur window. (Derived
+      // bookkeeping on this State, not a setState: the build consuming it is
+      // already running.)
+      _prevTarget = target;
+      _rollGen++;
     }
 
     // The roll: an EASE_OUT curve over `duration`, driven through motor. Spring
     // tokens would overshoot — an odometer must settle exactly on its number —
     // so this mirrors the source's `{ duration, ease: EASE_OUT }` tween.
-    return SingleMotionBuilder(
-      value: digit.toDouble(),
+    Widget digitRoll = SingleMotionBuilder(
+      value: target.toDouble(),
+      from: 0,
       motion: motionFor(
         context,
-        CurvedMotion(duration, beuiEaseOut),
+        CurvedMotion(widget.duration, beuiEaseOut),
         isMovement: true,
       ),
-      builder: (context, y, _) {
-        double blurSigma = 0;
-        if (blur) {
-          // Blur tracks how far the column still is from its target, scaled to
-          // the source window (`min(duration*0.75, 0.32)`), capped at the budget.
-          final dist = (y - digit).abs();
-          blurSigma = (dist * _maxBlurSigma).clamp(0.0, _maxBlurSigma);
-        }
-        return slotBox(column(y, blurSigma: blurSigma));
-      },
+      builder: (context, y, _) => slotBox(column(y)),
     );
+
+    if (widget.blur && _rollGen > 0) {
+      // Fixed-window blur riding the roll: sigma 5 → 0 over the window, eased
+      // like the roll; re-keyed per roll so a live update re-blurs.
+      digitRoll = TweenAnimationBuilder<double>(
+        key: ValueKey(_rollGen),
+        tween: Tween(begin: 1.0, end: 0.0),
+        duration: _blurWindow,
+        curve: beuiEaseOut,
+        child: digitRoll,
+        builder: (context, t, child) {
+          final sigma = t * _maxBlurSigma;
+          if (sigma <= 0.05) return child!;
+          return ImageFiltered(
+            imageFilter: ImageFilter.blur(
+              sigmaX: sigma,
+              sigmaY: sigma,
+              tileMode: TileMode.decal,
+            ),
+            child: child,
+          );
+        },
+      );
+    }
+
+    return digitRoll;
   }
 }
