@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import 'demos/not_found_demo.dart';
 import 'demos/number_demo.dart';
 import 'demos/action_rails_demo.dart';
 import 'demos/animated_badge_demo.dart';
@@ -80,6 +81,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Swap', swapDemo),
   GalleryEntry('Prediction Market', predictionMarketDemo),
   GalleryEntry('File Upload', fileUploadDemo),
+  GalleryEntry('Not Found', notFoundDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();

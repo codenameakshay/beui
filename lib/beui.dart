@@ -72,6 +72,13 @@ export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'
     show BeuiModalPlacement, BeuiMorphingModal;
+export 'src/motion/not_found.dart'
+    show
+        BeuiNotFoundGlitch,
+        BeuiNotFoundMagnetic,
+        BeuiNotFoundSpotlight,
+        BeuiNotFoundStacked,
+        BeuiNotFoundTerminal;
 export 'src/motion/number_ticker.dart' show BeuiNumberTicker;
 export 'src/motion/otp_input.dart' show BeuiOtpInput, BeuiOtpStatus;
 export 'src/motion/overflow_actions.dart'
