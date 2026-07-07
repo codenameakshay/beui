@@ -15,6 +15,7 @@ import 'demos/expandable_tabs_demo.dart';
 import 'demos/bouncy_accordion_demo.dart';
 import 'demos/range_slider_demo.dart';
 import 'demos/otp_input_demo.dart';
+import 'demos/prediction_market_demo.dart';
 import 'demos/scroll_animation_demo.dart';
 import 'demos/swap_demo.dart';
 import 'demos/swipeable_list_demo.dart';
@@ -76,6 +77,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Swipeable List', swipeableListDemo),
   GalleryEntry('Create Menu', createMenuDemo),
   GalleryEntry('Swap', swapDemo),
+  GalleryEntry('Prediction Market', predictionMarketDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();

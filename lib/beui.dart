@@ -70,6 +70,14 @@ export 'src/motion/otp_input.dart' show BeuiOtpInput, BeuiOtpStatus;
 export 'src/motion/overflow_actions.dart'
     show BeuiOverflowActionItem, BeuiOverflowActions, BeuiOverflowActionsSize;
 
+export 'src/motion/prediction_market.dart'
+    show
+        BeuiPredictionMarket,
+        BeuiPredictionMarketMode,
+        BeuiPredictionMarketOrder,
+        BeuiPredictionMarketOutcome,
+        BeuiPredictionMarketQuote;
+
 // Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
 export 'src/motion/parallax.dart' show BeuiParallax, BeuiParallaxAxis;
