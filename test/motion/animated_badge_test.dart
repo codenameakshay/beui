@@ -322,5 +322,87 @@ void main() {
 
       await tester.pump(const Duration(milliseconds: 600));
     });
+
+    testWidgets('the exiting layer fades to 0.5, not 0 (source endpoint)', (
+      tester,
+    ) async {
+      Widget app(String l) => _wrap(
+        BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
+      );
+      await tester.pumpWidget(app('Alpha'));
+      await tester.pumpAndSettle();
+
+      await tester.pumpWidget(app('Bravo'));
+      await tester.pump();
+      // Late in the 200ms text exit: opacity has bottomed out near its 0.5
+      // floor but the ghost is still mounted.
+      await tester.pump(const Duration(milliseconds: 150));
+
+      expect(find.text('Alpha'), findsOneWidget);
+      final exitOpacity = tester.widget<Opacity>(
+        find
+            .ancestor(of: find.text('Alpha'), matching: find.byType(Opacity))
+            .first,
+      );
+      expect(exitOpacity.opacity, greaterThanOrEqualTo(0.5));
+      expect(exitOpacity.opacity, lessThan(0.75));
+
+      // The entering layer never starts from 0 either (source: 0.76 → 1).
+      final enterOpacity = tester.widget<Opacity>(
+        find
+            .ancestor(of: find.text('Bravo'), matching: find.byType(Opacity))
+            .first,
+      );
+      expect(enterOpacity.opacity, greaterThanOrEqualTo(0.72));
+
+      await tester.pumpAndSettle();
+      expect(find.text('Alpha'), findsNothing); // removed after the exit
+    });
+  });
+
+  group('width morph (source layout spring)', () {
+    testWidgets('the container width springs to fit a new label', (
+      tester,
+    ) async {
+      Widget app(String l) => _wrap(
+        BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
+      );
+      await tester.pumpWidget(app('Hi'));
+      await tester.pumpAndSettle();
+      final small = tester.getSize(find.byType(BeuiAnimatedBadge)).width;
+
+      await tester.pumpWidget(app('A much longer label'));
+      await tester.pump(); // swap frame (post-frame width measurement lands)
+      await tester.pump(); // spring retargets to the measured width
+      await tester.pump(const Duration(milliseconds: 60)); // mid-morph
+      final mid = tester.getSize(find.byType(BeuiAnimatedBadge)).width;
+
+      await tester.pumpAndSettle();
+      final big = tester.getSize(find.byType(BeuiAnimatedBadge)).width;
+
+      expect(big, greaterThan(small + 20)); // longer label → wider badge
+      expect(mid, greaterThan(small + 1)); // gliding, not snapped...
+      expect(mid, lessThan(big - 1)); // ...and not there yet
+    });
+
+    testWidgets('reduced motion snaps the width', (tester) async {
+      Widget app(String l) => _wrap(
+        BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
+        reduce: true,
+      );
+      await tester.pumpWidget(app('Hi'));
+      await tester.pumpAndSettle();
+
+      await tester.pumpWidget(app('A much longer label'));
+      // The swap frame itself (plus the old label still cross-fading out under
+      // reduced motion does not hold the width — exits are lifted from flow).
+      await tester.pump(const Duration(milliseconds: 450));
+      final after = tester.getSize(find.byType(BeuiAnimatedBadge)).width;
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSize(find.byType(BeuiAnimatedBadge)).width,
+        closeTo(after, 0.5),
+      );
+    });
   });
 }
