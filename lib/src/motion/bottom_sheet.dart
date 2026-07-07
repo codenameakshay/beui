@@ -73,9 +73,14 @@ class BeuiBottomSheet extends StatelessWidget {
       barrierColor: colors.background.withValues(
         alpha: 0.4,
       ), // bg-background/40
-      barrierBlur: 4, // backdrop-blur-sm
+      barrierBlur: 2, // backdrop-blur-sm (4px) → σ2
+      // The barrier fade rides the panel's 500ms clock (the overlay default)
+      // with the drawer curve, matching the source's backdrop transition.
+      barrierCurve: beuiEaseDrawer,
       onDismiss: () => onOpenChange(false),
-      // Source `DRAWER` (0.5s) normally; the reduced-motion branch is 0.18s.
+      // Source `DRAWER` (0.5s) in BOTH directions — deliberately symmetric,
+      // overriding the house exits-faster-than-entrances rule. The
+      // reduced-motion branch is 0.18s.
       enterDuration: Duration(milliseconds: reduce ? 180 : 500),
       exitDuration: Duration(milliseconds: reduce ? 180 : 500),
       overlayBuilder: (context, animation, link) => _BottomSheetPanel(
@@ -130,7 +135,9 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
   late int _snap = widget.defaultSnap.clamp(0, widget.snapPoints.length - 1);
 
   bool _dragging = false;
-  double _dragOffset = 0; // elastic, visual (px)
+  // Elastic, visual drag offset (px). A ValueNotifier — NOT setState — so a
+  // pointer-move only re-runs the transform builder, never the sheet surface.
+  final ValueNotifier<double> _drag = ValueNotifier<double>(0);
   double _rawDy = 0; // raw finger travel (px) — the fling logic reads this
   double _returnFrom = 0; // drag offset captured at release
   bool _reduce = false;
@@ -156,6 +163,7 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
   @override
   void dispose() {
     _return.dispose();
+    _drag.dispose();
     super.dispose();
   }
 
@@ -167,24 +175,20 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
   double _elastic(double raw) => raw >= 0 ? raw * 0.4 : raw * 0.02;
 
   double _offsetNow() {
-    if (_dragging) return _dragOffset;
+    if (_dragging) return _drag.value;
     return _returnFrom * (1 - beuiEaseDrawer.transform(_return.value));
   }
 
   void _onDragStart(DragStartDetails _) {
     _return.stop();
-    setState(() {
-      _dragging = true;
-      _rawDy = 0;
-      _dragOffset = 0;
-    });
+    _rawDy = 0;
+    _drag.value = 0;
+    setState(() => _dragging = true); // cursor change only
   }
 
   void _onDragUpdate(DragUpdateDetails d) {
-    setState(() {
-      _rawDy += d.delta.dy;
-      _dragOffset = _elastic(_rawDy);
-    });
+    _rawDy += d.delta.dy;
+    _drag.value = _elastic(_rawDy); // no setState — transform-only update
   }
 
   void _onDragEnd(double velocity) {
@@ -212,10 +216,10 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
 
     setState(() {
       _dragging = false;
-      _returnFrom = _dragOffset;
-      _dragOffset = 0;
+      _returnFrom = _drag.value;
       _snap = target;
     });
+    _drag.value = 0;
     if (_reduce) {
       _returnFrom = 0; // no settle animation under reduced motion
     } else {
@@ -244,9 +248,15 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
   }
 
   Widget _buildSheet(double height) {
+    // PERF: the full surface (Material / decoration / scrollable content) is
+    // built once per state build and threaded through the `child` slot, so
+    // each slide frame and drag pointer-move only re-runs the
+    // Transform/Opacity wrappers below.
+    final surface = SizedBox(height: height, child: _surface());
     return AnimatedBuilder(
-      animation: Listenable.merge([widget.animation, _return]),
-      builder: (context, _) {
+      animation: Listenable.merge([widget.animation, _return, _drag]),
+      child: surface,
+      builder: (context, child) {
         final t = widget.animation.value.clamp(0.0, 1.0);
         final double translate;
         final double opacity;
@@ -260,10 +270,7 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
         }
         return Transform.translate(
           offset: Offset(0, translate),
-          child: Opacity(
-            opacity: opacity,
-            child: SizedBox(height: height, child: _surface()),
-          ),
+          child: Opacity(opacity: opacity, child: child),
         );
       },
     );
@@ -282,7 +289,7 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
         child: Container(
           clipBehavior: Clip.antiAlias, // overflow-hidden
           decoration: BoxDecoration(
-            color: colors.card,
+            color: colors.background, // source: bg-background
             border: Border.all(color: colors.border),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             boxShadow: const [
