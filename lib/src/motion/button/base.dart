@@ -98,7 +98,8 @@ class _BeuiButtonState extends State<BeuiButton> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final spec = _SizeSpec.of(widget.size);
@@ -109,10 +110,10 @@ class _BeuiButtonState extends State<BeuiButton> {
     final scaleTarget = !_enabled || reduce
         ? 1.0
         : _pressed
-            ? widget.pressScale
-            : _hovered
-                ? 1.02
-                : 1.0;
+        ? widget.pressScale
+        : _hovered
+        ? 1.02
+        : 1.0;
 
     final radius = isIcon
         ? BorderRadius.circular(8) // rounded-lg
@@ -237,8 +238,9 @@ class _BeuiButtonState extends State<BeuiButton> {
       child: FocusableActionDetector(
         enabled: _enabled,
         focusNode: widget.focusNode,
-        mouseCursor:
-            _enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
+        mouseCursor: _enabled
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.basic,
         shortcuts: const <ShortcutActivator, Intent>{
           SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
           SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
@@ -260,11 +262,7 @@ class _BeuiButtonState extends State<BeuiButton> {
 }
 
 class _Palette {
-  const _Palette({
-    required this.background,
-    required this.text,
-    this.border,
-  });
+  const _Palette({required this.background, required this.text, this.border});
   final Color background;
   final Color text;
   final Color? border;
@@ -278,21 +276,19 @@ _Palette _palette(BeuiButtonVariant variant, BeuiColors c, bool hovered) {
         text: c.primaryForeground,
       );
     case BeuiButtonVariant.secondary:
-      return _Palette(
-        background: c.card,
-        text: c.foreground,
-        border: c.border,
-      );
+      return _Palette(background: c.card, text: c.foreground, border: c.border);
     case BeuiButtonVariant.ghost:
       return _Palette(
-        background:
-            hovered ? c.primary.withValues(alpha: 0.05) : Colors.transparent,
+        background: hovered
+            ? c.primary.withValues(alpha: 0.05)
+            : Colors.transparent,
         text: hovered ? c.foreground : c.mutedForeground,
       );
     case BeuiButtonVariant.outline:
       return _Palette(
-        background:
-            hovered ? c.primary.withValues(alpha: 0.05) : Colors.transparent,
+        background: hovered
+            ? c.primary.withValues(alpha: 0.05)
+            : Colors.transparent,
         text: c.foreground,
         border: c.border,
       );
@@ -306,11 +302,11 @@ class _SizeSpec {
   final double textSize;
 
   static _SizeSpec of(BeuiButtonSize size) => switch (size) {
-        BeuiButtonSize.sm => const _SizeSpec(32, 12, 12),
-        BeuiButtonSize.md => const _SizeSpec(40, 20, 14),
-        BeuiButtonSize.lg => const _SizeSpec(48, 24, 16),
-        BeuiButtonSize.icon => const _SizeSpec(32, 0, 14),
-      };
+    BeuiButtonSize.sm => const _SizeSpec(32, 12, 12),
+    BeuiButtonSize.md => const _SizeSpec(40, 20, 14),
+    BeuiButtonSize.lg => const _SizeSpec(48, 24, 16),
+    BeuiButtonSize.icon => const _SizeSpec(32, 0, 14),
+  };
 }
 
 class _RippleData {
@@ -342,8 +338,10 @@ class _RippleState extends State<_Ripple> with SingleTickerProviderStateMixin {
     vsync: this,
     duration: const Duration(milliseconds: 1600),
   )..forward();
-  late final Animation<double> _t =
-      CurvedAnimation(parent: _controller, curve: beuiEaseOut);
+  late final Animation<double> _t = CurvedAnimation(
+    parent: _controller,
+    curve: beuiEaseOut,
+  );
 
   @override
   void initState() {

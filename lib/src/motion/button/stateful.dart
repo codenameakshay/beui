@@ -71,30 +71,34 @@ class BeuiStatefulButton extends StatelessWidget {
   final BeuiButtonSize size;
 
   String get _text => switch (state) {
-        BeuiButtonState.loading => loadingText,
-        BeuiButtonState.success => successText,
-        BeuiButtonState.error => errorText,
-        BeuiButtonState.idle => label,
-      };
+    BeuiButtonState.loading => loadingText,
+    BeuiButtonState.success => successText,
+    BeuiButtonState.error => errorText,
+    BeuiButtonState.idle => label,
+  };
 
   /// The leading status icon (spinner / check / ✗) — none while idle.
   IconData? get _leadingIcon => switch (state) {
-        BeuiButtonState.loading => LucideIcons.loader_circle,
-        BeuiButtonState.success => LucideIcons.check,
-        BeuiButtonState.error => LucideIcons.x,
-        BeuiButtonState.idle => null,
-      };
+    BeuiButtonState.loading => LucideIcons.loader_circle,
+    BeuiButtonState.success => LucideIcons.check,
+    BeuiButtonState.error => LucideIcons.x,
+    BeuiButtonState.idle => null,
+  };
 
   /// The trailing idle icon — only shown while idle (matching the source).
-  IconData? get _trailingIcon =>
-      state == BeuiButtonState.idle ? icon : null;
+  IconData? get _trailingIcon => state == BeuiButtonState.idle ? icon : null;
 
-  Widget _iconSlot(IconData? data, {required bool leading, required bool reduce}) {
+  Widget _iconSlot(
+    IconData? data, {
+    required bool leading,
+    required bool reduce,
+  }) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 280),
       switchInCurve: Curves.linear,
       switchOutCurve: Curves.linear,
-      transitionBuilder: (child, animation) => _rollIn(child, animation, reduce),
+      transitionBuilder: (child, animation) =>
+          _rollIn(child, animation, reduce),
       child: data == null
           ? SizedBox.shrink(key: ValueKey('none-${leading ? 'L' : 'T'}'))
           : Padding(
@@ -197,20 +201,22 @@ class _CascadeTextState extends State<_CascadeText>
   late String _current = widget.text;
   String? _previous;
 
-  int _durationMs(String t) => _enterMs + _staggerMs * (t.length - 1).clamp(0, 80);
+  int _durationMs(String t) =>
+      _enterMs + _staggerMs * (t.length - 1).clamp(0, 80);
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: _durationMs(_current)),
-      value: 1,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed && _previous != null) {
-          setState(() => _previous = null);
-        }
-      });
+    _controller =
+        AnimationController(
+          vsync: this,
+          duration: Duration(milliseconds: _durationMs(_current)),
+          value: 1,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed && _previous != null) {
+            setState(() => _previous = null);
+          }
+        });
   }
 
   @override
@@ -257,7 +263,14 @@ class _CascadeTextState extends State<_CascadeText>
                 left: 0,
                 top: 0,
                 bottom: 0,
-                child: _letters(_previous!, t, totalMs, roll, style, exiting: true),
+                child: _letters(
+                  _previous!,
+                  t,
+                  totalMs,
+                  roll,
+                  style,
+                  exiting: true,
+                ),
               ),
               // Entering text — sizes the slot to the new label immediately.
               _letters(_current, t, totalMs, roll, style, exiting: false),
@@ -268,8 +281,14 @@ class _CascadeTextState extends State<_CascadeText>
     );
   }
 
-  Widget _letters(String text, double t, int totalMs, double roll,
-      TextStyle style, {required bool exiting}) {
+  Widget _letters(
+    String text,
+    double t,
+    int totalMs,
+    double roll,
+    TextStyle style, {
+    required bool exiting,
+  }) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -279,8 +298,15 @@ class _CascadeTextState extends State<_CascadeText>
     );
   }
 
-  Widget _letter(String char, int i, double t, int totalMs, double roll,
-      TextStyle style, {required bool exiting}) {
+  Widget _letter(
+    String char,
+    int i,
+    double t,
+    int totalMs,
+    double roll,
+    TextStyle style, {
+    required bool exiting,
+  }) {
     final double dy;
     final double opacity;
     final double blur;
@@ -304,7 +330,10 @@ class _CascadeTextState extends State<_CascadeText>
     if (blur > 0.05) {
       glyph = ImageFiltered(
         imageFilter: ImageFilter.blur(
-            sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),
+          sigmaX: blur,
+          sigmaY: blur,
+          tileMode: TileMode.decal,
+        ),
         child: glyph,
       );
     }
@@ -324,7 +353,8 @@ class _Spinner extends StatefulWidget {
   State<_Spinner> createState() => _SpinnerState();
 }
 
-class _SpinnerState extends State<_Spinner> with SingleTickerProviderStateMixin {
+class _SpinnerState extends State<_Spinner>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 900),

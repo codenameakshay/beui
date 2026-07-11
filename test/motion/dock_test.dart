@@ -11,11 +11,7 @@ const _icons = <IconData>[
   LucideIcons.sparkles,
 ];
 
-Widget _app({
-  bool magnify = false,
-  bool reduce = false,
-  int activeIndex = 0,
-}) {
+Widget _app({bool magnify = false, bool reduce = false, int activeIndex = 0}) {
   Widget dock = BeuiDock(
     magnify: magnify,
     items: [
@@ -55,13 +51,15 @@ double? _scaleOf(WidgetTester tester, IconData icon) {
 
 /// The active pill — the rounded-xl (r=12) highlight behind the active item.
 Finder _pillFinder() => find.descendant(
-      of: find.byType(BeuiDock),
-      matching: find.byWidgetPredicate((w) =>
-          w is DecoratedBox &&
-          w.decoration is BoxDecoration &&
-          (w.decoration as BoxDecoration).borderRadius ==
-              BorderRadius.circular(12)),
-    );
+  of: find.byType(BeuiDock),
+  matching: find.byWidgetPredicate(
+    (w) =>
+        w is DecoratedBox &&
+        w.decoration is BoxDecoration &&
+        (w.decoration as BoxDecoration).borderRadius ==
+            BorderRadius.circular(12),
+  ),
+);
 
 int _pillCount(WidgetTester tester) => _pillFinder().evaluate().length;
 
@@ -72,8 +70,9 @@ double _iconCenterX(WidgetTester tester, IconData icon) =>
 
 void main() {
   group('default (faithful) dock', () {
-    testWidgets('hovering does NOT magnify — items carry no scaling transform',
-        (tester) async {
+    testWidgets('hovering does NOT magnify — items carry no scaling transform', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app());
       final g = await _mouse(tester);
 
@@ -91,8 +90,9 @@ void main() {
       }
     });
 
-    testWidgets('exactly one active pill is rendered behind the active item',
-        (tester) async {
+    testWidgets('exactly one active pill is rendered behind the active item', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();
       expect(_pillCount(tester), 1);
@@ -102,8 +102,10 @@ void main() {
       await tester.pumpWidget(_app(activeIndex: 0));
       await tester.pumpAndSettle();
       expect(_pillCount(tester), 1);
-      expect(_pillCenterX(tester),
-          closeTo(_iconCenterX(tester, _icons[0]), 4)); // behind item 0
+      expect(
+        _pillCenterX(tester),
+        closeTo(_iconCenterX(tester, _icons[0]), 4),
+      ); // behind item 0
 
       // Make item 3 active. The SAME pill should spring across (not snap): one
       // pill throughout, still left of item 3 mid-glide, arriving after settle.
@@ -130,21 +132,22 @@ void main() {
     });
 
     testWidgets(
-        'hovering an item magnifies it above 1 and more than a distant item',
-        (tester) async {
-      await tester.pumpWidget(_app(magnify: true));
-      final g = await _mouse(tester);
+      'hovering an item magnifies it above 1 and more than a distant item',
+      (tester) async {
+        await tester.pumpWidget(_app(magnify: true));
+        final g = await _mouse(tester);
 
-      // Hover the first item (house); the last item (sparkles) is far away.
-      await g.moveTo(tester.getCenter(find.byIcon(LucideIcons.house)));
-      await tester.pumpAndSettle();
+        // Hover the first item (house); the last item (sparkles) is far away.
+        await g.moveTo(tester.getCenter(find.byIcon(LucideIcons.house)));
+        await tester.pumpAndSettle();
 
-      final nearScale = _scaleOf(tester, LucideIcons.house)!;
-      final farScale = _scaleOf(tester, LucideIcons.sparkles)!;
+        final nearScale = _scaleOf(tester, LucideIcons.house)!;
+        final farScale = _scaleOf(tester, LucideIcons.sparkles)!;
 
-      expect(nearScale, greaterThan(1.0));
-      expect(nearScale, greaterThan(farScale));
-    });
+        expect(nearScale, greaterThan(1.0));
+        expect(nearScale, greaterThan(farScale));
+      },
+    );
 
     testWidgets('leaving the dock resets every item to 1', (tester) async {
       await tester.pumpWidget(_app(magnify: true));
@@ -161,8 +164,9 @@ void main() {
       }
     });
 
-    testWidgets('reduced motion keeps the dock static (no magnification)',
-        (tester) async {
+    testWidgets('reduced motion keeps the dock static (no magnification)', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app(magnify: true, reduce: true));
       final g = await _mouse(tester);
 

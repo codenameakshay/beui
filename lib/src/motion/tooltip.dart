@@ -117,9 +117,13 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   }
 
   Widget _buildTooltip(
-      BuildContext context, Animation<double> animation, LayerLink link) {
+    BuildContext context,
+    Animation<double> animation,
+    LayerLink link,
+  ) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final spec = _spec(widget.side);
@@ -153,7 +157,10 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
                   opacity: opacity,
                   child: ImageFiltered(
                     imageFilter: ImageFilter.blur(
-                        sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),
+                      sigmaX: blur,
+                      sigmaY: blur,
+                      tileMode: TileMode.decal,
+                    ),
                     child: surface,
                   ),
                 ),
@@ -170,7 +177,11 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(color: Color(0x40000000), blurRadius: 24, offset: Offset(0, 12)),
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 24,
+            offset: Offset(0, 12),
+          ),
         ],
       ),
       child: ClipRRect(
@@ -199,35 +210,35 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   }
 
   _TooltipSpec _spec(BeuiTooltipSide side) => switch (side) {
-        BeuiTooltipSide.top => const _TooltipSpec(
-            targetAnchor: Alignment.topCenter,
-            followerAnchor: Alignment.bottomCenter,
-            gap: Offset(0, -8),
-            away: Offset(0, 10),
-            origin: Alignment.bottomCenter,
-          ),
-        BeuiTooltipSide.bottom => const _TooltipSpec(
-            targetAnchor: Alignment.bottomCenter,
-            followerAnchor: Alignment.topCenter,
-            gap: Offset(0, 8),
-            away: Offset(0, -10),
-            origin: Alignment.topCenter,
-          ),
-        BeuiTooltipSide.left => const _TooltipSpec(
-            targetAnchor: Alignment.centerLeft,
-            followerAnchor: Alignment.centerRight,
-            gap: Offset(-8, 0),
-            away: Offset(10, 0),
-            origin: Alignment.centerRight,
-          ),
-        BeuiTooltipSide.right => const _TooltipSpec(
-            targetAnchor: Alignment.centerRight,
-            followerAnchor: Alignment.centerLeft,
-            gap: Offset(8, 0),
-            away: Offset(-10, 0),
-            origin: Alignment.centerLeft,
-          ),
-      };
+    BeuiTooltipSide.top => const _TooltipSpec(
+      targetAnchor: Alignment.topCenter,
+      followerAnchor: Alignment.bottomCenter,
+      gap: Offset(0, -8),
+      away: Offset(0, 10),
+      origin: Alignment.bottomCenter,
+    ),
+    BeuiTooltipSide.bottom => const _TooltipSpec(
+      targetAnchor: Alignment.bottomCenter,
+      followerAnchor: Alignment.topCenter,
+      gap: Offset(0, 8),
+      away: Offset(0, -10),
+      origin: Alignment.topCenter,
+    ),
+    BeuiTooltipSide.left => const _TooltipSpec(
+      targetAnchor: Alignment.centerLeft,
+      followerAnchor: Alignment.centerRight,
+      gap: Offset(-8, 0),
+      away: Offset(10, 0),
+      origin: Alignment.centerRight,
+    ),
+    BeuiTooltipSide.right => const _TooltipSpec(
+      targetAnchor: Alignment.centerRight,
+      followerAnchor: Alignment.centerLeft,
+      gap: Offset(8, 0),
+      away: Offset(-10, 0),
+      origin: Alignment.centerLeft,
+    ),
+  };
 }
 
 class _TooltipSpec {

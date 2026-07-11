@@ -97,7 +97,10 @@ void main() {
     host(tester).show();
     await tester.pumpAndSettle();
     final screen = tester.getSize(find.byType(MaterialApp));
-    expect(tester.getTopRight(find.byKey(_panel)).dx, closeTo(screen.width, 0.5));
+    expect(
+      tester.getTopRight(find.byKey(_panel)).dx,
+      closeTo(screen.width, 0.5),
+    );
   });
 
   testWidgets('left pins to the left edge', (tester) async {

@@ -28,7 +28,9 @@ Widget _app({
       child: marquee,
     );
   }
-  return MaterialApp(home: Scaffold(body: Center(child: marquee)));
+  return MaterialApp(
+    home: Scaffold(body: Center(child: marquee)),
+  );
 }
 
 double _x(WidgetTester t) => t.getTopLeft(find.text('A').first).dx;

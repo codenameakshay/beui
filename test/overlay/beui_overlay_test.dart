@@ -37,10 +37,11 @@ class _HostState extends State<_Host> {
               child: FadeTransition(
                 opacity: animation,
                 child: Container(
-                    key: _panel,
-                    width: 200,
-                    height: 120,
-                    color: const Color(0xFF202020)),
+                  key: _panel,
+                  width: 200,
+                  height: 120,
+                  color: const Color(0xFF202020),
+                ),
               ),
             ),
             child: const SizedBox(width: 50, height: 50),

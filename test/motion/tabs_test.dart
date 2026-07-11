@@ -62,7 +62,9 @@ void main() {
   group('BeuiTabs interaction', () {
     testWidgets('tap selects via onChanged (controlled)', (tester) async {
       String? changed;
-      await tester.pumpWidget(_app(value: 'one', onChanged: (v) => changed = v));
+      await tester.pumpWidget(
+        _app(value: 'one', onChanged: (v) => changed = v),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Two'));
       await tester.pump();
@@ -71,7 +73,9 @@ void main() {
 
     testWidgets('Enter activates the focused tab', (tester) async {
       String? changed;
-      await tester.pumpWidget(_app(value: 'one', onChanged: (v) => changed = v));
+      await tester.pumpWidget(
+        _app(value: 'one', onChanged: (v) => changed = v),
+      );
       await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
@@ -82,7 +86,9 @@ void main() {
 
     testWidgets('arrow key moves selection to the next tab', (tester) async {
       String? changed;
-      await tester.pumpWidget(_app(value: 'one', onChanged: (v) => changed = v));
+      await tester.pumpWidget(
+        _app(value: 'one', onChanged: (v) => changed = v),
+      );
       await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
@@ -91,9 +97,13 @@ void main() {
       expect(changed, 'two');
     });
 
-    testWidgets('arrow-left from the first tab wraps to the last', (tester) async {
+    testWidgets('arrow-left from the first tab wraps to the last', (
+      tester,
+    ) async {
       String? changed;
-      await tester.pumpWidget(_app(value: 'one', onChanged: (v) => changed = v));
+      await tester.pumpWidget(
+        _app(value: 'one', onChanged: (v) => changed = v),
+      );
       await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
@@ -104,7 +114,9 @@ void main() {
   });
 
   group('BeuiTabs content', () {
-    testWidgets('shows the active panel and swaps on selection', (tester) async {
+    testWidgets('shows the active panel and swaps on selection', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app(defaultValue: 'one', withContent: true));
       await tester.pumpAndSettle();
       expect(find.text('content One'), findsOneWidget);
@@ -118,28 +130,30 @@ void main() {
 
     testWidgets('panel stays left-aligned mid-transition', (tester) async {
       Widget build(String value) => MaterialApp(
-            theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-            home: Scaffold(
-              body: Align(
-                alignment: Alignment.topLeft,
-                child: BeuiTabs<String>(
-                  key: const ValueKey('t'),
-                  value: value,
-                  tabs: const [
-                    BeuiTab(
-                      value: 'a',
-                      label: Text('A'),
-                      content: Text('a very long panel body for tab a'),
-                    ),
-                    BeuiTab(value: 'b', label: Text('B'), content: Text('short b')),
-                  ],
+        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        home: Scaffold(
+          body: Align(
+            alignment: Alignment.topLeft,
+            child: BeuiTabs<String>(
+              key: const ValueKey('t'),
+              value: value,
+              tabs: const [
+                BeuiTab(
+                  value: 'a',
+                  label: Text('A'),
+                  content: Text('a very long panel body for tab a'),
                 ),
-              ),
+                BeuiTab(value: 'b', label: Text('B'), content: Text('short b')),
+              ],
             ),
-          );
+          ),
+        ),
+      );
       await tester.pumpWidget(build('a'));
       await tester.pumpAndSettle();
-      final leftA = tester.getTopLeft(find.text('a very long panel body for tab a')).dx;
+      final leftA = tester
+          .getTopLeft(find.text('a very long panel body for tab a'))
+          .dx;
 
       await tester.pumpWidget(build('b'));
       await tester.pump(); // begin transition (both panels stacked)
@@ -158,10 +172,14 @@ void main() {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(_app(value: 'two'));
       await tester.pumpAndSettle();
-      expect(tester.getSemantics(find.text('Two')),
-          isSemantics(isSelected: true, isButton: true));
-      expect(tester.getSemantics(find.text('One')),
-          isSemantics(isSelected: false));
+      expect(
+        tester.getSemantics(find.text('Two')),
+        isSemantics(isSelected: true, isButton: true),
+      );
+      expect(
+        tester.getSemantics(find.text('One')),
+        isSemantics(isSelected: false),
+      );
       handle.dispose();
     });
   });
@@ -177,8 +195,9 @@ void main() {
   });
 
   group('BeuiTabs motion fidelity', () {
-    testWidgets('indicator glides between tabs under normal motion',
-        (tester) async {
+    testWidgets('indicator glides between tabs under normal motion', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app(value: 'one'));
       await tester.pumpAndSettle();
       final x1 = _indicatorX(tester);

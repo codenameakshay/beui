@@ -60,8 +60,10 @@ class BeuiMarquee extends StatefulWidget {
 class _BeuiMarqueeState extends State<BeuiMarquee>
     with SingleTickerProviderStateMixin {
   final GlobalKey _trackKey = GlobalKey();
-  late final AnimationController _controller =
-      AnimationController(vsync: this, duration: widget.duration);
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: widget.duration,
+  );
   double? _trackExtent;
   bool _paused = false;
   bool _reduce = false;
@@ -112,23 +114,33 @@ class _BeuiMarqueeState extends State<BeuiMarquee>
   }
 
   List<Widget> _trackChildren() => [
-        for (final child in widget.children) ...[
-          child,
-          _vertical ? SizedBox(height: widget.gap) : SizedBox(width: widget.gap),
-        ],
-      ];
+    for (final child in widget.children) ...[
+      child,
+      _vertical ? SizedBox(height: widget.gap) : SizedBox(width: widget.gap),
+    ],
+  ];
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
 
     Widget track({Key? key}) => _vertical
-        ? Column(key: key, mainAxisSize: MainAxisSize.min, children: _trackChildren())
-        : Row(key: key, mainAxisSize: MainAxisSize.min, children: _trackChildren());
+        ? Column(
+            key: key,
+            mainAxisSize: MainAxisSize.min,
+            children: _trackChildren(),
+          )
+        : Row(
+            key: key,
+            mainAxisSize: MainAxisSize.min,
+            children: _trackChildren(),
+          );
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final viewport = _vertical ? constraints.maxHeight : constraints.maxWidth;
+        final viewport = _vertical
+            ? constraints.maxHeight
+            : constraints.maxWidth;
         final extent = _trackExtent;
 
         final Widget inner;
@@ -136,8 +148,7 @@ class _BeuiMarqueeState extends State<BeuiMarquee>
           // Measure pass: render one keyed track (static until measured).
           inner = track(key: _trackKey);
         } else {
-          final fill =
-              viewport.isFinite ? (viewport / extent).ceil() + 1 : 2;
+          final fill = viewport.isFinite ? (viewport / extent).ceil() + 1 : 2;
           final copies = math.max(2, fill);
           final tracks = <Widget>[
             track(key: _trackKey),
@@ -150,8 +161,9 @@ class _BeuiMarqueeState extends State<BeuiMarquee>
             animation: _controller,
             child: strip,
             builder: (context, child) {
-              final progress =
-                  _reverse ? 1 - _controller.value : _controller.value;
+              final progress = _reverse
+                  ? 1 - _controller.value
+                  : _controller.value;
               final shift = -progress * extent;
               return Transform.translate(
                 offset: _vertical ? Offset(0, shift) : Offset(shift, 0),

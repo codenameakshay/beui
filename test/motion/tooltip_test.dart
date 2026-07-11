@@ -14,7 +14,8 @@ Widget _app({BeuiTooltipSide side = BeuiTooltipSide.top, Widget? child}) {
         child: BeuiTooltip(
           side: side,
           content: const Text('TIP'),
-          child: child ??
+          child:
+              child ??
               const SizedBox(
                 key: _trigger,
                 width: 80,
@@ -52,9 +53,11 @@ void main() {
   });
 
   testWidgets('keyboard focus shows', (tester) async {
-    await tester.pumpWidget(_app(
-      child: ElevatedButton(onPressed: () {}, child: const Text('btn')),
-    ));
+    await tester.pumpWidget(
+      _app(
+        child: ElevatedButton(onPressed: () {}, child: const Text('btn')),
+      ),
+    );
     await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.tab); // focus the button
     await tester.pump(const Duration(milliseconds: 250));
@@ -64,8 +67,9 @@ void main() {
 
   testWidgets('long-press reveals on touch, releases to hide', (tester) async {
     await tester.pumpWidget(_app());
-    final gesture =
-        await tester.startGesture(tester.getCenter(find.byKey(_trigger)));
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.byKey(_trigger)),
+    );
     await tester.pump(const Duration(milliseconds: 600)); // long-press fires
     await tester.pumpAndSettle();
     expect(find.text('TIP'), findsOneWidget);

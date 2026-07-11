@@ -45,15 +45,16 @@ class _BeuiSharedLayoutBgState extends State<BeuiSharedLayoutBg>
     with SingleTickerProviderStateMixin {
   final GlobalKey _stackKey = GlobalKey();
   late List<GlobalKey> _itemKeys;
-  late final AnimationController _fade = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 220),
-    reverseDuration: const Duration(milliseconds: 160),
-  )..addStatusListener((status) {
-      if (status == AnimationStatus.dismissed && _rect != null) {
-        setState(() => _rect = null);
-      }
-    });
+  late final AnimationController _fade =
+      AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 220),
+        reverseDuration: const Duration(milliseconds: 160),
+      )..addStatusListener((status) {
+        if (status == AnimationStatus.dismissed && _rect != null) {
+          setState(() => _rect = null);
+        }
+      });
   Rect? _rect;
 
   @override
@@ -78,7 +79,8 @@ class _BeuiSharedLayoutBgState extends State<BeuiSharedLayoutBg>
 
   void _hover(int i) {
     final stackBox = _stackKey.currentContext?.findRenderObject() as RenderBox?;
-    final itemBox = _itemKeys[i].currentContext?.findRenderObject() as RenderBox?;
+    final itemBox =
+        _itemKeys[i].currentContext?.findRenderObject() as RenderBox?;
     if (stackBox == null || itemBox == null || !itemBox.hasSize) return;
     final topLeft = stackBox.globalToLocal(itemBox.localToGlobal(Offset.zero));
     setState(() {
@@ -97,11 +99,11 @@ class _BeuiSharedLayoutBgState extends State<BeuiSharedLayoutBg>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final color =
-        widget.pillColor ?? colors.primary.withValues(alpha: 0.06);
+    final color = widget.pillColor ?? colors.primary.withValues(alpha: 0.06);
 
     return MouseRegion(
       onExit: (_) => _leave(),
@@ -127,7 +129,9 @@ class _BeuiSharedLayoutBgState extends State<BeuiSharedLayoutBg>
                 MouseRegion(
                   onEnter: (_) => _hover(i),
                   child: KeyedSubtree(
-                      key: _itemKeys[i], child: widget.children[i]),
+                    key: _itemKeys[i],
+                    child: widget.children[i],
+                  ),
                 ),
             ],
           ),
@@ -171,7 +175,10 @@ class _Pill extends StatelessWidget {
         if (blur > 0.1) {
           box = ImageFiltered(
             imageFilter: ImageFilter.blur(
-                sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),
+              sigmaX: blur,
+              sigmaY: blur,
+              tileMode: TileMode.decal,
+            ),
             child: box,
           );
         }

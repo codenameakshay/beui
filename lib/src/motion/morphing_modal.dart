@@ -49,13 +49,16 @@ class BeuiMorphingModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
 
     return BeuiOverlay(
       open: viewId != null,
       barrier: true,
-      barrierColor: colors.background.withValues(alpha: 0.05), // bg-background/5
+      barrierColor: colors.background.withValues(
+        alpha: 0.05,
+      ), // bg-background/5
       barrierBlur: 14, // backdrop blur(14px)
       onDismiss: onClose,
       enterDuration: const Duration(milliseconds: 300),
@@ -67,7 +70,10 @@ class BeuiMorphingModal extends StatelessWidget {
   }
 
   Widget _panel(
-      BuildContext context, Animation<double> animation, BeuiColors colors) {
+    BuildContext context,
+    Animation<double> animation,
+    BeuiColors colors,
+  ) {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isBottom = placement == BeuiModalPlacement.bottom;
     final width = math.min(384.0, MediaQuery.of(context).size.width - 32);
@@ -86,7 +92,11 @@ class BeuiMorphingModal extends StatelessWidget {
           border: Border.all(color: colors.border),
           borderRadius: BorderRadius.circular(24), // rounded-3xl
           boxShadow: const [
-            BoxShadow(color: Color(0x40000000), blurRadius: 40, offset: Offset(0, 16)),
+            BoxShadow(
+              color: Color(0x40000000),
+              blurRadius: 40,
+              offset: Offset(0, 16),
+            ),
           ],
         ),
         clipBehavior: Clip.antiAlias, // overflow-hidden
@@ -118,7 +128,8 @@ class BeuiMorphingModal extends StatelessWidget {
                     Positioned(left: 0, right: 0, top: 0, child: c),
                 ],
               ),
-              transitionBuilder: (child, a) => _viewTransition(child, a, reduce),
+              transitionBuilder: (child, a) =>
+                  _viewTransition(child, a, reduce),
               child: KeyedSubtree(key: ValueKey(viewId), child: child),
             ),
           ),
@@ -129,7 +140,11 @@ class BeuiMorphingModal extends StatelessWidget {
     return Align(
       alignment: isBottom ? Alignment.bottomCenter : Alignment.center,
       child: Padding(
-        padding: EdgeInsets.only(left: 16, right: 16, bottom: isBottom ? 32 : 0),
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: isBottom ? 32 : 0,
+        ),
         child: SizedBox(
           width: width,
           child: AnimatedBuilder(
@@ -156,7 +171,11 @@ class BeuiMorphingModal extends StatelessWidget {
     );
   }
 
-  Widget _viewTransition(Widget child, Animation<double> animation, bool reduce) {
+  Widget _viewTransition(
+    Widget child,
+    Animation<double> animation,
+    bool reduce,
+  ) {
     if (reduce) return FadeTransition(opacity: animation, child: child);
     return AnimatedBuilder(
       animation: animation,
@@ -165,7 +184,8 @@ class BeuiMorphingModal extends StatelessWidget {
         // Entering views rise from below (y: 8 → 0); exiting views rise up and
         // out (y: 0 → -8) — one continuous upward roll, the source's
         // popLayout cross-fade. Source blur(4px) ≈ sigma ~2.5.
-        final exiting = animation.status == AnimationStatus.reverse ||
+        final exiting =
+            animation.status == AnimationStatus.reverse ||
             animation.status == AnimationStatus.dismissed;
         final dir = exiting ? -1.0 : 1.0;
         final eased = Curves.easeOut.transform(t);
@@ -176,7 +196,10 @@ class BeuiMorphingModal extends StatelessWidget {
             offset: Offset(0, (1 - eased) * 8 * dir),
             child: ImageFiltered(
               imageFilter: ImageFilter.blur(
-                  sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),
+                sigmaX: blur,
+                sigmaY: blur,
+                tileMode: TileMode.decal,
+              ),
               child: child,
             ),
           ),

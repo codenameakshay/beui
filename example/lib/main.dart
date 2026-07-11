@@ -3,11 +3,24 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import 'demos/not_found_demo.dart';
 import 'demos/number_demo.dart';
+import 'demos/action_rails_demo.dart';
 import 'demos/animated_badge_demo.dart';
+import 'demos/animated_toast_stack_demo.dart';
 import 'demos/bottom_sheet_demo.dart';
+import 'demos/command_palette_demo.dart';
+import 'demos/create_menu_demo.dart';
+import 'demos/dynamic_island_demo.dart';
+import 'demos/expandable_tabs_demo.dart';
+import 'demos/file_upload_demo.dart';
 import 'demos/bouncy_accordion_demo.dart';
 import 'demos/range_slider_demo.dart';
+import 'demos/otp_input_demo.dart';
+import 'demos/prediction_market_demo.dart';
+import 'demos/scroll_animation_demo.dart';
+import 'demos/swap_demo.dart';
+import 'demos/swipeable_list_demo.dart';
 import 'demos/theme_toggle_demo.dart';
 
 void main() => runApp(const GalleryApp());
@@ -56,6 +69,19 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Range Slider', rangeSliderDemo),
   GalleryEntry('Theme Toggle', themeToggleDemo),
   GalleryEntry('Bottom Sheet', bottomSheetDemo),
+  GalleryEntry('Toast Stack', animatedToastStackDemo),
+  GalleryEntry('Scroll Animation', scrollAnimationDemo),
+  GalleryEntry('OTP Input', otpInputDemo),
+  GalleryEntry('Command Palette', commandPaletteDemo),
+  GalleryEntry('Dynamic Island', dynamicIslandDemo),
+  GalleryEntry('Action Rails', actionRailsDemo),
+  GalleryEntry('Expandable Tabs', expandableTabsDemo),
+  GalleryEntry('Swipeable List', swipeableListDemo),
+  GalleryEntry('Create Menu', createMenuDemo),
+  GalleryEntry('Swap', swapDemo),
+  GalleryEntry('Prediction Market', predictionMarketDemo),
+  GalleryEntry('File Upload', fileUploadDemo),
+  GalleryEntry('Not Found', notFoundDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
@@ -1068,33 +1094,36 @@ class _DockDemoState extends State<_DockDemo> {
   ];
 
   List<BeuiDockItem?> _buildItems() => [
-        for (final (id, icon) in _items)
-          BeuiDockItem(
-            icon: icon,
-            tooltip: id,
-            active: _active == id,
-            onTap: () => setState(() => _active = id),
-          ),
-        null, // separator
-        BeuiDockItem(
-          icon: LucideIcons.settings,
-          tooltip: 'settings',
-          active: _active == 'settings',
-          onTap: () => setState(() => _active = 'settings'),
-        ),
-      ];
+    for (final (id, icon) in _items)
+      BeuiDockItem(
+        icon: icon,
+        tooltip: id,
+        active: _active == id,
+        onTap: () => setState(() => _active = id),
+      ),
+    null, // separator
+    BeuiDockItem(
+      icon: LucideIcons.settings,
+      tooltip: 'settings',
+      active: _active == 'settings',
+      onTap: () => setState(() => _active = 'settings'),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     Widget label(String text) => Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Text(text,
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: colors.mutedForeground)),
-        );
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: colors.mutedForeground,
+        ),
+      ),
+    );
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1127,10 +1156,8 @@ class _ActionSwapDemo extends StatefulWidget {
 class _ActionSwapDemoState extends State<_ActionSwapDemo> {
   // Hero (the /action-swap page preview): blur ⇄ roll button every 2.6s.
   static const _heroBlur = [
-    BeuiActionSwapItem(
-        id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
-    BeuiActionSwapItem(
-        id: 'copied', label: 'Copied', icon: LucideIcons.check),
+    BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
+    BeuiActionSwapItem(id: 'copied', label: 'Copied', icon: LucideIcons.check),
   ];
   static const _heroRoll = [
     BeuiActionSwapItem(id: 'send', label: 'Send', icon: LucideIcons.send),
@@ -1140,25 +1167,25 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
   // Per-variant rows (from the variant preview pages).
   static const _theme = [
     BeuiActionSwapItem(
-        id: 'light',
-        label: 'Light',
-        icon: LucideIcons.sun,
-        semanticLabel: 'Use light theme'),
+      id: 'light',
+      label: 'Light',
+      icon: LucideIcons.sun,
+      semanticLabel: 'Use light theme',
+    ),
     BeuiActionSwapItem(
-        id: 'dark',
-        label: 'Dark',
-        icon: LucideIcons.moon,
-        semanticLabel: 'Use dark theme'),
+      id: 'dark',
+      label: 'Dark',
+      icon: LucideIcons.moon,
+      semanticLabel: 'Use dark theme',
+    ),
   ];
   static const _blurText = [
     BeuiActionSwapItem(id: 'copy', label: 'Copy'),
     BeuiActionSwapItem(id: 'copied', label: 'Copied'),
   ];
   static const _blurCta = [
-    BeuiActionSwapItem(
-        id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
-    BeuiActionSwapItem(
-        id: 'copied', label: 'Copied', icon: LucideIcons.check),
+    BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
+    BeuiActionSwapItem(id: 'copied', label: 'Copied', icon: LucideIcons.check),
   ];
   static const _rollText = [
     BeuiActionSwapItem(id: 'idle', label: 'Save'),
@@ -1166,15 +1193,19 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
   ];
   static const _rollCta = [
     BeuiActionSwapItem(
-        id: 'send', label: 'Send invite', icon: LucideIcons.send),
+      id: 'send',
+      label: 'Send invite',
+      icon: LucideIcons.send,
+    ),
     BeuiActionSwapItem(
-        id: 'sent', label: 'Invite sent', icon: LucideIcons.sparkles),
+      id: 'sent',
+      label: 'Invite sent',
+      icon: LucideIcons.sparkles,
+    ),
   ];
   static const _cascadeCta = [
-    BeuiActionSwapItem(
-        id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
-    BeuiActionSwapItem(
-        id: 'copied', label: 'Copied!', icon: LucideIcons.check),
+    BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
+    BeuiActionSwapItem(id: 'copied', label: 'Copied!', icon: LucideIcons.check),
   ];
 
   bool _heroIsRoll = false;
@@ -1198,44 +1229,46 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     Widget caption(String text) => Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.3,
-              color: colors.mutedForeground,
-            ),
-          ),
-        );
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.3,
+          color: colors.mutedForeground,
+        ),
+      ),
+    );
 
-    Widget row(BeuiActionSwapVariant anim, List<BeuiActionSwapItem> text,
-            List<BeuiActionSwapItem> cta) =>
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            BeuiActionSwapButton(
-              items: text,
-              animation: anim,
-              variant: BeuiButtonVariant.secondary,
-            ),
-            BeuiActionSwapButton(
-              items: _theme,
-              animation: anim,
-              variant: BeuiButtonVariant.outline,
-              size: BeuiButtonSize.icon,
-              iconOnly: true,
-            ),
-            BeuiActionSwapButton(
-              items: cta,
-              animation: anim,
-              variant: BeuiButtonVariant.primary,
-            ),
-          ],
-        );
+    Widget row(
+      BeuiActionSwapVariant anim,
+      List<BeuiActionSwapItem> text,
+      List<BeuiActionSwapItem> cta,
+    ) => Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        BeuiActionSwapButton(
+          items: text,
+          animation: anim,
+          variant: BeuiButtonVariant.secondary,
+        ),
+        BeuiActionSwapButton(
+          items: _theme,
+          animation: anim,
+          variant: BeuiButtonVariant.outline,
+          size: BeuiButtonSize.icon,
+          iconOnly: true,
+        ),
+        BeuiActionSwapButton(
+          items: cta,
+          animation: anim,
+          variant: BeuiButtonVariant.primary,
+        ),
+      ],
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1336,17 +1369,17 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     Widget caption(String text) => Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.3,
-              color: colors.mutedForeground,
-            ),
-          ),
-        );
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.3,
+          color: colors.mutedForeground,
+        ),
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -29,6 +29,14 @@ export 'src/motion/action_swap.dart'
 export 'src/motion/animated_number.dart' show BeuiAnimatedNumber;
 export 'src/motion/animated_badge.dart'
     show BeuiAnimatedBadge, BeuiAnimatedBadgeSize, BeuiAnimatedBadgeStatus;
+export 'src/motion/animated_toast_stack.dart'
+    show
+        BeuiAnimatedToastStack,
+        BeuiToast,
+        BeuiToastAction,
+        BeuiToastController,
+        BeuiToastPosition,
+        BeuiToastStatus;
 export 'src/motion/bottom_sheet.dart' show BeuiBottomSheet;
 export 'src/motion/bouncy_accordion.dart'
     show BeuiBouncyAccordion, BeuiBouncyAccordionItem;
@@ -38,20 +46,81 @@ export 'src/motion/button/magnetic.dart' show BeuiMagneticButton;
 export 'src/motion/button/stateful.dart'
     show BeuiButtonState, BeuiStatefulButton;
 export 'src/motion/checkbox.dart' show BeuiCheckbox, BeuiCheckboxStyle;
+export 'src/motion/command_palette.dart'
+    show BeuiCommandItem, BeuiCommandPalette;
+export 'src/motion/create_menu.dart'
+    show BeuiCreateMenu, BeuiCreateMenuItem, beuiDefaultCreateMenuItems;
 export 'src/motion/dock.dart' show BeuiDock, BeuiDockItem;
 export 'src/motion/drawer.dart' show BeuiDrawer, BeuiDrawerSide;
+export 'src/motion/dynamic_island.dart'
+    show BeuiDynamicIsland, BeuiDynamicIslandView;
+export 'src/motion/expandable_action_bar.dart'
+    show
+        BeuiExpandableActionBar,
+        BeuiExpandableActionBarItem,
+        BeuiExpandableActionBarSize;
+export 'src/motion/expandable_tabs.dart'
+    show BeuiExpandableTabs, BeuiExpandableTabsItem;
+export 'src/motion/file_upload.dart'
+    show
+        BeuiFileUpload,
+        BeuiFileUploadItem,
+        BeuiFileUploadStatus,
+        BeuiFileUploadVariant,
+        beuiFormatBytes;
 export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'
     show BeuiModalPlacement, BeuiMorphingModal;
+export 'src/motion/not_found.dart'
+    show
+        BeuiNotFoundGlitch,
+        BeuiNotFoundMagnetic,
+        BeuiNotFoundSpotlight,
+        BeuiNotFoundStacked,
+        BeuiNotFoundTerminal;
 export 'src/motion/number_ticker.dart' show BeuiNumberTicker;
+export 'src/motion/otp_input.dart' show BeuiOtpInput, BeuiOtpStatus;
+export 'src/motion/overflow_actions.dart'
+    show BeuiOverflowActionItem, BeuiOverflowActions, BeuiOverflowActionsSize;
+
+export 'src/motion/prediction_market.dart'
+    show
+        BeuiPredictionMarket,
+        BeuiPredictionMarketMode,
+        BeuiPredictionMarketOrder,
+        BeuiPredictionMarketOutcome,
+        BeuiPredictionMarketQuote;
 
 // Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
+export 'src/motion/parallax.dart' show BeuiParallax, BeuiParallaxAxis;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
-export 'src/motion/range_slider.dart'
-    show BeuiRangeSlider, BeuiRangeSliderDual;
+export 'src/motion/range_slider.dart' show BeuiRangeSlider, BeuiRangeSliderDual;
+export 'src/motion/scroll_progress.dart' show BeuiScrollProgress;
+export 'src/motion/scroll_reveal.dart' show BeuiScrollReveal;
+export 'src/motion/scroll_to.dart' show BeuiScrollTo;
 export 'src/motion/shared_layout_bg.dart' show BeuiSharedLayoutBg;
+export 'src/motion/smooth_scroll.dart'
+    show BeuiSmoothScroll, BeuiSmoothScrollApi, beuiEaseScroll;
+export 'src/motion/swipeable_list.dart'
+    show
+        BeuiSwipeAction,
+        BeuiSwipeActionCallback,
+        BeuiSwipeActionTone,
+        BeuiSwipeSide,
+        BeuiSwipeableList,
+        BeuiSwipeableListItem,
+        BeuiSwipeableListValue;
+export 'src/motion/swap/swap.dart'
+    show
+        BeuiChain,
+        BeuiChainTone,
+        BeuiMultiChainSwap,
+        BeuiToken,
+        BeuiTokenSide,
+        beuiDefaultSwapChains,
+        beuiDefaultSwapTokens;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
 export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
 export 'src/motion/text_cascade.dart' show BeuiTextCascade;

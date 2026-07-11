@@ -1,17 +1,19 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 /// Builds the overlay content. [animation] runs 0→1 on enter and 1→0 on exit;
 /// [link] is the anchor's [LayerLink], for positioning relative to the trigger
 /// (e.g. a tooltip via [CompositedTransformFollower]). Modal content can ignore
 /// [link] and position itself full-screen (e.g. `Align`/`Positioned`).
-typedef BeuiOverlayBuilder = Widget Function(
-  BuildContext context,
-  Animation<double> animation,
-  LayerLink link,
-);
+typedef BeuiOverlayBuilder =
+    Widget Function(
+      BuildContext context,
+      Animation<double> animation,
+      LayerLink link,
+    );
 
 /// The shared overlay foundation for beUI — the single seam every floating
 /// surface (tooltip, drawer, bottom-sheet, modal, command-palette, create-menu)
@@ -92,19 +94,35 @@ class _BeuiOverlayState extends State<BeuiOverlay>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.enterDuration,
-      reverseDuration: widget.exitDuration,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.dismissed && _portal.isShowing) {
-          _portal.hide();
-        }
-      });
+    _controller =
+        AnimationController(
+          vsync: this,
+          duration: widget.enterDuration,
+          reverseDuration: widget.exitDuration,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.dismissed && _portal.isShowing) {
+            _scheduleHide();
+          }
+        });
     if (widget.open) {
       // OverlayPortalController.show() must not run during build/initState —
       // defer it. forward/reverse are fine in any phase.
       _scheduleShow(jumpToEnd: true);
+    }
+  }
+
+  /// Hides the portal, deferring past the build phase when necessary —
+  /// a close during build (didUpdateWidget -> reverse() with the controller
+  /// still at 0) emits `dismissed` synchronously, and
+  /// [OverlayPortalController.hide] asserts outside of it.
+  void _scheduleHide() {
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !widget.open && _portal.isShowing) _portal.hide();
+      });
+    } else {
+      _portal.hide();
     }
   }
 

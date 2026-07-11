@@ -92,7 +92,10 @@ class _RangeSliderDemoState extends State<_RangeSliderDemo> {
 
           // ---- Flutter-only dual range ----
           sectionLabel('Dual — Flutter-only extension (not in the source)'),
-          caption('Price range', '\$${_band.start.round()} – \$${_band.end.round()}'),
+          caption(
+            'Price range',
+            '\$${_band.start.round()} – \$${_band.end.round()}',
+          ),
           BeuiRangeSliderDual(
             values: _band,
             min: 0,

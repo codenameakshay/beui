@@ -38,15 +38,17 @@ Widget _app({
 }
 
 Finder _mark() => find.descendant(
-      of: find.byType(BeuiCheckbox),
-      matching: find.byType(CustomPaint),
-    );
+  of: find.byType(BeuiCheckbox),
+  matching: find.byType(CustomPaint),
+);
 
 void main() {
   group('BeuiCheckbox interaction', () {
     testWidgets('tap toggles via onChanged', (tester) async {
       bool? changed;
-      await tester.pumpWidget(_app(value: false, onChanged: (v) => changed = v));
+      await tester.pumpWidget(
+        _app(value: false, onChanged: (v) => changed = v),
+      );
       await tester.tap(find.byType(BeuiCheckbox));
       await tester.pump();
       expect(changed, isTrue);
@@ -64,7 +66,9 @@ void main() {
 
     testWidgets('Space activates when focused', (tester) async {
       bool? changed;
-      await tester.pumpWidget(_app(value: false, onChanged: (v) => changed = v));
+      await tester.pumpWidget(
+        _app(value: false, onChanged: (v) => changed = v),
+      );
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
@@ -157,46 +161,52 @@ void main() {
     });
   });
 
-  testWidgets('rest-state golden (checked / unchecked / indeterminate / disabled)',
-      (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-        home: const Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BeuiCheckbox(value: true, onChanged: _noop, label: 'Checked'),
-                SizedBox(height: 12),
-                BeuiCheckbox(value: false, onChanged: _noop, label: 'Unchecked'),
-                SizedBox(height: 12),
-                BeuiCheckbox(
-                  value: true,
-                  indeterminate: true,
-                  onChanged: _noop,
-                  label: 'Indeterminate',
-                ),
-                SizedBox(height: 12),
-                BeuiCheckbox(
-                  value: true,
-                  enabled: false,
-                  onChanged: _noop,
-                  label: 'Disabled',
-                ),
-              ],
+  testWidgets(
+    'rest-state golden (checked / unchecked / indeterminate / disabled)',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          home: const Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BeuiCheckbox(value: true, onChanged: _noop, label: 'Checked'),
+                  SizedBox(height: 12),
+                  BeuiCheckbox(
+                    value: false,
+                    onChanged: _noop,
+                    label: 'Unchecked',
+                  ),
+                  SizedBox(height: 12),
+                  BeuiCheckbox(
+                    value: true,
+                    indeterminate: true,
+                    onChanged: _noop,
+                    label: 'Indeterminate',
+                  ),
+                  SizedBox(height: 12),
+                  BeuiCheckbox(
+                    value: true,
+                    enabled: false,
+                    onChanged: _noop,
+                    label: 'Disabled',
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    await expectLater(
-      find.byType(Column),
-      matchesGoldenFile('goldens/beui_checkbox.png'),
-    );
-  });
+      );
+      await tester.pumpAndSettle();
+      await expectLater(
+        find.byType(Column),
+        matchesGoldenFile('goldens/beui_checkbox.png'),
+      );
+    },
+  );
 }
 
 void _noop(bool _) {}

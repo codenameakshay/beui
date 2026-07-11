@@ -43,7 +43,9 @@ void main() {
   group('BeuiSwitch interaction', () {
     testWidgets('tap toggles via onChanged', (tester) async {
       bool? changed;
-      await tester.pumpWidget(_app(value: false, onChanged: (v) => changed = v));
+      await tester.pumpWidget(
+        _app(value: false, onChanged: (v) => changed = v),
+      );
       await tester.tap(find.byType(BeuiSwitch));
       await tester.pump();
       expect(changed, isTrue);
@@ -61,7 +63,9 @@ void main() {
 
     testWidgets('Space activates when focused', (tester) async {
       bool? changed;
-      await tester.pumpWidget(_app(value: false, onChanged: (v) => changed = v));
+      await tester.pumpWidget(
+        _app(value: false, onChanged: (v) => changed = v),
+      );
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
@@ -117,8 +121,9 @@ void main() {
       expect(onX, greaterThan(offX));
     });
 
-    testWidgets('thumb snaps with no glide under reduced motion',
-        (tester) async {
+    testWidgets('thumb snaps with no glide under reduced motion', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app(value: false, reduce: true));
       await tester.pumpAndSettle();
       final offX = _thumbX(tester);

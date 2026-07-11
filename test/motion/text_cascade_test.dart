@@ -45,8 +45,9 @@ int _letterCount(WidgetTester tester) {
 }
 
 void main() {
-  testWidgets('at rest the cascade renders the whole string, not per-letter',
-      (tester) async {
+  testWidgets('at rest the cascade renders the whole string, not per-letter', (
+    tester,
+  ) async {
     await tester.pumpWidget(const _Host(initial: 'Hello'));
     await tester.pumpAndSettle();
     expect(find.text('Hello'), findsOneWidget);
@@ -62,8 +63,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 60));
 
     // Mid-transition both the old and new letters exist as individual glyphs.
-    expect(_letterCount(tester), greaterThan(0),
-        reason: 'letters animate individually during the roll');
+    expect(
+      _letterCount(tester),
+      greaterThan(0),
+      reason: 'letters animate individually during the roll',
+    );
     expect(find.text('Y'), findsOneWidget);
     expect(find.text('o'), findsOneWidget);
     // Old letters still present (rolling out).
@@ -92,8 +96,9 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('reduced motion shows plain text with no per-letter roll',
-      (tester) async {
+  testWidgets('reduced motion shows plain text with no per-letter roll', (
+    tester,
+  ) async {
     await tester.pumpWidget(const _Host(initial: 'Hi', reduce: true));
     await tester.pumpAndSettle();
 

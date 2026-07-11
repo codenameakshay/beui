@@ -82,7 +82,8 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final glareColor = widget.glareColor ?? colors.foreground;

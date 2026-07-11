@@ -19,8 +19,10 @@ class BeuiDockItem {
     this.onTap,
     this.active = false,
     this.tooltip,
-  }) : assert(icon != null || child != null,
-            'Provide either an icon glyph or a custom child.');
+  }) : assert(
+         icon != null || child != null,
+         'Provide either an icon glyph or a custom child.',
+       );
 
   /// Glyph for the item (framework-native — pick any [IconData]).
   final IconData? icon;
@@ -167,7 +169,8 @@ class _BeuiDockState extends State<BeuiDock> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>() ??
+    final colors =
+        theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
@@ -281,15 +284,22 @@ class _DockItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final glyph = item.child ??
+    final glyph =
+        item.child ??
         Icon(item.icon, size: size * 0.46, color: colors.foreground);
 
-    Widget content =
-        SizedBox(width: size, height: size, child: Center(child: glyph));
+    Widget content = SizedBox(
+      width: size,
+      height: size,
+      child: Center(child: glyph),
+    );
 
     if (item.tooltip != null) {
       content = Semantics(
-          label: item.tooltip, button: item.onTap != null, child: content);
+        label: item.tooltip,
+        button: item.onTap != null,
+        child: content,
+      );
     }
     if (item.onTap != null) {
       content = GestureDetector(
@@ -306,21 +316,21 @@ class _DockItemView extends StatelessWidget {
     // the row reflows; bottom-anchored sizing keeps the bar's baseline
     // (items-end) fixed, so items rise as they grow.
     Widget slot(double scale) => SizedBox(
-          width: size * scale,
-          height: size * scale,
-          child: Align(
+      width: size * scale,
+      height: size * scale,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: SizedBox(
+          width: size,
+          height: size,
+          child: Transform.scale(
+            scale: scale,
             alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              width: size,
-              height: size,
-              child: Transform.scale(
-                scale: scale,
-                alignment: Alignment.bottomCenter,
-                child: content,
-              ),
-            ),
+            child: content,
           ),
-        );
+        ),
+      ),
+    );
 
     return SingleMotionBuilder(
       value: targetScale,

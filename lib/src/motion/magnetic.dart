@@ -17,11 +17,7 @@ import '_engine.dart';
 /// matching the source's `useHoverCapable() && !reduce` gate.
 class BeuiMagnetic extends StatefulWidget {
   /// Wraps [child] with a magnetic pull.
-  const BeuiMagnetic({
-    required this.child,
-    this.strength = 0.35,
-    super.key,
-  });
+  const BeuiMagnetic({required this.child, this.strength = 0.35, super.key});
 
   /// The widget to pull.
   final Widget child;

@@ -36,14 +36,14 @@ double _minOpacity(WidgetTester tester) {
 }
 
 void main() {
-  testWidgets('units start below and faded, then rise and fade in',
-      (tester) async {
-    await tester.pumpWidget(_app(
-      const BeuiTextReveal(
-        'Motion in words',
-        style: TextStyle(fontSize: 32),
+  testWidgets('units start below and faded, then rise and fade in', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        const BeuiTextReveal('Motion in words', style: TextStyle(fontSize: 32)),
       ),
-    ));
+    );
 
     // First frame after mount: units offset down and at low opacity.
     await tester.pump(); // schedule the post-frame forward()
@@ -60,21 +60,24 @@ void main() {
   });
 
   testWidgets('char split renders one unit per character', (tester) async {
-    await tester.pumpWidget(_app(
-      const BeuiTextReveal('abc', split: BeuiTextRevealSplit.char),
-    ));
+    await tester.pumpWidget(
+      _app(const BeuiTextReveal('abc', split: BeuiTextRevealSplit.char)),
+    );
     await tester.pumpAndSettle();
     expect(find.text('a'), findsOneWidget);
     expect(find.text('b'), findsOneWidget);
     expect(find.text('c'), findsOneWidget);
   });
 
-  testWidgets('reduced motion drops the rise but keeps the fade',
-      (tester) async {
-    await tester.pumpWidget(_app(
-      const BeuiTextReveal('Motion in words', style: TextStyle(fontSize: 32)),
-      reduce: true,
-    ));
+  testWidgets('reduced motion drops the rise but keeps the fade', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        const BeuiTextReveal('Motion in words', style: TextStyle(fontSize: 32)),
+        reduce: true,
+      ),
+    );
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 16));

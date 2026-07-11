@@ -44,9 +44,11 @@ Widget _app({
 double _dotY(WidgetTester tester) => tester.getTopLeft(find.byKey(_dot)).dy;
 
 SemanticsNode _itemSemantics(WidgetTester tester, String value) =>
-    tester.getSemantics(find.byWidgetPredicate(
-      (w) => w is BeuiRadioItem<String> && w.value == value,
-    ));
+    tester.getSemantics(
+      find.byWidgetPredicate(
+        (w) => w is BeuiRadioItem<String> && w.value == value,
+      ),
+    );
 
 void main() {
   group('BeuiRadioGroup interaction', () {
@@ -74,7 +76,9 @@ void main() {
 
     testWidgets('disabled item does not select', (tester) async {
       String? changed;
-      await tester.pumpWidget(_app(defaultValue: 'a', onChanged: (v) => changed = v));
+      await tester.pumpWidget(
+        _app(defaultValue: 'a', onChanged: (v) => changed = v),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text('D'), warnIfMissed: false);
       await tester.pump();
@@ -94,7 +98,9 @@ void main() {
   });
 
   group('BeuiRadioGroup semantics', () {
-    testWidgets('selected item is checked + mutually exclusive', (tester) async {
+    testWidgets('selected item is checked + mutually exclusive', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(_app(value: 'b'));
       await tester.pumpAndSettle();

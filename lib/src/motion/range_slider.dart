@@ -775,7 +775,12 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
             ),
             // Thumbs — outside the clip so their shadow isn't shaved.
             thumbAt(_Thumb.end, ex, _endFocus, beuiRangeSliderEndThumbKey),
-            thumbAt(_Thumb.start, sx, _startFocus, beuiRangeSliderStartThumbKey),
+            thumbAt(
+              _Thumb.start,
+              sx,
+              _startFocus,
+              beuiRangeSliderStartThumbKey,
+            ),
           ],
         );
 
@@ -784,7 +789,9 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
         // Resolves one side's x: the dragged side is placed DIRECTLY at the
         // pointer (exact, no glide); the other side glides to its snapped step.
         Widget side(_Thumb which, double snapped, Widget Function(double x) b) {
-          if (draggingSide == which) return b(_clampThumbX(_dragX!, trackWidth));
+          if (draggingSide == which) {
+            return b(_clampThumbX(_dragX!, trackWidth));
+          }
           if (glideMotion is NoMotion) return b(snapped); // reduced motion
           return SingleMotionBuilder(
             value: snapped,
@@ -796,8 +803,7 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
         final Widget body = side(
           _Thumb.start,
           centerX(cur.start),
-          (sx) =>
-              side(_Thumb.end, centerX(cur.end), (ex) => buildBand(sx, ex)),
+          (sx) => side(_Thumb.end, centerX(cur.end), (ex) => buildBand(sx, ex)),
         );
 
         return GestureDetector(

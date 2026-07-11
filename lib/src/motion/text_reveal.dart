@@ -181,8 +181,8 @@ class _BeuiTextRevealState extends State<BeuiTextReveal>
                   controller: _controller,
                   text: widget.split == BeuiTextRevealSplit.word
                       ? (u < _units[l].length - 1
-                          ? '${_units[l][u]} '
-                          : _units[l][u])
+                            ? '${_units[l][u]} '
+                            : _units[l][u])
                       : _units[l][u],
                   style: baseStyle,
                   startMs: _delaysMs[l][u],
@@ -197,16 +197,16 @@ class _BeuiTextRevealState extends State<BeuiTextReveal>
   }
 
   CrossAxisAlignment _crossAxis(TextAlign? a) => switch (a) {
-        TextAlign.center => CrossAxisAlignment.center,
-        TextAlign.right || TextAlign.end => CrossAxisAlignment.end,
-        _ => CrossAxisAlignment.start,
-      };
+    TextAlign.center => CrossAxisAlignment.center,
+    TextAlign.right || TextAlign.end => CrossAxisAlignment.end,
+    _ => CrossAxisAlignment.start,
+  };
 
   WrapAlignment _wrapAlign(TextAlign? a) => switch (a) {
-        TextAlign.center => WrapAlignment.center,
-        TextAlign.right || TextAlign.end => WrapAlignment.end,
-        _ => WrapAlignment.start,
-      };
+    TextAlign.center => WrapAlignment.center,
+    TextAlign.right || TextAlign.end => WrapAlignment.end,
+    _ => WrapAlignment.start,
+  };
 }
 
 /// One revealed unit. The vertical rise is a [_revealSpring] re-targeted from
@@ -250,10 +250,12 @@ class _Unit extends StatelessWidget {
           );
         }
 
-        final op = beuiEaseOut
-            .transform(((elapsedMs - startMs) / _opacityMs).clamp(0.0, 1.0));
-        final bp = beuiEaseOut
-            .transform(((elapsedMs - startMs) / _blurMs).clamp(0.0, 1.0));
+        final op = beuiEaseOut.transform(
+          ((elapsedMs - startMs) / _opacityMs).clamp(0.0, 1.0),
+        );
+        final bp = beuiEaseOut.transform(
+          ((elapsedMs - startMs) / _blurMs).clamp(0.0, 1.0),
+        );
         // Sigma capped at the 10px motion limit.
         final sigma = ((1 - bp) * blur).clamp(0.0, 10.0);
 
