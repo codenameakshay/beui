@@ -89,8 +89,9 @@ void main() {
     expect(find.text('VIEW A'), findsOneWidget);
 
     host(tester).open('b'); // taller view
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 80));
+    await tester.pump(); // view swaps; new height measured post-frame
+    await tester.pump(); // SPRING_PANEL retargets to the measured height
+    await tester.pump(const Duration(milliseconds: 80)); // mid-spring
     final hMid = panelHeight(tester);
     await tester.pumpAndSettle();
     final hB = panelHeight(tester);

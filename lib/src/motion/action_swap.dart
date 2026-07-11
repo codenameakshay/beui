@@ -3,6 +3,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 
 import '../tokens/motion.dart';
+import '_engine.dart';
 import 'button/base.dart';
 
 /// The transition used when an [BeuiActionSwapText] / [BeuiActionSwapIcon] /
@@ -13,14 +14,15 @@ import 'button/base.dart';
 ///
 /// * [blur] — a blurred cross-fade. The outgoing content fades + scales down
 ///   under a `blur(8px)` while the incoming content fades + scales up from a
-///   blur. Symmetric `easeInOut` over 200ms (source `BLUR_TRANSITION`).
+///   blur. Framer's built-in `easeInOut` (cubic-bezier(0.42, 0, 0.58, 1)) over
+///   200ms (source `BLUR_TRANSITION`).
 /// * [roll] — the old content rolls up and out while the new rolls up from
 ///   below into place, each under a `blur(6px)`. 240ms `beuiEaseOut` enter,
-///   180ms `easeInOut` exit (source `ROLL_TRANSITION`).
-/// * [cascade] — a per-letter slot roll (text only): each glyph rolls
-///   independently, staggered left-to-right, reusing the StatefulButton's
-///   `_CascadeText` mechanic. Non-text content (icons) and reduced motion fall
-///   back to [roll], matching the source.
+///   180ms Framer-`easeInOut` exit (source `ROLL_TRANSITION`).
+/// * [cascade] — a per-letter slot roll (text only): each glyph rides the
+///   [beuiSpringSwap] token, released staggered left-to-right, reusing the
+///   StatefulButton's `_CascadeText` mechanic. Non-text content (icons) and
+///   reduced motion fall back to [roll], matching the source.
 enum BeuiActionSwapVariant {
   /// Blurred cross-fade (source `blur`).
   blur,
@@ -41,6 +43,11 @@ const _widthDuration = Duration(milliseconds: 220); // inline `width 220ms`
 // Blur radii. Framer `blur(Npx)` ≈ sigma N/2 in Flutter's ImageFilter.
 const _swapBlurSigma = 4.0; // SWAP_BLUR blur(8px)
 const _rollBlurSigma = 3.0; // ROLL_BLUR blur(6px)
+
+/// Framer Motion's built-in `"easeInOut"` — cubic-bezier(0.42, 0, 0.58, 1).
+/// The source's `BLUR_TRANSITION.ease` and the roll variant's exit ease use
+/// this built-in, NOT the design-token `EASE_IN_OUT` ([beuiEaseInOut]).
+const _framerEaseInOut = Cubic(0.42, 0, 0.58, 1);
 
 /// The [BeuiActionSwapVariant] that drives single-element content (icons, and
 /// the non-cascade text path). [BeuiActionSwapVariant.cascade] has no
@@ -192,21 +199,27 @@ class BeuiActionSwapIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final core = _core(variant);
-    return AnimatedSwitcher(
-      duration: core == BeuiActionSwapVariant.blur
-          ? _blurDuration
-          : _rollEnterDuration,
-      reverseDuration: core == BeuiActionSwapVariant.blur
-          ? _blurDuration
-          : _rollExitDuration,
-      switchInCurve: Curves.linear,
-      switchOutCurve: Curves.linear,
-      // popLayout: outgoing + incoming icons share one cell.
-      layoutBuilder: (current, previous) =>
-          Stack(alignment: Alignment.center, children: [...previous, ?current]),
-      transitionBuilder: (child, animation) =>
-          _swapTransition(child, animation, core, reduce, isIcon: true),
-      child: Icon(icon, key: ValueKey(value), size: size),
+    // Clipped like the source's `overflow-hidden` cell, so a rolling icon never
+    // paints outside its slot.
+    return ClipRect(
+      child: AnimatedSwitcher(
+        duration: core == BeuiActionSwapVariant.blur
+            ? _blurDuration
+            : _rollEnterDuration,
+        reverseDuration: core == BeuiActionSwapVariant.blur
+            ? _blurDuration
+            : _rollExitDuration,
+        switchInCurve: Curves.linear,
+        switchOutCurve: Curves.linear,
+        // popLayout: outgoing + incoming icons share one cell.
+        layoutBuilder: (current, previous) => Stack(
+          alignment: Alignment.center,
+          children: [...previous, ?current],
+        ),
+        transitionBuilder: (child, animation) =>
+            _swapTransition(child, animation, core, reduce, isIcon: true),
+        child: Icon(icon, key: ValueKey(value), size: size),
+      ),
     );
   }
 }
@@ -346,6 +359,8 @@ class _BeuiActionSwapButtonState extends State<BeuiActionSwapButton> {
 /// Animates the content's *width* over [_widthDuration] with [beuiEaseOut] so
 /// swaps that change label length don't snap. Height hugs the content; this is
 /// the analogue of the source's inline `transition: width 220ms EASE_OUT_CSS`.
+/// Under reduced motion the width change is a movement, so it snaps instead of
+/// animating.
 class _AnimatedWidth extends StatelessWidget {
   const _AnimatedWidth({required this.child});
 
@@ -353,6 +368,10 @@ class _AnimatedWidth extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Reduced motion: the width change is a movement, so it snaps. No
+    // AnimatedSize at all — a zero-duration AnimatedSize re-dirties itself
+    // during its own layout pass and asserts.
+    if (MediaQuery.disableAnimationsOf(context)) return child;
     return AnimatedSize(
       duration: _widthDuration,
       curve: beuiEaseOut,
@@ -399,7 +418,8 @@ Widget _swapTransition(
       var scale = 1.0;
 
       if (core == BeuiActionSwapVariant.blur) {
-        final eased = beuiEaseInOut.transform(t);
+        // Source BLUR_TRANSITION ease: Framer's built-in easeInOut.
+        final eased = _framerEaseInOut.transform(t);
         opacity = eased;
         blur = (1 - t) * _swapBlurSigma;
         // text scales 0.94→1; icon scales 0.25→1 (source ICON_VARIANTS).
@@ -414,9 +434,10 @@ Widget _swapTransition(
         // text: enter from +115%, exit to -115% of the line box (source
         // TEXT_VARIANTS.roll, scaled by font size); icon: ±16px.
         final travel = isIcon ? 16.0 : textTravel;
+        // Enter eases EASE_OUT; exit eases Framer's built-in easeInOut.
         final eased = entering
             ? beuiEaseOut.transform(t)
-            : beuiEaseInOut.transform(t);
+            : _framerEaseInOut.transform(t);
         // entering rises from below (+); exiting rises up and out the top (−).
         dy = entering ? (1 - eased) * travel : (1 - eased) * -travel;
       }
@@ -464,9 +485,9 @@ class _CascadeText extends StatefulWidget {
 class _CascadeTextState extends State<_CascadeText>
     with SingleTickerProviderStateMixin {
   static const int _staggerMs = 25; // source CASCADE_STAGGER 0.025s
-  static const int _enterMs = 320; // per-letter spring-in window
+  static const int _enterMs = 360; // covers the SPRING_SWAP settle
   static const int _exitMs = 160; // source exit 0.16s
-  static const double _blur = 3; // source ROLL_BLUR blur(6px) ≈ sigma 3
+  static const double _blur = 3; // source ROLL_BLUR blur(6px) → sigma 3
 
   late final AnimationController _controller;
   late String _current = widget.text;
@@ -576,25 +597,59 @@ class _CascadeTextState extends State<_CascadeText>
     TextStyle style, {
     required bool exiting,
   }) {
-    final double dy;
-    final double opacity;
-    final double blur;
     if (exiting) {
+      // Exit: 160ms EASE_OUT tween at half the enter stagger (source
+      // `delay * 0.5`) — rolls up and out, fading and blurring.
       final start = (i * _staggerMs * 0.5) / totalMs;
       final p = ((t - start) / (_exitMs / totalMs)).clamp(0.0, 1.0);
-      final e = Curves.easeOut.transform(p);
-      dy = -e * roll; // roll up and out
-      opacity = 1 - e;
-      blur = e * _blur;
-    } else {
-      final start = (i * _staggerMs) / totalMs;
-      final p = ((t - start) / (_enterMs / totalMs)).clamp(0.0, 1.0);
-      final e = Curves.easeOutCubic.transform(p);
-      dy = (1 - e) * roll; // roll up from below
-      opacity = e;
-      blur = (1 - e) * _blur;
+      final e = beuiEaseOut.transform(p);
+      return _glyph(
+        char,
+        style,
+        dy: -e * roll, // roll up and out
+        opacity: 1 - e,
+        blur: e * _blur,
+      );
     }
 
+    // Enter: the SPRING_SWAP token (source CASCADE_LETTER_VARIANTS), released
+    // once the shared clock crosses the letter's `index × 25ms` stagger —
+    // opacity and blur ride the spring's own progress.
+    final released = t * totalMs >= i * _staggerMs;
+    return SingleMotionBuilder(
+      value: released ? 0.0 : roll,
+      from: roll,
+      motion: beuiSpringSwap,
+      builder: (context, dy, child) {
+        final p = (1 - dy / roll).clamp(0.0, 1.0);
+        Widget glyph = child!;
+        final sigma = (1 - p) * _blur;
+        if (sigma > 0.05) {
+          glyph = ImageFiltered(
+            imageFilter: ImageFilter.blur(
+              sigmaX: sigma,
+              sigmaY: sigma,
+              tileMode: TileMode.decal,
+            ),
+            child: glyph,
+          );
+        }
+        return Opacity(
+          opacity: p,
+          child: Transform.translate(offset: Offset(0, dy), child: glyph),
+        );
+      },
+      child: Text(char, style: style, maxLines: 1, softWrap: false),
+    );
+  }
+
+  Widget _glyph(
+    String char,
+    TextStyle style, {
+    required double dy,
+    required double opacity,
+    required double blur,
+  }) {
     Widget glyph = Text(char, style: style, maxLines: 1, softWrap: false);
     if (blur > 0.05) {
       glyph = ImageFiltered(

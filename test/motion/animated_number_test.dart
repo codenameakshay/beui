@@ -85,6 +85,50 @@ void main() {
     expect(_shown(tester), '8,000');
   });
 
+  testWidgets('startOnView holds the seed until scrolled into view', (
+    tester,
+  ) async {
+    final controller = ScrollController();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        home: Scaffold(
+          body: SingleChildScrollView(
+            controller: controller,
+            child: Column(
+              children: [
+                const SizedBox(height: 1400),
+                DefaultTextStyle(
+                  style: const TextStyle(fontSize: 28),
+                  child: const BeuiAnimatedNumber(value: 900),
+                ),
+                const SizedBox(height: 400),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Below the fold: gated — still showing the 0 seed, not counting.
+    expect(_shown(tester), '0');
+
+    // Scroll it fully into view: the in-view check arms the count-up once.
+    controller.jumpTo(1200);
+    await tester.pump(); // anchor re-measures post-frame
+    await tester.pump(); // armed — count starts
+    await tester.pump(const Duration(milliseconds: 200));
+    final mid = int.parse(_shown(tester).replaceAll(',', ''));
+    expect(mid, greaterThan(0));
+    expect(mid, lessThan(900));
+
+    await tester.pumpAndSettle();
+    expect(_shown(tester), '900');
+  });
+
   testWidgets('honors a custom formatter', (tester) async {
     await tester.pumpWidget(
       MaterialApp(

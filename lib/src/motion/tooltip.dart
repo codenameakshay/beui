@@ -5,6 +5,20 @@ import 'package:flutter/material.dart';
 
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
+import '_engine.dart' show SingleMotionBuilder, SpringMotion;
+
+/// The source's bespoke tooltip enter spring for scale/offset:
+/// `{stiffness: 380, damping: 30, mass: 0.7}`.
+const _enterSpring = SpringMotion(
+  SpringDescription(mass: 0.7, stiffness: 380, damping: 30),
+);
+
+/// Per-channel enter windows on the overlay clock: opacity finishes at 220ms
+/// (EASE_OUT), blur at 300ms (EASE_OUT); scale/offset ride [_enterSpring]
+/// independently. The overlay's enter duration is the longest window.
+const _enterMs = 300;
+const _opacityInMs = 220;
 
 /// Which side of the trigger the tooltip appears on.
 enum BeuiTooltipSide {
@@ -28,9 +42,12 @@ enum BeuiTooltipSide {
 /// touch) and on keyboard focus, after a short [delay]; a global **warm window**
 /// makes neighbouring tooltips open instantly once one has just closed. On touch
 /// it reveals on long-press. The surface anchors to the trigger via the overlay
-/// [LayerLink] and rises into place from near the trigger (offset + scale from
-/// the trigger-facing edge + blur), driven by the source's 380/30/0.7 spring
-/// (approximated with an eased curve here). Reduced motion fades opacity only.
+/// [LayerLink] and rises into place from near the trigger: scale + offset ride
+/// the source's bespoke 380/30/0.7 spring, while opacity (220ms) and blur
+/// (300ms) run on their own `EASE_OUT` windows. The exit eases *forward* to its
+/// own targets (scale 0.92, 6px away, blur σ3, opacity 0) over 140ms — it is
+/// not a time-reversed entrance. Reduced motion fades opacity only
+/// (140ms in / 100ms out).
 class BeuiTooltip extends StatefulWidget {
   /// Creates a tooltip around [child].
   const BeuiTooltip({
@@ -91,13 +108,14 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
 
   @override
   Widget build(BuildContext context) {
+    final reduce = MediaQuery.disableAnimationsOf(context);
     return BeuiOverlay(
       open: _open,
       barrier: false,
       trapFocus: false,
       onDismiss: _hide,
-      enterDuration: const Duration(milliseconds: 280),
-      exitDuration: const Duration(milliseconds: 140),
+      enterDuration: Duration(milliseconds: reduce ? 140 : _enterMs),
+      exitDuration: Duration(milliseconds: reduce ? 100 : 140),
       overlayBuilder: _buildTooltip,
       child: MouseRegion(
         onEnter: (_) => _show(),
@@ -137,34 +155,84 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       child: IgnorePointer(
         child: AnimatedBuilder(
           animation: animation,
-          builder: (context, _) {
+          // PERF: the surface — including its BackdropFilter — is built once
+          // and threaded through the `child` slot; per-frame work is only the
+          // Transform / Opacity / ImageFiltered wrappers below.
+          child: _surface(colors),
+          builder: (context, surface) {
             final t = animation.value.clamp(0.0, 1.0);
-            final opacity = Curves.easeOut.transform(t);
-            final surface = _surface(colors);
+            final exiting =
+                animation.status == AnimationStatus.reverse ||
+                animation.status == AnimationStatus.dismissed;
             if (reduce) {
+              // Opacity-only: 140ms in / 100ms out, EASE_OUT forward in each
+              // direction.
+              final opacity = exiting
+                  ? 1 - beuiEaseOut.transform(1 - t)
+                  : beuiEaseOut.transform(t);
               return Opacity(opacity: opacity, child: surface);
             }
-            final e = Curves.easeOutCubic.transform(t);
-            final scale = 0.85 + 0.15 * e;
-            final blur = (1 - Curves.easeOut.transform(t)) * 10;
-            final offset = spec.away * (1 - e);
-            return Transform.translate(
-              offset: offset,
-              child: Transform.scale(
-                scale: scale,
-                alignment: spec.origin,
-                child: Opacity(
-                  opacity: opacity,
-                  child: ImageFiltered(
+            if (exiting) {
+              // Forward-eased exit with its OWN targets (not a reversed
+              // entrance): 140ms EASE_OUT to scale 0.92, 6px toward the
+              // trigger (0.6 × the 10px enter offset), blur 6px → σ3,
+              // opacity 0.
+              final p = beuiEaseOut.transform(1 - t); // exit progress 0 → 1
+              final blur = 3.0 * p;
+              Widget body = surface!;
+              if (blur > 0.05) {
+                body = ImageFiltered(
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: blur,
+                    sigmaY: blur,
+                    tileMode: TileMode.decal,
+                  ),
+                  child: body,
+                );
+              }
+              return Transform.translate(
+                offset: spec.away * (0.6 * p),
+                child: Transform.scale(
+                  scale: 1 - 0.08 * p,
+                  alignment: spec.origin,
+                  child: Opacity(opacity: 1 - p, child: body),
+                ),
+              );
+            }
+            // Enter: opacity over the first 220ms of the 300ms clock, blur
+            // over the full 300ms — both EASE_OUT; scale/offset ride the
+            // 380/30/0.7 spring on its own ticker.
+            final opacity = beuiEaseOut.transform(
+              (t * (_enterMs / _opacityInMs)).clamp(0.0, 1.0),
+            );
+            // Enter blur(10px) → σ5 (motion-blur cap).
+            final blur = 5.0 * (1 - beuiEaseOut.transform(t));
+            return SingleMotionBuilder(
+              value: 1.0,
+              from: 0.0,
+              motion: _enterSpring,
+              child: surface,
+              builder: (context, s, inner) {
+                Widget body = inner!;
+                if (blur > 0.05) {
+                  body = ImageFiltered(
                     imageFilter: ImageFilter.blur(
                       sigmaX: blur,
                       sigmaY: blur,
                       tileMode: TileMode.decal,
                     ),
-                    child: surface,
+                    child: body,
+                  );
+                }
+                return Transform.translate(
+                  offset: spec.away * (1 - s),
+                  child: Transform.scale(
+                    scale: 0.85 + 0.15 * s,
+                    alignment: spec.origin,
+                    child: Opacity(opacity: opacity, child: body),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
         ),
@@ -187,7 +255,9 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8), // rounded-lg
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16), // backdrop-blur-xl
+          // backdrop-blur-xl (24px → σ12), capped at the σ10 static-glass
+          // limit.
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             decoration: BoxDecoration(
               color: colors.popover.withValues(alpha: 0.85),

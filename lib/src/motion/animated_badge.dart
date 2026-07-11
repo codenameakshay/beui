@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_engine.dart';
 
 /// Status of a [BeuiAnimatedBadge] — a fixed, exhaustive set, mirroring the
 /// source `AnimatedBadgeStatus` union.
@@ -50,18 +51,45 @@ enum BeuiAnimatedBadgeSize {
   md,
 }
 
+// ---------------------------------------------------------------------------
+// Component-local springs — the source's per-channel roll/layout springs
+// (`ICON_ROLL_VARIANTS` / `TEXT_ROLL_VARIANTS` / the container `layout`
+// transition), verbatim. Bespoke to this component, not the SPRING_* tokens.
+// ---------------------------------------------------------------------------
+
+/// Roll y channel — the entering glyph/text springs up from below
+/// (source `{ stiffness: 210, damping: 24, mass: 0.85 }`).
+const _rollYSpring = SpringMotion(
+  SpringDescription(mass: 0.85, stiffness: 210, damping: 24),
+);
+
+/// Roll scale channel, icon only — 0.92 → 1 on enter
+/// (source `{ stiffness: 250, damping: 24, mass: 0.75 }`).
+const _rollScaleSpring = SpringMotion(
+  SpringDescription(mass: 0.75, stiffness: 250, damping: 24),
+);
+
+/// Container width morph (source `layout` spring
+/// `{ stiffness: 420, damping: 30, mass: 0.7 }`).
+const _layoutSpring = SpringMotion(
+  SpringDescription(mass: 0.7, stiffness: 420, damping: 30),
+);
+
 /// A status badge whose icon and color animate on status change, with an
 /// optional pulse — the Flutter port of beUI's `AnimatedBadge`.
 ///
 /// On a status change the icon rolls out the top (blurring) while the new icon
-/// rolls up from below into place; color cross-fades over 300ms; and the
-/// container width springs to fit the new label. While [BeuiAnimatedBadgeStatus.loading]
-/// the icon spins and (by default) a soft ring pulses behind the badge.
+/// rolls up from below into place on real springs ([_rollYSpring] /
+/// [_rollScaleSpring]); color cross-fades over 300ms; and the container width
+/// springs to fit the new label on [_layoutSpring] (the natural content width
+/// is measured post-frame, the dynamic-island pattern). While
+/// [BeuiAnimatedBadgeStatus.loading] the icon spins and (by default) a soft
+/// ring pulses behind the badge.
 ///
 /// Reduced motion drops the pulse and all icon/label *movement* (roll, scale,
-/// blur, spin) while keeping the color and opacity cross-fade — the source's
-/// `useReducedMotion()` branch.
-class BeuiAnimatedBadge extends StatelessWidget {
+/// blur, spin — and the width morph snaps) while keeping the color and opacity
+/// cross-fade — the source's `useReducedMotion()` branch.
+class BeuiAnimatedBadge extends StatefulWidget {
   /// Creates an animated status badge.
   const BeuiAnimatedBadge({
     this.status = BeuiAnimatedBadgeStatus.neutral,
@@ -121,32 +149,56 @@ class BeuiAnimatedBadge extends StatelessWidget {
   };
 
   @override
+  State<BeuiAnimatedBadge> createState() => _BeuiAnimatedBadgeState();
+}
+
+class _BeuiAnimatedBadgeState extends State<BeuiAnimatedBadge> {
+  /// Measures the content row's natural width post-frame (the dynamic-island
+  /// `_scheduleMeasure` pattern), so the container width can be driven by the
+  /// source's layout spring instead of a duration-eased AnimatedSize.
+  final GlobalKey _contentKey = GlobalKey();
+  double? _contentWidth;
+
+  void _scheduleMeasure() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final box = _contentKey.currentContext?.findRenderObject() as RenderBox?;
+      if (box == null || !box.hasSize) return;
+      final w = box.size.width;
+      if (_contentWidth == null || (w - _contentWidth!).abs() > 0.5) {
+        setState(() => _contentWidth = w);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final scheme = _BadgeScheme.of(status, colors);
-    final radius = BorderRadius.circular(_height / 2); // rounded-full
+    final scheme = _BadgeScheme.of(widget.status, colors);
+    final radius = BorderRadius.circular(widget._height / 2); // rounded-full
 
     final content = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (showIcon)
+        if (widget.showIcon)
           _IconSlot(
-            icon: icon ?? status.icon,
-            status: status,
+            icon: widget.icon ?? widget.status.icon,
+            status: widget.status,
             // A custom icon is never spun (source spins only the default
             // LoaderCircle); the default loading glyph becomes the spinner.
-            customIcon: icon != null,
+            customIcon: widget.icon != null,
             color: scheme.foreground,
-            size: _iconSize,
+            size: widget._iconSize,
             reduce: reduce,
           ),
-        if (showIcon && label != null) SizedBox(width: _gap),
-        if (label != null)
+        if (widget.showIcon && widget.label != null)
+          SizedBox(width: widget._gap),
+        if (widget.label != null)
           _LabelSlot(
-            label: label!,
+            label: widget.label!,
             style: TextStyle(
-              fontSize: _textSize,
+              fontSize: widget._textSize,
               fontWeight: FontWeight.w500,
               fontFeatures: const [FontFeature.tabularFigures()],
               color: scheme.foreground,
@@ -158,16 +210,44 @@ class BeuiAnimatedBadge extends StatelessWidget {
       ],
     );
 
+    // Width morph — the source's `layout` spring {stiffness: 420, damping: 30,
+    // mass: 0.7}. The content's natural width is measured post-frame (the
+    // exiting roll layers are lifted out of layout by the popLayout stack, so
+    // the measurement tracks only the incoming glyph/label) and the box width
+    // springs to it; the OverflowBox lets the content keep its natural layout
+    // mid-morph without Row-overflow errors. Reduced motion snaps (movement
+    // dropped): the content is laid out at its natural width, unanimated.
+    Widget sized;
+    if (reduce) {
+      sized = content;
+    } else {
+      _scheduleMeasure();
+      final measured = KeyedSubtree(key: _contentKey, child: content);
+      final w = _contentWidth;
+      sized = w == null
+          ? measured // first frame: natural width until measured
+          : SingleMotionBuilder(
+              value: w,
+              motion: _layoutSpring,
+              child: measured,
+              builder: (context, width, child) => SizedBox(
+                width: width < 0 ? 0 : width,
+                child: OverflowBox(
+                  minWidth: 0,
+                  maxWidth: double.infinity,
+                  child: child,
+                ),
+              ),
+            );
+    }
+
     // The container: color cross-fades (kept under reduced motion) via
-    // AnimatedContainer; width morphs to fit the new label via AnimatedSize on
-    // `beuiEaseOut` — the source `layout` transition, ported the same way the
-    // reference StatefulButton ports its width morph (curve, not snap). Reduced
-    // motion zeroes the size animation so the width snaps.
+    // AnimatedContainer; it shrink-wraps the spring-sized content above.
     final badge = AnimatedContainer(
       duration: const Duration(milliseconds: 300), // transition-colors
       curve: beuiEaseOut,
-      height: _height,
-      padding: EdgeInsets.symmetric(horizontal: _hPad),
+      height: widget._height,
+      padding: EdgeInsets.symmetric(horizontal: widget._hPad),
       decoration: BoxDecoration(
         color: scheme.background,
         border: Border.all(color: scheme.border),
@@ -177,21 +257,15 @@ class BeuiAnimatedBadge extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          if (_pulse && !reduce)
+          if (widget._pulse && !reduce)
             Positioned.fill(
-              child: _Pulse(color: scheme.foreground, radius: radius),
+              // The ring repaints every frame while breathing; isolate it so it
+              // never re-rasterises the badge content (and vice versa).
+              child: RepaintBoundary(
+                child: _Pulse(color: scheme.foreground, radius: radius),
+              ),
             ),
-          // Width morph (source `layout`). Reduced motion snaps (no AnimatedSize,
-          // which dislikes a zero duration and would re-dirty itself).
-          if (reduce)
-            content
-          else
-            AnimatedSize(
-              duration: const Duration(milliseconds: 360),
-              curve: beuiEaseOut,
-              alignment: Alignment.center,
-              child: content,
-            ),
+          sized,
         ],
       ),
     );
@@ -292,31 +366,32 @@ class _IconSlot extends StatelessWidget {
     // glyph rotated by RotationTransition wobbles (it spins around the widget
     // box, not the glyph's optical centre). A custom icon, or reduced motion,
     // renders a static glyph (source: spin only the default LoaderCircle).
+    // The spinner repaints every frame; a RepaintBoundary isolates it.
     final spin =
         status == BeuiAnimatedBadgeStatus.loading && !reduce && !customIcon;
     final Widget glyph = spin
-        ? _LoaderSpinner(size: size, color: color)
+        ? RepaintBoundary(
+            child: _LoaderSpinner(size: size, color: color),
+          )
         : Icon(icon, size: size, color: color);
 
     // ClipRect = the source's per-span `overflow-hidden`: the rolling glyph is
     // clipped to its own box so the exiting icon vanishes the moment it clears.
     return ClipRect(
       child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 420), // enter
-        reverseDuration: const Duration(milliseconds: 200), // exit is faster
+        duration: const Duration(milliseconds: 420), // enter (eased channels)
+        reverseDuration: const Duration(milliseconds: 220), // icon exit tween
         switchInCurve: Curves.linear,
         switchOutCurve: Curves.linear,
         transitionBuilder: (child, animation) => _RollTransition(
           animation: animation,
           reduce: reduce,
-          rise: size,
+          rise: size * 0.8, // source: y rolls 80% of the glyph box
+          exitMs: 220,
+          opacityFrom: 0.72,
           child: child,
         ),
-        // popLayout: stack out-going on top of in-coming without reflow.
-        layoutBuilder: (current, previous) => Stack(
-          alignment: Alignment.center,
-          children: [...previous, ?current],
-        ),
+        layoutBuilder: _popLayout,
         child: KeyedSubtree(
           key: ValueKey(
             'icon-${status.name}-${spin ? 'spin' : icon.codePoint}',
@@ -327,6 +402,25 @@ class _IconSlot extends StatelessWidget {
     );
   }
 }
+
+/// popLayout: exiting layers are lifted OUT of layout flow ([Positioned], so
+/// they never size the [Stack]) and stacked over the incoming child — the slot
+/// (and therefore the badge's width spring) tracks only the incoming content
+/// immediately, matching Framer's `AnimatePresence mode="popLayout"`.
+Widget _popLayout(Widget? current, List<Widget> previous) => Stack(
+  clipBehavior: Clip.none,
+  alignment: Alignment.center,
+  children: [
+    for (final p in previous)
+      Positioned(
+        left: 0,
+        top: 0,
+        bottom: 0,
+        child: Center(child: p), // vertically centred, natural width
+      ),
+    ?current,
+  ],
+);
 
 /// The label slot. On a label change the old text rolls out the top (blur) and
 /// the new text rolls up from below (spring + blur), matching the source
@@ -346,21 +440,22 @@ class _LabelSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRect(
       child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 420), // enter
-        reverseDuration: const Duration(milliseconds: 200), // exit is faster
+        duration: const Duration(milliseconds: 420), // enter (eased channels)
+        reverseDuration: const Duration(milliseconds: 200), // text exit tween
         switchInCurve: Curves.linear,
         switchOutCurve: Curves.linear,
         transitionBuilder: (child, animation) => _RollTransition(
           animation: animation,
           reduce: reduce,
-          rise: (style.fontSize ?? 12) * 1.3, // ≈ the natural line box height
+          // Source: text rolls 85% of the line box (≈ fontSize × 1.3).
+          rise: (style.fontSize ?? 12) * 1.3 * 0.85,
+          exitMs: 200,
+          opacityFrom: 0.76,
           scale: false, // text roll has no scale (source TEXT_ROLL_VARIANTS)
+          rotate: false, // ...and no rotate (icon-only channel)
           child: child,
         ),
-        layoutBuilder: (current, previous) => Stack(
-          alignment: Alignment.centerLeft,
-          children: [...previous, ?current],
-        ),
+        layoutBuilder: _popLayout,
         child: Text(
           label,
           key: ValueKey('label-$label'),
@@ -373,76 +468,163 @@ class _LabelSlot extends StatelessWidget {
   }
 }
 
-/// The roll transition shared by the icon and label slots — the y-rise, scale,
-/// blur and opacity all ride the live [animation] progress, eased with
-/// [beuiEaseOut] (the source's `EASE_OUT` per-channel transitions; the literal
-/// Framer springs can't track a duration-based switcher, so a single eased roll
-/// is used — the same proven shape as the action-swap roll). Reduced motion
-/// collapses to a plain fade.
+/// The roll transition shared by the icon and label slots — a faithful port of
+/// the source `ICON_ROLL_VARIANTS` / `TEXT_ROLL_VARIANTS` per-channel spec:
 ///
-/// [AnimatedSwitcher] runs the same builder for the entering child (forward,
-/// 0→1) and the exiting child (reverse, 1→0). Direction is read off the status
-/// **per frame**. The entering glyph rolls UP from below into place; the
-/// exiting one rolls UP and out the top (source `ICON_ROLL_VARIANTS` /
-/// `TEXT_ROLL_VARIANTS`: `y 80%→0` in, `0→-80%` out). The caller clips each slot
-/// to its glyph box (source `overflow-hidden`), so the exit vanishes cleanly.
-class _RollTransition extends StatelessWidget {
+/// * **y** — a real spring ([_rollYSpring], stiffness 210 / damping 24 /
+///   mass 0.85) released when the child enters, from +[rise] (below) to 0.
+///   The exit is a tween (the source's exits are duration-based):
+///   0 → −[rise], [beuiEaseOut] over [exitMs].
+/// * **scale** (icon only) — [_rollScaleSpring] (stiffness 250 / damping 24 /
+///   mass 0.75), from 0.92 → 1 on enter.
+/// * **rotate** (icon only) — enter −8° → 0 over 0.28s [beuiEaseOut]; exit
+///   0 → +8° over [exitMs].
+/// * **opacity** — enter [opacityFrom] → 1 over the 0.42s [beuiEaseOut]
+///   window; exit fades to **0.5** (not 0) — the glyph is still ghost-visible
+///   when the switcher removes it, matching the source endpoints.
+/// * **blur** — 6px → 0 (sigma 3 → 0) over the 0.42s [beuiEaseOut] window on
+///   enter; the exit blurs back in over [exitMs].
+///
+/// The eased channels ride elapsed-time windows off the (linear) switcher
+/// animation; the spring channels are independent [SingleMotionBuilder]s
+/// released on mount — the same released-spring pattern as text_reveal — and
+/// keep settling on their own after the switcher's window closes. Direction is
+/// read off the animation status per frame; the switcher's initial child
+/// (already completed at mount) renders settled without rolling in. Reduced
+/// motion collapses to a plain fade.
+class _RollTransition extends StatefulWidget {
   const _RollTransition({
     required this.animation,
     required this.reduce,
     required this.rise,
+    required this.exitMs,
+    required this.opacityFrom,
     required this.child,
     this.scale = true,
+    this.rotate = true,
   });
 
   final Animation<double> animation;
   final bool reduce;
 
-  /// Roll distance — the glyph/line box height, so the content fully clears the
-  /// (clipped) slot on exit and starts fully below on enter.
+  /// Roll distance — 80% of the glyph box (icon) / 85% of the line box (text),
+  /// the source's `y` endpoints.
   final double rise;
+
+  /// Exit tween duration in ms (must equal the slot's `reverseDuration`):
+  /// 220 for the icon, 200 for the text.
+  final int exitMs;
+
+  /// Enter opacity start point (0.72 icon / 0.76 text).
+  final double opacityFrom;
+
   final bool scale;
+  final bool rotate;
   final Widget child;
 
-  static const double _blur = 3; // source blur(6px) ≈ sigma 3
+  @override
+  State<_RollTransition> createState() => _RollTransitionState();
+}
+
+class _RollTransitionState extends State<_RollTransition> {
+  static const double _blurSigma = 3; // source blur(6px) → sigma 3
+  static const double _enterMs = 420; // opacity/blur window (= switch duration)
+  static const double _rotateMs = 280; // rotate-in window
+  static const double _maxRotate = 8 * math.pi / 180; // 8°
+
+  /// True when the animation was already completed at mount — the switcher's
+  /// initial child, which must render settled rather than roll in. It still
+  /// exits normally if a swap later reverses it.
+  late final bool _settledAtMount =
+      widget.animation.status == AnimationStatus.completed;
 
   @override
   Widget build(BuildContext context) {
-    if (reduce) return FadeTransition(opacity: animation, child: child);
-
+    if (widget.reduce) {
+      // Reduced motion: opacity kept, movement (y/scale/rotate/blur) dropped.
+      return FadeTransition(opacity: widget.animation, child: widget.child);
+    }
     return AnimatedBuilder(
-      animation: animation,
+      animation: widget.animation,
       builder: (context, _) {
-        final exiting = animation.status == AnimationStatus.reverse;
-        final t = animation.value; // live linear progress (1→0 while exiting)
-        final easedIn = beuiEaseOut.transform(t);
-        final easedOut = beuiEaseInOut.transform(t);
-        // enter: +rise (below) → 0 (easeOut). exit: 0 → -rise up and out
-        // (easeInOut, so it clears steadily rather than lingering at centre).
-        final dy = exiting ? -(1 - easedOut) * rise : (1 - easedIn) * rise;
-        final sc = scale ? 0.92 + 0.08 * easedIn : 1.0;
-        // Exit fades linearly (source exit is fast); enter fades eased.
-        final opacity = exiting ? t : easedIn;
-        final blur = (1 - t) * _blur;
-        Widget c = child;
-        if (blur > 0.05) {
-          c = ImageFiltered(
-            imageFilter: ImageFilter.blur(
-              sigmaX: blur,
-              sigmaY: blur,
-              tileMode: TileMode.decal,
-            ),
-            child: c,
+        final status = widget.animation.status;
+        final exiting =
+            status == AnimationStatus.reverse ||
+            status == AnimationStatus.dismissed;
+        if (exiting) return _exit(widget.animation.value);
+        if (_settledAtMount) return widget.child; // initial child, at rest
+        return _enter(widget.animation.value);
+      },
+    );
+  }
+
+  /// Exit: every channel is a [beuiEaseOut] tween over the slot's exit window
+  /// (the switcher's linear reverse run, [widget.exitMs]) — the source's exits
+  /// are duration-based, not springs. [t] runs 1 → 0.
+  Widget _exit(double t) {
+    final p = beuiEaseOut.transform((1 - t).clamp(0.0, 1.0));
+    Widget c = _blurred(widget.child, _blurSigma * p);
+    if (widget.rotate) {
+      c = Transform.rotate(angle: _maxRotate * p, child: c); // 0 → +8°
+    }
+    return Opacity(
+      opacity: (1 - 0.5 * p).clamp(0.0, 1.0), // fades to 0.5, not 0
+      child: Transform.translate(
+        offset: Offset(0, -widget.rise * p), // 0 → -rise, up and out the top
+        child: c,
+      ),
+    );
+  }
+
+  /// Enter: rotate/opacity/blur are eased elapsed-time windows off the linear
+  /// switcher progress [t]; y and scale are released springs.
+  Widget _enter(double t) {
+    final elapsedMs = t * _enterMs;
+    final p = beuiEaseOut.transform((elapsedMs / _enterMs).clamp(0.0, 1.0));
+    final opacity = widget.opacityFrom + (1 - widget.opacityFrom) * p;
+    Widget c = _blurred(widget.child, _blurSigma * (1 - p));
+    if (widget.rotate) {
+      final rp = beuiEaseOut.transform((elapsedMs / _rotateMs).clamp(0.0, 1.0));
+      c = Transform.rotate(angle: -_maxRotate * (1 - rp), child: c); // -8° → 0
+    }
+    return SingleMotionBuilder(
+      value: 0.0,
+      from: widget.rise, // released at mount: +rise (below) → 0
+      motion: _rollYSpring,
+      child: c,
+      builder: (context, dy, child) {
+        if (!widget.scale) {
+          return Opacity(
+            opacity: opacity.clamp(0.0, 1.0),
+            child: Transform.translate(offset: Offset(0, dy), child: child),
           );
         }
-        return Opacity(
-          opacity: opacity.clamp(0.0, 1.0),
-          child: Transform.translate(
-            offset: Offset(0, dy),
-            child: scale ? Transform.scale(scale: sc, child: c) : c,
+        return SingleMotionBuilder(
+          value: 1.0,
+          from: 0.92, // source scale channel: 0.92 → 1
+          motion: _rollScaleSpring,
+          child: child,
+          builder: (context, sc, inner) => Opacity(
+            opacity: opacity.clamp(0.0, 1.0),
+            child: Transform.translate(
+              offset: Offset(0, dy),
+              child: Transform.scale(scale: sc, child: inner),
+            ),
           ),
         );
       },
+    );
+  }
+
+  static Widget _blurred(Widget child, double sigma) {
+    if (sigma <= 0.05) return child;
+    return ImageFiltered(
+      imageFilter: ImageFilter.blur(
+        sigmaX: sigma,
+        sigmaY: sigma,
+        tileMode: TileMode.decal,
+      ),
+      child: child,
     );
   }
 }

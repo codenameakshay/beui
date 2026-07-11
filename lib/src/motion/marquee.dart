@@ -2,6 +2,11 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
+/// Hard ceiling on how many copies of the track a marquee will lay out. A
+/// degenerate tiny track (one small chip in a very wide viewport) would
+/// otherwise multiply into hundreds of Rows.
+const int _maxCopies = 32;
+
 /// Scroll direction for a [BeuiMarquee].
 enum BeuiMarqueeDirection {
   /// Scrolls right→left (default).
@@ -149,7 +154,17 @@ class _BeuiMarqueeState extends State<BeuiMarquee>
           inner = track(key: _trackKey);
         } else {
           final fill = viewport.isFinite ? (viewport / extent).ceil() + 1 : 2;
-          final copies = math.max(2, fill);
+          // Guard the degenerate tiny-track case (e.g. one small chip in a
+          // very wide viewport), which would otherwise explode into hundreds
+          // of track copies. Capped hard; asserts in debug so the consumer
+          // hears about it rather than silently shipping a gappy marquee.
+          assert(
+            fill <= _maxCopies,
+            'BeuiMarquee: track extent ($extent px) is too short for the '
+            'viewport ($viewport px) — needs $fill copies (max $_maxCopies). '
+            'Give the marquee longer content.',
+          );
+          final copies = math.max(2, math.min(fill, _maxCopies));
           final tracks = <Widget>[
             track(key: _trackKey),
             for (var i = 1; i < copies; i++) track(),
@@ -200,6 +215,10 @@ class _BeuiMarqueeState extends State<BeuiMarquee>
             child: result,
           );
         }
+
+        // RepaintBoundary isolates the strip's permanent 60fps repaint (and
+        // the fade mask's per-frame saveLayer) from the host page's layer.
+        result = RepaintBoundary(child: result);
 
         if (widget.pauseOnHover) {
           result = MouseRegion(

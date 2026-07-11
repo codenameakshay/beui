@@ -212,6 +212,34 @@ void main() {
     expect(find.text('Body A'), findsOneWidget);
   });
 
+  testWidgets('the open overshoots past the natural height, then settles '
+      '(the namesake bounce)', (tester) async {
+    double clipHeight(String id) => tester
+        .getSize(
+          find.ancestor(
+            of: find.byKey(beuiAccordionPanelKey(id)),
+            matching: find.byType(ClipRect),
+          ),
+        )
+        .height;
+
+    await tester.pumpWidget(_host());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Alpha'));
+    await tester.pump(); // release the open spring
+    // ~the first overshoot peak of the open spring (stiffness 300.1,
+    // damping 23.56, ζ≈0.68 → peak ≈ +5% at ≈240ms).
+    await tester.pump(const Duration(milliseconds: 240));
+
+    final peak = clipHeight('a');
+    expect(peak, greaterThan(141.0)); // past 100% — no longer clamped to 1.0
+    expect(peak, lessThan(140.0 * 1.25 + 1.0)); // but capped at 125%
+
+    await tester.pumpAndSettle();
+    expect(clipHeight('a'), closeTo(140.0, 1.0)); // settles at natural height
+  });
+
   testWidgets('a tap mid-bounce still toggles (stable hit target)', (
     tester,
   ) async {

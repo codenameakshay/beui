@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 
 import '../theme/beui_colors.dart';
@@ -113,7 +114,10 @@ class _BeuiDockState extends State<BeuiDock> {
   late List<GlobalKey> _itemKeys;
 
   /// Cursor x in the dock-row's local coordinates, or null when not hovering.
-  double? _cursorX;
+  /// A [ValueNotifier] rather than setState, so each mousemove re-targets only
+  /// the per-item scale springs (each item listens itself) instead of
+  /// rebuilding the whole bar at pointer-event rate.
+  final ValueNotifier<double?> _cursorX = ValueNotifier<double?>(null);
 
   /// Measured rect of the active item (in the dock Stack's space); the pill
   /// springs toward it. Null when no item is active.
@@ -133,18 +137,15 @@ class _BeuiDockState extends State<BeuiDock> {
     }
   }
 
+  @override
+  void dispose() {
+    _cursorX.dispose();
+    super.dispose();
+  }
+
   /// Falloff width (px): how far the magnification reaches on either side of the
   /// cursor. Roughly two item-widths so a small cluster grows, like macOS.
   double get _falloff => widget.size * 2;
-
-  /// Target scale for an item whose horizontal centre is [centerX].
-  double _scaleFor(double centerX) {
-    final x = _cursorX;
-    if (x == null) return 1;
-    final d = (x - centerX).abs();
-    final t = math.max(0.0, 1 - d / _falloff);
-    return 1 + (widget.maxScale - 1) * t;
-  }
 
   /// Measure the active item's rect relative to the Stack so the pill can glide
   /// to it (the source's `layoutId` shared layout — measured one frame late, as
@@ -208,7 +209,10 @@ class _BeuiDockState extends State<BeuiDock> {
                 item: widget.items[i]!,
                 size: widget.size,
                 magnify: magnify,
-                targetScale: magnify ? _scaleFor(centers[i]) : 1.0,
+                cursorX: _cursorX,
+                center: centers[i],
+                falloff: _falloff,
+                maxScale: widget.maxScale,
                 colors: colors,
               ),
             ),
@@ -236,29 +240,34 @@ class _BeuiDockState extends State<BeuiDock> {
       ],
     );
 
-    final bar = Container(
-      padding: EdgeInsets.symmetric(horizontal: padH, vertical: 4),
-      decoration: BoxDecoration(
-        color: colors.card.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(16), // rounded-2xl
-        border: Border.all(color: colors.border),
-        boxShadow: [
-          BoxShadow(
-            color: colors.foreground.withValues(alpha: 0.18),
-            blurRadius: 28,
-            offset: const Offset(0, 12),
-          ),
-        ],
+    // RepaintBoundary isolates the bar's animated repaints — the pill glide
+    // and (with magnify) the per-frame magnification, both under the bar's
+    // 28px-blur shadow — from the host page's layer.
+    final bar = RepaintBoundary(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: padH, vertical: 4),
+        decoration: BoxDecoration(
+          color: colors.card.withValues(alpha: 0.8),
+          borderRadius: BorderRadius.circular(16), // rounded-2xl
+          border: Border.all(color: colors.border),
+          boxShadow: [
+            BoxShadow(
+              color: colors.foreground.withValues(alpha: 0.18),
+              blurRadius: 28,
+              offset: const Offset(0, 12),
+            ),
+          ],
+        ),
+        child: stack,
       ),
-      child: stack,
     );
 
     // No magnification → faithful static dock, no pointer tracking.
     if (!magnify) return bar;
 
     return MouseRegion(
-      onHover: (e) => setState(() => _cursorX = e.localPosition.dx),
-      onExit: (_) => setState(() => _cursorX = null),
+      onHover: (e) => _cursorX.value = e.localPosition.dx,
+      onExit: (_) => _cursorX.value = null,
       child: bar,
     );
   }
@@ -272,15 +281,40 @@ class _DockItemView extends StatelessWidget {
     required this.item,
     required this.size,
     required this.magnify,
-    required this.targetScale,
+    required this.cursorX,
+    required this.center,
+    required this.falloff,
+    required this.maxScale,
     required this.colors,
   });
 
   final BeuiDockItem item;
   final double size;
   final bool magnify;
-  final double targetScale;
+
+  /// Live cursor x in the bar's local space (null off-hover); each item
+  /// listens to it itself so mousemove doesn't rebuild the whole bar.
+  final ValueListenable<double?> cursorX;
+
+  /// This item's resting horizontal centre in the bar's local space.
+  final double center;
+
+  /// Falloff width of the magnification (see [BeuiDock]).
+  final double falloff;
+
+  /// Peak magnification under the cursor (see [BeuiDock.maxScale]).
+  final double maxScale;
+
   final BeuiColors colors;
+
+  /// Target scale for this item given cursor [x] — the distance→scale mapping
+  /// documented on [BeuiDock].
+  double _scaleFor(double? x) {
+    if (x == null) return 1;
+    final d = (x - center).abs();
+    final t = math.max(0.0, 1 - d / falloff);
+    return 1 + (maxScale - 1) * t;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -314,8 +348,10 @@ class _DockItemView extends StatelessWidget {
 
     // The slot grows with the scale so neighbours push apart (macOS dock) and
     // the row reflows; bottom-anchored sizing keeps the bar's baseline
-    // (items-end) fixed, so items rise as they grow.
-    Widget slot(double scale) => SizedBox(
+    // (items-end) fixed, so items rise as they grow. The static glyph content
+    // threads through the builders' child slots — only the sizing/transform
+    // wrappers re-run per mousemove / spring frame.
+    Widget slot(double scale, Widget child) => SizedBox(
       width: size * scale,
       height: size * scale,
       child: Align(
@@ -326,16 +362,21 @@ class _DockItemView extends StatelessWidget {
           child: Transform.scale(
             scale: scale,
             alignment: Alignment.bottomCenter,
-            child: content,
+            child: child,
           ),
         ),
       ),
     );
 
-    return SingleMotionBuilder(
-      value: targetScale,
-      motion: beuiSpringMouse,
-      builder: (context, scale, _) => slot(scale),
+    return ValueListenableBuilder<double?>(
+      valueListenable: cursorX,
+      builder: (context, x, child) => SingleMotionBuilder(
+        value: _scaleFor(x),
+        motion: beuiSpringMouse,
+        builder: (context, scale, child) => slot(scale, child!),
+        child: child,
+      ),
+      child: content,
     );
   }
 }
@@ -354,35 +395,35 @@ class _DockPill extends StatelessWidget {
   final Color color;
   final bool reduce;
 
-  Widget _box(Rect r) {
+  Widget _place(Rect r, Widget box) {
     final w = math.max(0.0, r.width - 4); // inset-0.5 (2px each side)
     final h = math.max(0.0, r.height - 4);
     return Transform.translate(
       offset: Offset(r.left + 2, r.top + 2),
       child: Align(
         alignment: Alignment.topLeft,
-        child: SizedBox(
-          width: w,
-          height: h,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(12), // rounded-xl
-            ),
-          ),
-        ),
+        child: SizedBox(width: w, height: h, child: box),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (reduce) return _box(rect);
+    // Only the pill's placement/size animate; the decorated box itself is
+    // static, so it threads through the MotionBuilder's child slot.
+    final box = DecoratedBox(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12), // rounded-xl
+      ),
+    );
+    if (reduce) return _place(rect, box);
     return MotionBuilder<Rect>(
       value: rect,
       motion: beuiSpringLayout,
       converter: const RectMotionConverter(),
-      builder: (context, r, _) => _box(r),
+      builder: (context, r, child) => _place(r, child!),
+      child: box,
     );
   }
 }

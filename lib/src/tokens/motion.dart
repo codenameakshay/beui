@@ -106,6 +106,26 @@ const beuiEaseInOut = Cubic(0.77, 0, 0.175, 1);
 const beuiEaseDrawer = Cubic(0.32, 0.72, 0, 1);
 
 // ---------------------------------------------------------------------------
+// Blur convention
+// ---------------------------------------------------------------------------
+
+/// Converts a source CSS `blur(N px)` radius to the Flutter [ImageFilter]
+/// sigma used **everywhere** in this library: `σ = px / 2`.
+///
+/// The CSS spec relates its blur radius to a Gaussian as roughly `σ ≈ px / 2`
+/// (the spec words it as "a standard deviation equal to half the blur
+/// length"), and Flutter's `ImageFilter.blur` takes the standard deviation
+/// directly. Every component that ports a `filter: blur(Npx)` /
+/// `backdrop-filter: blur(Npx)` value MUST route it through this function so
+/// an identical source value renders identically across components — do not
+/// pass raw pixel values as sigma.
+///
+/// Intensity budget (mirrors the repo's motion rules): animated/motion blur
+/// stays ≤ σ5 (source values up to `blur(10px)`), and static glass surfaces
+/// (backdrops, frosted panels) may go up to σ10 (`blur(20px)`).
+double beuiBlurSigma(double cssBlurPx) => cssBlurPx / 2;
+
+// ---------------------------------------------------------------------------
 // Reduced-motion resolver
 // ---------------------------------------------------------------------------
 

@@ -297,6 +297,53 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
           );
         }
 
+        // Static per layout pass: the track, the fill's box, the tick layer,
+        // and the thumb are built ONCE here and reused by every buildAt frame.
+        // Identical widget instances short-circuit their subtree rebuilds, so
+        // a spring frame only re-runs the cheap Positioned wrappers below
+        // (fill width + thumb left) — not the track or up to 51 tick dots.
+        final trackBox = Positioned.fill(
+          child: ColoredBox(color: colors.muted),
+        );
+        final fillBox = ColoredBox(
+          color: colors.foreground.withValues(alpha: 0.15),
+        );
+        final Widget? tickLayer;
+        if (showTicks) {
+          // Tick positions are a pure function of the measured trackWidth (the
+          // ticks span the inset band), so no nested LayoutBuilder is needed.
+          final w = math.max(0.0, trackWidth - 2 * _tickInset);
+          tickLayer = Positioned(
+            left: _tickInset,
+            right: _tickInset,
+            top: 0,
+            bottom: 0,
+            child: IgnorePointer(
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  for (var i = 0; i <= steps; i++)
+                    Positioned(
+                      left: (i / steps) * w - 2,
+                      top: _trackHeight / 2 - 2,
+                      child: Container(
+                        width: 4,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: colors.foreground.withValues(alpha: 0.25),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        } else {
+          tickLayer = null;
+        }
+        final thumbWidget = thumb();
+
         // Both the fill width and the thumb position are driven by the same
         // x, so the fill's right edge tracks the thumb exactly (source binds
         // `left` to one motion value for both).
@@ -312,50 +359,15 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Positioned.fill(child: ColoredBox(color: colors.muted)),
+                      trackBox,
                       Positioned(
                         left: 0,
                         width: x,
                         top: 0,
                         bottom: 0,
-                        child: ColoredBox(
-                          color: colors.foreground.withValues(alpha: 0.15),
-                        ),
+                        child: fillBox,
                       ),
-                      if (showTicks)
-                        Positioned(
-                          left: _tickInset,
-                          right: _tickInset,
-                          top: 0,
-                          bottom: 0,
-                          child: IgnorePointer(
-                            child: LayoutBuilder(
-                              builder: (context, c) {
-                                final w = c.maxWidth;
-                                return Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    for (var i = 0; i <= steps; i++)
-                                      Positioned(
-                                        left: (i / steps) * w - 2,
-                                        top: _trackHeight / 2 - 2,
-                                        child: Container(
-                                          width: 4,
-                                          height: 4,
-                                          decoration: BoxDecoration(
-                                            color: colors.foreground.withValues(
-                                              alpha: 0.25,
-                                            ),
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        ),
+                      ?tickLayer,
                     ],
                   ),
                 ),
@@ -364,7 +376,7 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
               Positioned(
                 left: x - _thumbWidth / 2,
                 top: (_trackHeight - _thumbHeight) / 2,
-                child: thumb(),
+                child: thumbWidget,
               ),
             ],
           );
@@ -699,18 +711,76 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
           );
         }
 
-        Widget thumbAt(_Thumb which, double x, FocusNode focus, Key key) =>
-            Positioned(
-              left: x - _thumbWidth / 2,
-              top: (_trackHeight - _thumbHeight) / 2,
-              child: Focus(
-                focusNode: focus,
-                canRequestFocus: enabled,
-                onKeyEvent: (_, event) => _onKey(which, event),
-                onFocusChange: (_) => setState(() {}),
-                child: thumb(which, focus, key),
+        Widget focusableThumb(_Thumb which, FocusNode focus, Key key) => Focus(
+          focusNode: focus,
+          canRequestFocus: enabled,
+          onKeyEvent: (_, event) => _onKey(which, event),
+          onFocusChange: (_) => setState(() {}),
+          child: thumb(which, focus, key),
+        );
+
+        // Static per layout pass: the track, the fill's box, the tick layer,
+        // and both thumbs are built ONCE here and reused by every buildBand
+        // frame. Identical widget instances short-circuit their subtree
+        // rebuilds, so a spring frame on either side only re-runs the cheap
+        // Positioned wrappers below (band left/width + thumb lefts) — not the
+        // track or up to 51 tick dots.
+        final trackBox = Positioned.fill(
+          child: ColoredBox(color: colors.muted),
+        );
+        final fillBox = ColoredBox(
+          color: colors.foreground.withValues(alpha: 0.15),
+        );
+        final Widget? tickLayer;
+        if (showTicks) {
+          // Tick positions are a pure function of the measured trackWidth (the
+          // ticks span the inset band), so no nested LayoutBuilder is needed.
+          final w = math.max(0.0, trackWidth - 2 * _tickInset);
+          tickLayer = Positioned(
+            left: _tickInset,
+            right: _tickInset,
+            top: 0,
+            bottom: 0,
+            child: IgnorePointer(
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  for (var i = 0; i <= steps; i++)
+                    Positioned(
+                      left: (i / steps) * w - 2,
+                      top: _trackHeight / 2 - 2,
+                      child: Container(
+                        width: 4,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: colors.foreground.withValues(alpha: 0.25),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
               ),
-            );
+            ),
+          );
+        } else {
+          tickLayer = null;
+        }
+        final startThumb = focusableThumb(
+          _Thumb.start,
+          _startFocus,
+          beuiRangeSliderStartThumbKey,
+        );
+        final endThumb = focusableThumb(
+          _Thumb.end,
+          _endFocus,
+          beuiRangeSliderEndThumbKey,
+        );
+
+        Widget thumbAt(double x, Widget thumbWidget) => Positioned(
+          left: x - _thumbWidth / 2,
+          top: (_trackHeight - _thumbHeight) / 2,
+          child: thumbWidget,
+        );
 
         // The band + both thumbs read the same live x per side, so the fill
         // always spans exactly between the handles. The dragged side follows the
@@ -725,62 +795,22 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    Positioned.fill(child: ColoredBox(color: colors.muted)),
+                    trackBox,
                     Positioned(
                       left: math.min(sx, ex),
                       width: (ex - sx).abs(),
                       top: 0,
                       bottom: 0,
-                      child: ColoredBox(
-                        color: colors.foreground.withValues(alpha: 0.15),
-                      ),
+                      child: fillBox,
                     ),
-                    if (showTicks)
-                      Positioned(
-                        left: _tickInset,
-                        right: _tickInset,
-                        top: 0,
-                        bottom: 0,
-                        child: IgnorePointer(
-                          child: LayoutBuilder(
-                            builder: (context, c) {
-                              final w = c.maxWidth;
-                              return Stack(
-                                clipBehavior: Clip.none,
-                                children: [
-                                  for (var i = 0; i <= steps; i++)
-                                    Positioned(
-                                      left: (i / steps) * w - 2,
-                                      top: _trackHeight / 2 - 2,
-                                      child: Container(
-                                        width: 4,
-                                        height: 4,
-                                        decoration: BoxDecoration(
-                                          color: colors.foreground.withValues(
-                                            alpha: 0.25,
-                                          ),
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                      ),
+                    ?tickLayer,
                   ],
                 ),
               ),
             ),
             // Thumbs — outside the clip so their shadow isn't shaved.
-            thumbAt(_Thumb.end, ex, _endFocus, beuiRangeSliderEndThumbKey),
-            thumbAt(
-              _Thumb.start,
-              sx,
-              _startFocus,
-              beuiRangeSliderStartThumbKey,
-            ),
+            thumbAt(ex, endThumb),
+            thumbAt(sx, startThumb),
           ],
         );
 

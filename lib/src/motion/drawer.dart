@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
+import '_engine.dart' show SingleMotionBuilder;
 
 /// Which edge the drawer slides from.
 enum BeuiDrawerSide {
@@ -22,8 +23,11 @@ enum BeuiDrawerSide {
 /// [dismissible]) or Esc; focus is trapped while open.
 ///
 /// **Controlled** ([open] + [onOpenChange]), the source's API. The panel slide
-/// uses the overdamped panel spring (`SPRING_PANEL`, approximated with
-/// `EASE_OUT` here); reduced motion fades opacity instead of sliding.
+/// rides the overdamped panel spring (`SPRING_PANEL`) toward its current
+/// target — in place when open, off-screen when closing — so enter and exit
+/// are the *same spring played forward*, matching the source. The backdrop
+/// fades over 250ms `EASE_OUT` in both directions. Reduced motion fades
+/// opacity (200ms `EASE_OUT`) instead of sliding.
 class BeuiDrawer extends StatelessWidget {
   /// Creates a drawer whose [child] is the panel content.
   const BeuiDrawer({
@@ -56,15 +60,23 @@ class BeuiDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final reduce = MediaQuery.disableAnimationsOf(context);
     return BeuiOverlay(
       open: open,
       barrier: true,
       barrierColor: const Color(0x66000000), // bg-black/40
-      barrierBlur: 4, // backdrop-blur-sm
+      barrierBlur: 2, // backdrop-blur-sm (4px) → σ2
       barrierDismissible: dismissible,
+      // The backdrop fades over 250ms EASE_OUT in both directions (source).
+      barrierEnterDuration: Duration(milliseconds: reduce ? 200 : 250),
+      barrierExitDuration: Duration(milliseconds: reduce ? 200 : 250),
+      barrierCurve: beuiEaseOut,
       onDismiss: () => onOpenChange(false),
-      enterDuration: const Duration(milliseconds: 300),
-      exitDuration: const Duration(milliseconds: 220),
+      // Lifecycle envelope, not the slide's clock — the panel rides
+      // SPRING_PANEL (see _panel); 400ms keeps the portal mounted until the
+      // exit spring has visually settled. Reduced motion: 200ms opacity fade.
+      enterDuration: Duration(milliseconds: reduce ? 200 : 400),
+      exitDuration: Duration(milliseconds: reduce ? 200 : 400),
       overlayBuilder: (context, animation, link) => _panel(context, animation),
       child: const SizedBox.shrink(),
     );
@@ -111,23 +123,40 @@ class BeuiDrawer extends StatelessWidget {
       ),
     );
 
+    if (reduce) {
+      return Positioned(
+        top: 0,
+        bottom: 0,
+        left: isRight ? null : 0,
+        right: isRight ? 0 : null,
+        width: width,
+        child: AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) => Opacity(
+            opacity: beuiEaseOut.transform(animation.value.clamp(0.0, 1.0)),
+            child: child,
+          ),
+          child: surface,
+        ),
+      );
+    }
+
+    final offX = isRight ? width : -width; // off-screen resting x
     return Positioned(
       top: 0,
       bottom: 0,
       left: isRight ? null : 0,
       right: isRight ? 0 : null,
       width: width,
-      child: AnimatedBuilder(
-        animation: animation,
-        builder: (context, child) {
-          final t = animation.value.clamp(0.0, 1.0);
-          if (reduce) {
-            return Opacity(opacity: Curves.easeOut.transform(t), child: child);
-          }
-          final e = beuiEaseOut.transform(t);
-          final dx = (1 - e) * (isRight ? width : -width); // off-edge → 0
-          return Transform.translate(offset: Offset(dx, 0), child: child);
-        },
+      child: SingleMotionBuilder(
+        // SPRING_PANEL drives the slide in BOTH directions (source): the
+        // target is 0 while open and the off-screen edge while closing, so
+        // the exit is the same spring played forward, not a reversed enter.
+        value: open ? 0.0 : offX,
+        from: offX,
+        motion: beuiSpringPanel,
+        builder: (context, dx, child) =>
+            Transform.translate(offset: Offset(dx, 0), child: child),
         child: surface,
       ),
     );
