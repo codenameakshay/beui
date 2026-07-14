@@ -36,6 +36,12 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  # Fragment shaders backing BeuiShaderBackground (ports of @paper-design/shaders
+  # GLSL). Compiled by the flutter tool into the asset bundle; consumers load
+  # them as `packages/beui/shaders/<name>.frag`.
+  shaders:
+    - shaders/beui_shader_probe.frag
+
   # To add assets to your package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
