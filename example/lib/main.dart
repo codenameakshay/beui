@@ -22,6 +22,7 @@ import 'demos/scroll_animation_demo.dart';
 import 'demos/swap_demo.dart';
 import 'demos/swipeable_list_demo.dart';
 import 'demos/theme_toggle_demo.dart';
+import 'demos/shader_background_demo.dart';
 
 void main() => runApp(const GalleryApp());
 
@@ -82,6 +83,7 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Prediction Market', predictionMarketDemo),
   GalleryEntry('File Upload', fileUploadDemo),
   GalleryEntry('Not Found', notFoundDemo),
+  GalleryEntry('Shader Background', shaderBackgroundDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
