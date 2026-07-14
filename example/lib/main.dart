@@ -8,12 +8,23 @@ import 'demos/number_demo.dart';
 import 'demos/action_rails_demo.dart';
 import 'demos/animated_badge_demo.dart';
 import 'demos/animated_toast_stack_demo.dart';
+import 'demos/availability_scheduler_demo.dart';
 import 'demos/bloom_menu_demo.dart';
 import 'demos/bottom_sheet_demo.dart';
 import 'demos/command_palette_demo.dart';
 import 'demos/create_menu_demo.dart';
+import 'demos/cylinder_carousel_demo.dart';
+import 'demos/feedback_widget_demo.dart';
 import 'demos/input_demo.dart';
+import 'demos/knockout_bracket_demo.dart';
+import 'demos/loader_demo.dart';
 import 'demos/popover_demo.dart';
+import 'demos/popover_morph_demo.dart';
+import 'demos/preview_rail_demo.dart';
+import 'demos/select_demo.dart';
+import 'demos/table_demo.dart';
+import 'demos/wallet_card_demo.dart';
+import 'demos/wheel_picker_demo.dart';
 import 'demos/dynamic_island_demo.dart';
 import 'demos/expandable_tabs_demo.dart';
 import 'demos/file_upload_demo.dart';
@@ -88,6 +99,17 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Prediction Market', predictionMarketDemo),
   GalleryEntry('File Upload', fileUploadDemo),
   GalleryEntry('Not Found', notFoundDemo),
+  GalleryEntry('Select', selectDemo),
+  GalleryEntry('Popover Morph', popoverMorphDemo),
+  GalleryEntry('Preview Rail', previewRailDemo),
+  GalleryEntry('Wheel Picker', wheelPickerDemo),
+  GalleryEntry('Cylinder Carousel', cylinderCarouselDemo),
+  GalleryEntry('Loader', loaderDemo),
+  GalleryEntry('Feedback Widget', feedbackWidgetDemo),
+  GalleryEntry('Table', tableDemo),
+  GalleryEntry('Wallet Card', walletCardDemo),
+  GalleryEntry('Availability Scheduler', availabilitySchedulerDemo),
+  GalleryEntry('Knockout Bracket', knockoutBracketDemo),
 ];
 
 Widget _actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
