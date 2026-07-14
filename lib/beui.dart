@@ -37,6 +37,8 @@ export 'src/motion/animated_toast_stack.dart'
         BeuiToastController,
         BeuiToastPosition,
         BeuiToastStatus;
+export 'src/motion/bloom_menu.dart'
+    show BeuiBloomMenu, BeuiBloomMenuItem, beuiDefaultBloomMenuItems;
 export 'src/motion/bottom_sheet.dart' show BeuiBottomSheet;
 export 'src/motion/bouncy_accordion.dart'
     show BeuiBouncyAccordion, BeuiBouncyAccordionItem;
@@ -68,6 +70,7 @@ export 'src/motion/file_upload.dart'
         BeuiFileUploadStatus,
         BeuiFileUploadVariant,
         beuiFormatBytes;
+export 'src/motion/input.dart' show BeuiInput, BeuiInputStyle;
 export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'
@@ -95,6 +98,12 @@ export 'src/motion/prediction_market.dart'
 // Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
 export 'src/motion/parallax.dart' show BeuiParallax, BeuiParallaxAxis;
+export 'src/motion/popover.dart'
+    show
+        BeuiPopover,
+        BeuiPopoverAlign,
+        BeuiPopoverSide,
+        BeuiPopoverTrigger;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
 export 'src/motion/range_slider.dart' show BeuiRangeSlider, BeuiRangeSliderDual;
 export 'src/motion/scroll_progress.dart' show BeuiScrollProgress;

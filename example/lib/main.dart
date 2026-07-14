@@ -8,9 +8,12 @@ import 'demos/number_demo.dart';
 import 'demos/action_rails_demo.dart';
 import 'demos/animated_badge_demo.dart';
 import 'demos/animated_toast_stack_demo.dart';
+import 'demos/bloom_menu_demo.dart';
 import 'demos/bottom_sheet_demo.dart';
 import 'demos/command_palette_demo.dart';
 import 'demos/create_menu_demo.dart';
+import 'demos/input_demo.dart';
+import 'demos/popover_demo.dart';
 import 'demos/dynamic_island_demo.dart';
 import 'demos/expandable_tabs_demo.dart';
 import 'demos/file_upload_demo.dart';
@@ -52,8 +55,11 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Switch', _switchDemo),
   GalleryEntry('Checkbox', _checkboxDemo),
   GalleryEntry('Radio', _radioDemo),
+  GalleryEntry('Input', inputDemo),
   GalleryEntry('Tabs', _tabsDemo),
   GalleryEntry('Button', _buttonDemo),
+  GalleryEntry('Popover', popoverDemo),
+  GalleryEntry('Bloom Menu', bloomMenuDemo),
   GalleryEntry('Tooltip', _tooltipDemo),
   GalleryEntry('Drawer', _drawerDemo),
   GalleryEntry('Morphing Modal', _modalDemo),
