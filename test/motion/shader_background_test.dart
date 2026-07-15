@@ -66,6 +66,7 @@ void main() {
     BeuiShaderVariant.smokeRing,
     BeuiShaderVariant.warp,
     BeuiShaderVariant.godRays,
+    BeuiShaderVariant.dotOrbit,
   ]) {
     testWidgets('${v.name} compiles, loads and paints (texture)', (
       tester,
