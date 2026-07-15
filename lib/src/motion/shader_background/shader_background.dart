@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import 'specs/dot_grid.dart';
 import 'specs/simplex_noise.dart';
 import 'uniforms.dart';
 
@@ -78,6 +79,7 @@ enum BeuiShaderVariant {
 /// map are not yet ported and throw [UnimplementedError] when constructed.
 final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = {
   BeuiShaderVariant.simplexNoise: beuiSimplexNoiseSpec,
+  BeuiShaderVariant.dotGrid: beuiDotGridSpec,
 };
 
 /// A full-bleed animated GPU shader background — the Flutter port of beUI's
