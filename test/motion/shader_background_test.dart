@@ -64,6 +64,8 @@ void main() {
     BeuiShaderVariant.voronoi,
     BeuiShaderVariant.metaballs,
     BeuiShaderVariant.smokeRing,
+    BeuiShaderVariant.warp,
+    BeuiShaderVariant.godRays,
   ]) {
     testWidgets('${v.name} compiles, loads and paints (texture)', (
       tester,
