@@ -42,6 +42,8 @@ void main() {
     BeuiShaderVariant.dotGrid,
     BeuiShaderVariant.meshGradient,
     BeuiShaderVariant.staticMeshGradient,
+    BeuiShaderVariant.perlinNoise,
+    BeuiShaderVariant.swirl,
   ]) {
     testWidgets('${v.name} compiles, loads and paints', (tester) async {
       await tester.pumpWidget(_app(v));
