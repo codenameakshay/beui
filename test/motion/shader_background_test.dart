@@ -57,4 +57,24 @@ void main() {
       expect(find.byType(CustomPaint), findsWidgets);
     });
   }
+
+  // Texture-driven variants also decode the shared noise PNG asynchronously,
+  // so they need real async (runAsync) before the shader paints.
+  for (final v in const [BeuiShaderVariant.voronoi]) {
+    testWidgets('${v.name} compiles, loads and paints (texture)', (
+      tester,
+    ) async {
+      await tester.runAsync(() async {
+        await tester.pumpWidget(_app(v));
+        // Let FragmentProgram.fromAsset + the noise image codec resolve.
+        for (var k = 0; k < 12; k++) {
+          await tester.pump(const Duration(milliseconds: 16));
+          await Future<void>.delayed(const Duration(milliseconds: 8));
+        }
+      });
+      await tester.pump();
+      expect(find.byType(BeuiShaderBackground), findsOneWidget);
+      expect(find.byType(CustomPaint), findsWidgets);
+    });
+  }
 }

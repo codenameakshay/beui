@@ -1,6 +1,8 @@
+import 'dart:typed_data' show ByteData;
 import 'dart:ui' as ui;
 
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/widgets.dart';
 
 import 'specs/dot_grid.dart';
@@ -12,6 +14,7 @@ import 'specs/spiral.dart';
 import 'specs/static_mesh_gradient.dart';
 import 'specs/static_radial_gradient.dart';
 import 'specs/swirl.dart';
+import 'specs/voronoi.dart';
 import 'specs/waves.dart';
 import 'uniforms.dart';
 
@@ -96,6 +99,7 @@ final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = {
   BeuiShaderVariant.spiral: beuiSpiralSpec,
   BeuiShaderVariant.staticRadialGradient: beuiStaticRadialGradientSpec,
   BeuiShaderVariant.neuroNoise: beuiNeuroNoiseSpec,
+  BeuiShaderVariant.voronoi: beuiVoronoiSpec,
 };
 
 /// A full-bleed animated GPU shader background — the Flutter port of beUI's
@@ -143,6 +147,9 @@ class BeuiShaderBackground extends StatefulWidget {
 class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
     with SingleTickerProviderStateMixin {
   static final Map<String, ui.FragmentProgram> _programCache = {};
+  // The shared noise texture is loaded once for the whole app.
+  static ui.Image? _noiseImage;
+  static Future<ui.Image>? _noiseFuture;
 
   late Ticker _ticker;
   ui.FragmentShader? _shader;
@@ -157,8 +164,32 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
     if (_spec != null) _load();
   }
 
+  /// Lazily loads the shared noise PNG (tries the consumer-facing
+  /// `packages/beui/` asset key first, falling back to the bare key used by the
+  /// package's own tests / example).
+  Future<void> _ensureNoise() async {
+    if (_noiseImage != null) return;
+    _noiseFuture ??= _loadNoise();
+    final img = await _noiseFuture!;
+    _noiseImage = img;
+    if (mounted) setState(() {});
+  }
+
+  static Future<ui.Image> _loadNoise() async {
+    ByteData data;
+    try {
+      data = await rootBundle.load('packages/beui/assets/beui_shader_noise.png');
+    } on Exception {
+      data = await rootBundle.load('assets/beui_shader_noise.png');
+    }
+    final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
+    final frame = await codec.getNextFrame();
+    return frame.image;
+  }
+
   Future<void> _load() async {
     final spec = _spec!;
+    if (spec.needsNoise) _ensureNoise();
     var program = _programCache[spec.asset];
     program ??= _programCache[spec.asset] = await _loadProgram(spec.asset);
     if (!mounted) return;
@@ -231,6 +262,8 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
     );
     final shader = _shader;
     if (shader == null || spec == null) return const SizedBox.expand();
+    // Texture variants can't paint until the noise image is decoded.
+    if (spec.needsNoise && _noiseImage == null) return const SizedBox.expand();
     final colors = (widget.colors ?? spec.defaultColors)
         .take(kBeuiShaderMaxColors)
         .toList(growable: false);
@@ -243,6 +276,7 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
           colors: colors,
           params: params,
           time: _time,
+          noise: spec.needsNoise ? _noiseImage : null,
         ),
       ),
     );
@@ -256,6 +290,7 @@ class _ShaderPainter extends CustomPainter {
     required this.colors,
     required this.params,
     required this.time,
+    this.noise,
   });
 
   final ui.FragmentShader shader;
@@ -263,6 +298,7 @@ class _ShaderPainter extends CustomPainter {
   final List<Color> colors;
   final Map<String, double> params;
   final double time;
+  final ui.Image? noise;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -275,6 +311,8 @@ class _ShaderPainter extends CustomPainter {
         params: params,
       ),
     );
+    // Bind the shared noise texture at sampler index 0 for texture variants.
+    if (noise != null) shader.setImageSampler(0, noise!);
     canvas.drawRect(Offset.zero & size, Paint()..shader = shader);
   }
 
@@ -283,5 +321,6 @@ class _ShaderPainter extends CustomPainter {
       old.time != time ||
       old.colors != colors ||
       old.params != params ||
-      old.shader != shader;
+      old.shader != shader ||
+      old.noise != noise;
 }

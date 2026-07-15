@@ -86,6 +86,7 @@ class ShaderSpec {
     required this.defaultColors,
     required this.setUniforms,
     this.defaultParams = const {},
+    this.needsNoise = false,
   });
 
   /// Bare asset path of the compiled `.frag` (e.g.
@@ -102,6 +103,10 @@ class ShaderSpec {
 
   /// Default scalar params, merged under any caller overrides.
   final Map<String, double> defaultParams;
+
+  /// Whether the shader declares a `uniform sampler2D u_noiseTexture` (bound to
+  /// the shared noise PNG at sampler index 0). Texture-driven variants set this.
+  final bool needsNoise;
 
   /// Writes every uniform for one paint, in the `.frag`'s declaration order.
   final void Function(ShaderUniformCtx ctx) setUniforms;
