@@ -10,9 +10,8 @@ class _ShaderDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    // Only the variants wired into beuiShaderRegistry render; the rest arrive as
-    // the port progresses.
-    const ported = <BeuiShaderVariant>[BeuiShaderVariant.simplexNoise];
+    // All 21 variants are ported.
+    const ported = BeuiShaderVariant.values;
     return Wrap(
       spacing: 16,
       runSpacing: 16,

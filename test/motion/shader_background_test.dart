@@ -71,6 +71,7 @@ void main() {
     BeuiShaderVariant.dotOrbit,
     BeuiShaderVariant.pulsingBorder,
     BeuiShaderVariant.grainGradient,
+    BeuiShaderVariant.water,
   ]) {
     testWidgets('${v.name} compiles, loads and paints (texture)', (
       tester,

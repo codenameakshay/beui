@@ -24,6 +24,7 @@ import 'specs/static_radial_gradient.dart';
 import 'specs/swirl.dart';
 import 'specs/voronoi.dart';
 import 'specs/warp.dart';
+import 'specs/water.dart';
 import 'specs/waves.dart';
 import 'uniforms.dart';
 
@@ -118,6 +119,7 @@ final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = {
   BeuiShaderVariant.colorPanels: beuiColorPanelsSpec,
   BeuiShaderVariant.pulsingBorder: beuiPulsingBorderSpec,
   BeuiShaderVariant.grainGradient: beuiGrainGradientSpec,
+  BeuiShaderVariant.water: beuiWaterSpec,
 };
 
 /// A full-bleed animated GPU shader background — the Flutter port of beUI's
