@@ -38,11 +38,17 @@ void main() {
     expect(find.byType(CustomPaint), findsWidgets);
   });
 
-  testWidgets('dot-grid compiles, loads and paints', (tester) async {
-    await tester.pumpWidget(_app(BeuiShaderVariant.dotGrid));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 16));
-    expect(find.byType(BeuiShaderBackground), findsOneWidget);
-    expect(find.byType(CustomPaint), findsWidgets);
-  });
+  for (final v in const [
+    BeuiShaderVariant.dotGrid,
+    BeuiShaderVariant.meshGradient,
+    BeuiShaderVariant.staticMeshGradient,
+  ]) {
+    testWidgets('${v.name} compiles, loads and paints', (tester) async {
+      await tester.pumpWidget(_app(v));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(find.byType(BeuiShaderBackground), findsOneWidget);
+      expect(find.byType(CustomPaint), findsWidgets);
+    });
+  }
 }

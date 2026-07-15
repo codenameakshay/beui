@@ -4,7 +4,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import 'specs/dot_grid.dart';
+import 'specs/mesh_gradient.dart';
 import 'specs/simplex_noise.dart';
+import 'specs/static_mesh_gradient.dart';
 import 'uniforms.dart';
 
 /// The 21 shader effects ported from `@paper-design/shaders`, mirroring the
@@ -80,6 +82,8 @@ enum BeuiShaderVariant {
 final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = {
   BeuiShaderVariant.simplexNoise: beuiSimplexNoiseSpec,
   BeuiShaderVariant.dotGrid: beuiDotGridSpec,
+  BeuiShaderVariant.meshGradient: beuiMeshGradientSpec,
+  BeuiShaderVariant.staticMeshGradient: beuiStaticMeshGradientSpec,
 };
 
 /// A full-bleed animated GPU shader background — the Flutter port of beUI's
