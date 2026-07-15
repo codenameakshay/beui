@@ -50,6 +50,7 @@ void main() {
     BeuiShaderVariant.neuroNoise,
     BeuiShaderVariant.dithering,
     BeuiShaderVariant.colorPanels,
+    BeuiShaderVariant.water,
   ]) {
     testWidgets('${v.name} compiles, loads and paints', (tester) async {
       await tester.pumpWidget(_app(v));
@@ -71,7 +72,6 @@ void main() {
     BeuiShaderVariant.dotOrbit,
     BeuiShaderVariant.pulsingBorder,
     BeuiShaderVariant.grainGradient,
-    BeuiShaderVariant.water,
   ]) {
     testWidgets('${v.name} compiles, loads and paints (texture)', (
       tester,
