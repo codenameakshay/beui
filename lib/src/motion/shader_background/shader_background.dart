@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/widgets.dart';
 
+import 'specs/color_panels.dart';
 import 'specs/dithering.dart';
 import 'specs/dot_grid.dart';
 import 'specs/dot_orbit.dart';
@@ -112,6 +113,7 @@ final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = {
   BeuiShaderVariant.godRays: beuiGodRaysSpec,
   BeuiShaderVariant.dotOrbit: beuiDotOrbitSpec,
   BeuiShaderVariant.dithering: beuiDitheringSpec,
+  BeuiShaderVariant.colorPanels: beuiColorPanelsSpec,
 };
 
 /// A full-bleed animated GPU shader background — the Flutter port of beUI's
