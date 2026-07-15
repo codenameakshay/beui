@@ -47,6 +47,7 @@ void main() {
     BeuiShaderVariant.waves,
     BeuiShaderVariant.spiral,
     BeuiShaderVariant.staticRadialGradient,
+    BeuiShaderVariant.neuroNoise,
   ]) {
     testWidgets('${v.name} compiles, loads and paints', (tester) async {
       await tester.pumpWidget(_app(v));
