@@ -60,7 +60,11 @@ void main() {
 
   // Texture-driven variants also decode the shared noise PNG asynchronously,
   // so they need real async (runAsync) before the shader paints.
-  for (final v in const [BeuiShaderVariant.voronoi]) {
+  for (final v in const [
+    BeuiShaderVariant.voronoi,
+    BeuiShaderVariant.metaballs,
+    BeuiShaderVariant.smokeRing,
+  ]) {
     testWidgets('${v.name} compiles, loads and paints (texture)', (
       tester,
     ) async {
