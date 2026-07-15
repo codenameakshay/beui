@@ -69,6 +69,7 @@ void main() {
     BeuiShaderVariant.warp,
     BeuiShaderVariant.godRays,
     BeuiShaderVariant.dotOrbit,
+    BeuiShaderVariant.pulsingBorder,
   ]) {
     testWidgets('${v.name} compiles, loads and paints (texture)', (
       tester,

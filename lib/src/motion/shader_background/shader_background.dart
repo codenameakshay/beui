@@ -14,6 +14,7 @@ import 'specs/mesh_gradient.dart';
 import 'specs/metaballs.dart';
 import 'specs/neuro_noise.dart';
 import 'specs/perlin_noise.dart';
+import 'specs/pulsing_border.dart';
 import 'specs/smoke_ring.dart';
 import 'specs/simplex_noise.dart';
 import 'specs/spiral.dart';
@@ -114,6 +115,7 @@ final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = {
   BeuiShaderVariant.dotOrbit: beuiDotOrbitSpec,
   BeuiShaderVariant.dithering: beuiDitheringSpec,
   BeuiShaderVariant.colorPanels: beuiColorPanelsSpec,
+  BeuiShaderVariant.pulsingBorder: beuiPulsingBorderSpec,
 };
 
 /// A full-bleed animated GPU shader background — the Flutter port of beUI's
