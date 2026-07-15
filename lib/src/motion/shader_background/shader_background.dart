@@ -9,6 +9,7 @@ import 'specs/perlin_noise.dart';
 import 'specs/simplex_noise.dart';
 import 'specs/spiral.dart';
 import 'specs/static_mesh_gradient.dart';
+import 'specs/static_radial_gradient.dart';
 import 'specs/swirl.dart';
 import 'specs/waves.dart';
 import 'uniforms.dart';
@@ -92,6 +93,7 @@ final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = {
   BeuiShaderVariant.swirl: beuiSwirlSpec,
   BeuiShaderVariant.waves: beuiWavesSpec,
   BeuiShaderVariant.spiral: beuiSpiralSpec,
+  BeuiShaderVariant.staticRadialGradient: beuiStaticRadialGradientSpec,
 };
 
 /// A full-bleed animated GPU shader background — the Flutter port of beUI's

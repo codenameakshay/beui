@@ -46,6 +46,7 @@ void main() {
     BeuiShaderVariant.swirl,
     BeuiShaderVariant.waves,
     BeuiShaderVariant.spiral,
+    BeuiShaderVariant.staticRadialGradient,
   ]) {
     testWidgets('${v.name} compiles, loads and paints', (tester) async {
       await tester.pumpWidget(_app(v));
