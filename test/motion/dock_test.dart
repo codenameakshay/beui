@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -98,6 +100,25 @@ void main() {
       expect(_pillCount(tester), 1);
     });
 
+    testWidgets('bar is frosted glass: one backdrop blur at sigma 12', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+
+      final filters = find.descendant(
+        of: find.byType(BeuiDock),
+        matching: find.byType(BackdropFilter),
+      );
+      // Exactly one frosted surface (backdrop-blur-xl) behind the bar.
+      expect(filters, findsOneWidget);
+
+      // backdrop-blur-xl = 24px CSS blur → sigma 24/2 = 12.
+      final filter = tester.widget<BackdropFilter>(filters).filter;
+      expect(filter, isA<ImageFilter>());
+      expect(filter.toString(), contains('12.0'));
+    });
+
     testWidgets('active pill glides to the newly active item', (tester) async {
       await tester.pumpWidget(_app(activeIndex: 0));
       await tester.pumpAndSettle();
@@ -178,6 +199,47 @@ void main() {
       for (final icon in _icons) {
         expect(_scaleOf(tester, icon), isNull);
       }
+    });
+  });
+
+  group('separator', () {
+    Widget dockWith(double size) => MaterialApp(
+      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      home: Scaffold(
+        body: Center(
+          child: BeuiDock(
+            size: size,
+            items: [
+              BeuiDockItem(icon: LucideIcons.house, onTap: () {}),
+              null, // renders a vertical separator
+              BeuiDockItem(icon: LucideIcons.mail, onTap: () {}),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // Source is a fixed `h-6` (24px) hairline regardless of icon size — it must
+    // NOT scale with `size`.
+    Finder separatorLine() => find.descendant(
+      of: find.byType(BeuiDock),
+      matching: find.byType(ColoredBox),
+    );
+
+    testWidgets('line is a fixed 24px tall at the default size', (
+      tester,
+    ) async {
+      await tester.pumpWidget(dockWith(44));
+      await tester.pumpAndSettle();
+      expect(tester.getSize(separatorLine()).height, 24.0);
+    });
+
+    testWidgets('line stays 24px even when items are much larger', (
+      tester,
+    ) async {
+      await tester.pumpWidget(dockWith(88));
+      await tester.pumpAndSettle();
+      expect(tester.getSize(separatorLine()).height, 24.0);
     });
   });
 }

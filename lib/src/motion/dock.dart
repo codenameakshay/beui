@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
@@ -242,14 +243,13 @@ class _BeuiDockState extends State<BeuiDock> {
 
     // RepaintBoundary isolates the bar's animated repaints — the pill glide
     // and (with magnify) the per-frame magnification, both under the bar's
-    // 28px-blur shadow — from the host page's layer.
+    // 28px-blur shadow — from the host page's layer. The shadow lives on the
+    // outer DecoratedBox so the rounded clip (which bounds the backdrop blur)
+    // doesn't crop it; the frosted fill, border and BackdropFilter sit inside.
     final bar = RepaintBoundary(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: padH, vertical: 4),
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          color: colors.card.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(16), // rounded-2xl
-          border: Border.all(color: colors.border),
           boxShadow: [
             BoxShadow(
               color: colors.foreground.withValues(alpha: 0.18),
@@ -258,7 +258,22 @@ class _BeuiDockState extends State<BeuiDock> {
             ),
           ],
         ),
-        child: stack,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16), // rounded-2xl = 16px radius
+          child: BackdropFilter(
+            // backdrop-blur-xl = 24px CSS blur → sigma 24/2 = 12.
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: padH, vertical: 4),
+              decoration: BoxDecoration(
+                color: colors.card.withValues(alpha: 0.8), // bg-card/80
+                borderRadius: BorderRadius.circular(16), // rounded-2xl
+                border: Border.all(color: colors.border),
+              ),
+              child: stack,
+            ),
+          ),
+        ),
       ),
     );
 
@@ -446,7 +461,7 @@ class _Separator extends StatelessWidget {
         child: Center(
           child: SizedBox(
             width: 1,
-            height: size * 0.55, // ≈ h-6
+            height: 24, // h-6 = 24px, fixed regardless of icon size
             child: ColoredBox(color: color),
           ),
         ),
