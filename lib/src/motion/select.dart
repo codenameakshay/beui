@@ -115,8 +115,9 @@ double _panelNearClose(double t) {
 /// while the far corners stay rounded. Options **stagger in** (source
 /// `staggerChildren 0.035, delayChildren 0.05`), each rising 6px through a
 /// blur(3px)→0 opacity fade. The chevron rotates 180° on [_chevronSpring], and
-/// the trigger edge facing the panel **pinches flat then rounds back** (source's
-/// `[12,0,12]` corner keyframes). The panel flips above the trigger when there
+/// the trigger edge facing the panel **stays flat then rounds back up** on open
+/// (source `[0,0,12]`) and pinches on close (`[12,0,12]`). The panel flips above
+/// the trigger when there
 /// isn't room below. Each channel springs on enter (via `from: 0`, like the
 /// tooltip) and eases *forward* to its collapse on exit — the exit is not a
 /// time-reversed entrance.
@@ -1270,18 +1271,12 @@ class _OptionColumn extends StatelessWidget {
 }
 
 // Trigger corner keyframe sequences for the default variant.
-// Open: source keyframes `[12,0,12]` with `times:[0,0.4,1]`, ease EASE_OUT over
-// 0.6s — the near edge eases 12→0 across the first 40% as the panel attaches,
-// then 0→12 across the last 60% as it separates (no flat hold). Close: 12→0→12
-// with `times:[0,0.5,1]` (50/50) over 0.42s.
+// Open: source keyframes `[0,0,12]` with `times:[0,0.4,1]`, ease EASE_OUT over
+// 0.6s — the near edge stays flat at 0 through the first 40% while the panel is
+// attached, then rounds 0→12 across the last 60% as it separates (no pinch on
+// open). Close: `[12,0,12]` with `times:[0,0.5,1]` (50/50) over 0.42s.
 final Animatable<double> _openCornerSeq = TweenSequence<double>([
-  TweenSequenceItem(
-    tween: Tween(
-      begin: _radius,
-      end: 0.0,
-    ).chain(CurveTween(curve: beuiEaseOut)),
-    weight: 40,
-  ),
+  TweenSequenceItem(tween: ConstantTween<double>(0.0), weight: 40),
   TweenSequenceItem(
     tween: Tween(
       begin: 0.0,

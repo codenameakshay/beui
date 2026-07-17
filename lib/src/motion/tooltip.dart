@@ -48,8 +48,9 @@ enum BeuiTooltipSide {
 /// [LayerLink] and rises into place from near the trigger: scale + offset ride
 /// the source's bespoke 380/30/0.7 spring, while opacity (140ms) and blur
 /// (180ms) run on their own `EASE_OUT` windows. The exit eases *forward* to its
-/// own targets (scale 0.94, 4.8px away, blur σ1.5, opacity 0) over 140ms — it
-/// is not a time-reversed entrance. Reduced motion fades opacity only
+/// own targets (scale 0.94, 4.8px away, blur σ1.5, opacity 0) over 120ms
+/// (source `exit` `duration: 0.12`) — it is not a time-reversed entrance.
+/// Reduced motion fades opacity only
 /// (140ms in / 100ms out).
 class BeuiTooltip extends StatefulWidget {
   /// Creates a tooltip around [child].
@@ -177,7 +178,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
             }
             if (exiting) {
               // Forward-eased exit with its OWN targets (not a reversed
-              // entrance): 140ms EASE_OUT to scale 0.94, 4.8px toward the
+              // entrance): 120ms EASE_OUT to scale 0.94, 4.8px toward the
               // trigger (0.6 × the 8px enter offset), source blur(3px) → σ1.5,
               // opacity 0.
               final p = beuiEaseOut.transform(1 - t); // exit progress 0 → 1

@@ -311,8 +311,10 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
       }
       final positions = _controller.positions;
       if (positions.isEmpty) {
-        // No attached scroll view yet (e.g. empty feed) — still try to load.
-        _fireLoadMore();
+        // Source does not auto-load the first page from an empty feed (its fill
+        // effect early-returns when items is empty). Only fill an underfilled
+        // *non-empty* feed whose scroll view hasn't attached yet.
+        if (widget.items.isNotEmpty) _fireLoadMore();
         return;
       }
       for (final position in positions) {

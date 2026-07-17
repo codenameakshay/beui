@@ -102,9 +102,11 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
   final GlobalKey _sizerKey = GlobalKey();
   Size? _panelSize;
 
-  // The collapsed trigger is `w-fit` (source), so its width depends on
-  // [triggerLabel]. Measure it so the shared-element morph starts from the real
-  // pill size rather than a hardcoded guess.
+  // Source's collapsed trigger is a fixed `w-36` (144px) with a hardcoded
+  // "Create" label. The port adds an optional [triggerLabel]; to keep a longer
+  // label from overflowing, the pill is min-width 144 (== source at the default
+  // label) and content-sized beyond that. Measure it so the shared-element morph
+  // starts from the real pill size.
   final GlobalKey _triggerKey = GlobalKey();
   Size? _triggerMeasured;
 
@@ -325,8 +327,10 @@ class _TriggerState extends State<_Trigger> {
     final colors = widget.colors;
     final reduce = MediaQuery.disableAnimationsOf(context);
 
-    // Source pill is `w-fit h-11` (px-5): a fixed height, but content-sized
-    // width with a minimum so the default "Create" keeps its resting width and
+    // Source pill is fixed `w-36 h-11` (px-5). To support the additive
+    // [triggerLabel] without overflow the port keeps the height fixed but makes
+    // the width content-sized with a min of 144 — so the default "Create" keeps
+    // the exact source resting width (144) and
     // longer labels grow instead of overflowing.
     Widget body = Container(
       height: _triggerSize.height,

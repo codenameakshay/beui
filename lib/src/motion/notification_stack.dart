@@ -342,7 +342,9 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
 
           return _interactive(
             colors,
-            visible.length,
+            // Badge + aria report the TOTAL count (source `items.length`), not
+            // the capped number of peeking cards.
+            widget.items.length,
             Stack(clipBehavior: Clip.none, children: [surface, measure]),
           );
         },
@@ -454,7 +456,7 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
         left: 4, // px-1
         right: 4,
         height: _footerHeight,
-        child: _footer(colors, visible.length),
+        child: _footer(colors, widget.items.length),
       ),
     );
 
@@ -497,7 +499,7 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
             height: _footerHeight,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: _footer(colors, visible.length),
+              child: _footer(colors, widget.items.length),
             ),
           ),
         ],
@@ -517,7 +519,9 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
       decoration: BoxDecoration(
         color: colors.background,
         borderRadius: BorderRadius.circular(_cardRadius),
-        border: Border.all(color: colors.border),
+        border: Border.all(
+          color: colors.border.withValues(alpha: 0.6), // border-border/60
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16), // px-4
       child: Opacity(opacity: opacity, child: _cardContent(item, colors)),
