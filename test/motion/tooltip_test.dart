@@ -79,6 +79,20 @@ void main() {
     expect(find.text('TIP'), findsNothing);
   });
 
+  testWidgets('surface is opaque — no backdrop blur', (tester) async {
+    await tester.pumpWidget(_app());
+    final gesture = await _hover(tester, find.byKey(_trigger));
+    await tester.pump(const Duration(milliseconds: 250)); // past delay
+    await tester.pumpAndSettle();
+    expect(find.text('TIP'), findsOneWidget);
+    // Source is a SOLID `bg-background` pill with `shadow-lg`, not a frosted
+    // surface — the port must not reintroduce a BackdropFilter. (barrier:false
+    // means the overlay contributes none either.)
+    expect(find.byType(BackdropFilter), findsNothing);
+    await gesture.moveTo(const Offset(5, 5)); // release for a clean teardown
+    await tester.pumpAndSettle();
+  });
+
   for (final side in BeuiTooltipSide.values) {
     testWidgets('renders on $side', (tester) async {
       await tester.pumpWidget(_app(side: side));
