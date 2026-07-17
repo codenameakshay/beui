@@ -191,6 +191,56 @@ void main() {
       expect(signIns, 1);
     });
 
+    testWidgets('Connect button is 56px tall (source h-14)', (tester) async {
+      await tester.pumpWidget(_market(authenticated: false));
+      await tester.pump(const Duration(milliseconds: 400));
+      // Source: unauthenticated Connect is `h-14` (56px), not the `lg` 48px.
+      expect(tester.getSize(find.byType(BeuiStatefulButton)).height, 56);
+    });
+
+    testWidgets('authenticated Trade button stays 48px (source h-12)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_market());
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(tester.getSize(find.byType(BeuiStatefulButton)).height, 48);
+    });
+
+    testWidgets('outcome pill glides to the selected cell', (tester) async {
+      await tester.pumpWidget(_market());
+      await tester.pumpAndSettle();
+      final pill = find.byKey(
+        const ValueKey<String>('beui_prediction_market_pill'),
+      );
+      expect(pill, findsOneWidget);
+      // A single fully-rounded pill sits over the selected (first) cell.
+      final before = tester.getRect(pill);
+      expect(before.height, 56); // h-14
+      // Select the second outcome → the shared pill glides right.
+      await tester.tap(find.text('No 25¢'));
+      // Mid-flight: the spring has not settled to the target yet.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 16));
+      final midway = tester.getRect(pill);
+      await tester.pumpAndSettle();
+      final after = tester.getRect(pill);
+      expect(after.left, greaterThan(before.left)); // moved to cell 2
+      expect(midway.left, lessThan(after.left)); // was still travelling
+    });
+
+    testWidgets('reduced motion still moves the outcome pill', (tester) async {
+      await tester.pumpWidget(_market(reduce: true));
+      await tester.pumpAndSettle();
+      final pill = find.byKey(
+        const ValueKey<String>('beui_prediction_market_pill'),
+      );
+      final before = tester.getRect(pill);
+      await tester.tap(find.text('No 25¢'));
+      await tester.pumpAndSettle(); // NoMotion → target, no spring flight
+      final after = tester.getRect(pill);
+      expect(after.left, greaterThan(before.left));
+    });
+
     testWidgets('reduced motion types without blur', (tester) async {
       await tester.pumpWidget(_market(reduce: true));
       await tester.pump(const Duration(milliseconds: 200));

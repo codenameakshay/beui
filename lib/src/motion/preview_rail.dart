@@ -129,6 +129,7 @@ class BeuiPreviewRail extends StatefulWidget {
     this.onActiveChange,
     this.renderPreview,
     this.style,
+    this.child,
     super.key,
   });
 
@@ -154,6 +155,15 @@ class BeuiPreviewRail extends StatefulWidget {
 
   /// Optional visual overrides.
   final BeuiPreviewRailStyle? style;
+
+  /// Arbitrary content rendered in the preview's `min-h-0 flex-1` region — the
+  /// Flutter analog of the source `PreviewRail`'s `children` slot (a single
+  /// content region, not a per-item field). Optional and backward-compatible:
+  /// when null the rail lays out exactly as before. In the vertical orientation
+  /// it fills the area to the right of the rail and the preview card floats over
+  /// it (the source's absolute, pointer-events-none overlay); in the horizontal
+  /// orientation it sits below the rail.
+  final Widget? child;
 
   @override
   State<BeuiPreviewRail> createState() => _BeuiPreviewRailState();
@@ -243,8 +253,8 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
     final centre = (n - 1) / 2.0;
     // Position target the card glides toward: the live displayed index, or the
     // held index while fading out.
-    final positionTarget =
-        (displayed ? displayedIndex : _lastDisplayedIndex).toDouble();
+    final positionTarget = (displayed ? displayedIndex : _lastDisplayedIndex)
+        .toDouble();
 
     final activeTick = widget.style?.activeTickColor ?? colors.foreground;
     final inactiveTick =
@@ -334,16 +344,46 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
             child: OverflowBox(
               maxWidth: double.infinity,
               alignment: Alignment.bottomCenter,
-              child: Align(alignment: Alignment.bottomCenter, child: glidingCard),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: glidingCard,
+              ),
             ),
           ),
           const SizedBox(height: 12),
           railRegion,
+          // Source `min-h-0 flex-1` content: it follows the rail in flex order,
+          // so here it sits below the horizontal rail (natural height — the
+          // column is content-sized).
+          if (widget.child != null) ...[
+            const SizedBox(height: 12),
+            widget.child!,
+          ],
         ],
       );
     }
 
     // Vertical: rail on the left (48 wide), card to the right; only y glides.
+    // Source: the `flex-1` content fills the region to the right of the rail and
+    // the preview card floats over it (absolute, pointer-events-none — the port
+    // already wraps `glidingCard` in an IgnorePointer). When [child] is null the
+    // layout is unchanged.
+    Widget rightRegion = Align(
+      alignment: Alignment.centerLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 384),
+        child: glidingCard,
+      ),
+    );
+    if (widget.child != null) {
+      rightRegion = Stack(
+        children: [
+          Positioned.fill(child: widget.child!),
+          rightRegion,
+        ],
+      );
+    }
+
     return SizedBox(
       height: n * _track,
       child: Row(
@@ -351,15 +391,7 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
         children: [
           railRegion,
           const SizedBox(width: 16),
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 384),
-                child: glidingCard,
-              ),
-            ),
-          ),
+          Expanded(child: rightRegion),
         ],
       ),
     );

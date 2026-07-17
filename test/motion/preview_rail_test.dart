@@ -5,10 +5,26 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const _items = <BeuiPreviewRailItem>[
-  BeuiPreviewRailItem(id: 'a', label: 'Alpha', description: Text('First item.')),
-  BeuiPreviewRailItem(id: 'b', label: 'Beta', description: Text('Second item.')),
-  BeuiPreviewRailItem(id: 'c', label: 'Gamma', description: Text('Third item.')),
-  BeuiPreviewRailItem(id: 'd', label: 'Delta', description: Text('Fourth item.')),
+  BeuiPreviewRailItem(
+    id: 'a',
+    label: 'Alpha',
+    description: Text('First item.'),
+  ),
+  BeuiPreviewRailItem(
+    id: 'b',
+    label: 'Beta',
+    description: Text('Second item.'),
+  ),
+  BeuiPreviewRailItem(
+    id: 'c',
+    label: 'Gamma',
+    description: Text('Third item.'),
+  ),
+  BeuiPreviewRailItem(
+    id: 'd',
+    label: 'Delta',
+    description: Text('Fourth item.'),
+  ),
 ];
 
 Widget _app({
@@ -154,7 +170,72 @@ void main() {
     });
   });
 
-  testWidgets('rest-state golden (vertical, nothing displayed)', (tester) async {
+  group('BeuiPreviewRail content slot', () {
+    testWidgets('renders the child to the right of the rail (vertical)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          home: const Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 480,
+                height: 320,
+                child: BeuiPreviewRail(
+                  items: _items,
+                  child: Text('PANEL CONTENT'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('PANEL CONTENT'), findsOneWidget);
+      // Content fills the flex-1 region to the right of the rail ticks.
+      final contentLeft = tester.getRect(find.text('PANEL CONTENT')).left;
+      final railLeft = tester.getRect(find.bySemanticsLabel('Alpha')).left;
+      expect(contentLeft, greaterThan(railLeft));
+    });
+
+    testWidgets('renders the child below the rail (horizontal)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          home: const Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 480,
+                height: 320,
+                child: BeuiPreviewRail(
+                  items: _items,
+                  orientation: BeuiPreviewRailOrientation.horizontal,
+                  child: Text('PANEL CONTENT'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('PANEL CONTENT'), findsOneWidget);
+    });
+
+    testWidgets('no content slot by default (backward compatible)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+      expect(find.text('PANEL CONTENT'), findsNothing);
+    });
+  });
+
+  testWidgets('rest-state golden (vertical, nothing displayed)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
