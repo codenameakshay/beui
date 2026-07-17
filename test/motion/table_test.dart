@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -79,7 +80,9 @@ Widget _app({
   }
   return MaterialApp(
     theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    home: Scaffold(body: Padding(padding: const EdgeInsets.all(24), child: table)),
+    home: Scaffold(
+      body: Padding(padding: const EdgeInsets.all(24), child: table),
+    ),
   );
 }
 
@@ -94,7 +97,9 @@ void main() {
       expect(find.text('Leo'), findsOneWidget);
     });
 
-    testWidgets('empty state shows when no rows and not loading', (tester) async {
+    testWidgets('empty state shows when no rows and not loading', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app(data: const [], columns: _columns()));
       await tester.pumpAndSettle();
       expect(find.text('No data'), findsOneWidget);
@@ -141,15 +146,12 @@ void main() {
   });
 
   group('BeuiTable sort', () {
-    testWidgets('tapping a sortable header cycles asc -> desc -> clear',
-        (tester) async {
+    testWidgets('tapping a sortable header cycles asc -> desc -> clear', (
+      tester,
+    ) async {
       final events = <BeuiSortState?>[];
       await tester.pumpWidget(
-        _app(
-          data: _people,
-          columns: _columns(),
-          onSortChange: events.add,
-        ),
+        _app(data: _people, columns: _columns(), onSortChange: events.add),
       );
       await tester.pumpAndSettle();
 
@@ -176,6 +178,25 @@ void main() {
       final leo = tester.getTopLeft(find.text('Leo')).dy;
       // Leo (120) should sort above Ava (300) ascending.
       expect(leo, lessThan(ava));
+    });
+
+    testWidgets('string sort folds case like localeCompare (apple < Zebra)', (
+      tester,
+    ) async {
+      final data = <_Row>[
+        {'id': '1', 'name': 'Zebra', 'role': 'x', 'mrr': '0'},
+        {'id': '2', 'name': 'apple', 'role': 'y', 'mrr': '0'},
+      ];
+      await tester.pumpWidget(_app(data: data, columns: _columns()));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Name'));
+      await tester.pumpAndSettle();
+
+      final apple = tester.getTopLeft(find.text('apple')).dy;
+      final zebra = tester.getTopLeft(find.text('Zebra')).dy;
+      // Case-insensitive ascending: 'apple' above 'Zebra'. A raw code-unit
+      // compare would wrongly put 'Zebra' (Z=85) before 'apple' (a=97).
+      expect(apple, lessThan(zebra));
     });
   });
 
@@ -212,8 +233,9 @@ void main() {
   });
 
   group('BeuiTable motion fidelity', () {
-    testWidgets('reorder drag lifts the header cell on a spring (scale)',
-        (tester) async {
+    testWidgets('reorder drag lifts the header cell on a spring (scale)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _app(data: _people, columns: _columns(), reorderable: true),
       );
@@ -230,15 +252,17 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('sort arrow animates with a rotation under normal motion',
-        (tester) async {
+    testWidgets('sort arrow animates with a rotation under normal motion', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app(data: _people, columns: _columns()));
       await tester.pumpAndSettle();
       expect(find.byType(AnimatedRotation), findsWidgets);
     });
 
-    testWidgets('reduced motion drops the reorder scale animation',
-        (tester) async {
+    testWidgets('reduced motion drops the reorder scale animation', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _app(
           data: _people,
@@ -263,8 +287,49 @@ void main() {
     });
   });
 
-  testWidgets('rest-state golden (data table with selection + sort)',
-      (tester) async {
+  group('BeuiTable row handle', () {
+    testWidgets('handle appears on row hover and survives the 100ms grace', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(
+          data: _people,
+          columns: _columns(),
+          onInsertRow: (_, _) {},
+          onDeleteRow: (_, _) {},
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final handleIcon = find.byIcon(LucideIcons.ellipsis_vertical);
+      expect(handleIcon, findsNothing);
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+
+      // Hover a data row: the left-edge handle mounts.
+      await gesture.moveTo(tester.getCenter(find.text('Ava')));
+      await tester.pump();
+      expect(handleIcon, findsOneWidget);
+
+      // Leave the row entirely: within the 100ms grace the handle stays
+      // reachable (the bug was it unmounting the instant the row was left).
+      await gesture.moveTo(const Offset(2, 2));
+      await tester.pump();
+      expect(handleIcon, findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 60));
+      expect(handleIcon, findsOneWidget);
+
+      // Past the grace window it finally unmounts.
+      await tester.pump(const Duration(milliseconds: 80));
+      expect(handleIcon, findsNothing);
+    });
+  });
+
+  testWidgets('rest-state golden (data table with selection + sort)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _app(
         data: _people,
