@@ -28,6 +28,18 @@ String sanitizeAmount(String v) {
   return '${parts.first}.${parts.sublist(1).join()}';
 }
 
+/// The raw, ungrouped numeric string for [n] — mirrors JS `String(number)`:
+/// whole numbers drop the trailing `.0` (`4521.0` → "4521"), fractions keep
+/// their digits (`1.245` → "1.245"). Unlike [formatAmount] it never inserts
+/// thousands separators, so the result stays parseable by [double.tryParse].
+/// Used by the MAX affordance the same way source `field.tsx` uses
+/// `String(token.balance)`.
+String rawAmount(double n) {
+  if (!n.isFinite) return '0';
+  if (n == n.roundToDouble()) return n.toInt().toString();
+  return n.toString();
+}
+
 String formatAmount(double n, [int max = 6]) {
   if (!n.isFinite || n == 0) return '0';
   String trim(String s) => s.contains('.')
@@ -505,7 +517,13 @@ class _Field extends StatelessWidget {
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
                       onTap: () {
-                        final text = formatAmount(token.balance!);
+                        // Source sets `String(token.balance)` — the raw,
+                        // ungrouped number so it re-parses. formatAmount()
+                        // thousands-groups (e.g. "4,521") which breaks
+                        // double.tryParse → the amount would read 0; run the
+                        // raw value through the same sanitizeAmount path the
+                        // manual input uses.
+                        final text = sanitizeAmount(rawAmount(token.balance!));
                         amountController?.text = text;
                         onAmountChanged?.call(text);
                       },
@@ -669,9 +687,11 @@ class _FlipButtonState extends State<_FlipButton> {
           Transform.rotate(angle: deg * math.pi / 180, child: child),
       child: body,
     );
+    // Source's `whileTap` shares the flip's own transition (380/26/0.6), not a
+    // separate press spring.
     body = SingleMotionBuilder(
       value: _pressed && !widget.reduce ? 0.9 : 1.0,
-      motion: beuiSpringPress,
+      motion: _flipSpring,
       builder: (context, scale, child) =>
           Transform.scale(scale: scale, child: child),
       child: body,
