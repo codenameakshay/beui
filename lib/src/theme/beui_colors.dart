@@ -227,6 +227,8 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
     required this.input,
     required this.ring,
     required this.borderStrong,
+    required this.success,
+    required this.warning,
     required this.glass,
     required this.colorTheme,
     required this.brightness,
@@ -318,6 +320,15 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
   /// radio, checkbox and otp-input (source `--border-strong`).
   final Color borderStrong;
 
+  /// Positive / success accent (source `--success`, `oklch(70% 0.18 155)`).
+  /// Brightness-independent — the source defines it once with no dark override.
+  /// Read by input (success check) and feedback-widget.
+  final Color success;
+
+  /// Caution / warning accent (source `--warning`, `oklch(78% 0.18 75)`).
+  /// Brightness-independent, like [success].
+  final Color warning;
+
   /// Frosted-glass surface descriptor (source `--glass-*`), read by overlay
   /// components as one cohesive surface. See [BeuiGlass].
   final BeuiGlass glass;
@@ -356,6 +367,8 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
     Color? input,
     Color? ring,
     Color? borderStrong,
+    Color? success,
+    Color? warning,
     BeuiGlass? glass,
     BeuiColorTheme? colorTheme,
     Brightness? brightness,
@@ -380,6 +393,8 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
       input: input ?? this.input,
       ring: ring ?? this.ring,
       borderStrong: borderStrong ?? this.borderStrong,
+      success: success ?? this.success,
+      warning: warning ?? this.warning,
       glass: glass ?? this.glass,
       colorTheme: colorTheme ?? this.colorTheme,
       brightness: brightness ?? this.brightness,
@@ -425,6 +440,8 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
       input: Color.lerp(input, other.input, t)!,
       ring: Color.lerp(ring, other.ring, t)!,
       borderStrong: Color.lerp(borderStrong, other.borderStrong, t)!,
+      success: Color.lerp(success, other.success, t)!,
+      warning: Color.lerp(warning, other.warning, t)!,
       glass: BeuiGlass.lerp(glass, other.glass, t),
       // Discrete identity fields snap at the midpoint — they cannot meaningfully
       // interpolate.
@@ -458,6 +475,8 @@ BeuiColors _base(BeuiColorTheme theme, Brightness brightness) {
       input: _lInput,
       ring: _lRing,
       borderStrong: _lBorderStrong,
+      success: _success,
+      warning: _warning,
       glass: _glassLight,
       colorTheme: theme,
       brightness: Brightness.light,
@@ -483,6 +502,8 @@ BeuiColors _base(BeuiColorTheme theme, Brightness brightness) {
     input: _dInput,
     ring: _dRing,
     borderStrong: _dBorderStrong,
+    success: _success,
+    warning: _warning,
     glass: _glassDark,
     colorTheme: theme,
     brightness: Brightness.dark,

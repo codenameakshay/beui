@@ -204,6 +204,10 @@ const _Brand _limeDark = _Brand(
   ring: Color(0x8C96D448), // oklch(80% 0.18 130 / 0.55)
 );
 
+// ── Semantic status (brightness-independent) ─────────────────────
+const Color _success = Color(0xFF00BE6A); // oklch(70% 0.18 155)
+const Color _warning = Color(0xFFF9A300); // oklch(78% 0.18 75)
+
 // ── Picker swatches (brightness-independent) ──────────────────────
 const Color _monoSwatch = Color(0xFF484848); // oklch(40% 0 0)
 const Color _violetSwatch = Color(0xFF7552DB); // oklch(55% 0.2 290)
