@@ -79,6 +79,37 @@ void main() {
       expect(reported, isNot(0));
     });
 
+    testWidgets(
+      'a hard flick projects up to ~6 items (clamps the momentum product, '
+      'not the raw velocity)',
+      (tester) async {
+        int? reported;
+        await tester.pumpWidget(_app(onIndexChange: (i) => reported = i));
+        await tester.pump();
+
+        final center = tester.getCenter(find.byType(BeuiCylinderCarousel));
+        // A short, very fast drag: 8px in 8ms → ~1 px/ms → ~22.5 items/s of
+        // release velocity, well past the point where FLICK_MOMENTUM (0.45)
+        // saturates the ±MAX_FLICK_ITEMS (6) cap. The source clamps the
+        // *product* (velocity × momentum), so the projected travel maxes out
+        // at 6 items. The fixed bug clamped the *raw velocity* to ±6 first,
+        // which capped travel at 6 × 0.45 = 2.7 items → a settled index of ~3
+        // instead of ~6.
+        final g = await tester.startGesture(center); // pointer down at t=0
+        await g.moveBy(
+          const Offset(-8, 0),
+          timeStamp: const Duration(milliseconds: 8),
+        );
+        await g.up();
+        await tester.pumpAndSettle();
+
+        // Started at index 0; a saturated flick rolls ~6 items forward. Under
+        // the pre-fix clamp this would only reach ~3.
+        expect(reported, isNotNull);
+        expect(reported, greaterThanOrEqualTo(5));
+      },
+    );
+
     testWidgets('arrow keys roll by one item', (tester) async {
       int? reported;
       await tester.pumpWidget(_app(onIndexChange: (i) => reported = i));
@@ -104,9 +135,7 @@ void main() {
       final center = tester.getCenter(find.byType(BeuiCylinderCarousel));
       final pointer = TestPointer(1, PointerDeviceKind.mouse);
       await tester.sendEventToBinding(pointer.hover(center));
-      await tester.sendEventToBinding(
-        pointer.scroll(const Offset(0, 300)),
-      );
+      await tester.sendEventToBinding(pointer.scroll(const Offset(0, 300)));
       await tester.pumpAndSettle();
       expect(reported, isNotNull);
       expect(reported, isNot(0));
@@ -147,7 +176,11 @@ void main() {
     testWidgets('auto-rotate is disabled under reduced motion', (tester) async {
       int? reported;
       await tester.pumpWidget(
-        _app(reduce: true, autoRotate: true, onIndexChange: (i) => reported = i),
+        _app(
+          reduce: true,
+          autoRotate: true,
+          onIndexChange: (i) => reported = i,
+        ),
       );
       await tester.pump(const Duration(seconds: 3));
       expect(reported, isNull);
