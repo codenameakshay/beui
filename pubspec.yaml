@@ -36,6 +36,41 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  # The shared 128x128 RGBA noise texture (the exact PNG from
+  # @paper-design/shaders) sampled by the texture-driven shader variants
+  # (voronoi, warp, metaballs, god-rays, smoke-ring, pulsing-border,
+  # grain-gradient, dot-orbit). Consumers load it as
+  # `packages/beui/assets/beui_shader_noise.png`.
+  assets:
+    - assets/beui_shader_noise.png
+
+  # Fragment shaders backing BeuiShaderBackground (ports of @paper-design/shaders
+  # GLSL). Compiled by the flutter tool into the asset bundle; consumers load
+  # them as `packages/beui/shaders/<name>.frag`.
+  shaders:
+    - shaders/beui_shader_probe.frag
+    - shaders/beui_simplex_noise.frag
+    - shaders/beui_dot_grid.frag
+    - shaders/beui_mesh_gradient.frag
+    - shaders/beui_static_mesh_gradient.frag
+    - shaders/beui_perlin_noise.frag
+    - shaders/beui_swirl.frag
+    - shaders/beui_waves.frag
+    - shaders/beui_spiral.frag
+    - shaders/beui_static_radial_gradient.frag
+    - shaders/beui_neuro_noise.frag
+    - shaders/beui_voronoi.frag
+    - shaders/beui_metaballs.frag
+    - shaders/beui_smoke_ring.frag
+    - shaders/beui_warp.frag
+    - shaders/beui_god_rays.frag
+    - shaders/beui_dot_orbit.frag
+    - shaders/beui_dithering.frag
+    - shaders/beui_color_panels.frag
+    - shaders/beui_pulsing_border.frag
+    - shaders/beui_grain_gradient.frag
+    - shaders/beui_water.frag
+
   # To add assets to your package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
