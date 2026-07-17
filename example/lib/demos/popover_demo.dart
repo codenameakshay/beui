@@ -60,10 +60,7 @@ class _PopoverDemo extends StatelessWidget {
       children: [
         const Text('Click to open (tap outside or Esc to close):'),
         const SizedBox(height: 24),
-        BeuiPopover(
-          content: panel(),
-          child: triggerPill('Click me'),
-        ),
+        BeuiPopover(content: panel(), child: triggerPill('Click me')),
         const SizedBox(height: 80),
         const Text('Opens above, end-aligned:'),
         const SizedBox(height: 24),

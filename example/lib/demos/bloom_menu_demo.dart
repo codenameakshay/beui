@@ -23,9 +23,7 @@ class _BloomMenuDemoState extends State<_BloomMenuDemo> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 120),
-          BeuiBloomMenu(
-            onSelect: (label) => setState(() => _last = label),
-          ),
+          BeuiBloomMenu(onSelect: (label) => setState(() => _last = label)),
           const SizedBox(height: 160),
           Text(
             _last == null ? 'Pick an item…' : 'Created: $_last',

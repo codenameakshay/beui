@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 /// Gallery route for [BeuiInfiniteMasonry] — a responsive, lazily-built masonry
 /// feed that loads more tiles as you approach the end.
-Widget infiniteMasonryDemo(BuildContext context) => const _InfiniteMasonryDemo();
+Widget infiniteMasonryDemo(BuildContext context) =>
+    const _InfiniteMasonryDemo();
 
 class _Tile {
   const _Tile(this.id, this.height, this.hue);
