@@ -1,27 +1,29 @@
 import 'dart:math' as math;
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/scheduler.dart';
 
+import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
-import '_engine.dart' show SingleMotionBuilder, SpringMotion;
+import '_engine.dart';
 
-/// One entry in a [BeuiBloomMenu] grid.
+/// One entry in a [BeuiBloomMenu] grid (source `MenuItem`).
 @immutable
 class BeuiBloomMenuItem {
   /// Creates a menu entry. [icon] is a framework-native glyph.
   const BeuiBloomMenuItem({required this.label, required this.icon});
 
-  /// The label shown under the icon and passed to `onSelect`.
+  /// The label shown under the icon and passed to [BeuiBloomMenu.onSelect].
   final String label;
 
   /// The cell glyph.
   final IconData icon;
 }
 
-/// The source's default six-item create menu.
+/// The source's default six-item bloom menu (`ITEMS`, overridable per menu).
 const List<BeuiBloomMenuItem> beuiDefaultBloomMenuItems = [
   BeuiBloomMenuItem(label: 'Doc', icon: LucideIcons.file_text),
   BeuiBloomMenuItem(label: 'Board', icon: LucideIcons.layout_grid),
@@ -31,31 +33,42 @@ const List<BeuiBloomMenuItem> beuiDefaultBloomMenuItems = [
   BeuiBloomMenuItem(label: 'Link', icon: LucideIcons.link),
 ];
 
-/// The source's "folder-open" morph spring: `{stiffness: 300, damping: 32,
-/// mass: 0.9}` — a touch of overshoot as the panel expands, kept subtle.
-const _springFolder = SpringMotion(
+/// Folder-open feel: a touch of overshoot as the panel expands, kept subtle
+/// (source `SPRING_FOLDER`, stiffness 300 · damping 32 · mass 0.9).
+const _folderSpring = SpringMotion(
   SpringDescription(mass: 0.9, stiffness: 300, damping: 32),
 );
 
-const _triggerSize = Size(144, 44); // source `h-11 w-36`
+/// Per-item bloom spring (source item transition, stiffness 440 · damping 34).
+const _itemSpring = SpringMotion(
+  SpringDescription(mass: 1, stiffness: 440, damping: 34),
+);
 
-/// A "Create" pill that blooms open into a grid create-menu — the Flutter port
-/// of beUI's `bloom-menu` block.
+const _triggerSize = Size(144, 44); // source `h-11 w-36`
+const _panelMaxWidth = 420.0; // min(86vw, 420px)
+const _enterMs = 800.0; // hosts the 0.08s + 0.45s iris + item staggers
+
+/// A "Create" pill that blooms open into a grid menu — the Flutter port of
+/// beUI's `bloom-menu` block.
 ///
 /// The pill and the open panel are one **shared element**: the box morphs its
-/// size between them on [_springFolder], growing from the shared centre outward
+/// size between them on [_folderSpring], growing from the shared centre outward
 /// in every direction (source `layoutId` FLIP). As it opens, the grid does an
-/// **iris reveal** — a clip that starts as a small centred box and opens to all
-/// four corners over 450ms EASE_OUT — and each cell's content springs in on a
-/// **radial stagger** (delay ∝ distance from the grid centre), so the four
-/// corners animate together and the open reads centre-out, not corner-by-corner.
+/// **iris reveal** — a clip that starts as a small centred box
+/// (`inset(45% 34%)`) and opens to all four corners over 450ms `EASE_OUT` — and
+/// each cell's content springs in on a **radial stagger** (delay ∝ distance
+/// from the grid centre × 70ms, [_itemSpring], scale 0.85 through a 6px blur),
+/// so the four corners animate together and the open reads centre-out, not
+/// corner-by-corner.
 ///
-/// Closes on Escape, on a tap outside, or on selecting an item. The panel size
-/// is measured (one frame late — the box springs toward the measured size, it
-/// does not snap), matching the source's runtime measurement.
+/// Rendered through [BeuiOverlay] (transparent barrier): the panel is mounted in
+/// the root overlay, so it escapes ancestor `Transform`/`ClipRect` and stays
+/// tappable beyond the trigger's bounds — the containing-block-safe version of
+/// the source's absolute overlay. Closes on Escape, on a tap outside, or on
+/// selecting an item.
 ///
-/// Reduced motion keeps the size morph brief (150ms) and drops the iris /
-/// blur / scale flourishes — content fades opacity-only.
+/// Reduced motion swaps trigger/panel with quick fades — no morph, iris, or
+/// item movement — while keeping opacity transitions.
 class BeuiBloomMenu extends StatefulWidget {
   /// Creates a bloom menu.
   const BeuiBloomMenu({
@@ -65,115 +78,220 @@ class BeuiBloomMenu extends StatefulWidget {
     super.key,
   });
 
-  /// The grid entries. Defaults to [beuiDefaultBloomMenuItems].
+  /// The grid entries (3 columns). Defaults to [beuiDefaultBloomMenuItems].
   final List<BeuiBloomMenuItem> items;
 
-  /// Called with an item's label when it is chosen.
+  /// Called with an item's label when it is chosen; the menu closes after.
   final ValueChanged<String>? onSelect;
 
-  /// The collapsed pill's label.
+  /// Drives BOTH the collapsed pill and the open panel header.
   final String triggerLabel;
 
   @override
   State<BeuiBloomMenu> createState() => _BeuiBloomMenuState();
 }
 
-class _BeuiBloomMenuState extends State<BeuiBloomMenu> {
-  final GlobalKey _measureKey = GlobalKey();
+class _BeuiBloomMenuState extends State<BeuiBloomMenu>
+    with SingleTickerProviderStateMixin {
   bool _open = false;
+
+  /// True while the overlay is mounted (open or morphing closed) — the in-tree
+  /// trigger stays hidden until the box has shrunk back onto it.
+  bool _overlayVisible = false;
+
+  final GlobalKey _sizerKey = GlobalKey();
   Size? _panelSize;
 
-  static const int _cols = 3;
+  // The collapsed trigger is `w-fit` (source), so its width depends on
+  // [triggerLabel]. Measure it so the shared-element morph starts from the real
+  // pill size rather than a hardcoded guess.
+  final GlobalKey _triggerKey = GlobalKey();
+  Size? _triggerMeasured;
 
-  void _setOpen(bool next) {
-    if (_open == next) return;
-    setState(() => _open = next);
+  /// One clock for the delayed choreography (content fade at 120ms, iris at
+  /// 80–530ms, radial item staggers). Created eagerly: a lazily-initialized
+  /// ticker first touched in dispose() trips TickerMode's deactivated-ancestor
+  /// lookup.
+  late final AnimationController _clock;
+
+  @override
+  void initState() {
+    super.initState();
+    _clock = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: _enterMs ~/ 1),
+    );
   }
 
-  void _measure() {
-    final box = _measureKey.currentContext?.findRenderObject() as RenderBox?;
-    if (box == null || !box.hasSize) return;
-    if (_panelSize != box.size) {
-      setState(() => _panelSize = box.size);
+  void _setOpen(bool value) {
+    setState(() {
+      _open = value;
+      if (value) _overlayVisible = true;
+    });
+    if (value) {
+      _clock.forward(from: 0);
+    } else {
+      _clock.stop();
+      // Unhide the in-tree trigger once the shrink morph has landed.
+      Future<void>.delayed(const Duration(milliseconds: 480), () {
+        if (mounted && !_open) setState(() => _overlayVisible = false);
+      });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
-    final reduce = MediaQuery.disableAnimationsOf(context);
-    final panelWidth = math.min(
-      MediaQuery.sizeOf(context).width * 0.86,
-      420.0,
-    );
-    // Seed height before the first measurement so the box never springs from a
-    // wrong size (the one-frame-late caveat): header + grid rows estimate.
-    final rows = (widget.items.length / _cols).ceil();
-    final panelSize =
-        _panelSize ?? Size(panelWidth, 49.0 + rows * 92.0);
+  void dispose() {
+    _clock.dispose();
+    super.dispose();
+  }
 
-    return _CloseScope(
-      enabled: _open,
-      onClose: () => _setOpen(false),
-      child: SizedBox.fromSize(
-        size: _triggerSize,
+  void _scheduleMeasure() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final box = _sizerKey.currentContext?.findRenderObject() as RenderBox?;
+      if (box != null && box.hasSize && box.size != _panelSize) {
+        setState(() => _panelSize = box.size);
+      }
+      final trigger =
+          _triggerKey.currentContext?.findRenderObject() as RenderBox?;
+      if (trigger != null &&
+          trigger.hasSize &&
+          trigger.size != _triggerMeasured) {
+        setState(() => _triggerMeasured = trigger.size);
+      }
+    });
+  }
+
+  double _panelWidth(BuildContext context) =>
+      math.min(MediaQuery.sizeOf(context).width * 0.86, _panelMaxWidth);
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    _scheduleMeasure();
+
+    return Stack(
+      children: [
+        // Offstage sizer: the open panel's natural size at the target width.
+        Offstage(
+          child: KeyedSubtree(
+            key: _sizerKey,
+            child: SizedBox(
+              width: _panelWidth(context),
+              child: _PanelContent(
+                items: widget.items,
+                colors: colors,
+                title: widget.triggerLabel,
+                measuring: true,
+              ),
+            ),
+          ),
+        ),
+        BeuiOverlay(
+          open: _open,
+          onDismiss: () => _setOpen(false),
+          barrierColor: const Color(0x00000000), // outside tap closes, unseen
+          enterDuration: const Duration(milliseconds: 240),
+          exitDuration: const Duration(milliseconds: 420),
+          overlayBuilder: _buildOverlay,
+          child: _Trigger(
+            key: _triggerKey,
+            label: widget.triggerLabel,
+            colors: colors,
+            hidden: _overlayVisible,
+            onPressed: () => _setOpen(true),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOverlay(
+    BuildContext context,
+    Animation<double> animation,
+    LayerLink link,
+  ) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final panelSize = _panelSize ?? Size(_panelWidth(context), 300);
+    final triggerSize = _triggerMeasured ?? _triggerSize;
+
+    return CompositedTransformFollower(
+      link: link,
+      targetAnchor: Alignment.center,
+      followerAnchor: Alignment.center,
+      // The morphing box grows from the shared centre outward (the source's
+      // centering box).
+      child: MotionBuilder<Size>(
+        value: _open ? panelSize : triggerSize,
+        from: triggerSize,
+        converter: const SizeMotionConverter(),
+        motion: reduce
+            ? const CurvedMotion(Duration(milliseconds: 150), beuiEaseOut)
+            : _folderSpring,
+        builder: (context, size, child) => Container(
+          width: size.width,
+          height: size.height,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: colors.card,
+            border: Border.all(color: colors.border),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: OverflowBox(
+            minWidth: 0,
+            maxWidth: double.infinity,
+            minHeight: 0,
+            maxHeight: double.infinity,
+            alignment: Alignment.center,
+            child: child,
+          ),
+        ),
         child: Stack(
-          clipBehavior: Clip.none,
           alignment: Alignment.center,
           children: [
-            // Off-stage full-size panel, measured for the morph target. It is
-            // laid out but never painted.
-            Positioned(
-              left: 0,
-              top: 0,
-              child: Offstage(
-                child: SizedBox(
-                  key: _measureKey,
-                  width: panelWidth,
-                  child: _PanelChrome(
-                    items: widget.items,
-                    reveal: const AlwaysStoppedAnimation(1),
-                    reduce: true,
-                    onSelect: (_) {},
-                    onClose: () {},
-                  ),
+            // Panel content: fades in after 120ms (200ms window), out on close.
+            AnimatedBuilder(
+              animation: Listenable.merge([_clock, animation]),
+              builder: (context, child) {
+                final closing =
+                    animation.status == AnimationStatus.reverse || !_open;
+                final elapsed = _clock.value * _enterMs;
+                final opacity = closing
+                    ? animation.value.clamp(0.0, 1.0)
+                    : reduce
+                    ? 1.0
+                    : ((elapsed - 120) / 200).clamp(0.0, 1.0);
+                return Opacity(opacity: opacity, child: child);
+              },
+              child: SizedBox(
+                width: _panelWidth(context),
+                child: _PanelContent(
+                  items: widget.items,
+                  colors: colors,
+                  title: widget.triggerLabel,
+                  clock: _clock,
+                  reduce: reduce,
+                  onClose: () => _setOpen(false),
+                  onSelect: (label) {
+                    widget.onSelect?.call(label);
+                    _setOpen(false);
+                  },
                 ),
               ),
             ),
-            // The morphing shared element, centred on the trigger.
-            SingleMotionBuilder(
-              value: _open ? 1.0 : 0.0,
-              motion: reduce
-                  ? const SpringMotion(
-                      // Brief, overshoot-free under reduced motion (~150ms feel).
-                      SpringDescription(mass: 1, stiffness: 700, damping: 60),
-                    )
-                  : _springFolder,
-              builder: (context, p, _) {
-                final size = Size.lerp(_triggerSize, panelSize, p)!;
-                return SizedBox.fromSize(
-                  size: size,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: _MorphContents(
-                      progress: p,
-                      open: _open,
-                      panelWidth: panelWidth,
-                      panelSize: panelSize,
-                      triggerLabel: widget.triggerLabel,
-                      items: widget.items,
-                      reduce: reduce,
-                      onOpen: () => _setOpen(true),
-                      onClose: () => _setOpen(false),
-                      onSelect: (label) {
-                        widget.onSelect?.call(label);
-                        _setOpen(false);
-                      },
-                    ),
+            // The trigger label rides the shrinking box on close, so the morph
+            // lands seamlessly on the real (unhidden) trigger.
+            if (!_open)
+              IgnorePointer(
+                child: FadeTransition(
+                  opacity: ReverseAnimation(animation),
+                  child: _TriggerLabel(
+                    label: widget.triggerLabel,
+                    colors: colors,
                   ),
-                );
-              },
-            ),
+                ),
+              ),
           ],
         ),
       ),
@@ -181,292 +299,280 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu> {
   }
 }
 
-/// Wraps the morph's clipped box: the collapsed trigger (below a low progress)
-/// cross-fades into the open panel content. The trigger and panel are both
-/// pinned to the box's centre so neither drifts as the box morphs.
-class _MorphContents extends StatelessWidget {
-  const _MorphContents({
-    required this.progress,
-    required this.open,
-    required this.panelWidth,
-    required this.panelSize,
-    required this.triggerLabel,
-    required this.items,
-    required this.reduce,
-    required this.onOpen,
-    required this.onClose,
-    required this.onSelect,
+class _Trigger extends StatefulWidget {
+  const _Trigger({
+    super.key,
+    required this.label,
+    required this.colors,
+    required this.hidden,
+    required this.onPressed,
   });
 
-  final double progress;
-  final bool open;
-  final double panelWidth;
-  final Size panelSize;
-  final String triggerLabel;
-  final List<BeuiBloomMenuItem> items;
-  final bool reduce;
-  final VoidCallback onOpen;
-  final VoidCallback onClose;
-  final ValueChanged<String> onSelect;
+  final String label;
+  final BeuiColors colors;
+  final bool hidden;
+  final VoidCallback onPressed;
+
+  @override
+  State<_Trigger> createState() => _TriggerState();
+}
+
+class _TriggerState extends State<_Trigger> {
+  bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    // Content cross-fade windows on the morph progress: the trigger fades out
-    // early, the panel content fades in after the box has room (source delays
-    // the panel content ~0.12 after the box starts).
-    final triggerOpacity = (1 - progress * 3).clamp(0.0, 1.0);
-    final panelOpacity = reduce
-        ? (open ? 1.0 : 0.0)
-        : ((progress - 0.25) / 0.5).clamp(0.0, 1.0);
+    final colors = widget.colors;
+    final reduce = MediaQuery.disableAnimationsOf(context);
 
-    return DecoratedBox(
+    // Source pill is `w-fit h-11` (px-5): a fixed height, but content-sized
+    // width with a minimum so the default "Create" keeps its resting width and
+    // longer labels grow instead of overflowing.
+    Widget body = Container(
+      height: _triggerSize.height,
+      alignment: Alignment.center,
+      constraints: BoxConstraints(minWidth: _triggerSize.width),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: colors.card,
         border: Border.all(color: colors.border),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          // Panel content, sized to its full width so text lays out once and is
-          // merely revealed by the growing box (no reflow mid-morph).
-          if (panelOpacity > 0)
-            Positioned(
-              width: panelWidth,
-              height: panelSize.height,
-              child: Opacity(
-                opacity: panelOpacity,
-                child: _PanelBloom(
-                  items: items,
-                  reduce: reduce,
-                  open: open,
-                  onSelect: onSelect,
-                  onClose: onClose,
-                ),
-              ),
-            ),
-          // Collapsed trigger label.
-          if (triggerOpacity > 0)
-            Opacity(
-              opacity: triggerOpacity,
-              child: _TriggerLabel(label: triggerLabel, onTap: onOpen),
-            ),
-        ],
+      child: _TriggerLabel(label: widget.label, colors: colors),
+    );
+
+    // Trigger press feedback — source `whileTap={{ scale: 0.97 }}`.
+    body = SingleMotionBuilder(
+      value: _pressed && !reduce ? 0.97 : 1.0,
+      motion: beuiSpringPress,
+      builder: (context, scale, child) =>
+          Transform.scale(scale: scale, child: child),
+      child: body,
+    );
+
+    return Visibility(
+      visible: !widget.hidden,
+      maintainSize: true,
+      maintainAnimation: true,
+      maintainState: true,
+      child: Semantics(
+        button: true,
+        expanded: widget.hidden,
+        label: widget.label,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: (_) => setState(() => _pressed = true),
+            onTapUp: (_) => setState(() => _pressed = false),
+            onTapCancel: () => setState(() => _pressed = false),
+            onTap: widget.onPressed,
+            child: body,
+          ),
+        ),
       ),
     );
   }
 }
 
 class _TriggerLabel extends StatelessWidget {
-  const _TriggerLabel({required this.label, required this.onTap});
+  const _TriggerLabel({required this.label, required this.colors});
+
   final String label;
-  final VoidCallback onTap;
+  final BeuiColors colors;
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Semantics(
-      button: true,
-      label: label,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: SizedBox.fromSize(
-          size: _triggerSize,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: colors.foreground,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Icon(LucideIcons.plus, size: 16, color: colors.foreground),
-            ],
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 8, // gap-2
+      children: [
+        Text(
+          label,
+          maxLines: 1,
+          softWrap: false,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: colors.foreground,
           ),
         ),
-      ),
+        Icon(LucideIcons.plus, size: 16, color: colors.foreground),
+      ],
     );
   }
 }
 
-/// The open panel: static chrome (header + hairline grid) plus the iris reveal
-/// and radial-stagger animations, which restart each time [open] flips true.
-class _PanelBloom extends StatefulWidget {
-  const _PanelBloom({
+class _PanelContent extends StatelessWidget {
+  const _PanelContent({
     required this.items,
-    required this.reduce,
-    required this.open,
-    required this.onSelect,
-    required this.onClose,
+    required this.colors,
+    required this.title,
+    this.clock,
+    this.reduce = false,
+    this.measuring = false,
+    this.onClose,
+    this.onSelect,
   });
+
   final List<BeuiBloomMenuItem> items;
+  final BeuiColors colors;
+  final String title;
+  final Animation<double>? clock;
   final bool reduce;
-  final bool open;
-  final ValueChanged<String> onSelect;
-  final VoidCallback onClose;
+  final bool measuring;
+  final VoidCallback? onClose;
+  final ValueChanged<String>? onSelect;
 
   @override
-  State<_PanelBloom> createState() => _PanelBloomState();
-}
+  Widget build(BuildContext context) {
+    const cols = 3;
+    final rows = (items.length / cols).ceil();
 
-class _PanelBloomState extends State<_PanelBloom>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _reveal = AnimationController(
-    vsync: this,
-    // Iris clip 0.45s + item stagger tail; the grid controller drives both.
-    duration: const Duration(milliseconds: 750),
-  );
+    Widget grid = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var r = 0; r < rows; r++)
+          Row(
+            children: [
+              for (var c = 0; c < cols; c++)
+                Expanded(
+                  child: r * cols + c < items.length
+                      ? _Cell(
+                          item: items[r * cols + c],
+                          colors: colors,
+                          // Radial stagger: distance from the grid centre.
+                          delayMs: reduce || measuring
+                              ? 0
+                              : 100 +
+                                    math.sqrt(
+                                          math.pow(c - (cols - 1) / 2, 2) +
+                                              math.pow(r - (rows - 1) / 2, 2),
+                                        ) *
+                                        70,
+                          clock: measuring ? null : clock,
+                          reduce: reduce,
+                          borderRight: c != cols - 1,
+                          borderBottom: r != rows - 1,
+                          onTap: onSelect == null
+                              ? null
+                              : () => onSelect!(items[r * cols + c].label),
+                        )
+                      : const SizedBox(height: 96),
+                ),
+            ],
+          ),
+      ],
+    );
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.reduce) {
-      _reveal.value = 1;
-    } else {
-      _reveal.forward();
+    // Iris reveal: inset(45% 34%) → inset(0) over 450ms EASE_OUT, 80ms delay.
+    if (!measuring && clock != null && !reduce) {
+      grid = AnimatedBuilder(
+        animation: clock!,
+        builder: (context, child) {
+          final elapsed = clock!.value * _enterMs;
+          final t = beuiEaseOut.transform(
+            ((elapsed - 80) / 450).clamp(0.0, 1.0),
+          );
+          return ClipRect(
+            clipper: _IrisClipper(progress: t),
+            child: child,
+          );
+        },
+        child: grid,
+      );
     }
-  }
-
-  @override
-  void dispose() {
-    _reveal.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _PanelChrome(
-      items: widget.items,
-      reveal: _reveal,
-      reduce: widget.reduce,
-      onSelect: widget.onSelect,
-      onClose: widget.onClose,
-    );
-  }
-}
-
-/// The panel's visual body — header row and the 3-column grid. Split from the
-/// animation state so the off-stage measurement copy can reuse it with a static
-/// [reveal].
-class _PanelChrome extends StatelessWidget {
-  const _PanelChrome({
-    required this.items,
-    required this.reveal,
-    required this.reduce,
-    required this.onSelect,
-    required this.onClose,
-  });
-
-  final List<BeuiBloomMenuItem> items;
-  final Animation<double> reveal;
-  final bool reduce;
-  final ValueChanged<String> onSelect;
-  final VoidCallback onClose;
-
-  static const int _cols = 3;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    final rows = (items.length / _cols).ceil();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Header.
+        // Header (px-4 py-3, border-b) — shows [title] (the trigger label).
         Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: colors.border)),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Create',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: colors.mutedForeground,
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ),
               Semantics(
                 button: true,
                 label: 'Close menu',
-                child: GestureDetector(
-                  onTap: onClose,
-                  child: Icon(
-                    LucideIcons.x,
-                    size: 16,
-                    color: colors.mutedForeground,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: onClose,
+                    child: Icon(
+                      LucideIcons.x,
+                      size: 16,
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ),
               ),
             ],
           ),
         ),
-        // Grid, revealed by the iris clip.
-        AnimatedBuilder(
-          animation: reveal,
-          builder: (context, _) {
-            final t = reveal.value;
-            // Iris: inset 45%/34% → 0, over the first 0.6 of the controller
-            // (0.45s of 0.75s), EASE_OUT.
-            final irisT = beuiEaseOut.transform((t / 0.6).clamp(0.0, 1.0));
-            return ClipPath(
-              clipper: reduce ? null : _IrisClipper(irisT),
-              child: _grid(colors, rows, t),
-            );
-          },
-        ),
+        grid,
       ],
     );
   }
+}
 
-  Widget _grid(BeuiColors colors, int rows, double t) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var r = 0; r < rows; r++)
-          Row(
-            children: [
-              for (var c = 0; c < _cols; c++)
-                if (r * _cols + c < items.length)
-                  Expanded(
-                    child: _cell(colors, r, c, rows, t),
-                  )
-                else
-                  const Expanded(child: SizedBox.shrink()),
-            ],
-          ),
-      ],
-    );
+/// Iris clip: `inset(45% 34% 45% 34%)` → `inset(0)`.
+class _IrisClipper extends CustomClipper<Rect> {
+  _IrisClipper({required this.progress});
+
+  final double progress;
+
+  @override
+  Rect getClip(Size size) {
+    final dx = size.width * 0.34 * (1 - progress);
+    final dy = size.height * 0.45 * (1 - progress);
+    return Rect.fromLTRB(dx, dy, size.width - dx, size.height - dy);
   }
 
-  Widget _cell(BeuiColors colors, int r, int c, int rows, double t) {
-    final i = r * _cols + c;
-    final item = items[i];
-    // Radial stagger: delay ∝ distance from the grid centre. The controller
-    // runs 0→1 over 750ms; item springs begin at 0.1 + dist*0.07 (in seconds).
-    final dist = _distFromCentre(c, r, rows);
-    final start = (0.1 + dist * 0.07) / 0.75; // fraction of the controller
-    final local = reduce
-        ? 1.0
-        : ((t - start) / (1 - start)).clamp(0.0, 1.0);
-    final eased = beuiEaseOut.transform(local);
+  @override
+  bool shouldReclip(_IrisClipper old) => old.progress != progress;
+}
 
+class _Cell extends StatelessWidget {
+  const _Cell({
+    required this.item,
+    required this.colors,
+    required this.delayMs,
+    required this.clock,
+    required this.reduce,
+    required this.borderRight,
+    required this.borderBottom,
+    required this.onTap,
+  });
+
+  final BeuiBloomMenuItem item;
+  final BeuiColors colors;
+  final double delayMs;
+  final Animation<double>? clock;
+  final bool reduce;
+  final bool borderRight;
+  final bool borderBottom;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
     Widget content = Column(
       mainAxisSize: MainAxisSize.min,
+      spacing: 8, // gap-2
       children: [
         Icon(item.icon, size: 20, color: colors.mutedForeground),
-        const SizedBox(height: 8),
         Text(
           item.label,
           style: TextStyle(
@@ -478,95 +584,69 @@ class _PanelChrome extends StatelessWidget {
       ],
     );
 
-    if (!reduce) {
-      // opacity 0→1, scale 0.85→1, blur σ3→0.
-      content = Opacity(
-        opacity: eased,
-        child: Transform.scale(
-          scale: 0.85 + 0.15 * eased,
-          child: content,
-        ),
+    // Bloom-in: released at the radial delay, spring 440/34 from scale 0.85
+    // through a 6px blur.
+    if (clock != null && !reduce) {
+      content = AnimatedBuilder(
+        animation: clock!,
+        builder: (context, child) {
+          final released = clock!.value * _enterMs >= delayMs;
+          return SingleMotionBuilder(
+            value: released ? 1.0 : 0.0,
+            from: 0.0,
+            motion: _itemSpring,
+            builder: (context, t, inner) {
+              final clamped = t.clamp(0.0, 1.0);
+              final sigma = 3.0 * (1 - clamped); // blur(6px) ≈ σ3
+              Widget body = inner!;
+              if (sigma > 0.05) {
+                body = ImageFiltered(
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: sigma,
+                    sigmaY: sigma,
+                    tileMode: TileMode.decal,
+                  ),
+                  child: body,
+                );
+              }
+              return Opacity(
+                opacity: clamped,
+                child: Transform.scale(scale: 0.85 + 0.15 * t, child: body),
+              );
+            },
+            child: child,
+          );
+        },
+        child: content,
       );
-    } else {
-      content = Opacity(opacity: local, child: content);
     }
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border(
-          right: c != _cols - 1
-              ? BorderSide(color: colors.border)
-              : BorderSide.none,
-          bottom: r < rows - 1
-              ? BorderSide(color: colors.border)
-              : BorderSide.none,
-        ),
-      ),
-      child: Semantics(
-        button: true,
-        label: item.label,
+    // Static cell with hairline borders (no animated fill) so the grid lines
+    // never flicker as items stagger in.
+    return Semantics(
+      button: onTap != null,
+      label: item.label,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => onSelect(item.label),
-          child: Padding(
+          onTap: onTap,
+          child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+            decoration: BoxDecoration(
+              border: Border(
+                right: borderRight
+                    ? BorderSide(color: colors.border, width: 0.5)
+                    : BorderSide.none,
+                bottom: borderBottom
+                    ? BorderSide(color: colors.border, width: 0.5)
+                    : BorderSide.none,
+              ),
+            ),
             child: Center(child: content),
           ),
         ),
       ),
     );
-  }
-
-  static double _distFromCentre(int col, int row, int rows) {
-    final dc = col - (_cols - 1) / 2;
-    final dr = row - (rows - 1) / 2;
-    return math.sqrt(dc * dc + dr * dr);
-  }
-}
-
-/// The iris clip — an inset rectangle that opens from a centred box (45% top/
-/// bottom, 34% left/right) to the full bounds.
-class _IrisClipper extends CustomClipper<Path> {
-  _IrisClipper(this.t);
-  final double t; // 0 = closed box, 1 = full
-
-  @override
-  Path getClip(Size size) {
-    final top = 0.45 * size.height * (1 - t);
-    final bottom = size.height - 0.45 * size.height * (1 - t);
-    final left = 0.34 * size.width * (1 - t);
-    final right = size.width - 0.34 * size.width * (1 - t);
-    return Path()..addRect(Rect.fromLTRB(left, top, right, bottom));
-  }
-
-  @override
-  bool shouldReclip(_IrisClipper old) => old.t != t;
-}
-
-/// Closes the menu on Escape or a tap outside its subtree, while [enabled].
-class _CloseScope extends StatelessWidget {
-  const _CloseScope({
-    required this.enabled,
-    required this.onClose,
-    required this.child,
-  });
-  final bool enabled;
-  final VoidCallback onClose;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget result = TapRegion(
-      enabled: enabled,
-      onTapOutside: (_) => onClose(),
-      child: child,
-    );
-    if (enabled) {
-      result = CallbackShortcuts(
-        bindings: {const SingleActivator(LogicalKeyboardKey.escape): onClose},
-        child: Focus(autofocus: true, child: result),
-      );
-    }
-    return result;
   }
 }

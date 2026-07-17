@@ -12,8 +12,9 @@ import 'demos/availability_scheduler_demo.dart';
 import 'demos/bloom_menu_demo.dart';
 import 'demos/bottom_sheet_demo.dart';
 import 'demos/command_palette_demo.dart';
-import 'demos/create_menu_demo.dart';
 import 'demos/cylinder_carousel_demo.dart';
+import 'demos/infinite_masonry_demo.dart';
+import 'demos/notification_stack_demo.dart';
 import 'demos/feedback_widget_demo.dart';
 import 'demos/input_demo.dart';
 import 'demos/knockout_bracket_demo.dart';
@@ -95,7 +96,8 @@ const _entries = <GalleryEntry>[
   GalleryEntry('Action Rails', actionRailsDemo),
   GalleryEntry('Expandable Tabs', expandableTabsDemo),
   GalleryEntry('Swipeable List', swipeableListDemo),
-  GalleryEntry('Create Menu', createMenuDemo),
+  GalleryEntry('Notification Stack', notificationStackDemo),
+  GalleryEntry('Infinite Masonry', infiniteMasonryDemo),
   GalleryEntry('Swap', swapDemo),
   GalleryEntry('Prediction Market', predictionMarketDemo),
   GalleryEntry('File Upload', fileUploadDemo),
