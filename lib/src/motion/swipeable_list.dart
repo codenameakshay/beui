@@ -159,6 +159,14 @@ const _closeVelocity = 320.0;
 const _flingDistance = 14.0;
 const _dragElastic = 0.04;
 
+// Release velocity is clamped to this before it feeds the settle spring (source
+// RELEASE_VELOCITY_LIMIT). A fast flick carries up to this much momentum into
+// the spring; a slow drag to the same release point carries almost none.
+const _releaseVelocityLimit = 1500.0;
+
+double _clampReleaseVelocity(double velocity) =>
+    math.max(-_releaseVelocityLimit, math.min(_releaseVelocityLimit, velocity));
+
 /// Rows that swipe left/right to reveal contextual actions — the Flutter port
 /// of beUI's `SwipeableList`.
 ///
@@ -286,19 +294,61 @@ class _SwipeRow extends StatefulWidget {
   State<_SwipeRow> createState() => _SwipeRowState();
 }
 
-class _SwipeRowState extends State<_SwipeRow> {
+class _SwipeRowState extends State<_SwipeRow>
+    with SingleTickerProviderStateMixin {
+  // The row's live horizontal position. The pointer owns it during a drag; a
+  // release settles it on the row spring — carrying the clamped release
+  // velocity so a flick keeps its momentum (source `x` motion value + settleX).
+  late final SingleMotionController _controller;
   double _raw = 0;
   bool _dragging = false;
+
+  // Mirrors source `commandedTargetRef`: the last target we settled toward, so
+  // an externally driven target change (a controlled `value`, or another row
+  // opening and closing this one) does not redundantly re-settle a target that
+  // is already in flight.
+  double _commandedTarget = 0;
 
   double get _leftWidth => widget.item.leftActions.length * widget.actionWidth;
   double get _rightWidth =>
       widget.item.rightActions.length * widget.actionWidth;
 
-  double get _targetX => switch (widget.openSide) {
+  double _targetXFor(BeuiSwipeSide? side) => switch (side) {
     BeuiSwipeSide.left => _leftWidth,
     BeuiSwipeSide.right => -_rightWidth,
     null => 0,
   };
+
+  double get _targetX => _targetXFor(widget.openSide);
+
+  @override
+  void initState() {
+    super.initState();
+    _commandedTarget = _targetX;
+    _controller = SingleMotionController(
+      motion: _rowSettle,
+      vsync: this,
+      initialValue: _targetX,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant _SwipeRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Source targetX effect: settle toward an externally changed target — a
+    // controlled `value`, or another row's open state closing this one. This
+    // path carries no velocity (only a release flick does).
+    final target = _targetX;
+    if (!_dragging && _commandedTarget != target) {
+      _settleX(target);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   /// Constraints [-rightWidth, leftWidth] with 0.04 elasticity beyond.
   double _display(double raw) {
@@ -309,18 +359,38 @@ class _SwipeRowState extends State<_SwipeRow> {
     return raw;
   }
 
+  /// Port of source `settleX`: stop any in-flight spring and settle toward
+  /// [nextX], injecting the clamped release [velocity] so a flick carries
+  /// momentum into the spring. Reduced motion snaps (source `x.set`).
+  void _settleX(double nextX, {double velocity = 0}) {
+    _commandedTarget = nextX;
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _controller.value = nextX;
+      return;
+    }
+    _controller.animateTo(nextX, withVelocity: _clampReleaseVelocity(velocity));
+  }
+
   void _onDragStart(DragStartDetails details) {
+    // Take over from wherever the spring currently is (source onDragStart stops
+    // the animation; the drag then owns x from its live mid-spring position,
+    // not the committed target).
+    _controller.stop(canceled: true);
+    _dragging = true;
+    _raw = _controller.value;
     // Opening a new row closes any other open one (source onDragStart).
     if (widget.anotherOpen) widget.onOpenChanged(null);
-    setState(() {
-      _dragging = true;
-      _raw = _targetX;
-    });
+  }
+
+  void _onDragUpdate(DragUpdateDetails details) {
+    _raw += details.delta.dx;
+    // The pointer drives x directly during a drag (source `style={{ x }}`).
+    _controller.value = _display(_raw);
   }
 
   void _onDragEnd(DragEndDetails details) {
     final velocity = details.velocity.pixelsPerSecond.dx;
-    final latest = _display(_raw);
+    final latest = _controller.value;
     final openSide = widget.openSide;
     final leftOpenThreshold = math.max(
       widget.revealThreshold,
@@ -356,10 +426,18 @@ class _SwipeRowState extends State<_SwipeRow> {
       next = BeuiSwipeSide.right;
     }
 
-    setState(() => _dragging = false);
-    // The source snaps (and reports) on every release, even when the side is
-    // unchanged.
+    _dragging = false;
+    // Source snapTo: settle (carrying the release velocity) AND report on every
+    // release, even when the side is unchanged. Settling first pins
+    // `_commandedTarget`, so the didUpdateWidget reaction skips a redundant
+    // zero-velocity re-settle when onOpenChanged flips openSide.
+    _settleX(_targetXFor(next), velocity: velocity);
     widget.onOpenChanged(next);
+  }
+
+  void _onDragCancel() {
+    _dragging = false;
+    _settleX(_targetX);
   }
 
   void _handleAction(BeuiSwipeAction action, BeuiSwipeSide side) {
@@ -371,7 +449,6 @@ class _SwipeRowState extends State<_SwipeRow> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    final reduce = MediaQuery.disableAnimationsOf(context);
     final item = widget.item;
 
     Widget surface = Container(
@@ -445,21 +522,22 @@ class _SwipeRowState extends State<_SwipeRow> {
       surface = GestureDetector(
         behavior: HitTestBehavior.opaque,
         onHorizontalDragStart: _onDragStart,
-        onHorizontalDragUpdate: (d) => setState(() => _raw += d.delta.dx),
+        onHorizontalDragUpdate: _onDragUpdate,
         onHorizontalDragEnd: _onDragEnd,
-        onHorizontalDragCancel: () => setState(() => _dragging = false),
+        onHorizontalDragCancel: _onDragCancel,
         child: MouseRegion(cursor: SystemMouseCursors.grab, child: surface),
       );
     }
 
-    // Drag follows the pointer exactly; release settles on the row spring.
-    // Reduced motion snaps (source settleX `x.set`).
-    surface = SingleMotionBuilder(
-      value: _dragging ? _display(_raw) : _targetX,
-      motion: _rowSettle,
-      active: !_dragging && !reduce,
-      builder: (context, x, child) =>
-          Transform.translate(offset: Offset(x, 0), child: child),
+    // The pointer drives x during a drag; release settles on the row spring,
+    // carrying the clamped release velocity (see _settleX). Reduced motion
+    // snaps instead of springing (source settleX `x.set`).
+    surface = ListenableBuilder(
+      listenable: _controller,
+      builder: (context, child) => Transform.translate(
+        offset: Offset(_controller.value, 0),
+        child: child,
+      ),
       child: surface,
     );
 
@@ -552,7 +630,12 @@ class _RailButtonState extends State<_RailButton> {
   @override
   Widget build(BuildContext context) {
     final action = widget.action;
-    final tone = _toneColor(action.tone, widget.colors).color;
+    // Source: the neutral tone is muted and shifts to `foreground` on hover
+    // (`text-muted-foreground group-hover:text-foreground`); every other tone
+    // is hover-stable.
+    final tone = action.tone == BeuiSwipeActionTone.neutral && _hovered
+        ? widget.colors.foreground
+        : _toneColor(action.tone, widget.colors).color;
 
     Widget body = SizedBox(
       width: widget.width,

@@ -19,9 +19,7 @@ Widget _app({
       height: 460,
       child: Stack(
         children: [
-          Positioned.fill(
-            child: BeuiFeedbackWidget(onSubmit: onSubmit),
-          ),
+          Positioned.fill(child: BeuiFeedbackWidget(onSubmit: onSubmit)),
         ],
       ),
     ),
@@ -93,9 +91,7 @@ void main() {
     });
 
     testWidgets('a thrown submit routes to the retry view', (tester) async {
-      await tester.pumpWidget(
-        _app(onSubmit: (_) => throw StateError('nope')),
-      );
+      await tester.pumpWidget(_app(onSubmit: (_) => throw StateError('nope')));
 
       await tester.tap(_trigger());
       await tester.pump(const Duration(milliseconds: 500));
@@ -161,12 +157,23 @@ void main() {
 
   group('BeuiFeedbackWidget motion fidelity', () {
     testWidgets('content morph blurs under normal motion', (tester) async {
-      await tester.pumpWidget(_app());
+      // The open (trigger→form) blur resolves within a single frame, so exercise
+      // the inner view swap (form → sent), which morphs with a 4px blur-up over
+      // ~240ms and is reliably observable mid-transition.
+      await tester.pumpWidget(_app(onSubmit: (_) {}));
       await tester.tap(_trigger());
-      await tester.pump(const Duration(milliseconds: 100)); // mid-morph
+      await tester.pump(const Duration(milliseconds: 500)); // form shown
+      await tester.enterText(find.byType(TextField), 'Nice');
+      await tester.pump();
+
+      await tester.tap(find.byType(BeuiStatefulButton));
+      await tester.pump(); // sending → onSubmit resolves, view begins swapping
+      await tester.pump(const Duration(milliseconds: 30)); // mid view-swap
 
       expect(find.byType(ImageFiltered), findsWidgets);
       expect(find.byType(AnimatedSize), findsWidgets);
+
+      await tester.pump(const Duration(milliseconds: 600)); // land on sent view
     });
 
     testWidgets('reduced motion drops the morph blur', (tester) async {
@@ -205,9 +212,7 @@ void main() {
               width: 200,
               height: 160,
               child: const Stack(
-                children: [
-                  Positioned.fill(child: BeuiFeedbackWidget()),
-                ],
+                children: [Positioned.fill(child: BeuiFeedbackWidget())],
               ),
             ),
           ),

@@ -145,12 +145,10 @@ class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
                   child: SingleMotionBuilder(
                     value: open ? 0.0 : 1.0,
                     from: 1.0,
-                    motion: open
-                        ? beuiSpringPanel
-                        : const CurvedMotion(
-                            Duration(milliseconds: 220),
-                            beuiEaseOut,
-                          ),
+                    // Source drives both the enter and the exit on SPRING_PANEL
+                    // (the AnimatePresence `transition`), so the sheet retracts
+                    // on the same spring it arrives on.
+                    motion: beuiSpringPanel,
                     active: !reduce,
                     builder: (context, t, child) {
                       if (reduce) {

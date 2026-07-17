@@ -51,6 +51,7 @@ class BeuiButton extends StatefulWidget {
     this.variant = BeuiButtonVariant.primary,
     this.size = BeuiButtonSize.md,
     this.pressScale = 0.93,
+    this.enableHoverScale = true,
     this.ripple = false,
     this.focusNode,
     super.key,
@@ -70,6 +71,14 @@ class BeuiButton extends StatefulWidget {
 
   /// Scale applied while pressed. Default 0.93.
   final double pressScale;
+
+  /// Lift to 1.02 on hover-capable pointers. Default true.
+  ///
+  /// Mirrors the source's `whileHover={{ scale: 1.02 }}`. Set false to kill the
+  /// hover lift while keeping [pressScale] and the color-hover — the port of
+  /// passing `whileHover={undefined}` (used by [BeuiStatefulButton], whose
+  /// state-swap owns the motion).
+  final bool enableHoverScale;
 
   /// Spawn a Material-style ripple from the press point. Off by default.
   final bool ripple;
@@ -111,7 +120,7 @@ class _BeuiButtonState extends State<BeuiButton> {
         ? 1.0
         : _pressed
         ? widget.pressScale
-        : _hovered
+        : _hovered && widget.enableHoverScale
         ? 1.02
         : 1.0;
 

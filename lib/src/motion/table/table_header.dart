@@ -156,8 +156,8 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onHorizontalDragStart: (_) => state._startReorder(column.key),
-              onHorizontalDragUpdate:
-                  (d) => state._moveReorder(d.globalPosition.dx),
+              onHorizontalDragUpdate: (d) =>
+                  state._moveReorder(d.globalPosition.dx),
               onHorizontalDragEnd: (_) => state._endReorder(),
               child: Padding(
                 padding: const EdgeInsets.only(left: 8),
@@ -176,9 +176,8 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
     content = SingleMotionBuilder(
       value: scaleTarget,
       motion: beuiSpringPress,
-      builder:
-          (context, scale, child) =>
-              Transform.scale(scale: scale, child: child),
+      builder: (context, scale, child) =>
+          Transform.scale(scale: scale, child: child),
       child: AnimatedOpacity(
         opacity: w.isDragging ? 0.5 : 1.0,
         duration: const Duration(milliseconds: 150),
@@ -193,10 +192,7 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
         color: colors.muted,
         border: Border(
           bottom: BorderSide(color: colors.border),
-          top:
-              isActive
-                  ? BorderSide(color: colors.primary)
-                  : BorderSide.none,
+          top: isActive ? BorderSide(color: colors.primary) : BorderSide.none,
         ),
       ),
       child: Stack(
@@ -214,27 +210,35 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
                 cursor: SystemMouseCursors.resizeLeftRight,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onHorizontalDragStart:
-                      (d) => state._startResize(column.key, d.globalPosition.dx),
-                  onHorizontalDragUpdate:
-                      (d) => state._moveResize(d.globalPosition.dx),
+                  onHorizontalDragStart: (d) =>
+                      state._startResize(column.key, d.globalPosition.dx),
+                  onHorizontalDragUpdate: (d) =>
+                      state._moveResize(d.globalPosition.dx),
                   onHorizontalDragEnd: (_) => state._endResize(),
                   child: const SizedBox.expand(),
                 ),
               ),
             ),
-          // Hover-revealed column menu handle straddling the top border.
+          // Hover-revealed column menu handle straddling the top border. Its own
+          // opaque MouseRegion re-activates the column on enter (cancelling the
+          // 100ms deactivate grace) and re-arms it on exit, so the pointer can
+          // cross from the header cell onto the handle without it unmounting —
+          // mirroring the source ColumnHandle onPointerEnter / onPointerLeave.
           if (w.hasColumnMenu && isActive)
             Positioned(
               top: -1,
               left: 0,
               right: 0,
               child: Center(
-                child: _ColumnHandle<T>(
-                  state: state,
-                  column: column,
-                  index: w.index,
-                  colors: colors,
+                child: MouseRegion(
+                  onEnter: (_) => state._activateColumn(column.key),
+                  onExit: (_) => state._deactivateColumn(column.key),
+                  child: _ColumnHandle<T>(
+                    state: state,
+                    column: column,
+                    index: w.index,
+                    colors: colors,
+                  ),
                 ),
               ),
             ),
@@ -276,24 +280,23 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color:
-                          active ? colors.foreground : colors.mutedForeground,
+                      color: active
+                          ? colors.foreground
+                          : colors.mutedForeground,
                     ),
                   ),
                 ),
                 const SizedBox(width: 4),
                 AnimatedOpacity(
                   opacity: active ? 1 : 0.35,
-                  duration:
-                      w.reduce
-                          ? Duration.zero
-                          : const Duration(milliseconds: 180),
+                  duration: w.reduce
+                      ? Duration.zero
+                      : const Duration(milliseconds: 180),
                   child: AnimatedRotation(
                     turns: desc ? 0.5 : 0,
-                    duration:
-                        w.reduce
-                            ? Duration.zero
-                            : const Duration(milliseconds: 180),
+                    duration: w.reduce
+                        ? Duration.zero
+                        : const Duration(milliseconds: 180),
                     curve: beuiEaseOut,
                     child: Icon(
                       LucideIcons.chevron_up,
@@ -315,8 +318,7 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
         value: column.header,
         colors: colors,
         align: column.align,
-        onChanged:
-            (v) => state.widget.onColumnRename!(column.key, v),
+        onChanged: (v) => state.widget.onColumnRename!(column.key, v),
       );
     }
 
@@ -366,8 +368,9 @@ class _HeaderRenameField extends StatefulWidget {
 }
 
 class _HeaderRenameFieldState extends State<_HeaderRenameField> {
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.value);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.value,
+  );
   final FocusNode _focusNode = FocusNode();
   bool _focused = false;
 
@@ -407,8 +410,10 @@ class _HeaderRenameFieldState extends State<_HeaderRenameField> {
             isDense: true,
             filled: _focused,
             fillColor: colors.muted,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 6,
+              vertical: 6,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
               borderSide: BorderSide.none,
@@ -447,20 +452,18 @@ class _ColumnHandle<T> extends StatelessWidget {
           _TableMenuEntry(
             label: 'Insert before',
             icon: LucideIcons.arrow_left_to_line,
-            onSelect:
-                () => state.widget.onInsertColumn!(
-                  index,
-                  BeuiTableInsertPosition.before,
-                ),
+            onSelect: () => state.widget.onInsertColumn!(
+              index,
+              BeuiTableInsertPosition.before,
+            ),
           ),
           _TableMenuEntry(
             label: 'Insert after',
             icon: LucideIcons.arrow_right_to_line,
-            onSelect:
-                () => state.widget.onInsertColumn!(
-                  index,
-                  BeuiTableInsertPosition.after,
-                ),
+            onSelect: () => state.widget.onInsertColumn!(
+              index,
+              BeuiTableInsertPosition.after,
+            ),
           ),
         ],
         if (state.widget.onDeleteColumn != null)

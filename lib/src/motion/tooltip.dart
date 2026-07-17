@@ -14,11 +14,14 @@ const _enterSpring = SpringMotion(
   SpringDescription(mass: 0.7, stiffness: 380, damping: 30),
 );
 
-/// Per-channel enter windows on the overlay clock: opacity finishes at 220ms
-/// (EASE_OUT), blur at 300ms (EASE_OUT); scale/offset ride [_enterSpring]
-/// independently. The overlay's enter duration is the longest window.
+/// Per-channel enter windows on the overlay clock: opacity finishes at 140ms
+/// (source `opacity: { duration: 0.14 }`, EASE_OUT), blur at 180ms (source
+/// `filter: { duration: 0.18 }`, EASE_OUT); scale/offset ride [_enterSpring]
+/// independently. The overlay's enter duration spans the full spring settle
+/// (the longest window).
 const _enterMs = 300;
-const _opacityInMs = 220;
+const _opacityInMs = 140;
+const _blurInMs = 180;
 
 /// Which side of the trigger the tooltip appears on.
 enum BeuiTooltipSide {
@@ -43,10 +46,11 @@ enum BeuiTooltipSide {
 /// makes neighbouring tooltips open instantly once one has just closed. On touch
 /// it reveals on long-press. The surface anchors to the trigger via the overlay
 /// [LayerLink] and rises into place from near the trigger: scale + offset ride
-/// the source's bespoke 380/30/0.7 spring, while opacity (220ms) and blur
-/// (300ms) run on their own `EASE_OUT` windows. The exit eases *forward* to its
-/// own targets (scale 0.92, 6px away, blur σ3, opacity 0) over 140ms — it is
-/// not a time-reversed entrance. Reduced motion fades opacity only
+/// the source's bespoke 380/30/0.7 spring, while opacity (140ms) and blur
+/// (180ms) run on their own `EASE_OUT` windows. The exit eases *forward* to its
+/// own targets (scale 0.94, 4.8px away, blur σ1.5, opacity 0) over 120ms
+/// (source `exit` `duration: 0.12`) — it is not a time-reversed entrance.
+/// Reduced motion fades opacity only
 /// (140ms in / 100ms out).
 class BeuiTooltip extends StatefulWidget {
   /// Creates a tooltip around [child].
@@ -115,7 +119,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       trapFocus: false,
       onDismiss: _hide,
       enterDuration: Duration(milliseconds: reduce ? 140 : _enterMs),
-      exitDuration: Duration(milliseconds: reduce ? 100 : 140),
+      exitDuration: Duration(milliseconds: reduce ? 100 : 120),
       overlayBuilder: _buildTooltip,
       child: MouseRegion(
         onEnter: (_) => _show(),
@@ -155,9 +159,9 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       child: IgnorePointer(
         child: AnimatedBuilder(
           animation: animation,
-          // PERF: the surface — including its BackdropFilter — is built once
-          // and threaded through the `child` slot; per-frame work is only the
-          // Transform / Opacity / ImageFiltered wrappers below.
+          // PERF: the opaque surface is built once and threaded through the
+          // `child` slot; per-frame work is only the Transform / Opacity /
+          // ImageFiltered wrappers below.
           child: _surface(colors),
           builder: (context, surface) {
             final t = animation.value.clamp(0.0, 1.0);
@@ -174,11 +178,11 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
             }
             if (exiting) {
               // Forward-eased exit with its OWN targets (not a reversed
-              // entrance): 140ms EASE_OUT to scale 0.92, 6px toward the
-              // trigger (0.6 × the 10px enter offset), blur 6px → σ3,
+              // entrance): 120ms EASE_OUT to scale 0.94, 4.8px toward the
+              // trigger (0.6 × the 8px enter offset), source blur(3px) → σ1.5,
               // opacity 0.
               final p = beuiEaseOut.transform(1 - t); // exit progress 0 → 1
-              final blur = 3.0 * p;
+              final blur = 1.5 * p;
               Widget body = surface!;
               if (blur > 0.05) {
                 body = ImageFiltered(
@@ -193,20 +197,25 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
               return Transform.translate(
                 offset: spec.away * (0.6 * p),
                 child: Transform.scale(
-                  scale: 1 - 0.08 * p,
+                  scale: 1 - 0.06 * p,
                   alignment: spec.origin,
                   child: Opacity(opacity: 1 - p, child: body),
                 ),
               );
             }
-            // Enter: opacity over the first 220ms of the 300ms clock, blur
-            // over the full 300ms — both EASE_OUT; scale/offset ride the
-            // 380/30/0.7 spring on its own ticker.
+            // Enter: opacity over the first 140ms of the clock, blur over the
+            // first 180ms — both EASE_OUT; scale/offset ride the 380/30/0.7
+            // spring on its own ticker.
             final opacity = beuiEaseOut.transform(
               (t * (_enterMs / _opacityInMs)).clamp(0.0, 1.0),
             );
-            // Enter blur(10px) → σ5 (motion-blur cap).
-            final blur = 5.0 * (1 - beuiEaseOut.transform(t));
+            // Source enter blur(5px) → σ2.5, closed over the 180ms window.
+            final blur =
+                2.5 *
+                (1 -
+                    beuiEaseOut.transform(
+                      (t * (_enterMs / _blurInMs)).clamp(0.0, 1.0),
+                    ));
             return SingleMotionBuilder(
               value: 1.0,
               from: 0.0,
@@ -227,7 +236,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
                 return Transform.translate(
                   offset: spec.away * (1 - s),
                   child: Transform.scale(
-                    scale: 0.85 + 0.15 * s,
+                    scale: 0.9 + 0.1 * s,
                     alignment: spec.origin,
                     child: Opacity(opacity: opacity, child: body),
                   ),
@@ -241,39 +250,40 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   }
 
   Widget _surface(BeuiColors colors) {
+    // Source surface: `rounded-lg border border-border bg-background px-2.5 py-1
+    // text-xs font-medium text-foreground shadow-lg` — a SOLID OPAQUE pill, no
+    // backdrop blur.
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        color: colors.background, // bg-background (opaque)
+        border: Border.all(color: colors.border), // border-border
+        borderRadius: BorderRadius.circular(8), // rounded-lg
         boxShadow: const [
+          // shadow-lg: 0 10px 15px -3px rgb(0 0 0 / .1),
+          //           0 4px 6px -4px rgb(0 0 0 / .1)
           BoxShadow(
-            color: Color(0x40000000),
-            blurRadius: 24,
-            offset: Offset(0, 12),
+            color: Color(0x1A000000),
+            blurRadius: 15,
+            spreadRadius: -3,
+            offset: Offset(0, 10),
+          ),
+          BoxShadow(
+            color: Color(0x1A000000),
+            blurRadius: 6,
+            spreadRadius: -4,
+            offset: Offset(0, 4),
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8), // rounded-lg
-        child: BackdropFilter(
-          // backdrop-blur-xl (24px → σ12), capped at the σ10 static-glass
-          // limit.
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              color: colors.popover.withValues(alpha: 0.85),
-              border: Border.all(color: colors.border),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            child: DefaultTextStyle.merge(
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: colors.popoverForeground,
-              ),
-              child: widget.content,
-            ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: DefaultTextStyle.merge(
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: colors.foreground, // text-foreground
           ),
+          child: widget.content,
         ),
       ),
     );
@@ -284,28 +294,28 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       targetAnchor: Alignment.topCenter,
       followerAnchor: Alignment.bottomCenter,
       gap: Offset(0, -8),
-      away: Offset(0, 10),
+      away: Offset(0, 8),
       origin: Alignment.bottomCenter,
     ),
     BeuiTooltipSide.bottom => const _TooltipSpec(
       targetAnchor: Alignment.bottomCenter,
       followerAnchor: Alignment.topCenter,
       gap: Offset(0, 8),
-      away: Offset(0, -10),
+      away: Offset(0, -8),
       origin: Alignment.topCenter,
     ),
     BeuiTooltipSide.left => const _TooltipSpec(
       targetAnchor: Alignment.centerLeft,
       followerAnchor: Alignment.centerRight,
       gap: Offset(-8, 0),
-      away: Offset(10, 0),
+      away: Offset(8, 0),
       origin: Alignment.centerRight,
     ),
     BeuiTooltipSide.right => const _TooltipSpec(
       targetAnchor: Alignment.centerRight,
       followerAnchor: Alignment.centerLeft,
       gap: Offset(8, 0),
-      away: Offset(-10, 0),
+      away: Offset(-8, 0),
       origin: Alignment.centerLeft,
     ),
   };

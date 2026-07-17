@@ -147,7 +147,7 @@ void main() {
       expect(changed! % 5, 0, reason: 'snapped to a step of 5');
     });
 
-    testWidgets('the handle follows the finger exactly while dragging', (
+    testWidgets('the thumb glides to the snapped step during a drag', (
       tester,
     ) async {
       await tester.pumpWidget(const _SingleHost(initial: 10));
@@ -158,15 +158,22 @@ void main() {
       await g.moveBy(const Offset(50, 0));
       await g.moveBy(const Offset(50, 0)); // pointer now +100px from start
       await tester.pump(const Duration(milliseconds: 16)); // one frame
-      // A glide (≈60ms time constant) would still be far behind after one frame.
+      // A glide (≈60ms time constant) is still far behind after one frame.
 
-      // The handle is AT the pointer (+100), not lagging at a glided position.
+      // Source drives the thumb off the SNAPPED value through SPRING_GLIDE, so a
+      // frame after the pointer jumps the handle is still gliding toward the
+      // step — it LAGS the finger (detents live) rather than raw-tracking it.
       final fingerX = start.dx + 100;
       expect(
         (_thumbX(tester) - fingerX).abs(),
-        lessThan(8),
-        reason: 'handle tracks the pointer directly, no glide lag',
+        greaterThan(8),
+        reason:
+            'handle glides to the snapped step, not bound to the raw pointer',
       );
+
+      // It settles onto a snapped step to the right of where it began.
+      await tester.pumpAndSettle();
+      expect(_thumbX(tester), greaterThan(start.dx));
 
       await g.up();
       await tester.pumpAndSettle();
@@ -396,6 +403,35 @@ void main() {
         lessThanOrEqualTo(settledX + 0.5),
         reason: 'glide must not overshoot the target position',
       );
+    });
+
+    testWidgets('a dragged thumb glides to snapped steps (live detent)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(const _DualHost(initial: RangeValues(10, 90)));
+      await tester.pumpAndSettle();
+
+      final start = tester.getCenter(find.byKey(_startThumb));
+      final g = await tester.startGesture(start);
+      await g.moveBy(const Offset(40, 0));
+      await g.moveBy(const Offset(40, 0)); // pointer now +80px from start
+      await tester.pump(const Duration(milliseconds: 16)); // one frame
+
+      // Consistent with the single-thumb port: the dragged side is driven off
+      // the snapped value through SPRING_GLIDE, so after one frame it lags the
+      // finger rather than tracking the raw pointer.
+      final fingerX = start.dx + 80;
+      expect(
+        (_startX(tester) - fingerX).abs(),
+        greaterThan(8),
+        reason: 'dragged side glides to the step, not bound to the raw pointer',
+      );
+
+      await tester.pumpAndSettle();
+      expect(_startX(tester), greaterThan(start.dx));
+
+      await g.up();
+      await tester.pumpAndSettle();
     });
   });
 }

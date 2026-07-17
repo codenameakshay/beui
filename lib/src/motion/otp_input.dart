@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
@@ -23,12 +24,16 @@ enum BeuiOtpStatus {
 /// and success check draw — the Flutter port of beUI's `OTPInput`.
 ///
 /// The slot grid is purely presentational; input is owned by a transparent
-/// [EditableText] (soft keyboard, paste, SMS autofill via
-/// [AutofillHints.oneTimeCode]) plus a key handler for hardware keyboards —
-/// digits overwrite the active slot and advance, backspace clears in place or
-/// steps back, arrows/home/end move the caret. State is a fixed-length slot
-/// array, so clearing a middle slot leaves an in-place hole (the source's
-/// deliberate behavior).
+/// [EditableText] whose text is kept mirrored to the joined code. Soft-keyboard
+/// edits are diffed old->new and applied at the active slot, so digit-by-digit
+/// entry accumulates and advances and a delete steps back; paste / SMS autofill
+/// (via [AutofillHints.oneTimeCode]) spreads a whole code across the slots. A
+/// hardware-key handler covers physical keyboards (digits overwrite the active
+/// slot and advance, backspace clears in place or steps back, delete clears,
+/// arrows/home/end move the caret); the two paths guard each other so a desktop
+/// keystroke is never applied twice. State is a fixed-length slot array, so
+/// clearing a middle slot leaves an in-place hole (the source's deliberate
+/// behavior).
 ///
 /// Reduced motion drops the digit roll/blur, caret blink, shake and check
 /// scale-pop; fades and the drawn check remain instant.
@@ -124,6 +129,18 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
   final FocusNode _focusNode = FocusNode(debugLabel: 'BeuiOtpInput');
   bool _focused = false;
 
+  /// The last value we pushed into [_controller]; the baseline the native
+  /// [_onNativeChanged] diff compares against. Kept equal to [_joined].
+  String _lastSynced = '';
+
+  /// Set when [_onKey] applies a hardware keystroke; makes the paired native
+  /// [_onNativeChanged] echo (desktop IME re-reporting the same key) a no-op.
+  bool _hardwareGuard = false;
+
+  /// Set when [_onNativeChanged] applies a soft/IME edit; makes a paired
+  /// hardware [_onKey] echo (reverse dispatch order on desktop) a no-op.
+  bool _softGuard = false;
+
   /// Error shake — imperative so it replays on every transition into error.
   late final AnimationController _shake = AnimationController(
     vsync: this,
@@ -135,6 +152,7 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
   @override
   void initState() {
     super.initState();
+    _syncController();
     _focusNode.addListener(() {
       if (_focused != _focusNode.hasFocus) {
         setState(() => _focused = _focusNode.hasFocus);
@@ -145,6 +163,7 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
   @override
   void didUpdateWidget(BeuiOtpInput oldWidget) {
     super.didUpdateWidget(oldWidget);
+    final joinedBefore = _joined;
     // Pull in external value changes; skip the parent echoing our own
     // onChanged so internal holes survive the controlled round-trip.
     final value = widget.value;
@@ -155,6 +174,9 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
       _slots = _toSlots(_joined, widget.length);
       _active = _active.clamp(0, widget.length - 1);
     }
+    // Re-mirror the hidden field only when the digits actually moved, so a bare
+    // parent rebuild never disturbs an in-flight caret / IME composition.
+    if (_joined != joinedBefore) _syncController();
     if (widget.status == BeuiOtpStatus.error &&
         oldWidget.status != BeuiOtpStatus.error &&
         !MediaQuery.disableAnimationsOf(context)) {
@@ -179,6 +201,54 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
     if (!wasComplete && next.every((c) => c.isNotEmpty)) {
       widget.onComplete?.call(str);
     }
+    // Truth is the slot array; the hidden field always mirrors it so the native
+    // diff has a stable baseline and a soft-keyboard backspace has something to
+    // delete (an empty field would emit no change event).
+    _syncController();
+  }
+
+  /// Mirror the hidden [EditableText] to the joined code, caret at the end.
+  /// Programmatic assignment never re-invokes [_onNativeChanged], so this is
+  /// safe to call from inside that handler.
+  void _syncController() {
+    final text = _joined;
+    _lastSynced = text;
+    final selection = TextSelection.collapsed(offset: text.length);
+    if (_controller.text != text || _controller.selection != selection) {
+      _controller.value = TextEditingValue(text: text, selection: selection);
+    }
+  }
+
+  /// Source's backspace: a filled active slot clears in place; an empty one
+  /// steps back and clears there. Shared by the hardware and native paths.
+  void _backspace() {
+    if (_slots[_active].isNotEmpty) {
+      _clearSlot(_active);
+    } else if (_active > 0) {
+      _clearSlot(_active - 1);
+      setState(() => _active -= 1);
+    }
+  }
+
+  void _armHardwareGuard() {
+    _hardwareGuard = true;
+    _scheduleGuardClear();
+  }
+
+  void _armSoftGuard() {
+    _softGuard = true;
+    _scheduleGuardClear();
+  }
+
+  // A hardware key and its IME echo (or vice versa) land within one frame, so a
+  // post-frame reset bounds the guard to that pair without swallowing the next
+  // genuine event.
+  void _scheduleGuardClear() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _hardwareGuard = false;
+      _softGuard = false;
+    });
   }
 
   void _clearSlot(int index) {
@@ -213,22 +283,29 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
     }
     final key = event.logicalKey;
     final digit = _digitOf(key);
+    final mutatesText =
+        digit != null ||
+        key == LogicalKeyboardKey.backspace ||
+        key == LogicalKeyboardKey.delete;
+    // Reverse dispatch order on desktop: the IME's onChanged already applied
+    // this keystroke, so swallow the raw-key echo instead of double-applying.
+    if (mutatesText && _softGuard) {
+      _softGuard = false;
+      return KeyEventResult.handled;
+    }
     if (digit != null) {
       _insert(digit);
+      _armHardwareGuard();
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.backspace) {
-      // A filled slot clears in place; an empty slot steps back and clears.
-      if (_slots[_active].isNotEmpty) {
-        _clearSlot(_active);
-      } else if (_active > 0) {
-        _clearSlot(_active - 1);
-        setState(() => _active -= 1);
-      }
+      _backspace();
+      _armHardwareGuard();
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.delete) {
       _clearSlot(_active);
+      _armHardwareGuard();
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.arrowLeft) {
@@ -265,19 +342,68 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
     return null;
   }
 
-  /// Autofill / soft-keyboard path: the hidden field reports a whole value in
-  /// one shot; spread it across the slots from the start and keep the native
-  /// field empty (our state owns the digits).
+  /// Soft-keyboard / IME / paste / autofill path. The field text mirrors the
+  /// joined code, so diffing the last-synced value against the incoming one
+  /// isolates what the user did: a single digit typed (overwrite the active
+  /// slot and advance), a deletion (step back), or a multi-digit chunk pasted /
+  /// autofilled (spread across the slots). Re-syncs the mirror afterwards.
   void _onNativeChanged(String raw) {
     if (widget.disabled) return;
-    final digits = _sanitize(raw, widget.length);
-    if (digits.isNotEmpty) {
+    // Echo of a hardware keystroke the raw-key path already applied.
+    if (_hardwareGuard) {
+      _hardwareGuard = false;
+      _syncController();
+      return;
+    }
+    final old = _lastSynced;
+    if (raw == old) return;
+
+    // Common prefix / suffix (non-overlapping) bracket the edited span.
+    final maxShared = math.min(old.length, raw.length);
+    var prefix = 0;
+    while (prefix < maxShared && old[prefix] == raw[prefix]) {
+      prefix++;
+    }
+    var suffix = 0;
+    while (suffix < maxShared - prefix &&
+        old[old.length - 1 - suffix] == raw[raw.length - 1 - suffix]) {
+      suffix++;
+    }
+    final removed = old.substring(prefix, old.length - suffix);
+    final insertedRaw = raw.substring(prefix, raw.length - suffix);
+    final inserted = insertedRaw.replaceAll(RegExp(r'\D'), '');
+
+    if (removed.isEmpty && inserted.isEmpty) {
+      // Only stray non-digits changed (e.g. an IME space) — drop them.
+      _syncController();
+      return;
+    }
+
+    // A soft edit landed; a paired hardware echo (reverse order) must skip.
+    _armSoftGuard();
+
+    if (removed.isNotEmpty && insertedRaw.isEmpty) {
+      // Deletion — apply source backspace semantics per removed character.
+      for (var i = 0; i < removed.length; i++) {
+        _backspace();
+      }
+    } else if (removed.isEmpty && inserted.length == 1) {
+      // One digit typed: overwrite the active slot and advance.
+      _insert(inserted, from: _active);
+    } else if (old.isEmpty) {
+      // Whole code into an empty field — autofill: spread from the start.
+      _commit(_toSlots(inserted, widget.length));
+      setState(() => _active = inserted.length.clamp(0, widget.length - 1));
+    } else if (removed.isEmpty && inserted.length > 1) {
+      // A chunk pasted mid-field: spread forward from the active slot.
+      _insert(inserted, from: _active);
+    } else {
+      // Mixed replace / autocorrect: rebuild from the sanitized value.
+      final digits = _sanitize(raw, widget.length);
       _commit(_toSlots(digits, widget.length));
       setState(() => _active = digits.length.clamp(0, widget.length - 1));
     }
-    if (_controller.text.isNotEmpty) {
-      _controller.clear();
-    }
+    // _commit / _insert / _backspace each re-mirror via _syncController.
   }
 
   void _onTapDown(TapDownDetails details) {

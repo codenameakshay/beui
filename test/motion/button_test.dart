@@ -2,6 +2,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:motor/motor.dart';
@@ -21,6 +22,25 @@ Widget _wrap(Widget child, {bool reduce = false}) {
     theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
     home: Scaffold(body: body),
   );
+}
+
+Future<TestGesture> _hover(WidgetTester tester, Finder finder) async {
+  // FocusableActionDetector only reports a hover highlight (which drives the
+  // base button's 1.02 lift) when the focus highlight mode is `traditional` —
+  // i.e. a real pointer host. The widget-test binding defaults to a touch-first
+  // platform, so its highlight mode is `touch` and the callback never fires.
+  // Force `alwaysTraditional` to faithfully simulate the mouse/desktop host the
+  // hover lift targets, then restore the previous strategy.
+  final previousStrategy = FocusManager.instance.highlightStrategy;
+  FocusManager.instance.highlightStrategy =
+      FocusHighlightStrategy.alwaysTraditional;
+  addTearDown(() => FocusManager.instance.highlightStrategy = previousStrategy);
+  final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+  await gesture.addPointer(location: Offset.zero);
+  addTearDown(gesture.removePointer);
+  await gesture.moveTo(tester.getCenter(finder));
+  await tester.pumpAndSettle();
+  return gesture;
 }
 
 double _buttonScale(WidgetTester tester) {
@@ -183,6 +203,32 @@ void main() {
       expect(taps, 1);
       expect(find.byType(ClipRRect), findsWidgets);
     });
+
+    testWidgets('hover lifts to 1.02 by default', (tester) async {
+      await tester.pumpWidget(
+        _wrap(BeuiButton(onPressed: () {}, child: const Text('Go'))),
+      );
+      await tester.pumpAndSettle();
+      await _hover(tester, find.byType(BeuiButton));
+      expect(_buttonScale(tester), closeTo(1.02, 0.01));
+    });
+
+    testWidgets('enableHoverScale: false suppresses the hover lift', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiButton(
+            onPressed: () {},
+            enableHoverScale: false,
+            child: const Text('Go'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _hover(tester, find.byType(BeuiButton));
+      expect(_buttonScale(tester), closeTo(1.0, 0.001));
+    });
   });
 
   group('BeuiStatefulButton', () {
@@ -283,6 +329,17 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('Try again'), findsOneWidget);
+    });
+
+    testWidgets('does not lift on hover (source whileHover={undefined})', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(BeuiStatefulButton(label: 'Save', onPressed: () {})),
+      );
+      await tester.pumpAndSettle();
+      await _hover(tester, find.byType(BeuiButton));
+      expect(_buttonScale(tester), closeTo(1.0, 0.001));
     });
   });
 

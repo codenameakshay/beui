@@ -58,8 +58,15 @@ export 'src/motion/button/stateful.dart'
 export 'src/motion/checkbox.dart' show BeuiCheckbox, BeuiCheckboxStyle;
 export 'src/motion/command_palette.dart'
     show BeuiCommandItem, BeuiCommandPalette;
-export 'src/motion/create_menu.dart'
-    show BeuiCreateMenu, BeuiCreateMenuItem, beuiDefaultCreateMenuItems;
+export 'src/motion/infinite_masonry.dart'
+    show
+        BeuiInfiniteMasonry,
+        BeuiInfiniteMasonryKey,
+        BeuiMasonryItemBuilder,
+        BeuiMasonryKeyBuilder,
+        BeuiMasonrySizeEstimator;
+export 'src/motion/notification_stack.dart'
+    show BeuiNotificationStack, BeuiNotificationStackItem;
 export 'src/motion/cylinder_carousel.dart'
     show BeuiCylinderCarousel, BeuiCylinderCurve;
 export 'src/motion/dock.dart' show BeuiDock, BeuiDockItem;
@@ -125,11 +132,7 @@ export 'src/motion/prediction_market.dart'
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
 export 'src/motion/parallax.dart' show BeuiParallax, BeuiParallaxAxis;
 export 'src/motion/popover.dart'
-    show
-        BeuiPopover,
-        BeuiPopoverAlign,
-        BeuiPopoverSide,
-        BeuiPopoverTrigger;
+    show BeuiPopover, BeuiPopoverAlign, BeuiPopoverSide, BeuiPopoverTrigger;
 export 'src/motion/popover_morph.dart'
     show BeuiMorphPopover, BeuiMorphPopoverAlign, BeuiMorphPopoverSide;
 export 'src/motion/preview_rail.dart'

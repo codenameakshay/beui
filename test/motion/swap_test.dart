@@ -55,6 +55,29 @@ const _tokens = [
   ),
 ];
 
+// A from-token whose balance groups with a thousands separator when formatted
+// ("4,521") — the case the MAX affordance must set as a raw, parseable "4521".
+const _bigBalanceTokens = [
+  BeuiToken(
+    id: 'eth-usdc',
+    symbol: 'USDC',
+    name: 'USD Coin',
+    chainId: 'eth',
+    balance: 4521,
+    usd: 1,
+    popular: true,
+  ),
+  BeuiToken(
+    id: 'sol-sol',
+    symbol: 'SOL',
+    name: 'Solana',
+    chainId: 'sol',
+    balance: 10,
+    usd: 1,
+    popular: true,
+  ),
+];
+
 Widget _swap({bool reduce = false}) => _wrap(
   const BeuiMultiChainSwap(
     chains: _chains,
@@ -115,6 +138,33 @@ void main() {
       await tester.tap(find.text('MAX'));
       await tester.pump(const Duration(milliseconds: 600));
       expect(find.text('4'), findsOneWidget); // 2 ETH balance × rate 2
+    });
+
+    testWidgets('Max on a balance ≥ 1000 fills a parseable amount == balance', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const BeuiMultiChainSwap(
+            chains: _chains,
+            tokens: _bigBalanceTokens,
+            defaultFromId: 'eth-usdc',
+            defaultToId: 'sol-sol',
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 600));
+
+      await tester.tap(find.text('MAX'));
+      await tester.pump(const Duration(milliseconds: 600));
+
+      // Raw, ungrouped balance in the pay field — "4521", not "4,521".
+      expect(find.text('4521'), findsOneWidget);
+      // The amount parsed (not 0) and sits within balance, so the CTA is the
+      // swap action — the pre-fix "4,521" would fail double.tryParse, read as
+      // 0, and fall back to "Enter an amount".
+      expect(find.text('Enter an amount'), findsNothing);
+      expect(find.text('Swap USDC → SOL'), findsOneWidget);
     });
 
     testWidgets('action button states: empty, insufficient, ready', (

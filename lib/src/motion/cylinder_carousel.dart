@@ -275,9 +275,15 @@ class _BeuiCylinderCarouselState extends State<BeuiCylinderCarousel>
   }
 
   void _settle(double velocity) {
+    // Project how far the flick keeps rolling, then cap the *distance* at
+    // MAX_FLICK_ITEMS — matching the source's `clamp(velocity * FLICK_MOMENTUM,
+    // -6, 6)`. Clamping the raw velocity before scaling would cap travel at
+    // 6 × 0.45 = 2.7 items instead of the intended 6. The raw velocity is still
+    // handed to the settle spring unchanged so the roll leaves the finger at
+    // finger speed.
     final projected =
         _scroll.value +
-        velocity.clamp(-_maxFlickItems, _maxFlickItems) * _flickMomentum;
+        (velocity * _flickMomentum).clamp(-_maxFlickItems, _maxFlickItems);
     _glideTo(widget.snap ? projected.roundToDouble() : projected, velocity);
   }
 

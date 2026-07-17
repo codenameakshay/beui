@@ -231,5 +231,46 @@ void main() {
         moreOrLessEquals(-112, epsilon: 2),
       );
     });
+
+    testWidgets('a release flick carries momentum into the settle', (
+      tester,
+    ) async {
+      // Baseline: a slow (~zero-velocity) drag to the same release point opens
+      // the right rail and settles gently toward the -112 rest position.
+      await tester.pumpWidget(_wrap(BeuiSwipeableList(items: _items())));
+      await tester.pumpAndSettle();
+      await tester.drag(find.text('Design review'), const Offset(-90, 0));
+      await tester.pump(); // frame 0 of the settle (still at the release point)
+      await tester.pump(const Duration(milliseconds: 16));
+      final slowDx = _surfaceDx(tester, 'Design review');
+      await tester.pumpAndSettle();
+      expect(
+        _surfaceDx(tester, 'Design review'),
+        moreOrLessEquals(-112, epsilon: 2),
+      );
+
+      // Same release point, but a hard leftward fling injects release velocity
+      // (clamped to 1500). One frame into the settle the row is already further
+      // toward the -112 target — impossible from a zero-velocity settle.
+      await tester.pumpWidget(_wrap(BeuiSwipeableList(items: _items())));
+      await tester.pumpAndSettle();
+      await tester.fling(
+        find.text('Design review'),
+        const Offset(-90, 0),
+        3000,
+      );
+      await tester.pump(); // frame 0 of the settle
+      await tester.pump(const Duration(milliseconds: 16));
+      final fastDx = _surfaceDx(tester, 'Design review');
+      await tester.pumpAndSettle();
+      expect(
+        _surfaceDx(tester, 'Design review'),
+        moreOrLessEquals(-112, epsilon: 2),
+      );
+
+      // Momentum ⇒ at the same instant the flicked row has travelled further
+      // toward (more negative than) the target than the slow drag did.
+      expect(fastDx, lessThan(slowDx));
+    });
   });
 }

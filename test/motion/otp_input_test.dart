@@ -113,6 +113,58 @@ void main() {
       expect(find.text('7'), findsOneWidget);
     });
 
+    testWidgets(
+      'soft keyboard: sequential onChanged entry accumulates and advances',
+      (tester) async {
+        // The mobile keyboard reports the whole field on every keystroke via
+        // onChanged (no per-key preventDefault as on the web). Successive
+        // reports must accumulate — "1", then "12", then "123" — not overwrite
+        // slot 0 each time.
+        final changes = <String>[];
+        await tester.pumpWidget(
+          _wrap(BeuiOtpInput(length: 6, onChanged: changes.add)),
+        );
+        await _focus(tester);
+        final field = find.byType(EditableText);
+        await tester.enterText(field, '1');
+        await tester.pump();
+        await tester.enterText(field, '12');
+        await tester.pump();
+        await tester.enterText(field, '123');
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(changes, ['1', '12', '123']);
+        expect(find.text('1'), findsOneWidget);
+        expect(find.text('2'), findsOneWidget);
+        expect(find.text('3'), findsOneWidget);
+      },
+    );
+
+    testWidgets('soft keyboard: onChanged deletion steps back a slot', (
+      tester,
+    ) async {
+      final changes = <String>[];
+      await tester.pumpWidget(
+        _wrap(BeuiOtpInput(length: 6, onChanged: changes.add)),
+      );
+      await _focus(tester);
+      final field = find.byType(EditableText);
+      await tester.enterText(field, '1');
+      await tester.enterText(field, '12');
+      await tester.enterText(field, '123');
+      await tester.pump();
+      // Soft backspace: the mirrored field loses its last character.
+      await tester.enterText(field, '12');
+      // First frame applies the edit and starts the digit roll-out; the second
+      // advances past it so the cleared slot no longer renders the old digit.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(changes.last, '12');
+      expect(find.text('3'), findsNothing);
+      expect(find.text('2'), findsOneWidget);
+    });
+
     testWidgets('mask renders dots instead of digits', (tester) async {
       await tester.pumpWidget(_wrap(const BeuiOtpInput(length: 4, mask: true)));
       await _focus(tester);

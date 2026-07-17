@@ -440,21 +440,15 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
             child: Column(
               spacing: 16, // space-y-4
               children: [
-                // Outcome cells.
-                Row(
-                  spacing: 8, // gap-2
-                  children: [
-                    for (final outcome in widget.outcomes)
-                      Expanded(
-                        child: _OutcomeCell(
-                          outcome: outcome,
-                          selected: outcome.id == _selected.id,
-                          colors: colors,
-                          onTap: () =>
-                              _setOrder(order.copyWith(outcomeId: outcome.id)),
-                        ),
-                      ),
-                  ],
+                // Outcome cells: a single shared-layout pill glides between the
+                // selected cells (source `Tabs variant="pill"`).
+                _OutcomeCells(
+                  outcomes: widget.outcomes,
+                  selectedId: _selected.id,
+                  reduce: reduce,
+                  colors: colors,
+                  onTap: (outcome) =>
+                      _setOrder(order.copyWith(outcomeId: outcome.id)),
                 ),
                 // Amount card (shakes on invalid submit).
                 AnimatedBuilder(
@@ -612,6 +606,10 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
               child: SizedBox(
                 width: double.infinity,
+                // Source Connect button is `h-14` (56px), not the `lg` default
+                // (48px). The outer tight height enforces down onto BeuiButton's
+                // internal fixed-height box, so the surface renders at 56px.
+                height: 56,
                 child: BeuiStatefulButton(
                   label: 'Connect',
                   size: BeuiButtonSize.lg,
@@ -733,12 +731,133 @@ class _ModeTabsState extends State<_ModeTabs> {
   }
 }
 
-class _OutcomeCell extends StatelessWidget {
-  const _OutcomeCell({
+bool _isNoOutcome(String label) {
+  final l = label.toLowerCase();
+  return l == 'no' || l == 'down';
+}
+
+/// Glide spring for the outcome pill. The source renders the two outcome cells
+/// via `Tabs variant="pill"`, whose shared-layout indicator rides the Tabs
+/// `transition` spring (stiffness 170 · damping 24 · mass 1.2 — `tabs.tsx`),
+/// **not** `SPRING_LAYOUT`. This mirrors [BeuiTabs]' component-local
+/// `_indicatorSpring` verbatim so the outcome pill moves identically to every
+/// other pill in the library.
+const _outcomePillSpring = SpringMotion(
+  SpringDescription(mass: 1.2, stiffness: 170, damping: 24),
+);
+
+/// The two outcome cells with a single shared-layout pill that glides between
+/// the selected cell's rect on [_outcomePillSpring] — the Flutter analog of the
+/// source's `Tabs variant="pill"` (`layoutId` indicator). The pill takes the
+/// selected outcome's tint (red for No/Down, emerald otherwise) and is fully
+/// rounded (source `borderRadius: 9999`). Under reduced motion it snaps.
+class _OutcomeCells extends StatefulWidget {
+  const _OutcomeCells({
+    required this.outcomes,
+    required this.selectedId,
+    required this.reduce,
+    required this.colors,
+    required this.onTap,
+  });
+
+  final List<BeuiPredictionMarketOutcome> outcomes;
+  final String selectedId;
+  final bool reduce;
+  final BeuiColors colors;
+  final ValueChanged<BeuiPredictionMarketOutcome> onTap;
+
+  @override
+  State<_OutcomeCells> createState() => _OutcomeCellsState();
+}
+
+class _OutcomeCellsState extends State<_OutcomeCells> {
+  final GlobalKey _stackKey = GlobalKey();
+  final Map<String, GlobalKey> _keys = {};
+  Rect? _pill;
+
+  GlobalKey _keyFor(String id) => _keys.putIfAbsent(id, GlobalKey.new);
+
+  void _measure() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final cell =
+          _keys[widget.selectedId]?.currentContext?.findRenderObject()
+              as RenderBox?;
+      final stack = _stackKey.currentContext?.findRenderObject() as RenderBox?;
+      if (cell == null || stack == null || !cell.hasSize) return;
+      final rect = cell.localToGlobal(Offset.zero, ancestor: stack) & cell.size;
+      if (rect != _pill) setState(() => _pill = rect);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _measure();
+    final colors = widget.colors;
+
+    // Pill tint = the selected outcome's cell colour (source per-trigger
+    // `indicatorClassName`): red-500/… for No/Down, else emerald-500/20.
+    final selected =
+        widget.outcomes.where((o) => o.id == widget.selectedId).firstOrNull ??
+        widget.outcomes.first;
+    final pillColor = _isNoOutcome(selected.label)
+        ? const Color(0xFFEF4444).withValues(alpha: 0.12)
+        : const Color(0xFF10B981).withValues(alpha: 0.2);
+
+    return Stack(
+      key: _stackKey,
+      children: [
+        if (_pill != null)
+          MotionBuilder<Rect>(
+            value: _pill!,
+            motion: widget.reduce ? const NoMotion() : _outcomePillSpring,
+            converter: const RectMotionConverter(),
+            builder: (context, rect, _) {
+              final r = widget.reduce ? _pill! : rect;
+              return Positioned.fromRect(
+                rect: r,
+                child: IgnorePointer(
+                  child: DecoratedBox(
+                    // Stable handle so motion tests can read the pill's bounds.
+                    key: const ValueKey<String>('beui_prediction_market_pill'),
+                    decoration: BoxDecoration(
+                      color: pillColor,
+                      borderRadius: BorderRadius.circular(r.height / 2),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        Row(
+          spacing: 8, // gap-2
+          children: [
+            for (final outcome in widget.outcomes)
+              Expanded(
+                child: _OutcomeLabel(
+                  key: _keyFor(outcome.id),
+                  outcome: outcome,
+                  selected: outcome.id == widget.selectedId,
+                  colors: colors,
+                  onTap: () => widget.onTap(outcome),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// One outcome cell: the tappable label. The selected background is drawn by the
+/// shared gliding pill in [_OutcomeCells], so the cell itself is transparent.
+class _OutcomeLabel extends StatelessWidget {
+  const _OutcomeLabel({
     required this.outcome,
     required this.selected,
     required this.colors,
     required this.onTap,
+    super.key,
   });
 
   final BeuiPredictionMarketOutcome outcome;
@@ -748,18 +867,12 @@ class _OutcomeCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = outcome.label.toLowerCase();
-    final isNo = label == 'no' || label == 'down';
+    final isNo = _isNoOutcome(outcome.label);
     const emerald = Color(0xFF34D399); // emerald-400
     const red = Color(0xFFFCA5A5); // red-300
     final foreground = isNo
         ? (selected ? red : red.withValues(alpha: 0.55))
         : (selected ? emerald : colors.mutedForeground);
-    final background = selected
-        ? (isNo
-              ? const Color(0xFFEF4444).withValues(alpha: 0.12)
-              : const Color(0xFF10B981).withValues(alpha: 0.2))
-        : Colors.transparent;
 
     return Semantics(
       button: true,
@@ -769,21 +882,16 @@ class _OutcomeCell extends StatelessWidget {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: beuiEaseOut,
+          child: SizedBox(
             height: 56, // h-14
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(21.6), // rounded-[1.35rem]
-            ),
-            child: Text(
-              '${outcome.label} ${_formatCents(outcome.price)}',
-              style: TextStyle(
-                fontSize: 16, // text-base
-                fontWeight: FontWeight.w600,
-                color: foreground,
+            child: Center(
+              child: Text(
+                '${outcome.label} ${_formatCents(outcome.price)}',
+                style: TextStyle(
+                  fontSize: 16, // text-base
+                  fontWeight: FontWeight.w600,
+                  color: foreground,
+                ),
               ),
             ),
           ),

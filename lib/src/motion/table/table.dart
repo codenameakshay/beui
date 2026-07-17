@@ -12,6 +12,7 @@
 /// barrel; every `_`-prefixed helper below is internal.
 library;
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -334,9 +335,14 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   String? _dragKey;
   int? _dropIndex;
 
-  // Hover-activated menu handles.
+  // Hover-activated menu handles. A short (100ms) grace timer defers the
+  // deactivation on pointer-leave so the pointer can cross the gap from the
+  // header cell / row onto the floating handle without it unmounting (source
+  // `index.tsx`: `deactivateTimer` / `rowTimer`, `setTimeout(..., 100)`).
   String? _activeColumn;
   String? _activeRowId;
+  Timer? _columnDeactivateTimer;
+  Timer? _rowDeactivateTimer;
 
   final ScrollController _vScroll = ScrollController();
   bool _endReachedFired = false;
@@ -356,6 +362,8 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
 
   @override
   void dispose() {
+    _columnDeactivateTimer?.cancel();
+    _rowDeactivateTimer?.cancel();
     _vScroll
       ..removeListener(_onScroll)
       ..dispose();
@@ -391,10 +399,9 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   // (seeded from [BeuiTable.defaultSort]). Mirrors the selection pattern.
   BeuiSortState? get _sort => widget.sort ?? _internalSort;
 
-  Set<String> get _selected =>
-      widget.selectedRowIds != null
-          ? {...widget.selectedRowIds!}
-          : _internalSelected;
+  Set<String> get _selected => widget.selectedRowIds != null
+      ? {...widget.selectedRowIds!}
+      : _internalSelected;
 
   // ---- selection ------------------------------------------------------------
   void _commitSelection(Set<String> next) {
@@ -443,8 +450,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   List<_Entry<T>> _sortedRows(List<_Entry<T>> rows) {
     final s = _sort;
     if (s == null) return rows;
-    final column =
-        widget.columns.where((c) => c.key == s.key).firstOrNull;
+    final column = widget.columns.where((c) => c.key == s.key).firstOrNull;
     if (column == null) return rows;
     final copy = [...rows];
     copy.sort((a, b) {
@@ -454,7 +460,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
       if (av is num && bv is num) {
         cmp = av.compareTo(bv);
       } else {
-        cmp = av.toString().compareTo(bv.toString());
+        cmp = _localeCompare(av.toString(), bv.toString());
       }
       return s.direction == BeuiSortDirection.asc ? cmp : -cmp;
     });
@@ -518,10 +524,9 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     for (final column in _orderedColumns) {
       if (snapshot[column.key] == null) {
         final rect = _globalRectFor(column.key);
-        snapshot[column.key] =
-            rect != null
-                ? rect.width.roundToDouble()
-                : (column.width ?? widget.minColumnWidth);
+        snapshot[column.key] = rect != null
+            ? rect.width.roundToDouble()
+            : (column.width ?? widget.minColumnWidth);
       }
     }
     setState(() {
@@ -560,20 +565,39 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   }
 
   // ---- hover activation (menus) --------------------------------------------
+  //
+  // Activate cancels any pending deactivate (the pointer re-entered before the
+  // grace elapsed); deactivate arms a 100ms timer instead of clearing at once,
+  // so crossing the gap onto the handle — whose own MouseRegion re-activates —
+  // never blanks the handle mid-reach. Mirrors the source's setTimeout bridge.
   void _activateColumn(String key) {
+    _columnDeactivateTimer?.cancel();
+    _columnDeactivateTimer = null;
     if (_activeColumn != key) setState(() => _activeColumn = key);
   }
 
   void _deactivateColumn(String key) {
-    if (_activeColumn == key) setState(() => _activeColumn = null);
+    _columnDeactivateTimer?.cancel();
+    _columnDeactivateTimer = Timer(const Duration(milliseconds: 100), () {
+      if (mounted && _activeColumn == key) {
+        setState(() => _activeColumn = null);
+      }
+    });
   }
 
   void _activateRow(String id, int index) {
+    _rowDeactivateTimer?.cancel();
+    _rowDeactivateTimer = null;
     if (_activeRowId != id) setState(() => _activeRowId = id);
   }
 
   void _deactivateRow(String id) {
-    if (_activeRowId == id) setState(() => _activeRowId = null);
+    _rowDeactivateTimer?.cancel();
+    _rowDeactivateTimer = Timer(const Duration(milliseconds: 100), () {
+      if (mounted && _activeRowId == id) {
+        setState(() => _activeRowId = null);
+      }
+    });
   }
 
   // ---- infinite scroll ------------------------------------------------------
@@ -639,13 +663,13 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     final sortedRows = _sortedRows(rows);
     final cols = _orderedColumns;
 
-    final hasRowMenu =
-        widget.onInsertRow != null || widget.onDeleteRow != null;
+    final hasRowMenu = widget.onInsertRow != null || widget.onDeleteRow != null;
     final hasColumnMenu =
         widget.onInsertColumn != null || widget.onDeleteColumn != null;
 
     final allSelected =
-        sortedRows.isNotEmpty && sortedRows.every((r) => _selected.contains(r.id));
+        sortedRows.isNotEmpty &&
+        sortedRows.every((r) => _selected.contains(r.id));
     final someSelected = sortedRows.any((r) => _selected.contains(r.id));
 
     return Container(
@@ -693,7 +717,6 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
                         cols: cols,
                         resolved: resolved,
                         sortedRows: sortedRows,
-                        bodyHeight: bodyHeight,
                         hasRowMenu: hasRowMenu,
                       ),
                     ),
@@ -713,12 +736,14 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     required List<BeuiTableColumn<T>> cols,
     required Map<String, double> resolved,
     required List<_Entry<T>> sortedRows,
-    required double bodyHeight,
     required bool hasRowMenu,
   }) {
     if (sortedRows.isEmpty) {
       if (widget.loading) {
-        final count = math.max(1, (bodyHeight / widget.rowHeight).ceil());
+        // Fill the full viewport (header + body), matching the source's
+        // `Math.ceil(height / rowHeight)` — the previous `bodyHeight` subtracted
+        // the header row and rendered ~1 skeleton short.
+        final count = math.max(1, (widget.height / widget.rowHeight).ceil());
         return SingleChildScrollView(
           child: Column(
             children: [
@@ -811,12 +836,11 @@ class _DataRowState<T> extends State<_DataRow<T>> {
     final w = widget;
     final colors = w.colors;
 
-    final bg =
-        w.selected
-            ? colors.primary.withValues(alpha: 0.05)
-            : _hovered
-            ? colors.muted.withValues(alpha: 0.5)
-            : Colors.transparent;
+    final bg = w.selected
+        ? colors.primary.withValues(alpha: 0.05)
+        : _hovered
+        ? colors.muted.withValues(alpha: 0.5)
+        : Colors.transparent;
 
     Widget cells = Row(
       children: [
@@ -846,20 +870,18 @@ class _DataRowState<T> extends State<_DataRow<T>> {
     );
 
     Widget row = MouseRegion(
-      onEnter:
-          w.hasRowMenu
-              ? (_) {
-                setState(() => _hovered = true);
-                w.state._activateRow(w.entry.id, w.index);
-              }
-              : (_) => setState(() => _hovered = true),
-      onExit:
-          w.hasRowMenu
-              ? (_) {
-                setState(() => _hovered = false);
-                w.state._deactivateRow(w.entry.id);
-              }
-              : (_) => setState(() => _hovered = false),
+      onEnter: w.hasRowMenu
+          ? (_) {
+              setState(() => _hovered = true);
+              w.state._activateRow(w.entry.id, w.index);
+            }
+          : (_) => setState(() => _hovered = true),
+      onExit: w.hasRowMenu
+          ? (_) {
+              setState(() => _hovered = false);
+              w.state._deactivateRow(w.entry.id);
+            }
+          : (_) => setState(() => _hovered = false),
       child: Container(
         height: w.state.widget.rowHeight,
         decoration: BoxDecoration(
@@ -874,23 +896,32 @@ class _DataRowState<T> extends State<_DataRow<T>> {
 
     if (!w.hasRowMenu) return row;
 
-    // Left-edge row menu handle, revealed on hover (source RowHandle, rendered
-    // in-tree via BeuiOverlay so the popup escapes the scroll clip).
+    // Left-edge row menu handle. Mounted on the *active-row* flag (not the raw
+    // `_hovered`) so the 100ms deactivate grace keeps it alive while the pointer
+    // crosses from the row onto the handle. The handle carries its own opaque
+    // MouseRegion that re-activates the row on enter (cancelling the grace
+    // timer) and re-arms it on exit — reproducing the source RowHandle's
+    // onPointerEnter / onPointerLeave bridge so it is reliably reachable.
+    final active = w.state._activeRowId == w.entry.id;
     return Stack(
       clipBehavior: Clip.none,
       children: [
         row,
-        if (_hovered)
+        if (active)
           Positioned(
             left: -4,
             top: 0,
             bottom: 0,
             child: Center(
-              child: _RowHandle<T>(
-                state: w.state,
-                rowId: w.entry.id,
-                index: w.index,
-                colors: colors,
+              child: MouseRegion(
+                onEnter: (_) => w.state._activateRow(w.entry.id, w.index),
+                onExit: (_) => w.state._deactivateRow(w.entry.id),
+                child: _RowHandle<T>(
+                  state: w.state,
+                  rowId: w.entry.id,
+                  index: w.index,
+                  colors: colors,
+                ),
               ),
             ),
           ),
@@ -911,9 +942,8 @@ class _DataRowState<T> extends State<_DataRow<T>> {
         value: column.value?.call(w.entry.row) ?? '',
         colors: w.colors,
         align: column.align,
-        onChanged:
-            (next) =>
-                w.state.widget.onCellEdit?.call(w.entry.id, column.key, next),
+        onChanged: (next) =>
+            w.state.widget.onCellEdit?.call(w.entry.id, column.key, next),
       );
     }
     return Text(
@@ -923,6 +953,21 @@ class _DataRowState<T> extends State<_DataRow<T>> {
       style: TextStyle(color: w.colors.foreground, fontSize: 14),
     );
   }
+}
+
+/// Approximates JS `String.prototype.localeCompare` (source `use-column-sort`).
+///
+/// Dart ships no locale-aware collator, so string columns compare
+/// case-insensitively (lower-cased) with a code-unit tiebreak for stability —
+/// close enough that "apple" sorts before "Zebra", unlike a raw
+/// [String.compareTo] where every uppercase letter precedes every lowercase one.
+///
+/// Residual limitation vs `localeCompare`: no diacritic/accent folding and no
+/// locale-specific collation — e.g. "é" still orders by its code unit rather
+/// than next to "e".
+int _localeCompare(String a, String b) {
+  final cmp = a.toLowerCase().compareTo(b.toLowerCase());
+  return cmp != 0 ? cmp : a.compareTo(b);
 }
 
 Alignment _alignment(BeuiTableAlign align) => switch (align) {
