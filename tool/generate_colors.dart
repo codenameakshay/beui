@@ -294,6 +294,13 @@ final _brands = <Brand>[
 // near-white primaries so the picker dot reads (themes.ts THEMES.default).
 final _monoSwatch = oklch(40, 0, 0);
 
+// Semantic status colors (theme-css.ts `--success` / `--warning`). Defined once
+// in `:root` with no `.dark` override, so they are brightness-independent —
+// emitted as standalone consts, like the picker swatches. Read by input
+// (success check) and feedback-widget.
+final _success = oklch(70, 0.18, 155);
+final _warning = oklch(78, 0.18, 75);
+
 // Order of the 18 core + borderStrong fields, for emitting base consts.
 const _fieldOrder = <String>[
   'background',
@@ -393,6 +400,13 @@ void main() {
     _brandConst('_${id}Light', brand.light);
     _brandConst('_${id}Dark', brand.dark);
   }
+  _line();
+
+  _line(
+    '// ── Semantic status (brightness-independent) ─────────────────────',
+  );
+  _colConst('_success', _success);
+  _colConst('_warning', _warning);
   _line();
 
   _line(

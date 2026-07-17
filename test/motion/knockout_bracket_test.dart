@@ -1,0 +1,227 @@
+import 'package:beui/beui.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:motor/motor.dart';
+
+// A compact 4-round bracket (4 → 2 → 1 ... actually 4 rounds: 8→4→2→1) so paging
+// past the initial window is exercised. Each round holds half as many matches as
+// the one before it.
+const _a = BeuiTeam(name: 'Alpha', code: 'aa');
+const _b = BeuiTeam(name: 'Bravo', code: 'bb');
+
+BeuiMatch _m(String id, {BeuiMatchWinner winner = BeuiMatchWinner.home}) =>
+    BeuiMatch(
+      id: id,
+      date: 'Mon, 1 Jan',
+      status: BeuiMatchStatus.finished,
+      home: const BeuiMatchSide(team: _a, score: 2),
+      away: const BeuiMatchSide(team: _b, score: 1),
+      winner: winner,
+    );
+
+List<BeuiBracketRound> _bracket() => [
+  BeuiBracketRound(
+    name: 'Quarter-finals',
+    matches: [_m('qf1'), _m('qf2'), _m('qf3'), _m('qf4')],
+  ),
+  BeuiBracketRound(name: 'Semi-finals', matches: [_m('sf1'), _m('sf2')]),
+  const BeuiBracketRound(
+    name: 'Final',
+    matches: [
+      BeuiMatch(
+        id: 'f1',
+        date: 'Sun, 7 Jan',
+        time: '3:00 pm',
+        status: BeuiMatchStatus.upcoming,
+        home: BeuiMatchSide(),
+        away: BeuiMatchSide(),
+      ),
+    ],
+  ),
+];
+
+/// Sizes the test window large enough for the 3-column bracket (≈846×624) so
+/// the chevrons stay on-screen and hittable and nothing overflows the frame.
+/// Mirrors the gallery, which hosts each demo in a scrollable, roomy surface.
+void _sizeView(WidgetTester tester, {Size size = const Size(1400, 1000)}) {
+  tester.view.physicalSize = size;
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.reset);
+}
+
+Widget _app({
+  required List<BeuiBracketRound> rounds,
+  int initialRound = 0,
+  ValueChanged<int>? onRoundChanged,
+  bool reduce = false,
+}) {
+  Widget child = BeuiKnockoutBracket(
+    rounds: rounds,
+    initialRound: initialRound,
+    onRoundChanged: onRoundChanged,
+  );
+  if (reduce) {
+    final inner = child;
+    child = Builder(
+      builder: (context) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(disableAnimations: true),
+        child: inner,
+      ),
+    );
+  }
+  return MaterialApp(
+    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    home: Scaffold(body: child),
+  );
+}
+
+void main() {
+  group('BeuiKnockoutBracket paging', () {
+    testWidgets('next chevron advances the leftmost round', (tester) async {
+      _sizeView(tester);
+      int? changed;
+      await tester.pumpWidget(
+        _app(rounds: _bracket(), onRoundChanged: (v) => changed = v),
+      );
+      await tester.pumpAndSettle();
+
+      // initialRound 0 → maxPage = 3 - 2 = 1, so a Next chevron is present.
+      final next = find.bySemanticsLabel('Next round');
+      expect(next, findsOneWidget);
+      await tester.tap(next);
+      await tester.pumpAndSettle();
+      expect(changed, 1);
+
+      // At the last page the Next chevron is gone; Previous is shown.
+      expect(find.bySemanticsLabel('Next round'), findsNothing);
+      expect(find.bySemanticsLabel('Previous round'), findsOneWidget);
+    });
+
+    testWidgets('previous chevron steps back', (tester) async {
+      _sizeView(tester);
+      int? changed;
+      await tester.pumpWidget(
+        _app(
+          rounds: _bracket(),
+          initialRound: 1,
+          onRoundChanged: (v) => changed = v,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.bySemanticsLabel('Previous round'), findsOneWidget);
+      await tester.tap(find.bySemanticsLabel('Previous round'));
+      await tester.pumpAndSettle();
+      expect(changed, 0);
+    });
+
+    testWidgets('round titles render for every round', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pumpAndSettle();
+      expect(find.text('Quarter-finals'), findsOneWidget);
+      expect(find.text('Semi-finals'), findsOneWidget);
+      expect(find.text('Final'), findsOneWidget);
+    });
+  });
+
+  group('BeuiKnockoutBracket content', () {
+    testWidgets('finished match shows FT badge and scores', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pumpAndSettle();
+      expect(find.text('FT'), findsWidgets);
+      expect(find.text('2'), findsWidgets);
+    });
+
+    testWidgets('shootout renders penalties and an FT (P) badge', (
+      tester,
+    ) async {
+      _sizeView(tester);
+      final rounds = [
+        BeuiBracketRound(
+          name: 'Round of 2',
+          matches: const [
+            BeuiMatch(
+              id: 'p1',
+              date: 'Mon, 1 Jan',
+              status: BeuiMatchStatus.finished,
+              home: BeuiMatchSide(team: _a, score: 1, penalties: 4),
+              away: BeuiMatchSide(team: _b, score: 1, penalties: 3),
+              winner: BeuiMatchWinner.home,
+            ),
+          ],
+        ),
+      ];
+      await tester.pumpWidget(_app(rounds: rounds));
+      await tester.pumpAndSettle();
+      expect(find.text('FT (P)'), findsOneWidget);
+      expect(find.text('1 (4)'), findsOneWidget);
+      expect(find.text('1 (3)'), findsOneWidget);
+    });
+
+    testWidgets('upcoming TBD slot renders TBD label', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket(), initialRound: 1));
+      await tester.pumpAndSettle();
+      expect(find.text('TBD'), findsWidgets);
+    });
+  });
+
+  group('BeuiKnockoutBracket motion fidelity', () {
+    testWidgets('cards ride a spring (MotionBuilder) under normal motion', (
+      tester,
+    ) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pump();
+      expect(
+        find.descendant(
+          of: find.byType(BeuiKnockoutBracket),
+          matching: find.byType(MotionBuilder<Offset>),
+        ),
+        findsWidgets,
+      );
+    });
+
+    testWidgets('reduced motion snaps position (no offset MotionBuilder)', (
+      tester,
+    ) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket(), reduce: true));
+      await tester.pump();
+      expect(
+        find.descendant(
+          of: find.byType(BeuiKnockoutBracket),
+          matching: find.byType(MotionBuilder<Offset>),
+        ),
+        findsNothing,
+      );
+      // Opacity fade is preserved even under reduced motion.
+      expect(
+        find.descendant(
+          of: find.byType(BeuiKnockoutBracket),
+          matching: find.byType(AnimatedOpacity),
+        ),
+        findsWidgets,
+      );
+    });
+  });
+
+  testWidgets('rest-state golden', (tester) async {
+    _sizeView(tester);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        home: Scaffold(
+          body: Center(child: BeuiKnockoutBracket(rounds: _bracket())),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(BeuiKnockoutBracket),
+      matchesGoldenFile('goldens/beui_knockout_bracket.png'),
+    );
+  });
+}

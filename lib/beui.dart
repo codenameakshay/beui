@@ -37,6 +37,16 @@ export 'src/motion/animated_toast_stack.dart'
         BeuiToastController,
         BeuiToastPosition,
         BeuiToastStatus;
+export 'src/motion/availability_scheduler/availability_scheduler.dart'
+    show
+        BeuiAvailabilityScheduler,
+        BeuiDayAvailability,
+        BeuiDayKey,
+        BeuiTimeRange,
+        BeuiWeekAvailability,
+        beuiDefaultWeek;
+export 'src/motion/bloom_menu.dart'
+    show BeuiBloomMenu, BeuiBloomMenuItem, beuiDefaultBloomMenuItems;
 export 'src/motion/bottom_sheet.dart' show BeuiBottomSheet;
 export 'src/motion/bouncy_accordion.dart'
     show BeuiBouncyAccordion, BeuiBouncyAccordionItem;
@@ -50,6 +60,8 @@ export 'src/motion/command_palette.dart'
     show BeuiCommandItem, BeuiCommandPalette;
 export 'src/motion/create_menu.dart'
     show BeuiCreateMenu, BeuiCreateMenuItem, beuiDefaultCreateMenuItems;
+export 'src/motion/cylinder_carousel.dart'
+    show BeuiCylinderCarousel, BeuiCylinderCurve;
 export 'src/motion/dock.dart' show BeuiDock, BeuiDockItem;
 export 'src/motion/drawer.dart' show BeuiDrawer, BeuiDrawerSide;
 export 'src/motion/dynamic_island.dart'
@@ -61,6 +73,12 @@ export 'src/motion/expandable_action_bar.dart'
         BeuiExpandableActionBarSize;
 export 'src/motion/expandable_tabs.dart'
     show BeuiExpandableTabs, BeuiExpandableTabsItem;
+export 'src/motion/feedback_widget.dart'
+    show
+        BeuiFeedbackData,
+        BeuiFeedbackPosition,
+        BeuiFeedbackWidget,
+        BeuiFeedbackWidgetStyle;
 export 'src/motion/file_upload.dart'
     show
         BeuiFileUpload,
@@ -68,6 +86,17 @@ export 'src/motion/file_upload.dart'
         BeuiFileUploadStatus,
         BeuiFileUploadVariant,
         beuiFormatBytes;
+export 'src/motion/input.dart' show BeuiInput, BeuiInputStyle;
+export 'src/motion/knockout_bracket.dart'
+    show
+        BeuiBracketRound,
+        BeuiKnockoutBracket,
+        BeuiMatch,
+        BeuiMatchSide,
+        BeuiMatchStatus,
+        BeuiMatchWinner,
+        BeuiTeam;
+export 'src/motion/loader.dart' show BeuiLoader, BeuiLoaderVariant;
 export 'src/motion/magnetic.dart' show BeuiMagnetic;
 export 'src/motion/marquee.dart' show BeuiMarquee, BeuiMarqueeDirection;
 export 'src/motion/morphing_modal.dart'
@@ -95,11 +124,27 @@ export 'src/motion/prediction_market.dart'
 // Overlay foundation (tooltip, drawer, sheet, modal, command-palette, …).
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
 export 'src/motion/parallax.dart' show BeuiParallax, BeuiParallaxAxis;
+export 'src/motion/popover.dart'
+    show
+        BeuiPopover,
+        BeuiPopoverAlign,
+        BeuiPopoverSide,
+        BeuiPopoverTrigger;
+export 'src/motion/popover_morph.dart'
+    show BeuiMorphPopover, BeuiMorphPopoverAlign, BeuiMorphPopoverSide;
+export 'src/motion/preview_rail.dart'
+    show
+        BeuiPreviewRail,
+        BeuiPreviewRailItem,
+        BeuiPreviewRailOrientation,
+        BeuiPreviewRailStyle;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
 export 'src/motion/range_slider.dart' show BeuiRangeSlider, BeuiRangeSliderDual;
 export 'src/motion/scroll_progress.dart' show BeuiScrollProgress;
 export 'src/motion/scroll_reveal.dart' show BeuiScrollReveal;
 export 'src/motion/scroll_to.dart' show BeuiScrollTo;
+export 'src/motion/select.dart'
+    show BeuiMorphSelect, BeuiSelect, BeuiSelectOption;
 export 'src/motion/shader_background/shader_background.dart'
     show BeuiShaderBackground, BeuiShaderVariant;
 export 'src/motion/shared_layout_bg.dart' show BeuiSharedLayoutBg;
@@ -124,6 +169,14 @@ export 'src/motion/swap/swap.dart'
         beuiDefaultSwapChains,
         beuiDefaultSwapTokens;
 export 'src/motion/switch.dart' show BeuiSwitch, BeuiSwitchStyle;
+export 'src/motion/table/table.dart'
+    show
+        BeuiSortDirection,
+        BeuiSortState,
+        BeuiTable,
+        BeuiTableAlign,
+        BeuiTableColumn,
+        BeuiTableInsertPosition;
 export 'src/motion/tabs.dart' show BeuiTab, BeuiTabs, BeuiTabsVariant;
 export 'src/motion/text_cascade.dart' show BeuiTextCascade;
 export 'src/motion/text_reveal.dart' show BeuiTextReveal, BeuiTextRevealSplit;
@@ -137,3 +190,7 @@ export 'src/motion/theme_toggle.dart'
         BeuiThemeToggle;
 export 'src/motion/tilt_card.dart' show BeuiTiltCard;
 export 'src/motion/tooltip.dart' show BeuiTooltip, BeuiTooltipSide;
+export 'src/motion/wallet_card/wallet_card.dart'
+    show BeuiWalletAccount, BeuiWalletCard;
+export 'src/motion/wheel_picker.dart'
+    show BeuiWheelPicker, BeuiWheelPickerOption, BeuiWheelPickerStyle;
