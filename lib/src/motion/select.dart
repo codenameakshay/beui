@@ -78,6 +78,26 @@ enum _Placement { bottom, top }
 const int _staggerMs = 35; // source staggerChildren 0.035
 const int _itemDurMs = 300;
 
+// Gap opens 0.12s after height on the 0.6s enter clock — source `gapT` carries
+// `delay: 0.12` relative to the height spring. Below this fraction the gap holds
+// flush at 0; above it the bouncy gap spring runs.
+const double _gapDelayFraction = 0.12 / 0.6; // 0.2
+
+// Panel near-corner (the edge facing the trigger) uses the source's DEDICATED
+// corner transition `radiusT`, NOT the height spring: open eases 0→12 over 0.3s
+// (EASE_OUT) after a 0.14s delay; close eases 12→0 over 0.16s (EASE_OUT). Both
+// are normalized against the overlay enter/exit clocks (600ms / 300ms).
+double _panelNearOpen(double t) {
+  const delay = 0.14 / 0.6; // 0.2333…
+  const dur = 0.3 / 0.6; // 0.5
+  return _radius * beuiEaseOut.transform(((t - delay) / dur).clamp(0.0, 1.0));
+}
+
+double _panelNearClose(double t) {
+  const dur = 0.16 / 0.3; // 0.5333… (the exit clock `t` runs 1→0)
+  return _radius * (1 - beuiEaseOut.transform(((1 - t) / dur).clamp(0.0, 1.0)));
+}
+
 // ===========================================================================
 // BeuiSelect — the default (gooey accordion) dropdown.
 // ===========================================================================
@@ -155,6 +175,9 @@ class _BeuiSelectState extends State<BeuiSelect>
   double _panelHeight = 0;
   _Placement _placement = _Placement.bottom;
   int _active = -1;
+  bool _triggerHovered = false; // source hover:border-(--color-border-strong)
+  bool _triggerFocused =
+      false; // source focus-visible:ring-2 ring-foreground/20
 
   String? get _value => widget.value ?? _internalValue;
 
@@ -350,47 +373,72 @@ class _BeuiSelectState extends State<BeuiSelect>
     return Focus(
       canRequestFocus: widget.enabled,
       onKeyEvent: widget.enabled ? _onTriggerKey : null,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: widget.enabled ? () => _setOpen(!_open) : null,
-        child: AnimatedBuilder(
-          animation: _cornerCtrl,
-          builder: (context, _) {
-            final reduce = MediaQuery.disableAnimationsOf(context);
-            final near = reduce ? _radius : _cornerTween.evaluate(_cornerCtrl);
-            return Opacity(
-              opacity: widget.enabled ? 1 : 0.5,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: colors.background,
-                  border: Border.all(color: colors.border),
-                  borderRadius: _triggerCorners(near),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        label,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: selected
-                              ? colors.foreground
-                              : colors.mutedForeground,
+      onFocusChange: (f) => setState(() => _triggerFocused = f),
+      child: MouseRegion(
+        onEnter: widget.enabled
+            ? (_) => setState(() => _triggerHovered = true)
+            : null,
+        onExit: widget.enabled
+            ? (_) => setState(() => _triggerHovered = false)
+            : null,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.enabled ? () => _setOpen(!_open) : null,
+          child: AnimatedBuilder(
+            animation: _cornerCtrl,
+            builder: (context, _) {
+              final reduce = MediaQuery.disableAnimationsOf(context);
+              final near = reduce
+                  ? _radius
+                  : _cornerTween.evaluate(_cornerCtrl);
+              return Opacity(
+                opacity: widget.enabled ? 1 : 0.5,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: colors.background,
+                    // hover:border-(--color-border-strong)
+                    border: Border.all(
+                      color: _triggerHovered
+                          ? colors.borderStrong
+                          : colors.border,
+                    ),
+                    borderRadius: _triggerCorners(near),
+                    // focus-visible:ring-2 ring-foreground/20
+                    boxShadow: _triggerFocused
+                        ? [
+                            BoxShadow(
+                              color: colors.foreground.withValues(alpha: 0.2),
+                              spreadRadius: 2,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          label,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: selected
+                                ? colors.foreground
+                                : colors.mutedForeground,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    _Chevron(open: _open, color: colors.mutedForeground),
-                  ],
+                      const SizedBox(width: 8),
+                      _Chevron(open: _open, color: colors.mutedForeground),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -455,11 +503,13 @@ class _BeuiSelectState extends State<BeuiSelect>
                   clock: t,
                   hp: t,
                   gp: 0,
+                  near: _radius,
                 );
               }
               if (exiting) {
                 // Forward-eased collapse (its own targets, not a reversed
-                // spring): height and gap ease back to flush.
+                // spring): height and gap ease back to flush; the near corner
+                // squares off on its dedicated close transition (0.16s).
                 final hp = beuiEaseOut.transform(t);
                 return _panelBody(
                   colors: colors,
@@ -469,17 +519,22 @@ class _BeuiSelectState extends State<BeuiSelect>
                   clock: t,
                   hp: hp,
                   gp: t,
+                  near: _panelNearClose(t),
                 );
               }
-              // Enter: each channel springs from 0 on its own ticker (the
-              // `from: 0` makes it animate on mount, like the tooltip).
+              // Enter: height springs from 0 on its own ticker (the `from: 0`
+              // makes it animate on mount, like the tooltip); the gap is held
+              // flush until 0.12s (source `gapT` delay) then springs open on the
+              // bouncy gap spring; the near corner rounds on its dedicated
+              // transition (delay 0.14s, 0.3s), independent of the height.
               return SingleMotionBuilder(
                 value: 1.0,
                 from: 0.0,
                 motion: _heightSpring,
                 builder: (context, hp, _) {
+                  final gapTarget = t >= _gapDelayFraction ? 1.0 : 0.0;
                   return SingleMotionBuilder(
-                    value: 1.0,
+                    value: gapTarget,
                     from: 0.0,
                     motion: _gapSpring,
                     builder: (context, gp, _) {
@@ -491,6 +546,7 @@ class _BeuiSelectState extends State<BeuiSelect>
                         clock: t,
                         hp: hp,
                         gp: gp,
+                        near: _panelNearOpen(t),
                       );
                     },
                   );
@@ -511,9 +567,9 @@ class _BeuiSelectState extends State<BeuiSelect>
     required double clock,
     required double hp,
     required double gp,
+    required double near,
   }) {
     final gap = _gap * gp.clamp(0.0, 1.5);
-    final near = reduce ? _radius : (_radius * hp).clamp(0.0, _radius);
     final opacity = beuiEaseOut.transform(
       (clock * (600 / 180)).clamp(0.0, 1.0),
     );
@@ -955,7 +1011,12 @@ class _BeuiMorphSelectState extends State<BeuiMorphSelect> {
 
 /// The trigger / header row shared by [BeuiMorphSelect]'s closed trigger and
 /// open panel header, so the morph reads as one continuous surface.
-class _MorphRow extends StatelessWidget {
+///
+/// Stateful only so the **bordered** closed-trigger variant can mirror the
+/// source's trigger states — `hover:border-(--color-border-strong)` and
+/// `focus-visible:ring-2 ring-foreground/20`. The non-bordered header carries no
+/// border, hover or ring.
+class _MorphRow extends StatefulWidget {
   const _MorphRow({
     required this.label,
     required this.selected,
@@ -977,13 +1038,22 @@ class _MorphRow extends StatelessWidget {
   final KeyEventResult Function(FocusNode, KeyEvent)? onKeyEvent;
 
   @override
+  State<_MorphRow> createState() => _MorphRowState();
+}
+
+class _MorphRowState extends State<_MorphRow> {
+  bool _hovered = false;
+  bool _focused = false;
+
+  @override
   Widget build(BuildContext context) {
+    final colors = widget.colors;
     final reduce = MediaQuery.disableAnimationsOf(context);
     // When rendered as the open header, drive the chevron by the morph progress
     // so it rotates in lock-step with the grow; otherwise spring on toggle.
-    final chevron = open
+    final chevron = widget.open
         ? Transform.rotate(
-            angle: (reduce ? 1 : openProgress) * math.pi,
+            angle: (reduce ? 1 : widget.openProgress) * math.pi,
             child: Icon(
               LucideIcons.chevron_down,
               size: 16,
@@ -993,11 +1063,23 @@ class _MorphRow extends StatelessWidget {
         : _Chevron(open: false, color: colors.mutedForeground);
 
     Widget row = Container(
-      decoration: bordered
+      decoration: widget.bordered
           ? BoxDecoration(
               color: colors.background,
-              border: Border.all(color: colors.border),
+              // hover:border-(--color-border-strong)
+              border: Border.all(
+                color: _hovered ? colors.borderStrong : colors.border,
+              ),
               borderRadius: BorderRadius.circular(_radius),
+              // focus-visible:ring-2 ring-foreground/20
+              boxShadow: _focused
+                  ? [
+                      BoxShadow(
+                        color: colors.foreground.withValues(alpha: 0.2),
+                        spreadRadius: 2,
+                      ),
+                    ]
+                  : null,
             )
           : null,
       // Source ROW: px-3.5 py-2.5.
@@ -1006,11 +1088,13 @@ class _MorphRow extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              label,
+              widget.label,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 14,
-                color: selected ? colors.foreground : colors.mutedForeground,
+                color: widget.selected
+                    ? colors.foreground
+                    : colors.mutedForeground,
               ),
             ),
           ),
@@ -1020,15 +1104,27 @@ class _MorphRow extends StatelessWidget {
       ),
     );
 
-    if (onTap != null) {
-      row = GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
+    // Hover tracking only matters for the bordered trigger.
+    if (widget.bordered) {
+      row = MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
         child: row,
       );
     }
-    if (onKeyEvent != null) {
-      row = Focus(onKeyEvent: onKeyEvent, child: row);
+    if (widget.onTap != null) {
+      row = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: row,
+      );
+    }
+    if (widget.onKeyEvent != null) {
+      row = Focus(
+        onKeyEvent: widget.onKeyEvent,
+        onFocusChange: (f) => setState(() => _focused = f),
+        child: row,
+      );
     }
     return row;
   }
@@ -1174,11 +1270,18 @@ class _OptionColumn extends StatelessWidget {
 }
 
 // Trigger corner keyframe sequences for the default variant.
-// Open: 12 → 0 (pinch flat, panel attached) → hold → 0 → 12 (round back) as the
-// panel separates. Close: 12 → 0 → 12.
+// Open: source keyframes `[12,0,12]` with `times:[0,0.4,1]`, ease EASE_OUT over
+// 0.6s — the near edge eases 12→0 across the first 40% as the panel attaches,
+// then 0→12 across the last 60% as it separates (no flat hold). Close: 12→0→12
+// with `times:[0,0.5,1]` (50/50) over 0.42s.
 final Animatable<double> _openCornerSeq = TweenSequence<double>([
-  TweenSequenceItem(tween: Tween(begin: _radius, end: 0), weight: 5),
-  TweenSequenceItem(tween: ConstantTween<double>(0), weight: 35),
+  TweenSequenceItem(
+    tween: Tween(
+      begin: _radius,
+      end: 0.0,
+    ).chain(CurveTween(curve: beuiEaseOut)),
+    weight: 40,
+  ),
   TweenSequenceItem(
     tween: Tween(
       begin: 0.0,

@@ -139,11 +139,6 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
   double? _internal;
   bool _grabbed = false;
 
-  /// Continuous finger position (px) during an active drag, so the thumb + fill
-  /// follow the pointer EXACTLY (no glide lag). Null off-drag — then the position
-  /// glides to the snapped step. The reported value still snaps.
-  double? _dragX;
-
   bool get _controlled => widget.value != null;
 
   double get _current =>
@@ -187,32 +182,21 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
     if (isEnd) widget.onChangeEnd?.call(snapped);
   }
 
-  /// Clamps a finger x to the thumb-centre travel range.
-  double _clampThumbX(double dx, double trackWidth) =>
-      _clamp(dx, _thumbWidth / 2, trackWidth - _thumbWidth / 2);
-
   void _onPanStart(DragStartDetails details, double trackWidth) {
     if (!widget.enabled) return;
     _focus.requestFocus();
-    setState(() {
-      _grabbed = true;
-      _dragX = _clampThumbX(details.localPosition.dx, trackWidth);
-    });
+    setState(() => _grabbed = true);
     _commit(_valueFromDx(details.localPosition.dx, trackWidth));
   }
 
   void _onPanUpdate(DragUpdateDetails details, double trackWidth) {
     if (!widget.enabled || !_grabbed) return;
-    setState(() => _dragX = _clampThumbX(details.localPosition.dx, trackWidth));
     _commit(_valueFromDx(details.localPosition.dx, trackWidth));
   }
 
   void _onPanEnd() {
     if (!_grabbed) return;
-    setState(() {
-      _grabbed = false;
-      _dragX = null; // release → glide to the snapped step
-    });
+    setState(() => _grabbed = false);
     _commit(_current, isEnd: true);
   }
 
@@ -281,17 +265,23 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
               height: _thumbHeight,
               decoration: BoxDecoration(
                 color: colors.foreground,
-                borderRadius: BorderRadius.circular(3), // `rounded-sm`
-                boxShadow: const [
-                  BoxShadow(
+                borderRadius: BorderRadius.circular(
+                  2,
+                ), // `rounded-sm` (0.125rem)
+                boxShadow: [
+                  const BoxShadow(
                     color: Color(0x1A000000),
                     blurRadius: 4,
                     offset: Offset(0, 1),
                   ),
+                  // focus-visible:ring-4 ring-foreground/30 — a 4px ring hugging
+                  // the thumb (Tailwind rings paint OUTSIDE the box).
+                  if (isFocused)
+                    BoxShadow(
+                      color: colors.foreground.withValues(alpha: 0.3),
+                      spreadRadius: 4,
+                    ),
                 ],
-                border: isFocused
-                    ? Border.all(color: colors.ring, width: 2)
-                    : null,
               ),
             ),
           );
@@ -382,14 +372,14 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
           );
         }
 
-        // During an active drag the handle is placed DIRECTLY at the pointer —
-        // no spring — so it follows the finger exactly. Off a drag (keyboard,
-        // and the settle after release) it glides onto the snapped step.
+        // The handle is driven off the SNAPPED value (`current` → targetX)
+        // through SPRING_GLIDE, so during a drag it detents live between steps
+        // and eases onto each tick — matching the source, where `pos` always
+        // springs toward the snapped percent (the raw pointer x is never bound
+        // to the thumb). Reduced motion places it at the step with no glide.
         final Widget body;
-        if (_dragX != null && enabled) {
-          body = buildAt(_clampThumbX(_dragX!, trackWidth));
-        } else if (glideMotion is NoMotion) {
-          body = buildAt(targetX); // reduced motion
+        if (glideMotion is NoMotion) {
+          body = buildAt(targetX); // reduced motion — snap, no glide
         } else {
           body = SingleMotionBuilder(
             value: targetX,
@@ -522,14 +512,7 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
   _Thumb? _dragging;
   _Thumb? _grabbed;
 
-  /// Continuous finger position (px) while a thumb is being dragged, so the
-  /// dragged handle (and the band edge) follow the pointer exactly.
-  double? _dragX;
-
   bool get _controlled => widget.values != null;
-
-  double _clampThumbX(double dx, double trackWidth) =>
-      _clamp(dx, _thumbWidth / 2, trackWidth - _thumbWidth / 2);
 
   double get _step => (widget.max - widget.min) / widget.divisions;
 
@@ -601,7 +584,6 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
     setState(() {
       _dragging = thumb;
       _grabbed = thumb;
-      _dragX = _clampThumbX(details.localPosition.dx, trackWidth);
     });
     (thumb == _Thumb.start ? _startFocus : _endFocus).requestFocus();
     _commit(thumb, value);
@@ -609,7 +591,6 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
 
   void _onPanUpdate(DragUpdateDetails details, double trackWidth) {
     if (!widget.enabled || _dragging == null) return;
-    setState(() => _dragX = _clampThumbX(details.localPosition.dx, trackWidth));
     _commit(_dragging!, _valueFromDx(details.localPosition.dx, trackWidth));
   }
 
@@ -619,7 +600,6 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
     setState(() {
       _dragging = null;
       _grabbed = null;
-      _dragX = null; // release → glide to the snapped step
     });
     final cur = _current;
     _commit(thumb, thumb == _Thumb.start ? cur.start : cur.end, isEnd: true);
@@ -695,17 +675,23 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
               height: _thumbHeight,
               decoration: BoxDecoration(
                 color: colors.foreground,
-                borderRadius: BorderRadius.circular(3),
-                boxShadow: const [
-                  BoxShadow(
+                borderRadius: BorderRadius.circular(
+                  2,
+                ), // `rounded-sm` (0.125rem)
+                boxShadow: [
+                  const BoxShadow(
                     color: Color(0x1A000000),
                     blurRadius: 4,
                     offset: Offset(0, 1),
                   ),
+                  // focus-visible:ring-4 ring-foreground/30 — a 4px ring hugging
+                  // the thumb (Tailwind rings paint OUTSIDE the box).
+                  if (isFocused)
+                    BoxShadow(
+                      color: colors.foreground.withValues(alpha: 0.3),
+                      spreadRadius: 4,
+                    ),
                 ],
-                border: isFocused
-                    ? Border.all(color: colors.ring, width: 2)
-                    : null,
               ),
             ),
           );
@@ -783,8 +769,8 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
         );
 
         // The band + both thumbs read the same live x per side, so the fill
-        // always spans exactly between the handles. The dragged side follows the
-        // pointer (near-instant); the other side glides to its snapped step.
+        // always spans exactly between the handles. Each side glides to its
+        // snapped step under SPRING_GLIDE (the dragged side detents live).
         Widget buildBand(double sx, double ex) => Stack(
           clipBehavior: Clip.none,
           children: [
@@ -814,14 +800,11 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
           ],
         );
 
-        final draggingSide = (_dragX != null && enabled) ? _dragging : null;
-
-        // Resolves one side's x: the dragged side is placed DIRECTLY at the
-        // pointer (exact, no glide); the other side glides to its snapped step.
-        Widget side(_Thumb which, double snapped, Widget Function(double x) b) {
-          if (draggingSide == which) {
-            return b(_clampThumbX(_dragX!, trackWidth));
-          }
+        // Resolves one side's x: both sides are driven off the SNAPPED value
+        // through SPRING_GLIDE (consistent with the single-thumb port), so the
+        // dragged side detents live between steps as it glides onto each tick.
+        // Reduced motion places the side at its step with no glide.
+        Widget side(double snapped, Widget Function(double x) b) {
           if (glideMotion is NoMotion) return b(snapped); // reduced motion
           return SingleMotionBuilder(
             value: snapped,
@@ -831,9 +814,8 @@ class _BeuiRangeSliderDualState extends State<BeuiRangeSliderDual> {
         }
 
         final Widget body = side(
-          _Thumb.start,
           centerX(cur.start),
-          (sx) => side(_Thumb.end, centerX(cur.end), (ex) => buildBand(sx, ex)),
+          (sx) => side(centerX(cur.end), (ex) => buildBand(sx, ex)),
         );
 
         return GestureDetector(
