@@ -34,9 +34,7 @@ Future<TestGesture> _hover(WidgetTester tester, Finder finder) async {
   final previousStrategy = FocusManager.instance.highlightStrategy;
   FocusManager.instance.highlightStrategy =
       FocusHighlightStrategy.alwaysTraditional;
-  addTearDown(
-    () => FocusManager.instance.highlightStrategy = previousStrategy,
-  );
+  addTearDown(() => FocusManager.instance.highlightStrategy = previousStrategy);
   final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
   await gesture.addPointer(location: Offset.zero);
   addTearDown(gesture.removePointer);

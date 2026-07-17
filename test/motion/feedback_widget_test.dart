@@ -19,9 +19,7 @@ Widget _app({
       height: 460,
       child: Stack(
         children: [
-          Positioned.fill(
-            child: BeuiFeedbackWidget(onSubmit: onSubmit),
-          ),
+          Positioned.fill(child: BeuiFeedbackWidget(onSubmit: onSubmit)),
         ],
       ),
     ),
@@ -93,9 +91,7 @@ void main() {
     });
 
     testWidgets('a thrown submit routes to the retry view', (tester) async {
-      await tester.pumpWidget(
-        _app(onSubmit: (_) => throw StateError('nope')),
-      );
+      await tester.pumpWidget(_app(onSubmit: (_) => throw StateError('nope')));
 
       await tester.tap(_trigger());
       await tester.pump(const Duration(milliseconds: 500));
@@ -216,9 +212,7 @@ void main() {
               width: 200,
               height: 160,
               child: const Stack(
-                children: [
-                  Positioned.fill(child: BeuiFeedbackWidget()),
-                ],
+                children: [Positioned.fill(child: BeuiFeedbackWidget())],
               ),
             ),
           ),

@@ -132,11 +132,7 @@ export 'src/motion/prediction_market.dart'
 export 'src/overlay/beui_overlay.dart' show BeuiOverlay, BeuiOverlayBuilder;
 export 'src/motion/parallax.dart' show BeuiParallax, BeuiParallaxAxis;
 export 'src/motion/popover.dart'
-    show
-        BeuiPopover,
-        BeuiPopoverAlign,
-        BeuiPopoverSide,
-        BeuiPopoverTrigger;
+    show BeuiPopover, BeuiPopoverAlign, BeuiPopoverSide, BeuiPopoverTrigger;
 export 'src/motion/popover_morph.dart'
     show BeuiMorphPopover, BeuiMorphPopoverAlign, BeuiMorphPopoverSide;
 export 'src/motion/preview_rail.dart'
