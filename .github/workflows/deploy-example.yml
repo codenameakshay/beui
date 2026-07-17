@@ -1,0 +1,77 @@
+name: Deploy example to GitHub Pages
+
+# Builds the Flutter web version of the `example/` component explorer and
+# publishes it to GitHub Pages. Runs on every push to `main`, so the live
+# gallery redeploys automatically whenever main changes. Can also be run
+# manually from the Actions tab.
+on:
+  push:
+    branches: [main]
+    # Skip runs that can't change the deployed site (docs, tests, etc.).
+    paths:
+      - "lib/**"
+      - "shaders/**"
+      - "assets/**"
+      - "example/**"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - ".github/workflows/deploy-example.yml"
+  workflow_dispatch:
+
+# Grant the GITHUB_TOKEN the permissions the Pages deployment needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment; let an in-progress run finish so a
+# half-published site is never left live.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.44.4
+          cache: true
+
+      - name: Configure Pages
+        # `enablement: true` turns on GitHub Pages (source: GitHub Actions) on
+        # the first run so the very first deploy succeeds without manual setup.
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Install dependencies
+        working-directory: example
+        run: flutter pub get
+
+      - name: Build web
+        working-directory: example
+        # base-href must match the project-page path: https://<user>.github.io/beui/
+        run: flutter build web --release --base-href "/beui/"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: example/build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
