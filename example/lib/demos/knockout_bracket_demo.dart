@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 /// Gallery route for [BeuiKnockoutBracket] — a full World Cup knockout stage
 /// (Round of 32 → Final) that pages between rounds with the REFLOW glide.
-Widget knockoutBracketDemo(BuildContext context) => const _KnockoutBracketDemo();
+Widget knockoutBracketDemo(BuildContext context) =>
+    const _KnockoutBracketDemo();
 
 class _KnockoutBracketDemo extends StatelessWidget {
   const _KnockoutBracketDemo();

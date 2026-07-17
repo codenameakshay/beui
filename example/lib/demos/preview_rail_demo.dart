@@ -41,7 +41,9 @@ const _items = <BeuiPreviewRailItem>[
   BeuiPreviewRailItem(
     id: 'sponsors',
     label: 'Sponsors',
-    description: Text('Support continued development of the open-source library.'),
+    description: Text(
+      'Support continued development of the open-source library.',
+    ),
   ),
   BeuiPreviewRailItem(
     id: 'pro',
@@ -51,12 +53,16 @@ const _items = <BeuiPreviewRailItem>[
   BeuiPreviewRailItem(
     id: 'examples',
     label: 'Examples',
-    description: Text('See components composed in practical interface patterns.'),
+    description: Text(
+      'See components composed in practical interface patterns.',
+    ),
   ),
   BeuiPreviewRailItem(
     id: 'templates',
     label: 'Templates',
-    description: Text('Start from polished layouts built with beUI components.'),
+    description: Text(
+      'Start from polished layouts built with beUI components.',
+    ),
   ),
   BeuiPreviewRailItem(
     id: 'guides',
@@ -71,7 +77,9 @@ const _items = <BeuiPreviewRailItem>[
   BeuiPreviewRailItem(
     id: 'github',
     label: 'GitHub',
-    description: Text('View the source, report issues, and contribute improvements.'),
+    description: Text(
+      'View the source, report issues, and contribute improvements.',
+    ),
   ),
   BeuiPreviewRailItem(
     id: 'about',

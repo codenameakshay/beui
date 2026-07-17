@@ -27,8 +27,30 @@ class _Person {
   final int mrr;
 }
 
-const _first = ['Ava', 'Leo', 'Mia', 'Kai', 'Zoe', 'Eli', 'Noa', 'Ren', 'Ivy', 'Jude'];
-const _last = ['Cole', 'Frost', 'Vale', 'Reyes', 'Okafor', 'Sato', 'Lund', 'Marsh', 'Bose', 'Quinn'];
+const _first = [
+  'Ava',
+  'Leo',
+  'Mia',
+  'Kai',
+  'Zoe',
+  'Eli',
+  'Noa',
+  'Ren',
+  'Ivy',
+  'Jude',
+];
+const _last = [
+  'Cole',
+  'Frost',
+  'Vale',
+  'Reyes',
+  'Okafor',
+  'Sato',
+  'Lund',
+  'Marsh',
+  'Bose',
+  'Quinn',
+];
 const _roles = ['Owner', 'Admin', 'Member', 'Viewer'];
 const _statuses = ['active', 'invited', 'suspended'];
 
@@ -120,7 +142,11 @@ class _TableDemoState extends State<_TableDemo> {
         ),
         child: Text(
           status[0].toUpperCase() + status.substring(1),
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: tint),
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: tint,
+          ),
         ),
       );
     }
@@ -138,7 +164,12 @@ class _TableDemoState extends State<_TableDemo> {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
-      BeuiTableColumn(key: 'email', header: 'Email', flex: 1.8, value: (r) => r.email),
+      BeuiTableColumn(
+        key: 'email',
+        header: 'Email',
+        flex: 1.8,
+        value: (r) => r.email,
+      ),
       BeuiTableColumn(
         key: 'role',
         header: 'Role',
@@ -193,8 +224,18 @@ class _TableDemoState extends State<_TableDemo> {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
-      BeuiTableColumn(key: 'email', header: 'Email', width: 220, value: (r) => r.email),
-      BeuiTableColumn(key: 'role', header: 'Role', width: 110, value: (r) => r.role),
+      BeuiTableColumn(
+        key: 'email',
+        header: 'Email',
+        width: 220,
+        value: (r) => r.email,
+      ),
+      BeuiTableColumn(
+        key: 'role',
+        header: 'Role',
+        width: 110,
+        value: (r) => r.role,
+      ),
       BeuiTableColumn(
         key: 'status',
         header: 'Status',
@@ -225,8 +266,12 @@ class _TableDemoState extends State<_TableDemo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _section(colors, 'Data', '${_people.length} rows'
-                  '${_selected.isEmpty ? '' : ' · ${_selected.length} selected'}'),
+              _section(
+                colors,
+                'Data',
+                '${_people.length} rows'
+                    '${_selected.isEmpty ? '' : ' · ${_selected.length} selected'}',
+              ),
               const SizedBox(height: 8),
               BeuiTable<_Person>(
                 data: _people,
@@ -246,8 +291,11 @@ class _TableDemoState extends State<_TableDemo> {
               ),
 
               const SizedBox(height: 32),
-              _section(colors, 'Editable',
-                  'Click a cell to edit. Hover the row/column edges for insert & delete.'),
+              _section(
+                colors,
+                'Editable',
+                'Click a cell to edit. Hover the row/column edges for insert & delete.',
+              ),
               const SizedBox(height: 8),
               BeuiTable<Map<String, String>>(
                 data: _rows,
@@ -300,9 +348,16 @@ class _TableDemoState extends State<_TableDemo> {
               ),
 
               const SizedBox(height: 32),
-              _section(colors, 'Async',
-                  '${_asyncRows.length} loaded · '
-                  '${_asyncLoading ? 'Loading…' : asyncDone ? 'All loaded' : 'Scroll for more'}'),
+              _section(
+                colors,
+                'Async',
+                '${_asyncRows.length} loaded · '
+                    '${_asyncLoading
+                        ? 'Loading…'
+                        : asyncDone
+                        ? 'All loaded'
+                        : 'Scroll for more'}',
+              ),
               const SizedBox(height: 8),
               BeuiTable<_Person>(
                 data: _asyncRows,

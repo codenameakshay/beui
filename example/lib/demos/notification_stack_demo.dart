@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 /// Gallery route for [BeuiNotificationStack] — a collapsible stacked-inbox card
 /// that fans open on hover/focus/tap and rolls its footer label.
-Widget notificationStackDemo(BuildContext context) => const _NotificationStackDemo();
+Widget notificationStackDemo(BuildContext context) =>
+    const _NotificationStackDemo();
 
 class _NotificationStackDemo extends StatefulWidget {
   const _NotificationStackDemo();
