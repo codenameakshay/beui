@@ -1,10 +1,12 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
-import 'button/base.dart';
+import 'button/base.dart'; // BeuiButtonVariant / BeuiButtonSize (public API)
 
 /// The transition used when an [BeuiActionSwapText] / [BeuiActionSwapIcon] /
 /// [BeuiActionSwapButton] swaps its content — the Flutter port of the source's
@@ -17,8 +19,10 @@ import 'button/base.dart';
 ///   blur. Framer's built-in `easeInOut` (cubic-bezier(0.42, 0, 0.58, 1)) over
 ///   200ms (source `BLUR_TRANSITION`).
 /// * [roll] — the old content rolls up and out while the new rolls up from
-///   below into place, each under a `blur(6px)`. 240ms `beuiEaseOut` enter,
-///   180ms Framer-`easeInOut` exit (source `ROLL_TRANSITION`).
+///   below into place, each under a `blur(3px)`. The enter rides the
+///   [beuiSpringSwap] spring token (source `ROLL_TRANSITION = SPRING_SWAP`);
+///   the exit is a 140ms `beuiEaseOut` tween (source `ROLL_EXIT_TRANSITION =
+///   {duration: 0.14, ease: EASE_OUT}`).
 /// * [cascade] — a per-letter slot roll (text only): each glyph rides the
 ///   [beuiSpringSwap] token, released staggered left-to-right, reusing the
 ///   StatefulButton's `_CascadeText` mechanic. Non-text content (icons) and
@@ -36,17 +40,24 @@ enum BeuiActionSwapVariant {
 
 // Source timing tokens (action-swap.tsx).
 const _blurDuration = Duration(milliseconds: 200); // BLUR_TRANSITION 0.2s
-const _rollEnterDuration = Duration(milliseconds: 240); // ROLL_TRANSITION 0.24s
-const _rollExitDuration = Duration(milliseconds: 180); // roll exit 0.18s
+// The roll ENTER rides the [beuiSpringSwap] spring (source `ROLL_TRANSITION =
+// SPRING_SWAP`), not this linear window — this is just the AnimatedSwitcher
+// forward duration that keeps the entering child mounted while the spring
+// settles; the visible enter motion is spring-driven.
+const _rollEnterDuration = Duration(milliseconds: 240);
+const _rollExitDuration = Duration(
+  milliseconds: 140,
+); // ROLL_EXIT_TRANSITION 0.14s
 const _widthDuration = Duration(milliseconds: 220); // inline `width 220ms`
 
-// Blur radii. Framer `blur(Npx)` ≈ sigma N/2 in Flutter's ImageFilter.
+// Blur radii. Framer `blur(Npx)` → sigma N/2 in Flutter's ImageFilter.
 const _swapBlurSigma = 4.0; // SWAP_BLUR blur(8px)
-const _rollBlurSigma = 3.0; // ROLL_BLUR blur(6px)
+const _rollBlurSigma = 1.5; // ROLL_BLUR blur(3px)
 
 /// Framer Motion's built-in `"easeInOut"` — cubic-bezier(0.42, 0, 0.58, 1).
-/// The source's `BLUR_TRANSITION.ease` and the roll variant's exit ease use
-/// this built-in, NOT the design-token `EASE_IN_OUT` ([beuiEaseInOut]).
+/// The source's `BLUR_TRANSITION.ease` uses this built-in, NOT the design-token
+/// `EASE_IN_OUT` ([beuiEaseInOut]). (The roll variant's exit uses the
+/// design-token `EASE_OUT` / [beuiEaseOut] per `ROLL_EXIT_TRANSITION`.)
 const _framerEaseInOut = Cubic(0.42, 0, 0.58, 1);
 
 /// The [BeuiActionSwapVariant] that drives single-element content (icons, and
@@ -235,8 +246,10 @@ class BeuiActionSwapIcon extends StatelessWidget {
 /// Controlled + uncontrolled, mirroring the source: pass [value] + [onChanged]
 /// to control it, or omit [value] for internal state seeded from
 /// [defaultValue]. With [cycle] on (default) each tap advances to the next item
-/// and wraps. Press feedback uses [beuiSpringPress] via the underlying
-/// [BeuiButton].
+/// and wraps. It is a standalone pressable (the source's `ActionSwapButton` is
+/// its own `motion.button`, not the base button): press feedback scales to 0.97
+/// on the [beuiSpringPress] token (source `whileTap={{ scale: 0.97 }}`) with no
+/// hover lift, and its geometry mirrors the source `SIZE_CLASS` (icon = 40px).
 class BeuiActionSwapButton extends StatefulWidget {
   /// Creates an action-swap button.
   const BeuiActionSwapButton({
@@ -265,10 +278,10 @@ class BeuiActionSwapButton extends StatefulWidget {
   /// Called with the next id (and item) when the button advances.
   final void Function(String id, BeuiActionSwapItem item)? onChanged;
 
-  /// Visual style of the underlying [BeuiButton].
+  /// Visual style ([BeuiButtonVariant]).
   final BeuiButtonVariant variant;
 
-  /// Size of the underlying [BeuiButton].
+  /// Size ([BeuiButtonSize]). Drives the source `SIZE_CLASS` geometry.
   final BeuiButtonSize size;
 
   /// The swap transition.
@@ -290,6 +303,9 @@ class BeuiActionSwapButton extends StatefulWidget {
 
 class _BeuiActionSwapButtonState extends State<BeuiActionSwapButton> {
   late String _internal = widget.defaultValue ?? widget.items.first.id;
+  bool _pressed = false;
+  bool _hovered = false;
+  bool _focusVisible = false;
 
   String get _current => widget.value ?? _internal;
 
@@ -311,9 +327,17 @@ class _BeuiActionSwapButtonState extends State<BeuiActionSwapButton> {
   @override
   Widget build(BuildContext context) {
     if (widget.items.isEmpty) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final colors =
+        theme.extension<BeuiColors>() ??
+        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final spec = _ActionButtonSizeSpec.of(widget.size);
+    final square = widget.size == BeuiButtonSize.icon;
+    final palette = _actionButtonPalette(widget.variant, colors, _hovered);
+
     final active = widget.items[_activeIndex];
     final hasIcon = widget.items.any((it) => it.icon != null);
-
     final accessibleLabel =
         active.semanticLabel ?? (_iconOnly ? active.label : null);
 
@@ -325,7 +349,7 @@ class _BeuiActionSwapButtonState extends State<BeuiActionSwapButton> {
           variant: widget.animation,
         ),
       if (hasIcon && active.icon != null && !_iconOnly)
-        const SizedBox(width: 8),
+        SizedBox(width: spec.gap),
       if (!_iconOnly)
         BeuiActionSwapText(
           value: active.id,
@@ -334,7 +358,19 @@ class _BeuiActionSwapButtonState extends State<BeuiActionSwapButton> {
         ),
     ];
 
-    Widget content = Row(mainAxisSize: MainAxisSize.min, children: children);
+    // Source: `font-medium`, icon `h-4 w-4` (16px), `transition-colors`.
+    Widget content = AnimatedDefaultTextStyle(
+      duration: const Duration(milliseconds: 150),
+      style: TextStyle(
+        fontSize: spec.textSize,
+        fontWeight: FontWeight.w500,
+        color: palette.text,
+      ),
+      child: IconTheme.merge(
+        data: IconThemeData(color: palette.text, size: 16),
+        child: Row(mainAxisSize: MainAxisSize.min, children: children),
+      ),
+    );
     if (accessibleLabel != null) {
       content = Semantics(
         label: accessibleLabel,
@@ -343,13 +379,181 @@ class _BeuiActionSwapButtonState extends State<BeuiActionSwapButton> {
       );
     }
 
-    return BeuiButton(
-      onPressed: _advance,
-      variant: widget.variant,
-      size: widget.size,
-      child: content,
+    final radius = BorderRadius.circular(spec.height / 2); // rounded-full
+
+    Widget box = SizedBox(
+      height: spec.height,
+      width: square ? spec.height : null,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.ease, // transition-colors
+        padding: square ? null : EdgeInsets.symmetric(horizontal: spec.padX),
+        decoration: BoxDecoration(
+          color: palette.background,
+          border: palette.border == null
+              ? null
+              : Border.all(color: palette.border!),
+          borderRadius: radius,
+        ),
+        child: Center(widthFactor: 1, child: content),
+      ),
+    );
+
+    // Keyboard focus ring (a11y), matching the base button — the shadow is
+    // toggled, not the widget, so focus changes never restructure the subtree.
+    box = DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: radius,
+        boxShadow: _focusVisible
+            ? [
+                BoxShadow(color: colors.ring, spreadRadius: 3),
+                BoxShadow(color: colors.background, spreadRadius: 1),
+              ]
+            : null,
+      ),
+      child: box,
+    );
+
+    // Press feedback: scale to 0.97 on the beuiSpringPress token (source
+    // `whileTap={{ scale: 0.97 }}` + `transition={SPRING_PRESS}`). No hover
+    // lift — the source button never scales up on hover.
+    final scaleTarget = reduce ? 1.0 : (_pressed ? 0.97 : 1.0);
+
+    Widget scaled = SingleMotionBuilder(
+      value: scaleTarget,
+      motion: beuiSpringPress,
+      builder: (context, scale, child) =>
+          Transform.scale(scale: scale, child: child),
+      child: Listener(
+        onPointerDown: (_) => setState(() => _pressed = true),
+        onPointerUp: (_) {
+          if (_pressed) setState(() => _pressed = false);
+        },
+        onPointerCancel: (_) {
+          if (_pressed) setState(() => _pressed = false);
+        },
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _advance,
+          child: box,
+        ),
+      ),
+    );
+
+    return Semantics(
+      button: true,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              _advance();
+              return null;
+            },
+          ),
+        },
+        onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+        onShowHoverHighlight: (v) => setState(() => _hovered = v),
+        child: scaled,
+      ),
     );
   }
+}
+
+/// Colours for the standalone action-swap button — the port of the source's
+/// `VARIANT_CLASS`. No hover *lift*, but the `transition-colors` hover tints are
+/// kept.
+class _ActionButtonPalette {
+  const _ActionButtonPalette({
+    required this.background,
+    required this.text,
+    this.border,
+  });
+  final Color background;
+  final Color text;
+  final Color? border;
+}
+
+_ActionButtonPalette _actionButtonPalette(
+  BeuiButtonVariant variant,
+  BeuiColors c,
+  bool hovered,
+) {
+  switch (variant) {
+    case BeuiButtonVariant.primary:
+      return _ActionButtonPalette(
+        background: hovered ? c.primary.withValues(alpha: 0.9) : c.primary,
+        text: c.primaryForeground,
+      );
+    case BeuiButtonVariant.secondary:
+      return _ActionButtonPalette(
+        background: c.card,
+        text: c.foreground,
+        border: c.border,
+      );
+    case BeuiButtonVariant.ghost:
+      return _ActionButtonPalette(
+        background: hovered
+            ? c.primary.withValues(alpha: 0.05)
+            : Colors.transparent,
+        text: hovered ? c.foreground : c.mutedForeground,
+      );
+    case BeuiButtonVariant.outline:
+      return _ActionButtonPalette(
+        background: hovered
+            ? c.primary.withValues(alpha: 0.05)
+            : Colors.transparent,
+        text: c.foreground,
+        border: c.border,
+      );
+  }
+}
+
+/// Geometry for the standalone action-swap button — the port of the source's
+/// `SIZE_CLASS`. Note `icon` is a 40px square (`h-10 w-10`), NOT the base
+/// button's 32px icon.
+class _ActionButtonSizeSpec {
+  const _ActionButtonSizeSpec({
+    required this.height,
+    required this.gap,
+    required this.padX,
+    required this.textSize,
+  });
+  final double height;
+  final double gap;
+  final double padX;
+  final double textSize;
+
+  static _ActionButtonSizeSpec of(BeuiButtonSize size) => switch (size) {
+    BeuiButtonSize.sm => const _ActionButtonSizeSpec(
+      height: 32,
+      gap: 6,
+      padX: 12,
+      textSize: 12,
+    ),
+    BeuiButtonSize.md => const _ActionButtonSizeSpec(
+      height: 40,
+      gap: 8,
+      padX: 16,
+      textSize: 14,
+    ),
+    BeuiButtonSize.lg => const _ActionButtonSizeSpec(
+      height: 48,
+      gap: 10,
+      padX: 20,
+      textSize: 16,
+    ),
+    BeuiButtonSize.icon => const _ActionButtonSizeSpec(
+      height: 40,
+      gap: 0,
+      padX: 0,
+      textSize: 14,
+    ),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -385,18 +589,19 @@ class _AnimatedWidth extends StatelessWidget {
 // Shared single-element transition (blur / roll)
 // ---------------------------------------------------------------------------
 
-/// The per-child transition for the single-element paths. Driven by a *linear*
-/// [AnimatedSwitcher] animation (so the blur stays visible across the whole
-/// motion); the fade/scale/translate are eased internally. Under reduced
-/// motion it collapses to a movement-free crossfade (source's `reduce` branch).
+/// The per-child transition for the single-element paths (blur / roll). Under
+/// reduced motion it collapses to a movement-free crossfade (source's `reduce`
+/// branch).
 ///
-/// [AnimatedSwitcher] runs the same builder for entering (animation 0→1) and
-/// exiting (1→0) children. Direction is read off the status **inside** the
-/// builder, per frame — capturing it once is unreliable: when the exiting
-/// child's transition is first built its controller can still report
-/// `completed` (the reverse hasn't started), which would mis-detect the old
-/// child as entering and roll it the wrong way (out the bottom instead of the
-/// top). During the visible motion the status is reliably forward / reverse.
+/// * **blur** — a blurred cross-fade (scale + fade + blur) driven by the
+///   *linear* [AnimatedSwitcher] animation, so the blur stays visible across the
+///   whole motion. It is eased internally with Framer's built-in easeInOut,
+///   symmetric on enter and exit (source `BLUR_TRANSITION`).
+/// * **roll** — delegated to [_RollSwapTransition]. Enter rides the
+///   [beuiSpringSwap] spring while exit is a 140ms [beuiEaseOut] tween; the two
+///   curves differ (spring vs tween), so a single shared builder can't express
+///   both. The dedicated widget latches direction off the AnimatedSwitcher
+///   controller instead of guessing it per frame.
 Widget _swapTransition(
   Widget child,
   Animation<double> animation,
@@ -407,40 +612,29 @@ Widget _swapTransition(
 }) {
   if (reduce) return FadeTransition(opacity: animation, child: child);
 
+  if (core == BeuiActionSwapVariant.roll) {
+    // Icon travel is ±12px (source `ICON_VARIANTS.roll` y: ±12); text rolls by
+    // ~115% of the line box (source `TEXT_VARIANTS.roll` y: ±90%, approximated
+    // by [textTravel]).
+    return _RollSwapTransition(
+      animation: animation,
+      travel: isIcon ? 12.0 : textTravel,
+      child: child,
+    );
+  }
+
+  // blur
   return AnimatedBuilder(
     animation: animation,
     builder: (context, _) {
-      final entering = animation.status != AnimationStatus.reverse;
       final t = animation.value; // linear 0..1
-      late final double opacity;
-      late final double blur;
-      var dy = 0.0;
-      var scale = 1.0;
-
-      if (core == BeuiActionSwapVariant.blur) {
-        // Source BLUR_TRANSITION ease: Framer's built-in easeInOut.
-        final eased = _framerEaseInOut.transform(t);
-        opacity = eased;
-        blur = (1 - t) * _swapBlurSigma;
-        // text scales 0.94→1; icon scales 0.25→1 (source ICON_VARIANTS).
-        final from = isIcon ? 0.25 : 0.94;
-        scale = from + (1 - from) * eased;
-      } else {
-        // roll
-        opacity = entering
-            ? beuiEaseOut.transform(t)
-            : t; // exit fade is linear-ish under easeInOut switcher
-        blur = (1 - t) * _rollBlurSigma;
-        // text: enter from +115%, exit to -115% of the line box (source
-        // TEXT_VARIANTS.roll, scaled by font size); icon: ±16px.
-        final travel = isIcon ? 16.0 : textTravel;
-        // Enter eases EASE_OUT; exit eases Framer's built-in easeInOut.
-        final eased = entering
-            ? beuiEaseOut.transform(t)
-            : _framerEaseInOut.transform(t);
-        // entering rises from below (+); exiting rises up and out the top (−).
-        dy = entering ? (1 - eased) * travel : (1 - eased) * -travel;
-      }
+      // Source BLUR_TRANSITION ease: Framer's built-in easeInOut.
+      final eased = _framerEaseInOut.transform(t);
+      final opacity = eased;
+      final blur = (1 - t) * _swapBlurSigma;
+      // text scales 0.94→1; icon scales 0.25→1 (source ICON_VARIANTS).
+      final from = isIcon ? 0.25 : 0.94;
+      final scale = from + (1 - from) * eased;
 
       Widget result = child;
       if (blur > 0.05) {
@@ -456,12 +650,135 @@ Widget _swapTransition(
       if (scale != 1.0) {
         result = Transform.scale(scale: scale, child: result);
       }
-      if (dy != 0.0) {
-        result = Transform.translate(offset: Offset(0, dy), child: result);
-      }
       return Opacity(opacity: opacity.clamp(0.0, 1.0), child: result);
     },
   );
+}
+
+/// The roll single-element transition. [AnimatedSwitcher] only ever *builds* a
+/// transition for an entering child (its controller starts at 0, forward), so
+/// every instance begins life entering: it springs its content up from [travel]
+/// to rest on the [beuiSpringSwap] token (source `ROLL_TRANSITION =
+/// SPRING_SWAP`), fading and de-blurring as it settles — the same
+/// spring-progress pattern the cascade path uses.
+///
+/// When the child later becomes outgoing the switcher reverses its controller; a
+/// status listener latches that and swaps to the exit: a 140ms [beuiEaseOut]
+/// tween that rolls the content up and out the top while it fades and blurs
+/// (source `ROLL_EXIT_TRANSITION = {duration: 0.14, ease: EASE_OUT}`). Latching
+/// once on the reverse status is reliable because a fresh entry is never
+/// exiting — no per-frame direction guessing needed.
+class _RollSwapTransition extends StatefulWidget {
+  const _RollSwapTransition({
+    required this.animation,
+    required this.travel,
+    required this.child,
+  });
+
+  final Animation<double> animation;
+  final double travel;
+  final Widget child;
+
+  @override
+  State<_RollSwapTransition> createState() => _RollSwapTransitionState();
+}
+
+class _RollSwapTransitionState extends State<_RollSwapTransition> {
+  bool _exiting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.animation.addStatusListener(_onStatus);
+    // A fresh entry starts forward; guard the rare case it is already reversing.
+    _exiting = widget.animation.status == AnimationStatus.reverse;
+  }
+
+  void _onStatus(AnimationStatus status) {
+    if (status == AnimationStatus.reverse && !_exiting) {
+      setState(() => _exiting = true);
+    }
+  }
+
+  @override
+  void didUpdateWidget(_RollSwapTransition old) {
+    super.didUpdateWidget(old);
+    if (old.animation != widget.animation) {
+      old.animation.removeStatusListener(_onStatus);
+      widget.animation.addStatusListener(_onStatus);
+      _exiting = widget.animation.status == AnimationStatus.reverse;
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.animation.removeStatusListener(_onStatus);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final travel = widget.travel;
+
+    if (!_exiting) {
+      // Enter: spring the content up from +travel to rest (beuiSpringSwap).
+      // Opacity and blur ride the spring's own progress.
+      return SingleMotionBuilder(
+        value: 0.0,
+        from: travel,
+        motion: beuiSpringSwap,
+        builder: (context, dy, child) {
+          final p = (1 - dy / travel).clamp(0.0, 1.0);
+          Widget result = child!;
+          final sigma = (1 - p) * _rollBlurSigma;
+          if (sigma > 0.05) {
+            result = ImageFiltered(
+              imageFilter: ImageFilter.blur(
+                sigmaX: sigma,
+                sigmaY: sigma,
+                tileMode: TileMode.decal,
+              ),
+              child: result,
+            );
+          }
+          return Opacity(
+            opacity: p,
+            child: Transform.translate(offset: Offset(0, dy), child: result),
+          );
+        },
+        child: widget.child,
+      );
+    }
+
+    // Exit: a 140ms EASE_OUT tween driven by the reverse animation (1→0). The
+    // content rolls up and out the top (−travel) while it fades and blurs.
+    return AnimatedBuilder(
+      animation: widget.animation,
+      builder: (context, child) {
+        final t = widget.animation.value; // 1 → 0 during reverse
+        final q = beuiEaseOut.transform(1 - t); // eased exit progress 0 → 1
+        final dy = -travel * q;
+        final opacity = 1 - q;
+        final sigma = _rollBlurSigma * q;
+        Widget result = child!;
+        if (sigma > 0.05) {
+          result = ImageFiltered(
+            imageFilter: ImageFilter.blur(
+              sigmaX: sigma,
+              sigmaY: sigma,
+              tileMode: TileMode.decal,
+            ),
+            child: result,
+          );
+        }
+        return Opacity(
+          opacity: opacity.clamp(0.0, 1.0),
+          child: Transform.translate(offset: Offset(0, dy), child: result),
+        );
+      },
+      child: widget.child,
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------

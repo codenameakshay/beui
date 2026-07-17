@@ -39,11 +39,12 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
     with SingleTickerProviderStateMixin {
   // Source CASCADE_STAGGER 0.025s; enter rides SPRING_SWAP (released per
   // letter), exit is 0.16s EASE_OUT at half the enter stagger; ROLL_BLUR is
-  // blur(6px) → sigma 3; the slot width morphs over 220ms EASE_OUT.
+  // blur(3px) → sigma 1.5; the slot width morphs over 220ms EASE_OUT.
   static const int _staggerMs = 25;
   static const int _enterMs = 360; // covers the SPRING_SWAP settle
   static const int _exitMs = 160; // source exit duration (0.16s)
-  static const double _blur = 3; // blur(6px) → sigma 6/2 = 3
+  static const double _blur =
+      1.5; // source ROLL_BLUR blur(3px) → sigma 3/2 = 1.5
   static const _widthDuration = Duration(milliseconds: 220);
 
   late final AnimationController _controller;
