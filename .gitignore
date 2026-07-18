@@ -40,7 +40,10 @@ example/pubspec.lock
 
 # IDE
 .idea/
-.vscode/
+# Ignore per-user VS Code state, but keep the shared FVM SDK path in
+# settings.json tracked (it's the only committed .vscode file).
+.vscode/*
+!.vscode/settings.json
 *.iml
 
 # macOS

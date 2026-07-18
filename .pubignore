@@ -1,2 +1,41 @@
-# Repo/CI metadata — not part of the published package.
+# ─────────────────────────────────────────────────────────────────────────────
+# .pubignore — controls what `dart pub publish` ships.
+#
+# IMPORTANT: pub uses this file INSTEAD OF .gitignore in the same directory
+# (see dart.dev/go/pubignore). So it must re-list the build/dev artifacts the
+# root .gitignore hides — otherwise they leak into the published archive (with
+# .gitignore ignored, `build/` alone adds ~49 MB) — plus the repo-only files
+# that shouldn't ship at all.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Build & pub output (mirrors .gitignore)
+build/
+.dart_tool/
+.pub-cache/
+.pub/
+coverage/
+pubspec.lock
+*.log
+
+# IDE / editor
+.idea/
+.vscode/
+*.iml
+.history
+
+# FVM (local Flutter version cache)
+.fvm/
+.fvmrc
+
+# OS cruft
+.DS_Store
+
+# Repo & CI metadata + internal agent/porting docs — not useful to consumers.
+# (Relative links to these in README resolve to the GitHub repo on pub.dev.)
 .github/
+docs/
+CLAUDE.md
+
+# Dev-only: the test suite + goldens and the build-time color generator.
+test/
+tool/
