@@ -273,8 +273,10 @@ export 'src/motion/message_scroller.dart'
         BeuiMessageScrollerState;
 export 'src/motion/prompt_input.dart'
     show BeuiPromptAction, BeuiPromptInput, BeuiPromptModel;
-export 'src/motion/todo_list.dart' show BeuiTodoItem, BeuiTodoList;
-export 'src/motion/code_block.dart' show BeuiCodeBlock;
+export 'src/motion/todo_list.dart'
+    show BeuiTodoItem, BeuiTodoItemStatus, BeuiTodoList;
+export 'src/motion/code_block.dart'
+    show BeuiCodeBlock, BeuiCodeBlockStatus, BeuiCodeLanguage;
 export 'src/motion/approval_card.dart' show BeuiApprovalCard;
 export 'src/motion/file_diff.dart' show BeuiFileDiff;
 export 'src/motion/tool_result.dart' show BeuiToolResult;
@@ -282,7 +284,21 @@ export 'src/motion/streaming_response.dart' show BeuiStreamingResponse;
 export 'src/motion/image_generation.dart' show BeuiImageGeneration;
 export 'src/motion/tool_approval.dart' show BeuiToolApproval;
 export 'src/motion/citations.dart' show BeuiCitations;
-export 'src/motion/agent_activity.dart' show BeuiAgentActivity;
+export 'src/motion/agent_activity.dart'
+    show
+        BeuiAgentActivity,
+        BeuiAgentActivityContentType,
+        BeuiAgentActivityItem,
+        BeuiAgentActivitySearch,
+        BeuiAgentActivityStatus,
+        BeuiAgentActivityStep,
+        BeuiAgentActivityText,
+        BeuiAgentActivityTool,
+        BeuiAgentActivityTrace,
+        BeuiAgentSearchResult,
+        BeuiAgentStepStatus,
+        BeuiAgentTraceKind,
+        beuiFormatAgentActivityDuration;
 export 'src/motion/loading_states.dart'
     show
         BeuiAgentProgress,
