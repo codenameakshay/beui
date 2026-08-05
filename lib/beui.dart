@@ -239,9 +239,31 @@ export 'src/motion/context_menu.dart'
         BeuiContextMenuTone;
 export 'src/motion/center_morph_modal.dart' show BeuiCenterMorphModal;
 
-// Agents — newly scaffolded (ported in a later pass).
-export 'src/motion/message_bubble.dart' show BeuiMessageBubble;
-export 'src/motion/message.dart' show BeuiMessage, BeuiMessageGroup;
+// Agents — message primitives + bubble surface (ported); others scaffolded.
+export 'src/motion/message.dart'
+    show
+        BeuiMessage,
+        BeuiMessageAvatar,
+        BeuiMessageBubbleSide,
+        BeuiMessageContent,
+        BeuiMessageFooter,
+        BeuiMessageFrom,
+        BeuiMessageGroup,
+        BeuiMessageHeader,
+        BeuiMessageMarker,
+        BeuiMessageScope,
+        BeuiMessageSideScope,
+        BeuiMessageSpacing,
+        BeuiMessageTyping;
+export 'src/motion/message_bubble.dart'
+    show
+        BeuiMessageBubble,
+        BeuiMessageBubbleAlign,
+        BeuiMessageBubbleCollapsible,
+        BeuiMessageBubbleContent,
+        BeuiMessageBubbleGroup,
+        BeuiMessageBubbleSpacing,
+        BeuiMessageBubbleVariant;
 export 'src/motion/message_scroller.dart' show BeuiMessageScroller;
 export 'src/motion/prompt_input.dart' show BeuiPromptInput;
 export 'src/motion/todo_list.dart' show BeuiTodoItem, BeuiTodoList;
