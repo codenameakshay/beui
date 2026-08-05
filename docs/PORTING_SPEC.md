@@ -220,7 +220,11 @@ If no Lucide-for-Flutter package proves acceptable (stale, unmaintained, or lice
 
 ## 4. Component catalog
 
-The source registry now has **three categories** — `motion` (37 primitives, shown as "Components"), `blocks` (18 composed product widgets), and `agents` (17 AI/chat interfaces, added late in the cycle). The homepage advertises "101 components" counting variants, but the registry `categories` + `components` index at **`https://beui.dev/r`** is the authoritative catalog — port every entry listed there. Names below are the source slugs — see the React → Flutter porting conventions section for the Dart naming rule (`Beui` prefix; many collide with Flutter built-ins).
+The source registry now has **three categories** — `motion` (37 primitives, shown as "Components"), `blocks` (18 composed product widgets), and `agents` (17 AI/chat interfaces, added late in the cycle). Names below are the source slugs — see the React → Flutter porting conventions section for the Dart naming rule (`Beui` prefix; many collide with Flutter built-ins).
+
+> **Two levels of catalog — port against the second one.** The index at **`https://beui.dev/r`** lists **72 entries**, one per *doc page*. That is the page catalog, not the component catalog: a single page frequently ships several independently-installable components. The homepage's "101 components" is **not** marketing inflation — it is the count of registry install targets, and it is the number that matters.
+>
+> The authoritative per-page component list is the **`## Install` and `## API Reference` sections of `https://beui.dev/components/{category}/{slug}.md`**: every `npx shadcn@latest add @beui/<target>` is a component to port, and every `### <Name>` under API Reference is a public widget with its full prop table and defaults. Fetch the `.md` for a page before porting it — `/r/{slug}` alone will silently under-report. Pages that ship more than one component today: `range-slider` (5), `not-found` (5), `text-animation` (4), `scroll-animation` (5), `action-swap` (3), `button` (3), `loading-states` (3), `expanding-arrow-button` (3), `table` (3 usage targets, one component), `number` (2), `popover` (2), `select` (2), `knockout-bracket` (2), `file-upload` (2), `dock` (3 exports).
 
 > Note: the source stores files under `components/{category}/` (with sub-folders for multi-file widgets like `button/`, `swap/`, `not-found/`). The primitives/blocks split in the port is a deliberate organizational choice driven by each entry's registry `category` field — it is *not* a 1:1 mirror of the source folder layout. Where the recent site **consolidated** several v2 slugs into one ("Scroll Animation", "Text Animation", "Number", "Popover"), the port may keep the finer-grained split it already established — see the inline notes below; treat each as a deliberate decision, not drift.
 
@@ -244,13 +248,13 @@ The source registry now has **three categories** — `motion` (37 primitives, sh
 | `bounce-sidebar` | Vertical sidebar whose active dot jumps between destinations on a curved, spring-loaded path |
 | `animated-sidebar` | Composable app sidebar with morphing nested nav that folds into an icon rail on desktop and a focus-managed sheet on mobile |
 | `preview-rail` | Navigation rail with compact ticks forming a hover pyramid + floating destination preview |
-| `dock` | macOS-style dock with grouped actions and a gliding active pill (shared layout, `SPRING_LAYOUT`) |
+| `dock` | macOS-style dock with grouped actions and a gliding active pill (shared layout, `SPRING_LAYOUT`). Exports three parts: `Dock`, `DockItem` and `DockSeparator` — the separator is what makes "grouped actions" possible, and is decorative (not focusable, not magnified) |
 | `tooltip` | Hover/focus tooltip, blur enter/exit, spring spawn |
 | `context-menu` | Composable context-menu primitives with pointer-origin clip morph, gliding active row, checkbox/radio choices, keyboard nav, typeahead, long-press |
 | `popover` | Gooey popover whose panel oozes out of the trigger through an SVG goo filter (liquid neck), plus a Morph variant that clip-morphs open from the trigger corner |
 | `morphing-modal` | Panel morphing height across inner views, blur cross-fade |
 | `center-morph-modal` | Composable modal whose full-size surface unfolds from its exact center toward every edge, folding back with an inset close |
-| `text-animation` | `text-reveal` (word/char spring slide-up + blur), `text-shimmer` (gradient sweep), `text-cascade` (letter slot roll). Port already splits these into `text_reveal.dart` / `text_shimmer.dart` / `text_cascade.dart` |
+| `text-animation` | **Four** primitives: `text-reveal` (word/char spring slide-up + blur), `text-shimmer` (gradient sweep), `text-cascade` (letter slot roll), `chromatic-text-reveal` (fixed prefix + cycling words revealed by a travelling chromatic gradient edge). Port splits these into `text_reveal.dart` / `text_shimmer.dart` / `text_cascade.dart` / `chromatic_text_reveal.dart` |
 | `number` | `number-ticker` (slot-machine digits) + `animated-number` (in-view count-up — a *tween*, `animate(from, value)` over a duration with `EASE_OUT`; maps to `CurvedMotion(beuiEaseOut)`, not a `SpringMotion`). Port splits into `number_ticker.dart` / `animated_number.dart` |
 | `animated-badge` | Status badge with animated state icons + pulse |
 | `action-swap` | Core swap primitives (Button/Text/Icon) with `blur`, `roll`, `cascade` variants |
@@ -259,7 +263,7 @@ The source registry now has **three categories** — `motion` (37 primitives, sh
 | `bouncy-accordion` | Single-open accordion, weighted spring layout, icon rows |
 | `drawer` | Edge drawer (uses `EASE_DRAWER`) |
 | `scroll-animation` | Group: `smooth-scroll` (Lenis provider + hook), `scroll-progress` (bar/ring), `parallax`, `scroll-to`, `scroll-reveal`. Port already splits these into `smooth_scroll.dart` / `scroll_progress.dart` / `parallax.dart` / `scroll_to.dart` / `scroll_reveal.dart` |
-| `range-slider` | Slider with tick dots and a vertical-bar thumb that bounces as it lands on each step; drag + keyboard. Note: the homepage "Recently launched" section rebrands this as a no-thumb "Fluid Slider" — reconcile which visual the current source ships before updating the port |
+| `range-slider` | **Five** sliders sharing one prop base (`value`/`defaultValue`/`onValueChange`/`min`/`max`/`step`/`disabled`/`formatValueText`): `range-slider` (tick dots + vertical-bar thumb that bounces onto each step), `range-slider-fluid` (no-thumb fluid fill with `label`/`format`), `range-slider-wave` (`bars`), `range-slider-bubble` (`format`, value bubble), `range-slider-ruler` (`gap`/`majorEvery`/`unit`). Drag + keyboard on all five. There is **no dual-thumb slider** upstream — do not add one |
 | `wheel-picker` | iOS-style picker wheel: 3D drum on momentum scroll that snaps to the nearest notch; composable for date/time pickers |
 | `table` | Virtualized data table smooth at 10k+ rows; sortable headers, row selection, column resize/reorder, sticky header |
 | `shader-background` | Canvas shader backgrounds (mesh gradient, grain, warp, waves, voronoi, dot orbit, …) with a single typed variant prop |
@@ -295,7 +299,7 @@ The source registry now has **three categories** — `motion` (37 primitives, sh
 |---|---|
 | `infinite-masonry` | Responsive virtualized masonry that measures variable-height cards and loads more on scroll-approach |
 | `notification-stack` | Compact notification cards that spring from a stacked summary into a readable list on hover/focus/tap |
-| `knockout-bracket` | Animated tournament fixtures in two styles: a paging knockout bracket and a wheel wrapping the same tree around the champion |
+| `knockout-bracket` | Animated tournament fixtures in two styles, both reading the same `rounds` array: `knockout-bracket` (pages through rounds; also carries the `thirdPlace` / `thirdPlaceLabel` playoff fixture) and `knockout-wheel` (wraps the same tree around the champion). Two separate components, not a variant prop |
 | `availability-scheduler` | Weekly availability editor; days spring between available/unavailable, time ranges add/remove with blur-slide, copy-menu clones hours |
 | `swap` | Cross-chain swap widget, chain/token selectors, morphing views |
 | `dynamic-island` | iOS-style island pill morphing between live-activity views |
@@ -304,7 +308,7 @@ The source registry now has **three categories** — `motion` (37 primitives, sh
 | `overflow-actions` | Connected pill rail springing open to reveal extra controls |
 | `expandable-tabs` | Icon tab bar; active tab expands to labeled pill with height-morphing panel |
 | `swipeable-list` | Rows swipe left/right to reveal contextual action buttons |
-| `file-upload` | Two patterns: an attachment workspace for mixed files/links/audio/media, plus a progress queue with retry and removal. Needs drag-drop + a file picker (desktop-focused; requires a plugin — no clean mobile analog). See the Platform scope section. |
+| `file-upload` | Two separate components: `attachment-upload` (an attachment workspace for mixed files/links/audio/media, with an audio play toggle and too-large / max-files rejection) and `file-upload` (a progress queue with retry and removal). Needs drag-drop + a file picker (desktop-focused; requires a plugin — no clean mobile analog). See the Platform scope section. |
 | `prediction-market` | Trade ticket, buy/sell modes, outcome prices, rolling amount entry |
 | `wallet-card` | Wallet overview card: account switcher/search that morph open, cascading balance, live change pill, privacy toggle, copy-address, Send/Deposit/Swap/Buy actions |
 | `otp-input` | OTP input, gliding focus ring, roll-in digits, error shake, success draw |
@@ -322,8 +326,9 @@ The one-line entries in the component catalog name *what a widget is*, not *what
 
 A component is *done* when **all** of the following hold (this extends, not replaces, `CLAUDE.md`'s structural gate of *widget under `lib/src/` + barrel export + example route + test*):
 
+- [ ] **The page's whole component set ported, prop-for-prop.** Diff against `https://beui.dev/components/{category}/{slug}.md`: every `@beui/<target>` under `## Install` is its own component, and every `### <Name>` under `## API Reference` must have a Flutter counterpart whose params cover that name's prop table (minus web-only plumbing — `className`/`classNames`/`style`/`ref`, and DOM-input props the package deliberately doesn't own per the Platform scope section). One page ≠ one widget; see the catalog note above.
 - [ ] **Controlled + uncontrolled API ported.** A `value` (or `checked`/`open`/`viewId`) + `onChanged` pair, with an internal-state fallback when the value param is null — the Flutter `Switch`/`Slider` convention (see the React→Flutter conventions table). Match the source's exact split (e.g. `RadioGroup` controls `value`/`defaultValue`/`onValueChange` at the group, items are stateless).
-- [ ] **All source variants exposed.** Every variant present in source is reachable via a Dart `enum` parameter or named constructor — tabs `pill`/`segment`/`underline`, button `primary`/`secondary`/`ghost`/`outline` × `sm`/`md`/`lg`/`icon`, file-upload `default`/`centered`, drawer `left`/`right`, action-swap `blur`/`roll`/`cascade`. Don't ship a subset.
+- [ ] **All source variants exposed.** Every variant present in source is reachable via a Dart `enum` parameter or named constructor — tabs `pill`/`segment`/`underline`, button `primary`/`secondary`/`ghost`/`outline` × `sm`/`md`/`lg`/`icon`, file-upload `default`/`centered`, drawer `left`/`right`, action-swap `blur`/`roll`/`cascade`, theme-toggle `rectangle`/`circle`/`circle-blur`/`blinds`, animated-sidebar `sidebar`/`floating`/`inset`, loader's seventeen, shader-background's twenty-one. Don't ship a subset — count them against the source union type, not against the preview.
 - [ ] **Every applicable interaction state implemented** — idle / hover / focus(-visible) / pressed / disabled / loading / success / error — wherever the source has it. The non-obvious ones (disabled-press shake, focus-vs-pointer distinction, error-shake, success-draw, indeterminate, `aria-busy` lockout) are itemized per component in Part B; implement what that row lists, not just the happy path.
 - [ ] **Keyboard contract matched** to source key-for-key (see Part B and the Accessibility & input section). Where source has none (pure pointer/drag widgets), add Flutter-idiomatic focus + activation rather than inventing bindings absent upstream.
 - [ ] **`Semantics` role + state flags set** — the Flutter analog of the source's `role`/`aria-*` (see the Accessibility & input section). E.g. `Semantics(toggled:)` for switch/checkbox, `checked`/`inMutuallyExclusiveGroup` for radio, `selected` for tabs, `value`/`increasedValue`/`decreasedValue` for the slider, `liveRegion` for stateful-button/dynamic-island/file-upload status.
