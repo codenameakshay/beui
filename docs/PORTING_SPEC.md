@@ -230,7 +230,7 @@ The source registry now has **three categories** — `motion` (37 primitives, sh
 |---|---|
 | `tilt-card` | 3D perspective tilt on hover with cursor-tracked glare |
 | `button` | Spring-pressed `Button` (optional `ripple`), `StatefulButton` (idle→loading→success/error), `MagneticButton` |
-| `expanding-arrow-button` | Expressive CTA buttons with expanding, hold, and slide interactions — **not yet ported** |
+| `expanding-arrow-button` | Expressive CTA buttons with expanding, hold, and slide interactions |
 | `marquee` | Infinite horizontal/vertical scroll, pause-on-hover |
 | `tabs` | Pill / segment / underline tabs with spring `layoutId` indicator |
 | `switch` | Toggle with spring-driven thumb + press feedback |
@@ -239,17 +239,17 @@ The source registry now has **three categories** — `motion` (37 primitives, sh
 | `checkbox` | Animated check draw, press feedback, indeterminate (tri-state) state |
 | `radio` | Animated selection; gliding `layoutId` indicator dot; public widget is a group (`BeuiRadioGroup` + items) |
 | `bottom-sheet` | Draggable sheet with snap points, inertia, glass surface |
-| `pull-to-refresh` | Native-feeling pull-to-refresh container with drag resistance, threshold feedback and async refresh — **not yet ported** |
+| `pull-to-refresh` | Native-feeling pull-to-refresh container with drag resistance, threshold feedback and async refresh |
 | `shared-layout-bg` | Pill that glides between hovered items via shared layout |
-| `bounce-sidebar` | Vertical sidebar whose active dot jumps between destinations on a curved, spring-loaded path — **not yet ported** |
-| `animated-sidebar` | Composable app sidebar with morphing nested nav that folds into an icon rail on desktop and a focus-managed sheet on mobile — **not yet ported** |
+| `bounce-sidebar` | Vertical sidebar whose active dot jumps between destinations on a curved, spring-loaded path |
+| `animated-sidebar` | Composable app sidebar with morphing nested nav that folds into an icon rail on desktop and a focus-managed sheet on mobile |
 | `preview-rail` | Navigation rail with compact ticks forming a hover pyramid + floating destination preview |
 | `dock` | macOS-style dock with grouped actions and a gliding active pill (shared layout, `SPRING_LAYOUT`) |
 | `tooltip` | Hover/focus tooltip, blur enter/exit, spring spawn |
-| `context-menu` | Composable context-menu primitives with pointer-origin clip morph, gliding active row, checkbox/radio choices, keyboard nav, typeahead, long-press — **not yet ported** |
+| `context-menu` | Composable context-menu primitives with pointer-origin clip morph, gliding active row, checkbox/radio choices, keyboard nav, typeahead, long-press |
 | `popover` | Gooey popover whose panel oozes out of the trigger through an SVG goo filter (liquid neck), plus a Morph variant that clip-morphs open from the trigger corner |
 | `morphing-modal` | Panel morphing height across inner views, blur cross-fade |
-| `center-morph-modal` | Composable modal whose full-size surface unfolds from its exact center toward every edge, folding back with an inset close — **not yet ported** |
+| `center-morph-modal` | Composable modal whose full-size surface unfolds from its exact center toward every edge, folding back with an inset close |
 | `text-animation` | `text-reveal` (word/char spring slide-up + blur), `text-shimmer` (gradient sweep), `text-cascade` (letter slot roll). Port already splits these into `text_reveal.dart` / `text_shimmer.dart` / `text_cascade.dart` |
 | `number` | `number-ticker` (slot-machine digits) + `animated-number` (in-view count-up — a *tween*, `animate(from, value)` over a duration with `EASE_OUT`; maps to `CurvedMotion(beuiEaseOut)`, not a `SpringMotion`). Port splits into `number_ticker.dart` / `animated_number.dart` |
 | `animated-badge` | Status badge with animated state icons + pulse |
@@ -267,7 +267,7 @@ The source registry now has **three categories** — `motion` (37 primitives, sh
 | `loader` | Loading indicator with **seventeen variants** (spinner, dots, bars, dot-matrix, dither, morph, comet, scramble, metaballs, newton, helix, percent, plus five terminal-style ascii spinners); reduced-motion swaps transforms for an opacity pulse |
 | `magnetic` | Cursor-attracted magnetic pull wrapper. **Derived/foundational** — the source has **no standalone `magnetic` registry slug**; it lives at `components/motion/button/magnetic.tsx` and is exposed only through composition (`MagneticButton`, and the `not-found-magnetic` variant). The port deliberately surfaces it as `BeuiMagnetic` — a **promotion**, not a 1:1 registry component. |
 
-### `agents` — AI / chat interfaces (17 — **not yet ported as of the last audit**)
+### `agents` — AI / chat interfaces (17)
 
 | Source slug | What it does |
 |---|---|
