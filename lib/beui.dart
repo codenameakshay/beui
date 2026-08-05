@@ -214,8 +214,29 @@ export 'src/motion/bounce_sidebar.dart'
         BeuiBounceSidebar,
         BeuiBounceSidebarItem,
         beuiBounceSidebarIndicatorKey;
-export 'src/motion/animated_sidebar.dart' show BeuiAnimatedSidebar;
-export 'src/motion/context_menu.dart' show BeuiContextMenu, BeuiContextMenuItem;
+export 'src/motion/animated_sidebar.dart'
+    show
+        BeuiAnimatedSidebar,
+        BeuiAnimatedSidebarCollapsible,
+        BeuiAnimatedSidebarGroup,
+        BeuiAnimatedSidebarItem,
+        BeuiAnimatedSidebarScope,
+        BeuiAnimatedSidebarSide,
+        BeuiAnimatedSidebarTrigger,
+        beuiAnimatedSidebarActiveKey,
+        beuiAnimatedSidebarMobilePanelKey,
+        beuiAnimatedSidebarPanelKey,
+        kBeuiAnimatedSidebarIconWidth,
+        kBeuiAnimatedSidebarMobileBreakpoint,
+        kBeuiAnimatedSidebarMobileWidth,
+        kBeuiAnimatedSidebarWidth;
+export 'src/motion/context_menu.dart'
+    show
+        BeuiContextMenu,
+        BeuiContextMenuItem,
+        BeuiContextMenuItemKind,
+        BeuiContextMenuModality,
+        BeuiContextMenuTone;
 export 'src/motion/center_morph_modal.dart' show BeuiCenterMorphModal;
 
 // Agents — newly scaffolded (ported in a later pass).
