@@ -252,6 +252,11 @@ class ExplorerTopBar extends StatelessWidget {
                 onTap: () => controller.openIndex(ExploreSection.components),
               ),
               _NavTab(
+                label: 'Agents',
+                active: _activeSection == ExploreSection.agents,
+                onTap: () => controller.openIndex(ExploreSection.agents),
+              ),
+              _NavTab(
                 label: 'Blocks',
                 active: _activeSection == ExploreSection.blocks,
                 onTap: () => controller.openIndex(ExploreSection.blocks),
@@ -604,11 +609,6 @@ class ExplorerSidebar extends StatelessWidget {
           active: _onComponentsHome,
           onTap: () => controller.openIndex(ExploreSection.components),
         ),
-        _SidebarItem(
-          label: 'AI Agents',
-          active: route is DocRoute && (route as DocRoute).title == 'AI Agents',
-          onTap: () => controller.go(DocRoute('AI Agents', _aiAgentsBody)),
-        ),
         const SizedBox(height: 20),
         _SidebarHeader(label: 'Guides'),
         _SidebarItem(
@@ -619,6 +619,15 @@ class ExplorerSidebar extends StatelessWidget {
         const SizedBox(height: 20),
         _SidebarHeader(label: 'Components', count: kComponents.length),
         for (final e in kComponents)
+          _SidebarItem(
+            label: e.title,
+            isNew: e.isNew,
+            active: _activeSlug == e.slug,
+            onTap: () => controller.openEntry(e),
+          ),
+        const SizedBox(height: 20),
+        _SidebarHeader(label: 'AI Agents', count: kAgents.length),
+        for (final e in kAgents)
           _SidebarItem(
             label: e.title,
             isNew: e.isNew,
@@ -637,15 +646,6 @@ class ExplorerSidebar extends StatelessWidget {
       ],
     );
   }
-
-  static const _aiAgentsBody =
-      'beUI ships as a pub.dev package: add it with `flutter pub add beui`, '
-      'then import `package:beui/beui.dart` for every component, the theme '
-      'extension and the motion tokens.\n\n'
-      'Because components are exported widgets rather than copy-paste source, '
-      'an agent only needs the public widget API — no registry fetch step. '
-      'Point your assistant at docs/PORTING_SPEC.md for the catalog, the '
-      'spring/easing token map and the React→Flutter convention table.';
 }
 
 class _SidebarHeader extends StatelessWidget {

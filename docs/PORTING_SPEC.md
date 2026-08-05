@@ -81,7 +81,7 @@ Source `AGENTS.md` explicitly sanctions one-off springs where tuning is genuinel
 | `swipeable-list.tsx` (`ROW_SETTLE`) | 560 / 48 / 0.82 (+restDelta/restSpeed) | Distance-based row release, native-feeling |
 | `tooltip.tsx` | 380 / 30 / 0.7 | Spring spawn (with separate opacity/blur durations) |
 | `animated-toast-stack.tsx` (`STACK_SPRING`) | 420 / 34 / 0.75 | Stack reflow on enter/dismiss |
-| `create-menu.tsx` (`SPRING_FOLDER` / grid item) | 320 / 24 / 0.9 · 460 / 30 | Button→grid morph · staggered grid items |
+| `bloom-menu.tsx` (`SPRING_FOLDER` / grid item) | 320 / 24 / 0.9 · 460 / 30 | Button→grid morph · staggered grid items |
 | `swap/controls.tsx` (flip) | 380 / 26 / 0.6 | Swap-direction flip rotation |
 | `scroll-progress.tsx` / `parallax.tsx` | 120 / 30 / 0.6 | Smoothed scroll-driven follow (`useSpring`) |
 | `not-found/terminal.tsx` (`TYPE_SPRING`) | 320 / 30 / 0.6 | Terminal type-in caret/line |
@@ -191,7 +191,7 @@ The published package ships **no bundled fonts**; only the `example/` gallery ma
 
 ## 3. Iconography
 
-Source uses **`lucide-react`** for all glyphs. ~15 of the ~35 catalog components import it — roughly half the library, so an icon decision blocks the port. Representative dependants: `animated-badge`, `animated-toast-stack`, `command-palette`, `bouncy-accordion`, `overflow-actions`, `action-swap`, `file-upload`, `create-menu`, `prediction-market`, `swap` (+ its `controls`/`field`/`quote-row`/`token-picker` parts), `theme-toggle`, and `StatefulButton`. The icon type even **leaks into the public API**: `animated-badge` and `animated-toast-stack` type their status maps as `Record<Status, LucideIcon>` and `command-palette` types `icon?: LucideIcon` on a public prop — so the choice isn't just internal defaults, it shapes the widget surface.
+Source uses **`lucide-react`** for all glyphs. ~15 of the ~72 catalog components import it — roughly a fifth of the library, so the icon decision is still significant but less blocking than in the v2 catalog. Representative dependants: `animated-badge`, `animated-toast-stack`, `command-palette`, `bouncy-accordion`, `overflow-actions`, `action-swap`, `file-upload`, `bloom-menu`, `prediction-market`, `swap` (+ its parts), `theme-toggle`, and `StatefulButton`. The icon type even **leaks into the public API**: `animated-badge` and `animated-toast-stack` type their status maps as `Record<Status, LucideIcon>` and `command-palette` types `icon?: LucideIcon` on a public prop — so the choice isn't just internal defaults, it shapes the widget surface.
 
 ### Default icon source
 
@@ -220,42 +220,83 @@ If no Lucide-for-Flutter package proves acceptable (stale, unmaintained, or lice
 
 ## 4. Component catalog
 
-Two categories in the source registry: **`motion`** (primitives, shown as "Components") and **`blocks`** (composed product widgets). The registry documents **22 `motion` primitives + 12 `blocks`**; port the full set. Names below are the source slugs — see the React → Flutter porting conventions section for the Dart naming rule (many collide with Flutter built-ins).
+The source registry now has **three categories** — `motion` (37 primitives, shown as "Components"), `blocks` (18 composed product widgets), and `agents` (17 AI/chat interfaces, added late in the cycle). The homepage advertises "101 components" counting variants, but the registry `categories` + `components` index at **`https://beui.dev/r`** is the authoritative catalog — port every entry listed there. Names below are the source slugs — see the React → Flutter porting conventions section for the Dart naming rule (`Beui` prefix; many collide with Flutter built-ins).
 
-> Note: the source stores **both** `motion` and `blocks` files under `components/motion/` (with sub-folders for multi-file widgets like `button/`, `swap/`, `not-found/`). The primitives/blocks split in the port is a deliberate organizational choice driven by each entry's registry `category` field — it is *not* a 1:1 mirror of the source folder layout.
+> Note: the source stores files under `components/{category}/` (with sub-folders for multi-file widgets like `button/`, `swap/`, `not-found/`). The primitives/blocks split in the port is a deliberate organizational choice driven by each entry's registry `category` field — it is *not* a 1:1 mirror of the source folder layout. Where the recent site **consolidated** several v2 slugs into one ("Scroll Animation", "Text Animation", "Number", "Popover"), the port may keep the finer-grained split it already established — see the inline notes below; treat each as a deliberate decision, not drift.
 
-### `motion` — primitives
+### `motion` — primitives (37)
 
 | Source slug | What it does |
 |---|---|
 | `tilt-card` | 3D perspective tilt on hover with cursor-tracked glare |
 | `button` | Spring-pressed `Button` (optional `ripple`), `StatefulButton` (idle→loading→success/error), `MagneticButton` |
+| `expanding-arrow-button` | Expressive CTA buttons with expanding, hold, and slide interactions — **not yet ported** |
 | `marquee` | Infinite horizontal/vertical scroll, pause-on-hover |
 | `tabs` | Pill / segment / underline tabs with spring `layoutId` indicator |
 | `switch` | Toggle with spring-driven thumb + press feedback |
+| `input` | Text input with label, left/right icons, error shake and success check draw |
+| `select` | Composable select primitives whose panel bouncily unfolds out of the trigger, + a Morph variant where the trigger grows into the panel via shared layout |
 | `checkbox` | Animated check draw, press feedback, indeterminate (tri-state) state |
 | `radio` | Animated selection; gliding `layoutId` indicator dot; public widget is a group (`BeuiRadioGroup` + items) |
 | `bottom-sheet` | Draggable sheet with snap points, inertia, glass surface |
+| `pull-to-refresh` | Native-feeling pull-to-refresh container with drag resistance, threshold feedback and async refresh — **not yet ported** |
 | `shared-layout-bg` | Pill that glides between hovered items via shared layout |
+| `bounce-sidebar` | Vertical sidebar whose active dot jumps between destinations on a curved, spring-loaded path — **not yet ported** |
+| `animated-sidebar` | Composable app sidebar with morphing nested nav that folds into an icon rail on desktop and a focus-managed sheet on mobile — **not yet ported** |
+| `preview-rail` | Navigation rail with compact ticks forming a hover pyramid + floating destination preview |
 | `dock` | macOS-style dock with grouped actions and a gliding active pill (shared layout, `SPRING_LAYOUT`) |
 | `tooltip` | Hover/focus tooltip, blur enter/exit, spring spawn |
+| `context-menu` | Composable context-menu primitives with pointer-origin clip morph, gliding active row, checkbox/radio choices, keyboard nav, typeahead, long-press — **not yet ported** |
+| `popover` | Gooey popover whose panel oozes out of the trigger through an SVG goo filter (liquid neck), plus a Morph variant that clip-morphs open from the trigger corner |
 | `morphing-modal` | Panel morphing height across inner views, blur cross-fade |
-| `text-animation` | `text-reveal` (word/char spring slide-up + blur), `text-shimmer` (gradient sweep), `text-cascade` (letter slot roll) |
-| `number` | `number-ticker` (slot-machine digits) + `animated-number` (in-view count-up — a *tween*, `animate(from, value)` over a duration with `EASE_OUT`; maps to `CurvedMotion(beuiEaseOut)`, not a `SpringMotion`) |
+| `center-morph-modal` | Composable modal whose full-size surface unfolds from its exact center toward every edge, folding back with an inset close — **not yet ported** |
+| `text-animation` | `text-reveal` (word/char spring slide-up + blur), `text-shimmer` (gradient sweep), `text-cascade` (letter slot roll). Port already splits these into `text_reveal.dart` / `text_shimmer.dart` / `text_cascade.dart` |
+| `number` | `number-ticker` (slot-machine digits) + `animated-number` (in-view count-up — a *tween*, `animate(from, value)` over a duration with `EASE_OUT`; maps to `CurvedMotion(beuiEaseOut)`, not a `SpringMotion`). Port splits into `number_ticker.dart` / `animated_number.dart` |
 | `animated-badge` | Status badge with animated state icons + pulse |
 | `action-swap` | Core swap primitives (Button/Text/Icon) with `blur`, `roll`, `cascade` variants |
 | `animated-toast-stack` | Stacked toasts, status morphs, swipe dismissal, layout-aware motion |
 | `theme-toggle` | Theme toggle with full-page clip-path reveal. Source is built on the **View Transition API** + clip-path (no clean Flutter analog) — port as a custom `ClipPath`/circular-reveal overlay, or documented reduced parity. See the Platform scope section. |
 | `bouncy-accordion` | Single-open accordion, weighted spring layout, icon rows |
 | `drawer` | Edge drawer (uses `EASE_DRAWER`) |
-| `scroll-animation` | Group: `smooth-scroll` (Lenis provider + hook), `scroll-progress` (bar/ring), `parallax`, `scroll-to`, `scroll-reveal` |
-| `range-slider` | Range slider with tick dots, bouncy vertical-bar thumb snapping between steps, drag + keyboard |
-| `magnetic` | Cursor-attracted magnetic pull wrapper. **Derived/foundational** — the source has **no standalone `magnetic` registry slug**; it lives at `components/motion/button/magnetic.tsx` and is exposed only through composition (`MagneticButton` via `button-magnetic`, and the `not-found-magnetic` variant). The port may deliberately surface it as `BeuiMagnetic`, but treat that as a **promotion**, not a 1:1 registry component. |
+| `scroll-animation` | Group: `smooth-scroll` (Lenis provider + hook), `scroll-progress` (bar/ring), `parallax`, `scroll-to`, `scroll-reveal`. Port already splits these into `smooth_scroll.dart` / `scroll_progress.dart` / `parallax.dart` / `scroll_to.dart` / `scroll_reveal.dart` |
+| `range-slider` | Slider with tick dots and a vertical-bar thumb that bounces as it lands on each step; drag + keyboard. Note: the homepage "Recently launched" section rebrands this as a no-thumb "Fluid Slider" — reconcile which visual the current source ships before updating the port |
+| `wheel-picker` | iOS-style picker wheel: 3D drum on momentum scroll that snaps to the nearest notch; composable for date/time pickers |
+| `table` | Virtualized data table smooth at 10k+ rows; sortable headers, row selection, column resize/reorder, sticky header |
+| `shader-background` | Canvas shader backgrounds (mesh gradient, grain, warp, waves, voronoi, dot orbit, …) with a single typed variant prop |
+| `cylinder-carousel` | Items lining the inside of a cylinder, receding toward the center and growing toward the edges; drag/scroll/keys |
+| `loader` | Loading indicator with **seventeen variants** (spinner, dots, bars, dot-matrix, dither, morph, comet, scramble, metaballs, newton, helix, percent, plus five terminal-style ascii spinners); reduced-motion swaps transforms for an opacity pulse |
+| `magnetic` | Cursor-attracted magnetic pull wrapper. **Derived/foundational** — the source has **no standalone `magnetic` registry slug**; it lives at `components/motion/button/magnetic.tsx` and is exposed only through composition (`MagneticButton`, and the `not-found-magnetic` variant). The port deliberately surfaces it as `BeuiMagnetic` — a **promotion**, not a 1:1 registry component. |
 
-### `blocks` — composed product widgets
+### `agents` — AI / chat interfaces (17 — **not yet ported as of the last audit**)
 
 | Source slug | What it does |
 |---|---|
+| `message-bubble` | Focused conversational surface: visual tones, independent alignment, grouped messages, expandable content, interactive link/button support |
+| `message` | Composable primitives for message rows, grouped bubbles, avatars, metadata, live markers, mount-only trailing-edge pop-up |
+| `message-scroller` | Reader-aware conversation viewport that follows streamed output at the live edge and releases control when the reader moves away |
+| `prompt-input` | Auto-growing agent composer with prompt actions, model selection, keyboard submission, animated send/stop states |
+| `todo-list` | Collapsible agent task plan with morphing status marks, completion count, compact metadata, smooth list updates |
+| `code-block` | Syntax-highlighted code surface with stable streaming updates, line numbers, focused lines, smooth following, copy feedback |
+| `approval-card` | Human-in-the-loop decision surface: approvals, single/multiple-choice questions, custom responses, multi-step review |
+| `file-diff` | Syntax-highlighted file change disclosure with progressive rows, line numbers, live change counts, completion collapse |
+| `tool-result` | Lightweight execution disclosure for terminal output / request responses, collapsing to a compact completed state |
+| `streaming-response` | Stable response surface with completion actions, rendered content, expandable source summary |
+| `image-generation` | Stable generated-image surface moving queued → progressive refinement → completed without layout shift |
+| `tool-approval` | Permission card: review tool details, allow once, remember access, or deny |
+| `citations` | Inline citation markers + collapsible, progressively rendered reference collection |
+| `agent-activity` | One adaptive activity stream for reasoning, searches, tool calls, execution traces, or a chronological mix |
+| `loading-states` | Three AI loading states: shimmering status text, live agent progress, cycling reasoning phrases |
+| `ai-sidebar` | Collapsible AI workspace sidebar (folders, projects, files, bookmarks) with keyboard nav, optimistic moves, inline rename |
+| `chat-app` | Complete agent conversation workspace composing nav, messages, streaming, planning, approvals, tools, code, diffs, media, sources, prompt input |
+
+### `blocks` — composed product widgets (18)
+
+| Source slug | What it does |
+|---|---|
+| `infinite-masonry` | Responsive virtualized masonry that measures variable-height cards and loads more on scroll-approach |
+| `notification-stack` | Compact notification cards that spring from a stacked summary into a readable list on hover/focus/tap |
+| `knockout-bracket` | Animated tournament fixtures in two styles: a paging knockout bracket and a wheel wrapping the same tree around the champion |
+| `availability-scheduler` | Weekly availability editor; days spring between available/unavailable, time ranges add/remove with blur-slide, copy-menu clones hours |
 | `swap` | Cross-chain swap widget, chain/token selectors, morphing views |
 | `dynamic-island` | iOS-style island pill morphing between live-activity views |
 | `command-palette` | ⌘K palette, fuzzy filter, spring-animated active row |
@@ -263,10 +304,12 @@ Two categories in the source registry: **`motion`** (primitives, shown as "Compo
 | `overflow-actions` | Connected pill rail springing open to reveal extra controls |
 | `expandable-tabs` | Icon tab bar; active tab expands to labeled pill with height-morphing panel |
 | `swipeable-list` | Rows swipe left/right to reveal contextual action buttons |
-| `file-upload` | Drag-drop upload queue, progress rows, retry/remove. Needs drag-drop + a file picker (desktop-focused; requires a file-picker plugin — no clean mobile analog). See the Platform scope section. |
+| `file-upload` | Two patterns: an attachment workspace for mixed files/links/audio/media, plus a progress queue with retry and removal. Needs drag-drop + a file picker (desktop-focused; requires a plugin — no clean mobile analog). See the Platform scope section. |
 | `prediction-market` | Trade ticket, buy/sell modes, outcome prices, rolling amount entry |
+| `wallet-card` | Wallet overview card: account switcher/search that morph open, cascading balance, live change pill, privacy toggle, copy-address, Send/Deposit/Swap/Buy actions |
 | `otp-input` | OTP input, gliding focus ring, roll-in digits, error shake, success draw |
-| `create-menu` | Button morphing open into grid menu via shared layout + clip-path |
+| `bloom-menu` | Button that morphs open into a menu and blooms iris-out from the center, grid revealing radially staggered items. **Subsumes the v2 `create-menu` slug** — the port already folded `create-menu` into `bloom_menu.dart` |
+| `feedback-widget` | Corner trigger that morphs open into a feedback popup with message entry, animated sending/success/retry states |
 | `not-found` | 404 variants: `glitch`, `magnetic`, `spotlight`, `stacked`, `terminal` |
 
 ---
@@ -315,7 +358,7 @@ Pure display primitives — `marquee`, `text-reveal`/`text-shimmer`/`text-cascad
 | **expandable-tabs** | bar-only(null) vs expanded; shell width/height morph; active tab expands to labeled pill; label blur-in; outside-click/Esc close | **Esc** close; focus-visible ring | `role="tablist"`+`aria-orientation`; tab `aria-selected`+`aria-label` | shell resizes instant; label width only, no blur |
 | **swipeable-list** | drag-reveal left/right rails; distance+velocity snap open/close; only one row open; per-action tone; disabled row | rail buttons focusable **only when that side is open** (`tabIndex`) | action buttons `aria-label`; rail `aria-hidden` when closed | reveal snaps to target (no settle spring) |
 | **file-upload** | dropzone idle/hover/**dragging**/focus/disabled/max-reached; per-row queued/uploading/success/error; retry on error; remove | dropzone is a button (Enter/Space → file picker); hidden input `tabIndex=-1` | `role="progressbar"` (`aria-valuenow`); status `sr-only`; per-action `aria-label` | rows fade (no y); progress sets `scaleX` directly; spinner `animate-none` |
-| **create-menu** | trigger↔panel **morph** (shared layout); whileTap trigger scale; grid clip-path reveal + staggered items; outside-click/Esc close | **Esc** close | trigger `aria-haspopup="menu"`+`aria-expanded` | morph timing collapses; items fade, no scale/blur/stagger; clip-path skipped |
+| **bloom-menu** | trigger↔panel **morph** (shared layout); whileTap trigger scale; grid clip-path reveal + staggered items; outside-click/Esc close | **Esc** close | trigger `aria-haspopup="menu"`+`aria-expanded` | morph timing collapses; items fade, no scale/blur/stagger; clip-path skipped |
 | **dynamic-island** | compact pill ↔ expanded view (`view=null` = pill); shell width/height **morph** to measured content; slot unfurl/suck-back | (none — driven by `view` prop) | `role="status"`, `aria-live="polite"` | shell resize instant; slots opacity-only, no scale/y/blur |
 
 ---
@@ -333,7 +376,7 @@ Pure display primitives — `marquee`, `text-reveal`/`text-shimmer`/`text-cascad
 | Framer `layout` / `layoutId` (shared layout) | `Stack` + `MotionBuilder<Rect>` keyed on the active item driven by `beuiSpringLayout`; `Hero` for route-level transitions |
 | `ResizeObserver` / `getBoundingClientRect` / `offsetWidth` (runtime element measurement) | `GlobalKey` + `RenderBox` (`localToGlobal` / `.size`) read in a post-frame callback (`addPostFrameCallback`), wrapped in **one** reusable `MeasureSize` helper; feed the resulting `Rect`/`Size` into `MotionBuilder<Rect>`/`<Size>` with `beuiSpringLayout`. The source hand-rolls this in expandable-tabs, overflow-actions, dynamic-island, range-slider, bouncy-accordion, tilt-card and action-swap — dynamic-island even comments that the observer fires async after mount. Mirror that **one-frame-late caveat** (the first measured value lands a frame after layout; spring toward it, don't snap), and route **every** shared-layout / measure-driven component through the same helper so the timing is identical |
 | `createPortal` → `document.body` / fixed-overlay | `Overlay` / `OverlayEntry` (or `OverlayPortal`); animate entry with `beuiSpringPanel`. Source uses `createPortal` in command-palette, bottom-sheet and animated-toast-stack, with in-tree `fixed inset-0` for morphing-modal and drawer. Note: decide **once**, library-wide, between an imperative `show()`/controller surface and a declarative `open` + `onOpenChange` surface, and keep it consistent. Flutter `Transform`/`ClipRect` ancestors create the same containing-block hazards the source's bottom-sheet comment warns about (a transformed ancestor re-parents fixed/positioned descendants); `Overlay` escapes the ancestor chain and avoids them |
-| Global `keydown` (Escape, ⌘K) | `Shortcuts`/`Actions` or `Focus(onKeyEvent:)` at the overlay root. Source: global ⌘/Ctrl+K + Escape in command-palette; Escape-to-close in drawer, create-menu, expandable-tabs and swap's token-picker. Map ⌘/Ctrl to `LogicalKeyboardKey.meta` / `.control` (meta on macOS/iOS, control on others). Use the modern key API (`HardwareKeyboard` / `Focus`'s `onKeyEvent`), **not** the deprecated `RawKeyboardListener`. See the *Accessibility & input* section |
+| Global `keydown` (Escape, ⌘K) | `Shortcuts`/`Actions` or `Focus(onKeyEvent:)` at the overlay root. Source: global ⌘/Ctrl+K + Escape in command-palette; Escape-to-close in drawer, bloom-menu, expandable-tabs and swap's token-picker. Map ⌘/Ctrl to `LogicalKeyboardKey.meta` / `.control` (meta on macOS/iOS, control on others). Use the modern key API (`HardwareKeyboard` / `Focus`'s `onKeyEvent`), **not** the deprecated `RawKeyboardListener`. See the *Accessibility & input* section |
 | Element-level `onKeyDown` (Arrow / Enter / Home / End nav) | `Focus(onKeyEvent:)` on the focused element. Source: Arrow/Enter row-nav in command-palette, and Arrow/Home/End value-nav in range-slider and otp-input. Same modern key API as above; cross-ref the *Accessibility & input* section |
 | Imperative focus + `:focus-visible` rings + focus trap | `inputRef.focus()` → `FocusNode.requestFocus()` (in a post-frame callback, matching command-palette's `requestAnimationFrame(() => inputRef.focus())` on open); `:focus-visible` rings (present across ~11 components) → `FocusableActionDetector` (keyboard-vs-pointer aware); overlay focus trap → `FocusScope`. The OTP input's animated focus ring is a measured `Rect` glided with `beuiSpringLayout`, not a static outline |
 | Framer variants spring per dimension (`x`/`y`/scale) | `MotionBuilder` with the matching converter (`Offset`/`Size`/`Rect`/`Alignment`/`Color`) — each axis springs independently |

@@ -197,3 +197,31 @@ export 'src/motion/wallet_card/wallet_card.dart'
     show BeuiWalletAccount, BeuiWalletCard;
 export 'src/motion/wheel_picker.dart'
     show BeuiWheelPicker, BeuiWheelPickerOption, BeuiWheelPickerStyle;
+
+// Motion — newly scaffolded (ported in a later pass; see docs/PORTING_SPEC.md §4).
+export 'src/motion/expanding_arrow_button.dart' show BeuiExpandingArrowButton;
+export 'src/motion/pull_to_refresh.dart' show BeuiPullToRefresh;
+export 'src/motion/bounce_sidebar.dart' show BeuiBounceSidebar;
+export 'src/motion/animated_sidebar.dart' show BeuiAnimatedSidebar;
+export 'src/motion/context_menu.dart'
+    show BeuiContextMenu, BeuiContextMenuItem;
+export 'src/motion/center_morph_modal.dart' show BeuiCenterMorphModal;
+
+// Agents — newly scaffolded (ported in a later pass).
+export 'src/motion/message_bubble.dart' show BeuiMessageBubble;
+export 'src/motion/message.dart' show BeuiMessage, BeuiMessageGroup;
+export 'src/motion/message_scroller.dart' show BeuiMessageScroller;
+export 'src/motion/prompt_input.dart' show BeuiPromptInput;
+export 'src/motion/todo_list.dart' show BeuiTodoItem, BeuiTodoList;
+export 'src/motion/code_block.dart' show BeuiCodeBlock;
+export 'src/motion/approval_card.dart' show BeuiApprovalCard;
+export 'src/motion/file_diff.dart' show BeuiFileDiff;
+export 'src/motion/tool_result.dart' show BeuiToolResult;
+export 'src/motion/streaming_response.dart' show BeuiStreamingResponse;
+export 'src/motion/image_generation.dart' show BeuiImageGeneration;
+export 'src/motion/tool_approval.dart' show BeuiToolApproval;
+export 'src/motion/citations.dart' show BeuiCitations;
+export 'src/motion/agent_activity.dart' show BeuiAgentActivity;
+export 'src/motion/loading_states.dart' show BeuiLoadingStates;
+export 'src/motion/ai_sidebar.dart' show BeuiAiSidebar;
+export 'src/motion/chat_app.dart' show BeuiChatApp;
