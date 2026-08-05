@@ -207,8 +207,13 @@ export 'src/motion/expanding_arrow_button.dart'
         BeuiSlideActionButton;
 
 // Motion — newly scaffolded (ported in a later pass; see docs/PORTING_SPEC.md §4).
-export 'src/motion/pull_to_refresh.dart' show BeuiPullToRefresh;
-export 'src/motion/bounce_sidebar.dart' show BeuiBounceSidebar;
+export 'src/motion/pull_to_refresh.dart'
+    show BeuiPullToRefresh, BeuiPullToRefreshStatus;
+export 'src/motion/bounce_sidebar.dart'
+    show
+        BeuiBounceSidebar,
+        BeuiBounceSidebarItem,
+        beuiBounceSidebarIndicatorKey;
 export 'src/motion/animated_sidebar.dart' show BeuiAnimatedSidebar;
 export 'src/motion/context_menu.dart' show BeuiContextMenu, BeuiContextMenuItem;
 export 'src/motion/center_morph_modal.dart' show BeuiCenterMorphModal;
