@@ -198,13 +198,19 @@ export 'src/motion/wallet_card/wallet_card.dart'
 export 'src/motion/wheel_picker.dart'
     show BeuiWheelPicker, BeuiWheelPickerOption, BeuiWheelPickerStyle;
 
+// Motion — expanding CTA suite (expanding / hold / slide).
+export 'src/motion/expanding_arrow_button.dart'
+    show
+        BeuiExpandingArrowButton,
+        BeuiHoldActionButton,
+        BeuiHoldActionDirection,
+        BeuiSlideActionButton;
+
 // Motion — newly scaffolded (ported in a later pass; see docs/PORTING_SPEC.md §4).
-export 'src/motion/expanding_arrow_button.dart' show BeuiExpandingArrowButton;
 export 'src/motion/pull_to_refresh.dart' show BeuiPullToRefresh;
 export 'src/motion/bounce_sidebar.dart' show BeuiBounceSidebar;
 export 'src/motion/animated_sidebar.dart' show BeuiAnimatedSidebar;
-export 'src/motion/context_menu.dart'
-    show BeuiContextMenu, BeuiContextMenuItem;
+export 'src/motion/context_menu.dart' show BeuiContextMenu, BeuiContextMenuItem;
 export 'src/motion/center_morph_modal.dart' show BeuiCenterMorphModal;
 
 // Agents — newly scaffolded (ported in a later pass).
