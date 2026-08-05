@@ -264,8 +264,15 @@ export 'src/motion/message_bubble.dart'
         BeuiMessageBubbleGroup,
         BeuiMessageBubbleSpacing,
         BeuiMessageBubbleVariant;
-export 'src/motion/message_scroller.dart' show BeuiMessageScroller;
-export 'src/motion/prompt_input.dart' show BeuiPromptInput;
+export 'src/motion/message_scroller.dart'
+    show
+        BeuiMessageScroller,
+        BeuiMessageScrollerAnchor,
+        BeuiMessageScrollerNavigation,
+        BeuiMessageScrollerRailItem,
+        BeuiMessageScrollerState;
+export 'src/motion/prompt_input.dart'
+    show BeuiPromptAction, BeuiPromptInput, BeuiPromptModel;
 export 'src/motion/todo_list.dart' show BeuiTodoItem, BeuiTodoList;
 export 'src/motion/code_block.dart' show BeuiCodeBlock;
 export 'src/motion/approval_card.dart' show BeuiApprovalCard;
@@ -276,6 +283,13 @@ export 'src/motion/image_generation.dart' show BeuiImageGeneration;
 export 'src/motion/tool_approval.dart' show BeuiToolApproval;
 export 'src/motion/citations.dart' show BeuiCitations;
 export 'src/motion/agent_activity.dart' show BeuiAgentActivity;
-export 'src/motion/loading_states.dart' show BeuiLoadingStates;
+export 'src/motion/loading_states.dart'
+    show
+        BeuiAgentProgress,
+        BeuiLoadingStates,
+        BeuiReasoningText,
+        BeuiReasoningTextVariant,
+        BeuiThinkingShimmer,
+        beuiFormatAgentElapsed;
 export 'src/motion/ai_sidebar.dart' show BeuiAiSidebar;
 export 'src/motion/chat_app.dart' show BeuiChatApp;
