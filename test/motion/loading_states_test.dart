@@ -58,6 +58,29 @@ void main() {
       expect(find.text('Reviewing your direction'), findsOneWidget);
     });
 
+    testWidgets('forwards text, duration and medium weight to the shimmer', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiThinkingShimmer(
+            text: 'Reviewing',
+            duration: Duration(seconds: 2),
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300),
+          ),
+        ),
+      );
+      await tester.pump();
+      final shimmer = tester.widget<BeuiTextShimmer>(
+        find.byType(BeuiTextShimmer),
+      );
+      expect(shimmer.text, 'Reviewing');
+      expect(shimmer.duration, const Duration(seconds: 2));
+      // The caller's size survives; the weight is forced to the source's medium.
+      expect(shimmer.style?.fontSize, 17);
+      expect(shimmer.style?.fontWeight, FontWeight.w500);
+    });
+
     testWidgets('reduced motion holds a static highlight', (tester) async {
       await tester.pumpWidget(_app(const BeuiThinkingShimmer(), reduce: true));
       await tester.pumpAndSettle();
@@ -112,6 +135,20 @@ void main() {
       expect(find.text('5.0s'), findsOneWidget);
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('5.0s'), findsOneWidget);
+    });
+
+    testWidgets('controlled elapsedSeconds overrides the internal timer', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(const BeuiAgentProgress(elapsedSeconds: 3, initialSeconds: 40)),
+      );
+      await tester.pump();
+      expect(find.text('3.0s'), findsOneWidget);
+      // Running clock, but the controlled value wins on every frame.
+      await tester.pump(const Duration(milliseconds: 600));
+      expect(find.text('3.0s'), findsOneWidget);
+      expect(find.textContaining('40'), findsNothing);
     });
 
     testWidgets('exposes an accessible status label', (tester) async {
@@ -200,6 +237,59 @@ void main() {
         expect(tester.takeException(), isNull);
       });
     }
+
+    testWidgets('swap cross-fades the outgoing and incoming phrase', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiReasoningText(
+            phrases: ['Alpha', 'Bravo', 'Charlie-the-longest'],
+            variant: BeuiReasoningTextVariant.swap,
+            interval: Duration(milliseconds: 800),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(find.textContaining('Alpha'), findsOneWidget);
+      expect(find.textContaining('Bravo'), findsNothing);
+
+      // Mid-swap (200ms window): both phrases are on screen at once.
+      await tester.pump(const Duration(milliseconds: 810));
+      await tester.pump(const Duration(milliseconds: 80));
+      expect(find.textContaining('Alpha'), findsOneWidget);
+      expect(find.textContaining('Bravo'), findsOneWidget);
+
+      // Settled: the outgoing phrase is gone.
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(find.textContaining('Alpha'), findsNothing);
+      expect(find.textContaining('Bravo'), findsOneWidget);
+    });
+
+    testWidgets('scramble mutates glyphs before settling on the phrase', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiReasoningText(
+            phrases: ['Alpha', 'Bravo', 'Charlie-the-longest'],
+            variant: BeuiReasoningTextVariant.scramble,
+            interval: Duration(milliseconds: 800),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(find.text('Alpha…'), findsOneWidget);
+
+      // Phrase flips, glyphs churn: the target is not readable yet.
+      await tester.pump(const Duration(milliseconds: 810));
+      await tester.pump(const Duration(milliseconds: 40));
+      expect(find.text('Bravo…'), findsNothing);
+
+      // Settles left-to-right onto the target within its 420ms window.
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Bravo…'), findsOneWidget);
+    });
 
     testWidgets('custom indicator replaces the default loader', (tester) async {
       await tester.pumpWidget(

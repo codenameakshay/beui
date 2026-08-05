@@ -8,11 +8,17 @@ import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 
-/// One entry in a [BeuiDock].
+/// One entry in a [BeuiDock] — an action, or a [BeuiDockItem.separator].
 ///
 /// Carries the glyph and an optional [onTap] / [active] state. The dock owns the
 /// gliding active pill (and, when enabled, magnification); an item only
 /// describes itself.
+///
+/// The source exports the separator as its own component (`DockSeparator`), but
+/// a dock is driven here by a *list of items* rather than by children, so the
+/// port folds it into this model as a named constructor. That keeps [BeuiDock]'s
+/// item list homogeneous ([List] of non-nullable [BeuiDockItem]) and keeps the
+/// grouping visible at the call site.
 class BeuiDockItem {
   /// Creates a dock item.
   const BeuiDockItem({
@@ -21,10 +27,39 @@ class BeuiDockItem {
     this.onTap,
     this.active = false,
     this.tooltip,
-  }) : assert(
+  }) : isSeparator = false,
+       assert(
          icon != null || child != null,
          'Provide either an icon glyph or a custom child.',
        );
+
+  /// A thin vertical rule that groups the actions on either side of it — the
+  /// port of the source's `DockSeparator` (`mx-1 h-6 w-px self-center
+  /// bg-border`), and what makes the "macOS-style dock with grouped actions"
+  /// arrangement expressible.
+  ///
+  /// It is furniture, not an entry: it is **skipped by hover magnification**
+  /// (it never scales, though it still occupies its 9px of the row so the
+  /// cursor→item distances stay true), **skipped by keyboard traversal** (it
+  /// holds nothing focusable), and **decorative for semantics** — the subtree is
+  /// wrapped in [ExcludeSemantics], the port of the source's `aria-hidden`. It
+  /// can never be [active], so it never attracts the pill.
+  ///
+  /// ```dart
+  /// BeuiDock(items: [
+  ///   BeuiDockItem(icon: LucideIcons.house, onTap: goHome),
+  ///   BeuiDockItem(icon: LucideIcons.mail, onTap: openMail),
+  ///   const BeuiDockItem.separator(),
+  ///   BeuiDockItem(icon: LucideIcons.settings, onTap: openSettings),
+  /// ]);
+  /// ```
+  const BeuiDockItem.separator()
+    : icon = null,
+      child = null,
+      onTap = null,
+      active = false,
+      tooltip = null,
+      isSeparator = true;
 
   /// Glyph for the item (framework-native — pick any [IconData]).
   final IconData? icon;
@@ -40,7 +75,17 @@ class BeuiDockItem {
 
   /// Accessible label / semantics for the item.
   final String? tooltip;
+
+  /// Whether this entry is a decorative rule rather than an action — true only
+  /// for [BeuiDockItem.separator]. See that constructor for what the dock skips.
+  final bool isSeparator;
 }
+
+/// Painted width of a [BeuiDockItem.separator]: the 1px rule plus its `mx-1`
+/// (4px) margins. Fixed — a separator does not scale with [BeuiDock.size], and
+/// the hover-distance math must use this real width so the items to its right
+/// magnify around the correct centres.
+const double _separatorWidth = 9;
 
 /// A dock — the Flutter port of beUI's `dock`.
 ///
@@ -73,6 +118,11 @@ class BeuiDockItem {
 /// continuous cursor-follow token (the same one `tilt-card` / `magnetic` use),
 /// re-targeted on every `MouseRegion.onHover`. On exit all items relax to 1.
 ///
+/// **Grouping.** A [BeuiDockItem.separator] entry renders the source's
+/// `DockSeparator` — a 1px vertical rule that splits the bar into groups. It is
+/// decorative throughout: never magnified, never focusable, never active, and
+/// hidden from semantics.
+///
 /// **Hover-only.** Magnification is driven by `MouseRegion`, so it never fires on
 /// touch (matching the source's `useHoverCapable()` gate). **Reduced motion**
 /// renders the static faithful dock even when [magnify] is `true` (no
@@ -89,8 +139,9 @@ class BeuiDock extends StatefulWidget {
     super.key,
   });
 
-  /// The items, left to right. A `null` entry renders a vertical separator.
-  final List<BeuiDockItem?> items;
+  /// The items, left to right. Use [BeuiDockItem.separator] to group them with
+  /// a vertical rule.
+  final List<BeuiDockItem> items;
 
   /// Opt in to the macOS-style cursor magnification (a Flutter-only enhancement;
   /// **not** in the React source). Defaults to `false` — the faithful flat dock.
@@ -155,7 +206,7 @@ class _BeuiDockState extends State<BeuiDock> {
     if (!mounted) return;
     final stackBox = _stackKey.currentContext?.findRenderObject() as RenderBox?;
     if (stackBox == null) return;
-    final idx = widget.items.indexWhere((it) => it?.active ?? false);
+    final idx = widget.items.indexWhere((it) => it.active);
     if (idx < 0) {
       if (_pillRect != null) setState(() => _pillRect = null);
       return;
@@ -183,14 +234,16 @@ class _BeuiDockState extends State<BeuiDock> {
 
     // Lay out resting item centres so onHover can map cursor x → per-item
     // distance. These stay in the bar's local space (the MouseRegion frame), so
-    // they include the bar's left padding. Separators take half an item-width;
-    // everything is gap-separated. Distance is measured from the *resting* grid
-    // even while items magnify — the standard, stable macOS approximation.
+    // they include the bar's left padding. Separators contribute their painted
+    // [_separatorWidth] (they are never magnified, but they do displace their
+    // neighbours); everything is gap-separated. Distance is measured from the
+    // *resting* grid even while items magnify — the standard, stable macOS
+    // approximation.
     final padH = widget.gap + 2;
     final centers = <double>[];
     var cursor = padH;
     for (final item in widget.items) {
-      final w = item == null ? widget.size / 2 : widget.size;
+      final w = item.isSeparator ? _separatorWidth : widget.size;
       centers.add(cursor + w / 2);
       cursor += w + widget.gap;
     }
@@ -201,13 +254,13 @@ class _BeuiDockState extends State<BeuiDock> {
       children: [
         for (var i = 0; i < widget.items.length; i++) ...[
           if (i > 0) SizedBox(width: widget.gap),
-          if (widget.items[i] == null)
+          if (widget.items[i].isSeparator)
             _Separator(size: widget.size, color: colors.border)
           else
             KeyedSubtree(
               key: _itemKeys[i],
               child: _DockItemView(
-                item: widget.items[i]!,
+                item: widget.items[i],
                 size: widget.size,
                 magnify: magnify,
                 cursorX: _cursorX,
@@ -443,9 +496,15 @@ class _DockPill extends StatelessWidget {
   }
 }
 
-/// A vertical hairline divider — `h-6 w-px self-center bg-border`. Sits in a
-/// full-height slot so it bottom-aligns with the items, with the line itself
-/// vertically centred (the source's `self-center`).
+/// A vertical hairline divider — `h-6 w-px self-center bg-border`, rendered for
+/// [BeuiDockItem.separator]. Sits in a full-height slot so it bottom-aligns with
+/// the items, with the line itself vertically centred (the source's
+/// `self-center`).
+///
+/// It is deliberately inert: no [MouseRegion], no scale builder and no gesture
+/// or focus node, so it is skipped by magnification and by keyboard traversal;
+/// [ExcludeSemantics] ports the source's `aria-hidden`, keeping it out of the
+/// screen-reader order.
 class _Separator extends StatelessWidget {
   const _Separator({required this.size, required this.color});
 
@@ -454,15 +513,19 @@ class _Separator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: size,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4), // mx-1
-        child: Center(
-          child: SizedBox(
-            width: 1,
-            height: 24, // h-6 = 24px, fixed regardless of icon size
-            child: ColoredBox(color: color),
+    return ExcludeSemantics(
+      child: SizedBox(
+        height: size,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: (_separatorWidth - 1) / 2, // mx-1
+          ),
+          child: Center(
+            child: SizedBox(
+              width: 1,
+              height: 24, // h-6 = 24px, fixed regardless of icon size
+              child: ColoredBox(color: color),
+            ),
           ),
         ),
       ),

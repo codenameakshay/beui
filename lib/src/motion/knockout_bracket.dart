@@ -65,10 +65,10 @@ class BeuiMatch {
   /// keeps spring identity as the bracket reflows.
   const BeuiMatch({
     required this.id,
-    required this.date,
     required this.status,
     required this.home,
     required this.away,
+    this.date,
     this.time,
     this.winner,
   });
@@ -77,7 +77,11 @@ class BeuiMatch {
   final String id;
 
   /// Human date label (e.g. `"Wed, 1 Jul"` or `"Today"`).
-  final String date;
+  ///
+  /// Optional: this model is shared with `BeuiKnockoutWheel`, whose source
+  /// `Match` type omits the fields the wheel never draws (date, time, status),
+  /// so a wheel-only dataset leaves it null and the card header renders empty.
+  final String? date;
 
   /// Optional kick-off time (e.g. `"4:00 am"`).
   final String? time;
@@ -177,11 +181,20 @@ bool _isInWindow(int r, int page, int visibleCols) =>
 /// **Uncontrolled paging** (mirroring the source): [initialRound] seeds the
 /// leftmost column, clamped to the valid range; [onRoundChanged] reports each
 /// chevron step.
+///
+/// An optional [thirdPlace] play-off sits below the tree under its own rule,
+/// headed by [thirdPlaceLabel] — it feeds off the semi-finals rather than into
+/// the final, so it is not part of the paging window.
+///
+/// The `rounds` array is the same one `BeuiKnockoutWheel` takes: one dataset
+/// draws either fixture style.
 class BeuiKnockoutBracket extends StatefulWidget {
   /// Creates a bracket from ordered [rounds] (16 → 8 → 4 → 2 → 1 matches).
   const BeuiKnockoutBracket({
     required this.rounds,
     this.initialRound = 1,
+    this.thirdPlace,
+    this.thirdPlaceLabel = 'Third place play-off',
     this.onRoundChanged,
     this.flagBuilder,
     super.key,
@@ -193,6 +206,17 @@ class BeuiKnockoutBracket extends StatefulWidget {
   /// Round shown as the leftmost column on mount. Defaults to 1, clamped to the
   /// valid paging range (source `initialRound`).
   final int initialRound;
+
+  /// Third place play-off, rendered under the bracket instead of inside it.
+  ///
+  /// It feeds off the semi-finals rather than into the final, so it gets its own
+  /// rule below the stage instead of a column — it never pages, and it is
+  /// unaffected by [initialRound].
+  final BeuiMatch? thirdPlace;
+
+  /// Heading over [thirdPlace]. Defaults to `"Third place play-off"`; rename it
+  /// when a tournament calls the fixture something else ("Bronze match").
+  final String thirdPlaceLabel;
 
   /// Called with the new leftmost-round index whenever the user pages.
   final ValueChanged<int>? onRoundChanged;
@@ -211,8 +235,10 @@ class _BeuiKnockoutBracketState extends State<BeuiKnockoutBracket> {
   late int _page;
 
   int get _maxPage =>
-      (widget.rounds.length - (widget.rounds.length < 2 ? 1 : 2))
-          .clamp(0, 1 << 30);
+      (widget.rounds.length - (widget.rounds.length < 2 ? 1 : 2)).clamp(
+        0,
+        1 << 30,
+      );
 
   @override
   void initState() {
@@ -370,6 +396,40 @@ class _BeuiKnockoutBracketState extends State<BeuiKnockoutBracket> {
                 ),
               ),
             ),
+            // Outside the bracket stage — the play-off feeds off the
+            // semi-finals rather than into the final, so it gets its own rule
+            // instead of a column and never pages with the tree.
+            if (widget.thirdPlace != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 32),
+                child: Container(
+                  width: containerWidth,
+                  padding: const EdgeInsets.only(left: _padX, top: 24),
+                  decoration: BoxDecoration(
+                    border: Border(top: BorderSide(color: colors.border)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.thirdPlaceLabel,
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 20 / 14,
+                          color: colors.mutedForeground.withValues(alpha: 0.7),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _MatchCard(
+                        match: widget.thirdPlace!,
+                        colors: colors,
+                        flagBuilder: widget.flagBuilder,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -398,8 +458,7 @@ _BracketLayout _computeLayout(
   final centers = List<List<double>>.filled(rounds.length, const []);
   final base = rounds[page];
   centers[page] = [
-    for (var i = 0; i < base.matches.length; i++)
-      _padY + i * _row + _cardH / 2,
+    for (var i = 0; i < base.matches.length; i++) _padY + i * _row + _cardH / 2,
   ];
   // Later rounds: each match centers on its two feeders.
   for (var r = page + 1; r < rounds.length; r++) {
@@ -696,9 +755,10 @@ class _MatchCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    match.time != null
-                        ? '${match.date}, ${match.time}'
-                        : match.date,
+                    [
+                      if (match.date != null) match.date!,
+                      if (match.time != null) match.time!,
+                    ].join(', '),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -949,8 +1009,12 @@ String _matchLabel(BeuiMatch m) {
   final sides = m.status == BeuiMatchStatus.finished
       ? '${_sideLabel(m.home)}, ${_sideLabel(m.away)}'
       : '${_sideLabel(m.home)} versus ${_sideLabel(m.away)}';
-  final when = m.status == BeuiMatchStatus.upcoming
-      ? ', ${m.date}${m.time != null ? ', ${m.time}' : ''}'
+  final schedule = [
+    if (m.date != null) m.date!,
+    if (m.time != null) m.time!,
+  ].join(', ');
+  final when = m.status == BeuiMatchStatus.upcoming && schedule.isNotEmpty
+      ? ', $schedule'
       : '';
   final winnerName = switch (m.winner) {
     BeuiMatchWinner.home => m.home.team?.name,

@@ -1,13 +1,12 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery entry for the slider family.
-///
-/// PRIMARY — the single-thumb [BeuiRangeSlider], a 1:1 port of the source
-/// `range-slider.preview`: a ticked slider with a "Drag the handle" caption and
-/// a live value readout. Below it, the Flutter-only [BeuiRangeSliderDual]
-/// (two thumbs, a band) — clearly labelled as an extension not present in the
-/// source.
+/// Gallery entry for the slider family — one section per component on the
+/// source's `motion/range-slider` page, in the order that page ships them:
+/// [BeuiRangeSlider], [BeuiFluidSlider], [BeuiWaveSlider], [BeuiBubbleSlider]
+/// and [BeuiRulerSlider]. Each section mirrors that component's own preview
+/// (same seed value, same caption, same props), so the route doubles as visual
+/// QA against beui.dev.
 Widget rangeSliderDemo(BuildContext context) => const _RangeSliderDemo();
 
 class _RangeSliderDemo extends StatefulWidget {
@@ -18,11 +17,12 @@ class _RangeSliderDemo extends StatefulWidget {
 }
 
 class _RangeSliderDemoState extends State<_RangeSliderDemo> {
-  // Primary — single-thumb, source preview parity (value 40, step 5).
-  double _value = 40;
-
-  // Flutter-only dual range.
-  RangeValues _band = const RangeValues(20, 60);
+  // Each preview's own seed value, from the source's usage snippets.
+  double _value = 40; // range-slider
+  double _brightness = 35; // range-slider-fluid
+  double _gain = 45; // range-slider-wave
+  double _bubble = 28; // range-slider-bubble
+  double _weight = 72.5; // range-slider-ruler
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,8 @@ class _RangeSliderDemoState extends State<_RangeSliderDemo> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ---- Single-thumb (the source's range-slider) ----
+          // ---- Range Slider ----
+          sectionLabel('Range slider'),
           caption('Drag the handle', '${_value.round()}'),
           BeuiRangeSlider(
             value: _value,
@@ -90,27 +91,55 @@ class _RangeSliderDemoState extends State<_RangeSliderDemo> {
           ),
           const SizedBox(height: 48),
 
-          // ---- Flutter-only dual range ----
-          sectionLabel('Dual — Flutter-only extension (not in the source)'),
-          caption(
-            'Price range',
-            '\$${_band.start.round()} – \$${_band.end.round()}',
+          // ---- Fluid Slider ----
+          sectionLabel('Fluid — no thumb, the label inverts under the fill'),
+          BeuiFluidSlider(
+            value: _brightness,
+            labelText: 'Brightness',
+            label: 'Brightness',
+            onChanged: (v) => setState(() => _brightness = v),
           ),
-          BeuiRangeSliderDual(
-            values: _band,
-            min: 0,
-            max: 100,
-            divisions: 20, // step of 5
-            label: 'Price range',
-            onChanged: (v) => setState(() => _band = v),
-          ),
-          const SizedBox(height: 40),
-          caption('Disabled', '30 – 70'),
-          const BeuiRangeSliderDual(
-            values: RangeValues(30, 70),
+          const SizedBox(height: 16),
+          const BeuiFluidSlider(
+            defaultValue: 60,
+            labelText: 'Disabled',
+            label: 'Disabled',
             enabled: false,
-            divisions: 20,
-            onChanged: null,
+          ),
+          const SizedBox(height: 48),
+
+          // ---- Wave Slider ----
+          sectionLabel('Wave — a crest travels with the value'),
+          caption('Gain', '${_gain.round()}'),
+          BeuiWaveSlider(
+            value: _gain,
+            label: 'Gain',
+            onChanged: (v) => setState(() => _gain = v),
+          ),
+          const SizedBox(height: 48),
+
+          // ---- Bubble Slider ----
+          sectionLabel('Bubble — leans and squashes with drag speed'),
+          caption('Drag fast and the bubble leans', '${_bubble.round()}'),
+          BeuiBubbleSlider(
+            value: _bubble,
+            label: 'Value',
+            onChanged: (v) => setState(() => _bubble = v),
+          ),
+          const SizedBox(height: 32),
+
+          // ---- Ruler Slider ----
+          sectionLabel('Ruler — the scale scrolls under a fixed needle'),
+          BeuiRulerSlider(
+            value: _weight,
+            min: 40,
+            max: 120,
+            step: 0.5,
+            gap: 12,
+            majorEvery: 10,
+            unit: 'kg',
+            label: 'Weight',
+            onChanged: (v) => setState(() => _weight = v),
           ),
         ],
       ),

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 /// Gallery route for [BeuiPreviewRail] — hover (or focus) the ticks to magnify
 /// the nearest one and glide the preview card along the rail. Mirrors the
 /// source `preview-rail.preview.tsx`: the same items, `defaultActiveId: 'docs'`,
-/// shown in both orientations.
+/// shown in both orientations, plus the mirrored [BeuiPreviewRailPreviewSide],
+/// a preview-less rail, and the resting `highlightActive` highlight.
 Widget previewRailDemo(BuildContext context) => const _PreviewRailDemo();
 
 const _items = <BeuiPreviewRailItem>[
@@ -126,6 +127,36 @@ class _PreviewRailDemo extends StatelessWidget {
               section(
                 'VERTICAL',
                 const BeuiPreviewRail(items: _items, defaultActiveId: 'docs'),
+              ),
+              const SizedBox(height: 48),
+              section(
+                'PREVIEW SIDE · BEFORE',
+                const BeuiPreviewRail(
+                  items: _items,
+                  label: 'Mirrored section navigation',
+                  previewSide: BeuiPreviewRailPreviewSide.before,
+                  defaultActiveId: 'docs',
+                ),
+              ),
+              const SizedBox(height: 48),
+              // No preview at all, and the selection keeps the pyramid anchored
+              // while nothing is hovered — the rail as a pure "you are here".
+              section(
+                'SHOW PREVIEW OFF · HIGHLIGHT ACTIVE',
+                BeuiPreviewRail(
+                  items: _items,
+                  label: 'Compact section navigation',
+                  showPreview: false,
+                  highlightActive: true,
+                  defaultActiveId: 'docs',
+                  onItemSelect: (item) =>
+                      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                        SnackBar(
+                          content: Text('Selected ${item.label}'),
+                          duration: const Duration(milliseconds: 900),
+                        ),
+                      ),
+                ),
               ),
               const SizedBox(height: 48),
               section(

@@ -140,9 +140,10 @@ export 'src/motion/preview_rail.dart'
         BeuiPreviewRail,
         BeuiPreviewRailItem,
         BeuiPreviewRailOrientation,
+        BeuiPreviewRailPreviewSide,
         BeuiPreviewRailStyle;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
-export 'src/motion/range_slider.dart' show BeuiRangeSlider, BeuiRangeSliderDual;
+export 'src/motion/range_slider.dart' show BeuiRangeSlider;
 export 'src/motion/scroll_progress.dart' show BeuiScrollProgress;
 export 'src/motion/scroll_reveal.dart' show BeuiScrollReveal;
 export 'src/motion/scroll_to.dart' show BeuiScrollTo;
@@ -152,7 +153,11 @@ export 'src/motion/shader_background/shader_background.dart'
     show BeuiShaderBackground, BeuiShaderVariant;
 export 'src/motion/shared_layout_bg.dart' show BeuiSharedLayoutBg;
 export 'src/motion/smooth_scroll.dart'
-    show BeuiSmoothScroll, BeuiSmoothScrollApi, beuiEaseScroll;
+    show
+        BeuiSmoothScroll,
+        BeuiSmoothScrollApi,
+        BeuiSmoothScrollOrientation,
+        beuiEaseScroll;
 export 'src/motion/swipeable_list.dart'
     show
         BeuiSwipeAction,
@@ -223,7 +228,10 @@ export 'src/motion/animated_sidebar.dart'
         BeuiAnimatedSidebarScope,
         BeuiAnimatedSidebarSide,
         BeuiAnimatedSidebarTrigger,
+        BeuiAnimatedSidebarVariant,
         beuiAnimatedSidebarActiveKey,
+        beuiAnimatedSidebarChromeKey,
+        beuiAnimatedSidebarInsetKey,
         beuiAnimatedSidebarMobilePanelKey,
         beuiAnimatedSidebarPanelKey,
         kBeuiAnimatedSidebarIconWidth,
@@ -341,7 +349,6 @@ export 'src/motion/agent_activity.dart'
 export 'src/motion/loading_states.dart'
     show
         BeuiAgentProgress,
-        BeuiLoadingStates,
         BeuiReasoningText,
         BeuiReasoningTextVariant,
         BeuiThinkingShimmer,
@@ -365,3 +372,17 @@ export 'src/motion/ai_sidebar.dart'
         beuiSidebarRemove,
         beuiSidebarRename;
 export 'src/motion/chat_app.dart' show BeuiChatApp;
+export 'src/motion/range_slider_bubble.dart' show BeuiBubbleSlider;
+export 'src/motion/range_slider_fluid.dart' show BeuiFluidSlider;
+export 'src/motion/range_slider_ruler.dart' show BeuiRulerSlider;
+export 'src/motion/range_slider_wave.dart' show BeuiWaveSlider;
+export 'src/motion/knockout_wheel.dart' show BeuiKnockoutWheel;
+export 'src/motion/attachment_upload.dart'
+    show
+        BeuiAttachmentKind,
+        BeuiAttachmentRejectReason,
+        BeuiAttachmentStatus,
+        BeuiAttachmentUpload,
+        BeuiAttachmentUploadController,
+        BeuiAttachmentUploadItem;
+export 'src/motion/chromatic_text_reveal.dart' show BeuiChromaticTextReveal;

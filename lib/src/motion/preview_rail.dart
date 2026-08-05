@@ -45,6 +45,25 @@ enum BeuiPreviewRailOrientation {
   horizontal,
 }
 
+/// Which side of the rail the floating preview pops out on
+/// (source `previewSide`).
+enum BeuiPreviewRailPreviewSide {
+  /// The preview floats on the leading side of the rail, and the rail itself
+  /// moves to the trailing edge — the mirror image of [after].
+  ///
+  /// The source expresses this with mirrored insets (`right-16 left-4` plus
+  /// `ml-auto` on the card), which only reads correctly once the consumer has
+  /// flipped the rail to the trailing edge with `className`. Class-name
+  /// overriding is [intentionally not ported](https://beui.dev), so the widget
+  /// owns the flip: choosing [before] both moves the rail and mirrors the
+  /// preview, giving the same rendering in one prop.
+  before,
+
+  /// The preview floats on the trailing side of the rail, hugging it — the
+  /// source default (`right-4 left-16`).
+  after,
+}
+
 /// Optional visual overrides for [BeuiPreviewRail]. Null fields resolve from the
 /// ambient [BeuiColors] theme extension (or sensible defaults). Mirrors the
 /// source's `railClassName` / `previewClassName` slots with typed fields.
@@ -56,6 +75,8 @@ class BeuiPreviewRailStyle {
     this.inactiveTickColor,
     this.tickLength,
     this.tickThickness,
+    this.itemSize,
+    @Deprecated('Renamed to itemSize, matching the source prop.')
     this.trackExtent,
   });
 
@@ -71,7 +92,28 @@ class BeuiPreviewRailStyle {
   /// Short axis / thickness of a tick line (source `h-0.5`/`w-0.5` → 2).
   final double? tickThickness;
 
-  /// Spacing track per item (source `1.25rem` → 20).
+  /// Extent of one item's slot along the rail axis — the source's `itemSize`
+  /// (its grid track, `repeat(n, itemSize)`, and each item's own height/width).
+  ///
+  /// **Why it lives on the style, not on [BeuiPreviewRail].** The source keeps
+  /// `itemSize` as a top-level prop because its sibling geometry (tick length,
+  /// tick thickness) is spelled in Tailwind classes rather than props. The port
+  /// has no class names: it collects that geometry into this one class, so
+  /// [tickLength], [tickThickness] and `itemSize` are the same *kind* of knob
+  /// and belong together. Putting `itemSize` on the widget would split the
+  /// rail's geometry across two places, and — because it is the same quantity
+  /// as the pre-existing [trackExtent] — would give one value two homes.
+  ///
+  /// Resolves to 20 when null. The source's own default is 24 (`h-6`); the port
+  /// keeps 20 so existing layouts and goldens are unchanged — set this to 24 to
+  /// match the source exactly.
+  final double? itemSize;
+
+  /// Spacing track per item.
+  ///
+  /// Superseded by [itemSize], which is the same quantity under the source's
+  /// own name. When both are set [itemSize] wins.
+  @Deprecated('Renamed to itemSize, matching the source prop.')
   final double? trackExtent;
 
   /// Returns a copy with the given fields replaced.
@@ -80,6 +122,8 @@ class BeuiPreviewRailStyle {
     Color? inactiveTickColor,
     double? tickLength,
     double? tickThickness,
+    double? itemSize,
+    @Deprecated('Renamed to itemSize, matching the source prop.')
     double? trackExtent,
   }) {
     return BeuiPreviewRailStyle(
@@ -87,6 +131,8 @@ class BeuiPreviewRailStyle {
       inactiveTickColor: inactiveTickColor ?? this.inactiveTickColor,
       tickLength: tickLength ?? this.tickLength,
       tickThickness: tickThickness ?? this.tickThickness,
+      itemSize: itemSize ?? this.itemSize,
+      // ignore: deprecated_member_use_from_same_package
       trackExtent: trackExtent ?? this.trackExtent,
     );
   }
@@ -107,9 +153,15 @@ class BeuiPreviewRailStyle {
 /// cross-fades on each change: opacity + a 4px rise + a σ3 → 0 unblur over 180ms
 /// `EASE_OUT` (exit quicker at 120ms), mirroring the source's `AnimatePresence`.
 ///
-/// Selection is decorative-free in the source — it drives only `aria-current`, not
-/// the tick visuals — so this port keeps the highlight purely hover/focus-driven
-/// and exposes selection through [activeId]/[onActiveChange] for parity.
+/// Selection is decorative-free in the source by default — it drives only
+/// `aria-current`, not the tick visuals — so the highlight stays purely
+/// hover/focus-driven and selection is exposed through
+/// [activeId]/[onActiveChange]/[onItemSelect]. Opt into a resting highlight on
+/// the selected tick with [highlightActive].
+///
+/// The preview can be dropped entirely with [showPreview], and floats on either
+/// side of the rail via [previewSide]. [label] names the rail for assistive
+/// technology.
 ///
 /// **Controlled + uncontrolled**, following the source: pass [activeId] +
 /// [onActiveChange] to control the selection, or omit [activeId] and seed with
@@ -123,11 +175,16 @@ class BeuiPreviewRail extends StatefulWidget {
   /// Creates a preview rail from [items].
   const BeuiPreviewRail({
     required this.items,
+    this.label = 'Section navigation',
     this.orientation = BeuiPreviewRailOrientation.vertical,
     this.activeId,
     this.defaultActiveId,
     this.onActiveChange,
+    this.onItemSelect,
     this.renderPreview,
+    this.showPreview = true,
+    this.previewSide = BeuiPreviewRailPreviewSide.after,
+    this.highlightActive = false,
     this.style,
     this.child,
     super.key,
@@ -135,6 +192,14 @@ class BeuiPreviewRail extends StatefulWidget {
 
   /// The rail entries, in order.
   final List<BeuiPreviewRailItem> items;
+
+  /// Accessible name for the rail as a whole — the source's `aria-label` on its
+  /// `<nav>` (default `"Section navigation"`).
+  ///
+  /// Applied as a labelled `Semantics` container around the ticks, so a screen
+  /// reader announces the group before its items. The ticks keep their own
+  /// labels ([BeuiPreviewRailItem.label]); this one names the group.
+  final String label;
 
   /// Layout axis. Defaults to [BeuiPreviewRailOrientation.vertical].
   final BeuiPreviewRailOrientation orientation;
@@ -147,11 +212,51 @@ class BeuiPreviewRail extends StatefulWidget {
   final String? defaultActiveId;
 
   /// Called with the id when an item is activated (tap/enter).
+  ///
+  /// Fires before [onItemSelect] on every activation, and is the callback half
+  /// of the controlled [activeId] pair — a controlled rail is expected to route
+  /// this back into [activeId].
   final ValueChanged<String>? onActiveChange;
+
+  /// Called with the whole item when an item is activated (tap/enter).
+  ///
+  /// Distinct from [onActiveChange]: that one reports the *selection change* and
+  /// is what a controlled parent echoes back into [activeId], while this one is
+  /// the plain "the user picked this entry" side effect (the source fires it
+  /// where the item's `href` navigation would happen). Both fire on every
+  /// activation, [onActiveChange] first — including re-activating the already
+  /// selected item.
+  final ValueChanged<BeuiPreviewRailItem>? onItemSelect;
 
   /// Builds the preview card body for [item]. When null a default card (label +
   /// description) is used.
   final Widget Function(BeuiPreviewRailItem item)? renderPreview;
+
+  /// Whether the floating preview is rendered at all (source `showPreview`,
+  /// default true).
+  ///
+  /// False leaves a bare rail: the ticks still form their hover pyramid, and
+  /// the space the card would occupy is not reserved. [renderPreview] and
+  /// [previewSide] are then unused.
+  final bool showPreview;
+
+  /// Which side of the rail the preview floats on (source `previewSide`,
+  /// default [BeuiPreviewRailPreviewSide.after]).
+  ///
+  /// Vertical orientation only — the horizontal rail always floats its card
+  /// above the ticks, as the source does. Direction-aware: "before" is the
+  /// leading side, so it flips under RTL.
+  final BeuiPreviewRailPreviewSide previewSide;
+
+  /// Whether the selected item stays highlighted while nothing is hovered or
+  /// focused (source `highlightActive`, default false).
+  ///
+  /// False (the source default) keeps the highlight purely pointer/keyboard
+  /// driven: at rest every tick sits at the 0.25 resting scale. True anchors
+  /// the pyramid on the selected tick instead, so the rail reads as "you are
+  /// here" at rest. It never summons the preview card — that stays bound to
+  /// hover/focus, matching the source.
+  final bool highlightActive;
 
   /// Optional visual overrides.
   final BeuiPreviewRailStyle? style;
@@ -196,9 +301,10 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
 
   String? get _displayedId => _hoveredId ?? _focusedId;
 
-  void _select(String id) {
-    if (widget.activeId == null) setState(() => _internalActiveId = id);
-    widget.onActiveChange?.call(id);
+  void _select(BeuiPreviewRailItem item) {
+    if (widget.activeId == null) setState(() => _internalActiveId = item.id);
+    widget.onActiveChange?.call(item.id);
+    widget.onItemSelect?.call(item);
   }
 
   void _setHovered(String? id) {
@@ -211,7 +317,12 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
 
   // ---- geometry -----------------------------------------------------------
 
-  double get _track => widget.style?.trackExtent ?? 20.0;
+  // itemSize is the source's name; trackExtent is its deprecated alias.
+  double get _track =>
+      widget.style?.itemSize ??
+      // ignore: deprecated_member_use_from_same_package
+      widget.style?.trackExtent ??
+      20.0;
   double get _tickLength => widget.style?.tickLength ?? 48.0;
   double get _tickThickness => widget.style?.tickThickness ?? 2.0;
 
@@ -261,6 +372,16 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
         widget.style?.inactiveTickColor ?? colors.mutedForeground;
     final selectedId = _selectedId;
 
+    // The pyramid's apex: whatever is hovered/focused, else the selection when
+    // [highlightActive] is on, else nothing (source `highlightedId`). Kept
+    // separate from `displayedIndex` because the card is bound to hover/focus
+    // only — highlightActive anchors the ticks, it never summons the preview.
+    final highlightedIndex = displayed
+        ? displayedIndex
+        : (widget.highlightActive
+              ? items.indexWhere((i) => i.id == selectedId)
+              : -1);
+
     // ---- rail -------------------------------------------------------------
 
     final ticks = <Widget>[
@@ -271,8 +392,8 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
           isHorizontal: _isHorizontal,
           reduce: reduce,
           selected: items[i].id == selectedId,
-          highlighted: i == displayedIndex,
-          scale: _scaleFor(i, displayedIndex),
+          highlighted: i == highlightedIndex,
+          scale: _scaleFor(i, highlightedIndex),
           length: _tickLength,
           thickness: _tickThickness,
           track: _track,
@@ -280,7 +401,7 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
           inactiveColor: inactiveTick,
           onHover: (hover) => _setHovered(hover ? items[i].id : null),
           onFocus: (focus) => _setFocused(focus ? items[i].id : null),
-          onTap: () => _select(items[i].id),
+          onTap: () => _select(items[i]),
         ),
     ];
 
@@ -289,10 +410,14 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
         : Column(mainAxisSize: MainAxisSize.min, children: ticks);
 
     // Clear hover when the pointer leaves the whole rail (source's
-    // `onPointerLeave` on the <nav>).
-    final railRegion = MouseRegion(
-      onExit: (_) => _setHovered(null),
-      child: rail,
+    // `onPointerLeave` on the <nav>). The labelled Semantics container is the
+    // source's `<nav aria-label={label}>`; explicitChildNodes keeps each tick
+    // its own node so the group name never swallows the item names.
+    final railRegion = Semantics(
+      container: true,
+      explicitChildNodes: true,
+      label: widget.label,
+      child: MouseRegion(onExit: (_) => _setHovered(null), child: rail),
     );
 
     // ---- preview card -----------------------------------------------------
@@ -323,7 +448,11 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
 
     // Position snaps under reduced motion (source `duration: 0`); otherwise it
     // springs along SPRING_LAYOUT — the source's `layoutId` shared-layout glide.
-    final glidingCard = reduce
+    // Skipped entirely when [showPreview] is false (source renders no preview
+    // container at all), so the card's springs never run.
+    final Widget? glidingCard = !widget.showPreview
+        ? null
+        : reduce
         ? positionedCard(glide(positionTarget))
         : SingleMotionBuilder(
             value: positionTarget,
@@ -333,24 +462,27 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
           );
 
     if (_isHorizontal) {
-      // Card floats above a bottom-aligned rail; only x glides.
+      // Card floats above a bottom-aligned rail; only x glides. `previewSide`
+      // is vertical-only in the source, so the card stays above either way.
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            height: 132,
-            width: n * _track,
-            child: OverflowBox(
-              maxWidth: double.infinity,
-              alignment: Alignment.bottomCenter,
-              child: Align(
+          if (glidingCard != null) ...[
+            SizedBox(
+              height: 132,
+              width: n * _track,
+              child: OverflowBox(
+                maxWidth: double.infinity,
                 alignment: Alignment.bottomCenter,
-                child: glidingCard,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: glidingCard,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 12),
+            const SizedBox(height: 12),
+          ],
           railRegion,
           // Source `min-h-0 flex-1` content: it follows the rail in flex order,
           // so here it sits below the horizontal rail (natural height — the
@@ -363,36 +495,45 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
       );
     }
 
-    // Vertical: rail on the left (48 wide), card to the right; only y glides.
-    // Source: the `flex-1` content fills the region to the right of the rail and
-    // the preview card floats over it (absolute, pointer-events-none — the port
-    // already wraps `glidingCard` in an IgnorePointer). When [child] is null the
-    // layout is unchanged.
-    Widget rightRegion = Align(
-      alignment: Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 384),
-        child: glidingCard,
-      ),
-    );
+    // Vertical: rail down one side (48 wide), card beside it; only y glides.
+    // Source: the `flex-1` content fills the region next to the rail and the
+    // preview card floats over it (absolute, pointer-events-none — the port
+    // already wraps `glidingCard` in an IgnorePointer). With [previewSide]
+    // `before` the whole arrangement mirrors: rail to the trailing edge, card
+    // hugging it from the leading side (the source's mirrored insets + the
+    // `ml-auto` that right-aligns the card).
+    final before = widget.previewSide == BeuiPreviewRailPreviewSide.before;
+    Widget? sideRegion = glidingCard == null
+        ? null
+        : Align(
+            // The card hugs the rail: it sits at whichever edge the rail is on.
+            alignment: before
+                ? AlignmentDirectional.centerEnd
+                : AlignmentDirectional.centerStart,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 384),
+              child: glidingCard,
+            ),
+          );
     if (widget.child != null) {
-      rightRegion = Stack(
-        children: [
-          Positioned.fill(child: widget.child!),
-          rightRegion,
-        ],
-      );
+      sideRegion = sideRegion == null
+          ? widget.child!
+          : Stack(
+              children: [
+                Positioned.fill(child: widget.child!),
+                sideRegion,
+              ],
+            );
     }
 
+    final beside = Expanded(child: sideRegion ?? const SizedBox.shrink());
     return SizedBox(
       height: n * _track,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          railRegion,
-          const SizedBox(width: 16),
-          Expanded(child: rightRegion),
-        ],
+        children: before
+            ? [beside, const SizedBox(width: 16), railRegion]
+            : [railRegion, const SizedBox(width: 16), beside],
       ),
     );
   }

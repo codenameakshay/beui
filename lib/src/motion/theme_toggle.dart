@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 
 import '../tokens/icons.dart';
+import '../tokens/motion.dart' show beuiEaseOut;
 import 'action_swap.dart' show BeuiActionSwapIcon, BeuiActionSwapVariant;
 
 /// How a [BeuiThemeSwitcher] reveals the new theme — the Flutter port of beUI's
@@ -23,9 +24,22 @@ enum BeuiThemeRevealVariant {
   /// A circle expands from the origin, the seam softened with a fading blur
   /// (source `circle-blur`, 700ms + `blur(8px)`→0).
   circleBlur,
+
+  /// Vertical slats open across the whole surface like a shutter — the source's
+  /// `blinds` (700ms `EASE_OUT`). The source masks the incoming view with a
+  /// repeating 72px-tiled `linear-gradient(90deg, …)` whose opaque band widens
+  /// from `-20px` to `72px`; this port clips the same widening band per tile.
+  ///
+  /// The slats sweep the entire surface, so [BeuiThemeRevealStart] is
+  /// **ignored** for this variant — matching the source, which sets no
+  /// `--beui-vt-origin` for `blinds` ("there is no origin point to set").
+  blinds,
 }
 
 /// Origin the reveal grows from (source `RectStart`).
+///
+/// Ignored by [BeuiThemeRevealVariant.blinds], whose slats open across the
+/// whole surface rather than growing from a point.
 enum BeuiThemeRevealStart {
   topLeft,
   topRight,
@@ -192,6 +206,7 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     _controller
       ..stop()
       ..value = 0
+      // Source durations: rect 400ms, circle / circle-blur / blinds 700ms.
       ..duration = variant == BeuiThemeRevealVariant.rectangle
           ? const Duration(milliseconds: 400)
           : const Duration(milliseconds: 700);
@@ -238,12 +253,17 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
 
     if (_oldImage == null) return live;
 
-    // rectangle = the CSS `ease-out` keyword, cubic-bezier(0, 0, 0.58, 1)
-    // (NOT Flutter's Curves.easeOut, which is Material's (0, 0, 0.2, 1));
-    // circle = the source's cubic-bezier(.4,0,.2,1).
-    final curve = _variant == BeuiThemeRevealVariant.rectangle
-        ? const Cubic(0, 0, 0.58, 1)
-        : const Cubic(0.4, 0, 0.2, 1);
+    // Per-variant curve, verbatim from the source's `VT_CSS`:
+    // - rectangle → the CSS `ease-out` *keyword*, cubic-bezier(0, 0, 0.58, 1)
+    //   (NOT Flutter's Curves.easeOut, which is Material's (0, 0, 0.2, 1));
+    // - circle / circle-blur → cubic-bezier(.4, 0, .2, 1);
+    // - blinds → `${EASE_OUT_CSS}`, i.e. the shared [beuiEaseOut] token.
+    final curve = switch (_variant) {
+      BeuiThemeRevealVariant.rectangle => const Cubic(0, 0, 0.58, 1),
+      BeuiThemeRevealVariant.circle ||
+      BeuiThemeRevealVariant.circleBlur => const Cubic(0.4, 0, 0.2, 1),
+      BeuiThemeRevealVariant.blinds => beuiEaseOut,
+    };
     return Stack(
       children: [
         live, // live new theme (revealed as the overlay clips away)
@@ -459,6 +479,7 @@ class _RevealClipper extends CustomClipper<Path> {
   }
 
   Path _revealPath(Size size) {
+    if (variant == BeuiThemeRevealVariant.blinds) return _blindsPath(size);
     if (variant == BeuiThemeRevealVariant.rectangle) {
       final f = _rectFrom(start); // (top, right, bottom, left) fractions
       final t = f[0] * (1 - progress);
@@ -479,6 +500,41 @@ class _RevealClipper extends CustomClipper<Path> {
     return Path()..addOval(
       Rect.fromCircle(center: center, radius: progress * _endRadius(size)),
     );
+  }
+
+  /// Width of one shutter tile — source `mask-size: 72px 100%`.
+  static const double blindsTile = 72;
+
+  /// Soft trailing edge of each slat — source's `+ 20px` gradient stop.
+  static const double blindsFeather = 20;
+
+  /// One widening slat per 72px tile, so the new theme opens across the surface
+  /// like a shutter (source `beui-blinds-reveal`).
+  ///
+  /// The source animates a registered custom property `--beui-vt-slat` from
+  /// `-20px` → `72px` and masks the incoming view with
+  /// `linear-gradient(90deg, #000 0 var(--slat), transparent calc(var(--slat) + 20px))`
+  /// repeated every 72px. A [ClipPath] has no soft edge, so the hard clip is
+  /// placed at the mask's **50%-alpha boundary** (`slat + 20/2`) — the closest
+  /// single-edge equivalent of the feathered band, and the reason the slats
+  /// still start closed at t=0 and land fully open at t=1.
+  Path _blindsPath(Size size) {
+    // slat = lerp(-20, 72, progress); edge = slat + feather / 2.
+    const span = blindsTile + blindsFeather; // -20 → 72
+    final edge = (-blindsFeather + span * progress + blindsFeather / 2).clamp(
+      0.0,
+      blindsTile,
+    );
+    final path = Path();
+    if (edge <= 0) return path;
+    final tiles = (size.width / blindsTile).ceil();
+    for (var i = 0; i < tiles; i++) {
+      final left = i * blindsTile;
+      path.addRect(
+        Rect.fromLTWH(left, 0, math.min(edge, size.width - left), size.height),
+      );
+    }
+    return path;
   }
 
   /// The source grows the clip to `circle(150%)`, and CSS resolves a circle()

@@ -1018,7 +1018,7 @@ class _DockDemoState extends State<_DockDemo> {
     ('discover', LucideIcons.sparkles),
   ];
 
-  List<BeuiDockItem?> _buildItems() => [
+  List<BeuiDockItem> _buildItems() => [
     for (final (id, icon) in _items)
       BeuiDockItem(
         icon: icon,
@@ -1026,7 +1026,9 @@ class _DockDemoState extends State<_DockDemo> {
         active: _active == id,
         onTap: () => setState(() => _active = id),
       ),
-    null, // separator
+    // Groups the settings action away from the five navigation actions
+    // (source: DockSeparator).
+    const BeuiDockItem.separator(),
     BeuiDockItem(
       icon: LucideIcons.settings,
       tooltip: 'settings',
@@ -1425,6 +1427,35 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
             fontWeight: FontWeight.w500,
             color: colors.foreground,
           ),
+        ),
+        const SizedBox(height: 44),
+
+        // Chromatic — a colour edge sweeps each word in, then cycles.
+        caption('Chromatic — a colour edge paints each word in (cycles)'),
+        BeuiChromaticTextReveal(
+          prefix: 'Ship interfaces that feel',
+          words: const ['alive', 'considered', 'effortless', 'fast'],
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.6,
+            color: colors.foreground,
+          ),
+        ),
+        const SizedBox(height: 14),
+        // A custom palette + a slower, longer-resting sweep.
+        BeuiChromaticTextReveal(
+          prefix: 'Built for',
+          words: const ['Flutter', 'iOS', 'Android', 'the web'],
+          colors: const [
+            Color(0xFF34D399),
+            Color(0xFF22D3EE),
+            Color(0xFF60A5FA),
+          ],
+          foregroundColor: colors.mutedForeground,
+          duration: const Duration(milliseconds: 1600),
+          pauseDuration: const Duration(milliseconds: 1100),
+          style: TextStyle(fontSize: 14, color: colors.mutedForeground),
         ),
       ],
     );

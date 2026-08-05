@@ -44,6 +44,26 @@ const _labelExit = Duration(milliseconds: 120);
 /// Keyboard shortcut key (source `SIDEBAR_KEYBOARD_SHORTCUT = "b"` with ⌘/Ctrl).
 const _shortcutKey = LogicalKeyboardKey.keyB;
 
+/// Detached-surface inset for the `floating` / `inset` variants — source `m-2`
+/// (0.5rem), which is also what makes their height `calc(100svh - 1rem)`.
+const double _detachedMargin = 8;
+
+/// Corner radius of a detached panel — source `rounded-2xl` (Tailwind v4: 1rem).
+const double _detachedRadius = 16;
+
+/// Source `shadow-sm` (Tailwind v4): `0 1px 3px 0 rgb(0 0 0 / .1)`,
+/// `0 1px 2px -1px rgb(0 0 0 / .1)`. Carried by the `floating` panel and by the
+/// `inset` variant's content surface.
+const List<BoxShadow> _detachedShadow = [
+  BoxShadow(color: Color(0x1A000000), blurRadius: 3, offset: Offset(0, 1)),
+  BoxShadow(
+    color: Color(0x1A000000),
+    blurRadius: 2,
+    spreadRadius: -1,
+    offset: Offset(0, 1),
+  ),
+];
+
 // ---------------------------------------------------------------------------
 // Test handles
 // ---------------------------------------------------------------------------
@@ -66,6 +86,21 @@ const beuiAnimatedSidebarActiveKey = ValueKey<String>(
   'beui_animated_sidebar_active',
 );
 
+/// Test handle on the desktop panel's chrome — the surface carrying the
+/// variant's background, border, corner radius and shadow.
+@visibleForTesting
+const beuiAnimatedSidebarChromeKey = ValueKey<String>(
+  'beui_animated_sidebar_chrome',
+);
+
+/// Test handle on the `inset` variant's detached content surface (source
+/// `AnimatedSidebarInset`'s `md:peer-data-[variant=inset]` chrome). Absent for
+/// the `sidebar` and `floating` variants, and on mobile.
+@visibleForTesting
+const beuiAnimatedSidebarInsetKey = ValueKey<String>(
+  'beui_animated_sidebar_inset',
+);
+
 // ---------------------------------------------------------------------------
 // Public enums & models
 // ---------------------------------------------------------------------------
@@ -77,6 +112,28 @@ enum BeuiAnimatedSidebarSide {
 
   /// Right edge.
   right,
+}
+
+/// Panel chrome on desktop (source `SidebarVariant`). Ignored on mobile, where
+/// the sheet always renders as a flush, bordered, shadowed drawer — exactly as
+/// the source, whose `AnimatedSidebar` short-circuits to `MobileSidebar` before
+/// the variant is read.
+enum BeuiAnimatedSidebarVariant {
+  /// Flush panel with a border on its inner edge — a left sidebar borders
+  /// right, a right sidebar borders left. Source `"sidebar"` (the default).
+  sidebar,
+
+  /// A detached card: inset by 8 on every side (source `m-2` +
+  /// `h-[calc(100svh-1rem)]`), 16 corner radius (`rounded-2xl`), bordered all
+  /// round and lifted with a `shadow-sm`. Source `"floating"`.
+  floating,
+
+  /// Same detached geometry as [floating] but with **no** border or shadow —
+  /// and the main content ([BeuiAnimatedSidebar.child]) becomes the detached
+  /// surface instead, gaining the margin, radius and shadow (source
+  /// `AnimatedSidebarInset`'s `md:peer-data-[variant=inset]` rules).
+  /// Source `"inset"`.
+  inset,
 }
 
 /// Collapse behaviour when desktop [BeuiAnimatedSidebar.expanded] is false
@@ -277,8 +334,9 @@ class BeuiAnimatedSidebarTrigger extends StatelessWidget {
 ///
 /// | Source | Flutter |
 /// | --- | --- |
-/// | `AnimatedSidebarProvider` open/openMobile | [expanded] / internal mobile open |
-/// | `AnimatedSidebar` collapsible/side | [collapsible] / [side] |
+/// | `AnimatedSidebarProvider` open/openMobile | [expanded] / [openMobile] (both controlled + uncontrolled) |
+/// | `AnimatedSidebar` collapsible/side/variant | [collapsible] / [side] / [variant] |
+/// | `AnimatedSidebarInset` inset chrome | [child], wrapped when [variant] is inset |
 /// | Menu groups + items | [groups] of [BeuiAnimatedSidebarItem] |
 /// | Nested `MenuSub` | [BeuiAnimatedSidebarItem.children] |
 /// | Active `layoutId` pill | shared-layout active indicator |
@@ -304,6 +362,9 @@ class BeuiAnimatedSidebar extends StatefulWidget {
     this.expanded,
     this.defaultExpanded = true,
     this.onExpandedChange,
+    this.openMobile,
+    this.defaultOpenMobile = false,
+    this.onOpenMobileChange,
     this.selectedId,
     this.defaultSelectedId,
     this.onSelected,
@@ -311,6 +372,7 @@ class BeuiAnimatedSidebar extends StatefulWidget {
     this.footer,
     this.child,
     this.side = BeuiAnimatedSidebarSide.left,
+    this.variant = BeuiAnimatedSidebarVariant.sidebar,
     this.collapsible = BeuiAnimatedSidebarCollapsible.icon,
     this.width = kBeuiAnimatedSidebarWidth,
     this.iconWidth = kBeuiAnimatedSidebarIconWidth,
@@ -332,6 +394,19 @@ class BeuiAnimatedSidebar extends StatefulWidget {
 
   /// Called when desktop expanded changes.
   final ValueChanged<bool>? onExpandedChange;
+
+  /// Mobile sheet open state (controlled — source `openMobile`). When null the
+  /// sidebar owns the state internally, seeded from [defaultOpenMobile].
+  final bool? openMobile;
+
+  /// Initial mobile sheet state when uncontrolled (source `defaultOpenMobile`,
+  /// default `false`).
+  final bool defaultOpenMobile;
+
+  /// Called when the mobile sheet opens or closes (source
+  /// `onOpenMobileChange`). Fires for the trigger, the ⌘/Ctrl+B shortcut, the
+  /// barrier / close button, and the auto-close after selecting a destination.
+  final ValueChanged<bool>? onOpenMobileChange;
 
   /// Selected item id (controlled).
   final String? selectedId;
@@ -355,6 +430,9 @@ class BeuiAnimatedSidebar extends StatefulWidget {
 
   /// Edge the sidebar sits on.
   final BeuiAnimatedSidebarSide side;
+
+  /// Desktop panel chrome — flush, floating card, or inset. Ignored on mobile.
+  final BeuiAnimatedSidebarVariant variant;
 
   /// How the desktop sidebar collapses.
   final BeuiAnimatedSidebarCollapsible collapsible;
@@ -383,7 +461,7 @@ class BeuiAnimatedSidebar extends StatefulWidget {
 
 class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
   late bool _internalExpanded;
-  late bool _openMobile;
+  late bool _internalOpenMobile;
   String? _internalSelected;
   final Set<String> _openSections = {};
   final GlobalKey _panelStackKey = GlobalKey();
@@ -392,12 +470,17 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
   late final FocusNode _shortcutFocus;
 
   bool get _controlledExpanded => widget.expanded != null;
+  bool get _controlledOpenMobile => widget.openMobile != null;
   bool get _controlledSelected => widget.selectedId != null;
 
   bool get _expanded {
     if (widget.collapsible == BeuiAnimatedSidebarCollapsible.none) return true;
     return _controlledExpanded ? widget.expanded! : _internalExpanded;
   }
+
+  /// Mirrors `openMobile ?? internalOpenMobile` in the source provider.
+  bool get _openMobile =>
+      _controlledOpenMobile ? widget.openMobile! : _internalOpenMobile;
 
   String? get _selected {
     final id = _controlledSelected ? widget.selectedId : _internalSelected;
@@ -410,7 +493,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
   void initState() {
     super.initState();
     _internalExpanded = widget.defaultExpanded;
-    _openMobile = false;
+    _internalOpenMobile = widget.defaultOpenMobile;
     _internalSelected = widget.defaultSelectedId ?? _firstSelectableId();
     _shortcutFocus = FocusNode(debugLabel: 'beui_animated_sidebar_shortcut');
     _ensureItemKeys();
@@ -508,8 +591,13 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
     widget.onExpandedChange?.call(next);
   }
 
+  /// Same controlled/uncontrolled shape as [_setExpanded] (source `setOpenMobile`:
+  /// only writes internal state when the prop is uncontrolled, always notifies).
   void _setOpenMobile(bool next) {
-    setState(() => _openMobile = next);
+    if (!_controlledOpenMobile) {
+      setState(() => _internalOpenMobile = next);
+    }
+    widget.onOpenMobileChange?.call(next);
   }
 
   void _toggle({required bool isMobile}) {
@@ -693,6 +781,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
       expanded: expanded,
       collapsible: widget.collapsible,
       side: widget.side,
+      variant: widget.variant,
       colors: colors,
       reduce: reduce,
       onRailTap: () => _toggle(isMobile: false),
@@ -701,7 +790,15 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
 
     final children = <Widget>[
       rail,
-      if (widget.child != null) Expanded(child: widget.child!),
+      if (widget.child != null)
+        Expanded(
+          child: _InsetContent(
+            variant: widget.variant,
+            side: widget.side,
+            colors: colors,
+            child: widget.child!,
+          ),
+        ),
     ];
     if (widget.side == BeuiAnimatedSidebarSide.right) {
       return Row(
@@ -726,6 +823,7 @@ class _DesktopRail extends StatelessWidget {
     required this.expanded,
     required this.collapsible,
     required this.side,
+    required this.variant,
     required this.colors,
     required this.reduce,
     required this.onRailTap,
@@ -736,10 +834,41 @@ class _DesktopRail extends StatelessWidget {
   final bool expanded;
   final BeuiAnimatedSidebarCollapsible collapsible;
   final BeuiAnimatedSidebarSide side;
+  final BeuiAnimatedSidebarVariant variant;
   final BeuiColors colors;
   final bool reduce;
   final VoidCallback onRailTap;
   final Widget child;
+
+  /// `sidebar` sits flush; `floating` / `inset` are detached cards inset by
+  /// `m-2` on every edge (which is also what makes them `100svh - 1rem` tall).
+  bool get _detached => variant != BeuiAnimatedSidebarVariant.sidebar;
+
+  /// Source per-variant panel chrome:
+  /// - `sidebar` → a single border on the inner edge, square, flat;
+  /// - `floating` → `rounded-2xl border border-border shadow-sm`;
+  /// - `inset` → `rounded-2xl` only (no border, no shadow).
+  BoxDecoration get _decoration => BoxDecoration(
+    color: colors.background,
+    borderRadius: _detached
+        ? BorderRadius.circular(_detachedRadius)
+        : BorderRadius.zero,
+    border: switch (variant) {
+      BeuiAnimatedSidebarVariant.sidebar => Border(
+        right: side == BeuiAnimatedSidebarSide.left
+            ? BorderSide(color: colors.border)
+            : BorderSide.none,
+        left: side == BeuiAnimatedSidebarSide.right
+            ? BorderSide(color: colors.border)
+            : BorderSide.none,
+      ),
+      BeuiAnimatedSidebarVariant.floating => Border.all(color: colors.border),
+      BeuiAnimatedSidebarVariant.inset => null,
+    },
+    boxShadow: variant == BeuiAnimatedSidebarVariant.floating
+        ? _detachedShadow
+        : null,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -758,6 +887,17 @@ class _DesktopRail extends StatelessWidget {
         final offcanvasHidden =
             collapsible == BeuiAnimatedSidebarCollapsible.offcanvas &&
             !expanded;
+        // The rail reserves `width` in the Row; a detached panel gives back
+        // `m-2` on each side, so the card itself is 16 narrower (and, via the
+        // same Padding, 16 shorter — the source's `h-[calc(100svh-1rem)]`).
+        final margin = _detached
+            ? const EdgeInsets.all(_detachedMargin)
+            : EdgeInsets.zero;
+        final outer = width < 1 ? kBeuiAnimatedSidebarWidth : width;
+        final inner = (outer - margin.horizontal).clamp(0.0, double.infinity);
+        final radius = _detached
+            ? BorderRadius.circular(_detachedRadius)
+            : BorderRadius.zero;
 
         return SizedBox(
           width: width,
@@ -776,44 +916,41 @@ class _DesktopRail extends StatelessWidget {
                     : const Duration(milliseconds: 360),
                 curve: beuiEaseDrawer,
                 opacity: offcanvasHidden ? 0 : 1,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.background,
-                    border: Border(
-                      right: side == BeuiAnimatedSidebarSide.left
-                          ? BorderSide(color: colors.border)
-                          : BorderSide.none,
-                      left: side == BeuiAnimatedSidebarSide.right
-                          ? BorderSide(color: colors.border)
-                          : BorderSide.none,
-                    ),
-                  ),
-                  child: SizedBox(
-                    width: width < 1 ? kBeuiAnimatedSidebarWidth : width,
-                    child: Stack(
-                      clipBehavior: Clip.hardEdge,
-                      children: [
-                        Positioned.fill(child: child),
-                        // Edge rail hit-target (source AnimatedSidebarRail).
-                        Positioned(
-                          top: 0,
-                          bottom: 0,
-                          right: side == BeuiAnimatedSidebarSide.left
-                              ? 0
-                              : null,
-                          left: side == BeuiAnimatedSidebarSide.right
-                              ? 0
-                              : null,
-                          width: 12,
-                          child: MouseRegion(
-                            cursor: SystemMouseCursors.resizeColumn,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: onRailTap,
+                child: Padding(
+                  padding: margin,
+                  child: DecoratedBox(
+                    key: beuiAnimatedSidebarChromeKey,
+                    decoration: _decoration,
+                    child: ClipRRect(
+                      borderRadius: radius,
+                      child: SizedBox(
+                        width: inner,
+                        child: Stack(
+                          clipBehavior: Clip.hardEdge,
+                          children: [
+                            Positioned.fill(child: child),
+                            // Edge rail hit-target (source AnimatedSidebarRail).
+                            Positioned(
+                              top: 0,
+                              bottom: 0,
+                              right: side == BeuiAnimatedSidebarSide.left
+                                  ? 0
+                                  : null,
+                              left: side == BeuiAnimatedSidebarSide.right
+                                  ? 0
+                                  : null,
+                              width: 12,
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.resizeColumn,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: onRailTap,
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -825,6 +962,56 @@ class _DesktopRail extends StatelessWidget {
     );
 
     return rail;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Inset content surface (source `AnimatedSidebarInset`)
+// ---------------------------------------------------------------------------
+
+/// Wraps [BeuiAnimatedSidebar.child]. Only the `inset` variant gives it chrome:
+/// source `md:peer-data-[variant=inset]:m-2 …:ml-0 …:rounded-2xl …:shadow-sm`.
+///
+/// The source hardcodes `ml-0` because its inset sits to the *right* of a
+/// left-hand sidebar; the margin is dropped on the edge the sidebar already
+/// spaced with its own `m-2`, so this port resolves that edge from [side]
+/// rather than pinning it to the left.
+class _InsetContent extends StatelessWidget {
+  const _InsetContent({
+    required this.variant,
+    required this.side,
+    required this.colors,
+    required this.child,
+  });
+
+  final BeuiAnimatedSidebarVariant variant;
+  final BeuiAnimatedSidebarSide side;
+  final BeuiColors colors;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (variant != BeuiAnimatedSidebarVariant.inset) return child;
+
+    final onLeft = side == BeuiAnimatedSidebarSide.left;
+    final radius = BorderRadius.circular(_detachedRadius);
+    return Padding(
+      padding: EdgeInsets.only(
+        left: onLeft ? 0 : _detachedMargin,
+        right: onLeft ? _detachedMargin : 0,
+        top: _detachedMargin,
+        bottom: _detachedMargin,
+      ),
+      child: DecoratedBox(
+        key: beuiAnimatedSidebarInsetKey,
+        decoration: BoxDecoration(
+          color: colors.background,
+          borderRadius: radius,
+          boxShadow: _detachedShadow,
+        ),
+        child: ClipRRect(borderRadius: radius, child: child),
+      ),
+    );
   }
 }
 

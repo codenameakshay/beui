@@ -17,6 +17,16 @@ class _AnimatedSidebarDemo extends StatefulWidget {
 class _AnimatedSidebarDemoState extends State<_AnimatedSidebarDemo> {
   String _active = 'people';
   bool _expanded = true;
+  BeuiAnimatedSidebarVariant _variant = BeuiAnimatedSidebarVariant.sidebar;
+
+  static const _variantBlurb = {
+    BeuiAnimatedSidebarVariant.sidebar:
+        'Flush panel, bordered on the inner edge.',
+    BeuiAnimatedSidebarVariant.floating:
+        'Detached card — inset, rounded, bordered, lifted by a shadow.',
+    BeuiAnimatedSidebarVariant.inset:
+        'Detached panel with no chrome; the content area becomes the card.',
+  };
 
   static final _quickLinks = BeuiAnimatedSidebarGroup(
     items: [
@@ -146,30 +156,98 @@ class _AnimatedSidebarDemoState extends State<_AnimatedSidebarDemo> {
 
     return Padding(
       padding: const EdgeInsets.all(12),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.background,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: colors.foreground.withValues(alpha: 0.08)),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: SizedBox(
-            height: 720,
-            child: BeuiAnimatedSidebar(
-              groups: [_quickLinks, _workspaces],
-              expanded: _expanded,
-              onExpandedChange: (v) => setState(() => _expanded = v),
-              selectedId: _active,
-              onSelected: (id) => setState(() => _active = id),
-              semanticLabel: 'Solace workspace',
-              header: _Header(colors: colors),
-              footer: _Footer(colors: colors),
-              child: _Inset(title: _title, colors: colors),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _VariantPicker(
+            colors: colors,
+            value: _variant,
+            onChanged: (v) => setState(() => _variant = v),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _variantBlurb[_variant]!,
+            style: TextStyle(fontSize: 12, color: colors.mutedForeground),
+          ),
+          const SizedBox(height: 12),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.background,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: colors.foreground.withValues(alpha: 0.08),
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: SizedBox(
+                height: 720,
+                child: BeuiAnimatedSidebar(
+                  groups: [_quickLinks, _workspaces],
+                  variant: _variant,
+                  expanded: _expanded,
+                  onExpandedChange: (v) => setState(() => _expanded = v),
+                  selectedId: _active,
+                  onSelected: (id) => setState(() => _active = id),
+                  semanticLabel: 'Solace workspace',
+                  header: _Header(colors: colors),
+                  footer: _Footer(colors: colors),
+                  child: _Inset(title: _title, colors: colors),
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
+    );
+  }
+}
+
+/// Segmented picker for [BeuiAnimatedSidebarVariant] — flips the shell's panel
+/// chrome between `sidebar`, `floating` and `inset`.
+class _VariantPicker extends StatelessWidget {
+  const _VariantPicker({
+    required this.colors,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final BeuiColors colors;
+  final BeuiAnimatedSidebarVariant value;
+  final ValueChanged<BeuiAnimatedSidebarVariant> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final v in BeuiAnimatedSidebarVariant.values)
+          Material(
+            color: v == value ? colors.muted : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () => onChanged(v),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                child: Text(
+                  v.name,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: v == value
+                        ? colors.foreground
+                        : colors.mutedForeground,
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

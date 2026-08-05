@@ -49,16 +49,30 @@ void _sizeView(WidgetTester tester, {Size size = const Size(1400, 1000)}) {
   addTearDown(tester.view.reset);
 }
 
+/// The source `THIRD_PLACE`: both slots stay TBD until the semi-finals resolve.
+const _thirdPlace = BeuiMatch(
+  id: 'tp1',
+  date: 'Sun, 6 Jan',
+  time: '3:00 pm',
+  status: BeuiMatchStatus.upcoming,
+  home: BeuiMatchSide(),
+  away: BeuiMatchSide(),
+);
+
 Widget _app({
   required List<BeuiBracketRound> rounds,
   int initialRound = 0,
   ValueChanged<int>? onRoundChanged,
   bool reduce = false,
+  BeuiMatch? thirdPlace,
+  String? thirdPlaceLabel,
 }) {
   Widget child = BeuiKnockoutBracket(
     rounds: rounds,
     initialRound: initialRound,
     onRoundChanged: onRoundChanged,
+    thirdPlace: thirdPlace,
+    thirdPlaceLabel: thirdPlaceLabel ?? 'Third place play-off',
   );
   if (reduce) {
     final inner = child;
@@ -165,6 +179,68 @@ void main() {
       await tester.pumpWidget(_app(rounds: _bracket(), initialRound: 1));
       await tester.pumpAndSettle();
       expect(find.text('TBD'), findsWidgets);
+    });
+  });
+
+  group('BeuiKnockoutBracket third place play-off', () {
+    testWidgets('is absent unless a thirdPlace fixture is passed', (
+      tester,
+    ) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pumpAndSettle();
+      expect(find.text('Third place play-off'), findsNothing);
+    });
+
+    testWidgets('renders its heading and card under the tree', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(
+        _app(rounds: _bracket(), thirdPlace: _thirdPlace),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Third place play-off'), findsOneWidget);
+      // The play-off's own card — its date/time header is unique to it.
+      expect(find.text('Sun, 6 Jan, 3:00 pm'), findsOneWidget);
+      // …and it sits below the bracket stage, not inside a column of it.
+      expect(
+        tester.getTopLeft(find.text('Third place play-off')).dy,
+        greaterThan(tester.getBottomLeft(find.text('Quarter-finals')).dy),
+      );
+    });
+
+    testWidgets('thirdPlaceLabel renames the fixture', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(
+        _app(
+          rounds: _bracket(),
+          thirdPlace: _thirdPlace,
+          thirdPlaceLabel: 'Bronze match',
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Bronze match'), findsOneWidget);
+      expect(find.text('Third place play-off'), findsNothing);
+    });
+
+    testWidgets('does not page with the tree', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(
+        _app(rounds: _bracket(), thirdPlace: _thirdPlace),
+      );
+      await tester.pumpAndSettle();
+      final before = tester.getTopLeft(find.text('Sun, 6 Jan, 3:00 pm'));
+
+      await tester.tap(find.bySemanticsLabel('Next round'));
+      await tester.pumpAndSettle();
+
+      // It feeds off the semi-finals rather than into the final, so it stays put
+      // below the rule while the columns page behind it — it only rides up with
+      // the stage as the shorter round collapses the bracket's height.
+      expect(find.text('Third place play-off'), findsOneWidget);
+      final after = tester.getTopLeft(find.text('Sun, 6 Jan, 3:00 pm'));
+      expect(after.dx, before.dx);
+      expect(after.dy, lessThan(before.dy));
     });
   });
 

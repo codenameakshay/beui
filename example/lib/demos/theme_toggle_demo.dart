@@ -50,7 +50,8 @@ class _ThemeToggleDemo extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Tap a toggle — the new theme wipes in from the bottom.',
+                        'Tap a toggle — the new theme wipes, irises or opens '
+                        'in like a shutter.',
                         style: TextStyle(fontSize: 14, color: c.muted),
                       ),
                       const Spacer(),
@@ -199,6 +200,16 @@ class _ToggleChip extends StatelessWidget {
     BeuiThemeRevealVariant.rectangle: 'Rectangle',
     BeuiThemeRevealVariant.circle: 'Circle',
     BeuiThemeRevealVariant.circleBlur: 'Circle blur',
+    BeuiThemeRevealVariant.blinds: 'Blinds',
+  };
+
+  /// `blinds` sweeps the whole surface, so it has no origin (source sets no
+  /// `--beui-vt-origin` for it) — the chip says so instead of naming a start.
+  static const _hints = {
+    BeuiThemeRevealVariant.rectangle: 'from bottom',
+    BeuiThemeRevealVariant.circle: 'from bottom',
+    BeuiThemeRevealVariant.circleBlur: 'from bottom',
+    BeuiThemeRevealVariant.blinds: 'no origin',
   };
 
   @override
@@ -226,6 +237,10 @@ class _ToggleChip extends StatelessWidget {
         Text(
           _labels[variant]!,
           style: TextStyle(fontSize: 11, color: colors.muted),
+        ),
+        Text(
+          _hints[variant]!,
+          style: TextStyle(fontSize: 9, color: colors.muted),
         ),
       ],
     );

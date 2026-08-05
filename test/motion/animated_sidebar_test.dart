@@ -54,6 +54,13 @@ Widget _wrap(
   );
 }
 
+/// The desktop panel's chrome decoration — background, border, radius, shadow.
+BoxDecoration _chrome(WidgetTester tester) =>
+    tester
+            .widget<DecoratedBox>(find.byKey(beuiAnimatedSidebarChromeKey))
+            .decoration
+        as BoxDecoration;
+
 void main() {
   group('BeuiAnimatedSidebar', () {
     testWidgets('renders items and group labels', (tester) async {
@@ -271,6 +278,361 @@ void main() {
       await tester.tap(find.text('Inbox'));
       await tester.pumpAndSettle();
       expect(find.text('sel:inbox'), findsOneWidget);
+    });
+  });
+
+  group('BeuiAnimatedSidebar variant', () {
+    testWidgets('sidebar (default) is flush: inner-edge border, no radius, '
+        'no shadow, no inset chrome', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final chrome = _chrome(tester);
+      // Left side → border on the RIGHT edge only.
+      final border = chrome.border! as Border;
+      expect(border.right.style, BorderStyle.solid);
+      expect(border.left.style, BorderStyle.none);
+      expect(chrome.borderRadius, BorderRadius.zero);
+      expect(chrome.boxShadow, isNull);
+
+      // Flush panel fills the whole rail width — no `m-2`.
+      expect(
+        tester.getSize(find.byKey(beuiAnimatedSidebarChromeKey)).width,
+        closeTo(kBeuiAnimatedSidebarWidth, 0.5),
+      );
+      // The content area stays plain for this variant.
+      expect(find.byKey(beuiAnimatedSidebarInsetKey), findsNothing);
+    });
+
+    testWidgets('sidebar on the right borders its LEFT (inner) edge', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            side: BeuiAnimatedSidebarSide.right,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final border = _chrome(tester).border! as Border;
+      expect(border.left.style, BorderStyle.solid);
+      expect(border.right.style, BorderStyle.none);
+    });
+
+    testWidgets('floating is a detached card: m-2 inset, 1rem radius, border '
+        'all round, shadow', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            variant: BeuiAnimatedSidebarVariant.floating,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final chrome = _chrome(tester);
+      expect(chrome.borderRadius, BorderRadius.circular(16));
+      expect(chrome.boxShadow, isNotNull);
+      expect(chrome.boxShadow, isNotEmpty);
+      final border = chrome.border! as Border;
+      for (final side in [
+        border.top,
+        border.bottom,
+        border.left,
+        border.right,
+      ]) {
+        expect(side.style, BorderStyle.solid);
+      }
+
+      // m-2 on every edge: 16 narrower and 16 shorter than the flush panel,
+      // while the rail still reserves the full sidebar width in the row.
+      final shell = tester.getRect(find.byType(BeuiAnimatedSidebar));
+      final rect = tester.getRect(find.byKey(beuiAnimatedSidebarChromeKey));
+      expect(rect.width, closeTo(kBeuiAnimatedSidebarWidth - 16, 0.5));
+      expect(rect.height, closeTo(shell.height - 16, 0.5));
+      expect(rect.left, closeTo(shell.left + 8, 0.5));
+      expect(rect.top, closeTo(shell.top + 8, 0.5));
+
+      // Floating leaves the content area alone.
+      expect(find.byKey(beuiAnimatedSidebarInsetKey), findsNothing);
+    });
+
+    testWidgets('inset: panel is detached but bare, and the CONTENT area '
+        'becomes the card', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            variant: BeuiAnimatedSidebarVariant.inset,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Panel: same detached geometry as floating, but no border and no shadow.
+      final chrome = _chrome(tester);
+      expect(chrome.borderRadius, BorderRadius.circular(16));
+      expect(chrome.border, isNull);
+      expect(chrome.boxShadow, isNull);
+      final panelRect = tester.getRect(
+        find.byKey(beuiAnimatedSidebarChromeKey),
+      );
+      expect(panelRect.width, closeTo(kBeuiAnimatedSidebarWidth - 16, 0.5));
+
+      // Content: gains margin, radius and shadow.
+      final insetFinder = find.byKey(beuiAnimatedSidebarInsetKey);
+      expect(insetFinder, findsOneWidget);
+      final inset =
+          tester.widget<DecoratedBox>(insetFinder).decoration as BoxDecoration;
+      expect(inset.borderRadius, BorderRadius.circular(16));
+      expect(inset.boxShadow, isNotEmpty);
+
+      // Margin is dropped on the edge the sidebar already spaced (source
+      // `ml-0`), kept on the other three.
+      final shell = tester.getRect(find.byType(BeuiAnimatedSidebar));
+      final insetRect = tester.getRect(insetFinder);
+      expect(
+        insetRect.left,
+        closeTo(shell.left + kBeuiAnimatedSidebarWidth, 0.5),
+      );
+      expect(insetRect.top, closeTo(shell.top + 8, 0.5));
+      expect(insetRect.bottom, closeTo(shell.bottom - 8, 0.5));
+      expect(insetRect.right, closeTo(shell.right - 8, 0.5));
+    });
+
+    testWidgets('inset on the right drops the margin on its right edge', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            variant: BeuiAnimatedSidebarVariant.inset,
+            side: BeuiAnimatedSidebarSide.right,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final shell = tester.getRect(find.byType(BeuiAnimatedSidebar));
+      final rect = tester.getRect(find.byKey(beuiAnimatedSidebarInsetKey));
+      expect(rect.left, closeTo(shell.left + 8, 0.5));
+      expect(rect.right, closeTo(shell.right - kBeuiAnimatedSidebarWidth, 0.5));
+    });
+
+    testWidgets('variant chrome survives a collapse to the icon rail', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            variant: BeuiAnimatedSidebarVariant.floating,
+            defaultExpanded: false,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final chrome = _chrome(tester);
+      expect(chrome.borderRadius, BorderRadius.circular(16));
+      // Card is still inset by m-2 inside the narrower icon rail.
+      expect(
+        tester.getSize(find.byKey(beuiAnimatedSidebarChromeKey)).width,
+        closeTo(kBeuiAnimatedSidebarIconWidth - 16, 1),
+      );
+    });
+
+    testWidgets('mobile ignores the variant — the sheet keeps its own chrome', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            variant: BeuiAnimatedSidebarVariant.inset,
+            defaultOpenMobile: true,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+          size: const Size(400, 800),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsOneWidget);
+      expect(find.byKey(beuiAnimatedSidebarChromeKey), findsNothing);
+      expect(find.byKey(beuiAnimatedSidebarInsetKey), findsNothing);
+    });
+
+    testWidgets('reduced motion still renders the floating chrome', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            variant: BeuiAnimatedSidebarVariant.floating,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+          reduce: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final chrome = _chrome(tester);
+      expect(chrome.borderRadius, BorderRadius.circular(16));
+      expect(chrome.boxShadow, isNotEmpty);
+      expect(find.text('Tasks'), findsOneWidget);
+    });
+  });
+
+  group('BeuiAnimatedSidebar mobile sheet state', () {
+    testWidgets('defaultOpenMobile opens the sheet on first frame', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            defaultOpenMobile: true,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+          size: const Size(400, 800),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsOneWidget);
+      expect(find.text('Search'), findsWidgets);
+    });
+
+    testWidgets('uncontrolled openMobile notifies onOpenMobileChange', (
+      tester,
+    ) async {
+      final changes = <bool>[];
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            onOpenMobileChange: changes.add,
+            defaultSelectedId: 'tasks',
+            child: const Column(
+              children: [
+                BeuiAnimatedSidebarTrigger(),
+                Expanded(child: SizedBox.expand()),
+              ],
+            ),
+          ),
+          size: const Size(400, 800),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(BeuiAnimatedSidebarTrigger));
+      await tester.pumpAndSettle();
+      expect(changes, [true]);
+      expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsOneWidget);
+
+      // Selecting a destination auto-closes the sheet (source `closeOnSelect`).
+      await tester.tap(find.text('Search').first);
+      await tester.pumpAndSettle();
+      expect(changes, [true, false]);
+    });
+
+    testWidgets(
+      'controlled openMobile does NOT self-open — the owner decides',
+      (tester) async {
+        final changes = <bool>[];
+        await tester.pumpWidget(
+          _wrap(
+            BeuiAnimatedSidebar(
+              groups: _groups,
+              openMobile: false,
+              onOpenMobileChange: changes.add,
+              defaultSelectedId: 'tasks',
+              child: const Column(
+                children: [
+                  BeuiAnimatedSidebarTrigger(),
+                  Expanded(child: SizedBox.expand()),
+                ],
+              ),
+            ),
+            size: const Size(400, 800),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byType(BeuiAnimatedSidebarTrigger));
+        await tester.pumpAndSettle();
+
+        // Callback fired, but the pinned prop still wins.
+        expect(changes, [true]);
+        expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsNothing);
+      },
+    );
+
+    testWidgets('controlled openMobile opens when the owner writes it back', (
+      tester,
+    ) async {
+      var open = false;
+      await tester.pumpWidget(
+        _wrap(
+          StatefulBuilder(
+            builder: (context, setState) => BeuiAnimatedSidebar(
+              groups: _groups,
+              openMobile: open,
+              onOpenMobileChange: (v) => setState(() => open = v),
+              defaultSelectedId: 'tasks',
+              child: const Column(
+                children: [
+                  BeuiAnimatedSidebarTrigger(),
+                  Expanded(child: SizedBox.expand()),
+                ],
+              ),
+            ),
+          ),
+          size: const Size(400, 800),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsNothing);
+
+      await tester.tap(find.byType(BeuiAnimatedSidebarTrigger));
+      await tester.pumpAndSettle();
+      expect(open, isTrue);
+      expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsOneWidget);
+
+      // The trigger is behind the sheet's barrier once open, so close the way
+      // a user would: the sheet's own close button.
+      await tester.tap(find.byTooltip('Close sidebar'));
+      await tester.pumpAndSettle();
+      expect(open, isFalse);
+      expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsNothing);
     });
   });
 }

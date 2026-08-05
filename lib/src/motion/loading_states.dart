@@ -930,26 +930,3 @@ class _ScramblePhraseState extends State<_ScramblePhrase> {
     );
   }
 }
-
-// ---------------------------------------------------------------------------
-// Barrel alias
-// ---------------------------------------------------------------------------
-
-/// Convenience re-export surface for the three agent loading states.
-///
-/// Prefer the named widgets ([BeuiThinkingShimmer], [BeuiAgentProgress],
-/// [BeuiReasoningText]) — this class exists only so older gallery routes that
-/// referenced a single `BeuiLoadingStates` entry still resolve.
-@Deprecated('Use BeuiThinkingShimmer, BeuiAgentProgress, or BeuiReasoningText')
-class BeuiLoadingStates extends StatelessWidget {
-  /// @nodoc
-  @Deprecated(
-    'Use BeuiThinkingShimmer, BeuiAgentProgress, or BeuiReasoningText',
-  )
-  const BeuiLoadingStates({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const BeuiThinkingShimmer();
-  }
-}
