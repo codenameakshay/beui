@@ -277,7 +277,14 @@ export 'src/motion/todo_list.dart'
     show BeuiTodoItem, BeuiTodoItemStatus, BeuiTodoList;
 export 'src/motion/code_block.dart'
     show BeuiCodeBlock, BeuiCodeBlockStatus, BeuiCodeLanguage;
-export 'src/motion/approval_card.dart' show BeuiApprovalCard;
+export 'src/motion/approval_card.dart'
+    show
+        BeuiApprovalCard,
+        BeuiApprovalCardAnswer,
+        BeuiApprovalCardAnswers,
+        BeuiApprovalCardOption,
+        BeuiApprovalCardQuestion,
+        BeuiApprovalCardStatus;
 export 'src/motion/file_diff.dart'
     show
         BeuiFileDiff,
@@ -290,9 +297,18 @@ export 'src/motion/tool_result.dart'
         BeuiToolResultKind,
         BeuiToolResultOutput,
         BeuiToolResultStatus;
-export 'src/motion/streaming_response.dart' show BeuiStreamingResponse;
+export 'src/motion/streaming_response.dart'
+    show
+        BeuiStreamingResponse,
+        BeuiStreamingResponseFeedback,
+        BeuiStreamingResponseStatus;
 export 'src/motion/image_generation.dart' show BeuiImageGeneration;
-export 'src/motion/tool_approval.dart' show BeuiToolApproval;
+export 'src/motion/tool_approval.dart'
+    show
+        BeuiToolApproval,
+        BeuiToolApprovalCode,
+        BeuiToolApprovalParameter,
+        BeuiToolApprovalStatus;
 export 'src/motion/citations.dart'
     show
         BeuiCitation,
