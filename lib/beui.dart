@@ -302,7 +302,11 @@ export 'src/motion/streaming_response.dart'
         BeuiStreamingResponse,
         BeuiStreamingResponseFeedback,
         BeuiStreamingResponseStatus;
-export 'src/motion/image_generation.dart' show BeuiImageGeneration;
+export 'src/motion/image_generation.dart'
+    show
+        BeuiImageGeneration,
+        BeuiImageGenerationSize,
+        BeuiImageGenerationStatus;
 export 'src/motion/tool_approval.dart'
     show
         BeuiToolApproval,
@@ -342,5 +346,22 @@ export 'src/motion/loading_states.dart'
         BeuiReasoningTextVariant,
         BeuiThinkingShimmer,
         beuiFormatAgentElapsed;
-export 'src/motion/ai_sidebar.dart' show BeuiAiSidebar;
+export 'src/motion/ai_sidebar.dart'
+    show
+        BeuiAiSidebar,
+        BeuiSidebarResource,
+        BeuiSidebarResourceDropPosition,
+        BeuiSidebarResourceKind,
+        BeuiSidebarResourceMenuControls,
+        BeuiSidebarResourceMove,
+        beuiAiSidebarKey,
+        beuiAiSidebarRenameKey,
+        beuiAiSidebarRowKey,
+        beuiSidebarCanContain,
+        beuiSidebarContains,
+        beuiSidebarFind,
+        beuiSidebarInsert,
+        beuiSidebarMove,
+        beuiSidebarRemove,
+        beuiSidebarRename;
 export 'src/motion/chat_app.dart' show BeuiChatApp;
