@@ -611,13 +611,18 @@ class _DrawerDemoState extends State<_DrawerDemo> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
     return Stack(
       children: [
+        // DrawerPreview: `flex items-center gap-3` — "Open left" is the
+        // bordered card pill, "Open right" the filled primary one.
         Wrap(
+          alignment: WrapAlignment.center,
           spacing: 12,
           runSpacing: 12,
           children: [
             BeuiButton(
+              variant: BeuiButtonVariant.secondary,
               onPressed: () => _show(BeuiDrawerSide.left),
               child: const Text('Open left'),
             ),
@@ -632,31 +637,33 @@ class _DrawerDemoState extends State<_DrawerDemo> {
           side: _side,
           label: 'Menu',
           onOpenChange: (v) => setState(() => _open = v),
+          // The source panel is `className="gap-4 p-6"` holding just a
+          // `text-sm font-semibold` heading and a `text-sm text-muted-
+          // foreground` paragraph — not a nav list.
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24), // p-6
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Settings',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 24),
-                for (final item in const [
-                  'Profile',
-                  'Account',
-                  'Notifications',
-                  'Privacy',
-                ])
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(item, style: const TextStyle(fontSize: 16)),
+                Text(
+                  'Drawer',
+                  style: TextStyle(
+                    fontSize: 14, // text-sm
+                    height: 20 / 14,
+                    fontWeight: FontWeight.w600,
+                    color: colors.foreground,
                   ),
-                const Spacer(),
-                BeuiButton(
-                  variant: BeuiButtonVariant.outline,
-                  onPressed: () => setState(() => _open = false),
-                  child: const Text('Close'),
+                ),
+                const SizedBox(height: 16), // gap-4
+                Text(
+                  'Slides in from the ${_side == BeuiDrawerSide.left ? 'left' : 'right'}. '
+                  'Press Esc or click outside to close.',
+                  style: TextStyle(
+                    fontSize: 14, // text-sm
+                    height: 20 / 14,
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
