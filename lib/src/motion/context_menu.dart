@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
+import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 
@@ -966,12 +967,12 @@ class _SelectableRow extends StatelessWidget {
 
     Widget? leading;
     if (item.kind == BeuiContextMenuItemKind.checkbox) {
+      // Source: a Lucide `Check` (h-3.5) that pops in on SPRING_PANEL under
+      // AnimatePresence — `{opacity: 0, scale: 0.75} → {opacity: 1, scale: 1}`.
       leading = SizedBox(
         width: 16,
         height: 16,
-        child: item.checked
-            ? Icon(Icons.check, size: 14, color: fg)
-            : const SizedBox.shrink(),
+        child: _CheckMark(checked: item.checked, color: fg),
       );
     } else if (item.kind == BeuiContextMenuItemKind.radio) {
       leading = SizedBox(
@@ -1042,6 +1043,42 @@ class _SelectableRow extends StatelessWidget {
           child: Opacity(opacity: enabled ? 1 : 0.4, child: row),
         ),
       ),
+    );
+  }
+}
+
+/// The checkbox row's tick — a Lucide check that pops in on [beuiSpringPanel]
+/// (source `initial {opacity: 0, scale: 0.75} → animate {opacity: 1, scale: 1}`
+/// under `AnimatePresence`) and shrinks back out when unchecked.
+///
+/// Under reduced motion it crossfades in place over 80ms (source's
+/// `{ duration: 0.08 }` branch), with no scale.
+class _CheckMark extends StatelessWidget {
+  const _CheckMark({required this.checked, required this.color});
+
+  final bool checked;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final mark = Icon(LucideIcons.check, size: 14, color: color);
+    if (reduce) {
+      return AnimatedOpacity(
+        opacity: checked ? 1 : 0,
+        duration: const Duration(milliseconds: 80),
+        child: mark,
+      );
+    }
+    return SingleMotionBuilder(
+      value: checked ? 1.0 : 0.0,
+      motion: beuiSpringPanel,
+      builder: (context, t, child) => Opacity(
+        opacity: t.clamp(0.0, 1.0),
+        // 0.75 → 1 across the same channel.
+        child: Transform.scale(scale: 0.75 + 0.25 * t, child: child),
+      ),
+      child: mark,
     );
   }
 }

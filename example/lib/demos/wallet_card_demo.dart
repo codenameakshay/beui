@@ -51,28 +51,27 @@ class _WalletCardDemoState extends State<_WalletCardDemo> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BeuiWalletCard(
-            accounts: _accounts,
-            balance: _balance,
-            defaultChange: 124.5,
-            searchRecent: _recentSearches,
-            hasNotifications: true,
-          ),
-          const SizedBox(height: 16),
-          TextButton(
-            onPressed: _simulate,
-            style: TextButton.styleFrom(foregroundColor: colors.foreground),
-            child: const Text('Simulate balance change'),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BeuiWalletCard(
+          accounts: _accounts,
+          balance: _balance,
+          defaultChange: 124.5,
+          searchRecent: _recentSearches,
+          hasNotifications: true,
+        ),
+        const SizedBox(height: 16), // gap-4
+        // Source preview uses the library's own ghost/sm button, not a
+        // Material TextButton — muted-foreground label at text-xs.
+        BeuiButton(
+          variant: BeuiButtonVariant.ghost,
+          size: BeuiButtonSize.sm,
+          onPressed: _simulate,
+          child: const Text('Simulate balance change'),
+        ),
+      ],
+    ),
+  );
 }

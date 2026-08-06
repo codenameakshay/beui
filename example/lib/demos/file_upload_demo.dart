@@ -14,78 +14,21 @@ Widget fileUploadDemo(BuildContext context) => const _FileUploadDemo();
 class _FileUploadDemo extends StatelessWidget {
   const _FileUploadDemo();
 
+  // Both source previews render bare (their prose lives in the page chrome),
+  // so the route is just the two components stacked.
   @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 520),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 40,
-            children: [
-              _Section(
-                label: 'Attachment workspace',
-                blurb:
-                    'Files, links, images and audio in one list — browse to add '
-                    '(the fourth is oversized on purpose), play the voice note, '
-                    'retry the failed row.',
-                child: _AttachmentUploadSection(),
-              ),
-              _Section(
-                label: 'Upload queue',
-                blurb: 'Dropzone with per-file progress, retry and removal.',
-                child: _UploadQueueSection(),
-              ),
-            ],
-          ),
-        ),
+  Widget build(BuildContext context) => SingleChildScrollView(
+    child: Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 48,
+        children: [
+          const _AttachmentUploadSection(),
+          const _UploadQueueSection(),
+        ],
       ),
-    );
-  }
-}
-
-class _Section extends StatelessWidget {
-  const _Section({
-    required this.label,
-    required this.blurb,
-    required this.child,
-  });
-
-  final String label;
-  final String blurb;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: colors.foreground,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 2, bottom: 16),
-          child: Text(
-            blurb,
-            style: TextStyle(
-              fontSize: 12,
-              height: 1.4,
-              color: colors.mutedForeground,
-            ),
-          ),
-        ),
-        child,
-      ],
-    );
-  }
+    ),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -381,20 +324,45 @@ class _UploadQueueSection extends StatefulWidget {
   State<_UploadQueueSection> createState() => _UploadQueueSectionState();
 }
 
+/// Mirrors `file-upload.preview.tsx`: a "Upload package" shell with a
+/// Centered/Row variant toggle, a reset button, and three seeded rows —
+/// one done, one climbing, one failed.
 class _UploadQueueSectionState extends State<_UploadQueueSection> {
-  final List<BeuiFileUploadItem> _items = [];
-  final Map<String, Timer> _uploads = {};
-  int _seed = 0;
-  final _random = math.Random(7);
-
-  static const _fakes = [
-    ('quarterly-report.pdf', 2411724),
-    ('hero-banner.png', 4837291),
-    ('release-notes.md', 18231),
-    ('podcast-episode.mp3', 48273645),
-    ('archive-2025.zip', 104857600),
-    ('main.dart', 5231),
+  static const _seedItems = [
+    BeuiFileUploadItem(
+      id: 'brand-assets',
+      name: 'brand-assets.zip',
+      size: 18400000,
+      progress: 100,
+      status: BeuiFileUploadStatus.success,
+    ),
+    BeuiFileUploadItem(
+      id: 'release-video',
+      name: 'release-cut.mov',
+      size: 84200000,
+      progress: 58,
+      status: BeuiFileUploadStatus.uploading,
+    ),
+    BeuiFileUploadItem(
+      id: 'contracts',
+      name: 'vendor-contract.pdf',
+      size: 2800000,
+      progress: 32,
+      status: BeuiFileUploadStatus.error,
+      error: 'Connection lost',
+    ),
   ];
+
+  List<BeuiFileUploadItem> _items = List.of(_seedItems);
+  final Map<String, Timer> _uploads = {};
+  final _random = math.Random(7);
+  BeuiFileUploadVariant _variant = BeuiFileUploadVariant.centered;
+
+  @override
+  void initState() {
+    super.initState();
+    _start('release-video');
+  }
 
   @override
   void dispose() {
@@ -404,67 +372,213 @@ class _UploadQueueSectionState extends State<_UploadQueueSection> {
     super.dispose();
   }
 
-  void _browse() {
-    final (name, size) = _fakes[_seed % _fakes.length];
-    final item = BeuiFileUploadItem(
-      id: 'file-${_seed++}',
-      name: name,
-      size: size,
-      status: BeuiFileUploadStatus.uploading,
-      progress: 0,
-    );
-    setState(() => _items.add(item));
-    _simulate(item.id, failChance: 0.3);
-  }
+  void _stop(String id) => _uploads.remove(id)?.cancel();
 
-  void _simulate(String id, {double failChance = 0}) {
-    _uploads[id]?.cancel();
-    final willFail = _random.nextDouble() < failChance;
-    _uploads[id] = Timer.periodic(const Duration(milliseconds: 220), (timer) {
+  void _start(String id) {
+    _stop(id);
+    _uploads[id] = Timer.periodic(const Duration(milliseconds: 520), (timer) {
       final index = _items.indexWhere((e) => e.id == id);
-      if (index < 0) {
+      if (index < 0 || _items[index].status != BeuiFileUploadStatus.uploading) {
         timer.cancel();
+        _uploads.remove(id);
         return;
       }
       final current = _items[index];
-      final next = (current.progress ?? 0) + 12 + _random.nextInt(14);
+      final next = math.min(
+        100.0,
+        (current.progress ?? 0) + 7 + _random.nextDouble() * 12,
+      );
       setState(() {
-        if (willFail && next > 55) {
-          timer.cancel();
-          _items[index] = current.copyWith(
-            status: BeuiFileUploadStatus.error,
-            error: 'Connection dropped',
+        _items = List.of(_items)
+          ..[index] = current.copyWith(
+            progress: next,
+            status: next >= 100
+                ? BeuiFileUploadStatus.success
+                : BeuiFileUploadStatus.uploading,
           );
-        } else if (next >= 100) {
-          timer.cancel();
-          _items[index] = current.copyWith(
-            progress: 100,
-            status: BeuiFileUploadStatus.success,
-          );
-        } else {
-          _items[index] = current.copyWith(progress: next.toDouble());
-        }
       });
+      if (next >= 100) {
+        timer.cancel();
+        _uploads.remove(id);
+      }
     });
+  }
+
+  void _reset() {
+    for (final id in _uploads.keys.toList()) {
+      _stop(id);
+    }
+    setState(() => _items = List.of(_seedItems));
+    _start('release-video');
   }
 
   @override
   Widget build(BuildContext context) {
-    return BeuiFileUpload(
-      value: List.of(_items),
-      maxFiles: 6,
-      onBrowse: _browse,
-      onRemove: (item) {
-        _uploads.remove(item.id)?.cancel();
-        setState(() => _items.removeWhere((e) => e.id == item.id));
-      },
-      onRetry: (item) {
-        final index = _items.indexWhere((e) => e.id == item.id);
-        if (index >= 0) {
-          setState(() => _items[index] = item);
-          _simulate(item.id);
-        }
-      },
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final ready = _items
+        .where((e) => e.status == BeuiFileUploadStatus.success)
+        .length;
+    final centered = _variant == BeuiFileUploadVariant.centered;
+
+    return ConstrainedBox(
+      // `min-h-[30rem] items-center justify-center` around a `max-w-md` shell.
+      constraints: const BoxConstraints(minHeight: 480, maxWidth: 448),
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.all(12), // p-3
+          decoration: BoxDecoration(
+            color: colors.background,
+            border: Border.all(color: colors.border),
+            borderRadius: BorderRadius.circular(32), // rounded-[2rem]
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), // px-1 mb-3
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Upload package',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: colors.foreground,
+                            ),
+                          ),
+                          Text(
+                            '$ready of ${_items.length} files ready',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: colors.mutedForeground,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 6, // gap-1.5
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(4), // p-1
+                          decoration: BoxDecoration(
+                            color: colors.muted,
+                            border: Border.all(color: colors.border),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _VariantChip(
+                                label: 'Centered',
+                                selected: centered,
+                                colors: colors,
+                                onPressed: () => setState(
+                                  () =>
+                                      _variant = BeuiFileUploadVariant.centered,
+                                ),
+                              ),
+                              _VariantChip(
+                                label: 'Row',
+                                selected: !centered,
+                                colors: colors,
+                                onPressed: () => setState(
+                                  () =>
+                                      _variant = BeuiFileUploadVariant.standard,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Semantics(
+                          button: true,
+                          label: 'Reset upload queue',
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: _reset,
+                              child: Container(
+                                width: 36,
+                                height: 36, // h-9 w-9
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: colors.border),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  LucideIcons.rotate_ccw,
+                                  size: 14,
+                                  color: colors.mutedForeground,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              BeuiFileUpload(
+                value: _items,
+                variant: _variant,
+                maxFiles: 5,
+                title: centered ? 'Drop files to upload' : 'Drop release files',
+                description: 'PDF, images, video or zipped assets',
+                onValueChange: (next) => setState(() => _items = next),
+                onRetry: (item) => _start(item.id),
+                onRemove: (item) => _stop(item.id),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
+}
+
+/// One cell of the preview's Centered/Row segmented control.
+class _VariantChip extends StatelessWidget {
+  const _VariantChip({
+    required this.label,
+    required this.selected,
+    required this.colors,
+    required this.onPressed,
+  });
+
+  final String label;
+  final bool selected;
+  final BeuiColors colors;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+    cursor: SystemMouseCursors.click,
+    child: GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        height: 28, // h-7
+        padding: const EdgeInsets.symmetric(horizontal: 12), // px-3
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: selected ? colors.background : null,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: selected ? colors.foreground : colors.mutedForeground,
+          ),
+        ),
+      ),
+    ),
+  );
 }

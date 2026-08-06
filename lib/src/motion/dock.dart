@@ -303,11 +303,16 @@ class _BeuiDockState extends State<BeuiDock> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16), // rounded-2xl
-          boxShadow: [
+          // `shadow-2xl` = `0 25px 50px -12px rgb(0 0 0 / 0.25)`. Tailwind's
+          // shadow colour is black in both themes — tinting it with
+          // `foreground` lit a white halo under the bar in dark mode, which
+          // the source never shows.
+          boxShadow: const [
             BoxShadow(
-              color: colors.foreground.withValues(alpha: 0.18),
-              blurRadius: 28,
-              offset: const Offset(0, 12),
+              color: Color(0x40000000),
+              blurRadius: 50,
+              spreadRadius: -12,
+              offset: Offset(0, 25),
             ),
           ],
         ),

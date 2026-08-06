@@ -76,19 +76,19 @@ const _disclosureOpen = CurvedMotion(Duration(milliseconds: 220), beuiEaseOut);
 const _disclosureClose = CurvedMotion(Duration(milliseconds: 140), beuiEaseOut);
 
 /// Tailwind `emerald-500` — matches the source's complete header glyph.
-const _emerald500 = Color(0xFF10B981);
+const _emerald500 = Color(0xFF00BC7D);
 
 /// Tailwind `emerald-600` (light) for the completion count.
-const _emerald600 = Color(0xFF059669);
+const _emerald600 = Color(0xFF009966);
 
 /// Tailwind `emerald-400` (dark) for the completion count.
-const _emerald400 = Color(0xFF34D399);
+const _emerald400 = Color(0xFF00D492);
 
 /// Tailwind `rose-600` (light) for cancelled marks.
-const _rose600 = Color(0xFFE11D48);
+const _rose600 = Color(0xFFEC003F);
 
 /// Tailwind `rose-400` (dark) for cancelled marks.
-const _rose400 = Color(0xFFFB7185);
+const _rose400 = Color(0xFFFF637E);
 
 /// Indefinite in-progress spin (source `duration: 1.1, repeat: Infinity`).
 const _spinPeriod = Duration(milliseconds: 1100);
@@ -241,7 +241,9 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16), // rounded-2xl
-          border: Border.all(color: colors.border.withValues(alpha: 0.7)),
+          border: Border.all(
+            color: colors.border.withValues(alpha: colors.border.a * 0.7),
+          ),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),

@@ -981,17 +981,19 @@ class _MessageRailPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final card = Material(
-      color: colors.popover,
-      elevation: 8,
+      // source DefaultPreview: `bg-card text-card-foreground shadow-sm
+      // border-border rounded-2xl` on a `h-20` card.
+      color: colors.card,
+      elevation: 1, // shadow-sm
       shadowColor: colors.foreground.withValues(alpha: 0.12),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: colors.border.withValues(alpha: 0.6)),
+        borderRadius: BorderRadius.circular(16), // rounded-2xl
+        side: BorderSide(color: colors.border),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: SizedBox(
-          height: 56,
+          height: 80, // h-20
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1003,7 +1005,7 @@ class _MessageRailPreview extends StatelessWidget {
                   fontSize: 12,
                   height: 16 / 12,
                   fontWeight: FontWeight.w500,
-                  color: colors.popoverForeground,
+                  color: colors.cardForeground,
                 ),
               ),
               if (item.description != null) ...[

@@ -451,14 +451,17 @@ void main() {
   });
 
   group('BeuiPreviewRailStyle.itemSize', () {
-    testWidgets('defaults to a 20px slot per item', (tester) async {
+    // 24, not 20: the source's `itemSize` default is 24 and the visual pass
+    // against beui.dev moved the port onto it. The old 20 was a porting-time
+    // choice made to avoid regenerating a golden.
+    testWidgets('defaults to a 24px slot per item', (tester) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();
-      expect(tester.getSize(_tick('Alpha')).height, 20);
+      expect(tester.getSize(_tick('Alpha')).height, 24);
       expect(
         tester.getCenter(_tick('Delta')).dy -
             tester.getCenter(_tick('Alpha')).dy,
-        3 * 20,
+        3 * 24,
       );
     });
 

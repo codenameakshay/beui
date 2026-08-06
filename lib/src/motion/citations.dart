@@ -877,7 +877,7 @@ class _CitationRowState extends State<_CitationRow> {
               ],
             ),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8), // gap-2
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [

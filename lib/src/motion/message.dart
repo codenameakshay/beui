@@ -505,33 +505,47 @@ class BeuiMessageMarker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Align(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400), // ~88% soft cap
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: colors.muted.withValues(alpha: 0.7), // bg-muted/70
-            borderRadius: BorderRadius.circular(999),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10, // px-2.5
-              vertical: 4, // py-1
+    // source: `mx-auto flex w-fit max-w-[88%] …` — shrink to fit, capped at
+    // 88% of the row.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Align(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: constraints.maxWidth.isFinite
+                  ? constraints.maxWidth * 0.88
+                  : double.infinity,
             ),
-            child: DefaultTextStyle.merge(
-              style: TextStyle(
-                fontSize: 12, // text-xs
-                color: colors.mutedForeground,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.muted.withValues(alpha: 0.7), // bg-muted/70
+                borderRadius: BorderRadius.circular(999),
               ),
-              textAlign: TextAlign.center,
-              child: IconTheme.merge(
-                data: IconThemeData(size: 14, color: colors.mutedForeground),
-                child: child,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10, // px-2.5
+                  vertical: 4, // py-1
+                ),
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    fontSize: 12, // text-xs
+                    height: 16 / 12, // leading-4
+                    color: colors.mutedForeground,
+                  ),
+                  textAlign: TextAlign.center,
+                  child: IconTheme.merge(
+                    data: IconThemeData(
+                      size: 14,
+                      color: colors.mutedForeground,
+                    ),
+                    child: child,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

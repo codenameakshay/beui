@@ -159,17 +159,17 @@ String _statusLabel(BeuiApprovalCardStatus status) {
 }
 
 // Tailwind status accents (light / dark), matching the source classes.
-const _emerald600 = Color(0xFF059669);
-const _emerald400 = Color(0xFF34D399);
-const _rose600 = Color(0xFFE11D48);
-const _rose400 = Color(0xFFFB7185);
-const _amber600 = Color(0xFFD97706);
-const _amber400 = Color(0xFFFBBF24);
-const _amber500 = Color(0xFFF59E0B);
-const _blue600 = Color(0xFF2563EB);
-const _blue400 = Color(0xFF60A5FA);
-const _blue500 = Color(0xFF3B82F6);
-const _rose500 = Color(0xFFF43F5E);
+const _emerald600 = Color(0xFF009966);
+const _emerald400 = Color(0xFF00D492);
+const _rose600 = Color(0xFFEC003F);
+const _rose400 = Color(0xFFFF637E);
+const _amber600 = Color(0xFFE17100);
+const _amber400 = Color(0xFFFFB900);
+const _amber500 = Color(0xFFFE9A00);
+const _blue600 = Color(0xFF155DFC);
+const _blue400 = Color(0xFF51A2FF);
+const _blue500 = Color(0xFF2B7FFF);
+const _rose500 = Color(0xFFFF2056);
 
 Color _statusIconColor(BeuiApprovalCardStatus status, bool dark) {
   return switch (status) {
@@ -208,8 +208,8 @@ Color _statusIconColor(BeuiApprovalCardStatus status, bool dark) {
     final fg = dark ? _emerald400 : _emerald600;
     return (
       fg: fg,
-      bg: const Color(0xFF10B981).withValues(alpha: 0.10),
-      border: const Color(0xFF10B981).withValues(alpha: 0.30),
+      bg: const Color(0xFF00BC7D).withValues(alpha: 0.10),
+      border: const Color(0xFF00BC7D).withValues(alpha: 0.30),
     );
   }
   // rejected
@@ -984,47 +984,72 @@ class _QuestionOptions extends StatelessWidget {
                       ],
                     ],
                   )
-                : BeuiRadioGroup<String>(
-                    items: [
-                      for (final o in options)
-                        BeuiRadioItem<String>(
-                          value: o.value,
-                          label: o.label,
-                          enabled: !disabled && o.enabled,
-                        ),
-                    ],
-                    // Empty string keeps the group controlled with no match
-                    // (source `value={answer.selected[0] ?? ""}`).
-                    value: answer.selected.isEmpty ? '' : answer.selected.first,
-                    onChanged: (value) {
-                      onChange(
-                        BeuiApprovalCardAnswer(selected: [value], custom: ''),
-                      );
-                      onSingleSelect();
-                    },
-                    spacing: 2, // gap-0.5
+                // Source gives every radio row the same `min-h-9 rounded-lg
+                // px-1.5 py-1` box the checkbox rows get. `BeuiRadioGroup`
+                // takes `List<BeuiRadioItem>` so the rows cannot be wrapped
+                // individually; reproduce the source's rhythm with the group's
+                // own insets — 8px above/below each 20px ring plus the
+                // `gap-0.5` between rows gives the source's 38px row pitch.
+                : Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6, // px-1.5
+                      vertical: 8, // min-h-9 around a 20px ring
+                    ),
+                    child: BeuiRadioGroup<String>(
+                      items: [
+                        for (final o in options)
+                          BeuiRadioItem<String>(
+                            value: o.value,
+                            label: o.label,
+                            enabled: !disabled && o.enabled,
+                          ),
+                      ],
+                      // Empty string keeps the group controlled with no match
+                      // (source `value={answer.selected[0] ?? ""}`).
+                      value: answer.selected.isEmpty
+                          ? ''
+                          : answer.selected.first,
+                      onChanged: (value) {
+                        onChange(
+                          BeuiApprovalCardAnswer(selected: [value], custom: ''),
+                        );
+                        onSingleSelect();
+                      },
+                      spacing: 18, // 8 + gap-0.5 + 8
+                    ),
                   ),
           if (question.allowCustom)
             Padding(
               padding: EdgeInsets.only(top: hasOptions ? 6 : 0), // mt-1.5
-              child: BeuiInput(
-                value: custom,
-                enabled: !disabled,
-                placeholder:
-                    question.customPlaceholder ?? 'Add another response…',
-                onChanged: (value) {
-                  onChange(
-                    BeuiApprovalCardAnswer(
-                      selected: question.multiple ? answer.selected : const [],
-                      custom: value,
-                    ),
-                  );
-                },
-                style: BeuiInputStyle(
-                  height: 40, // h-10
-                  borderRadius: 12, // rounded-xl
-                  borderColor: Colors.transparent,
-                  focusedBorderColor: Colors.transparent,
+              // source field classes: `h-10 rounded-xl border-0
+              // bg-background/70`. BeuiInputStyle has no fill, so the capsule
+              // is painted behind the (transparent-bordered) field.
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colors.background.withValues(alpha: 0.7),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: BeuiInput(
+                  value: custom,
+                  enabled: !disabled,
+                  placeholder:
+                      question.customPlaceholder ?? 'Add another response…',
+                  onChanged: (value) {
+                    onChange(
+                      BeuiApprovalCardAnswer(
+                        selected: question.multiple
+                            ? answer.selected
+                            : const [],
+                        custom: value,
+                      ),
+                    );
+                  },
+                  style: BeuiInputStyle(
+                    height: 40, // h-10
+                    borderRadius: 12, // rounded-xl
+                    borderColor: Colors.transparent,
+                    focusedBorderColor: Colors.transparent,
+                  ),
                 ),
               ),
             ),

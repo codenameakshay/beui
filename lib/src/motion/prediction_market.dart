@@ -394,7 +394,9 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(color: colors.border.withValues(alpha: 0.8)),
+                bottom: BorderSide(
+                  color: colors.border.withValues(alpha: colors.border.a * 0.8),
+                ),
               ),
             ),
             child: Row(
@@ -511,13 +513,20 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: colors.border.withValues(alpha: 0.8)),
+                  top: BorderSide(
+                    color: colors.border.withValues(
+                      alpha: colors.border.a * 0.8,
+                    ),
+                  ),
                 ),
               ),
               child: Column(
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
+                    // `justify-between` + the payout's `ml-auto`: the label
+                    // block hugs the left edge, the payout the right.
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
                         child: Column(
@@ -942,17 +951,22 @@ class _AmountCard extends StatelessWidget {
           child: Container(
             height: 36, // h-9
             padding: const EdgeInsets.symmetric(horizontal: 14), // px-3.5
-            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colors.background,
               borderRadius: BorderRadius.circular(12), // rounded-xl
             ),
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: colors.foreground,
+            // `widthFactor: 1` keeps the chip hugging its label. A bare
+            // `alignment:` on the Container would let it expand to the Wrap's
+            // full width, stacking the chips one per line.
+            child: Center(
+              widthFactor: 1,
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: colors.foreground,
+                ),
               ),
             ),
           ),

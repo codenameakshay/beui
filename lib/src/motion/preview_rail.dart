@@ -104,9 +104,8 @@ class BeuiPreviewRailStyle {
   /// rail's geometry across two places, and — because it is the same quantity
   /// as the pre-existing [trackExtent] — would give one value two homes.
   ///
-  /// Resolves to 20 when null. The source's own default is 24 (`h-6`); the port
-  /// keeps 20 so existing layouts and goldens are unchanged — set this to 24 to
-  /// match the source exactly.
+  /// Resolves to 24 when null, matching the source's own `itemSize = 24`
+  /// default (`h-6`).
   final double? itemSize;
 
   /// Spacing track per item.
@@ -322,7 +321,8 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
       widget.style?.itemSize ??
       // ignore: deprecated_member_use_from_same_package
       widget.style?.trackExtent ??
-      20.0;
+      // Source default: `itemSize = 24`.
+      24.0;
   double get _tickLength => widget.style?.tickLength ?? 48.0;
   double get _tickThickness => widget.style?.tickThickness ?? 2.0;
 

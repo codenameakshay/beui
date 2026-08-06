@@ -18,7 +18,6 @@ class _FeedbackWidgetDemo extends StatefulWidget {
 
 class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
   int _attempts = 0;
-  String? _lastMessage;
 
   Future<void> _submit(BeuiFeedbackData data) async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
@@ -26,7 +25,7 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
     if (_attempts == 1) {
       throw StateError('Preview submission failed');
     }
-    if (mounted) setState(() => _lastMessage = data.message);
+    debugPrint('feedback received: ${data.message}');
   }
 
   @override
@@ -65,9 +64,9 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              bar(220),
+              bar(306), // w-3/4 of the 408px content box
               const SizedBox(height: 12),
-              bar(150),
+              bar(204), // w-1/2
               const SizedBox(height: 12),
               Container(
                 height: 96,
@@ -77,7 +76,7 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
                 ),
               ),
               const SizedBox(height: 12),
-              bar(180),
+              bar(272), // w-2/3
             ],
           ),
         ),
@@ -85,41 +84,27 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
     );
 
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 448),
-            child: SizedBox(
-              height: 320,
-              child: ClipRRect(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 448),
+        child: SizedBox(
+          height: 320,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.background,
                 borderRadius: BorderRadius.circular(16),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.background,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: colors.border),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(child: fauxApp),
-                      Positioned.fill(
-                        child: BeuiFeedbackWidget(onSubmit: _submit),
-                      ),
-                    ],
-                  ),
-                ),
+                border: Border.all(color: colors.border),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(child: fauxApp),
+                  Positioned.fill(child: BeuiFeedbackWidget(onSubmit: _submit)),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 20),
-          Text(
-            _lastMessage == null
-                ? 'Open the corner trigger and submit feedback…'
-                : 'Received: $_lastMessage',
-            style: TextStyle(fontSize: 13, color: colors.mutedForeground),
-          ),
-        ],
+        ),
       ),
     );
   }

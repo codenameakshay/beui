@@ -53,12 +53,12 @@ const _disclosureClose = CurvedMotion(Duration(milliseconds: 140), beuiEaseOut);
 const _spinPeriod = Duration(milliseconds: 900);
 
 // Status palette — Tailwind blue / emerald / rose matching the source classes.
-const _blue600 = Color(0xFF2563EB);
-const _blue400 = Color(0xFF60A5FA);
-const _emerald600 = Color(0xFF059669);
-const _emerald400 = Color(0xFF34D399);
-const _rose600 = Color(0xFFE11D48);
-const _rose400 = Color(0xFFFB7185);
+const _blue600 = Color(0xFF155DFC);
+const _blue400 = Color(0xFF51A2FF);
+const _emerald600 = Color(0xFF009966);
+const _emerald400 = Color(0xFF00D492);
+const _rose600 = Color(0xFFEC003F);
+const _rose400 = Color(0xFFFF637E);
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -179,18 +179,23 @@ class _OutputPalette {
     required this.string,
     required this.comment,
     required this.number,
+    required this.entity,
     required this.punct,
   });
 
+  // Shiki `github-light-high-contrast` / `github-dark-high-contrast` — the
+  // themes the source's AgentCode highlighter is created with
+  // (agent-code.tsx LIGHT_THEME / DARK_THEME).
   factory _OutputPalette.of(BeuiColors colors, Brightness brightness) {
     final isLight = brightness == Brightness.light;
     return _OutputPalette(
-      base: colors.foreground.withValues(alpha: 0.8),
-      keyword: isLight ? const Color(0xFF0550AE) : const Color(0xFF79C0FF),
-      string: isLight ? const Color(0xFF0A3069) : const Color(0xFFA5D6FF),
-      comment: colors.mutedForeground.withValues(alpha: 0.7),
-      number: isLight ? const Color(0xFF0550AE) : const Color(0xFF79C0FF),
-      punct: colors.foreground.withValues(alpha: 0.55),
+      base: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
+      keyword: isLight ? const Color(0xFFA0111F) : const Color(0xFFFF9492),
+      string: isLight ? const Color(0xFF032563) : const Color(0xFFADDCFF),
+      comment: isLight ? const Color(0xFF4B535D) : const Color(0xFFBDC4CC),
+      number: isLight ? const Color(0xFF023B95) : const Color(0xFF91CBFF),
+      entity: isLight ? const Color(0xFF622CBC) : const Color(0xFFDBB7FF),
+      punct: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
     );
   }
 
@@ -199,6 +204,7 @@ class _OutputPalette {
   final Color string;
   final Color comment;
   final Color number;
+  final Color entity;
   final Color punct;
 }
 
@@ -360,7 +366,16 @@ List<_Tok> _hlGeneric(
     if (_isIdentStart(ch) || ch == r'$') {
       final end = _scanIdent(line, i);
       final w = line.substring(i, end);
-      out.add(_Tok(w, keywords.contains(w) ? p.keyword : p.base));
+      out.add(
+        _Tok(
+          w,
+          keywords.contains(w)
+              ? p.keyword
+              : _callsAhead(line, end)
+              ? p.entity
+              : p.base,
+        ),
+      );
       i = end;
       continue;
     }
@@ -383,6 +398,16 @@ bool _isIdentStart(String ch) {
 bool _isIdentPart(String ch) {
   final c = ch.codeUnitAt(0);
   return _isIdentStart(ch) || _isDigit(ch) || c == 0x24;
+}
+
+/// True when the next non-space character after [end] opens a call — the
+/// source's Shiki themes paint those identifiers with the `entity` colour.
+bool _callsAhead(String line, int end) {
+  var j = end;
+  while (j < line.length && line[j] == ' ') {
+    j++;
+  }
+  return j < line.length && line[j] == '(';
 }
 
 int _scanIdent(String s, int start) {
@@ -790,7 +815,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
                             ),
                           ],
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 8), // gap-2
                         _Chevron(
                           open: _currentOpen,
                           reduce: reduce,

@@ -283,11 +283,14 @@ class _DayRowState extends State<DayRow> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final slot in _slots)
+        for (final (i, slot) in _slots.indexed)
           _PresenceSlot(
             key: ValueKey(slot.key),
             exiting: slot.exiting,
             reduce: reduce,
+            // Source column is `flex flex-col gap-2`: 8px *between* slots, with
+            // no trailing gap after the last one.
+            gapBefore: i == 0 ? 0 : 8,
             // Ranges enter from y -6 with a 4px blur; the unavailable line from
             // y -4 with no blur (source initial/exit specs).
             enterY: slot.range != null ? -6 : -4,
@@ -387,8 +390,8 @@ class _UnavailableContent extends StatelessWidget {
 /// The presence wrapper — the same enter/exit/height-reflow contract as the
 /// toast stack's `_ToastItem`, applied to a scheduler slot. Enter runs `0 → 1`
 /// on `SPRING_LAYOUT`; exit runs `1 → 0` on the same spring and unmounts on
-/// completion. An 8px bottom gap is included in the collapsing area so the
-/// spacing reflows with the slot.
+/// completion. [gapBefore] is included in the collapsing area so the spacing
+/// reflows with the slot.
 class _PresenceSlot extends StatelessWidget {
   const _PresenceSlot({
     required this.exiting,
@@ -396,6 +399,7 @@ class _PresenceSlot extends StatelessWidget {
     required this.enterY,
     required this.exitY,
     required this.blurPx,
+    required this.gapBefore,
     required this.onExited,
     required this.child,
     super.key,
@@ -406,6 +410,7 @@ class _PresenceSlot extends StatelessWidget {
   final double enterY;
   final double exitY;
   final double blurPx;
+  final double gapBefore;
   final VoidCallback onExited;
   final Widget child;
 
@@ -446,10 +451,13 @@ class _PresenceSlot extends StatelessWidget {
         final heightFactor = reduce ? 1.0 : opacity;
         return ClipRect(
           child: Align(
-            alignment: Alignment.topCenter,
+            // `topStart`, not `topCenter`: the slot content is left-aligned in
+            // the ranges column (the "Unavailable" line sits at the same left
+            // edge as the start-time select).
+            alignment: AlignmentDirectional.topStart,
             heightFactor: heightFactor,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: EdgeInsets.only(top: gapBefore),
               child: body,
             ),
           ),

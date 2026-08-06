@@ -140,6 +140,8 @@ class BeuiPromptInput extends StatefulWidget {
     this.focusNode,
     this.controller,
     this.autofocus = false,
+    this.surfaceColor,
+    this.bordered = true,
     super.key,
   }) : assert(minRows >= 1),
        assert(maxRows >= minRows),
@@ -211,6 +213,15 @@ class BeuiPromptInput extends StatefulWidget {
 
   /// Autofocus the field on mount.
   final bool autofocus;
+
+  /// Overrides the composer fill. Defaults to `BeuiColors.background` (source
+  /// `bg-background`). Embedded composers use the source's `bg-muted`.
+  final Color? surfaceColor;
+
+  /// Draws the resting + focus-within border (source `border border-border/80
+  /// focus-within:border-foreground/25`). Pass false for the source's
+  /// `border-0 focus-within:border-transparent` embedded variant.
+  final bool bordered;
 
   @override
   State<BeuiPromptInput> createState() => _BeuiPromptInputState();
@@ -386,7 +397,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
 
     final borderColor = _focused
         ? colors.foreground.withValues(alpha: 0.25)
-        : colors.border.withValues(alpha: 0.8);
+        : colors.border.withValues(alpha: colors.border.a * 0.8);
 
     return Opacity(
       opacity: widget.enabled ? 1 : 0.6,
@@ -394,8 +405,10 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
         duration: const Duration(milliseconds: 150),
         curve: Curves.ease,
         decoration: BoxDecoration(
-          color: colors.background,
-          border: Border.all(color: borderColor),
+          color: widget.surfaceColor ?? colors.background,
+          border: widget.bordered
+              ? Border.all(color: borderColor)
+              : Border.all(color: Colors.transparent),
           borderRadius: BorderRadius.circular(_shellRadius),
         ),
         padding: const EdgeInsets.all(8),

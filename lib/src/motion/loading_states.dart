@@ -884,7 +884,6 @@ class _ScramblePhraseState extends State<_ScramblePhrase> {
     final durationMs = math
         .min(760, math.max(420, characters.length * 32))
         .toDouble();
-    final startedAt = DateTime.now();
     var lastUpdate = Duration.zero;
 
     _ticker = Ticker((elapsed) {
@@ -903,7 +902,9 @@ class _ScramblePhraseState extends State<_ScramblePhrase> {
       }
       if (!mounted) return;
       setState(() => _display = next.toString());
-      if (DateTime.now().difference(startedAt).inMilliseconds >= durationMs) {
+      // Completion runs off the ticker's own clock, not the wall clock, so the
+      // ticker actually stops (and disposes) under fake async in tests.
+      if (elapsed.inMilliseconds >= durationMs) {
         _ticker?.dispose();
         _ticker = null;
         if (mounted) setState(() => _display = target);

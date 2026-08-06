@@ -1,71 +1,64 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery route for [BeuiNotificationStack] — a collapsible stacked-inbox card
-/// that fans open on hover/focus/tap and rolls its footer label.
+/// Gallery route for [BeuiNotificationStack] — mirrors
+/// `notification-stack.preview.tsx`: three incident cards, the first carrying
+/// an amber retry-count trailing slot.
 Widget notificationStackDemo(BuildContext context) =>
     const _NotificationStackDemo();
 
-class _NotificationStackDemo extends StatefulWidget {
+/// `text-amber-400` — the dark-mode tone the source preview uses for the
+/// retry counter.
+const _amber400 = Color(0xFFFBBF24);
+
+class _NotificationStackDemo extends StatelessWidget {
   const _NotificationStackDemo();
 
   @override
-  State<_NotificationStackDemo> createState() => _NotificationStackDemoState();
-}
-
-class _NotificationStackDemoState extends State<_NotificationStackDemo> {
-  bool _empty = false;
-  String _last = '—';
-
-  static const _items = <BeuiNotificationStackItem>[
-    BeuiNotificationStackItem(
-      id: 'mention',
-      title: 'Aditi mentioned you',
-      description: 'in "Motion fidelity — spring tokens"',
-    ),
-    BeuiNotificationStackItem(
-      id: 'review',
-      title: 'Review requested',
-      description: 'feat: port notification-stack (#42)',
-    ),
-    BeuiNotificationStackItem(
-      id: 'deploy',
-      title: 'Preview deployed',
-      description: 'beui-gallery · 2m ago',
-    ),
-    BeuiNotificationStackItem(
-      id: 'star',
-      title: 'New star on beui',
-      description: 'You reached 1,200 stars',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 24),
-          BeuiNotificationStack(
-            items: _empty ? const [] : _items,
-            onViewAll: () => setState(() => _last = 'View all'),
+  Widget build(BuildContext context) => Padding(
+    // Source wrapper is `pt-52 pb-6`: headroom for the upward fan-out.
+    padding: const EdgeInsets.only(top: 208, bottom: 24),
+    child: Align(
+      alignment: Alignment.topCenter,
+      child: BeuiNotificationStack(
+        items: const [
+          BeuiNotificationStackItem(
+            id: 'import-failed',
+            title: 'Orders import failed',
+            description: '42s · TimeoutError at Step 2',
+            trailing: _RetryCount(count: 2),
           ),
-          const SizedBox(height: 220), // room for the fan-out
-          BeuiButton(
-            variant: BeuiButtonVariant.secondary,
-            size: BeuiButtonSize.sm,
-            onPressed: () => setState(() => _empty = !_empty),
-            child: Text(_empty ? 'Show notifications' : 'Empty state'),
+          BeuiNotificationStackItem(
+            id: 'sla-breach',
+            title: 'SLA breach',
+            description: '2m 11s · Data enrichment',
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Last action: $_last',
-            style: TextStyle(fontSize: 13, color: colors.mutedForeground),
+          BeuiNotificationStackItem(
+            id: 'sync-fixed',
+            title: 'Product sync auto-fixed',
+            description: '5m · 404 on GET /products',
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+class _RetryCount extends StatelessWidget {
+  const _RetryCount({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) => DefaultTextStyle.merge(
+    style: const TextStyle(color: _amber400),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 4, // gap-1
+      children: [
+        const Icon(LucideIcons.rotate_cw, size: 14, color: _amber400),
+        Text('$count'),
+      ],
+    ),
+  );
 }

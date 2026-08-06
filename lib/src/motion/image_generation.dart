@@ -807,7 +807,7 @@ class _StatusLabel extends StatelessWidget {
     final style = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w500,
-      height: 1.25,
+      height: 20 / 14, // text-sm / leading-5
       color: color,
     );
 

@@ -78,18 +78,18 @@ const _actionsOutReduced = CurvedMotion(
 const _spinPeriod = Duration(milliseconds: 900);
 
 // Status palette — Tailwind amber / blue / emerald / rose matching the source.
-const _amber500 = Color(0xFFF59E0B);
-const _amber600 = Color(0xFFD97706);
-const _amber400 = Color(0xFFFBBF24);
-const _blue500 = Color(0xFF3B82F6);
-const _blue600 = Color(0xFF2563EB);
-const _blue400 = Color(0xFF60A5FA);
-const _emerald500 = Color(0xFF10B981);
-const _emerald600 = Color(0xFF059669);
-const _emerald400 = Color(0xFF34D399);
-const _rose500 = Color(0xFFF43F5E);
-const _rose600 = Color(0xFFE11D48);
-const _rose400 = Color(0xFFFB7185);
+const _amber500 = Color(0xFFFE9A00);
+const _amber600 = Color(0xFFE17100);
+const _amber400 = Color(0xFFFFB900);
+const _blue500 = Color(0xFF2B7FFF);
+const _blue600 = Color(0xFF155DFC);
+const _blue400 = Color(0xFF51A2FF);
+const _emerald500 = Color(0xFF00BC7D);
+const _emerald600 = Color(0xFF009966);
+const _emerald400 = Color(0xFF00D492);
+const _rose500 = Color(0xFFFF2056);
+const _rose600 = Color(0xFFEC003F);
+const _rose400 = Color(0xFFFF637E);
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -196,7 +196,9 @@ class BeuiToolApprovalCode extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.muted.withValues(alpha: 0.30),
         borderRadius: BorderRadius.circular(8), // rounded-lg
-        border: Border.all(color: colors.border.withValues(alpha: 0.50)),
+        border: Border.all(
+          color: colors.border.withValues(alpha: colors.border.a * 0.50),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -384,7 +386,9 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
           decoration: BoxDecoration(
             color: colors.muted.withValues(alpha: 0.20),
             borderRadius: BorderRadius.circular(16), // rounded-2xl
-            border: Border.all(color: colors.border.withValues(alpha: 0.60)),
+            border: Border.all(
+              color: colors.border.withValues(alpha: colors.border.a * 0.60),
+            ),
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
@@ -459,7 +463,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                               DefaultTextStyle.merge(
                                 style: TextStyle(
                                   fontSize: 14,
-                                  height: 1.25, // leading-5 at 14px ≈ 20px
+                                  height: 20 / 14, // leading-5 at text-sm
                                   color: colors.mutedForeground,
                                 ),
                                 child: _asWidget(widget.description!),
@@ -496,7 +500,9 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                           color: colors.background.withValues(alpha: 0.70),
                           borderRadius: BorderRadius.circular(12), // rounded-xl
                           border: Border.all(
-                            color: colors.border.withValues(alpha: 0.50),
+                            color: colors.border.withValues(
+                              alpha: colors.border.a * 0.50,
+                            ),
                           ),
                         ),
                         child: Padding(
@@ -531,7 +537,9 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                     decoration: BoxDecoration(
                       border: Border(
                         top: BorderSide(
-                          color: colors.border.withValues(alpha: 0.60),
+                          color: colors.border.withValues(
+                            alpha: colors.border.a * 0.60,
+                          ),
                         ),
                       ),
                     ),
@@ -596,7 +604,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
                                       color: colors.border.withValues(
-                                        alpha: 0.60,
+                                        alpha: colors.border.a * 0.60,
                                       ),
                                     ),
                                   ),
@@ -711,7 +719,9 @@ class _LeadingGlyph extends StatelessWidget {
         decoration: BoxDecoration(
           color: colors.background,
           borderRadius: BorderRadius.circular(12), // rounded-xl
-          border: Border.all(color: colors.border.withValues(alpha: 0.60)),
+          border: Border.all(
+            color: colors.border.withValues(alpha: colors.border.a * 0.60),
+          ),
         ),
         child: SizedBox(width: 32, height: 32, child: Center(child: glyph)),
       ),

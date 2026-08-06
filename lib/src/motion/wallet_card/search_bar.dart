@@ -108,11 +108,7 @@ class _WalletSearchBarState extends State<WalletSearchBar> {
     );
   }
 
-  Widget _panel(
-    BuildContext context,
-    BeuiColors colors,
-    WalletMorphInfo info,
-  ) {
+  Widget _panel(BuildContext context, BeuiColors colors, WalletMorphInfo info) {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final filtered = _filtered;
     final contentOpacity = ((info.progress - 0.15) / 0.85).clamp(0.0, 1.0);
@@ -180,7 +176,10 @@ class _WalletSearchBarState extends State<WalletSearchBar> {
         ),
         Opacity(
           opacity: contentOpacity,
-          child: Container(height: 1, color: colors.border.withValues(alpha: 0.4)),
+          child: Container(
+            height: 1,
+            color: colors.border.withValues(alpha: colors.border.a * 0.4),
+          ),
         ),
         // Results / empty state.
         Opacity(

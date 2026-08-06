@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery entry for [BeuiAnimatedBadge] — replicates the source
-/// `animated-badge.preview.tsx`: a hero badge that cycles through statuses every
-/// 1.6s (icon + color animate, the loader pulses), plus a static grid showing
-/// every status at the small size.
+/// Gallery entry for [BeuiAnimatedBadge] — a faithful port of the source
+/// `animated-badge.preview.tsx`: `flex flex-col items-center gap-6` holding a
+/// hero badge in an `h-16` box that cycles status every 1.6s, then a
+/// `grid sm:grid-cols-3 gap-2` of every status at the small size.
 Widget animatedBadgeDemo(BuildContext context) => const _AnimatedBadgeDemo();
 
 class _AnimatedBadgeDemo extends StatefulWidget {
@@ -23,6 +23,20 @@ class _AnimatedBadgeDemoState extends State<_AnimatedBadgeDemo> {
     (BeuiAnimatedBadgeStatus.success, 'Synced'),
     (BeuiAnimatedBadgeStatus.warning, 'Review'),
     (BeuiAnimatedBadgeStatus.danger, 'Failed'),
+  ];
+
+  // The `sm:grid-cols-3` grid, row-major.
+  static const _grid = <List<(BeuiAnimatedBadgeStatus, String)>>[
+    [
+      (BeuiAnimatedBadgeStatus.neutral, 'Queued'),
+      (BeuiAnimatedBadgeStatus.info, 'Live'),
+      (BeuiAnimatedBadgeStatus.loading, 'Indexing'),
+    ],
+    [
+      (BeuiAnimatedBadgeStatus.success, 'Verified'),
+      (BeuiAnimatedBadgeStatus.warning, 'Pending'),
+      (BeuiAnimatedBadgeStatus.danger, 'Blocked'),
+    ],
   ];
 
   int _active = 0;
@@ -44,71 +58,46 @@ class _AnimatedBadgeDemoState extends State<_AnimatedBadgeDemo> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
     final (status, label) = _cycle[_active];
 
-    Widget caption(String text) => Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.3,
-          color: colors.mutedForeground,
-        ),
-      ),
-    );
-
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        caption('Auto-cycles status — icon + color animate, loader pulses'),
+        // `flex h-16 items-center justify-center`
         SizedBox(
           height: 64,
-          child: Align(
-            alignment: Alignment.centerLeft,
+          child: Center(
             child: BeuiAnimatedBadge(status: status, label: label),
           ),
         ),
-        const SizedBox(height: 32),
-        caption('Every status (small)'),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: const [
-            BeuiAnimatedBadge(
-              status: BeuiAnimatedBadgeStatus.neutral,
-              size: BeuiAnimatedBadgeSize.sm,
-              label: 'Queued',
-            ),
-            BeuiAnimatedBadge(
-              status: BeuiAnimatedBadgeStatus.info,
-              size: BeuiAnimatedBadgeSize.sm,
-              label: 'Live',
-            ),
-            BeuiAnimatedBadge(
-              status: BeuiAnimatedBadgeStatus.loading,
-              size: BeuiAnimatedBadgeSize.sm,
-              label: 'Indexing',
-            ),
-            BeuiAnimatedBadge(
-              status: BeuiAnimatedBadgeStatus.success,
-              size: BeuiAnimatedBadgeSize.sm,
-              label: 'Verified',
-            ),
-            BeuiAnimatedBadge(
-              status: BeuiAnimatedBadgeStatus.warning,
-              size: BeuiAnimatedBadgeSize.sm,
-              label: 'Pending',
-            ),
-            BeuiAnimatedBadge(
-              status: BeuiAnimatedBadgeStatus.danger,
-              size: BeuiAnimatedBadgeSize.sm,
-              label: 'Blocked',
-            ),
-          ],
+        const SizedBox(height: 24), // gap-6
+        // `grid sm:grid-cols-3 gap-2` — 1fr tracks, so every cell is the same
+        // width and each badge stretches to fill it.
+        IntrinsicWidth(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var r = 0; r < _grid.length; r++) ...[
+                if (r > 0) const SizedBox(height: 8),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (var c = 0; c < _grid[r].length; c++) ...[
+                      if (c > 0) const SizedBox(width: 8),
+                      Expanded(
+                        child: BeuiAnimatedBadge(
+                          status: _grid[r][c].$1,
+                          size: BeuiAnimatedBadgeSize.sm,
+                          label: _grid[r][c].$2,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ],
+          ),
         ),
       ],
     );

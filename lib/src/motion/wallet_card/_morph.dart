@@ -184,7 +184,9 @@ class _MorphPanelState extends State<MorphPanel> {
         changed = true;
       }
     }
-    if (measure != null && measure.hasSize && measure.size.height != _panelHeight) {
+    if (measure != null &&
+        measure.hasSize &&
+        measure.size.height != _panelHeight) {
       _panelHeight = measure.size.height;
       changed = true;
     }
@@ -200,12 +202,8 @@ class _MorphPanelState extends State<MorphPanel> {
 
     return OverlayPortal(
       controller: _portal,
-      overlayChildBuilder: (overlayContext) => _buildOverlay(
-        overlayContext,
-        scope.headerLink,
-        panelWidth,
-        reduce,
-      ),
+      overlayChildBuilder: (overlayContext) =>
+          _buildOverlay(overlayContext, scope.headerLink, panelWidth, reduce),
       // In-flow trigger. Kept in layout (maintainSize) but hidden + inert while
       // open, so the header row width never shifts.
       child: Stack(
@@ -376,7 +374,9 @@ class _MorphBox extends StatelessWidget {
     final content = DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        border: Border.all(color: colors.border.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: colors.border.withValues(alpha: colors.border.a * 0.3),
+        ),
         borderRadius: rrect,
       ),
       child: child,
@@ -399,11 +399,7 @@ class _MorphBox extends StatelessWidget {
 /// (`delayChildren 0.12s + index·0.035s`). Reduced motion shows it instantly.
 class WalletRevealItem extends StatefulWidget {
   /// Creates a staggered reveal wrapper.
-  const WalletRevealItem({
-    required this.index,
-    required this.child,
-    super.key,
-  });
+  const WalletRevealItem({required this.index, required this.child, super.key});
 
   /// Position in the list (drives the stagger delay).
   final int index;

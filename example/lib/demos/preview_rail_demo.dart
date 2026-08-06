@@ -94,81 +94,32 @@ class _PreviewRailDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-
-    Widget section(String title, Widget child) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 12),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: colors.mutedForeground,
+    // Source preview: two rails in a `flex flex-col gap-8` (32) — a vertical
+    // one at `h-[360px] max-w-2xl` (672) and a horizontal one at `h-[280px]`,
+    // both `defaultActiveId: 'docs'`. The remaining variants
+    // (previewSide/showPreview/highlightActive) are covered by the widget
+    // tests rather than shown here, matching the source page.
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 672),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
+            SizedBox(
+              height: 360,
+              child: BeuiPreviewRail(items: _items, defaultActiveId: 'docs'),
             ),
-          ),
-        ),
-        child,
-      ],
-    );
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              section(
-                'VERTICAL',
-                const BeuiPreviewRail(items: _items, defaultActiveId: 'docs'),
+            SizedBox(height: 32),
+            SizedBox(
+              height: 280,
+              child: BeuiPreviewRail(
+                items: _items,
+                orientation: BeuiPreviewRailOrientation.horizontal,
+                defaultActiveId: 'docs',
               ),
-              const SizedBox(height: 48),
-              section(
-                'PREVIEW SIDE · BEFORE',
-                const BeuiPreviewRail(
-                  items: _items,
-                  label: 'Mirrored section navigation',
-                  previewSide: BeuiPreviewRailPreviewSide.before,
-                  defaultActiveId: 'docs',
-                ),
-              ),
-              const SizedBox(height: 48),
-              // No preview at all, and the selection keeps the pyramid anchored
-              // while nothing is hovered — the rail as a pure "you are here".
-              section(
-                'SHOW PREVIEW OFF · HIGHLIGHT ACTIVE',
-                BeuiPreviewRail(
-                  items: _items,
-                  label: 'Compact section navigation',
-                  showPreview: false,
-                  highlightActive: true,
-                  defaultActiveId: 'docs',
-                  onItemSelect: (item) =>
-                      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-                        SnackBar(
-                          content: Text('Selected ${item.label}'),
-                          duration: const Duration(milliseconds: 900),
-                        ),
-                      ),
-                ),
-              ),
-              const SizedBox(height: 48),
-              section(
-                'HORIZONTAL',
-                const BeuiPreviewRail(
-                  items: _items,
-                  orientation: BeuiPreviewRailOrientation.horizontal,
-                  defaultActiveId: 'docs',
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -201,7 +201,9 @@ class _BeuiMultiChainSwapState extends State<BeuiMultiChainSwap> {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             border: Border(
-              bottom: BorderSide(color: colors.border.withValues(alpha: 0.5)),
+              bottom: BorderSide(
+                color: colors.border.withValues(alpha: colors.border.a * 0.5),
+              ),
             ),
           ),
           child: Row(
@@ -249,7 +251,9 @@ class _BeuiMultiChainSwapState extends State<BeuiMultiChainSwap> {
                 children: [
                   Column(
                     mainAxisSize: MainAxisSize.min,
-                    spacing: 6, // gap-1.5
+                    // gap-1.5 (6) + the flip wrapper's own `-my-4` box
+                    // (h-9 36px less 32px of negative margin = 4) + gap-1.5.
+                    spacing: 16,
                     children: [
                       _Field(
                         side: BeuiTokenSide.from,
@@ -287,7 +291,7 @@ class _BeuiMultiChainSwapState extends State<BeuiMultiChainSwap> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12), // mt-3
+              const SizedBox(height: 18), // gap-1.5 + mt-3
               _QuoteRow(
                 from: from,
                 to: to,
@@ -295,7 +299,7 @@ class _BeuiMultiChainSwapState extends State<BeuiMultiChainSwap> {
                 quoting: _quoting,
                 colors: colors,
               ),
-              const SizedBox(height: 4), // mt-1
+              const SizedBox(height: 10), // gap-1.5 + mt-1
               _DestinationRow(
                 show: _showDest,
                 controller: _dest,
@@ -307,7 +311,7 @@ class _BeuiMultiChainSwapState extends State<BeuiMultiChainSwap> {
                 }),
                 onChanged: (_) => setState(() {}),
               ),
-              const SizedBox(height: 12), // mt-3
+              const SizedBox(height: 18), // gap-1.5 + mt-3
               _ActionButton(
                 from: from,
                 to: to,
@@ -330,7 +334,9 @@ class _BeuiMultiChainSwapState extends State<BeuiMultiChainSwap> {
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: colors.card,
-          border: Border.all(color: colors.border.withValues(alpha: 0.2)),
+          border: Border.all(
+            color: colors.border.withValues(alpha: colors.border.a * 0.2),
+          ),
           borderRadius: BorderRadius.circular(24), // rounded-3xl
         ),
         child: Stack(
@@ -396,7 +402,9 @@ class _Field extends StatelessWidget {
       padding: const EdgeInsets.all(14), // p-3.5
       decoration: BoxDecoration(
         color: colors.background.withValues(alpha: 0.4),
-        border: Border.all(color: colors.border.withValues(alpha: 0.5)),
+        border: Border.all(
+          color: colors.border.withValues(alpha: colors.border.a * 0.5),
+        ),
         borderRadius: BorderRadius.circular(16), // rounded-2xl
       ),
       child: Column(
@@ -755,7 +763,9 @@ class _QuoteRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       decoration: BoxDecoration(
         color: colors.background.withValues(alpha: 0.4),
-        border: Border.all(color: colors.border.withValues(alpha: 0.5)),
+        border: Border.all(
+          color: colors.border.withValues(alpha: colors.border.a * 0.5),
+        ),
         borderRadius: BorderRadius.circular(12), // rounded-xl
       ),
       child: Column(
@@ -806,7 +816,9 @@ class _DestinationRow extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: colors.background.withValues(alpha: 0.4),
-        border: Border.all(color: colors.border.withValues(alpha: 0.5)),
+        border: Border.all(
+          color: colors.border.withValues(alpha: colors.border.a * 0.5),
+        ),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -881,7 +893,11 @@ class _DestinationRow extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: colors.border.withValues(alpha: 0.5)),
+                  top: BorderSide(
+                    color: colors.border.withValues(
+                      alpha: colors.border.a * 0.5,
+                    ),
+                  ),
                 ),
               ),
               padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),

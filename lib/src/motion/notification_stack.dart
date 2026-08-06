@@ -520,7 +520,9 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
         color: colors.background,
         borderRadius: BorderRadius.circular(_cardRadius),
         border: Border.all(
-          color: colors.border.withValues(alpha: 0.6), // border-border/60
+          color: colors.border.withValues(
+            alpha: colors.border.a * 0.6,
+          ), // border-border/60
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16), // px-4

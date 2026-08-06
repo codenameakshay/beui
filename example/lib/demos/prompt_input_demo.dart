@@ -104,12 +104,14 @@ class _PromptInputDemoState extends State<_PromptInputDemo> {
         ? 'Prompt sent to the selected model.'
         : _notice;
 
+    // source preview: `flex h-[360px] w-full max-w-xl flex-col justify-center`
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+        constraints: const BoxConstraints(maxWidth: 576),
+        child: SizedBox(
+          height: 360,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -140,34 +142,29 @@ class _PromptInputDemoState extends State<_PromptInputDemo> {
                   });
                 },
               ),
-              const SizedBox(height: 8),
+              // source preview: `h-8 px-2 pt-2 text-xs text-muted-foreground`
               SizedBox(
-                height: 24,
+                height: 32,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 180),
                     switchInCurve: beuiEaseOut,
                     child: status == null
                         ? const SizedBox.shrink()
-                        : Text(
+                        : Align(
                             key: ValueKey(status),
-                            status,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: colors.mutedForeground,
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              status,
+                              style: TextStyle(
+                                fontSize: 12,
+                                height: 16 / 12,
+                                color: colors.mutedForeground,
+                              ),
                             ),
                           ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Model: $_model · Enter to send · Shift+Enter for newline',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: colors.mutedForeground.withValues(alpha: 0.7),
                 ),
               ),
             ],

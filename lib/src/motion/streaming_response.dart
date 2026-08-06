@@ -304,6 +304,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
+                    spacing: 2, // gap-0.5
                     children: [
                       if (_canCopy)
                         _ResponseAction(
@@ -396,15 +397,18 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                         ),
                       ],
                       if (_hasSources)
-                        _SourcesToggle(
-                          open: _currentSourcesOpen,
-                          count: widget.sources.length,
-                          sources: widget.sources,
-                          hovered: _sourcesHovered,
-                          reduce: reduce,
-                          colors: colors,
-                          onHover: (h) => setState(() => _sourcesHovered = h),
-                          onTap: () => _setSourcesOpen(!_currentSourcesOpen),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4), // ml-1
+                          child: _SourcesToggle(
+                            open: _currentSourcesOpen,
+                            count: widget.sources.length,
+                            sources: widget.sources,
+                            hovered: _sourcesHovered,
+                            reduce: reduce,
+                            colors: colors,
+                            onHover: (h) => setState(() => _sourcesHovered = h),
+                            onTap: () => _setSourcesOpen(!_currentSourcesOpen),
+                          ),
                         ),
                     ],
                   ),

@@ -25,30 +25,16 @@ class _BounceSidebarDemoState extends State<_BounceSidebarDemo> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    // Source preview: the bare sidebar at `w-52` (208), centred in a
+    // `min-h-[360px]` box — no surrounding labels.
     return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 360, maxWidth: 208),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Active: $_active',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: colors.mutedForeground,
-              ),
-            ),
-            const SizedBox(height: 16),
-            BeuiBounceSidebar(
-              items: _destinations,
-              value: _active,
-              onChanged: (id) => setState(() => _active = id),
-              semanticLabel: 'beUI sections',
-            ),
-          ],
+      child: SizedBox(
+        width: 208,
+        child: BeuiBounceSidebar(
+          items: _destinations,
+          value: _active,
+          onChanged: (id) => setState(() => _active = id),
+          semanticLabel: 'beUI sections',
         ),
       ),
     );

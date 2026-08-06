@@ -122,7 +122,7 @@ class _FileDiffDemoState extends State<_FileDiffDemo> {
               Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 48),
+                  padding: const EdgeInsets.only(bottom: 48),
                   child: BeuiFileDiff(
                     key: ValueKey(_run),
                     file: 'src/runner.ts',

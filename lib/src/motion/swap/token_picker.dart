@@ -423,7 +423,7 @@ class _ChainChip extends StatelessWidget {
               border: Border.all(
                 color: active
                     ? colors.primary.withValues(alpha: 0.2)
-                    : colors.border.withValues(alpha: 0.6),
+                    : colors.border.withValues(alpha: colors.border.a * 0.6),
               ),
               borderRadius: BorderRadius.circular(12),
             ),

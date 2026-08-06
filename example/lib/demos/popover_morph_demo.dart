@@ -1,9 +1,9 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery route for [BeuiMorphPopover] — a panel that morphs open out of the
-/// trigger corner (the morph variant of popover). Mirrors the source's
-/// `MorphPopoverPreview`: an "Options" trigger revealing an action menu.
+/// Gallery route for [BeuiMorphPopover] — mirrors the source
+/// `popover-morph.preview.tsx`: an "Options" trigger whose panel morphs open
+/// out of the nearest corner, carrying four actions.
 Widget popoverMorphDemo(BuildContext context) => const _PopoverMorphDemo();
 
 class _PopoverMorphDemo extends StatefulWidget {
@@ -27,7 +27,9 @@ class _PopoverMorphDemoState extends State<_PopoverMorphDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
-    Widget trigger(String label) => Container(
+    // Source trigger: h-10 gap-2 rounded-xl border bg-background px-4 text-sm
+    // font-medium, with a muted chevron.
+    final trigger = Container(
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
@@ -39,7 +41,7 @@ class _PopoverMorphDemoState extends State<_PopoverMorphDemo> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            label,
+            'Options',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -56,17 +58,19 @@ class _PopoverMorphDemoState extends State<_PopoverMorphDemo> {
       ),
     );
 
-    Widget menu(void Function() onPick) => SizedBox(
-      width: 192, // w-48
+    // Source content: w-48 p-1.5, rows gap-2.5 rounded-lg px-2.5 py-2 text-sm.
+    final menu = SizedBox(
+      width: 192,
       child: Padding(
-        padding: const EdgeInsets.all(6), // p-1.5
+        padding: const EdgeInsets.all(6),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (final (icon, label) in _actions)
               InkWell(
                 borderRadius: BorderRadius.circular(8),
-                onTap: onPick,
+                onTap: () => setState(() => _open = false),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -92,34 +96,14 @@ class _PopoverMorphDemoState extends State<_PopoverMorphDemo> {
       ),
     );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          'Tap to morph the panel out of the corner (Esc / tap outside to close):',
-        ),
-        const SizedBox(height: 24),
-        BeuiMorphPopover(
-          open: _open,
-          onOpenChange: (v) => setState(() => _open = v),
-          align: BeuiMorphPopoverAlign.start,
-          content: menu(() => setState(() => _open = false)),
-          child: trigger('Options'),
-        ),
-        const SizedBox(height: 120),
-        const Text('Opens above, end-aligned (uncontrolled):'),
-        const SizedBox(height: 24),
-        Align(
-          alignment: Alignment.centerRight,
-          child: BeuiMorphPopover(
-            side: BeuiMorphPopoverSide.top,
-            align: BeuiMorphPopoverAlign.end,
-            content: menu(() {}),
-            child: trigger('Above'),
-          ),
-        ),
-      ],
+    return Center(
+      child: BeuiMorphPopover(
+        open: _open,
+        onOpenChange: (v) => setState(() => _open = v),
+        align: BeuiMorphPopoverAlign.start,
+        content: menu,
+        child: trigger,
+      ),
     );
   }
 }

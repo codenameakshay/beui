@@ -61,6 +61,14 @@ void main() {
       expect(changed, 'b');
     });
 
+    testWidgets('dot is inset from inside the ring stroke', (tester) async {
+      // Source: a `h-5 w-5 border-2` ring with an `inset-1` dot. CSS resolves
+      // `inset` against the padding box, so the dot is 20 − 2×(2+4) = 8px.
+      await tester.pumpWidget(_app(defaultValue: 'a'));
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.byKey(_dot)), const Size(8, 8));
+    });
+
     testWidgets('uncontrolled selection moves the dot', (tester) async {
       await tester.pumpWidget(_app(defaultValue: 'a'));
       await tester.pumpAndSettle();

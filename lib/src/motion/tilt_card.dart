@@ -52,7 +52,6 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
   double _ry = 0; // target rotateY (radians)
   double _gx = 0.5; // glare x (0..1)
   double _gy = 0.5; // glare y (0..1)
-  bool _hovering = false;
 
   void _onHover(PointerHoverEvent e) {
     final box = _key.currentContext?.findRenderObject() as RenderBox?;
@@ -67,7 +66,6 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
       _ry = (px - 0.5) * maxRad;
       _gx = px;
       _gy = py;
-      _hovering = true;
     });
   }
 
@@ -75,7 +73,6 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
     setState(() {
       _rx = 0;
       _ry = 0;
-      _hovering = false;
     });
   }
 
@@ -97,9 +94,11 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
           if (widget.glare && !reduce)
             Positioned.fill(
               child: IgnorePointer(
-                child: AnimatedOpacity(
-                  opacity: _hovering ? 0.15 : 0.0,
-                  duration: const Duration(milliseconds: 200),
+                // Source: a plain `opacity-15` class — the glare is always
+                // painted (centred at 50%/50% until the cursor moves) and is
+                // not faded in on hover, nor recentred on exit.
+                child: Opacity(
+                  opacity: 0.15,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: RadialGradient(

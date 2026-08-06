@@ -106,7 +106,9 @@ class _StreamingResponseDemoState extends State<_StreamingResponseDemo> {
               Align(
                 alignment: Alignment.topCenter,
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 48),
+                  // source preview container has no inset; the response is
+                  // flush inside `w-full max-w-xl`.
+                  padding: const EdgeInsets.only(bottom: 48),
                   child: _ResponseDemo(
                     key: ValueKey<int>(_run),
                     onReplay: () => setState(() => _run++),
@@ -289,22 +291,21 @@ class _ResponseDemoState extends State<_ResponseDemo> {
           ],
           if (_started(4)) ...[
             const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.only(left: 20), // pl-5
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _Bullet(text: _reveal(4), colors: colors),
-                  if (_started(5)) ...[
-                    const SizedBox(height: 4),
-                    _Bullet(text: _reveal(5), colors: colors),
-                  ],
-                  if (_started(6)) ...[
-                    const SizedBox(height: 4),
-                    _Bullet(text: _reveal(6), colors: colors),
-                  ],
+            // `list-disc pl-5`: the marker lives inside the 20px padding,
+            // so the item text — not the marker — starts at x=20.
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _Bullet(text: _reveal(4), colors: colors),
+                if (_started(5)) ...[
+                  const SizedBox(height: 4), // space-y-1
+                  _Bullet(text: _reveal(5), colors: colors),
                 ],
-              ),
+                if (_started(6)) ...[
+                  const SizedBox(height: 4),
+                  _Bullet(text: _reveal(6), colors: colors),
+                ],
+              ],
             ),
           ],
           if (_started(7)) ...[
@@ -361,15 +362,19 @@ class _Bullet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = TextStyle(
+      fontSize: 14,
+      height: 24 / 14,
+      color: colors.foreground.withValues(alpha: 0.9),
+    );
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '•  ',
-          style: TextStyle(
-            fontSize: 14,
-            height: 24 / 14,
-            color: colors.foreground.withValues(alpha: 0.9),
+        SizedBox(
+          width: 20, // pl-5 marker gutter
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Text('•', style: style),
           ),
         ),
         Expanded(

@@ -15,7 +15,6 @@ class _ContextMenuDemo extends StatefulWidget {
 class _ContextMenuDemoState extends State<_ContextMenuDemo> {
   String? _message;
   bool _offline = false;
-  String _view = 'grid';
 
   void _setMessage(String message) => setState(() => _message = message);
 
@@ -61,24 +60,6 @@ class _ContextMenuDemoState extends State<_ContextMenuDemo> {
             },
           ),
           const BeuiContextMenuItem.separator(),
-          const BeuiContextMenuItem.label('View'),
-          BeuiContextMenuItem.radio(
-            label: 'Grid',
-            checked: _view == 'grid',
-            onSelect: () {
-              setState(() => _view = 'grid');
-              _setMessage('Grid view');
-            },
-          ),
-          BeuiContextMenuItem.radio(
-            label: 'List',
-            checked: _view == 'list',
-            onSelect: () {
-              setState(() => _view = 'list');
-              _setMessage('List view');
-            },
-          ),
-          const BeuiContextMenuItem.separator(),
           BeuiContextMenuItem(
             label: 'Move to trash',
             icon: LucideIcons.trash_2,
@@ -101,15 +82,39 @@ class _ContextMenuDemoState extends State<_ContextMenuDemo> {
               ),
             ),
             const SizedBox(height: 4),
+            // Source: `mt-1 h-4` slot swapping the hint for a checked message.
             SizedBox(
               height: 16,
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 180),
-                child: Text(
-                  _message ?? 'or long-press · Shift + F10',
-                  key: ValueKey(_message ?? 'hint'),
-                  style: TextStyle(fontSize: 10, color: colors.mutedForeground),
-                ),
+                child: _message == null
+                    ? Text(
+                        'or long-press · Shift + F10',
+                        key: const ValueKey('hint'),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: colors.mutedForeground,
+                        ),
+                      )
+                    : Row(
+                        key: ValueKey(_message),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            LucideIcons.check,
+                            size: 12,
+                            color: colors.success,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            _message!,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: colors.mutedForeground,
+                            ),
+                          ),
+                        ],
+                      ),
               ),
             ),
           ],

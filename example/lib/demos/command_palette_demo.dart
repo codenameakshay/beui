@@ -1,7 +1,8 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery route for [BeuiCommandPalette] — press ⌘K/Ctrl+K or the button.
+/// Gallery route for [BeuiCommandPalette] — mirrors
+/// `command-palette.preview.tsx`: a trigger pill plus the ⌘J / Ctrl J hint.
 Widget commandPaletteDemo(BuildContext context) => const _PaletteDemo();
 
 class _PaletteDemo extends StatefulWidget {
@@ -13,71 +14,139 @@ class _PaletteDemo extends StatefulWidget {
 
 class _PaletteDemoState extends State<_PaletteDemo> {
   bool _open = false;
-  String _last = '—';
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    void run(String what) => setState(() => _last = what);
     return BeuiCommandPalette(
       open: _open,
       onOpenChange: (v) => setState(() => _open = v),
+      shortcut: 'j',
       items: [
         BeuiCommandItem(
-          id: 'new-file',
-          label: 'New file',
-          group: 'Actions',
-          hint: '⌘N',
-          icon: LucideIcons.file_text,
-          onSelect: () => run('New file'),
+          id: 'home',
+          label: 'Go to Home',
+          group: 'Navigation',
+          hint: 'G H',
+          icon: LucideIcons.house,
+          onSelect: () {},
         ),
         BeuiCommandItem(
-          id: 'new-folder',
-          label: 'New folder',
-          group: 'Actions',
-          icon: LucideIcons.folder_closed,
-          onSelect: () => run('New folder'),
+          id: 'profile',
+          label: 'Open profile',
+          group: 'Navigation',
+          hint: 'G P',
+          icon: LucideIcons.user,
+          onSelect: () {},
         ),
         BeuiCommandItem(
           id: 'settings',
-          label: 'Open settings',
-          group: 'Actions',
-          hint: '⌘,',
+          label: 'Settings',
+          group: 'Navigation',
           icon: LucideIcons.settings,
-          onSelect: () => run('Open settings'),
+          onSelect: () {},
         ),
         BeuiCommandItem(
-          id: 'github',
-          label: 'GitHub repository',
-          group: 'Links',
-          keywords: const ['repo', 'source'],
-          icon: LucideIcons.link,
-          onSelect: () => run('GitHub repository'),
+          id: 'new-doc',
+          label: 'Create document',
+          group: 'Actions',
+          hint: '⌘ N',
+          icon: LucideIcons.file_text,
+          onSelect: () {},
         ),
         BeuiCommandItem(
-          id: 'docs',
-          label: 'Documentation',
-          group: 'Links',
-          icon: LucideIcons.book_open,
-          onSelect: () => run('Documentation'),
+          id: 'new-project',
+          label: 'New project',
+          group: 'Actions',
+          hint: '⌘ ⇧ N',
+          icon: LucideIcons.plus,
+          onSelect: () {},
         ),
       ],
       child: Center(
         child: Column(
+          // Source wrapper: `flex flex-col items-start gap-3`.
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
+          spacing: 12,
           children: [
-            BeuiButton(
+            _TriggerPill(
+              colors: colors,
               onPressed: () => setState(() => _open = true),
-              child: const Text('Open palette (⌘K)'),
             ),
-            const SizedBox(height: 16),
-            Text(
-              'Last command: $_last',
-              style: TextStyle(color: colors.mutedForeground, fontSize: 13),
-            ),
+            _HintLine(colors: colors),
           ],
         ),
       ),
     );
   }
+}
+
+/// `h-10 rounded-full border border-border bg-card px-5 text-sm font-medium`.
+class _TriggerPill extends StatelessWidget {
+  const _TriggerPill({required this.colors, required this.onPressed});
+
+  final BeuiColors colors;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+    cursor: SystemMouseCursors.click,
+    child: GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: colors.card,
+          border: Border.all(color: colors.border),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          'Open command palette',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: colors.foreground,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+class _HintLine extends StatelessWidget {
+  const _HintLine({required this.colors});
+
+  final BeuiColors colors;
+
+  Widget _kbd(String label) => Container(
+    margin: const EdgeInsets.symmetric(horizontal: 4),
+    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+    decoration: BoxDecoration(
+      color: colors.card,
+      border: Border.all(color: colors.border),
+      borderRadius: BorderRadius.circular(4), // rounded
+    ),
+    child: Text(
+      label,
+      style: TextStyle(fontSize: 12, color: colors.foreground),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) => DefaultTextStyle.merge(
+    style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('Press'),
+        _kbd('⌘ J'),
+        const Text('(or'),
+        _kbd('Ctrl J'),
+        const Text(') to open.'),
+      ],
+    ),
+  );
 }

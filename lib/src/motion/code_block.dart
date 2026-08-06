@@ -68,23 +68,27 @@ class _CodePalette {
     required this.string,
     required this.comment,
     required this.number,
+    required this.entity,
     required this.punct,
     required this.diffAdd,
     required this.diffDel,
   });
 
+  // Shiki `github-light-high-contrast` / `github-dark-high-contrast` — the
+  // themes the source's AgentCode highlighter is created with
+  // (agent-code.tsx LIGHT_THEME / DARK_THEME).
   factory _CodePalette.of(BeuiColors colors, Brightness brightness) {
     final isLight = brightness == Brightness.light;
-    // Soft accent hues that stay readable on muted surfaces in both modes.
     return _CodePalette(
-      base: colors.foreground.withValues(alpha: 0.85),
-      keyword: isLight ? const Color(0xFF0550AE) : const Color(0xFF79C0FF),
-      string: isLight ? const Color(0xFF0A3069) : const Color(0xFFA5D6FF),
-      comment: colors.mutedForeground.withValues(alpha: 0.7),
-      number: isLight ? const Color(0xFF0550AE) : const Color(0xFF79C0FF),
-      punct: colors.foreground.withValues(alpha: 0.55),
-      diffAdd: isLight ? const Color(0xFF116329) : const Color(0xFF3FB950),
-      diffDel: isLight ? const Color(0xFFCF222E) : const Color(0xFFF85149),
+      base: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
+      keyword: isLight ? const Color(0xFFA0111F) : const Color(0xFFFF9492),
+      string: isLight ? const Color(0xFF032563) : const Color(0xFFADDCFF),
+      comment: isLight ? const Color(0xFF4B535D) : const Color(0xFFBDC4CC),
+      number: isLight ? const Color(0xFF023B95) : const Color(0xFF91CBFF),
+      entity: isLight ? const Color(0xFF622CBC) : const Color(0xFFDBB7FF),
+      punct: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
+      diffAdd: isLight ? const Color(0xFF055D20) : const Color(0xFF26CD4D),
+      diffDel: isLight ? const Color(0xFFA0111F) : const Color(0xFFFF9492),
     );
   }
 
@@ -93,6 +97,7 @@ class _CodePalette {
   final Color string;
   final Color comment;
   final Color number;
+  final Color entity;
   final Color punct;
   final Color diffAdd;
   final Color diffDel;
@@ -249,7 +254,9 @@ List<_CodeToken> _highlightJson(String line, _CodePalette palette) {
       // Key vs value: a key is followed (after whitespace) by `:`.
       final after = line.substring(end).trimLeft();
       final isKey = after.startsWith(':');
-      out.add(_CodeToken(slice, isKey ? palette.keyword : palette.string));
+      // github-*-high-contrast paints JSON property names with the constant
+      // colour, not the keyword colour.
+      out.add(_CodeToken(slice, isKey ? palette.number : palette.string));
       i = end;
       continue;
     }
@@ -324,7 +331,11 @@ List<_CodeToken> _highlightGeneric(
     if (_isIdentStart(ch) || ch == r'$') {
       final end = _scanIdent(line, i);
       final word = line.substring(i, end);
-      final color = keywords.contains(word) ? palette.keyword : palette.base;
+      final color = keywords.contains(word)
+          ? palette.keyword
+          : _callsAhead(line, end)
+          ? palette.entity
+          : palette.base;
       out.add(_CodeToken(word, color));
       i = end;
       continue;
@@ -336,6 +347,16 @@ List<_CodeToken> _highlightGeneric(
     i++;
   }
   return out;
+}
+
+/// True when the next non-space character after [end] opens a call — the
+/// source's Shiki themes paint those identifiers with the `entity` colour.
+bool _callsAhead(String line, int end) {
+  var j = end;
+  while (j < line.length && line[j] == ' ') {
+    j++;
+  }
+  return j < line.length && line[j] == '(';
 }
 
 bool _isDigit(String ch) =>
@@ -575,10 +596,10 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
     // Preserve trailing empty line behaviour of split — matches source.
 
     // Status chrome colours: blue while writing, emerald when ready.
-    const writingBlue = Color(0xFF2563EB); // blue-600
-    const writingBlueDark = Color(0xFF60A5FA); // blue-400
-    const readyGreen = Color(0xFF059669); // emerald-600
-    const readyGreenDark = Color(0xFF34D399); // emerald-400
+    const writingBlue = Color(0xFF155DFC); // blue-600
+    const writingBlueDark = Color(0xFF51A2FF); // blue-400
+    const readyGreen = Color(0xFF009966); // emerald-600
+    const readyGreenDark = Color(0xFF00D492); // emerald-400
     final isLight = theme.brightness == Brightness.light;
     final statusColor = _streaming
         ? (isLight ? writingBlue : writingBlueDark)
@@ -624,7 +645,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                             ],
                             fontSize: 12,
                             color: colors.foreground.withValues(alpha: 0.8),
-                            height: 1.2,
+                            height: 16 / 12, // text-xs default leading-4
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -640,7 +661,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
-                        letterSpacing: 0.6,
+                        letterSpacing: 0.25, // tracking-wide (0.025em @ 10px)
                         color: colors.mutedForeground.withValues(alpha: 0.55),
                       ),
                     ),
@@ -661,7 +682,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                       ),
                     ),
                     if (_showCopy) ...[
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 10), // gap-2.5
                       Semantics(
                         button: true,
                         label: _copied ? 'Copied' : 'Copy code',
@@ -747,17 +768,30 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                             highlight: highlight,
                             wrap: true,
                           )
-                        : SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: _CodeLines(
-                              lines: lines,
-                              language: widget.language,
-                              palette: palette,
-                              colors: colors,
-                              showLineNumbers: widget.showLineNumbers,
-                              highlight: highlight,
-                              wrap: false,
-                            ),
+                        // source `pre` is `min-w-max` inside the scroller, so
+                        // every line row is at least as wide as the viewport
+                        // and the highlight band fills the whole row.
+                        : LayoutBuilder(
+                            builder: (context, viewport) =>
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      minWidth: viewport.maxWidth,
+                                    ),
+                                    child: IntrinsicWidth(
+                                      child: _CodeLines(
+                                        lines: lines,
+                                        language: widget.language,
+                                        palette: palette,
+                                        colors: colors,
+                                        showLineNumbers: widget.showLineNumbers,
+                                        highlight: highlight,
+                                        wrap: false,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                           ),
                   ),
                 ),
@@ -839,7 +873,7 @@ class _CodeLines extends StatelessWidget {
     );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
         for (var i = 0; i < lines.length; i++)
@@ -852,7 +886,7 @@ class _CodeLines extends StatelessWidget {
             wrap: wrap,
             colors: colors,
             baseStyle: baseStyle,
-            highlightFill: const Color(0xFF3B82F6).withValues(alpha: 0.07),
+            highlightFill: const Color(0xFF2B7FFF).withValues(alpha: 0.07),
           ),
       ],
     );

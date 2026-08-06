@@ -374,8 +374,8 @@ const _disclosureCloseMotion = CurvedMotion(
 );
 
 // Tailwind emerald-500 / rose-500 for tool diff counts.
-const _emerald500 = Color(0xFF10B981);
-const _rose500 = Color(0xFFF43F5E);
+const _emerald500 = Color(0xFF00BC7D);
+const _rose500 = Color(0xFFFF2056);
 
 // ---------------------------------------------------------------------------
 // BeuiAgentActivity
@@ -676,7 +676,6 @@ class _SummaryTriggerState extends State<_SummaryTrigger> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 120),
             height: 28,
-            padding: const EdgeInsets.symmetric(horizontal: 2),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
               border: _focused
@@ -1407,88 +1406,97 @@ class _ToolRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 6,
-        vertical: 2,
-      ), // px-1.5 py-0.5
-      child: Row(
-        children: [
-          SizedBox(
-            width: 16,
-            height: 16,
-            child: Icon(
-              _actionIcon,
-              size: 16,
-              color: colors.mutedForeground.withValues(alpha: 0.7),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            _actionLabel,
-            style: TextStyle(
-              fontSize: 14,
-              height: 20 / 14,
-              fontWeight: FontWeight.w500,
-              color: colors.foreground.withValues(alpha: 0.9),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 4,
-              ), // px-2.5 py-1
-              decoration: BoxDecoration(
-                color: colors.muted.withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(8), // rounded-lg
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 32), // min-h-8
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 6,
+          vertical: 2,
+        ), // px-1.5 py-0.5
+        child: Row(
+          children: [
+            SizedBox(
+              width: 16,
+              height: 16,
+              child: Icon(
+                _actionIcon,
+                size: 16,
+                color: colors.mutedForeground.withValues(alpha: 0.7),
               ),
-              child: Text(
-                item.target,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 12, // text-xs
-                  height: 16 / 12,
-                  fontFamily: 'monospace',
-                  fontFamilyFallback: const ['Menlo', 'Consolas', 'monospace'],
-                  color: colors.mutedForeground.withValues(alpha: 0.7),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              _actionLabel,
+              style: TextStyle(
+                fontSize: 14,
+                height: 20 / 14,
+                fontWeight: FontWeight.w500,
+                color: colors.foreground.withValues(alpha: 0.9),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ), // px-2.5 py-1
+                decoration: BoxDecoration(
+                  color: colors.muted.withValues(alpha: 0.8),
+                  borderRadius: BorderRadius.circular(8), // rounded-lg
+                ),
+                child: Text(
+                  item.target,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12, // text-xs
+                    height: 16 / 12,
+                    fontFamily: 'monospace',
+                    fontFamilyFallback: const [
+                      'Menlo',
+                      'Consolas',
+                      'monospace',
+                    ],
+                    color: colors.mutedForeground.withValues(alpha: 0.7),
+                  ),
                 ),
               ),
             ),
-          ),
-          if (item.additions != null || item.deletions != null) ...[
-            const SizedBox(width: 10),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (item.additions != null)
-                  Text(
-                    '+${item.additions}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontFamily: 'monospace',
-                      fontFeatures: [FontFeature.tabularFigures()],
-                      color: _emerald500,
+            if (item.additions != null || item.deletions != null) ...[
+              const SizedBox(width: 10),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (item.additions != null)
+                    Text(
+                      '+${item.additions}',
+                      style: const TextStyle(
+                        fontSize: 14, // inherits text-sm
+                        height: 20 / 14, // leading-5
+                        fontFamily: 'monospace',
+                        fontFeatures: [FontFeature.tabularFigures()],
+                        color: _emerald500,
+                      ),
                     ),
-                  ),
-                if (item.additions != null && item.deletions != null)
-                  const SizedBox(width: 8), // gap-2
-                if (item.deletions != null)
-                  Text(
-                    '−${item.deletions}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontFamily: 'monospace',
-                      fontFeatures: [FontFeature.tabularFigures()],
-                      color: _rose500,
+                  if (item.additions != null && item.deletions != null)
+                    const SizedBox(width: 8), // gap-2
+                  if (item.deletions != null)
+                    Text(
+                      '−${item.deletions}',
+                      style: const TextStyle(
+                        fontSize: 14, // inherits text-sm
+                        height: 20 / 14, // leading-5
+                        fontFamily: 'monospace',
+                        fontFeatures: [FontFeature.tabularFigures()],
+                        color: _rose500,
+                      ),
                     ),
-                  ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -1511,63 +1519,66 @@ class _TraceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 16,
-            height: 16,
-            child:
-                item.icon ??
-                Icon(
-                  _kindIcon,
-                  size: 16,
-                  color: colors.mutedForeground.withValues(alpha: 0.7),
-                ),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            item.label,
-            style: TextStyle(
-              fontSize: 14,
-              height: 20 / 14,
-              fontWeight: FontWeight.w500,
-              color: colors.foreground.withValues(alpha: 0.9),
-            ),
-          ),
-          if (item.detail != null) ...[
-            const SizedBox(width: 10),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: colors.muted.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  item.detail!,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 12,
-                    height: 16 / 12,
-                    fontFamily: 'monospace',
-                    fontFamilyFallback: const [
-                      'Menlo',
-                      'Consolas',
-                      'monospace',
-                    ],
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 32), // min-h-8
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 16,
+              height: 16,
+              child:
+                  item.icon ??
+                  Icon(
+                    _kindIcon,
+                    size: 16,
                     color: colors.mutedForeground.withValues(alpha: 0.7),
+                  ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              item.label,
+              style: TextStyle(
+                fontSize: 14,
+                height: 20 / 14,
+                fontWeight: FontWeight.w500,
+                color: colors.foreground.withValues(alpha: 0.9),
+              ),
+            ),
+            if (item.detail != null) ...[
+              const SizedBox(width: 10),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colors.muted.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    item.detail!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 16 / 12,
+                      fontFamily: 'monospace',
+                      fontFamilyFallback: const [
+                        'Menlo',
+                        'Consolas',
+                        'monospace',
+                      ],
+                      color: colors.mutedForeground.withValues(alpha: 0.7),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

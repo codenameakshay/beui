@@ -100,7 +100,7 @@ class _TableDemoState extends State<_TableDemo> {
   bool _asyncLoading = true;
   int _page = 0;
   static const _pageSize = 20;
-  static const _maxPages = 6;
+  static const _maxPages = 8; // source MAX_PAGES
 
   @override
   void initState() {
@@ -286,7 +286,7 @@ class _TableDemoState extends State<_TableDemo> {
                   key: 'mrr',
                   direction: BeuiSortDirection.desc,
                 ),
-                height: 340,
+                height: 420, // source height={420}
                 rowHeight: 52,
               ),
 
@@ -294,7 +294,7 @@ class _TableDemoState extends State<_TableDemo> {
               _section(
                 colors,
                 'Editable',
-                'Click a cell to edit. Hover the row/column edges for insert & delete.',
+                'Click a cell to edit. Use the column and row handles to insert or delete.',
               ),
               const SizedBox(height: 8),
               BeuiTable<Map<String, String>>(
@@ -302,9 +302,8 @@ class _TableDemoState extends State<_TableDemo> {
                 columns: editableColumns,
                 getRowId: (r, _) => r['id'] ?? '',
                 rowHeight: 48,
-                height:
-                    ((_rows.isEmpty ? 1 : _rows.length.clamp(1, 6)) * 48 + 48)
-                        .toDouble(),
+                height: ((_rows.isEmpty ? 1 : _rows.length.clamp(1, 6)) * 48)
+                    .toDouble(),
                 onCellEdit: (rowId, key, value) => setState(() {
                   final row = _rows.firstWhere((r) => r['id'] == rowId);
                   row[key] = value;
@@ -363,7 +362,7 @@ class _TableDemoState extends State<_TableDemo> {
                 data: _asyncRows,
                 columns: asyncColumns,
                 getRowId: (r, _) => r.id,
-                height: 340,
+                height: 420, // source height={420}
                 rowHeight: 52,
                 loading: _asyncLoading,
                 onEndReached: _loadMore,

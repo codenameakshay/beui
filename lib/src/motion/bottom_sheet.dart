@@ -9,7 +9,8 @@ import '../tokens/motion.dart';
 /// A draggable bottom sheet with snap points — the Flutter port of beUI's
 /// `bottom-sheet`, built on [BeuiOverlay].
 ///
-/// A modal panel (capped at 512px wide, centered) that slides up over a fading,
+/// A modal panel (capped at 672px wide — source `max-w-2xl` — and centered)
+/// that slides up over a fading,
 /// blurred backdrop and settles at one of [snapPoints] — fractions of the
 /// viewport height, `[0.5, 0.92]` by default, with [defaultSnap] the opening
 /// index. Drag the handle to move it: an upward fling snaps to the next point,

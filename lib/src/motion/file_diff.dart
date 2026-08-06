@@ -76,12 +76,12 @@ const _spinPeriod = Duration(milliseconds: 900);
 const _copyFeedback = Duration(milliseconds: 1600);
 
 // Tailwind emerald / rose for change counts and gutters.
-const _emerald600 = Color(0xFF059669);
-const _emerald400 = Color(0xFF34D399);
-const _rose600 = Color(0xFFE11D48);
-const _rose400 = Color(0xFFFB7185);
-const _emerald500 = Color(0xFF10B981);
-const _rose500 = Color(0xFFF43F5E);
+const _emerald600 = Color(0xFF009966);
+const _emerald400 = Color(0xFF00D492);
+const _rose600 = Color(0xFFEC003F);
+const _rose400 = Color(0xFFFF637E);
+const _emerald500 = Color(0xFF00BC7D);
+const _rose500 = Color(0xFFFF2056);
 
 // Unicode minus (source `−`), not ASCII hyphen.
 const _minus = '−';
@@ -312,7 +312,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
       ],
       fontSize: 12,
       color: colors.foreground.withValues(alpha: 0.8),
-      height: 1.2,
+      height: 16 / 12, // text-xs default leading-4
     );
     final child = widget.file is Widget
         ? widget.file as Widget
@@ -597,7 +597,7 @@ class _HeaderState extends State<_Header> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 8), // gap-2
                 _Chevron(
                   open: widget.open,
                   reduce: widget.reduce,
@@ -917,18 +917,24 @@ class _DiffPalette {
     required this.string,
     required this.comment,
     required this.number,
+    required this.entity,
     required this.punct,
   });
 
+  // Shiki `github-light-high-contrast` / `github-dark-high-contrast` — the
+  // themes the source's AgentCode highlighter is created with
+  // (agent-code.tsx LIGHT_THEME / DARK_THEME).
   factory _DiffPalette.of(BeuiColors colors, Brightness brightness) {
     final isLight = brightness == Brightness.light;
     return _DiffPalette(
-      base: colors.foreground.withValues(alpha: 0.85),
-      keyword: isLight ? const Color(0xFF0550AE) : const Color(0xFF79C0FF),
-      string: isLight ? const Color(0xFF0A3069) : const Color(0xFFA5D6FF),
-      comment: colors.mutedForeground.withValues(alpha: 0.7),
-      number: isLight ? const Color(0xFF0550AE) : const Color(0xFF79C0FF),
-      punct: colors.foreground.withValues(alpha: 0.55),
+      // file-diff.tsx renders its grid with no `text-foreground/NN` dimming.
+      base: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
+      keyword: isLight ? const Color(0xFFA0111F) : const Color(0xFFFF9492),
+      string: isLight ? const Color(0xFF032563) : const Color(0xFFADDCFF),
+      comment: isLight ? const Color(0xFF4B535D) : const Color(0xFFBDC4CC),
+      number: isLight ? const Color(0xFF023B95) : const Color(0xFF91CBFF),
+      entity: isLight ? const Color(0xFF622CBC) : const Color(0xFFDBB7FF),
+      punct: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
     );
   }
 
@@ -937,6 +943,7 @@ class _DiffPalette {
   final Color string;
   final Color comment;
   final Color number;
+  final Color entity;
   final Color punct;
 }
 
@@ -1073,7 +1080,7 @@ List<_CodeToken> _highlightJson(String line, _DiffPalette palette) {
       final slice = line.substring(i, end);
       final after = line.substring(end).trimLeft();
       final isKey = after.startsWith(':');
-      out.add(_CodeToken(slice, isKey ? palette.keyword : palette.string));
+      out.add(_CodeToken(slice, isKey ? palette.number : palette.string));
       i = end;
       continue;
     }
@@ -1138,7 +1145,11 @@ List<_CodeToken> _highlightGeneric(
     if (_isIdentStart(ch) || ch == r'$') {
       final end = _scanIdent(line, i);
       final word = line.substring(i, end);
-      final color = keywords.contains(word) ? palette.keyword : palette.base;
+      final color = keywords.contains(word)
+          ? palette.keyword
+          : _callsAhead(line, end)
+          ? palette.entity
+          : palette.base;
       out.add(_CodeToken(word, color));
       i = end;
       continue;
@@ -1148,6 +1159,16 @@ List<_CodeToken> _highlightGeneric(
     i++;
   }
   return out;
+}
+
+/// True when the next non-space character after [end] opens a call — the
+/// source's Shiki themes paint those identifiers with the `entity` colour.
+bool _callsAhead(String line, int end) {
+  var j = end;
+  while (j < line.length && line[j] == ' ') {
+    j++;
+  }
+  return j < line.length && line[j] == '(';
 }
 
 bool _isDigit(String ch) =>

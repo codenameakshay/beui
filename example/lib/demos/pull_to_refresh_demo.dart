@@ -147,13 +147,14 @@ class _PullToRefreshDemoState extends State<_PullToRefreshDemo> {
                                         fontWeight: FontWeight.w600,
                                         color: colors.foreground,
                                         fontSize: 16,
+                                        height: 24 / 16, // base leading
                                       ),
                                     ),
-                                    const SizedBox(height: 2),
                                     Text(
                                       'Pull down to check for updates',
                                       style: TextStyle(
                                         fontSize: 12,
+                                        height: 16 / 12, // text-xs
                                         color: colors.mutedForeground,
                                       ),
                                     ),
@@ -186,11 +187,20 @@ class _PullToRefreshDemoState extends State<_PullToRefreshDemo> {
                           ),
                         ),
                       ),
-                      for (var i = 0; i < _updates.length; i++) ...[
-                        if (i > 0) Divider(height: 1, color: colors.border),
-                        _FeedRow(item: _updates[i], colors: colors),
-                      ],
-                      const SizedBox(height: 12),
+                      // Source list container: `px-2 pb-3`.
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            for (var i = 0; i < _updates.length; i++) ...[
+                              if (i > 0)
+                                Divider(height: 1, color: colors.border),
+                              _FeedRow(item: _updates[i], colors: colors),
+                            ],
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -248,6 +258,7 @@ class _FeedRow extends StatelessWidget {
                         item.title,
                         style: TextStyle(
                           fontSize: 14,
+                          height: 20 / 14, // text-sm
                           fontWeight: FontWeight.w500,
                           color: colors.foreground,
                         ),
@@ -269,7 +280,7 @@ class _FeedRow extends StatelessWidget {
                   item.detail,
                   style: TextStyle(
                     fontSize: 12,
-                    height: 1.45,
+                    height: 1.625, // leading-relaxed
                     color: colors.mutedForeground,
                   ),
                 ),

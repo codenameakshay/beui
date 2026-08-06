@@ -94,10 +94,9 @@ class _AgentActivityDemoState extends State<_AgentActivityDemo> {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 560),
+          constraints: const BoxConstraints(maxWidth: 576),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

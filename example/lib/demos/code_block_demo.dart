@@ -76,48 +76,36 @@ class _CodeBlockDemoState extends State<_CodeBlockDemo> {
     final code = _lines.take(_visible).join('\n');
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 560),
+          // source preview: `w-full max-w-xl` = 576px
+          constraints: const BoxConstraints(maxWidth: 576),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Streaming',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.4,
-                  color: colors.mutedForeground,
-                ),
-              ),
-              const SizedBox(height: 12),
-              BeuiCodeBlock(
-                key: ValueKey(_run),
-                code: code,
-                filename: 'summarize.ts',
-                language: BeuiCodeLanguage.typescript,
-                status: complete
-                    ? BeuiCodeBlockStatus.complete
-                    : BeuiCodeBlockStatus.streaming,
-                highlightLines: const [4, 5, 6, 7],
-                maxHeight: 224,
-              ),
-              const SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: _replay,
-                  icon: const Icon(LucideIcons.rotate_ccw, size: 12),
-                  label: const Text('Replay'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: colors.mutedForeground,
-                    textStyle: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+              // source preview: `relative h-[340px] w-full max-w-xl` with the
+              // Replay control pinned to `bottom-0 left-0`.
+              SizedBox(
+                height: 340,
+                child: Stack(
+                  children: [
+                    BeuiCodeBlock(
+                      key: ValueKey(_run),
+                      code: code,
+                      filename: 'summarize.ts',
+                      language: BeuiCodeLanguage.typescript,
+                      status: complete
+                          ? BeuiCodeBlockStatus.complete
+                          : BeuiCodeBlockStatus.streaming,
+                      highlightLines: const [4, 5, 6, 7],
+                      maxHeight: 224,
                     ),
-                  ),
+                    Positioned(
+                      left: 0,
+                      bottom: 0,
+                      child: _ReplayButton(onPressed: _replay, colors: colors),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 32),
@@ -160,6 +148,50 @@ class _CodeBlockDemoState extends State<_CodeBlockDemo> {
                 showLineNumbers: false,
                 wrap: true,
                 maxHeight: 120,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Ghost "Replay" control matching the source preview's
+/// `rounded-full px-2 py-1 text-xs font-medium text-muted-foreground` button.
+class _ReplayButton extends StatelessWidget {
+  const _ReplayButton({required this.onPressed, required this.colors});
+
+  final VoidCallback onPressed;
+  final BeuiColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(999),
+        hoverColor: colors.muted,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                LucideIcons.rotate_ccw,
+                size: 12,
+                color: colors.mutedForeground,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'Replay',
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 16 / 12,
+                  fontWeight: FontWeight.w500,
+                  color: colors.mutedForeground,
+                ),
               ),
             ],
           ),

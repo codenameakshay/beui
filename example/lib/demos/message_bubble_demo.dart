@@ -1,8 +1,11 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery route for [BeuiMessageBubble] — tones, alignment, groups,
-/// collapsible content, and interactive bubbles.
+import 'agents_chat_preview.dart';
+
+/// Gallery route for [BeuiMessageBubble] — the source preview
+/// (`message-bubble.preview.tsx`) followed by tones, groups, collapsible
+/// content, and interactive bubbles.
 Widget messageBubbleDemo(BuildContext context) => const _MessageBubbleDemo();
 
 class _MessageBubbleDemo extends StatefulWidget {
@@ -37,13 +40,21 @@ class _MessageBubbleDemoState extends State<_MessageBubbleDemo> {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 560),
+          constraints: const BoxConstraints(maxWidth: 576),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // source preview `message-bubble.preview.tsx`
+              const ChatPreview(
+                reply:
+                    'That message mounted once with a spring pop. Streaming '
+                    'updates only change its content, so the entrance does '
+                    'not replay.',
+                placeholder: 'Send a bubble…',
+              ),
+              const SizedBox(height: 32),
               _sectionLabel(colors, 'Variants'),
               const SizedBox(height: 12),
               BeuiMessageGroup(
@@ -147,7 +158,9 @@ class _MessageBubbleDemoState extends State<_MessageBubbleDemo> {
               DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: colors.border.withValues(alpha: 0.7),
+                    color: colors.border.withValues(
+                      alpha: colors.border.a * 0.7,
+                    ),
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -189,7 +202,9 @@ class _MessageBubbleDemoState extends State<_MessageBubbleDemo> {
                     ),
                     Divider(
                       height: 1,
-                      color: colors.border.withValues(alpha: 0.6),
+                      color: colors.border.withValues(
+                        alpha: colors.border.a * 0.6,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),

@@ -24,7 +24,6 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 512),

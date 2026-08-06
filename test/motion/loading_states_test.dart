@@ -291,6 +291,39 @@ void main() {
       expect(find.text('Bravo…'), findsOneWidget);
     });
 
+    testWidgets('scramble stops its ticker on the ticker clock', (
+      tester,
+    ) async {
+      // Regression: the scramble ticker used to check completion against the
+      // wall clock (`DateTime.now()`) while ticking on fake time, so under
+      // flutter_test it never reached its stop condition and leaked a live
+      // Ticker for the rest of the test. `pumpAndSettle` can't be the probe
+      // here — BeuiTextShimmer and BeuiLoader both repeat() forever by design,
+      // so a frame is always scheduled — so count transient callbacks instead.
+      await tester.pumpWidget(
+        _app(
+          const BeuiReasoningText(
+            phrases: ['Alpha', 'Bravo'],
+            variant: BeuiReasoningTextVariant.scramble,
+            interval: Duration(milliseconds: 800),
+          ),
+        ),
+      );
+      await tester.pump();
+      // Shimmer + loader loops, no scramble in flight.
+      final idle = tester.binding.transientCallbackCount;
+
+      // Phrase flips: the scramble ticker joins the idle loops.
+      await tester.pump(const Duration(milliseconds: 810));
+      await tester.pump(const Duration(milliseconds: 40));
+      expect(tester.binding.transientCallbackCount, idle + 1);
+
+      // Past the 420ms scramble window the ticker stops and disposes itself.
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Bravo…'), findsOneWidget);
+      expect(tester.binding.transientCallbackCount, idle);
+    });
+
     testWidgets('custom indicator replaces the default loader', (tester) async {
       await tester.pumpWidget(
         _app(

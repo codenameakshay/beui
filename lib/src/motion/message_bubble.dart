@@ -271,7 +271,9 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
     };
 
     final border = variant == BeuiMessageBubbleVariant.outline
-        ? Border.all(color: colors.border.withValues(alpha: 0.7))
+        ? Border.all(
+            color: colors.border.withValues(alpha: colors.border.a * 0.7),
+          )
         : null;
 
     final content = DefaultTextStyle.merge(

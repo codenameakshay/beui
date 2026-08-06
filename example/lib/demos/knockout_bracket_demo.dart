@@ -11,48 +11,24 @@ Widget knockoutBracketDemo(BuildContext context) =>
 class _KnockoutBracketDemo extends StatelessWidget {
   const _KnockoutBracketDemo();
 
+  // The site renders these as two bare previews (the prose lives in the page
+  // chrome, not the preview), so the route is just the two components: the
+  // wheel first, matching the "Fixtures" page order, each in the source
+  // preview's own `w-full py-8` wrapper.
   @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _sectionLabel(colors, 'Knockout bracket'),
-        const SizedBox(height: 8),
-        Text(
-          'Use the chevrons to page between rounds — cards, connectors and the '
-          'stage height glide as one piece. The third place play-off sits '
-          'under the tree on its own rule, so it never pages with it.',
-          style: TextStyle(fontSize: 14, color: colors.mutedForeground),
-        ),
-        const SizedBox(height: 24),
-        BeuiKnockoutBracket(rounds: _rounds, thirdPlace: _thirdPlace),
-        const SizedBox(height: 48),
-        _sectionLabel(colors, 'Knockout wheel'),
-        const SizedBox(height: 8),
-        Text(
-          'The same Round list drawn radially: the champion holds the hub, '
-          'each round is a ring further out, and the teams form the rim. Marks '
-          'spring in ring by ring; hover, tap or focus one to isolate it, and '
-          'arrow keys walk the geometry — up toward the hub, down to a feeder, '
-          'left/right around the ring. `initialRound: 1` would drop the outer '
-          'ring and open at the Round of 16.',
-          style: TextStyle(fontSize: 14, color: colors.mutedForeground),
-        ),
-        const SizedBox(height: 24),
-        BeuiKnockoutWheel(rounds: _wheelRounds),
-      ],
-    );
-  }
-
-  Widget _sectionLabel(BeuiColors colors, String label) => Text(
-    label,
-    style: TextStyle(
-      fontSize: 13,
-      fontWeight: FontWeight.w500,
-      color: colors.mutedForeground,
-    ),
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32), // py-8
+        child: BeuiKnockoutWheel(rounds: _wheelRounds),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32), // py-8
+        child: BeuiKnockoutBracket(rounds: _rounds, thirdPlace: _thirdPlace),
+      ),
+    ],
   );
 }
 

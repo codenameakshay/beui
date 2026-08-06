@@ -17,16 +17,6 @@ class _AnimatedSidebarDemo extends StatefulWidget {
 class _AnimatedSidebarDemoState extends State<_AnimatedSidebarDemo> {
   String _active = 'people';
   bool _expanded = true;
-  BeuiAnimatedSidebarVariant _variant = BeuiAnimatedSidebarVariant.sidebar;
-
-  static const _variantBlurb = {
-    BeuiAnimatedSidebarVariant.sidebar:
-        'Flush panel, bordered on the inner edge.',
-    BeuiAnimatedSidebarVariant.floating:
-        'Detached card — inset, rounded, bordered, lifted by a shadow.',
-    BeuiAnimatedSidebarVariant.inset:
-        'Detached panel with no chrome; the content area becomes the card.',
-  };
 
   static final _quickLinks = BeuiAnimatedSidebarGroup(
     items: [
@@ -154,100 +144,35 @@ class _AnimatedSidebarDemoState extends State<_AnimatedSidebarDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
+    // Source preview: the bare shell in `w-full px-0 py-2 sm:p-3`, an
+    // `h-[720px] rounded-2xl border-foreground/[0.08]` provider — no variant
+    // picker (the other variants are covered by the widget tests).
     return Padding(
       padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _VariantPicker(
-            colors: colors,
-            value: _variant,
-            onChanged: (v) => setState(() => _variant = v),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _variantBlurb[_variant]!,
-            style: TextStyle(fontSize: 12, color: colors.mutedForeground),
-          ),
-          const SizedBox(height: 12),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: colors.background,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: colors.foreground.withValues(alpha: 0.08),
-              ),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: SizedBox(
-                height: 720,
-                child: BeuiAnimatedSidebar(
-                  groups: [_quickLinks, _workspaces],
-                  variant: _variant,
-                  expanded: _expanded,
-                  onExpandedChange: (v) => setState(() => _expanded = v),
-                  selectedId: _active,
-                  onSelected: (id) => setState(() => _active = id),
-                  semanticLabel: 'Solace workspace',
-                  header: _Header(colors: colors),
-                  footer: _Footer(colors: colors),
-                  child: _Inset(title: _title, colors: colors),
-                ),
-              ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.background,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: colors.foreground.withValues(alpha: 0.08)),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: SizedBox(
+            height: 720,
+            child: BeuiAnimatedSidebar(
+              groups: [_quickLinks, _workspaces],
+              expanded: _expanded,
+              onExpandedChange: (v) => setState(() => _expanded = v),
+              selectedId: _active,
+              onSelected: (id) => setState(() => _active = id),
+              semanticLabel: 'Solace workspace',
+              header: _Header(colors: colors),
+              footer: _Footer(colors: colors),
+              child: _Inset(title: _title, colors: colors),
             ),
           ),
-        ],
+        ),
       ),
-    );
-  }
-}
-
-/// Segmented picker for [BeuiAnimatedSidebarVariant] — flips the shell's panel
-/// chrome between `sidebar`, `floating` and `inset`.
-class _VariantPicker extends StatelessWidget {
-  const _VariantPicker({
-    required this.colors,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final BeuiColors colors;
-  final BeuiAnimatedSidebarVariant value;
-  final ValueChanged<BeuiAnimatedSidebarVariant> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        for (final v in BeuiAnimatedSidebarVariant.values)
-          Material(
-            color: v == value ? colors.muted : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(10),
-              onTap: () => onChanged(v),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: Text(
-                  v.name,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: v == value
-                        ? colors.foreground
-                        : colors.mutedForeground,
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
     );
   }
 }
@@ -420,41 +345,92 @@ class _Inset extends StatelessWidget {
             ],
           ),
         ),
+        // Source: `flex-1 flex-col justify-between p-7` — the greeting block
+        // pinned to the top, the "Active view" footer to the bottom.
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Wednesday, July 29',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: colors.mutedForeground,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Good morning, Ava.',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: -0.3,
-                    color: colors.foreground,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 420),
-                  child: Text(
-                    'Your workspace stays in place while the navigation folds '
-                    'down to a focused icon rail.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 1.5,
-                      color: colors.mutedForeground,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Wednesday, July 29',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: colors.mutedForeground,
+                      ),
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Good morning, Ava.',
+                      style: TextStyle(
+                        fontSize: 24, // sm:text-2xl
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.3,
+                        color: colors.foreground,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 448),
+                      child: Text(
+                        'Your workspace stays in place while the navigation '
+                        'folds down to a focused icon rail.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.7, // leading-6
+                          color: colors.mutedForeground,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(top: BorderSide(color: colors.border)),
+                  ),
+                  padding: const EdgeInsets.only(top: 16), // pt-4
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'ACTIVE VIEW',
+                            style: TextStyle(
+                              fontSize: 10,
+                              letterSpacing: 1.6, // tracking-[0.16em]
+                              color: colors.mutedForeground,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: colors.foreground,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        'Press ⌘B to toggle',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colors.mutedForeground,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

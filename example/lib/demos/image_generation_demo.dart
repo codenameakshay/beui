@@ -24,7 +24,6 @@ class _ImageGenerationDemoState extends State<_ImageGenerationDemo> {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 576), // max-w-xl
