@@ -41,13 +41,23 @@ const _grabSpring = SpringMotion(
 @visibleForTesting
 const beuiRangeSliderThumbKey = ValueKey<String>('beui_range_slider_thumb');
 
+/// Test handle on the single-thumb slider's tick-dot layer.
+@visibleForTesting
+const beuiRangeSliderTicksKey = ValueKey<String>('beui_range_slider_ticks');
+
 double _clamp(double v, double lo, double hi) => math.min(hi, math.max(lo, v));
 
-// Shared track geometry (source `h-10`, `w-1.5`, `h-5`, `inset-x-2`).
+// Shared track geometry (source `h-10`, `w-1.5`, `h-5`, `inset-x-[3px]`).
 const double _trackHeight = 40;
 const double _thumbWidth = 6;
 const double _thumbHeight = 20;
-const double _tickInset = 8;
+
+/// Source `inset-x-[3px]` on the tick layer — half the thumb's width, which is
+/// exactly the span the thumb's own centre travels (`_thumbWidth / 2` to
+/// `trackWidth - _thumbWidth / 2`). Insetting the dots by the same amount is
+/// what makes a dot sit precisely where the thumb lands; any other inset walks
+/// the dots off the thumb towards both ends of the track.
+const double _tickInset = _thumbWidth / 2;
 
 /// A single-thumb slider — a one-to-one port of beUI's `range-slider`.
 ///
@@ -300,6 +310,7 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
             bottom: 0,
             child: IgnorePointer(
               child: Stack(
+                key: beuiRangeSliderTicksKey,
                 clipBehavior: Clip.none,
                 children: [
                   for (var i = 0; i <= steps; i++)

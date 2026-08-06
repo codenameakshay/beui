@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 // The components' own `@visibleForTesting` keys, mirrored here — they are
 // deliberately not part of the barrel's public surface.
 const _thumb = ValueKey<String>('beui_range_slider_thumb');
+const _ticks = ValueKey<String>('beui_range_slider_ticks');
 const _fluidTrack = ValueKey<String>('beui_fluid_slider_track');
 const _fluidFill = ValueKey<String>('beui_fluid_slider_fill');
 const _waveTrack = ValueKey<String>('beui_wave_slider_track');
@@ -116,6 +117,47 @@ void main() {
         onChanged: onChanged,
       ),
     );
+
+    // The source insets the tick layer by `inset-x-[3px]` — half the thumb's
+    // width, which is exactly the span the thumb's own centre travels. That is
+    // what makes a dot sit precisely where the thumb lands. Any other inset
+    // leaves the dots agreeing with the thumb only at the midpoint and walking
+    // off it towards both ends.
+    testWidgets('a tick dot sits exactly where the thumb lands', (
+      tester,
+    ) async {
+      final dots = find.descendant(
+        of: find.byKey(_ticks),
+        matching: find.byType(Container),
+      );
+
+      for (final probe in const [(0.0, 0), (50.0, 10), (100.0, 20)]) {
+        // A fresh key per probe: `_Controlled` seeds its value in a field
+        // initialiser, so re-pumping the same widget type would reuse the old
+        // State and leave the thumb where the previous probe left it.
+        await tester.pumpWidget(
+          _Controlled(
+            key: ValueKey<double>(probe.$1),
+            initial: probe.$1,
+            build: (value, onChanged) => BeuiRangeSlider(
+              value: value,
+              min: 0,
+              max: 100,
+              step: 5,
+              onChanged: onChanged,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(dots, findsNWidgets(21), reason: '0..100 by 5 is 21 dots');
+        expect(
+          tester.getCenter(dots.at(probe.$2)).dx,
+          moreOrLessEquals(_thumbX(tester), epsilon: 0.5),
+          reason: 'the dot for value ${probe.$1} is under the thumb',
+        );
+      }
+    });
 
     testWidgets('dragging the thumb changes its value', (tester) async {
       double? changed;

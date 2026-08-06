@@ -426,7 +426,11 @@ class _BeuiRulerSliderState extends State<BeuiRulerSlider>
             _readout(currentValue),
             key: beuiRulerSliderReadoutKey,
             style: TextStyle(
+              // `text-3xl` is 30/36, not 30/font-metrics. Without the explicit
+              // line height the row is as tall as whatever font happens to be
+              // resolved, which pushed the whole scale down the page.
               fontSize: 30,
+              height: 36 / 30,
               fontWeight: FontWeight.w600,
               fontFeatures: const [FontFeature.tabularFigures()],
               color: colors.foreground,
@@ -436,7 +440,12 @@ class _BeuiRulerSliderState extends State<BeuiRulerSlider>
             const SizedBox(width: 4),
             Text(
               widget.unit!,
-              style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+              // `text-sm` — 14/20.
+              style: TextStyle(
+                fontSize: 14,
+                height: 20 / 14,
+                color: colors.mutedForeground,
+              ),
             ),
           ],
         ],
@@ -464,7 +473,12 @@ class _BeuiRulerSliderState extends State<BeuiRulerSlider>
               stops: [0, 0.18, 0.82, 1],
             ).createShader(rect),
             child: Stack(
-              clipBehavior: Clip.none,
+              // The source's mask lives on this box, and a CSS mask clips its
+              // element to the border box (`mask-clip: border-box`). The needle
+              // is `bottom-5 h-9` inside an `h-12` box, so its top 8px fall
+              // outside and the browser cuts them. Clip here for the same
+              // silhouette — unclipped, the needle spears up into the readout.
+              clipBehavior: Clip.hardEdge,
               children: [
                 AnimatedBuilder(
                   animation: _x,
