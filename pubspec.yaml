@@ -30,6 +30,13 @@ dependencies:
   # major (icon additions in minors are wanted and low-risk; a major could
   # rename glyphs) — looser than motor's pin because icons aren't motion-core.
   flutter_lucide: ">=1.11.0 <2.0.0"
+  # Zone-scoped `clock.now()` for the one component that reads a wall clock
+  # (BeuiAgentProgress's elapsed timer). Identical to DateTime.now() in
+  # production, but flutter_test's fake async overrides it — so a widget whose
+  # updates tick on fake time also *reads* fake time, and consumers can drive
+  # the timer deterministically in their own tests. Dart-team package, no
+  # transitive deps; already present transitively via flutter_test.
+  clock: ^1.1.2
 
 dev_dependencies:
   fake_async: ^1.3.3

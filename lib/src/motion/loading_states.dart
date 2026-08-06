@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -132,14 +133,15 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
 
   late double _internalSeconds = widget.initialSeconds;
   Timer? _timer;
+
+  /// Instant the current running span began, back-dated by the seconds already
+  /// on the clock. Re-anchored by [_syncTimer] on every (re)start, so it is
+  /// only meaningful while [_timer] is live.
   late DateTime _startedAt;
 
   @override
   void initState() {
     super.initState();
-    _startedAt = DateTime.now().subtract(
-      Duration(microseconds: (widget.initialSeconds * 1e6).round()),
-    );
     _syncTimer();
   }
 
@@ -152,9 +154,6 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
       if (widget.elapsedSeconds == null &&
           widget.initialSeconds != old.initialSeconds) {
         _internalSeconds = widget.initialSeconds;
-        _startedAt = DateTime.now().subtract(
-          Duration(microseconds: (widget.initialSeconds * 1e6).round()),
-        );
       }
       _syncTimer();
     }
@@ -176,11 +175,23 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
     _timer?.cancel();
     _timer = null;
     if (widget.elapsedSeconds != null || !widget.running) return;
+    // Anchor to now less the seconds already counted, rather than to a single
+    // fixed start instant: a paused span then contributes nothing when
+    // [running] flips back on, and resuming picks up where it stopped.
+    //
+    // `clock.now()`, not `DateTime.now()` — the timer below ticks on the zone's
+    // event loop, so the value it reports has to come off the same clock the
+    // zone is running. They are the same instant in production; under
+    // `flutter_test`'s fake async only `clock.now()` advances, so the counter
+    // stays truthful in tests instead of freezing at its starting value.
+    _startedAt = clock.now().subtract(
+      Duration(microseconds: (_internalSeconds * 1e6).round()),
+    );
     _timer = Timer.periodic(const Duration(milliseconds: 100), (_) {
       if (!mounted) return;
       setState(() {
         _internalSeconds =
-            DateTime.now().difference(_startedAt).inMicroseconds / 1e6;
+            clock.now().difference(_startedAt).inMicroseconds / 1e6;
       });
     });
   }

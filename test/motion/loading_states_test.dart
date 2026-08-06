@@ -114,16 +114,26 @@ void main() {
     });
 
     testWidgets('internal timer advances while running', (tester) async {
+      // Regression: the timer used to tick on the event loop but read the wall
+      // clock (`DateTime.now()`), so under flutter_test's fake async it fired
+      // on schedule and reported no elapsed time at all — the counter froze at
+      // initialSeconds. Reading `clock.now()` puts both on the same clock, so
+      // the displayed value is exact and consumers can drive it in tests.
       await tester.pumpWidget(
         _app(const BeuiAgentProgress(initialSeconds: 1.0)),
       );
       await tester.pump();
-      expect(find.textContaining('1.'), findsOneWidget);
+      expect(find.text('1.0s'), findsOneWidget);
 
-      // Advance past two timer ticks (100ms each).
+      // Two ticks (100ms each) land inside the window; the frame renders the
+      // value from the last one.
       await tester.pump(const Duration(milliseconds: 250));
-      // Still showing a seconds string; exact value is wall-clock based.
-      expect(find.textContaining('s'), findsWidgets);
+      expect(find.text('1.2s'), findsOneWidget);
+
+      // Five more ticks; elapsed accumulates off _startedAt, so it neither
+      // drifts nor resets across pumps.
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('1.7s'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
@@ -135,6 +145,34 @@ void main() {
       expect(find.text('5.0s'), findsOneWidget);
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('5.0s'), findsOneWidget);
+    });
+
+    testWidgets('pausing and resuming does not count the paused span', (
+      tester,
+    ) async {
+      // Regression: `running: false` cancelled the timer but left the start
+      // instant receding, so resuming jumped the counter forward by however
+      // long the pause lasted. The start instant is now re-anchored on every
+      // resume, off the seconds already counted.
+      Widget build({required bool running}) =>
+          _app(BeuiAgentProgress(initialSeconds: 1.0, running: running));
+
+      await tester.pumpWidget(build(running: true));
+      await tester.pump();
+      expect(find.text('1.0s'), findsOneWidget);
+
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('1.5s'), findsOneWidget);
+
+      // Paused: a full second goes by on the clock, none of it counted.
+      await tester.pumpWidget(build(running: false));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('1.5s'), findsOneWidget);
+
+      // Resumed: counting picks up from 1.5s, not from 2.5s.
+      await tester.pumpWidget(build(running: true));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('1.8s'), findsOneWidget);
     });
 
     testWidgets('controlled elapsedSeconds overrides the internal timer', (
