@@ -35,6 +35,27 @@ class _HostState extends State<_Host> {
   }
 }
 
+/// Hosts a cascade given only a partial style, so the ambient [DefaultTextStyle]
+/// still supplies the line height.
+class _SlotHost extends StatefulWidget {
+  const _SlotHost();
+
+  @override
+  State<_SlotHost> createState() => _SlotHostState();
+}
+
+class _SlotHostState extends State<_SlotHost> {
+  String _text = 'Install skills';
+
+  void set(String t) => setState(() => _text = t);
+
+  @override
+  Widget build(BuildContext context) => BeuiTextCascade(
+    _text,
+    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+  );
+}
+
 /// Counts the number of single-character [Text] widgets currently rendered.
 int _letterCount(WidgetTester tester) {
   var n = 0;
@@ -94,6 +115,44 @@ void main() {
     expect(translated, isTrue, reason: 'letters roll vertically');
 
     await tester.pumpAndSettle();
+  });
+
+  testWidgets('the rolling slot keeps the resting height (no layout jump)', (
+    tester,
+  ) async {
+    // A partial style (size + weight only) inherits the ambient `height`, which
+    // is what Text paints with. The rolling slot is measured separately, so if
+    // it ignored the ambient style the line would grow mid-roll and shove the
+    // surrounding layout — seen on beui.dev/components/motion/text-animation as
+    // a 5px jump of the whole column on every cascade.
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        home: const Scaffold(
+          body: DefaultTextStyle(
+            style: TextStyle(fontSize: 14, height: 1.43),
+            child: Center(child: _SlotHost()),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final rest = tester.getSize(find.byType(BeuiTextCascade));
+
+    tester.state<_SlotHostState>(find.byType(_SlotHost)).set('Open settings');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 60));
+    expect(
+      tester.getSize(find.byType(BeuiTextCascade)).height,
+      moreOrLessEquals(rest.height, epsilon: 0.5),
+      reason: 'the slot height must not change when the roll starts',
+    );
+
+    await tester.pumpAndSettle();
+    expect(
+      tester.getSize(find.byType(BeuiTextCascade)).height,
+      moreOrLessEquals(rest.height, epsilon: 0.5),
+    );
   });
 
   testWidgets('reduced motion shows plain text with no per-letter roll', (

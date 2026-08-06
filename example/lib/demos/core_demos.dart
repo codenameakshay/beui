@@ -1361,9 +1361,15 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
   }
 }
 
-/// The text-animation showcase — mirrors
-/// beui.dev/components/motion/text-animation: a hero that auto-cycles reveal ⇄
-/// shimmer, then the reveal / shimmer / cascade examples from the variant pages.
+/// The text-animation showcase — the four previews
+/// beui.dev/components/motion/text-animation ships, in the page's own order:
+/// `ChromaticTextRevealPreview`, `TextRevealPreview`, `TextShimmerPreview`,
+/// `TextCascadePreview`. Each block mirrors its source preview verbatim; the
+/// captions stand in for the site's per-primitive section headings.
+///
+/// Type sizes take the source's `sm:` branch (the ≥640px one), which is what the
+/// site renders in the 824px-wide preview band: `text-5xl` = 48px,
+/// `tracking-[-0.04em]` = −1.92px at that size.
 class _TextAnimationDemo extends StatefulWidget {
   const _TextAnimationDemo();
 
@@ -1374,19 +1380,14 @@ class _TextAnimationDemo extends StatefulWidget {
 class _TextAnimationDemoState extends State<_TextAnimationDemo> {
   static const _phrases = ['Install skills', 'Open settings', 'Ship updates'];
 
-  bool _heroShimmer = false;
   int _phrase = 0;
   int _replay = 0;
-  Timer? _heroTimer;
   Timer? _cascadeTimer;
 
   @override
   void initState() {
     super.initState();
-    // Source preview cycles reveal ⇄ shimmer every 3s; cascade cycles every 2.4s.
-    _heroTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (mounted) setState(() => _heroShimmer = !_heroShimmer);
-    });
+    // Source TextCascadePreview cycles its phrases every 2.4s.
     _cascadeTimer = Timer.periodic(const Duration(milliseconds: 2400), (_) {
       if (mounted) setState(() => _phrase = (_phrase + 1) % _phrases.length);
     });
@@ -1394,7 +1395,6 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
 
   @override
   void dispose() {
-    _heroTimer?.cancel();
     _cascadeTimer?.cancel();
     super.dispose();
   }
@@ -1416,155 +1416,145 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
     );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Hero — the /text-animation page preview (auto-cycles reveal ⇄ shimmer).
-        caption('Auto-cycles reveal ⇄ shimmer'),
-        SizedBox(
-          height: 56,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 220),
-              switchInCurve: beuiEaseOut,
-              switchOutCurve: beuiEaseOut,
-              transitionBuilder: (child, anim) => FadeTransition(
-                opacity: anim,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 0.12),
-                    end: Offset.zero,
-                  ).animate(anim),
-                  child: child,
-                ),
-              ),
-              child: _heroShimmer
-                  ? BeuiTextShimmer(
-                      'Loading with shimmer',
-                      key: const ValueKey('shimmer'),
-                      duration: const Duration(milliseconds: 1800),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: colors.foreground,
-                      ),
-                    )
-                  : BeuiTextReveal(
-                      'Motion in words.',
-                      key: const ValueKey('reveal'),
-                      stagger: const Duration(milliseconds: 45),
-                      blur: 6,
-                      yOffset: 0.18,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -0.5,
-                        color: colors.foreground,
-                      ),
-                    ),
+        // ChromaticTextRevealPreview: prefix + cycling words, `text-5xl
+        // font-medium tracking-[-0.04em]`, started on mount (startOnView false).
+        caption('Dia text animation — a colour edge paints each word in'),
+        Center(
+          child: BeuiChromaticTextReveal(
+            prefix: 'Motion that feels',
+            words: const ['natural.', 'intentional.', 'alive.'],
+            startOnView: false,
+            style: TextStyle(
+              fontSize: 48,
+              fontWeight: FontWeight.w500,
+              letterSpacing: -1.92,
+              color: colors.foreground,
             ),
           ),
         ),
-        const SizedBox(height: 44),
+        const SizedBox(height: 48),
 
-        // Reveal — multi-line headline + delayed subtitle + Replay.
+        // TextRevealPreview: centred headline + delayed subtitle (`gap-2`), then
+        // `gap-8` to the Replay pill.
         caption('Reveal — word by word, with a soft blur'),
         KeyedSubtree(
           key: ValueKey(_replay),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               BeuiTextReveal(
                 const ['Motion that feels', 'considered.'],
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 40,
-                  height: 0.98,
+                  fontSize: 48,
+                  height: 0.95, // leading-[0.95]
                   fontWeight: FontWeight.w600,
-                  letterSpacing: -1.6,
+                  letterSpacing: -1.92, // tracking-[-0.04em]
                   color: colors.foreground,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8), // gap-2
               BeuiTextReveal(
                 'Word by word, with a soft blur.',
                 delay: const Duration(milliseconds: 900),
                 stagger: const Duration(milliseconds: 50),
                 blur: 6,
                 yOffset: 0.2,
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14, color: colors.mutedForeground),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 16),
-        BeuiButton(
-          onPressed: () => setState(() => _replay++),
-          variant: BeuiButtonVariant.secondary,
-          size: BeuiButtonSize.sm,
-          child: const Text('Replay'),
-        ),
-        const SizedBox(height: 44),
+        const SizedBox(height: 32), // gap-8
+        Center(child: _ReplayPill(onTap: () => setState(() => _replay++))),
+        const SizedBox(height: 48),
 
-        // Shimmer — two sweeps (one slower, one faster).
+        // TextShimmerPreview: `flex flex-col gap-4`, left-aligned inside a
+        // centred block.
         caption('Shimmer — gradient sweep'),
-        BeuiTextShimmer(
-          'Loading projects…',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.w600,
-            color: colors.foreground,
+        Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BeuiTextShimmer(
+                'Loading projects…',
+                style: TextStyle(
+                  fontSize: 30, // text-3xl
+                  fontWeight: FontWeight.w600,
+                  color: colors.foreground,
+                ),
+              ),
+              const SizedBox(height: 16), // gap-4
+              BeuiTextShimmer(
+                'Faster shimmer',
+                duration: const Duration(milliseconds: 1500),
+                style: TextStyle(fontSize: 14, color: colors.foreground),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 10),
-        BeuiTextShimmer(
-          'Faster shimmer',
-          duration: const Duration(milliseconds: 1500),
-          style: TextStyle(fontSize: 14, color: colors.foreground),
-        ),
-        const SizedBox(height: 44),
+        const SizedBox(height: 48),
 
-        // Cascade — per-letter slot roll, cycling phrases.
+        // TextCascadePreview: one centred `text-lg font-medium` line, cycling.
         caption('Cascade — per-letter slot roll (cycles)'),
-        BeuiTextCascade(
-          _phrases[_phrase],
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: colors.foreground,
+        Center(
+          child: BeuiTextCascade(
+            _phrases[_phrase],
+            style: TextStyle(
+              fontSize: 18, // text-lg
+              fontWeight: FontWeight.w500,
+              color: colors.foreground,
+            ),
           ),
-        ),
-        const SizedBox(height: 44),
-
-        // Chromatic — a colour edge sweeps each word in, then cycles.
-        caption('Chromatic — a colour edge paints each word in (cycles)'),
-        BeuiChromaticTextReveal(
-          prefix: 'Ship interfaces that feel',
-          words: const ['alive', 'considered', 'effortless', 'fast'],
-          style: TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.6,
-            color: colors.foreground,
-          ),
-        ),
-        const SizedBox(height: 14),
-        // A custom palette + a slower, longer-resting sweep.
-        BeuiChromaticTextReveal(
-          prefix: 'Built for',
-          words: const ['Flutter', 'iOS', 'Android', 'the web'],
-          colors: const [
-            Color(0xFF34D399),
-            Color(0xFF22D3EE),
-            Color(0xFF60A5FA),
-          ],
-          foregroundColor: colors.mutedForeground,
-          duration: const Duration(milliseconds: 1600),
-          pauseDuration: const Duration(milliseconds: 1100),
-          style: TextStyle(fontSize: 14, color: colors.mutedForeground),
         ),
       ],
+    );
+  }
+}
+
+/// The Replay control from `TextRevealPreview` — preview chrome, not a beUI
+/// component: `h-9 rounded-full border border-border bg-card px-4 text-xs
+/// font-medium`.
+class _ReplayPill extends StatelessWidget {
+  const _ReplayPill({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    return GestureDetector(
+      onTap: onTap,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          height: 36, // h-9
+          padding: const EdgeInsets.symmetric(horizontal: 16), // px-4
+          decoration: BoxDecoration(
+            color: colors.card,
+            border: Border.all(color: colors.border),
+            borderRadius: BorderRadius.circular(18), // rounded-full
+          ),
+          // widthFactor: 1 shrink-wraps the pill to its label; without it the
+          // Container's alignment would expand to the row's full width.
+          child: Center(
+            widthFactor: 1,
+            child: Text(
+              'Replay',
+              style: TextStyle(
+                fontSize: 12, // text-xs
+                fontWeight: FontWeight.w500,
+                color: colors.foreground,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
