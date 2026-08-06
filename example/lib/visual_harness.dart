@@ -41,7 +41,13 @@ class VisualHarnessApp extends StatelessWidget {
     final pad = double.tryParse(params['pad'] ?? '') ?? 48;
 
     final colors = BeuiColors.of(colorTheme, brightness);
-    final base = ThemeData(brightness: brightness, useMaterial3: true);
+    // Render in Geist, the face beui.dev serves, so a diff against the site
+    // measures the widget rather than the difference between two typefaces.
+    final base = ThemeData(
+      brightness: brightness,
+      useMaterial3: true,
+      fontFamily: 'Geist',
+    );
     final theme = base.copyWith(
       scaffoldBackgroundColor: colors.background,
       canvasColor: colors.background,

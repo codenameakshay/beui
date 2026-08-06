@@ -24,7 +24,13 @@ class _BeuiExplorerAppState extends State<BeuiExplorerApp> {
 
   ThemeData _themeData(Brightness brightness) {
     final colors = BeuiColors.of(_colorTheme, brightness);
-    final base = ThemeData(brightness: brightness, useMaterial3: true);
+    // Geist is the face beui.dev serves; the gallery renders in it so it reads
+    // like the site. Bundled in `example/` only — see example/pubspec.yaml.
+    final base = ThemeData(
+      brightness: brightness,
+      useMaterial3: true,
+      fontFamily: 'Geist',
+    );
     return base.copyWith(
       scaffoldBackgroundColor: colors.background,
       canvasColor: colors.background,
