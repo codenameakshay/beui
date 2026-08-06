@@ -19,8 +19,10 @@ class BeuiTeam {
   final String name;
 
   /// ISO 3166-1 alpha-2 code (source loads `flagcdn.com/w80/{code}.png`;
-  /// England is `gb-eng`). Only consumed by a custom [BeuiKnockoutBracket.flagBuilder];
-  /// the default flag slot renders a shield placeholder, so this may be null.
+  /// England is `gb-eng`). Only consumed by a custom [BeuiKnockoutBracket.flagBuilder]
+  /// — this package ships no artwork and fetches nothing, so without one the slot
+  /// falls back to the team's initials exactly as the source does when a flag
+  /// fails to load. May be null.
   final String? code;
 }
 
@@ -221,10 +223,12 @@ class BeuiKnockoutBracket extends StatefulWidget {
   /// Called with the new leftmost-round index whenever the user pages.
   final ValueChanged<int>? onRoundChanged;
 
-  /// Builds the 28×20 flag slot for a team. Defaults to a shield placeholder
-  /// (the source's own on-error fallback) — the package ships no assets and
-  /// keeps goldens deterministic, so real flags are opt-in, e.g.
+  /// Builds the 28×20 flag slot for a team. Defaults to the team's initials on a
+  /// `foreground/10` disc — the source's own on-error fallback. The package ships
+  /// no assets and fetches nothing, which keeps goldens deterministic, so real
+  /// flags are opt-in, e.g.
   /// `flagBuilder: (ctx, team) => Image.network('https://flagcdn.com/w80/${team.code}.png')`.
+  /// An undecided (null team) slot always draws the shield, never initials.
   final Widget Function(BuildContext context, BeuiTeam team)? flagBuilder;
 
   @override
@@ -833,9 +837,13 @@ class _TeamRow extends StatelessWidget {
     final textColor = dim ? colors.mutedForeground : colors.foreground;
     final team = side.team;
 
-    final Widget flag = team != null && flagBuilder != null
+    // Source `TeamCrest`: artwork when there is any, the team's initials when
+    // there is not, and the shield only for an undecided (TBD) slot.
+    final Widget flag = team == null
+        ? _shieldSlot(colors)
+        : flagBuilder != null
         ? SizedBox(width: 28, height: 20, child: flagBuilder!(context, team))
-        : _shieldSlot(colors);
+        : _initialsSlot(colors, team.name);
 
     return Row(
       children: [
@@ -894,6 +902,48 @@ Widget _shieldSlot(BeuiColors colors) => SizedBox(
       LucideIcons.shield,
       size: 20,
       color: colors.mutedForeground.withValues(alpha: 0.5),
+    ),
+  ),
+);
+
+/// Two-letter stand-in when a team has no artwork — "Real Madrid" → RM. Takes
+/// the first *rune*, not the first code unit: an emoji or astral first character
+/// is a surrogate pair and indexing it renders a replacement glyph.
+String _initials(String name) => name
+    .trim()
+    .split(RegExp(r'\s+'))
+    .take(2)
+    .map(
+      (word) => word.runes.isEmpty ? '' : String.fromCharCode(word.runes.first),
+    )
+    .join()
+    .toUpperCase();
+
+/// The source's no-artwork crest — a 20px `foreground/10` disc carrying the
+/// team's initials. `foreground`, not `mutedForeground`: the /10 tint already
+/// lifts the disc toward the muted ramp, and muted text on top of it lands
+/// under AA in both themes.
+Widget _initialsSlot(BeuiColors colors, String name) => SizedBox(
+  width: 28,
+  height: 20,
+  child: Center(
+    child: Container(
+      width: 20,
+      height: 20,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: colors.foreground.withValues(alpha: 0.1),
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        _initials(name),
+        style: TextStyle(
+          fontSize: 10,
+          height: 1,
+          fontWeight: FontWeight.w600,
+          color: colors.foreground,
+        ),
+      ),
     ),
   ),
 );

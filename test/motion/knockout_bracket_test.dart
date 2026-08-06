@@ -66,6 +66,7 @@ Widget _app({
   bool reduce = false,
   BeuiMatch? thirdPlace,
   String? thirdPlaceLabel,
+  Widget Function(BuildContext, BeuiTeam)? flagBuilder,
 }) {
   Widget child = BeuiKnockoutBracket(
     rounds: rounds,
@@ -73,6 +74,7 @@ Widget _app({
     onRoundChanged: onRoundChanged,
     thirdPlace: thirdPlace,
     thirdPlaceLabel: thirdPlaceLabel ?? 'Third place play-off',
+    flagBuilder: flagBuilder,
   );
   if (reduce) {
     final inner = child;
@@ -179,6 +181,54 @@ void main() {
       await tester.pumpWidget(_app(rounds: _bracket(), initialRound: 1));
       await tester.pumpAndSettle();
       expect(find.text('TBD'), findsWidgets);
+    });
+  });
+
+  // Source `TeamCrest`: artwork if there is any, the team's initials if there is
+  // not, and the shield only for an undecided slot. The package ships no artwork,
+  // so a team always lands on the initials branch unless a flagBuilder is given.
+  group('BeuiKnockoutBracket team crest', () {
+    testWidgets('a team with no flagBuilder falls back to its initials', (
+      tester,
+    ) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pumpAndSettle();
+      expect(find.text('A'), findsWidgets); // Alpha
+      expect(find.text('B'), findsWidgets); // Bravo
+    });
+
+    testWidgets('the shield is reserved for an undecided slot', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pumpAndSettle();
+      // Fourteen sides are on stage (4 QF + 2 SF + 1 Final, two sides each) but
+      // only the Final's two are undecided, so exactly two shields are drawn —
+      // the other twelve carry a team and get initials.
+      expect(find.byIcon(LucideIcons.shield), findsNWidgets(2));
+
+      await tester.pumpWidget(
+        _app(rounds: _bracket(), thirdPlace: _thirdPlace),
+      );
+      await tester.pumpAndSettle();
+      // The third-place fixture is TBD v TBD as well, adding two more.
+      expect(find.byIcon(LucideIcons.shield), findsNWidgets(4));
+    });
+
+    testWidgets('a flagBuilder wins over the initials fallback', (
+      tester,
+    ) async {
+      _sizeView(tester);
+      await tester.pumpWidget(
+        _app(
+          rounds: _bracket(),
+          flagBuilder: (context, team) =>
+              ColoredBox(key: ValueKey('flag-${team.name}'), color: Colors.red),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('flag-Alpha')), findsWidgets);
+      expect(find.text('A'), findsNothing);
     });
   });
 
