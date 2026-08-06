@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,18 +63,45 @@ void main() {
         _wrap(const BeuiNotificationStack(items: _items)),
       );
       await tester.pumpAndSettle();
-      final collapsed = tester.getSize(find.byType(BeuiNotificationStack));
+      final collapsed = tester.getRect(find.byType(BeuiNotificationStack));
+      final collapsedFooter = tester.getRect(find.text('Notifications'));
 
       await tester.tap(find.byType(BeuiNotificationStack));
       await tester.pumpAndSettle();
 
       expect(find.text('View all'), findsOneWidget);
       expect(find.text('Notifications'), findsNothing);
-      final expanded = tester.getSize(find.byType(BeuiNotificationStack));
+
+      // The source pins the panel to the host's bottom (`absolute inset-x-0
+      // bottom-0`), so the deck fans *upward*: the host keeps its resting box
+      // and the footer stays where it was.
+      final expanded = tester.getRect(find.byType(BeuiNotificationStack));
       expect(
-        expanded.height,
-        greaterThan(collapsed.height),
-        reason: 'the fanned list is taller than the collapsed stack',
+        expanded,
+        collapsed,
+        reason: 'expanding must not resize or move the host box',
+      );
+      expect(
+        tester.getRect(find.text('View all')).center.dy,
+        moreOrLessEquals(collapsedFooter.center.dy, epsilon: 1),
+        reason: 'the footer strip stays anchored while the deck fans up',
+      );
+
+      // The fanned deck overflows above the host box. The primary card leads
+      // the deck, and its title matches twice — once in the deck, once in the
+      // hidden measuring column pinned to the host's top edge — so the higher
+      // of the two is the deck's own card.
+      final tops = find
+          .text('Deploy finished')
+          .evaluate()
+          .map(
+            (e) => (e.renderObject! as RenderBox).localToGlobal(Offset.zero).dy,
+          )
+          .toList();
+      expect(
+        tops.reduce(math.min),
+        lessThan(collapsed.top),
+        reason: 'the fanned deck overflows above the host box',
       );
     });
 

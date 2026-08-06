@@ -340,12 +340,30 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
             ),
           );
 
+          // Bottom-anchored host: an in-flow sizer holds the resting height and
+          // the animating surface hangs off its bottom edge, so expanding fans
+          // the deck up over whatever sits above instead of pushing the footer
+          // down the page (source `absolute inset-x-0 bottom-0`).
+          final host = measured
+              ? Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    SizedBox(
+                      width: width,
+                      height: _collapsedSurfaceHeight(heights),
+                    ),
+                    Positioned(left: 0, right: 0, bottom: 0, child: surface),
+                    measure,
+                  ],
+                )
+              : Stack(clipBehavior: Clip.none, children: [surface, measure]);
+
           return _interactive(
             colors,
             // Badge + aria report the TOTAL count (source `items.length`), not
             // the capped number of peeking cards.
             widget.items.length,
-            Stack(clipBehavior: Clip.none, children: [surface, measure]),
+            host,
           );
         },
       ),
@@ -400,6 +418,21 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
 
   // --- surface -------------------------------------------------------------
 
+  /// The surface's height at rest. The source sizes its host with a static
+  /// in-flow copy of the primary card plus the footer strip, then overlays the
+  /// real (animating) panel absolutely against the host's bottom — so the
+  /// expanded deck never pushes the layout around, it just grows upward.
+  double _collapsedSurfaceHeight(List<double> heights) {
+    var stack = 0.0;
+    for (var i = 0; i < heights.length; i++) {
+      stack = math.max(stack, i * _stackPeek + heights[i]);
+    }
+    return stack +
+        _footerTopMargin +
+        _footerHeight +
+        _surfacePadding * 2; // p-3 both sides
+  }
+
   Widget _surface(
     double width,
     double contentWidth,
@@ -410,8 +443,9 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
   ) {
     final n = visible.length;
 
-    // Collapsed vs expanded geometry (top-anchored: card 0 stays at the top,
-    // the rest fan down).
+    // Collapsed vs expanded geometry. The surface itself lays the cards out
+    // downward from its own top; the host pins the surface's *bottom* (source
+    // `absolute inset-x-0 bottom-0`), so growing it fans the deck upward.
     var expandedCursor = 0.0;
     var collapsedStackHeight = 0.0;
     final collapsedTops = List<double>.filled(n, 0);
