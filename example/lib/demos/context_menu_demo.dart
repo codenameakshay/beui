@@ -25,6 +25,8 @@ class _ContextMenuDemoState extends State<_ContextMenuDemo> {
     return Center(
       child: BeuiContextMenu(
         semanticLabel: 'Folder actions',
+        // Source preview overrides the `min-w-56` default with `w-60`.
+        minWidth: 240,
         items: [
           const BeuiContextMenuItem.label('Project files'),
           BeuiContextMenuItem(
