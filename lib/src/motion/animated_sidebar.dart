@@ -1232,26 +1232,50 @@ class _SidebarPanel extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      for (final group in groups) ...[
-                        if (group.label != null)
-                          _GroupLabel(
-                            label: group.label!,
-                            expanded: expanded,
-                            colors: colors,
-                            reduce: reduce,
+                      for (var gi = 0; gi < groups.length; gi++) ...[
+                        // Source `AnimatedSidebarContent` is `gap-2` — 8
+                        // *between* groups, never trailing the last one.
+                        if (gi > 0) const SizedBox(height: 8),
+                        Padding(
+                          // Source `AnimatedSidebarGroup`: `px-1 py-1.5`.
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 6,
                           ),
-                        for (final item in group.items)
-                          _MenuItem(
-                            item: item,
-                            itemKeys: itemKeys,
-                            expanded: expanded,
-                            selectedId: selectedId,
-                            open: openSections.contains(item.id),
-                            colors: colors,
-                            reduce: reduce,
-                            onSelect: onSelect,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (groups[gi].label != null)
+                                _GroupLabel(
+                                  label: groups[gi].label!,
+                                  expanded: expanded,
+                                  colors: colors,
+                                  reduce: reduce,
+                                ),
+                              for (
+                                var ii = 0;
+                                ii < groups[gi].items.length;
+                                ii++
+                              ) ...[
+                                // Source `AnimatedSidebarMenu`: `gap-0.5` — 2.
+                                if (ii > 0) const SizedBox(height: 2),
+                                _MenuItem(
+                                  item: groups[gi].items[ii],
+                                  itemKeys: itemKeys,
+                                  expanded: expanded,
+                                  selectedId: selectedId,
+                                  open: openSections.contains(
+                                    groups[gi].items[ii].id,
+                                  ),
+                                  colors: colors,
+                                  reduce: reduce,
+                                  onSelect: onSelect,
+                                ),
+                              ],
+                            ],
                           ),
-                        const SizedBox(height: 8),
+                        ),
                       ],
                     ],
                   ),
@@ -1261,7 +1285,8 @@ class _SidebarPanel extends StatelessWidget {
           ),
           if (footer != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+              // Source `AnimatedSidebarFooter`: `p-3` — 12 on every edge.
+              padding: const EdgeInsets.all(12),
               child: footer!,
             ),
         ],
@@ -1360,18 +1385,25 @@ class _GroupLabel extends StatelessWidget {
       duration: reduce ? _labelExit : (expanded ? _labelEnter : _labelExit),
       curve: beuiEaseOut,
       opacity: expanded ? 1 : 0,
+      // Source `AnimatedSidebarGroupLabel`: `mb-1 h-7 px-2` — a fixed 28-tall
+      // box with a 4 bottom margin. It carries no top padding of its own.
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
-        child: Text(
-          label.toUpperCase(),
-          maxLines: 1,
-          overflow: TextOverflow.clip,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 1.4,
-            color: colors.mutedForeground,
-            height: 2.8,
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 4),
+        child: SizedBox(
+          height: 28,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              label.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.clip,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 1.4,
+                color: colors.mutedForeground,
+              ),
+            ),
           ),
         ),
       ),
@@ -1477,77 +1509,137 @@ class _MenuButtonState extends State<_MenuButton> {
         ? colors.foreground
         : (_hovered ? colors.foreground : colors.mutedForeground);
 
-    final icon = item.icon != null
-        ? Icon(item.icon, size: 18, color: fg)
-        : const SizedBox(width: 18, height: 18);
+    // Source: a `size-5` (20) grid cell holding a `size-4` (16) glyph.
+    final icon = SizedBox(
+      width: 20,
+      height: 20,
+      child: item.icon != null
+          ? Center(child: Icon(item.icon, size: 16, color: fg))
+          : null,
+    );
 
-    // Labels only when the rail has room. [expanded] flips immediately while
-    // width springs, so we also gate on maxWidth to avoid mid-morph Row
-    // overflows (source `overflow-hidden` on the menu button).
-    Widget row = ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 36),
+    // The source row keeps its `px-3` layout at every width: the icon stays
+    // anchored 24 from the panel edge and the narrowing rail closes around it,
+    // landing the glyph dead-centre of the 68 icon rail by arithmetic
+    // (8 content + 4 group + 12 row + 10 half-icon = 34 = 68 / 2). Only the
+    // label, badge and chevron come and go. Never re-centre the icon: that
+    // makes it jump to the middle of a still-wide panel mid-morph.
+    // Source `min-h-9`, single-line label: always exactly 36 tall.
+    Widget row = SizedBox(
+      height: 36,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final showLabels = widget.expanded && constraints.maxWidth >= 96;
-          if (!showLabels) {
-            return Center(child: icon);
-          }
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: [
-                icon,
-                Expanded(
-                  child: _CollapsingLabel(
-                    expanded: true,
-                    reduce: widget.reduce,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        item.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: fg,
+          // Stand-in for the source's `overflow-hidden`. CSS clips whatever
+          // does not fit the closing rail; a Flutter Row throws instead, so
+          // this does the clipping explicitly. Two cases need it:
+          //
+          //  * `expanded` flips a whole width spring before the rail is wide
+          //    enough for the trailing badge/chevron — gate those on measured
+          //    width (never the icon, which must keep its `px-3` anchor);
+          //  * the `floating` variant's icon rail is 52 wide once `m-2` is
+          //    taken out, leaving the row 4 for a 20 icon. The source clips
+          //    there too, so hold a 44 floor and clip the overflow.
+          final trailingFits = constraints.maxWidth >= 96;
+          final w = constraints.maxWidth < 44 ? 44.0 : constraints.maxWidth;
+          return ClipRect(
+            child: OverflowBox(
+              alignment: AlignmentDirectional.centerStart,
+              minWidth: w,
+              maxWidth: w,
+              minHeight: 36,
+              maxHeight: 36,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  children: [
+                    icon,
+                    // `flex-1 truncate`: the label absorbs the slack and shrinks to
+                    // zero as the rail closes, so the row never overflows.
+                    Expanded(
+                      child: _CollapsingLabel(
+                        expanded: widget.expanded,
+                        reduce: widget.reduce,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            item.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: fg,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                    // Source row is a single `gap-2.5` flex, so the badge and the
+                    // chevron are each 10 clear of the label, not 4 and 0.
+                    // Source drops the badge outright while collapsed
+                    // (`badge && !panel.collapsed`).
+                    if (item.badge != null && widget.expanded && trailingFits)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          item.badge!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: colors.mutedForeground,
+                          ),
+                        ),
+                      ),
+                    if (widget.isSectionOpen != null && trailingFits)
+                      // Source keeps the chevron mounted and fades it
+                      // (`opacity: collapsed ? 0 : 1`); collapsing its width in
+                      // step is what `overflow-hidden` buys the source for free.
+                      ClipRect(
+                        child: AnimatedAlign(
+                          duration: widget.reduce
+                              ? _labelExit
+                              : (widget.expanded ? _labelEnter : _labelExit),
+                          curve: beuiEaseOut,
+                          alignment: AlignmentDirectional.centerStart,
+                          widthFactor: widget.expanded ? 1.0 : 0.0,
+                          child: _CollapsingLabel(
+                            expanded: widget.expanded,
+                            reduce: widget.reduce,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: SingleMotionBuilder(
+                                value: widget.isSectionOpen! ? 1.0 : 0.0,
+                                motion: motionFor(
+                                  context,
+                                  beuiSpringLayout,
+                                  isMovement: true,
+                                  reducedFallback: const NoMotion(),
+                                ),
+                                builder: (context, t, _) {
+                                  // Source: a `size-4` (16) cell holding a
+                                  // `size-3.5` (14) chevron.
+                                  return SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: Center(
+                                      child: Transform.rotate(
+                                        angle: t * 1.57079632679, // 90°
+                                        child: Icon(
+                                          LucideIcons.chevron_right,
+                                          size: 14,
+                                          color: colors.mutedForeground,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                if (item.badge != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: Text(
-                      item.badge!,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colors.mutedForeground,
-                      ),
-                    ),
-                  ),
-                if (widget.isSectionOpen != null)
-                  SingleMotionBuilder(
-                    value: widget.isSectionOpen! ? 1.0 : 0.0,
-                    motion: motionFor(
-                      context,
-                      beuiSpringLayout,
-                      isMovement: true,
-                      reducedFallback: const NoMotion(),
-                    ),
-                    builder: (context, t, _) {
-                      return Transform.rotate(
-                        angle: t * 1.57079632679, // 90°
-                        child: Icon(
-                          LucideIcons.chevron_right,
-                          size: 14,
-                          color: colors.mutedForeground,
-                        ),
-                      );
-                    },
-                  ),
-              ],
+              ),
             ),
           );
         },

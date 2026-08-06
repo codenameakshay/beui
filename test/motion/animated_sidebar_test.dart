@@ -635,4 +635,78 @@ void main() {
       expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsNothing);
     });
   });
+
+  group('BeuiAnimatedSidebar row geometry', () {
+    // Source `AnimatedSidebarMenuButton` never re-centres its icon: the row
+    // keeps `px-3` at every width and the closing rail lands the glyph
+    // dead-centre by arithmetic — 8 (content `px-2`) + 4 (group `px-1`)
+    // + 12 (row `px-3`) + 10 (half of the `size-5` cell) = 34 = 68 / 2.
+    // Re-centring instead makes the icon jump to the middle of a still-wide
+    // panel mid-morph.
+    Future<double> iconCentre(WidgetTester tester) async {
+      final panel = tester.getRect(find.byKey(beuiAnimatedSidebarChromeKey));
+      final icon = tester.getRect(find.byIcon(Icons.search));
+      return icon.center.dx - panel.left;
+    }
+
+    testWidgets(
+      'icon keeps its px-3 anchor expanded, collapsed and mid-morph',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            BeuiAnimatedSidebar(
+              groups: _groups,
+              defaultExpanded: true,
+              defaultSelectedId: 'tasks',
+              child: const Column(
+                children: [
+                  BeuiAnimatedSidebarTrigger(),
+                  Expanded(child: SizedBox.expand()),
+                ],
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(await iconCentre(tester), closeTo(34, 0.5));
+
+        // Collapse, and sample partway through the width spring.
+        await tester.tap(find.byType(BeuiAnimatedSidebarTrigger));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(
+          await iconCentre(tester),
+          closeTo(34, 0.5),
+          reason: 'icon must not re-anchor while the rail is still wide',
+        );
+
+        await tester.pumpAndSettle();
+        expect(await iconCentre(tester), closeTo(34, 0.5));
+        // …which is the centre of the 68 icon rail.
+        expect(
+          tester.getSize(find.byKey(beuiAnimatedSidebarChromeKey)).width,
+          closeTo(kBeuiAnimatedSidebarIconWidth, 0.5),
+        );
+      },
+    );
+
+    testWidgets('rows sit on the source 38 pitch (h-9 + gap-0.5)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAnimatedSidebar(
+            groups: _groups,
+            defaultSelectedId: 'tasks',
+            child: const SizedBox.expand(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final search = tester.getRect(find.text('Search'));
+      final inbox = tester.getRect(find.text('Inbox'));
+      expect(inbox.center.dy - search.center.dy, closeTo(38, 0.5));
+    });
+  });
 }

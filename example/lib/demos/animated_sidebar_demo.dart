@@ -187,46 +187,56 @@ class _Header extends StatelessWidget {
     final scope = BeuiAnimatedSidebarScope.maybeOf(context);
     final expanded = scope?.expanded ?? true;
 
-    return Row(
-      children: [
-        Container(
-          width: 28,
-          height: 28,
-          decoration: BoxDecoration(
-            color: colors.foreground,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          alignment: Alignment.center,
-          child: Icon(LucideIcons.command, size: 14, color: colors.background),
-        ),
-        if (expanded) ...[
-          const SizedBox(width: 12),
-          Expanded(
-            child: Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    'Acme Inc',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: colors.foreground,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Icon(
-                  LucideIcons.chevrons_up_down,
-                  size: 14,
-                  color: colors.mutedForeground,
-                ),
-              ],
+    // Source preview: `flex min-h-11 items-center gap-3 overflow-hidden px-2`.
+    return Container(
+      constraints: const BoxConstraints(minHeight: 44),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      alignment: Alignment.centerLeft,
+      child: Row(
+        children: [
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: colors.foreground,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              LucideIcons.command,
+              size: 16,
+              color: colors.background,
             ),
           ),
+          if (expanded) ...[
+            const SizedBox(width: 12),
+            Expanded(
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      'Acme Inc',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: colors.foreground,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    LucideIcons.chevrons_up_down,
+                    size: 14,
+                    color: colors.mutedForeground,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -246,8 +256,11 @@ class _Footer extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {},
-        child: Padding(
+        // Source preview: `flex min-h-11 items-center gap-3 rounded-xl p-1`.
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 44),
           padding: const EdgeInsets.all(4),
+          alignment: Alignment.centerLeft,
           child: Row(
             children: [
               Container(
