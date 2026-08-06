@@ -98,11 +98,15 @@ class _PullToRefreshDemoState extends State<_PullToRefreshDemo> {
               color: colors.background,
               borderRadius: BorderRadius.circular(32), // rounded-[2rem]
               border: Border.all(color: colors.border),
-              boxShadow: [
+              // `shadow-2xl` = 0 25px 50px -12px rgb(0 0 0 / 0.25). Tailwind
+              // shadows are always black; tinting with `foreground` turned this
+              // into a white halo in the dark theme.
+              boxShadow: const [
                 BoxShadow(
-                  color: colors.foreground.withValues(alpha: 0.12),
-                  blurRadius: 40,
-                  offset: const Offset(0, 16),
+                  color: Color(0x40000000),
+                  blurRadius: 50,
+                  spreadRadius: -12,
+                  offset: Offset(0, 25),
                 ),
               ],
             ),
@@ -231,11 +235,12 @@ class _FeedRow extends StatelessWidget {
               color: colors.card,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: colors.border),
-              boxShadow: [
+              // `shadow-sm` = 0 1px 2px 0 rgb(0 0 0 / 0.05) — black, not tinted.
+              boxShadow: const [
                 BoxShadow(
-                  color: colors.foreground.withValues(alpha: 0.04),
+                  color: Color(0x0D000000),
                   blurRadius: 2,
-                  offset: const Offset(0, 1),
+                  offset: Offset(0, 1),
                 ),
               ],
             ),
