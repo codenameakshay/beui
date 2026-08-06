@@ -859,70 +859,80 @@ class _TabsDemoState extends State<_TabsDemo> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    final body = TextStyle(fontSize: 14, color: colors.mutedForeground);
+    // `text-sm text-muted-foreground` — 14px on a 20px line box.
+    final body = TextStyle(
+      fontSize: 14,
+      height: 20 / 14,
+      color: colors.mutedForeground,
+    );
 
-    // Outer `flex flex-col gap-8` (32px).
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _tabsSection(
-          colors,
-          'Pill',
-          BeuiTabs<String>(
-            variant: BeuiTabsVariant.pill,
-            value: _pill,
-            onChanged: (v) => setState(() => _pill = v),
-            tabs: [
-              BeuiTab(
-                value: 'overview',
-                label: const Text('Overview'),
-                content: Text('High-level summary.', style: body),
-              ),
-              BeuiTab(
-                value: 'activity',
-                label: const Text('Activity'),
-                content: Text('Recent events.', style: body),
-              ),
-              BeuiTab(
-                value: 'settings',
-                label: const Text('Settings'),
-                content: Text('Preferences.', style: body),
-              ),
-            ],
+    // Outer `flex w-full max-w-md flex-col gap-8` (448px wide, 32px gaps).
+    // SizedBox degrades to the parent's width when it is narrower, which is
+    // exactly what `w-full max-w-md` means.
+    return SizedBox(
+      width: 448,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _tabsSection(
+            colors,
+            'Pill',
+            BeuiTabs<String>(
+              variant: BeuiTabsVariant.pill,
+              value: _pill,
+              onChanged: (v) => setState(() => _pill = v),
+              tabs: [
+                BeuiTab(
+                  value: 'overview',
+                  label: const Text('Overview'),
+                  content: Text('High-level summary.', style: body),
+                ),
+                BeuiTab(
+                  value: 'activity',
+                  label: const Text('Activity'),
+                  content: Text('Recent events.', style: body),
+                ),
+                BeuiTab(
+                  value: 'settings',
+                  label: const Text('Settings'),
+                  content: Text('Preferences.', style: body),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 32),
-        _tabsSection(
-          colors,
-          'Segment',
-          BeuiTabs<String>(
-            variant: BeuiTabsVariant.segment,
-            value: _segment,
-            onChanged: (v) => setState(() => _segment = v),
-            tabs: const [
-              BeuiTab(value: 'day', label: Text('Day')),
-              BeuiTab(value: 'week', label: Text('Week')),
-              BeuiTab(value: 'month', label: Text('Month')),
-            ],
+          const SizedBox(height: 32),
+          _tabsSection(
+            colors,
+            'Segment',
+            BeuiTabs<String>(
+              variant: BeuiTabsVariant.segment,
+              value: _segment,
+              onChanged: (v) => setState(() => _segment = v),
+              tabs: const [
+                BeuiTab(value: 'day', label: Text('Day')),
+                BeuiTab(value: 'week', label: Text('Week')),
+                BeuiTab(value: 'month', label: Text('Month')),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 32),
-        _tabsSection(
-          colors,
-          'Underline',
-          BeuiTabs<String>(
-            variant: BeuiTabsVariant.underline,
-            value: _underline,
-            onChanged: (v) => setState(() => _underline = v),
-            tabs: const [
-              BeuiTab(value: 'all', label: Text('All')),
-              BeuiTab(value: 'open', label: Text('Open')),
-              BeuiTab(value: 'closed', label: Text('Closed')),
-            ],
+          const SizedBox(height: 32),
+          _tabsSection(
+            colors,
+            'Underline',
+            BeuiTabs<String>(
+              variant: BeuiTabsVariant.underline,
+              value: _underline,
+              onChanged: (v) => setState(() => _underline = v),
+              tabs: const [
+                BeuiTab(value: 'all', label: Text('All')),
+                BeuiTab(value: 'open', label: Text('Open')),
+                BeuiTab(value: 'closed', label: Text('Closed')),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -938,6 +948,9 @@ class _TabsDemoState extends State<_TabsDemo> {
           fontSize: 10,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.5, // tracking-wider (0.05em)
+          // `text-[10px]` sets font-size only; the 1.5 line-height is
+          // inherited, giving a 15px line box (not Roboto's default 12).
+          height: 1.5,
           color: colors.mutedForeground,
         ),
       ),

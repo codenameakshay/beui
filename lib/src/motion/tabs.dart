@@ -159,11 +159,14 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       final topLeft = stackBox.globalToLocal(box.localToGlobal(Offset.zero));
       final rect = topLeft & box.size;
       next = switch (widget.variant) {
+        // Source: `absolute -bottom-px left-0 right-0 h-px` — a 1px rule that
+        // sits 1px *below* the trigger box, so it rides under the list's
+        // `border-b` rather than covering it.
         BeuiTabsVariant.underline => Rect.fromLTWH(
           rect.left,
-          rect.bottom - 2,
+          rect.bottom,
           rect.width,
-          2,
+          1,
         ),
         _ => rect,
       };
@@ -224,6 +227,11 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
 
     final stack = Stack(
       key: _stackKey,
+      // The underline rule is deliberately 1px outside the list box (the
+      // source's `-bottom-px`), so it must not be clipped away.
+      clipBehavior: variant == BeuiTabsVariant.underline
+          ? Clip.none
+          : Clip.hardEdge,
       children: variant == BeuiTabsVariant.underline
           ? [row, indicatorLayer] // line on top
           : [indicatorLayer, row], // pill behind the text
@@ -422,6 +430,9 @@ class _TabTriggerState<T> extends State<_TabTrigger<T>> {
         duration: const Duration(milliseconds: 150),
         style: TextStyle(
           fontSize: 14,
+          // `text-sm` is 14px/20px. Without an explicit line box the trigger
+          // renders ~3px shorter than the source (29 vs 32).
+          height: 20 / 14,
           fontWeight: FontWeight.w500,
           color: _textColor(colors),
         ),
