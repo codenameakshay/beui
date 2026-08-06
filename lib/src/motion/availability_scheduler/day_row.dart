@@ -290,7 +290,13 @@ class _DayRowState extends State<DayRow> {
             reduce: reduce,
             // Source column is `flex flex-col gap-2`: 8px *between* slots, with
             // no trailing gap after the last one.
-            gapBefore: i == 0 ? 0 : 8,
+            //
+            // A slot that follows an *exiting* one carries no gap: the source's
+            // `AnimatePresence mode="popLayout"` pulls a leaving slot out of
+            // flow, so it never spaces the slot that replaces it. Keeping the
+            // gap here instead made the column bulge while both were mounted
+            // and then jump 8px the frame the leaver unmounted.
+            gapBefore: i == 0 || _slots[i - 1].exiting ? 0 : 8,
             // Ranges enter from y -6 with a 4px blur; the unavailable line from
             // y -4 with no blur (source initial/exit specs).
             enterY: slot.range != null ? -6 : -4,
@@ -333,10 +339,21 @@ class _RangeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Each field is `min-w-0 flex-1 sm:max-w-[132px]`: it grows into its flex
+    // share but stops at 132px, so a wide row keeps trailing slack rather than
+    // stretching the fields (which is why the remove button does not sit flush
+    // against the actions column).
+    Widget field(Widget child) => Flexible(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 132),
+        child: SizedBox(width: double.infinity, child: child),
+      ),
+    );
+
     return Row(
       children: [
-        Expanded(
-          child: TimeSelect(
+        field(
+          TimeSelect(
             key: ValueKey('${range.id}-start'),
             value: range.start,
             options: options,
@@ -347,8 +364,8 @@ class _RangeContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text('–', style: TextStyle(color: colors.mutedForeground)),
         ),
-        Expanded(
-          child: TimeSelect(
+        field(
+          TimeSelect(
             key: ValueKey('${range.id}-end'),
             value: range.end,
             options: options,
@@ -378,10 +395,15 @@ class _UnavailableContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      // `py-1 sm:py-2` — 8px at the desktop breakpoint this port renders.
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         'Unavailable',
-        style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+        style: TextStyle(
+          fontSize: 14, // text-sm
+          height: 20 / 14, // …/20
+          color: colors.mutedForeground,
+        ),
       ),
     );
   }
