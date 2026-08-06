@@ -530,4 +530,40 @@ void main() {
       matchesGoldenFile('goldens/beui_preview_rail.png'),
     );
   });
+
+  group('BeuiPreviewRail horizontal layout', () {
+    // The source preview overlay is `pointer-events-none absolute z-50`, so it
+    // takes no layout space and the `h-12` nav stays centred by the container's
+    // `flex-col items-center justify-center`. Reserving a slot for the card
+    // above the rail instead pushes the rail below centre.
+    testWidgets('rail stays centred; the card floats without displacing it', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(orientation: BeuiPreviewRailOrientation.horizontal),
+      );
+      await tester.pumpAndSettle();
+
+      final box = tester.getRect(find.byType(BeuiPreviewRail));
+      final tick = tester.getRect(_tick('Alpha'));
+      expect(
+        tick.center.dy,
+        closeTo(box.center.dy, 0.5),
+        reason: 'the 48-tall nav is centred in the container',
+      );
+
+      // Hovering summons the card; the rail must not move.
+      await _hover(tester, _tick('Beta'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getRect(_tick('Alpha')).center.dy,
+        closeTo(tick.center.dy, 0.5),
+      );
+
+      // Source card is `bottom-12` off an `h-5` cell centred on the container,
+      // so its bottom lands 38 above the centre line.
+      final card = tester.getRect(find.text('Beta'));
+      expect(card.bottom, lessThan(box.center.dy - 38));
+    });
+  });
 }

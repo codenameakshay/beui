@@ -462,35 +462,47 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
           );
 
     if (_isHorizontal) {
-      // Card floats above a bottom-aligned rail; only x glides. `previewSide`
-      // is vertical-only in the source, so the card stays above either way.
+      // Card floats above a centred rail; only x glides. `previewSide` is
+      // vertical-only in the source, so the card stays above either way.
+      //
+      // The source does NOT stack the two: its preview grid is
+      // `pointer-events-none absolute z-50 top-1/2 left-1/2 h-5 -translate-*`,
+      // so the card takes no layout space and the `h-12` nav is centred in the
+      // container by `flex-col items-center justify-center`. Reserving a slot
+      // for the card above the rail instead pushes the rail off centre.
+      final Widget layout = LayoutBuilder(
+        builder: (context, constraints) {
+          final h = constraints.maxHeight.isFinite
+              ? constraints.maxHeight
+              : _tickLength;
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(child: Center(child: railRegion)),
+              if (glidingCard != null)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  // The preview grid is `h-5` centred on the container, so a
+                  // cell's bottom sits 10 below centre; each card is `bottom-12`
+                  // (48) clear of it — 48 - 10 = 38 above the centre line.
+                  bottom: h / 2 + 38,
+                  child: Center(child: glidingCard),
+                ),
+            ],
+          );
+        },
+      );
+
+      // Source `min-h-0 flex-1` content: it follows the rail in flex order, so
+      // here it sits below the horizontal rail.
+      if (widget.child == null) return layout;
       return Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (glidingCard != null) ...[
-            SizedBox(
-              height: 132,
-              width: n * _track,
-              child: OverflowBox(
-                maxWidth: double.infinity,
-                alignment: Alignment.bottomCenter,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: glidingCard,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-          ],
-          railRegion,
-          // Source `min-h-0 flex-1` content: it follows the rail in flex order,
-          // so here it sits below the horizontal rail (natural height — the
-          // column is content-sized).
-          if (widget.child != null) ...[
-            const SizedBox(height: 12),
-            widget.child!,
-          ],
+          Expanded(child: layout),
+          const SizedBox(height: 12),
+          widget.child!,
         ],
       );
     }
@@ -510,9 +522,17 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
             alignment: before
                 ? AlignmentDirectional.centerEnd
                 : AlignmentDirectional.centerStart,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 384),
-              child: glidingCard,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Source card is `w-full max-w-sm`: it fills the preview
+                // column up to 384 and does NOT shrink-wrap its text, so its
+                // width is stable no matter which item is displayed.
+                final available = constraints.maxWidth;
+                final w = available.isFinite && available < 384
+                    ? available
+                    : 384.0;
+                return SizedBox(width: w, child: glidingCard);
+              },
             ),
           );
     if (widget.child != null) {
@@ -676,10 +696,21 @@ class _PreviewCard extends StatelessWidget {
             child: renderPreview?.call(current) ?? _defaultPreview(current),
           );
 
-    final width = isHorizontal ? 288.0 : double.infinity;
+    // Horizontal card is `w-72` (288); the vertical one is `w-full max-w-sm`
+    // and gets its width from the caller, so pass the constraint straight
+    // through rather than re-imposing one here.
     return SizedBox(
-      width: isHorizontal ? width : null,
+      width: isHorizontal ? 288.0 : null,
       child: AnimatedSwitcher(
+        // The default layout builder is a `Stack(alignment: center)`, which
+        // hands children LOOSE constraints — the card would shrink-wrap its
+        // longest line and re-centre, so its width would jitter per item.
+        // `passthrough` keeps the caller's tight width.
+        layoutBuilder: (currentChild, previousChildren) => Stack(
+          alignment: AlignmentDirectional.topStart,
+          fit: StackFit.passthrough,
+          children: <Widget>[...previousChildren, ?currentChild],
+        ),
         duration: const Duration(milliseconds: 180),
         reverseDuration: const Duration(milliseconds: 120),
         switchInCurve: beuiEaseOut,
