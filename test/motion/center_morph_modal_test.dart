@@ -71,6 +71,23 @@ void main() {
     expect(find.byKey(_panel), findsOneWidget);
   });
 
+  testWidgets('unfold runs the source 430ms envelope', (tester) async {
+    // CENTER_UNFOLD_TRANSITION is `{ duration: 0.43 }`. A frame-sampled screen
+    // capture cannot resolve this (Flutter web paints far fewer frames per
+    // wall-clock second than the DOM reference), so pin it here instead.
+    await tester.pumpWidget(const _Host());
+    host(tester).show();
+    await tester.pump(); // schedule the enter
+    await tester.pump(const Duration(milliseconds: 420));
+    expect(
+      tester.binding.transientCallbackCount,
+      greaterThan(0),
+      reason: 'still unfolding at 420ms — the envelope must not collapse',
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(_panel), findsOneWidget);
+  });
+
   testWidgets('onOpenChange(false) on barrier dismiss', (tester) async {
     await tester.pumpWidget(const _Host());
     host(tester).show();
