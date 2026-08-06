@@ -641,70 +641,100 @@ class _BeuiHoldActionButtonState extends State<BeuiHoldActionButton>
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // Liquid fill.
-                        AnimatedBuilder(
-                          animation: _fill,
-                          builder: (context, child) {
-                            if (reduce) {
-                              return Opacity(
-                                opacity: active ? 1 : 0,
-                                child: ColoredBox(color: fill),
+                        // Liquid fill. `Positioned.fill` keeps this layer out
+                        // of the Stack's sizing — a StackFit.expand child would
+                        // stretch the button to the incoming maxWidth, defeating
+                        // the source's `min-w-72` hug.
+                        Positioned.fill(
+                          child: AnimatedBuilder(
+                            animation: _fill,
+                            builder: (context, child) {
+                              if (reduce) {
+                                return Opacity(
+                                  opacity: active ? 1 : 0,
+                                  child: ColoredBox(color: fill),
+                                );
+                              }
+                              final t = _fill.value;
+                              final isH =
+                                  widget.direction ==
+                                  BeuiHoldActionDirection.horizontal;
+                              return FractionalTranslation(
+                                translation: isH
+                                    ? Offset(t - 1, 0)
+                                    : Offset(0, 1.15 * (1 - t)),
+                                child: LayoutBuilder(
+                                  builder: (context, box) => Stack(
+                                    // The wave deliberately overhangs the fill
+                                    // (source `-top-5` / `-right-5`); the
+                                    // button's own ClipRRect trims it, which is
+                                    // what leaves a sliver visible at rest.
+                                    clipBehavior: Clip.none,
+                                    fit: StackFit.expand,
+                                    children: [
+                                      ColoredBox(color: fill),
+                                      if (isH)
+                                        // `absolute -right-5 top-0 h-[200%] w-6`
+                                        Positioned(
+                                          top: 0,
+                                          right: -20,
+                                          width: 24,
+                                          height: box.maxHeight * 2,
+                                          child: _HoldWave(
+                                            horizontal: true,
+                                            color: fill,
+                                          ),
+                                        )
+                                      else
+                                        // `absolute -top-5 left-0 h-6 w-[200%]`
+                                        Positioned(
+                                          top: -20,
+                                          left: 0,
+                                          width: box.maxWidth * 2,
+                                          height: 24,
+                                          child: _HoldWave(
+                                            horizontal: false,
+                                            color: fill,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
                               );
-                            }
-                            final t = _fill.value;
-                            final isH =
-                                widget.direction ==
-                                BeuiHoldActionDirection.horizontal;
-                            return FractionalTranslation(
-                              translation: isH
-                                  ? Offset(t - 1, 0)
-                                  : Offset(0, 1.15 * (1 - t)),
-                              child: Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  ColoredBox(color: fill),
-                                  if (isH)
-                                    const Align(
-                                      alignment: Alignment.centerRight,
-                                      child: _HoldWave(horizontal: true),
-                                    )
-                                  else
-                                    const Align(
-                                      alignment: Alignment.topCenter,
-                                      child: _HoldWave(horizontal: false),
-                                    ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                        // Labels.
-                        DefaultTextStyle(
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: -0.16,
-                            color: fg,
+                            },
                           ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              _CrossFadeLabel(
-                                visible: !active,
-                                reduce: reduce,
-                                child: widget.child,
-                              ),
-                              _CrossFadeLabel(
-                                visible: _holding && !_completed,
-                                reduce: reduce,
-                                child: widget.holdingLabel,
-                              ),
-                              _CrossFadeLabel(
-                                visible: _completed,
-                                reduce: reduce,
-                                child: widget.completeLabel,
-                              ),
-                            ],
+                        ),
+                        // Labels — `px-8` gutter (source `px-8`), so a long
+                        // label grows the button past `min-w-72` symmetrically.
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: DefaultTextStyle(
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: -0.16,
+                              color: fg,
+                            ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                _CrossFadeLabel(
+                                  visible: !active,
+                                  reduce: reduce,
+                                  child: widget.child,
+                                ),
+                                _CrossFadeLabel(
+                                  visible: _holding && !_completed,
+                                  reduce: reduce,
+                                  child: widget.holdingLabel,
+                                ),
+                                _CrossFadeLabel(
+                                  visible: _completed,
+                                  reduce: reduce,
+                                  child: widget.completeLabel,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -752,9 +782,14 @@ class _CrossFadeLabel extends StatelessWidget {
 }
 
 /// Scrolling wave edge for the hold fill (decorative).
+///
+/// Sized by the [Positioned] that hosts it (200% of the fill along the scroll
+/// axis, 24px across), and painted `preserveAspectRatio="none"` — the source
+/// SVG's viewBox is stretched to fill, exactly as the browser does.
 class _HoldWave extends StatefulWidget {
-  const _HoldWave({required this.horizontal});
+  const _HoldWave({required this.horizontal, required this.color});
   final bool horizontal;
+  final Color color;
 
   @override
   State<_HoldWave> createState() => _HoldWaveState();
@@ -762,8 +797,10 @@ class _HoldWave extends StatefulWidget {
 
 class _HoldWaveState extends State<_HoldWave>
     with SingleTickerProviderStateMixin {
-  // Single forward pass — a forever-repeat pins pumpAndSettle in tests, and
-  // the primary feedback is the fill translation itself.
+  // Single forward pass — a forever-repeat pins pumpAndSettle in tests. The
+  // path's period is exactly half its length, so the resting pose at t=1
+  // (translate -50%, the source's `active` target) is pixel-identical to the
+  // pose at t=0; only the scroll *during* a hold is shortened.
   late final AnimationController _c = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1100),
@@ -777,19 +814,21 @@ class _HoldWaveState extends State<_HoldWave>
 
   @override
   Widget build(BuildContext context) {
-    const color = Color(0xFF38BDF8);
     return AnimatedBuilder(
       animation: _c,
-      builder: (context, child) {
-        final t = _c.value;
-        if (widget.horizontal) {
-          return Transform.translate(offset: Offset(0, -t * 120), child: child);
-        }
-        return Transform.translate(offset: Offset(-t * 120, 0), child: child);
-      },
+      builder: (context, child) => FractionalTranslation(
+        // Source: translateX(-50%) / translateY(-50%) over 1.1s linear.
+        translation: widget.horizontal
+            ? Offset(0, -0.5 * _c.value)
+            : Offset(-0.5 * _c.value, 0),
+        child: child,
+      ),
       child: CustomPaint(
-        size: widget.horizontal ? const Size(24, 240) : const Size(240, 24),
-        painter: _WavePainter(horizontal: widget.horizontal, color: color),
+        size: Size.infinite,
+        painter: _WavePainter(
+          horizontal: widget.horizontal,
+          color: widget.color,
+        ),
       ),
     );
   }
@@ -805,21 +844,36 @@ class _WavePainter extends CustomPainter {
     final paint = Paint()..color = color;
     final path = Path();
     if (horizontal) {
-      // Vertical wave strip on the right edge of a horizontal fill.
+      // Source viewBox "0 0 24 240":
+      // M0 0h12C2 20 2 40 12 60s10 40 0 60-10 40 0 60 10 40 0 60H0Z
+      final sx = size.width / 24;
+      final sy = size.height / 240;
+      Offset p(double x, double y) => Offset(x * sx, y * sy);
+      void cube(Offset c1, Offset c2, Offset e) =>
+          path.cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, e.dx, e.dy);
       path.moveTo(0, 0);
-      path.lineTo(12, 0);
-      for (var y = 0.0; y <= 240; y += 60) {
-        path.cubicTo(2, y + 20, 2, y + 40, 12, y + 60);
-      }
-      path.lineTo(0, 240);
+      path.lineTo(p(12, 0).dx, 0);
+      cube(p(2, 20), p(2, 40), p(12, 60));
+      cube(p(22, 80), p(22, 100), p(12, 120));
+      cube(p(2, 140), p(2, 160), p(12, 180));
+      cube(p(22, 200), p(22, 220), p(12, 240));
+      path.lineTo(0, p(0, 240).dy);
       path.close();
     } else {
-      path.moveTo(0, 12);
-      for (var x = 0.0; x <= 240; x += 60) {
-        path.cubicTo(x + 20, 2, x + 40, 2, x + 60, 12);
-      }
-      path.lineTo(240, 24);
-      path.lineTo(0, 24);
+      // Source viewBox "0 0 240 24":
+      // M0 12C20 2 40 2 60 12s40 10 60 0 40-10 60 0 40 10 60 0v12H0Z
+      final sx = size.width / 240;
+      final sy = size.height / 24;
+      Offset p(double x, double y) => Offset(x * sx, y * sy);
+      void cube(Offset c1, Offset c2, Offset e) =>
+          path.cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, e.dx, e.dy);
+      path.moveTo(0, p(0, 12).dy);
+      cube(p(20, 2), p(40, 2), p(60, 12));
+      cube(p(80, 22), p(100, 22), p(120, 12));
+      cube(p(140, 2), p(160, 2), p(180, 12));
+      cube(p(200, 22), p(220, 22), p(240, 12));
+      path.lineTo(p(240, 24).dx, p(240, 24).dy);
+      path.lineTo(0, p(0, 24).dy);
       path.close();
     }
     canvas.drawPath(path, paint);
@@ -1033,10 +1087,10 @@ class _BeuiSlideActionButtonState extends State<BeuiSlideActionButton> {
         height: 64,
         width: 288,
         child: DecoratedBox(
+          // Source track is `bg-primary/10 rounded-[22px]` with no ring.
           decoration: BoxDecoration(
             color: track,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: colors.primary.withValues(alpha: 0.1)),
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(22),

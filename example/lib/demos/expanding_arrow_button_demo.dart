@@ -52,7 +52,13 @@ class _ExpandingArrowButtonDemoState extends State<_ExpandingArrowButtonDemo> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // ── ExpandingArrowButtonPreview ────────────────────────────────
-          const BeuiExpandingArrowButton(child: Text('Book a demo')),
+          // The source preview renders an *enabled* button; leaving `onPressed`
+          // null here dimmed it to 50% (killing the lime accent) and disabled
+          // the hover expansion the component exists to show.
+          BeuiExpandingArrowButton(
+            onPressed: () {},
+            child: const Text('Book a demo'),
+          ),
           const SizedBox(height: 64),
 
           // ── HoldActionButtonPreview — `flex-col items-center gap-3` ────
