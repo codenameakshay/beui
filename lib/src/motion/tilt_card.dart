@@ -85,6 +85,21 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final glareColor = widget.glareColor ?? colors.foreground;
 
+    // Source glare: `radial-gradient(circle at gx% gy%, var(--foreground),
+    // transparent 50%)`. A CSS `circle` with no size keyword sizes to
+    // `farthest-corner` — the distance from the gradient's centre to the
+    // box corner furthest from it — and the `transparent` stop sits at half
+    // of that. Flutter states `RadialGradient.radius` as a fraction of the
+    // box's *shortest side*, so convert. Recomputed per frame because the
+    // farthest corner changes as the glare centre follows the cursor.
+    double glareRadius(Size size) {
+      final shortest = math.min(size.width, size.height);
+      if (shortest <= 0) return 0;
+      final fx = math.max(_gx, 1 - _gx) * size.width;
+      final fy = math.max(_gy, 1 - _gy) * size.height;
+      return 0.5 * math.sqrt(fx * fx + fy * fy) / shortest;
+    }
+
     final content = ClipRRect(
       key: _key,
       borderRadius: widget.borderRadius,
@@ -99,12 +114,14 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
                 // not faded in on hover, nor recentred on exit.
                 child: Opacity(
                   opacity: 0.15,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: RadialGradient(
-                        center: Alignment(_gx * 2 - 1, _gy * 2 - 1),
-                        radius: 0.7,
-                        colors: [glareColor, glareColor.withValues(alpha: 0)],
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: RadialGradient(
+                          center: Alignment(_gx * 2 - 1, _gy * 2 - 1),
+                          radius: glareRadius(constraints.biggest),
+                          colors: [glareColor, glareColor.withValues(alpha: 0)],
+                        ),
                       ),
                     ),
                   ),
