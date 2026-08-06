@@ -47,11 +47,14 @@ class _IslandDemoState extends State<_IslandDemo> {
     // The island paints on a light shell, so its content reads on `background`.
     final onShell = colors.background;
 
+    // `text-[10px] uppercase tracking-wider` — 0.05em of tracking on a 10px
+    // face, in the source's inherited 15px line box.
     Widget caption(String text) => Text(
       text,
       style: TextStyle(
         fontSize: 10,
-        letterSpacing: 0.8,
+        height: 1.5,
+        letterSpacing: 0.5,
         color: onShell.withValues(alpha: 0.6),
       ),
     );
@@ -92,19 +95,28 @@ class _IslandDemoState extends State<_IslandDemo> {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 16, // gap-4
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            caption('INCOMING CALL'),
-                            const Text(
-                              'Saurabh',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                        // The source's text block is a flex item, so it
+                        // shrinks to its min-content width and the label wraps
+                        // at the longest word ("INCOMING / CALL" on the site).
+                        // `Flexible` is how a Flutter Row child gets that same
+                        // shrink; without it the Row hands the column unbounded
+                        // main-axis space and the text never wraps.
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              caption('INCOMING CALL'),
+                              const Text(
+                                'Saurabh',
+                                style: TextStyle(
+                                  fontSize: 14, // text-sm — 20px line box
+                                  height: 20 / 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Row(
                           mainAxisSize: MainAxisSize.min,
@@ -166,26 +178,31 @@ class _IslandDemoState extends State<_IslandDemo> {
                           ),
                           child: const Icon(LucideIcons.music, size: 14),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Midnight City',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                height: 1.1,
+                        // Same flex-item shrink as the call view: the site
+                        // wraps this to "Midnight / City".
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                'Midnight City',
+                                style: TextStyle(
+                                  fontSize: 12, // text-xs
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.25, // leading-tight
+                                ),
                               ),
-                            ),
-                            Text(
-                              'M83',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: onShell.withValues(alpha: 0.6),
+                              Text(
+                                'M83',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  height: 1.5,
+                                  color: onShell.withValues(alpha: 0.6),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         _EqBars(color: colors.success),
                       ],

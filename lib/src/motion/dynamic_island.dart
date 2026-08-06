@@ -1,6 +1,7 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../theme/beui_colors.dart';
@@ -125,12 +126,14 @@ class _BeuiDynamicIslandState extends State<BeuiDynamicIsland> {
         child: active != null
             ? KeyedSubtree(
                 key: ValueKey('view-${active.id}'),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
-                  ), // px-6 py-4
-                  child: active.child,
+                child: _MinContentWidth(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ), // px-6 py-4
+                    child: active.child,
+                  ),
                 ),
               )
             : widget.compact != null
@@ -214,6 +217,61 @@ class _BeuiDynamicIslandState extends State<BeuiDynamicIsland> {
         child: sizer,
       ),
     );
+  }
+}
+
+/// Lays the child out at its **minimum** intrinsic width — CSS `min-content`.
+///
+/// The source's sizer is `w-max` (max-content) but it is also a flex item of
+/// the shell, and a flex item shrinks to its min-content width when the
+/// container is narrower. Because the shell's width is driven *from* the
+/// sizer's measured width, the two settle at a fixed point: the shell always
+/// comes to rest at the content's min-content width, whichever view it came
+/// from. That is what beui.dev renders — "INCOMING / CALL" and "Midnight /
+/// City" wrap at the longest word — so the port has to size the same way,
+/// not at Flutter's natural max-intrinsic width.
+class _MinContentWidth extends SingleChildRenderObjectWidget {
+  const _MinContentWidth({required Widget super.child});
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderMinContentWidth();
+}
+
+class _RenderMinContentWidth extends RenderProxyBox {
+  @override
+  double computeMinIntrinsicWidth(double height) =>
+      child?.getMinIntrinsicWidth(height) ?? 0;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) =>
+      child?.getMinIntrinsicWidth(height) ?? 0;
+
+  BoxConstraints _minContent(BoxConstraints constraints) {
+    final child = this.child;
+    if (child == null) return constraints;
+    final width = constraints.constrainWidth(
+      child.getMinIntrinsicWidth(double.infinity),
+    );
+    return constraints.tighten(width: width);
+  }
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final child = this.child;
+    if (child == null) return constraints.smallest;
+    return child.getDryLayout(_minContent(constraints));
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+    child.layout(_minContent(constraints), parentUsesSize: true);
+    size = child.size;
   }
 }
 
