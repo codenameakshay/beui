@@ -87,6 +87,15 @@ class BeuiDockItem {
 /// magnify around the correct centres.
 const double _separatorWidth = 9;
 
+/// Horizontal padding inside the bar — source `px-2`. Fixed, and deliberately
+/// independent of [BeuiDock.gap]: the source sets the two with separate
+/// utilities (`px-2` and `gap-1.5`), so changing the gap must not move the end
+/// items relative to the bar's edge.
+const double _barPaddingH = 8;
+
+/// Vertical padding inside the bar — source `py-1`.
+const double _barPaddingV = 4;
+
 /// A dock — the Flutter port of beUI's `dock`.
 ///
 /// **By default this is a one-to-one port of the React source**
@@ -239,9 +248,8 @@ class _BeuiDockState extends State<BeuiDock> {
     // neighbours); everything is gap-separated. Distance is measured from the
     // *resting* grid even while items magnify — the standard, stable macOS
     // approximation.
-    final padH = widget.gap + 2;
     final centers = <double>[];
-    var cursor = padH;
+    var cursor = _barPaddingH;
     for (final item in widget.items) {
       final w = item.isSeparator ? _separatorWidth : widget.size;
       centers.add(cursor + w / 2);
@@ -322,7 +330,10 @@ class _BeuiDockState extends State<BeuiDock> {
             // backdrop-blur-xl = 24px CSS blur → sigma 24/2 = 12.
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: padH, vertical: 4),
+              padding: const EdgeInsets.symmetric(
+                horizontal: _barPaddingH, // px-2
+                vertical: _barPaddingV, // py-1
+              ),
               decoration: BoxDecoration(
                 color: colors.card.withValues(alpha: 0.8), // bg-card/80
                 borderRadius: BorderRadius.circular(16), // rounded-2xl

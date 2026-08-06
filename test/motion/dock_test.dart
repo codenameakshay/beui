@@ -257,6 +257,43 @@ void main() {
       expect(tester.getSize(separatorLine()).height, 24.0);
     });
 
+    testWidgets('bar padding is a fixed px-2, independent of gap', (
+      tester,
+    ) async {
+      // Source sets `px-2` and `gap-1.5` with separate utilities, so a custom
+      // gap must not shift the end items relative to the bar's edge. Measured on
+      // beui.dev/components/motion/dock: 44px items, 6px gaps and 8px padding
+      // give a 377px bar, which is what the site renders.
+      Future<double> barWidth(double gap) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+            home: Scaffold(
+              body: Center(
+                child: BeuiDock(
+                  gap: gap,
+                  items: [
+                    BeuiDockItem(icon: LucideIcons.house, onTap: () {}),
+                    BeuiDockItem(icon: LucideIcons.mail, onTap: () {}),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        return tester.getSize(find.byType(BeuiDock)).width;
+      }
+
+      // Two 44px items + the gap + 2 x 8px padding + 2 x 1px border.
+      expect(await barWidth(6), moreOrLessEquals(112, epsilon: 0.5));
+      expect(
+        await barWidth(20),
+        moreOrLessEquals(126, epsilon: 0.5),
+        reason: 'a wider gap must widen only the gap, never the bar padding',
+      );
+    });
+
     testWidgets('is skipped by hover magnification while its neighbours grow', (
       tester,
     ) async {
