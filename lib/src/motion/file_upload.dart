@@ -329,21 +329,30 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
           colors: colors,
           onBrowse: widget.onBrowse,
         ),
-        for (final entry in _entries)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 0),
-            child: _Row(
-              key: ValueKey(entry.item.id),
-              item: entry.item,
-              exiting: entry.exiting,
-              reduce: reduce,
-              colors: colors,
-              onRemove: () => _remove(entry.item),
-              onRetry: () => _retry(entry.item),
-              onExited: () {
-                if (mounted) setState(() => _entries.remove(entry));
-              },
-            ),
+        // The queue is its own list: the source nests the rows in a
+        // `<ul className="space-y-2">` inside the root's `space-y-3`, so rows
+        // sit 8px apart while the dropzone keeps its 12px from the list. Kept
+        // out of the tree entirely when empty, or the root's spacing would add
+        // a 12px gap under the dropzone with nothing beneath it.
+        if (_entries.isNotEmpty)
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 8, // space-y-2
+            children: [
+              for (final entry in _entries)
+                _Row(
+                  key: ValueKey(entry.item.id),
+                  item: entry.item,
+                  exiting: entry.exiting,
+                  reduce: reduce,
+                  colors: colors,
+                  onRemove: () => _remove(entry.item),
+                  onRetry: () => _retry(entry.item),
+                  onExited: () {
+                    if (mounted) setState(() => _entries.remove(entry));
+                  },
+                ),
+            ],
           ),
       ],
     );
