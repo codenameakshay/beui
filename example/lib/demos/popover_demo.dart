@@ -42,8 +42,11 @@ class _PopoverDemo extends StatelessWidget {
       ],
     );
 
+    // Tailwind widths are border-box: the source's `w-72` panel is 288px
+    // *including* its own `p-4`. BeuiPopover adds that 16px padding around the
+    // child, so the child asks for 288 - 32.
     final dimensions = SizedBox(
-      width: 288, // w-72
+      width: 256, // w-72 (288) less the panel's p-4 gutters
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,7 +73,7 @@ class _PopoverDemo extends StatelessWidget {
     );
 
     final hoverNote = SizedBox(
-      width: 224, // w-56
+      width: 192, // w-56 (224) less the panel's p-4 gutters
       child: Text(
         'Opens on hover, with a grace window so you can move into the panel.',
         style: TextStyle(fontSize: 14, height: 1.45, color: colors.foreground),
