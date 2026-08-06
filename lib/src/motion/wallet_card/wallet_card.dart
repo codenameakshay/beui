@@ -222,7 +222,8 @@ class _BeuiWalletCardState extends State<BeuiWalletCard> {
                   Text(
                     'Balance',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12, // text-xs
+                      height: 16 / 12, // …/16
                       color: colors.mutedForeground,
                     ),
                   ),
@@ -234,19 +235,23 @@ class _BeuiWalletCardState extends State<BeuiWalletCard> {
                   ),
                 ],
               ),
-              const SizedBox(height: 2),
+              // No gap here: the source stacks the label row and the amount
+              // directly inside `flex flex-col items-center`.
               BeuiActionSwapText(
                 value: _balanceHidden ? 'hidden' : shown,
                 text: _balanceHidden ? masked : shown,
                 variant: BeuiActionSwapVariant.cascade,
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 30, // text-3xl
+                  height: 36 / 30, // …/36
                   fontWeight: FontWeight.w600,
                   color: colors.foreground,
                 ),
               ),
               if (_balanceHidden)
-                SizedBox(
+                Container(
+                  // `mt-2 flex h-7` — same row box as the delta it replaces.
+                  margin: const EdgeInsets.only(top: 8),
                   height: 28,
                   child: Center(
                     child: Text(
@@ -398,11 +403,7 @@ class _BellButtonState extends State<_BellButton>
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    Icon(
-                      LucideIcons.bell,
-                      size: 16,
-                      color: colors.foreground,
-                    ),
+                    Icon(LucideIcons.bell, size: 16, color: colors.foreground),
                     if (widget.hasNotifications)
                       Positioned(
                         top: -2,

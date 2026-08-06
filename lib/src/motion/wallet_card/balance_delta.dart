@@ -75,8 +75,10 @@ class _WalletBalanceDeltaState extends State<WalletBalanceDelta> {
     final up = (delta?.amount ?? 0) > 0;
     final tone = up ? colors.success : colors.destructive;
 
-    return SizedBox(
-      height: 28,
+    // Source row is `mt-2 flex h-7 items-center justify-center`.
+    return Container(
+      margin: const EdgeInsets.only(top: 8), // mt-2
+      height: 28, // h-7
       child: Center(
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
@@ -117,7 +119,9 @@ class _WalletBalanceDeltaState extends State<WalletBalanceDelta> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        up ? LucideIcons.trending_up : LucideIcons.trending_down,
+                        up
+                            ? LucideIcons.trending_up
+                            : LucideIcons.trending_down,
                         size: 14,
                         color: tone,
                       ),
@@ -125,7 +129,8 @@ class _WalletBalanceDeltaState extends State<WalletBalanceDelta> {
                       Text(
                         '${up ? '+' : '-'}\$${_formatMoney(delta.amount)}',
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 12, // text-xs
+                          height: 16 / 12, // …/16
                           fontWeight: FontWeight.w600,
                           color: tone,
                           fontFeatures: const [FontFeature.tabularFigures()],
