@@ -300,30 +300,48 @@ class _BeuiWheelPickerState extends State<BeuiWheelPicker> {
     // Cylinder geometry, reproduced from the source's `visibleCount` math:
     //   rowsEachSide = floor(visibleCount/2); cutoff = rowsEachSide + 1;
     //   itemAngle = 90/cutoff;  radius = itemHeight / tan(itemAngle);
-    //   height = 2·radius·sin(rowsEachSide·itemAngle) + itemHeight.
-    // ListWheelScrollView spans `2·asin(1/diameterRatio)` radians across its
-    // whole viewport (list_wheel_viewport.dart: angle = -(fracY-0.5)·2·
-    // maxVisibleRadian, maxVisibleRadian = asin(1/diameterRatio) for ratio≥1),
-    // so per-row angle = (itemHeight/height)·2·asin(1/diameterRatio). Solving
-    // that against the source's per-row `itemAngle` fixes diameterRatio — giving
-    // the identical drum curvature instead of the framework default.
+    //   height = round(2·radius·sin(rowsEachSide·itemAngle) + itemHeight).
+    //
+    // Both engines project a row seated on the drum to the same closed form,
+    //   Y(i) = R·sin(i·θ) / (1 + p·R·(1 − cos(i·θ))),
+    // the source via CSS `perspective: 1000px` + rotateX/translateZ, Flutter via
+    // `MatrixUtils.createCylindricalProjectionTransform`. So matching the render
+    // is exactly matching the triple (R, θ, p), and ListWheelScrollView exposes
+    // one knob for each:
+    //
+    //   R = viewportHeight·diameterRatio/2   → diameterRatio = 2·radius/height
+    //   θ = (itemHeight/height)·2·maxVisibleRadian/squeeze
+    //   p = perspective                      → 0.001, i.e. CSS's 1000px
+    //
+    // `maxVisibleRadian` is π/2 whenever diameterRatio < 1 (list_wheel_viewport
+    // .dart), and 2·radius < height holds for every visibleCount — the drum is
+    // always narrower than the box it sits in — so it is π/2 here by
+    // construction, and squeeze follows.
+    //
+    // Solving R through diameterRatio *alone* (no squeeze) is what a per-row
+    // angle match on its own gives you, and it is wrong: it forces
+    // R = height·diameterRatio/2 ≥ height/2 = 114.5 against the source's 101.4,
+    // spreading the rows ~26% too far apart and pushing the outermost pair past
+    // the box edge to be clipped mid-glyph.
     final rowsEachSide = math.max(1, widget.visibleCount ~/ 2);
     final cutoff = rowsEachSide + 1;
     final itemAngle = (math.pi / 2) / cutoff;
     final drumRadius = itemHeight / math.tan(itemAngle);
     final viewportHeight =
-        2 * drumRadius * math.sin(rowsEachSide * itemAngle) + itemHeight;
+        (2 * drumRadius * math.sin(rowsEachSide * itemAngle) + itemHeight)
+            .roundToDouble();
 
-    late final double diameterRatio;
+    final double diameterRatio;
+    final double squeeze;
     if (reduce) {
       // Flatten the drum: reduced motion drops the 3D rotation (the movement),
       // keeping a plain scrollable list. A large ratio makes every row's angle
       // ~0, so nothing rotates.
       diameterRatio = 100;
+      squeeze = 1;
     } else {
-      final targetAsin =
-          (itemAngle * viewportHeight / (2 * itemHeight)).clamp(0.0, math.pi / 2 - 0.01);
-      diameterRatio = 1 / math.sin(targetAsin);
+      diameterRatio = 2 * drumRadius / viewportHeight;
+      squeeze = (itemHeight / viewportHeight) * math.pi / itemAngle;
     }
 
     Widget row(int i) {
@@ -348,9 +366,17 @@ class _BeuiWheelPickerState extends State<BeuiWheelPicker> {
       controller: _controller,
       itemExtent: itemHeight,
       diameterRatio: diameterRatio,
-      // Dim rows off the centre so one crisp foreground row reads against the
-      // muted drum (source: crisp centre band over a muted-foreground drum).
-      overAndUnderCenterOpacity: reduce ? 0.45 : 0.35,
+      squeeze: squeeze,
+      // CSS `perspective: 1000px` → 1/1000. Flutter's own default is 0.003,
+      // which would over-foreshorten the outer rows against the source.
+      perspective: 0.001,
+      // The source dims off-centre rows *only* by colour — every drum row is
+      // `text-muted-foreground` and the crisp centre copy is `text-foreground`,
+      // which `row()` already reproduces. There is no per-row opacity ramp; the
+      // sole alpha falloff is the shared `maskFade` gradient below. Dimming here
+      // as well would multiply the two, and did: it put the off-centre rows at
+      // less than half the source's luminance.
+      overAndUnderCenterOpacity: 1,
       physics: enabled
           ? const FixedExtentScrollPhysics()
           : const NeverScrollableScrollPhysics(),
@@ -387,7 +413,8 @@ class _BeuiWheelPickerState extends State<BeuiWheelPicker> {
         IgnorePointer(
           child: Container(
             height: itemHeight,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
+            // Source: `absolute inset-x-0 … rounded-md` — the band runs the full
+            // width of the wheel, with no horizontal inset.
             decoration: BoxDecoration(
               color: highlight,
               borderRadius: BorderRadius.circular(6),
