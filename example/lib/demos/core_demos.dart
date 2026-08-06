@@ -180,7 +180,8 @@ class _SharedRowState extends State<_SharedRow> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14, // text-sm — 20px line box
+                    height: 20 / 14,
                     fontWeight: FontWeight.w500,
                     color: colors.foreground,
                   ),
@@ -197,10 +198,18 @@ class _SharedRowState extends State<_SharedRow> {
                 ),
               ],
             ),
-            const SizedBox(height: 4),
+            // Two stacked text-sm line boxes and `py-3` make the row 64px on
+            // beui.dev (12 + 20 + 20 + 12), which is what the hover pill
+            // measures there. Relying on Geist's natural ~19px line height
+            // plus a 4px spacer put the row at 68 and the title-to-body step
+            // at 23px instead of the site's 20.
             Text(
               widget.body,
-              style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+              style: TextStyle(
+                fontSize: 14,
+                height: 20 / 14,
+                color: colors.mutedForeground,
+              ),
             ),
           ],
         ),

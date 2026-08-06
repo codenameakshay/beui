@@ -121,19 +121,26 @@ class _BeuiSharedLayoutBgState extends State<BeuiSharedLayoutBg>
                 ),
               ),
             ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < widget.children.length; i++)
-                MouseRegion(
-                  onEnter: (_) => _hover(i),
-                  child: KeyedSubtree(
-                    key: _itemKeys[i],
-                    child: widget.children[i],
+          // A non-positioned Stack child is laid out with *loose* constraints,
+          // so without this the row column shrinks to its widest row's
+          // intrinsic width and the pill stops short of the trailing icon.
+          // The source's rows are block-level and fill the list, so do that.
+          SizedBox(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < widget.children.length; i++)
+                  MouseRegion(
+                    onEnter: (_) => _hover(i),
+                    child: KeyedSubtree(
+                      key: _itemKeys[i],
+                      child: widget.children[i],
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -186,7 +193,23 @@ class _Pill extends StatelessWidget {
           opacity: f,
           child: Transform.translate(
             offset: r.topLeft,
-            child: Align(alignment: Alignment.topLeft, child: box),
+            child: Align(
+              alignment: Alignment.topLeft,
+              // `Positioned.fill` hands the Align tight stack-sized
+              // constraints, which it passes down as a `maxWidth` — so without
+              // this the pill was silently clamped to the list width and the
+              // `inset` only ever moved it left instead of widening it. The
+              // source's pill is `absolute` with `left:-inset; right:-inset`,
+              // i.e. deliberately wider than the row on both sides.
+              child: OverflowBox(
+                alignment: Alignment.topLeft,
+                minWidth: 0,
+                maxWidth: double.infinity,
+                minHeight: 0,
+                maxHeight: double.infinity,
+                child: box,
+              ),
+            ),
           ),
         );
       },

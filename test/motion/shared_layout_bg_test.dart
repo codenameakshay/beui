@@ -54,6 +54,28 @@ void main() {
     expect(yMid, lessThan(y3)); // gliding, not snapping
   });
 
+  // The source's pill is `absolute` with `left:-inset; right:-inset`, so it is
+  // deliberately wider than the row on both sides (default inset 20). The
+  // stack hands the pill tight, list-sized constraints, so it has to be let
+  // out of them explicitly or the inset only shifts it instead of widening it.
+  testWidgets('pill overhangs each row by `inset` on both sides', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    final g = await _mouse(tester);
+    await g.moveTo(tester.getCenter(find.text('Item 0')));
+    await tester.pumpAndSettle();
+
+    final list = tester.getRect(find.byType(BeuiSharedLayoutBg));
+    final pill = tester.getRect(find.byKey(_pill));
+    expect(list.width, 300);
+    expect(pill.left, moreOrLessEquals(list.left - 20, epsilon: 0.5));
+    expect(pill.right, moreOrLessEquals(list.right + 20, epsilon: 0.5));
+    expect(pill.width, moreOrLessEquals(340, epsilon: 0.5));
+    // Vertically it is `inset-y-0`: exactly the row, no overhang.
+    expect(pill.height, moreOrLessEquals(56, epsilon: 0.5));
+  });
+
   testWidgets('pill fades out when the pointer leaves the list', (
     tester,
   ) async {
