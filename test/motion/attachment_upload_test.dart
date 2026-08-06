@@ -145,7 +145,9 @@ void main() {
       expect(find.text('0:12'), findsOneWidget);
       expect(find.text('0:48'), findsOneWidget);
       expect(find.text('launch-note.m4a'), findsNothing);
-      expect(find.byIcon(LucideIcons.play), findsOneWidget);
+      // The mark is painted, not an icon-font glyph (the source fills it), so
+      // the toggle's state reads off its semantics label as the source's does.
+      expect(find.bySemanticsLabel('Play launch-note.m4a'), findsOneWidget);
     });
 
     testWidgets('a failed row without onRetry is a static alert', (
@@ -490,8 +492,8 @@ void main() {
 
       await tester.pumpWidget(app(null));
       await tester.pump(const Duration(milliseconds: 400));
-      expect(find.byIcon(LucideIcons.play), findsOneWidget);
-      expect(find.byIcon(LucideIcons.pause), findsNothing);
+      expect(find.bySemanticsLabel('Play launch-note.m4a'), findsOneWidget);
+      expect(find.bySemanticsLabel('Pause launch-note.m4a'), findsNothing);
 
       await tester.tap(find.bySemanticsLabel('Play launch-note.m4a'));
       await tester.pump();
@@ -499,8 +501,8 @@ void main() {
 
       await tester.pumpWidget(app('voice-note'));
       await tester.pump(const Duration(milliseconds: 400));
-      expect(find.byIcon(LucideIcons.pause), findsOneWidget);
       expect(find.bySemanticsLabel('Pause launch-note.m4a'), findsOneWidget);
+      expect(find.bySemanticsLabel('Play launch-note.m4a'), findsNothing);
 
       // Stop the waveform's repeating pulse before the test ends.
       await tester.pumpWidget(app(null));

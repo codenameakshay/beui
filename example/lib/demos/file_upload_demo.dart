@@ -35,8 +35,6 @@ class _FileUploadDemo extends StatelessWidget {
 // Attachment workspace
 // ---------------------------------------------------------------------------
 
-const _maxAttachmentSize = 20 * 1024 * 1024;
-
 class _AttachmentUploadSection extends StatefulWidget {
   const _AttachmentUploadSection();
 
@@ -49,6 +47,10 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
   final _controller = BeuiAttachmentUploadController();
   final _timers = <Timer>{};
 
+  // Source `AttachmentUploadPreview.INITIAL_ITEMS`, verbatim: a failed file, an
+  // image and an audio note. The image's artwork is the one thing that cannot
+  // carry over — the source points `previewUrl` at Unsplash and the package
+  // fetches nothing — so `_buildPreview` paints a stand-in bitmap for it.
   List<BeuiAttachmentUploadItem> _items = const [
     BeuiAttachmentUploadItem(
       id: 'brief',
@@ -58,10 +60,10 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
       error: 'Upload failed',
     ),
     BeuiAttachmentUploadItem(
-      id: 'docs',
-      name: 'beui.dev/blocks',
-      kind: BeuiAttachmentKind.link,
-      href: 'https://beui.dev/components/blocks/file-upload',
+      id: 'flowers',
+      name: 'orange-flowers.jpg',
+      kind: BeuiAttachmentKind.image,
+      size: 9800000,
     ),
     BeuiAttachmentUploadItem(
       id: 'voice-note',
@@ -72,7 +74,6 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
     ),
   ];
 
-  ImageProvider? _preview;
   String? _playingId;
   String? _notice;
   Timer? _playback;
@@ -135,17 +136,11 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
     if (bytes == null || !mounted) return;
     final provider = MemoryImage(bytes.buffer.asUint8List());
     setState(() {
-      _preview = provider;
       _items = [
-        _items.first,
-        BeuiAttachmentUploadItem(
-          id: 'mood-board',
-          name: 'mood-board.png',
-          kind: BeuiAttachmentKind.image,
-          size: 4800000,
-          preview: provider,
-        ),
-        ..._items.skip(1),
+        for (final item in _items)
+          item.kind == BeuiAttachmentKind.image && item.preview == null
+              ? item.copyWith(preview: provider)
+              : item,
       ];
     });
   }
@@ -156,12 +151,14 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
       name: 'spec-outline.pdf',
       size: 1240000,
     ),
-    BeuiAttachmentUploadItem(
+    // The link kind is not in the source preview's rest state, so the gallery
+    // reaches it through Browse rather than by seeding a row the site does not
+    // show.
+    const BeuiAttachmentUploadItem(
       id: '',
-      name: 'orange-flowers.png',
-      kind: BeuiAttachmentKind.image,
-      size: 2100000,
-      preview: _preview,
+      name: 'beui.dev/blocks',
+      kind: BeuiAttachmentKind.link,
+      href: 'https://beui.dev/components/blocks/file-upload',
     ),
     const BeuiAttachmentUploadItem(
       id: '',
@@ -171,13 +168,13 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
       currentTime: Duration.zero,
       duration: Duration(seconds: 36),
     ),
-    // Deliberately over maxFileSize, so browsing four times shows the
-    // too-large rejection path.
+    // Deliberately over the component's 500 MB default, so browsing four times
+    // shows the too-large rejection path.
     const BeuiAttachmentUploadItem(
       id: '',
       name: 'teaser-cut.mov',
       kind: BeuiAttachmentKind.file,
-      size: 84200000,
+      size: 842000000,
     ),
   ];
 
@@ -263,54 +260,65 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        BeuiAttachmentUpload(
-          controller: _controller,
-          value: _items,
-          onValueChange: (next) => setState(() => _items = next),
-          onBrowse: _browse,
-          maxFiles: 8,
-          maxFileSize: _maxAttachmentSize,
-          attachmentsLabel: 'Attachments:',
-          playingId: _playingId,
-          onAudioToggle: _toggleAudio,
-          onRetry: _retry,
-          onOpenLink: (item) => _notify('Would open ${item.href}'),
-          onAttachmentsRejected: (rejected, reason) {
-            final names = rejected.map((item) => item.name).join(', ');
-            _notify(switch (reason) {
-              BeuiAttachmentRejectReason.tooLarge =>
-                '$names is over the 20 MB limit',
-              BeuiAttachmentRejectReason.maxFiles =>
-                '$names turned away — attachment limit reached',
-            });
-          },
+    // Source preview wrapper: `w-full max-w-2xl px-3 py-6 sm:px-6`. Without it
+    // the workspace runs the full width of the stage instead of the 624px the
+    // site gives it.
+    return Align(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 672),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: _body(colors),
         ),
-        if (_notice != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 12),
-            child: Row(
-              spacing: 8,
-              children: [
-                Icon(
-                  LucideIcons.circle_alert,
-                  size: 14,
-                  color: colors.destructive,
-                ),
-                Expanded(
-                  child: Text(
-                    _notice!,
-                    style: TextStyle(fontSize: 12, color: colors.destructive),
-                  ),
-                ),
-              ],
-            ),
-          ),
-      ],
+      ),
     );
   }
+
+  Widget _body(BeuiColors colors) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      BeuiAttachmentUpload(
+        controller: _controller,
+        value: _items,
+        onValueChange: (next) => setState(() => _items = next),
+        onBrowse: _browse,
+        attachmentsLabel: 'Attachments:',
+        playingId: _playingId,
+        onAudioToggle: _toggleAudio,
+        onRetry: _retry,
+        onOpenLink: (item) => _notify('Would open ${item.href}'),
+        onAttachmentsRejected: (rejected, reason) {
+          final names = rejected.map((item) => item.name).join(', ');
+          _notify(switch (reason) {
+            BeuiAttachmentRejectReason.tooLarge =>
+              '$names is over the 500 MB limit',
+            BeuiAttachmentRejectReason.maxFiles =>
+              '$names turned away — attachment limit reached',
+          });
+        },
+      ),
+      if (_notice != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 12),
+          child: Row(
+            spacing: 8,
+            children: [
+              Icon(
+                LucideIcons.circle_alert,
+                size: 14,
+                color: colors.destructive,
+              ),
+              Expanded(
+                child: Text(
+                  _notice!,
+                  style: TextStyle(fontSize: 12, color: colors.destructive),
+                ),
+              ),
+            ],
+          ),
+        ),
+    ],
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -420,122 +428,129 @@ class _UploadQueueSectionState extends State<_UploadQueueSection> {
         .length;
     final centered = _variant == BeuiFileUploadVariant.centered;
 
-    return ConstrainedBox(
-      // `min-h-[30rem] items-center justify-center` around a `max-w-md` shell.
-      constraints: const BoxConstraints(minHeight: 480, maxWidth: 448),
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(12), // p-3
-          decoration: BoxDecoration(
-            color: colors.background,
-            border: Border.all(color: colors.border),
-            borderRadius: BorderRadius.circular(32), // rounded-[2rem]
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), // px-1 mb-3
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+    // Align first: the stage hands down a tight full-stage width, which a bare
+    // ConstrainedBox would enforce straight past `maxWidth` and leave the shell
+    // full-bleed instead of the source's centred `max-w-md`.
+    return Align(
+      child: ConstrainedBox(
+        // `min-h-[30rem] items-center justify-center` around a `max-w-md` shell.
+        constraints: const BoxConstraints(minHeight: 480, maxWidth: 448),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(12), // p-3
+            decoration: BoxDecoration(
+              color: colors.background,
+              border: Border.all(color: colors.border),
+              borderRadius: BorderRadius.circular(32), // rounded-[2rem]
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 0, 4, 12), // px-1 mb-3
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Upload package',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: colors.foreground,
+                              ),
+                            ),
+                            Text(
+                              '$ready of ${_items.length} files ready',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: colors.mutedForeground,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
                         mainAxisSize: MainAxisSize.min,
+                        spacing: 6, // gap-1.5
                         children: [
-                          Text(
-                            'Upload package',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: colors.foreground,
+                          Container(
+                            padding: const EdgeInsets.all(4), // p-1
+                            decoration: BoxDecoration(
+                              color: colors.muted,
+                              border: Border.all(color: colors.border),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _VariantChip(
+                                  label: 'Centered',
+                                  selected: centered,
+                                  colors: colors,
+                                  onPressed: () => setState(
+                                    () => _variant =
+                                        BeuiFileUploadVariant.centered,
+                                  ),
+                                ),
+                                _VariantChip(
+                                  label: 'Row',
+                                  selected: !centered,
+                                  colors: colors,
+                                  onPressed: () => setState(
+                                    () => _variant =
+                                        BeuiFileUploadVariant.standard,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Text(
-                            '$ready of ${_items.length} files ready',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: colors.mutedForeground,
+                          Semantics(
+                            button: true,
+                            label: 'Reset upload queue',
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: _reset,
+                                child: Container(
+                                  width: 36,
+                                  height: 36, // h-9 w-9
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: colors.border),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    LucideIcons.rotate_ccw,
+                                    size: 14,
+                                    color: colors.mutedForeground,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 6, // gap-1.5
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(4), // p-1
-                          decoration: BoxDecoration(
-                            color: colors.muted,
-                            border: Border.all(color: colors.border),
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _VariantChip(
-                                label: 'Centered',
-                                selected: centered,
-                                colors: colors,
-                                onPressed: () => setState(
-                                  () =>
-                                      _variant = BeuiFileUploadVariant.centered,
-                                ),
-                              ),
-                              _VariantChip(
-                                label: 'Row',
-                                selected: !centered,
-                                colors: colors,
-                                onPressed: () => setState(
-                                  () =>
-                                      _variant = BeuiFileUploadVariant.standard,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Semantics(
-                          button: true,
-                          label: 'Reset upload queue',
-                          child: MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: _reset,
-                              child: Container(
-                                width: 36,
-                                height: 36, // h-9 w-9
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: colors.border),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  LucideIcons.rotate_ccw,
-                                  size: 14,
-                                  color: colors.mutedForeground,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              BeuiFileUpload(
-                value: _items,
-                variant: _variant,
-                maxFiles: 5,
-                title: centered ? 'Drop files to upload' : 'Drop release files',
-                description: 'PDF, images, video or zipped assets',
-                onValueChange: (next) => setState(() => _items = next),
-                onRetry: (item) => _start(item.id),
-                onRemove: (item) => _stop(item.id),
-              ),
-            ],
+                BeuiFileUpload(
+                  value: _items,
+                  variant: _variant,
+                  maxFiles: 5,
+                  title: centered
+                      ? 'Drop files to upload'
+                      : 'Drop release files',
+                  description: 'PDF, images, video or zipped assets',
+                  onValueChange: (next) => setState(() => _items = next),
+                  onRetry: (item) => _start(item.id),
+                  onRemove: (item) => _stop(item.id),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1566,6 +1566,64 @@ class _WaveformState extends State<_Waveform>
 
 /// Audio play/pause toggle — glyph swaps with a 0.2s EASE_OUT scale/fade,
 /// press dips to 0.94 on SPRING_PRESS.
+/// The play/pause mark inside the audio row's toggle.
+///
+/// The source renders `<Play className="size-4 translate-x-px fill-current" />`
+/// and `<Pause className="size-4 fill-current" />` — Lucide glyphs with their
+/// interiors *filled*. An [Icon] can only draw the icon font's stroked outline,
+/// which reads as a hollow triangle against the white disc, so the two marks are
+/// painted here instead (spec §3: a source mark with no icon-font equivalent
+/// ports to [CustomPaint], never to a bundled asset).
+class _PlayGlyphPainter extends CustomPainter {
+  const _PlayGlyphPainter({required this.playing, required this.color});
+
+  final bool playing;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Lucide authors both glyphs in a 24-unit box and strokes them 2 units wide
+    // with round joins; filling *and* stroking the same path is what
+    // `fill-current` renders.
+    final s = size.width / 24;
+    // `translate-x-px` nudges the triangle right so it reads centred in the
+    // disc; the pause bars are already symmetric and take no offset.
+    final dx = playing ? 0.0 : 1.0;
+    final path = Path();
+    if (playing) {
+      for (final x in const [6.0, 14.0]) {
+        path.addRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(x * s, 4 * s, 4 * s, 16 * s),
+            Radius.circular(s),
+          ),
+        );
+      }
+    } else {
+      path
+        ..moveTo(6 * s + dx, 3 * s)
+        ..lineTo(20 * s + dx, 12 * s)
+        ..lineTo(6 * s + dx, 21 * s)
+        ..close();
+    }
+    canvas
+      ..drawPath(path, Paint()..color = color)
+      ..drawPath(
+        path,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2 * s
+          ..strokeJoin = StrokeJoin.round
+          ..strokeCap = StrokeCap.round,
+      );
+  }
+
+  @override
+  bool shouldRepaint(_PlayGlyphPainter old) =>
+      old.playing != playing || old.color != color;
+}
+
 class _PlayToggle extends StatefulWidget {
   const _PlayToggle({
     required this.playing,
@@ -1613,11 +1671,16 @@ class _PlayToggleState extends State<_PlayToggle> {
             child: fade,
           );
         },
-        child: Icon(
-          widget.playing ? LucideIcons.pause : LucideIcons.play,
+        child: SizedBox(
           key: ValueKey(widget.playing),
-          size: 16,
-          color: colors.background,
+          width: 16, // size-4
+          height: 16,
+          child: CustomPaint(
+            painter: _PlayGlyphPainter(
+              playing: widget.playing,
+              color: colors.background,
+            ),
+          ),
         ),
       ),
     );
