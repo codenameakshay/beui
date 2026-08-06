@@ -1193,29 +1193,19 @@ class _GithubMarkPainter extends CustomPainter {
   bool shouldRepaint(_GithubMarkPainter old) => old.color != color;
 }
 
-/// The action-swap showcase — replicates beui.dev/components/motion/action-swap:
-/// a hero that auto-alternates a blur button ⇄ a roll button, then a row of
-/// text / icon-only / CTA buttons per variant (blur, roll, cascade). Tap any
-/// button to swap its content.
-class _ActionSwapDemo extends StatefulWidget {
+/// The action-swap showcase — replicates beui.dev/components/motion/action-swap,
+/// which ships three preview sections in the page's own order: `Cascade`
+/// (`action-swap-cascade.tsx`), `Blur` (`action-swap-blur.tsx`) and `Roll`
+/// (`action-swap-roll.tsx`). The page has no hero preview above them.
+///
+/// Cascade is a single centred primary CTA; Blur and Roll are a centred
+/// `gap-4` group of a text pill, an icon-only toggle and a primary CTA. Tap any
+/// button to swap its content. The captions stand in for the site's per-section
+/// headings.
+class _ActionSwapDemo extends StatelessWidget {
   const _ActionSwapDemo();
 
-  @override
-  State<_ActionSwapDemo> createState() => _ActionSwapDemoState();
-}
-
-class _ActionSwapDemoState extends State<_ActionSwapDemo> {
-  // Hero (the /action-swap page preview): blur ⇄ roll button every 2.6s.
-  static const _heroBlur = [
-    BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
-    BeuiActionSwapItem(id: 'copied', label: 'Copied', icon: LucideIcons.check),
-  ];
-  static const _heroRoll = [
-    BeuiActionSwapItem(id: 'send', label: 'Send', icon: LucideIcons.send),
-    BeuiActionSwapItem(id: 'sent', label: 'Sent', icon: LucideIcons.sparkles),
-  ];
-
-  // Per-variant rows (from the variant preview pages).
+  // Per-section rows, matching each preview on the page.
   static const _theme = [
     BeuiActionSwapItem(
       id: 'light',
@@ -1254,28 +1244,6 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
       icon: LucideIcons.sparkles,
     ),
   ];
-  static const _cascadeCta = [
-    BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
-    BeuiActionSwapItem(id: 'copied', label: 'Copied!', icon: LucideIcons.check),
-  ];
-
-  bool _heroIsRoll = false;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(milliseconds: 2600), (_) {
-      if (mounted) setState(() => _heroIsRoll = !_heroIsRoll);
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
@@ -1292,11 +1260,14 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
       ),
     );
 
+    // The Blur / Roll previews: `flex items-center justify-center gap-3`
+    // (12px — measured off the live previews, not guessed).
     Widget row(
       BeuiActionSwapVariant anim,
       List<BeuiActionSwapItem> text,
       List<BeuiActionSwapItem> cta,
     ) => Wrap(
+      alignment: WrapAlignment.center,
       spacing: 12,
       runSpacing: 12,
       crossAxisAlignment: WrapCrossAlignment.center,
@@ -1322,57 +1293,28 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
     );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        caption('Tap to swap — the preview auto-alternates blur ⇄ roll'),
-        SizedBox(
-          height: 44,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 220),
-              switchInCurve: beuiEaseOut,
-              switchOutCurve: beuiEaseOut,
-              transitionBuilder: (child, anim) => FadeTransition(
-                opacity: anim,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 0.12),
-                    end: Offset.zero,
-                  ).animate(anim),
-                  child: child,
-                ),
-              ),
-              child: _heroIsRoll
-                  ? const BeuiActionSwapButton(
-                      key: ValueKey('roll'),
-                      items: _heroRoll,
-                      animation: BeuiActionSwapVariant.roll,
-                      variant: BeuiButtonVariant.primary,
-                    )
-                  : const BeuiActionSwapButton(
-                      key: ValueKey('blur'),
-                      items: _heroBlur,
-                      animation: BeuiActionSwapVariant.blur,
-                      variant: BeuiButtonVariant.secondary,
-                    ),
-            ),
+        // Section 1 — Cascade: a single centred primary CTA.
+        caption('Cascade — letter-by-letter slot roll'),
+        const Center(
+          child: BeuiActionSwapButton(
+            items: _blurCta,
+            animation: BeuiActionSwapVariant.cascade,
+            variant: BeuiButtonVariant.primary,
           ),
         ),
         const SizedBox(height: 40),
-        caption('Blur — blurred cross-fade'),
+
+        // Section 2 — Blur.
+        caption('Blur — swap with blur, opacity and scale'),
         row(BeuiActionSwapVariant.blur, _blurText, _blurCta),
-        const SizedBox(height: 28),
-        caption('Roll — old rolls out the top, new rolls up from below'),
+        const SizedBox(height: 40),
+
+        // Section 3 — Roll.
+        caption('Roll — the next text or icon rolls in from below'),
         row(BeuiActionSwapVariant.roll, _rollText, _rollCta),
-        const SizedBox(height: 28),
-        caption('Cascade — per-letter slot roll'),
-        const BeuiActionSwapButton(
-          items: _cascadeCta,
-          animation: BeuiActionSwapVariant.cascade,
-          variant: BeuiButtonVariant.primary,
-        ),
       ],
     );
   }
