@@ -739,7 +739,15 @@ class _TooltipTrigger extends StatelessWidget {
   }
 }
 
-/// Exercises button variants, sizes, the stateful lifecycle, and magnetic pull.
+/// The button showcase — the three preview sections
+/// beui.dev/components/motion/button ships, in the page's own order:
+/// `Button` (`base.tsx`), `Stateful Button` (`stateful.tsx`) and
+/// `Magnetic Button` (`magnetic.tsx`). Every preview on that page is centred;
+/// the captions stand in for the site's per-section headings.
+///
+/// Measured off the live previews: base is three centred rows at `gap-3` (12px)
+/// with `gap-6` (24px) between rows; stateful stacks its two buttons in a
+/// centred column at `gap-3`; magnetic is one centred row at `gap-4` (16px).
 class _ButtonDemo extends StatefulWidget {
   const _ButtonDemo();
 
@@ -760,11 +768,28 @@ class _ButtonDemoState extends State<_ButtonDemo> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    Widget caption(String text) => Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.3,
+          color: colors.mutedForeground,
+        ),
+      ),
+    );
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Section 1 — Button (base.tsx).
+        caption('Button — press scale, hover lift, variants and sizes'),
         Wrap(
+          alignment: WrapAlignment.center,
           spacing: 12,
           runSpacing: 12,
           children: [
@@ -792,8 +817,9 @@ class _ButtonDemoState extends State<_ButtonDemo> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 24), // gap-6
         Wrap(
+          alignment: WrapAlignment.center,
           spacing: 12,
           runSpacing: 12,
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -821,8 +847,9 @@ class _ButtonDemoState extends State<_ButtonDemo> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 24), // gap-6
         Wrap(
+          alignment: WrapAlignment.center,
           spacing: 12,
           runSpacing: 12,
           children: [
@@ -839,11 +866,13 @@ class _ButtonDemoState extends State<_ButtonDemo> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        const SizedBox(height: 40),
+
+        // Section 2 — Stateful Button (stateful.tsx): a centred *column*, not
+        // a row.
+        caption('Stateful — idle → loading → success, morphing width'),
+        Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             BeuiStatefulButton(
               label: 'Save changes',
@@ -851,6 +880,7 @@ class _ButtonDemoState extends State<_ButtonDemo> {
               state: _state,
               onPressed: _runLifecycle,
             ),
+            const SizedBox(height: 12), // gap-3
             BeuiButton(
               variant: BeuiButtonVariant.outline,
               onPressed: () {},
@@ -858,10 +888,15 @@ class _ButtonDemoState extends State<_ButtonDemo> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 40),
+
+        // Section 3 — Magnetic Button (magnetic.tsx): one centred row at
+        // `gap-4`, wider than the base preview's `gap-3`.
+        caption('Magnetic — the button leans toward the cursor'),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          alignment: WrapAlignment.center,
+          spacing: 16,
+          runSpacing: 16,
           children: [
             BeuiMagneticButton(
               onPressed: () {},
