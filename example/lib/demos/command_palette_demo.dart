@@ -97,18 +97,21 @@ class _TriggerPill extends StatelessWidget {
       child: Container(
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: colors.card,
           border: Border.all(color: colors.border),
           borderRadius: BorderRadius.circular(999),
         ),
-        child: Text(
-          'Open command palette',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: colors.foreground,
+        // `inline-flex` — the pill hugs its label instead of filling the row.
+        child: Center(
+          widthFactor: 1,
+          child: Text(
+            'Open command palette',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: colors.foreground,
+            ),
           ),
         ),
       ),
@@ -121,8 +124,8 @@ class _HintLine extends StatelessWidget {
 
   final BeuiColors colors;
 
-  Widget _kbd(String label) => Container(
-    margin: const EdgeInsets.symmetric(horizontal: 4),
+  Widget _kbd(String label, {double trailing = 4}) => Container(
+    margin: EdgeInsets.only(left: 4, right: trailing),
     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
     decoration: BoxDecoration(
       color: colors.card,
@@ -144,7 +147,8 @@ class _HintLine extends StatelessWidget {
         const Text('Press'),
         _kbd('⌘ J'),
         const Text('(or'),
-        _kbd('Ctrl J'),
+        // Source: `<kbd>Ctrl J</kbd>) to open.` — no space before the paren.
+        _kbd('Ctrl J', trailing: 0),
         const Text(') to open.'),
       ],
     ),
