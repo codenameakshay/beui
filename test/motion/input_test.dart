@@ -43,10 +43,34 @@ void main() {
   });
 
   group('BeuiInput states', () {
+    // Regression: `ring-2` is an *outset* ring. Expressing it as a BoxShadow on
+    // a fill-less BoxDecoration floods the field's interior with the ring
+    // colour, because there is no fill to occlude the shadow's rounded rect.
+    testWidgets('focus ring is an outset stroke, never a fill', (tester) async {
+      await tester.pumpWidget(_app(const BeuiInput(error: 'Bad value')));
+      await tester.pumpAndSettle();
+
+      final decorated = tester
+          .widgetList<Container>(find.byType(Container))
+          .map((c) => c.decoration)
+          .whereType<BoxDecoration>();
+      expect(decorated, isNotEmpty);
+      for (final d in decorated) {
+        // No filled shadow, and no background fill: the field is transparent.
+        expect(d.boxShadow, anyOf(isNull, isEmpty));
+        expect(d.color, anyOf(isNull, const Color(0x00000000)));
+      }
+      // The ring itself is a 2px border laid out-of-flow, so it costs no space.
+      final ring = tester
+          .widgetList<Container>(find.byType(Container))
+          .map((c) => c.decoration)
+          .whereType<BoxDecoration>()
+          .where((d) => d.border?.top.width == 2);
+      expect(ring, hasLength(1));
+    });
+
     testWidgets('string error renders an alert message', (tester) async {
-      await tester.pumpWidget(
-        _app(const BeuiInput(error: 'Bad value')),
-      );
+      await tester.pumpWidget(_app(const BeuiInput(error: 'Bad value')));
       await tester.pumpAndSettle();
       expect(find.text('Bad value'), findsOneWidget);
     });
@@ -113,11 +137,23 @@ void main() {
                 children: [
                   BeuiInput(label: 'Idle', defaultValue: 'Hello'),
                   SizedBox(height: 12),
-                  BeuiInput(label: 'Success', defaultValue: 'Taken', success: true),
+                  BeuiInput(
+                    label: 'Success',
+                    defaultValue: 'Taken',
+                    success: true,
+                  ),
                   SizedBox(height: 12),
-                  BeuiInput(label: 'Error', defaultValue: 'x', error: 'Invalid'),
+                  BeuiInput(
+                    label: 'Error',
+                    defaultValue: 'x',
+                    error: 'Invalid',
+                  ),
                   SizedBox(height: 12),
-                  BeuiInput(label: 'Disabled', defaultValue: 'Off', enabled: false),
+                  BeuiInput(
+                    label: 'Disabled',
+                    defaultValue: 'Off',
+                    enabled: false,
+                  ),
                 ],
               ),
             ),

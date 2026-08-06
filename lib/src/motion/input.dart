@@ -253,7 +253,9 @@ class _BeuiInputState extends State<BeuiInput>
     } else if (_focused) {
       borderColor =
           s?.focusedBorderColor ?? colors.foreground.withValues(alpha: 0.4);
-      ringColor = colors.ring.withValues(alpha: 0.4);
+      // `ring-ring/40` scales the ring token's *own* alpha by 40% — it does not
+      // replace it. The dark token is white@10%, so the ring lands at white@4%.
+      ringColor = colors.ring.withValues(alpha: colors.ring.a * 0.4);
     } else {
       borderColor = s?.borderColor ?? colors.border;
       ringColor = null;
@@ -272,11 +274,6 @@ class _BeuiInputState extends State<BeuiInput>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(color: borderColor),
-        // ring-2 → a 2px outer glow via a spread shadow, ramped by the same
-        // AnimatedContainer clock.
-        boxShadow: ringColor != null
-            ? [BoxShadow(color: ringColor, spreadRadius: 2)]
-            : null,
       ),
       child: Row(
         children: [
@@ -328,6 +325,39 @@ class _BeuiInputState extends State<BeuiInput>
             ),
         ],
       ),
+    );
+
+    // `ring-2` is a CSS *outset* ring: a 2px band sitting immediately outside
+    // the border box, never over the field's interior. A Flutter BoxShadow
+    // cannot express that — it paints the whole rounded rect behind the box,
+    // and because this decoration has no fill there is nothing to occlude the
+    // middle, so the field would flood with the ring colour on focus. Draw the
+    // ring as its own stroked rounded rect, inflated 2px and laid out-of-flow
+    // so it costs no space (as `ring` does in CSS).
+    field = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        field,
+        Positioned(
+          left: -2,
+          top: -2,
+          right: -2,
+          bottom: -2,
+          child: IgnorePointer(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.ease,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(radius + 2),
+                border: Border.all(
+                  color: ringColor ?? const Color(0x00000000),
+                  width: 2,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
 
     // Keyframed shake on error appearance: x: [0,-6,6,-4,4,-2,0] over 450ms.
