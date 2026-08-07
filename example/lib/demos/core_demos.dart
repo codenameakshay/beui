@@ -135,15 +135,21 @@ Widget sharedLayoutDemo(BuildContext context) {
   ];
   // Mirrors SharedLayoutBgPreview: `w-full max-w-lg px-2` (512px cap, 8px
   // horizontal padding) around the row list.
-  return SizedBox(
-    width: 512,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: BeuiSharedLayoutBg(
-        children: [
-          for (final (title, body) in items)
-            _SharedRow(title: title, body: body),
-        ],
+  //
+  // Align first: SizedBox enforces its width against the incoming constraints,
+  // so under a tight full-stage width it is widened past 512 rather than
+  // capped. Align loosens, and is a no-op when the parent is already loose.
+  return Align(
+    child: SizedBox(
+      width: 512,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: BeuiSharedLayoutBg(
+          children: [
+            for (final (title, body) in items)
+              _SharedRow(title: title, body: body),
+          ],
+        ),
       ),
     ),
   );
@@ -968,71 +974,76 @@ class _TabsDemoState extends State<_TabsDemo> {
     );
 
     // Outer `flex w-full max-w-md flex-col gap-8` (448px wide, 32px gaps).
-    // SizedBox degrades to the parent's width when it is narrower, which is
-    // exactly what `w-full max-w-md` means.
-    return SizedBox(
-      width: 448,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _tabsSection(
-            colors,
-            'Pill',
-            BeuiTabs<String>(
-              variant: BeuiTabsVariant.pill,
-              value: _pill,
-              onChanged: (v) => setState(() => _pill = v),
-              tabs: [
-                BeuiTab(
-                  value: 'overview',
-                  label: const Text('Overview'),
-                  content: Text('High-level summary.', style: body),
-                ),
-                BeuiTab(
-                  value: 'activity',
-                  label: const Text('Activity'),
-                  content: Text('Recent events.', style: body),
-                ),
-                BeuiTab(
-                  value: 'settings',
-                  label: const Text('Settings'),
-                  content: Text('Preferences.', style: body),
-                ),
-              ],
+    //
+    // Align first: SizedBox narrows to the parent only when the incoming
+    // constraints are loose. Under a tight full-stage width it enforces the
+    // other way and is widened past 448, which is not what `max-w-md` means.
+    // Align loosens; it is a no-op when the parent is already loose.
+    return Align(
+      child: SizedBox(
+        width: 448,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _tabsSection(
+              colors,
+              'Pill',
+              BeuiTabs<String>(
+                variant: BeuiTabsVariant.pill,
+                value: _pill,
+                onChanged: (v) => setState(() => _pill = v),
+                tabs: [
+                  BeuiTab(
+                    value: 'overview',
+                    label: const Text('Overview'),
+                    content: Text('High-level summary.', style: body),
+                  ),
+                  BeuiTab(
+                    value: 'activity',
+                    label: const Text('Activity'),
+                    content: Text('Recent events.', style: body),
+                  ),
+                  BeuiTab(
+                    value: 'settings',
+                    label: const Text('Settings'),
+                    content: Text('Preferences.', style: body),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 32),
-          _tabsSection(
-            colors,
-            'Segment',
-            BeuiTabs<String>(
-              variant: BeuiTabsVariant.segment,
-              value: _segment,
-              onChanged: (v) => setState(() => _segment = v),
-              tabs: const [
-                BeuiTab(value: 'day', label: Text('Day')),
-                BeuiTab(value: 'week', label: Text('Week')),
-                BeuiTab(value: 'month', label: Text('Month')),
-              ],
+            const SizedBox(height: 32),
+            _tabsSection(
+              colors,
+              'Segment',
+              BeuiTabs<String>(
+                variant: BeuiTabsVariant.segment,
+                value: _segment,
+                onChanged: (v) => setState(() => _segment = v),
+                tabs: const [
+                  BeuiTab(value: 'day', label: Text('Day')),
+                  BeuiTab(value: 'week', label: Text('Week')),
+                  BeuiTab(value: 'month', label: Text('Month')),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 32),
-          _tabsSection(
-            colors,
-            'Underline',
-            BeuiTabs<String>(
-              variant: BeuiTabsVariant.underline,
-              value: _underline,
-              onChanged: (v) => setState(() => _underline = v),
-              tabs: const [
-                BeuiTab(value: 'all', label: Text('All')),
-                BeuiTab(value: 'open', label: Text('Open')),
-                BeuiTab(value: 'closed', label: Text('Closed')),
-              ],
+            const SizedBox(height: 32),
+            _tabsSection(
+              colors,
+              'Underline',
+              BeuiTabs<String>(
+                variant: BeuiTabsVariant.underline,
+                value: _underline,
+                onChanged: (v) => setState(() => _underline = v),
+                tabs: const [
+                  BeuiTab(value: 'all', label: Text('All')),
+                  BeuiTab(value: 'open', label: Text('Open')),
+                  BeuiTab(value: 'closed', label: Text('Closed')),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

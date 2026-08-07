@@ -26,47 +26,53 @@ class _InputDemoState extends State<_InputDemo> {
         ? 'Enter a valid email address.'
         : null;
 
-    return ConstrainedBox(
-      // Source: `w-full max-w-xs` (320) with `gap-5` (20) between fields.
-      constraints: const BoxConstraints(maxWidth: 320),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BeuiInput(
-            label: 'Email',
-            placeholder: 'you@example.com',
-            keyboardType: TextInputType.emailAddress,
-            leftIcon: const Icon(LucideIcons.mail),
-            value: _email,
-            error: emailError,
-            onChanged: (v) => setState(() => _email = v),
-          ),
-          const SizedBox(height: 20),
-          BeuiInput(
-            label: 'Password',
-            value: _pass,
-            obscureText: !_show,
-            onChanged: (v) => setState(() => _pass = v),
-            rightIcon: Semantics(
-              button: true,
-              label: _show ? 'Hide password' : 'Show password',
-              child: GestureDetector(
-                onTap: () => setState(() => _show = !_show),
-                behavior: HitTestBehavior.opaque,
-                child: Icon(_show ? LucideIcons.eye_off : LucideIcons.eye),
+    // Align first: ConstrainedBox enforces against the incoming constraints,
+    // so under a tight full-stage width it is widened straight past `maxWidth`
+    // and the fields render full-bleed instead of the source's `max-w-xs`.
+    // Align loosens; it is a no-op when the parent is already loose.
+    return Align(
+      child: ConstrainedBox(
+        // Source: `w-full max-w-xs` (320) with `gap-5` (20) between fields.
+        constraints: const BoxConstraints(maxWidth: 320),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BeuiInput(
+              label: 'Email',
+              placeholder: 'you@example.com',
+              keyboardType: TextInputType.emailAddress,
+              leftIcon: const Icon(LucideIcons.mail),
+              value: _email,
+              error: emailError,
+              onChanged: (v) => setState(() => _email = v),
+            ),
+            const SizedBox(height: 20),
+            BeuiInput(
+              label: 'Password',
+              value: _pass,
+              obscureText: !_show,
+              onChanged: (v) => setState(() => _pass = v),
+              rightIcon: Semantics(
+                button: true,
+                label: _show ? 'Hide password' : 'Show password',
+                child: GestureDetector(
+                  onTap: () => setState(() => _show = !_show),
+                  behavior: HitTestBehavior.opaque,
+                  child: Icon(_show ? LucideIcons.eye_off : LucideIcons.eye),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 20),
-          BeuiInput(
-            label: 'Search',
-            leftIcon: const Icon(LucideIcons.search),
-            value: _query,
-            success: _query.length > 1,
-            onChanged: (v) => setState(() => _query = v),
-          ),
-        ],
+            const SizedBox(height: 20),
+            BeuiInput(
+              label: 'Search',
+              leftIcon: const Icon(LucideIcons.search),
+              value: _query,
+              success: _query.length > 1,
+              onChanged: (v) => setState(() => _query = v),
+            ),
+          ],
+        ),
       ),
     );
   }
