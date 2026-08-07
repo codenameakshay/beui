@@ -365,7 +365,7 @@ class _BeuiCitationFaviconState extends State<BeuiCitationFavicon> {
             }
           });
           return Icon(
-            LucideIcons.globe,
+            LucideIcons.earth,
             size: widget.imageSize * 0.875, // size-3.5 relative to 16
             color: colors.mutedForeground,
           );
@@ -378,7 +378,7 @@ class _BeuiCitationFaviconState extends State<BeuiCitationFavicon> {
             );
           }
           return Icon(
-            LucideIcons.globe,
+            LucideIcons.earth,
             size: widget.imageSize * 0.875,
             color: colors.mutedForeground,
           );
@@ -386,7 +386,7 @@ class _BeuiCitationFaviconState extends State<BeuiCitationFavicon> {
       );
     } else {
       child = Icon(
-        LucideIcons.globe,
+        LucideIcons.earth,
         size: widget.imageSize * 0.875,
         color: colors.mutedForeground,
       );

@@ -420,6 +420,22 @@ void main() {
     });
   });
 
+  group('BeuiCitationFavicon', () {
+    // Regression: the source falls back to lucide `Globe2` (renamed `earth`
+    // in flutter_lucide), not `globe` — a visibly different glyph.
+    testWidgets('falls back to the Globe2/earth glyph', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          home: const Scaffold(body: Center(child: BeuiCitationFavicon())),
+        ),
+      );
+      await tester.pump();
+      expect(find.byIcon(LucideIcons.earth), findsOneWidget);
+      expect(find.byIcon(LucideIcons.globe), findsNothing);
+    });
+  });
+
   group('BeuiCitationStack', () {
     testWidgets('renders up to limit favicon slots', (tester) async {
       await tester.pumpWidget(
