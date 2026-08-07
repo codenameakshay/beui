@@ -156,7 +156,7 @@ class BeuiAgentSearchResult {
   /// Optional URL (data only — use [onTap] to open it).
   final String? url;
 
-  /// Optional leading glyph; defaults to [LucideIcons.globe].
+  /// Optional leading glyph; defaults to [LucideIcons.earth].
   final Widget? icon;
 
   /// Optional tap handler (e.g. open [url]).
@@ -552,6 +552,10 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
         TextStyle(
           fontSize: 14, // text-sm
           height: 20 / 14, // leading-5
+          // Tailwind tracking is `normal`. Pin it at the root so an ambient
+          // Material text theme (bodyMedium letterSpacing 0.25) cannot leak
+          // into every row and widen the stream.
+          letterSpacing: 0,
           color: colors.foreground,
         );
 
@@ -1332,7 +1336,7 @@ class _SearchResultRow extends StatelessWidget {
               child:
                   result.icon ??
                   Icon(
-                    LucideIcons.globe,
+                    LucideIcons.earth,
                     size: 12,
                     color: colors.mutedForeground,
                   ),

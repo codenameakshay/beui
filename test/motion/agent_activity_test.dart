@@ -1,5 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _app(Widget child, {bool reduce = false}) {
@@ -332,6 +333,80 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Done step'), findsOneWidget);
       expect(find.textContaining('Thought for'), findsOneWidget);
+    });
+
+    // Regression: Tailwind tracking is `normal`. Material's bodyMedium
+    // letterSpacing (0.25 by default) was leaking into every row and widening
+    // the stream by ~4% against beui.dev.
+    testWidgets('pins tracking to normal against an ambient text theme', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(
+            extensions: [BeuiColors.light()],
+            textTheme: const TextTheme(
+              bodyMedium: TextStyle(fontSize: 14, letterSpacing: 4),
+            ),
+          ),
+          home: const Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 400,
+                child: BeuiAgentActivity(
+                  items: [
+                    BeuiAgentActivityStep(
+                      id: '1',
+                      label: 'Reading the launch brief',
+                      status: BeuiAgentStepStatus.complete,
+                    ),
+                  ],
+                  status: BeuiAgentActivityStatus.complete,
+                  duration: 1,
+                  defaultOpen: true,
+                  collapseOnComplete: false,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      final style = tester
+          .renderObject<RenderParagraph>(find.text('Reading the launch brief'))
+          .text
+          .style!;
+      expect(style.letterSpacing, 0);
+    });
+
+    // Regression: the source uses lucide `Globe2` (renamed `earth` in
+    // flutter_lucide), not `globe` — different glyph entirely.
+    testWidgets('search results fall back to the Globe2/earth glyph', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiAgentActivity(
+            items: [
+              BeuiAgentActivitySearch(
+                id: 's',
+                query: 'coffee',
+                results: [
+                  BeuiAgentSearchResult(id: 'r', title: 'Heart Coffee'),
+                ],
+              ),
+            ],
+            status: BeuiAgentActivityStatus.complete,
+            defaultOpen: true,
+            collapseOnComplete: false,
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.byIcon(LucideIcons.earth), findsOneWidget);
+      expect(find.byIcon(LucideIcons.globe), findsNothing);
     });
   });
 }
