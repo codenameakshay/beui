@@ -322,12 +322,72 @@ void main() {
       expect(wideGap - tightGap, moreOrLessEquals(20, epsilon: 0.5));
     });
 
-    testWidgets('wrap flows triggers onto multiple runs', (tester) async {
-      // Narrow enough that three triggers cannot share one run.
-      await tester.pumpWidget(host(wrap: true, width: 120));
+    testWidgets('wrap keeps triggers on one run when they fit', (tester) async {
+      // The real defect this guards: a trigger that fills its bounded width
+      // puts every label on its own run, which is what the shader-background
+      // preset list rendered. Sharing a run is the assertion that matters —
+      // merely landing on different rows proves nothing.
+      await tester.pumpWidget(host(wrap: true, width: 600));
       await tester.pumpAndSettle();
 
       expect(find.byType(Wrap), findsOneWidget);
+      final y = tester.getTopLeft(find.text('One')).dy;
+      expect(tester.getTopLeft(find.text('Two')).dy, y);
+      expect(tester.getTopLeft(find.text('Three')).dy, y);
+      // ...and each trigger is sized to its label, not to the bounded width.
+      expect(
+        tester
+            .getSize(
+              find
+                  .ancestor(
+                    of: find.text('One'),
+                    matching: find.byType(Padding),
+                  )
+                  .first,
+            )
+            .width,
+        lessThan(200),
+      );
+    });
+
+    testWidgets('wrap centres its runs in a stretched list', (tester) async {
+      // A wrapped list shrink-wraps to its widest run; the Stack used to pin
+      // that to the left, shifting every run off-centre in a stretched list.
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          home: Scaffold(
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                BeuiTabs<String>(
+                  defaultValue: 'one',
+                  wrap: true,
+                  tabs: const [
+                    BeuiTab(value: 'one', label: Text('One')),
+                    BeuiTab(value: 'two', label: Text('Two')),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final list = tester.getRect(find.byType(BeuiTabs<String>));
+      final runLeft = tester.getRect(find.text('One')).left;
+      final runRight = tester.getRect(find.text('Two')).right;
+      expect(
+        (runLeft + runRight) / 2,
+        moreOrLessEquals(list.center.dx, epsilon: 2),
+      );
+    });
+
+    testWidgets('wrap flows onto a second run when too narrow', (tester) async {
+      await tester.pumpWidget(host(wrap: true, width: 130));
+      await tester.pumpAndSettle();
+
       expect(
         tester.getTopLeft(find.text('Three')).dy,
         greaterThan(tester.getTopLeft(find.text('One')).dy),

@@ -223,8 +223,7 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       );
     }
 
-    final gap =
-        widget.gap ?? (variant == BeuiTabsVariant.segment ? 0.0 : 4.0);
+    final gap = widget.gap ?? (variant == BeuiTabsVariant.segment ? 0.0 : 4.0);
     final row = widget.wrap
         ? Wrap(
             alignment: WrapAlignment.center,
@@ -258,6 +257,11 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
 
     final stack = Stack(
       key: _stackKey,
+      // A wrapped list shrink-wraps to its widest run, so the Stack's default
+      // top-start placement would pin those runs to the left of a stretched
+      // list. Centre them, matching the source's `justify-center`. Harmless in
+      // row mode, where the Stack is already the row's width.
+      alignment: widget.wrap ? Alignment.center : AlignmentDirectional.topStart,
       // The underline rule is deliberately 1px outside the list box (the
       // source's `-bottom-px`), so it must not be clipped away.
       clipBehavior: variant == BeuiTabsVariant.underline
@@ -328,8 +332,7 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
     return switch (variant) {
       BeuiTabsVariant.pill => BoxDecoration(
         color: colors.card,
-        borderRadius:
-            widget.listBorderRadius ?? BorderRadius.circular(9999),
+        borderRadius: widget.listBorderRadius ?? BorderRadius.circular(9999),
       ),
       BeuiTabsVariant.segment => BoxDecoration(
         color: colors.card,
@@ -455,7 +458,6 @@ class _TabTriggerState<T> extends State<_TabTrigger<T>> {
       constraints: widget.variant == BeuiTabsVariant.underline
           ? const BoxConstraints(minHeight: 44)
           : const BoxConstraints(),
-      alignment: Alignment.center,
       padding: _padding,
       decoration: _focusVisible
           ? BoxDecoration(
@@ -463,22 +465,31 @@ class _TabTriggerState<T> extends State<_TabTrigger<T>> {
               boxShadow: [BoxShadow(color: colors.ring, spreadRadius: 2)],
             )
           : null,
-      child: AnimatedDefaultTextStyle(
-        duration: const Duration(milliseconds: 150),
-        // Built from the ambient style, not from scratch: `AnimatedDefaultText
-        // Style` *replaces* the inherited `DefaultTextStyle`, so a bare
-        // `TextStyle` here would drop the host font family and render the
-        // trigger in the platform fallback face.
-        style: DefaultTextStyle.of(context).style.copyWith(
-          fontSize: 14,
-          // `text-sm` is 14px/20px. Without an explicit line box the trigger
-          // renders ~3px shorter than the source (29 vs 32).
-          height: 20 / 14,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0, // tracking-normal
-          color: _textColor(colors),
+      // `widthFactor: 1` sizes the trigger to its label; a bare
+      // `Container(alignment:)` fills whatever bounded width it is given, which
+      // in a `Wrap` inflates every trigger to full width and puts each on its
+      // own run. Height still fills, so the underline variant's minHeight
+      // keeps centring the label vertically.
+      child: Align(
+        alignment: Alignment.center,
+        widthFactor: 1,
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 150),
+          // Built from the ambient style, not from scratch: `AnimatedDefaultText
+          // Style` *replaces* the inherited `DefaultTextStyle`, so a bare
+          // `TextStyle` here would drop the host font family and render the
+          // trigger in the platform fallback face.
+          style: DefaultTextStyle.of(context).style.copyWith(
+            fontSize: 14,
+            // `text-sm` is 14px/20px. Without an explicit line box the trigger
+            // renders ~3px shorter than the source (29 vs 32).
+            height: 20 / 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0, // tracking-normal
+            color: _textColor(colors),
+          ),
+          child: widget.label,
         ),
-        child: widget.label,
       ),
     );
 
