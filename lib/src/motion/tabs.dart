@@ -68,6 +68,10 @@ class BeuiTabs<T> extends StatefulWidget {
     this.defaultValue,
     this.onChanged,
     this.variant = BeuiTabsVariant.pill,
+    this.wrap = false,
+    this.gap,
+    this.listBorderRadius,
+    this.triggerPadding,
     super.key,
   });
 
@@ -85,6 +89,23 @@ class BeuiTabs<T> extends StatefulWidget {
 
   /// Which look to render.
   final BeuiTabsVariant variant;
+
+  /// Flows the triggers onto multiple centred runs instead of one row — the
+  /// source's `TabsList className="flex-wrap justify-center"`. The indicator
+  /// still measures each trigger's rect, so it glides between runs.
+  final bool wrap;
+
+  /// Gap between triggers, overriding the variant default (source list
+  /// `gap-*`: `gap-1` for pill/underline, `gap-0` for segment).
+  final double? gap;
+
+  /// The list's corner radius, overriding the variant default (source list
+  /// `rounded-*`).
+  final BorderRadiusGeometry? listBorderRadius;
+
+  /// Each trigger's padding, overriding the variant default (source trigger
+  /// `px-* py-*`).
+  final EdgeInsetsGeometry? triggerPadding;
 
   @override
   State<BeuiTabs<T>> createState() => _BeuiTabsState<T>();
@@ -194,6 +215,7 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
           focusNode: _focusNodes[tab.value]!,
           label: tab.label,
           variant: variant,
+          padding: widget.triggerPadding,
           active: tab.value == _current,
           onSelect: () => _select(tab.value),
           onMove: (delta) => _move(tab.value, delta),
@@ -201,16 +223,25 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       );
     }
 
-    final gap = variant == BeuiTabsVariant.segment ? 0.0 : 4.0;
-    final row = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var i = 0; i < triggers.length; i++) ...[
-          if (i > 0) SizedBox(width: gap),
-          triggers[i],
-        ],
-      ],
-    );
+    final gap =
+        widget.gap ?? (variant == BeuiTabsVariant.segment ? 0.0 : 4.0);
+    final row = widget.wrap
+        ? Wrap(
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            spacing: gap,
+            runSpacing: gap,
+            children: triggers,
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < triggers.length; i++) ...[
+                if (i > 0) SizedBox(width: gap),
+                triggers[i],
+              ],
+            ],
+          );
 
     final indicatorLayer = _indicator == null
         ? const SizedBox.shrink()
@@ -297,11 +328,13 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
     return switch (variant) {
       BeuiTabsVariant.pill => BoxDecoration(
         color: colors.card,
-        borderRadius: BorderRadius.circular(9999),
+        borderRadius:
+            widget.listBorderRadius ?? BorderRadius.circular(9999),
       ),
       BeuiTabsVariant.segment => BoxDecoration(
         color: colors.card,
-        borderRadius: BorderRadius.circular(8), // rounded-lg
+        borderRadius:
+            widget.listBorderRadius ?? BorderRadius.circular(8), // rounded-lg
       ),
       BeuiTabsVariant.underline => BoxDecoration(
         border: Border(bottom: BorderSide(color: colors.border)),
@@ -371,6 +404,7 @@ class _TabTrigger<T> extends StatefulWidget {
     required this.focusNode,
     required this.label,
     required this.variant,
+    required this.padding,
     required this.active,
     required this.onSelect,
     required this.onMove,
@@ -381,6 +415,7 @@ class _TabTrigger<T> extends StatefulWidget {
   final FocusNode focusNode;
   final Widget label;
   final BeuiTabsVariant variant;
+  final EdgeInsetsGeometry? padding;
   final bool active;
   final VoidCallback onSelect;
   final ValueChanged<int> onMove;
@@ -402,9 +437,11 @@ class _TabTriggerState<T> extends State<_TabTrigger<T>> {
     return _hovered ? colors.foreground : colors.mutedForeground;
   }
 
-  EdgeInsets get _padding => widget.variant == BeuiTabsVariant.underline
-      ? const EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 10)
-      : const EdgeInsets.symmetric(horizontal: 14, vertical: 6);
+  EdgeInsetsGeometry get _padding =>
+      widget.padding ??
+      (widget.variant == BeuiTabsVariant.underline
+          ? const EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 10)
+          : const EdgeInsets.symmetric(horizontal: 14, vertical: 6));
 
   @override
   Widget build(BuildContext context) {
