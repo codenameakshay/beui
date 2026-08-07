@@ -58,6 +58,16 @@ class _HostState extends State<_Host> {
   }
 }
 
+/// Settles at 1ms granularity and returns the fake-clock time it took.
+///
+/// `pumpAndSettle`'s default 100ms step quantises a 430ms envelope up to 700ms
+/// and a 140ms one up to 400ms, which is too coarse to tell the two apart.
+Future<int> _settleMs(WidgetTester tester) async {
+  final start = tester.binding.clock.now();
+  await tester.pumpAndSettle(const Duration(milliseconds: 1));
+  return tester.binding.clock.now().difference(start).inMilliseconds;
+}
+
 void main() {
   _HostState host(WidgetTester t) => t.state<_HostState>(find.byType(_Host));
 
@@ -77,14 +87,24 @@ void main() {
     // wall-clock second than the DOM reference), so pin it here instead.
     await tester.pumpWidget(const _Host());
     host(tester).show();
-    await tester.pump(); // schedule the enter
-    await tester.pump(const Duration(milliseconds: 420));
+    final ms = await _settleMs(tester);
+
     expect(
-      tester.binding.transientCallbackCount,
-      greaterThan(0),
-      reason: 'still unfolding at 420ms — the envelope must not collapse',
+      ms,
+      inInclusiveRange(430, 450),
+      reason: 'the unfold must run the full 430ms envelope, no more',
     );
-    await tester.pumpAndSettle();
+    expect(find.byKey(_panel), findsOneWidget);
+  });
+
+  testWidgets('reduced motion shortens the envelope to 140ms', (tester) async {
+    // The counterpart to the test above: the envelope is not merely *present*
+    // under reduced motion, it collapses to the 140ms movement-free arrival.
+    await tester.pumpWidget(const _Host(disableAnimations: true));
+    host(tester).show();
+    final ms = await _settleMs(tester);
+
+    expect(ms, inInclusiveRange(140, 160));
     expect(find.byKey(_panel), findsOneWidget);
   });
 

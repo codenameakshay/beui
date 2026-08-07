@@ -449,6 +449,76 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
       brightness: t < 0.5 ? brightness : other.brightness,
     );
   }
+
+  // Value equality is **load-bearing, not a nicety.** `ThemeData` compares its
+  // `extensions` map by value, so without this two structurally identical
+  // palettes compare unequal and every rebuild that reconstructs the theme
+  // (`ThemeData.light().copyWith(extensions: [BeuiColors.light()])` inside a
+  // `build`, which is exactly how the gallery and the tests wire it) looks like
+  // a *theme change* to `AnimatedTheme`. That restarts its 200ms lerp, and the
+  // drifting interpolated `ThemeData` then re-triggers Material's own implicit
+  // animations (`AnimatedPhysicalModel`, `AnimatedDefaultTextStyle`) for a
+  // further 200ms as they chase it — a ~400ms tail of pure phantom animation on
+  // every setState, which reduced motion does not suppress because a color
+  // transition is not movement. See `test/theme/beui_colors_test.dart`.
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is BeuiColors &&
+        other.background == background &&
+        other.foreground == foreground &&
+        other.card == card &&
+        other.cardForeground == cardForeground &&
+        other.popover == popover &&
+        other.popoverForeground == popoverForeground &&
+        other.primary == primary &&
+        other.primaryForeground == primaryForeground &&
+        other.secondary == secondary &&
+        other.secondaryForeground == secondaryForeground &&
+        other.muted == muted &&
+        other.mutedForeground == mutedForeground &&
+        other.accent == accent &&
+        other.accentForeground == accentForeground &&
+        other.destructive == destructive &&
+        other.border == border &&
+        other.input == input &&
+        other.ring == ring &&
+        other.borderStrong == borderStrong &&
+        other.success == success &&
+        other.warning == warning &&
+        other.glass == glass &&
+        other.colorTheme == colorTheme &&
+        other.brightness == brightness;
+  }
+
+  // 24 fields — past `Object.hash`'s 20-argument ceiling, so hash the list.
+  @override
+  int get hashCode => Object.hashAll([
+    background,
+    foreground,
+    card,
+    cardForeground,
+    popover,
+    popoverForeground,
+    primary,
+    primaryForeground,
+    secondary,
+    secondaryForeground,
+    muted,
+    mutedForeground,
+    accent,
+    accentForeground,
+    destructive,
+    border,
+    input,
+    ring,
+    borderStrong,
+    success,
+    warning,
+    glass,
+    colorTheme,
+    brightness,
+  ]);
 }
 
 /// Builds the neutral base palette for [brightness], tagged with [theme] so a

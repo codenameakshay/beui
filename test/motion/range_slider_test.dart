@@ -564,6 +564,11 @@ void main() {
 
       final origin = tester.getTopLeft(find.byKey(_waveTrack));
       await tester.dragFrom(origin + const Offset(2, 40), const Offset(178, 0));
+      // The per-bar stagger is a `Timer` (`min(distance × 12ms, 120ms)`), and
+      // `pumpAndSettle` only waits on transient callbacks — never on pending
+      // timers. Advance past the longest stagger explicitly so every bar has
+      // actually been handed its new target, then settle the springs.
+      await tester.pump(const Duration(milliseconds: 130));
       await tester.pumpAndSettle();
 
       // The crest has moved to the right-hand bars and the left has fallen back.

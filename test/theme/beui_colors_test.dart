@@ -180,6 +180,73 @@ void main() {
     });
   });
 
+  group('BeuiColors is a value type (load-bearing for AnimatedTheme)', () {
+    test('two identically-resolved palettes compare equal', () {
+      for (final theme in BeuiColorTheme.values) {
+        for (final brightness in Brightness.values) {
+          expect(
+            BeuiColors.of(theme, brightness),
+            BeuiColors.of(theme, brightness),
+          );
+          expect(
+            BeuiColors.of(theme, brightness).hashCode,
+            BeuiColors.of(theme, brightness).hashCode,
+          );
+        }
+      }
+      expect(BeuiColors.light(), BeuiColors.light());
+      expect(BeuiColors.dark(), BeuiColors.dark());
+    });
+
+    test('palettes that actually differ compare unequal', () {
+      expect(BeuiColors.light(), isNot(BeuiColors.dark()));
+      expect(
+        BeuiColors.of(BeuiColorTheme.values.first, Brightness.light),
+        isNot(BeuiColors.of(BeuiColorTheme.values.last, Brightness.light)),
+      );
+      expect(
+        BeuiColors.light(),
+        isNot(BeuiColors.light().copyWith(primary: const Color(0xFF00FF00))),
+      );
+    });
+
+    test('a ThemeData carrying the extension compares equal', () {
+      // This is the property that matters. `ThemeData` compares `extensions` by
+      // value, so a `BeuiColors` without `==` makes every rebuild that
+      // reconstructs the theme inside `build` look like a theme *change* to
+      // `AnimatedTheme`. That kicks off a 200ms theme lerp whose drifting
+      // interpolated `ThemeData` then restarts Material's own implicit
+      // animations for another ~200ms as they chase it — a constant ~400ms tail
+      // of phantom animation on every setState, which reduced motion does not
+      // suppress (a color transition is not movement) and which swamps every
+      // component animation shorter than it in `pumpAndSettle`.
+      ThemeData build() =>
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]);
+      expect(build(), build());
+    });
+
+    testWidgets('a rebuild does not schedule a phantom theme animation', (
+      tester,
+    ) async {
+      Widget app(int _) => MaterialApp(
+        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        home: const Scaffold(body: SizedBox.shrink()),
+      );
+
+      await tester.pumpWidget(app(0));
+      await tester.pumpAndSettle();
+
+      // Rebuild with a fresh-but-identical ThemeData. Nothing must start
+      // ticking: a single pump has to leave the scheduler idle.
+      await tester.pumpWidget(app(1));
+      expect(
+        tester.binding.transientCallbackCount,
+        0,
+        reason: 'rebuilding with an equal theme must not animate anything',
+      );
+    });
+  });
+
   group('BeuiTextTheme exposes family names only (no bundled fonts)', () {
     test('sans is Inter, mono is JetBrains Mono (not Geist Mono)', () {
       const text = BeuiTextTheme();
