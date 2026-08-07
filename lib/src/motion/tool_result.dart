@@ -146,7 +146,9 @@ class BeuiToolResultOutput extends StatelessWidget {
       style: TextStyle(
         fontFamily: 'monospace',
         fontSize: 12,
-        height: 1.55,
+        // Source `AgentCode`: `font-mono text-xs leading-5` — a 20px line box
+        // at 12px, not a relative leading.
+        height: 20 / 12,
         color: colors.foreground.withValues(alpha: 0.8),
       ),
       child: SelectionArea(
@@ -181,6 +183,7 @@ class _OutputPalette {
     required this.comment,
     required this.number,
     required this.entity,
+    required this.variable,
     required this.punct,
   });
 
@@ -199,6 +202,8 @@ class _OutputPalette {
       comment: isLight ? const Color(0xFF4B535D) : const Color(0xFFBDC4CC),
       number: isLight ? const Color(0xFF023B95) : const Color(0xFF91CBFF),
       entity: isLight ? const Color(0xFF622CBC) : const Color(0xFFDBB7FF),
+      // `variable` — the colour these themes give a shell command word.
+      variable: isLight ? const Color(0xFF702C00) : const Color(0xFFFFB757),
       punct: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
     );
   }
@@ -210,6 +215,7 @@ class _OutputPalette {
   final Color comment;
   final Color number;
   final Color entity;
+  final Color variable;
   final Color punct;
 }
 
@@ -219,35 +225,6 @@ class _Tok {
   final String text;
   final Color color;
 }
-
-const _bashKw = <String>{
-  'if',
-  'then',
-  'else',
-  'elif',
-  'fi',
-  'for',
-  'while',
-  'do',
-  'done',
-  'case',
-  'esac',
-  'function',
-  'in',
-  'return',
-  'export',
-  'local',
-  'readonly',
-  'source',
-  'alias',
-  'cd',
-  'echo',
-  'exit',
-  'set',
-  'unset',
-  'true',
-  'false',
-};
 
 const _tsKw = <String>{
   'const',
@@ -288,12 +265,88 @@ List<_Tok> _highlightLine(
   if (language == BeuiCodeLanguage.json) {
     return _hlJson(line, p);
   }
+  if (language == BeuiCodeLanguage.bash) {
+    return _hlBash(line, p);
+  }
   final kw = switch (language) {
-    BeuiCodeLanguage.bash => _bashKw,
     BeuiCodeLanguage.typescript || BeuiCodeLanguage.tsx => _tsKw,
     _ => const <String>{},
   };
   return _hlGeneric(line, kw, p, language);
+}
+
+/// Shell lines, the way Shiki's bash grammar tokenises them under
+/// `github-*-high-contrast`.
+///
+/// The first word on a line is the command word and takes the `variable`
+/// colour (`#FFB757` dark); every later bare word is an unquoted argument and
+/// takes the `string` colour (`#ADDCFF`), except a bare number, which keeps the
+/// `number` colour. Verified token-by-token against beui.dev's tool-approval
+/// (`bun test tests/a11y.test.tsx`) and tool-result (`$ bun …`, `49 pass · 0
+/// fail`) previews — note that `49`, being first, is a command word while the
+/// later `0` is a number.
+List<_Tok> _hlBash(String line, _OutputPalette p) {
+  final out = <_Tok>[];
+  var i = 0;
+  var first = true;
+  while (i < line.length) {
+    final ch = line[i];
+    if (ch == ' ' || ch == '\t') {
+      final start = i;
+      while (i < line.length && (line[i] == ' ' || line[i] == '\t')) {
+        i++;
+      }
+      out.add(_Tok(line.substring(start, i), p.base));
+      continue;
+    }
+    if (ch == '#') {
+      out.add(_Tok(line.substring(i), p.comment));
+      break;
+    }
+    if (ch == "'" || ch == '"' || ch == '`') {
+      final end = _scanStr(line, i, quote: ch);
+      out.add(_Tok(line.substring(i, end), p.string));
+      i = end;
+      first = false;
+      continue;
+    }
+    final start = i;
+    while (i < line.length &&
+        line[i] != ' ' &&
+        line[i] != '\t' &&
+        line[i] != "'" &&
+        line[i] != '"' &&
+        line[i] != '`') {
+      i++;
+    }
+    final word = line.substring(start, i);
+    out.add(
+      _Tok(
+        word,
+        first
+            ? p.variable
+            : _isBareNumber(word)
+            ? p.number
+            : p.string,
+      ),
+    );
+    first = false;
+  }
+  return out;
+}
+
+/// True for a word made only of digits and `.` — Shiki's `constant.numeric`.
+bool _isBareNumber(String word) {
+  var sawDigit = false;
+  for (var i = 0; i < word.length; i++) {
+    final ch = word[i];
+    if (_isDigit(ch)) {
+      sawDigit = true;
+    } else if (ch != '.') {
+      return false;
+    }
+  }
+  return sawDigit;
 }
 
 List<_Tok> _hlJson(String line, _OutputPalette p) {
