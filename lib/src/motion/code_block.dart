@@ -644,6 +644,10 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                               'Courier New',
                             ],
                             fontSize: 12,
+                            // Tailwind `tracking-normal`. Explicit because an
+                            // unset letterSpacing inherits Material's body
+                            // styles (0.25), widening every mono line.
+                            letterSpacing: 0,
                             color: colors.foreground.withValues(alpha: 0.8),
                             height: 16 / 12, // text-xs default leading-4
                           ),
@@ -678,6 +682,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
+                        letterSpacing: 0, // tracking-normal
                         color: statusColor,
                       ),
                     ),
@@ -868,6 +873,8 @@ class _CodeLines extends StatelessWidget {
         'monospace',
       ],
       fontSize: _fontSize,
+      // Tailwind `tracking-normal`; see the filename style for why.
+      letterSpacing: 0,
       height: _lineHeight / _fontSize,
       color: palette.base,
     );

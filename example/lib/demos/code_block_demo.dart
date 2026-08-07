@@ -144,6 +144,7 @@ class _ReplayButton extends StatelessWidget {
                   fontSize: 12,
                   height: 16 / 12,
                   fontWeight: FontWeight.w500,
+                  letterSpacing: 0, // tracking-normal
                   color: colors.mutedForeground,
                 ),
               ),
