@@ -273,14 +273,24 @@ class _BeuiCitationState extends State<BeuiCitation> {
                       ? Border.all(color: colors.ring, width: 2)
                       : null,
                 ),
-                alignment: Alignment.center,
-                child: Text(
-                  '${widget.index}',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    height: 1,
-                    color: fg,
+                // NOTE: no `alignment:` on the Container — that inserts an
+                // unbounded Align, which inside a WidgetSpan grabs the whole
+                // paragraph width and forces a line break. A shrink-wrapping
+                // Align (width/heightFactor 1) still honours `minWidth: 16`.
+                child: Align(
+                  widthFactor: 1,
+                  heightFactor: 1,
+                  child: Text(
+                    '${widget.index}',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      height: 1,
+                      // Tailwind tracking is `normal`; pin it so an ambient
+                      // Material text theme cannot widen the badge.
+                      letterSpacing: 0,
+                      color: fg,
+                    ),
                   ),
                 ),
               ),
@@ -733,6 +743,7 @@ class _CitationsHeaderState extends State<_CitationsHeader> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
+                        letterSpacing: 0,
                         color: fg,
                       ),
                       child: widget.title,
@@ -753,6 +764,7 @@ class _CitationsHeaderState extends State<_CitationsHeader> {
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
                           height: 1.2,
+                          letterSpacing: 0,
                           fontFeatures: const [FontFeature.tabularFigures()],
                           color: fg,
                         ),
@@ -857,6 +869,7 @@ class _CitationRowState extends State<_CitationRow> {
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     height: 20 / 14,
+                    letterSpacing: 0,
                     color: titleColor,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -868,6 +881,7 @@ class _CitationRowState extends State<_CitationRow> {
                     style: TextStyle(
                       fontSize: 12,
                       height: 16 / 12,
+                      letterSpacing: 0,
                       color: colors.mutedForeground.withValues(alpha: 0.6),
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -895,6 +909,7 @@ class _CitationRowState extends State<_CitationRow> {
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     height: 1,
+                    letterSpacing: 0,
                     fontFeatures: const [FontFeature.tabularFigures()],
                     color: colors.mutedForeground,
                   ),

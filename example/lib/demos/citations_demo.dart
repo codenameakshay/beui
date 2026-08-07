@@ -111,6 +111,7 @@ class _CitationsDemoState extends State<_CitationsDemo> {
                           style: TextStyle(
                             fontSize: 14,
                             height: 24 / 14, // leading-6
+                            letterSpacing: 0, // Tailwind tracking-normal
                             color: colors.foreground.withValues(alpha: 0.9),
                           ),
                           children: [
@@ -157,21 +158,8 @@ class _CitationsDemoState extends State<_CitationsDemo> {
               Positioned(
                 left: 0,
                 bottom: 0,
-                child: TextButton.icon(
+                child: TextButton(
                   onPressed: _replay,
-                  icon: Icon(
-                    LucideIcons.rotate_ccw,
-                    size: 12,
-                    color: colors.mutedForeground,
-                  ),
-                  label: Text(
-                    'Replay',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: colors.mutedForeground,
-                    ),
-                  ),
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
@@ -179,7 +167,33 @@ class _CitationsDemoState extends State<_CitationsDemo> {
                     ),
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    // Desktop `adaptivePlatformDensity` is compact (-2,-2),
+                    // which eats 4px of the source's 24px button height.
+                    visualDensity: VisualDensity.standard,
                     foregroundColor: colors.foreground,
+                  ),
+                  // Source: inline-flex items-center gap-1.5 px-2 py-1 text-xs.
+                  // `TextButton.icon` hardcodes an 8px gap, so build the row.
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        LucideIcons.rotate_ccw,
+                        size: 12,
+                        color: colors.mutedForeground,
+                      ),
+                      const SizedBox(width: 6), // gap-1.5
+                      Text(
+                        'Replay',
+                        style: TextStyle(
+                          fontSize: 12,
+                          height: 16 / 12, // text-xs
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0,
+                          color: colors.mutedForeground,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

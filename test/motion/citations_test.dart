@@ -1,5 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 List<BeuiCitationItem> _sample({int count = 3}) {
@@ -120,6 +121,47 @@ void main() {
       await tester.pumpWidget(_host(citations: _sample(), defaultOpen: true));
       await tester.pumpAndSettle();
       expect(find.text('Sources'), findsOneWidget);
+    });
+
+    // Regression: Tailwind tracking is `normal`. An ambient Material text
+    // theme (bodyMedium letterSpacing 0.25 by default) otherwise leaks into
+    // every label and widens the panel by ~3.5%.
+    testWidgets('header and row labels pin tracking to normal', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(
+            extensions: [BeuiColors.light()],
+            textTheme: const TextTheme(
+              bodyMedium: TextStyle(fontSize: 14, letterSpacing: 3),
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 360,
+                child: BeuiCitations(
+                  citations: _sample(count: 1),
+                  defaultOpen: true,
+                  idPrefix: 'tracking-panel',
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      for (final label in <String>[
+        'Sources',
+        'Motion documentation',
+        'motion.dev',
+      ]) {
+        final style = tester
+            .renderObject<RenderParagraph>(find.text(label))
+            .text
+            .style!;
+        expect(style.letterSpacing, 0, reason: 'tracking on "$label"');
+      }
     });
 
     testWidgets('tapping header toggles open state (uncontrolled)', (
@@ -297,6 +339,84 @@ void main() {
       await tester.tap(find.byType(BeuiCitation));
       await tester.pump();
       expect(pressed, isTrue);
+    });
+
+    // Regression: the marker is an inline `<a>` in the source. Container's
+    // `alignment:` inserts an unbounded Align, which inside a WidgetSpan takes
+    // the whole paragraph width and forces a line break around every marker.
+    testWidgets('inline marker shrink-wraps inside a WidgetSpan', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          home: const Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 400,
+                child: Text.rich(
+                  key: Key('para'),
+                  TextSpan(
+                    children: [
+                      TextSpan(text: 'before '),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.baseline,
+                        baseline: TextBaseline.alphabetic,
+                        child: BeuiCitation(
+                          citationId: 'motion',
+                          index: 1,
+                          idPrefix: 'inline',
+                        ),
+                      ),
+                      TextSpan(text: ' after'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final marker = tester.getSize(find.byType(BeuiCitation));
+      // min-w-4 (16) + mx-0.5 (2+2) = 20; anything near 400 means it grabbed
+      // the paragraph width.
+      expect(marker.width, lessThan(32));
+
+      // The whole run must still fit on one line.
+      final paragraph = tester.renderObject<RenderBox>(
+        find.byKey(const Key('para')),
+      );
+      expect(paragraph.size.height, lessThan(40));
+    });
+
+    testWidgets('marker index pins tracking to normal', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(
+            extensions: [BeuiColors.light()],
+            textTheme: const TextTheme(
+              bodyMedium: TextStyle(fontSize: 14, letterSpacing: 3),
+            ),
+          ),
+          home: const Scaffold(
+            body: Center(
+              child: BeuiCitation(
+                citationId: 'motion',
+                index: 2,
+                idPrefix: 'tracking',
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      final style = tester
+          .renderObject<RenderParagraph>(find.text('2'))
+          .text
+          .style!;
+      expect(style.letterSpacing, 0);
     });
   });
 
