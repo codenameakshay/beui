@@ -59,6 +59,18 @@ void main() {
       expect(find.text('Doc'), findsNothing); // default item hidden
     });
 
+    testWidgets('the collapsed pill shrink-wraps instead of filling a loose '
+        'parent', (tester) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+      final size = tester.getSize(find.byType(BeuiBloomMenu));
+      expect(size.height, 44); // h-11
+      // w-36 (144) at the default label; the test font is wider than the real
+      // one, so pin the property that matters: it never goes full-bleed.
+      expect(size.width, greaterThanOrEqualTo(144));
+      expect(size.width, lessThan(240));
+    });
+
     testWidgets('tapping the trigger blooms the grid menu', (tester) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();
