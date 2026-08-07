@@ -176,6 +176,7 @@ class _OutputPalette {
   const _OutputPalette({
     required this.base,
     required this.keyword,
+    required this.property,
     required this.string,
     required this.comment,
     required this.number,
@@ -191,6 +192,9 @@ class _OutputPalette {
     return _OutputPalette(
       base: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
       keyword: isLight ? const Color(0xFFA0111F) : const Color(0xFFFF9492),
+      // Shiki scopes a JSON property name as `support.type.property-name.json`,
+      // which these themes paint green — NOT the red they use for keywords.
+      property: isLight ? const Color(0xFF024C1A) : const Color(0xFF72F088),
       string: isLight ? const Color(0xFF032563) : const Color(0xFFADDCFF),
       comment: isLight ? const Color(0xFF4B535D) : const Color(0xFFBDC4CC),
       number: isLight ? const Color(0xFF023B95) : const Color(0xFF91CBFF),
@@ -201,6 +205,7 @@ class _OutputPalette {
 
   final Color base;
   final Color keyword;
+  final Color property;
   final Color string;
   final Color comment;
   final Color number;
@@ -302,7 +307,7 @@ List<_Tok> _hlJson(String line, _OutputPalette p) {
       out.add(
         _Tok(
           line.substring(i, end),
-          after.startsWith(':') ? p.keyword : p.string,
+          after.startsWith(':') ? p.property : p.string,
         ),
       );
       i = end;

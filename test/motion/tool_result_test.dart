@@ -324,5 +324,44 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.textContaining('echo hello'), findsOneWidget);
     });
+
+    testWidgets('JSON property names take the theme green, not keyword red', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          status: BeuiToolResultStatus.error,
+          child: const BeuiToolResultOutput(
+            code: '{\n  "error": "rate_limit_exceeded"\n}',
+            language: BeuiCodeLanguage.json,
+          ),
+        ),
+      );
+      // Fixed pumps, not pumpAndSettle: the running spinner is indefinite and
+      // a stray ~397ms ticker keeps the tree busy even at a terminal status.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+
+      Color? colorOf(String text) {
+        Color? found;
+        for (final rt in tester.widgetList<RichText>(find.byType(RichText))) {
+          rt.text.visitChildren((span) {
+            if (span is TextSpan && span.text == text) {
+              found = span.style?.color;
+              return false;
+            }
+            return true;
+          });
+          if (found != null) break;
+        }
+        return found;
+      }
+
+      // Shiki scopes a property name as `support.type.property-name.json`,
+      // which github-*-high-contrast paints green. Painting it with the keyword
+      // red was the divergence measured against beui.dev.
+      expect(colorOf('"error"'), const Color(0xFF024C1A));
+      expect(colorOf('"rate_limit_exceeded"'), const Color(0xFF032563));
+    });
   });
 }
