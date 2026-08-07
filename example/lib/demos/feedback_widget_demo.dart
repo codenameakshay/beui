@@ -53,12 +53,18 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: colors.border)),
           ),
-          child: Container(
-            height: 10,
-            width: 96,
-            decoration: BoxDecoration(
-              color: colors.mutedForeground.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(999),
+          // `Align` loosens the tight width the full-bleed header hands down —
+          // without it the `w-24` pill enforces against a tight 408px and goes
+          // full-bleed.
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              height: 10,
+              width: 96,
+              decoration: BoxDecoration(
+                color: colors.mutedForeground.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(999),
+              ),
             ),
           ),
         ),
