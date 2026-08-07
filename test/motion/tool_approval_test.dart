@@ -291,5 +291,21 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('ui-components'), findsOneWidget);
     });
+
+    testWidgets('the action row is left-aligned, not centred', (tester) async {
+      await tester.pumpWidget(
+        _host(onApprove: () {}, onAlwaysAllow: () {}, onDeny: () {}),
+      );
+      await tester.pumpAndSettle();
+
+      // The source's action row is `flex … px-4 py-3` with no `justify-*`, so
+      // it is full-width and flex-start. The reveal's `Align` loosens, so
+      // without an explicit full-width box the row shrink-wrapped to its
+      // buttons and `topCenter` centred them.
+      final card = tester.getRect(find.byType(BeuiToolApproval));
+      final first = tester.getRect(find.text('Allow once'));
+
+      expect(first.left - card.left, lessThan(40));
+    });
   });
 }

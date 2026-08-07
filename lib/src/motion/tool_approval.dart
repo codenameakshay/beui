@@ -974,11 +974,19 @@ class _ActionsPresence extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.topCenter,
                   heightFactor: tt,
-                  child: Opacity(
-                    opacity: tt,
-                    child: Transform.translate(
-                      offset: Offset(0, y),
-                      child: child,
+                  // `Align` loosens, so without this the action row shrink-
+                  // wraps to its buttons and `topCenter` centres it — the
+                  // source's row is `flex … px-4` with no `justify-*`, i.e.
+                  // full width and flex-start. The reduced-motion branch has no
+                  // Align, so it was already correct; only this path drifted.
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Opacity(
+                      opacity: tt,
+                      child: Transform.translate(
+                        offset: Offset(0, y),
+                        child: child,
+                      ),
                     ),
                   ),
                 ),
