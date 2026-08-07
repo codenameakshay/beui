@@ -46,7 +46,10 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          // px-5 py-3; `width: infinity` so the divider spans the card the way
+          // a block-level div does, instead of shrink-wrapping the pill.
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: colors.border)),
           ),
