@@ -280,5 +280,41 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Skipped task'), findsOneWidget);
     });
+
+    testWidgets('the completion strike spans the title, not the whole row', (
+      tester,
+    ) async {
+      // A deliberately short title: the test font is far wider than Geist, so
+      // a realistic sentence would fill the row and ellipsize, making the
+      // strike legitimately full-width and the assertion meaningless.
+      await tester.pumpWidget(
+        _host(
+          items: const [
+            BeuiTodoItem(
+              id: 'a',
+              title: Text('Done'),
+              status: BeuiTodoItemStatus.completed,
+            ),
+          ],
+          collapseOnComplete: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // The rule is drawn with `Positioned.fill` over the title's Stack, so
+      // that Stack must shrink-wrap the glyphs. Under a bare Expanded the
+      // Stack was handed a tight full-row width and the rule ran well past the
+      // end of the text; beui.dev strikes only the title.
+      final strike = tester
+          .getSize(
+            find
+                .ancestor(of: find.text('Done'), matching: find.byType(Stack))
+                .first,
+          )
+          .width;
+      final row = tester.getSize(find.byType(BeuiTodoList)).width;
+
+      expect(strike, lessThan(row / 2));
+    });
   });
 }

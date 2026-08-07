@@ -787,20 +787,27 @@ class _TodoRowState extends State<_TodoRow> {
             ),
             const SizedBox(width: 10), // gap-2.5
             Expanded(
-              child: Semantics(
-                label: '${_statusLabel(status)}: ',
-                child: DefaultTextStyle.merge(
-                  style: TextStyle(
-                    fontSize: 14,
-                    height: 20 / 14,
-                    color: _titleColor(status, colors),
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  child: _StrikethroughTitle(
-                    completed: completed,
-                    reduce: reduce,
-                    child: item.title,
+              // Align loosens the incoming tight width, so the strike Stack
+              // shrink-wraps the glyphs. Under a bare Expanded the Stack fills
+              // the row and `Positioned.fill` rules straight past the title,
+              // where the source strikes only the text.
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Semantics(
+                  label: '${_statusLabel(status)}: ',
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 20 / 14,
+                      color: _titleColor(status, colors),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    child: _StrikethroughTitle(
+                      completed: completed,
+                      reduce: reduce,
+                      child: item.title,
+                    ),
                   ),
                 ),
               ),
