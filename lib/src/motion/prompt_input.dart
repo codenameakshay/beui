@@ -406,9 +406,10 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
         curve: Curves.ease,
         decoration: BoxDecoration(
           color: widget.surfaceColor ?? colors.background,
-          border: widget.bordered
-              ? Border.all(color: borderColor)
-              : Border.all(color: Colors.transparent),
+          // `border-0` in the source removes the box entirely — a transparent
+          // 1px border would still inset the child and make the shell 2px
+          // taller than the site's.
+          border: widget.bordered ? Border.all(color: borderColor) : null,
           borderRadius: BorderRadius.circular(_shellRadius),
         ),
         padding: const EdgeInsets.all(8),
