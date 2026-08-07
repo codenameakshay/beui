@@ -14,7 +14,9 @@ Widget _app(Widget child, {bool reduce = false}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }
@@ -126,7 +128,9 @@ void main() {
   ) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: const Scaffold(
           body: Center(
             child: SizedBox(

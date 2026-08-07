@@ -32,7 +32,9 @@ Widget _app({
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: child),
   );
 }
@@ -144,7 +146,9 @@ void main() {
   testWidgets('rest-state golden (on / off / disabled)', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: const Scaffold(
           body: Center(
             child: Column(

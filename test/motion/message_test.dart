@@ -14,7 +14,9 @@ Widget _wrap(Widget child, {bool reduce = false}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }
@@ -193,7 +195,9 @@ void main() {
     testWidgets('placeholder reserves space but hides content', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
           home: const Scaffold(
             body: Center(
               child: BeuiMessageAvatar(placeholder: true, child: Text('AK')),

@@ -430,6 +430,10 @@ class _DropzoneState extends State<_Dropzone> {
           style: TextStyle(
             fontSize: centered ? 16 : 14,
             fontWeight: FontWeight.w600,
+            // Source: `tracking-[-0.01em]` — one of the few beUI labels that
+            // asks for tracking at all, so it is pinned rather than left to
+            // the theme's (now zero) default.
+            letterSpacing: (centered ? 16 : 14) * -0.01,
             color: colors.foreground,
           ),
         ),

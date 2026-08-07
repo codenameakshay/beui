@@ -67,7 +67,9 @@ Widget _host({
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: child),
   );
 }
@@ -279,7 +281,9 @@ void main() {
     testWidgets('renders index badge', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
           home: const Scaffold(
             body: Center(
               child: BeuiCitation(
@@ -323,7 +327,9 @@ void main() {
       var pressed = false;
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
           home: Scaffold(
             body: Center(
               child: BeuiCitation(
@@ -349,7 +355,9 @@ void main() {
     ) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
           home: const Scaffold(
             body: Center(
               child: SizedBox(
@@ -440,7 +448,9 @@ void main() {
     testWidgets('renders up to limit favicon slots', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
           home: Scaffold(
             body: Center(
               child: BeuiCitationStack(citations: _sample(), limit: 2),
@@ -458,7 +468,9 @@ void main() {
     testWidgets('renders rows without a parent panel', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
           home: Scaffold(
             body: Center(
               child: BeuiCitationList(

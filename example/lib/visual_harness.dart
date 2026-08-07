@@ -43,10 +43,15 @@ class VisualHarnessApp extends StatelessWidget {
     final colors = BeuiColors.of(colorTheme, brightness);
     // Render in Geist, the face beui.dev serves, so a diff against the site
     // measures the widget rather than the difference between two typefaces.
-    final base = ThemeData(
-      brightness: brightness,
-      useMaterial3: true,
-      fontFamily: 'Geist',
+    // Tracking neutralised for the same reason the gallery does it: Material's
+    // default letterSpacing has no counterpart in the Tailwind source, and it
+    // is exactly what a width diff against beui.dev would otherwise measure.
+    final base = BeuiTextTheme.trackingNormal(
+      ThemeData(
+        brightness: brightness,
+        useMaterial3: true,
+        fontFamily: 'Geist',
+      ),
     );
     final theme = base.copyWith(
       scaffoldBackgroundColor: colors.background,

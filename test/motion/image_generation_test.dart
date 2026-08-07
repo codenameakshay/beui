@@ -44,7 +44,9 @@ Widget _host({
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }

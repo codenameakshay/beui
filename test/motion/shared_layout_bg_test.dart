@@ -6,7 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 const _pill = ValueKey<String>('beui_shared_pill');
 
 Widget _app() => MaterialApp(
-  theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+  theme: BeuiTextTheme.trackingNormal(
+    ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+  ),
   home: Scaffold(
     body: Center(
       child: SizedBox(
@@ -94,7 +96,9 @@ void main() {
     var tapped = -1;
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: Scaffold(
           body: Center(
             child: SizedBox(

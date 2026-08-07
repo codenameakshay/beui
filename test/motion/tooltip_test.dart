@@ -8,7 +8,9 @@ const _trigger = ValueKey<String>('trigger');
 
 Widget _app({BeuiTooltipSide side = BeuiTooltipSide.top, Widget? child}) {
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(
       body: Center(
         child: BeuiTooltip(

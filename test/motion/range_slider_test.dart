@@ -33,7 +33,9 @@ Widget _app({required Widget child, bool reduce = false, double width = 200}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }

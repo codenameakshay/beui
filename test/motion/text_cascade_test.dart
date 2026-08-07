@@ -29,7 +29,9 @@ class _HostState extends State<_Host> {
       );
     }
     return MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
       home: Scaffold(body: Center(child: body)),
     );
   }
@@ -127,7 +129,9 @@ void main() {
     // a 5px jump of the whole column on every cascade.
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: const Scaffold(
           body: DefaultTextStyle(
             style: TextStyle(fontSize: 14, height: 1.43),

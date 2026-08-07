@@ -30,7 +30,9 @@ class _HostState extends State<_Host> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
       builder: (context, child) {
         if (!widget.disableAnimations) return child!;
         return MediaQuery(

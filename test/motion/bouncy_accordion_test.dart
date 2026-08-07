@@ -37,7 +37,9 @@ Widget _host({
     collapsible: collapsible,
   );
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(
       body: Builder(
         builder: (context) => MediaQuery(
