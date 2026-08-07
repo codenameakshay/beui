@@ -43,7 +43,11 @@ class _LoadingStatesDemo extends StatelessWidget {
                 BeuiReasoningText(
                   variant: example.variant,
                   phrases: example.phrases,
-                  style: const TextStyle(fontSize: 16),
+                  // `text-base leading-7` — the component sets no type of its
+                  // own, so the preview's line box is what the site shows.
+                  // Without it the three variants pitch 71px apart where the
+                  // site pitches them 76-77.
+                  style: const TextStyle(fontSize: 16, height: 28 / 16),
                 ),
                 const SizedBox(height: 24),
               ],
