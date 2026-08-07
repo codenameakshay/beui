@@ -44,6 +44,7 @@ class _MenuRowState extends State<_MenuRow> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
+                  letterSpacing: 0, // tracking-normal
                   color: colors.foreground,
                 ),
               ),
