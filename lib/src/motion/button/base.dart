@@ -54,6 +54,7 @@ class BeuiButton extends StatefulWidget {
     this.enableHoverScale = true,
     this.ripple = false,
     this.focusNode,
+    this.borderRadius,
     super.key,
   });
 
@@ -85,6 +86,14 @@ class BeuiButton extends StatefulWidget {
 
   /// Optional external focus node.
   final FocusNode? focusNode;
+
+  /// Corner radius override — the port of passing `rounded-*` in `className`.
+  ///
+  /// Defaults to the size's own radius: `rounded-full` for the text sizes,
+  /// `rounded-lg` (8px) for [BeuiButtonSize.icon]. Callers that mirror a source
+  /// usage overriding the class (e.g. approval-card's circular nav buttons)
+  /// pass their own here.
+  final BorderRadius? borderRadius;
 
   @override
   State<BeuiButton> createState() => _BeuiButtonState();
@@ -124,13 +133,23 @@ class _BeuiButtonState extends State<BeuiButton> {
         ? 1.02
         : 1.0;
 
-    final radius = isIcon
-        ? BorderRadius.circular(8) // rounded-lg
-        : BorderRadius.circular(spec.height / 2); // rounded-full
+    final radius =
+        widget.borderRadius ??
+        (isIcon
+            ? BorderRadius.circular(8) // rounded-lg
+            : BorderRadius.circular(spec.height / 2)); // rounded-full
+
+    // Inherit the ambient family so the label renders in the app's typeface —
+    // a plain `TextStyle` here would reset `fontFamily` to the platform default
+    // (Roboto), because AnimatedDefaultTextStyle *replaces* the ambient style
+    // rather than merging with it.
+    final inherited = DefaultTextStyle.of(context).style;
 
     Widget content = AnimatedDefaultTextStyle(
       duration: const Duration(milliseconds: 150),
       style: TextStyle(
+        fontFamily: inherited.fontFamily,
+        fontFamilyFallback: inherited.fontFamilyFallback,
         fontSize: spec.textSize,
         fontWeight: FontWeight.w500,
         color: palette.text,

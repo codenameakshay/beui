@@ -1,5 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
@@ -455,4 +456,51 @@ void main() {
       matchesGoldenFile('goldens/beui_button.png'),
     );
   });
+
+  testWidgets(
+    'label inherits the ambient font family and honours borderRadius',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(
+            fontFamily: 'HostFace',
+          ).copyWith(extensions: [BeuiColors.light()]),
+          home: const Scaffold(
+            body: Center(
+              child: BeuiButton(
+                size: BeuiButtonSize.icon,
+                borderRadius: BorderRadius.all(Radius.circular(999)),
+                child: Text('Go'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // AnimatedDefaultTextStyle *replaces* the ambient style, so a bare
+      // TextStyle would silently reset the label to the platform default face.
+      expect(
+        tester
+            .renderObject<RenderParagraph>(find.text('Go'))
+            .text
+            .style
+            ?.fontFamily,
+        'HostFace',
+      );
+
+      final box = tester.widget<AnimatedContainer>(
+        find
+            .descendant(
+              of: find.byType(BeuiButton),
+              matching: find.byType(AnimatedContainer),
+            )
+            .first,
+      );
+      expect(
+        (box.decoration! as BoxDecoration).borderRadius,
+        BorderRadius.circular(999),
+      );
+    },
+  );
 }

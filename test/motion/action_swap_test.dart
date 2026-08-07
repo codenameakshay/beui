@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {bool reduce = false}) {
@@ -65,6 +66,31 @@ void main() {
       await tester.tap(find.byType(BeuiActionSwapButton));
       await tester.pumpAndSettle();
       expect(find.text('Copy link'), findsOneWidget);
+    });
+
+    testWidgets('label inherits the ambient font family', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(
+            fontFamily: 'HostFace',
+          ).copyWith(extensions: [BeuiColors.light()]),
+          home: const Scaffold(
+            body: Center(child: BeuiActionSwapButton(items: _items)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // AnimatedDefaultTextStyle *replaces* the ambient style, so a bare
+      // TextStyle would silently reset the label to the platform default face.
+      expect(
+        tester
+            .renderObject<RenderParagraph>(find.text('Copy link'))
+            .text
+            .style
+            ?.fontFamily,
+        'HostFace',
+      );
     });
 
     testWidgets('controlled value ignores internal state', (tester) async {

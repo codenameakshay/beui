@@ -577,7 +577,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
                     if (!_interactive)
                       Padding(
                         padding: const EdgeInsets.only(top: 4), // mt-1
-                        child: DefaultTextStyle(
+                        child: DefaultTextStyle.merge(
                           style: TextStyle(
                             fontSize: 14,
                             height: 20 / 14,
@@ -661,23 +661,20 @@ class _HeaderRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: DefaultTextStyle(
+          // `.merge` (not a replacing DefaultTextStyle) so the heading keeps the
+          // ambient font family; the swap reads this style rather than being
+          // handed a bare TextStyle that would reset the face to the default.
+          child: DefaultTextStyle.merge(
             style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              height: 20 / 16,
+              fontSize: 16, // text-base
+              fontWeight: FontWeight.w500, // font-medium
+              height: 20 / 16, // leading-5
               color: colors.foreground,
             ),
             child: BeuiActionSwapText(
               value: titleKey,
               text: displayTitle,
               variant: BeuiActionSwapVariant.roll,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                height: 20 / 16,
-                color: colors.foreground,
-              ),
             ),
           ),
         ),
@@ -1020,7 +1017,10 @@ class _QuestionOptions extends StatelessWidget {
                   ),
           if (question.allowCustom)
             Padding(
-              padding: EdgeInsets.only(top: hasOptions ? 6 : 0), // mt-1.5
+              // mt-1.5 on the wrapper, plus the wrapper's own `p-0.5` (2px)
+              // gutter around the 40px field — the source passes
+              // `className={cn("p-0.5", …)}`, so the slot is 44px tall.
+              padding: EdgeInsets.fromLTRB(2, hasOptions ? 8 : 2, 2, 2),
               // source field classes: `h-10 rounded-xl border-0
               // bg-background/70`. BeuiInputStyle has no fill, so the capsule
               // is painted behind the (transparent-bordered) field.
@@ -1119,6 +1119,9 @@ class _QuestionNav extends StatelessWidget {
           child: BeuiButton(
             variant: BeuiButtonVariant.ghost,
             size: BeuiButtonSize.icon,
+            // Source: `className="rounded-full"` on the nav buttons, overriding
+            // the icon size's default `rounded-lg`.
+            borderRadius: BorderRadius.circular(999),
             onPressed: busy || currentStep == 0 ? null : onPrev,
             child: const Icon(LucideIcons.arrow_left, size: 16),
           ),
@@ -1135,6 +1138,7 @@ class _QuestionNav extends StatelessWidget {
           message: isLast ? 'Submit response' : 'Next question',
           child: BeuiButton(
             size: isLast ? BeuiButtonSize.sm : BeuiButtonSize.icon,
+            borderRadius: BorderRadius.circular(999), // rounded-full
             onPressed: busy || !answered ? null : onContinue,
             child: busy
                 ? _SpinIcon(

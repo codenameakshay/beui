@@ -1,5 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const _questions = <BeuiApprovalCardQuestion>[
@@ -384,6 +385,82 @@ void main() {
       await tester.tap(find.text('Approve'));
       await tester.pump();
       expect(approved, isTrue);
+    });
+  });
+
+  group('BeuiApprovalCard — visual fidelity', () {
+    testWidgets('heading and action labels keep the ambient font family', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(
+            fontFamily: 'HostFace',
+          ).copyWith(extensions: [BeuiColors.light()]),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 400,
+                child: BeuiApprovalCard(
+                  questions: _questions,
+                  onSubmit: (_) {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // A replacing DefaultTextStyle / AnimatedDefaultTextStyle would reset the
+      // family to the platform default, silently rendering in the wrong face.
+      String? familyOf(Finder finder) =>
+          tester.renderObject<RenderParagraph>(finder).text.style?.fontFamily;
+
+      expect(familyOf(find.text(_questions.first.title)), 'HostFace');
+      expect(familyOf(find.text('A focused starter set')), 'HostFace');
+    });
+
+    testWidgets('question nav buttons are circular (source rounded-full)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_host(questions: _questions, onSubmit: (_) {}));
+      await tester.pump(const Duration(milliseconds: 400));
+
+      for (final label in ['Previous question', 'Next question']) {
+        final button = tester.widget<BeuiButton>(
+          find.descendant(
+            of: find.byTooltip(label),
+            matching: find.byType(BeuiButton),
+          ),
+        );
+        expect(
+          button.borderRadius,
+          BorderRadius.circular(999),
+          reason: '$label should be a pill, not the icon size\'s rounded-lg',
+        );
+      }
+    });
+
+    testWidgets('custom-response field sits in a 2px p-0.5 gutter', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_host(questions: _questions, onSubmit: (_) {}));
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // Source: `className={cn("p-0.5", question.options?.length && "mt-1.5")}`
+      // — 6px margin above plus a 2px gutter all round the 40px field.
+      final paddings = tester.widgetList<Padding>(
+        find.ancestor(
+          of: find.byType(BeuiInput),
+          matching: find.byType(Padding),
+        ),
+      );
+      expect(
+        paddings.any((p) => p.padding == const EdgeInsets.fromLTRB(2, 8, 2, 2)),
+        isTrue,
+        reason: 'expected the mt-1.5 + p-0.5 slot around the input',
+      );
     });
   });
 }

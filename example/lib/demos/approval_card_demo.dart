@@ -272,12 +272,16 @@ class _MetaList extends StatelessWidget {
       ('Visibility', 'Public registry', false),
     ];
 
+    // Source markup: `<dl class="grid gap-1 text-xs">` with each row
+    // `flex items-center justify-between gap-4 py-1` — 12/16 text plus py-1
+    // makes a 24px row, gap-1 (4px) between rows.
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        for (final (label, value, mono) in rows)
+        for (final (i, (label, value, mono)) in rows.indexed) ...[
+          if (i > 0) const SizedBox(height: 4), // gap-1
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 4), // py-1
             child: Row(
               children: [
                 Expanded(
@@ -285,14 +289,17 @@ class _MetaList extends StatelessWidget {
                     label,
                     style: TextStyle(
                       fontSize: 12,
+                      height: 16 / 12, // text-xs leading
                       color: colors.mutedForeground,
                     ),
                   ),
                 ),
+                const SizedBox(width: 16), // gap-4
                 Text(
                   value,
                   style: TextStyle(
                     fontSize: 12,
+                    height: 16 / 12,
                     fontFamily: mono ? 'monospace' : null,
                     color: colors.foreground.withValues(alpha: 0.80),
                   ),
@@ -300,6 +307,7 @@ class _MetaList extends StatelessWidget {
               ],
             ),
           ),
+        ],
       ],
     );
   }
