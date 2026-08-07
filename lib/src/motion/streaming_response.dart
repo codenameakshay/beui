@@ -285,6 +285,10 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
             style: TextStyle(
               fontSize: 14, // text-sm
               height: 24 / 14, // leading-6
+              // Tailwind `tracking-normal`. Explicit because an unset
+              // letterSpacing inherits the host theme's body style — 0.25 on
+              // stock Material — and widens every prose line.
+              letterSpacing: 0,
               color: contentColor,
             ),
             child: IconTheme.merge(
@@ -655,6 +659,7 @@ class _SourcesToggle extends StatelessWidget {
                     label,
                     style: TextStyle(
                       fontSize: 12, // text-xs
+                      letterSpacing: 0, // tracking-normal
                       color: fg,
                       fontFeatures: const [FontFeature.tabularFigures()],
                     ),

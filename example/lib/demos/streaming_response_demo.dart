@@ -96,35 +96,34 @@ class _StreamingResponseDemoState extends State<_StreamingResponseDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 576), // max-w-xl
-        child: SizedBox(
-          height: 500,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  // source preview container has no inset; the response is
-                  // flush inside `w-full max-w-xl`.
-                  padding: const EdgeInsets.only(bottom: 48),
-                  child: _ResponseDemo(
-                    key: ValueKey<int>(_run),
-                    onReplay: () => setState(() => _run++),
-                  ),
+    return Align(
+      child: SizedBox(
+        // source preview: `relative h-[500px] w-full max-w-xl` (576).
+        width: 576,
+        height: 500,
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: SingleChildScrollView(
+                // source preview container has no inset; the response is
+                // flush inside `w-full max-w-xl`.
+                padding: const EdgeInsets.only(bottom: 48),
+                child: _ResponseDemo(
+                  key: ValueKey<int>(_run),
+                  onReplay: () => setState(() => _run++),
                 ),
               ),
-              Positioned(
-                left: 8,
-                bottom: 8,
-                child: _ReplayButton(
-                  colors: colors,
-                  onPressed: () => setState(() => _run++),
-                ),
+            ),
+            Positioned(
+              left: 0,
+              bottom: 0,
+              child: _ReplayButton(
+                colors: colors,
+                onPressed: () => setState(() => _run++),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -139,26 +138,36 @@ class _ReplayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton.icon(
-      onPressed: onPressed,
-      icon: Icon(
-        LucideIcons.rotate_ccw,
-        size: 12,
-        color: colors.mutedForeground,
-      ),
-      label: Text(
-        'Replay',
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: colors.mutedForeground,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(6), // rounded-md
+        hoverColor: colors.muted,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                LucideIcons.rotate_ccw,
+                size: 12,
+                color: colors.mutedForeground,
+              ),
+              const SizedBox(width: 6), // gap-1.5
+              Text(
+                'Replay',
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 16 / 12,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0, // tracking-normal
+                  color: colors.mutedForeground,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      style: TextButton.styleFrom(
-        foregroundColor: colors.mutedForeground,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
   }
@@ -249,9 +258,11 @@ class _ResponseDemoState extends State<_ResponseDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final mono = TextStyle(
-      fontFamily: 'JetBrains Mono',
-      fontFamilyFallback: const ['monospace'],
+      // The source's prose styles resolve `code`/`pre` to `font-mono`, the
+      // generic family — not a named face.
+      fontFamily: 'monospace',
       fontSize: 12.6, // text-[0.9em] of 14
+      letterSpacing: 0, // tracking-normal
       color: colors.foreground.withValues(alpha: 0.9),
     );
 
@@ -365,16 +376,30 @@ class _Bullet extends StatelessWidget {
     final style = TextStyle(
       fontSize: 14,
       height: 24 / 14,
+      letterSpacing: 0,
       color: colors.foreground.withValues(alpha: 0.9),
     );
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // `list-disc` paints a 5px ::marker disc, not a bullet glyph: a `•`
+        // in the body face lands ~4px right of it and reads a pixel small.
         SizedBox(
           width: 20, // pl-5 marker gutter
+          height: 24, // leading-6 line box, so the disc centres on the line
           child: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text('•', style: style),
+            padding: const EdgeInsets.only(left: 4),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                width: 5,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: style.color,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
           ),
         ),
         Expanded(
@@ -383,6 +408,7 @@ class _Bullet extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               height: 24 / 14,
+              letterSpacing: 0,
               color: colors.foreground.withValues(alpha: 0.9),
             ),
           ),
