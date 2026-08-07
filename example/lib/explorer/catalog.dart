@@ -70,7 +70,11 @@ import '../demos/wheel_picker_demo.dart';
 /// The three top-level groups in the explorer, mirroring the site's sidebar.
 enum ExploreSection {
   components('Components', 'motion', 'Motion primitives with composable APIs.'),
-  agents('AI Agents', 'agents', 'Conversational and agent-reasoning interfaces.'),
+  agents(
+    'AI Agents',
+    'agents',
+    'Conversational and agent-reasoning interfaces.',
+  ),
   blocks('Blocks', 'blocks', 'Composed, product-ready motion patterns.');
 
   const ExploreSection(this.title, this.slug, this.subtitle);
@@ -604,7 +608,8 @@ const List<ExploreEntry> kAgents = [
     slug: 'prompt-input',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Auto-growing composer with model selection and animated send states.',
+    blurb:
+        'Auto-growing composer with model selection and animated send states.',
     builder: promptInputDemo,
   ),
   ExploreEntry(
@@ -628,7 +633,8 @@ const List<ExploreEntry> kAgents = [
     slug: 'approval-card',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Decision surface for approvals and single or multi-choice questions.',
+    blurb:
+        'Decision surface for approvals and single or multi-choice questions.',
     builder: approvalCardDemo,
   ),
   ExploreEntry(
@@ -644,8 +650,7 @@ const List<ExploreEntry> kAgents = [
     slug: 'tool-result',
     section: ExploreSection.agents,
     isNew: true,
-    blurb:
-        'Execution disclosure for terminal output that collapses when done.',
+    blurb: 'Execution disclosure for terminal output that collapses when done.',
     builder: toolResultDemo,
   ),
   ExploreEntry(
@@ -653,7 +658,8 @@ const List<ExploreEntry> kAgents = [
     slug: 'streaming-response',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Stable response surface with completion actions and source summary.',
+    blurb:
+        'Stable response surface with completion actions and source summary.',
     builder: streamingResponseDemo,
   ),
   ExploreEntry(
@@ -715,11 +721,7 @@ const List<ExploreEntry> kAgents = [
 ];
 
 /// All entries across every section, in display order.
-const List<ExploreEntry> kAllEntries = [
-  ...kComponents,
-  ...kAgents,
-  ...kBlocks,
-];
+const List<ExploreEntry> kAllEntries = [...kComponents, ...kAgents, ...kBlocks];
 
 /// The entries for [section].
 List<ExploreEntry> entriesFor(ExploreSection section) => switch (section) {

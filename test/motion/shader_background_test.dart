@@ -18,7 +18,9 @@ Widget _app(BeuiShaderVariant variant, {bool reduce = false}) {
       ),
     );
   }
-  return MaterialApp(home: Scaffold(body: Center(child: body)));
+  return MaterialApp(
+    home: Scaffold(body: Center(child: body)),
+  );
 }
 
 void main() {

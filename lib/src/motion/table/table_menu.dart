@@ -132,7 +132,11 @@ class _TableMenuState extends State<_TableMenu> {
           mainAxisSize: MainAxisSize.min,
           children: [
             for (final item in widget.items)
-              _MenuItem(item: item, colors: colors, onClose: () => _setOpen(false)),
+              _MenuItem(
+                item: item,
+                colors: colors,
+                onClose: () => _setOpen(false),
+              ),
           ],
         ),
       ),
@@ -149,13 +153,9 @@ class _TableMenuState extends State<_TableMenu> {
         child: SingleMotionBuilder(
           value: _open ? 1.0 : 0.0,
           from: 0,
-          motion:
-              reduce
-                  ? const CurvedMotion(
-                    Duration(milliseconds: 120),
-                    beuiEaseOut,
-                  )
-                  : beuiSpringPanel,
+          motion: reduce
+              ? const CurvedMotion(Duration(milliseconds: 120), beuiEaseOut)
+              : beuiSpringPanel,
           builder: (context, t, child) {
             final clamped = t.clamp(0.0, 1.0);
             // Opacity rides the overlay's own enter/exit clock so close always
@@ -168,8 +168,7 @@ class _TableMenuState extends State<_TableMenu> {
                       offset: Offset(0, -4 * (1 - t)),
                       child: Transform.scale(
                         scale: 0.96 + 0.04 * clamped,
-                        alignment:
-                            end ? Alignment.topRight : Alignment.topLeft,
+                        alignment: end ? Alignment.topRight : Alignment.topLeft,
                         child: child,
                       ),
                     ),
@@ -205,10 +204,9 @@ class _MenuItemState extends State<_MenuItem> {
     final item = widget.item;
     final colors = widget.colors;
     final fg = item.destructive ? colors.destructive : colors.foreground;
-    final hoverBg =
-        item.destructive
-            ? colors.destructive.withValues(alpha: 0.1)
-            : colors.muted;
+    final hoverBg = item.destructive
+        ? colors.destructive.withValues(alpha: 0.1)
+        : colors.muted;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -221,8 +219,7 @@ class _MenuItemState extends State<_MenuItem> {
           item.onSelect();
         },
         child: Container(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
             color: _hovered ? hoverBg : Colors.transparent,
             borderRadius: BorderRadius.circular(8),

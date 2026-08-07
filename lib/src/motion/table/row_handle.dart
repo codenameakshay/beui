@@ -28,20 +28,16 @@ class _RowHandle<T> extends StatelessWidget {
           _TableMenuEntry(
             label: 'Insert before',
             icon: LucideIcons.arrow_up_to_line,
-            onSelect:
-                () => state.widget.onInsertRow!(
-                  index,
-                  BeuiTableInsertPosition.before,
-                ),
+            onSelect: () => state.widget.onInsertRow!(
+              index,
+              BeuiTableInsertPosition.before,
+            ),
           ),
           _TableMenuEntry(
             label: 'Insert after',
             icon: LucideIcons.arrow_down_to_line,
-            onSelect:
-                () => state.widget.onInsertRow!(
-                  index,
-                  BeuiTableInsertPosition.after,
-                ),
+            onSelect: () =>
+                state.widget.onInsertRow!(index, BeuiTableInsertPosition.after),
           ),
         ],
         if (state.widget.onDeleteRow != null)

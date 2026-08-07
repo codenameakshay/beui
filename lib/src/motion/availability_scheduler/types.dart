@@ -46,7 +46,11 @@ enum BeuiDayKey {
 class BeuiTimeRange {
   /// Creates a time range. [id] is a stable identity used to key add/remove
   /// animations.
-  const BeuiTimeRange({required this.id, required this.start, required this.end});
+  const BeuiTimeRange({
+    required this.id,
+    required this.start,
+    required this.end,
+  });
 
   /// Stable identity across list updates — drives the enter/exit animation of
   /// the range's row.

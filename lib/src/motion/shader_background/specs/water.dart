@@ -22,7 +22,9 @@ final ShaderSpec beuiWaterSpec = ShaderSpec(
     ctx.header(scale: ctx.p('scale', 1));
     final cs = ctx.colors;
     ctx.col(cs.isNotEmpty ? cs[0] : const Color(0xFF0A2540)); // u_colorBack
-    ctx.col(cs.length > 1 ? cs[1] : const Color(0xFF8ECAE6)); // u_colorHighlight
+    ctx.col(
+      cs.length > 1 ? cs[1] : const Color(0xFF8ECAE6),
+    ); // u_colorHighlight
     ctx.f(ctx.p('imageAspectRatio', 1));
     ctx.f(ctx.p('size', 0.5));
     ctx.f(ctx.p('highlights', 1.2));

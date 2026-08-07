@@ -42,7 +42,12 @@ const _presets = <_Preset>[
   _Preset(
     'Mesh',
     BeuiShaderVariant.meshGradient,
-    [Color(0xFFE0EAFF), Color(0xFF241D9A), Color(0xFFF75092), Color(0xFF9F50D3)],
+    [
+      Color(0xFFE0EAFF),
+      Color(0xFF241D9A),
+      Color(0xFFF75092),
+      Color(0xFF9F50D3),
+    ],
     speed: 0.4,
     params: {'distortion': 0.8, 'swirl': 0.3},
   ),
@@ -89,60 +94,58 @@ const _presets = <_Preset>[
   _Preset(
     'Mesh — Aurora',
     BeuiShaderVariant.meshGradient,
-    [Color(0xFF00FFB2), Color(0xFF0072FF), Color(0xFFA200FF), Color(0xFF001A2C)],
+    [
+      Color(0xFF00FFB2),
+      Color(0xFF0072FF),
+      Color(0xFFA200FF),
+      Color(0xFF001A2C),
+    ],
     speed: 0.3,
     params: {'distortion': 0.6, 'swirl': 0.5},
   ),
   _Preset(
     'Mesh — Citrus',
     BeuiShaderVariant.meshGradient,
-    [Color(0xFFFFF200), Color(0xFFFF8A00), Color(0xFFFF3D00), Color(0xFFFFE08A)],
+    [
+      Color(0xFFFFF200),
+      Color(0xFFFF8A00),
+      Color(0xFFFF3D00),
+      Color(0xFFFFE08A),
+    ],
     speed: 0.5,
     params: {'distortion': 0.7, 'swirl': 0.4},
   ),
   // warp: the colour list fills the gradient array in order.
-  _Preset(
-    'Warp',
-    BeuiShaderVariant.warp,
-    [Color(0xFF121212), Color(0xFF9470FF), Color(0xFF121212), Color(0xFF8838FF)],
-    speed: 0.4,
-  ),
+  _Preset('Warp', BeuiShaderVariant.warp, [
+    Color(0xFF121212),
+    Color(0xFF9470FF),
+    Color(0xFF121212),
+    Color(0xFF8838FF),
+  ], speed: 0.4),
   // waves: `colorFront` then `colorBack`. Static — the source passes no speed.
   _Preset('Waves', BeuiShaderVariant.waves, [
     Color(0xFFFFBB00),
     Color(0xFF000000),
   ]),
   // voronoi: the colour list fills the cell palette.
-  _Preset(
-    'Voronoi',
-    BeuiShaderVariant.voronoi,
-    [Color(0xFFFF8247), Color(0xFFFFE53D)],
-    speed: 0.3,
-  ),
+  _Preset('Voronoi', BeuiShaderVariant.voronoi, [
+    Color(0xFFFF8247),
+    Color(0xFFFFE53D),
+  ], speed: 0.3),
   // swirl: colour 0 is `colorBack`, the rest are the bands.
-  _Preset(
-    'Swirl',
-    BeuiShaderVariant.swirl,
-    [
-      Color(0xFF180018),
-      Color(0xFFFFD1D1),
-      Color(0xFFFF8A8A),
-      Color(0xFF660000),
-    ],
-    speed: 0.2,
-  ),
+  _Preset('Swirl', BeuiShaderVariant.swirl, [
+    Color(0xFF180018),
+    Color(0xFFFFD1D1),
+    Color(0xFFFF8A8A),
+    Color(0xFF660000),
+  ], speed: 0.2),
   // dot-orbit: colour 0 is `colorBack`, the rest tint the dots.
-  _Preset(
-    'Orbit',
-    BeuiShaderVariant.dotOrbit,
-    [
-      Color(0xFF000000),
-      Color(0xFFFFC96B),
-      Color(0xFFFF6200),
-      Color(0xFFFF2F00),
-    ],
-    speed: 0.6,
-  ),
+  _Preset('Orbit', BeuiShaderVariant.dotOrbit, [
+    Color(0xFF000000),
+    Color(0xFFFFC96B),
+    Color(0xFFFF6200),
+    Color(0xFFFF2F00),
+  ], speed: 0.6),
   // dot-grid: `colorBack`, `colorFill`, `colorStroke`.
   _Preset('Grid', BeuiShaderVariant.dotGrid, [
     Color(0xFF000000),
@@ -150,12 +153,10 @@ const _presets = <_Preset>[
     Color(0xFFFFAA00),
   ]),
   // smoke-ring: colour 0 is `colorBack`, the rest fill the ring.
-  _Preset(
-    'Smoke',
-    BeuiShaderVariant.smokeRing,
-    [Color(0xFF000000), Color(0xFFFFFFFF)],
-    speed: 0.3,
-  ),
+  _Preset('Smoke', BeuiShaderVariant.smokeRing, [
+    Color(0xFF000000),
+    Color(0xFFFFFFFF),
+  ], speed: 0.3),
   // static-radial-gradient: colour 0 is `colorBack`.
   _Preset('Radial', BeuiShaderVariant.staticRadialGradient, [
     Color(0xFF000000),
@@ -164,76 +165,54 @@ const _presets = <_Preset>[
     Color(0xFFFFFFFF),
   ]),
   // neuro-noise: `colorFront`, `colorMid`, `colorBack`.
-  _Preset(
-    'Neuro',
-    BeuiShaderVariant.neuroNoise,
-    [Color(0xFFFFFFFF), Color(0xFF47A6FF), Color(0xFF000000)],
-    speed: 0.4,
-  ),
+  _Preset('Neuro', BeuiShaderVariant.neuroNoise, [
+    Color(0xFFFFFFFF),
+    Color(0xFF47A6FF),
+    Color(0xFF000000),
+  ], speed: 0.4),
   // water: `colorBack` (the base) then `colorHighlight`.
-  _Preset(
-    'Water',
-    BeuiShaderVariant.water,
-    [Color(0xFF909090), Color(0xFFFFFFFF)],
-    speed: 0.4,
-  ),
+  _Preset('Water', BeuiShaderVariant.water, [
+    Color(0xFF909090),
+    Color(0xFFFFFFFF),
+  ], speed: 0.4),
   // metaballs: colour 0 is `colorBack`, the rest tint the balls.
-  _Preset(
-    'Metaballs',
-    BeuiShaderVariant.metaballs,
-    [
-      Color(0xFF000000),
-      Color(0xFFFF5CF4),
-      Color(0xFF4D9EFF),
-      Color(0xFF000000),
-    ],
-    speed: 0.5,
-  ),
+  _Preset('Metaballs', BeuiShaderVariant.metaballs, [
+    Color(0xFF000000),
+    Color(0xFFFF5CF4),
+    Color(0xFF4D9EFF),
+    Color(0xFF000000),
+  ], speed: 0.5),
   // god-rays: colour 0 is `colorBack`, the rest are the ray colours.
-  _Preset(
-    'Rays',
-    BeuiShaderVariant.godRays,
-    [Color(0xFF000000), Color(0xFFFFCC66), Color(0xFFFF6A00)],
-    speed: 0.4,
-  ),
+  _Preset('Rays', BeuiShaderVariant.godRays, [
+    Color(0xFF000000),
+    Color(0xFFFFCC66),
+    Color(0xFFFF6A00),
+  ], speed: 0.4),
   // spiral: `colorBack` then `colorFront`.
-  _Preset(
-    'Spiral',
-    BeuiShaderVariant.spiral,
-    [Color(0xFF7A5CFF), Color(0xFFFF5CA6), Color(0xFF000000)],
-    speed: 0.4,
-  ),
+  _Preset('Spiral', BeuiShaderVariant.spiral, [
+    Color(0xFF7A5CFF),
+    Color(0xFFFF5CA6),
+    Color(0xFF000000),
+  ], speed: 0.4),
   // dithering: `colorFront` then `colorBack`.
-  _Preset(
-    'Dither',
-    BeuiShaderVariant.dithering,
-    [Color(0xFF00FF9D), Color(0xFF000000)],
-    speed: 0.4,
-  ),
+  _Preset('Dither', BeuiShaderVariant.dithering, [
+    Color(0xFF00FF9D),
+    Color(0xFF000000),
+  ], speed: 0.4),
   // pulsing-border: colour 0 is `colorBack`, the rest are the spots.
-  _Preset(
-    'Pulse',
-    BeuiShaderVariant.pulsingBorder,
-    [
-      Color(0xFF000000),
-      Color(0xFF00E5FF),
-      Color(0xFF7000FF),
-      Color(0xFFFF00C8),
-    ],
-    speed: 0.5,
-  ),
+  _Preset('Pulse', BeuiShaderVariant.pulsingBorder, [
+    Color(0xFF000000),
+    Color(0xFF00E5FF),
+    Color(0xFF7000FF),
+    Color(0xFFFF00C8),
+  ], speed: 0.5),
   // color-panels: the colour list fills the panel palette.
-  _Preset(
-    'Panels',
-    BeuiShaderVariant.colorPanels,
-    [
-      Color(0xFFFF3D68),
-      Color(0xFFFFB800),
-      Color(0xFF3D7AFF),
-      Color(0xFF00FFB2),
-    ],
-    speed: 0.3,
-  ),
+  _Preset('Panels', BeuiShaderVariant.colorPanels, [
+    Color(0xFFFF3D68),
+    Color(0xFFFFB800),
+    Color(0xFF3D7AFF),
+    Color(0xFF00FFB2),
+  ], speed: 0.3),
   _Preset('Static Mesh', BeuiShaderVariant.staticMeshGradient, [
     Color(0xFFFF8A3D),
     Color(0xFFFF3D9A),
@@ -252,19 +231,16 @@ const _presets = <_Preset>[
     Color(0xFFFFCE00),
     Color(0xFF4A0000),
   ]),
-  _Preset(
-    'Simplex',
-    BeuiShaderVariant.simplexNoise,
-    [Color(0xFFFF6EC7), Color(0xFF6EC7FF), Color(0xFF000000)],
-    speed: 0.4,
-  ),
+  _Preset('Simplex', BeuiShaderVariant.simplexNoise, [
+    Color(0xFFFF6EC7),
+    Color(0xFF6EC7FF),
+    Color(0xFF000000),
+  ], speed: 0.4),
   // perlin-noise: `colorFront` then `colorBack`.
-  _Preset(
-    'Perlin',
-    BeuiShaderVariant.perlinNoise,
-    [Color(0xFF00FFD5), Color(0xFF000000)],
-    speed: 0.3,
-  ),
+  _Preset('Perlin', BeuiShaderVariant.perlinNoise, [
+    Color(0xFF00FFD5),
+    Color(0xFF000000),
+  ], speed: 0.3),
 ];
 
 class _ShaderDemo extends StatefulWidget {

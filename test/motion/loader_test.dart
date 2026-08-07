@@ -106,9 +106,7 @@ void main() {
       MaterialApp(
         theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
         home: const Scaffold(
-          body: Center(
-            child: RepaintBoundary(child: _Grid()),
-          ),
+          body: Center(child: RepaintBoundary(child: _Grid())),
         ),
       ),
     );
