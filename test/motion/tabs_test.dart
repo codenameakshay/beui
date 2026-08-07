@@ -259,6 +259,115 @@ void main() {
       matchesGoldenFile('goldens/beui_tabs.png'),
     );
   });
+
+  // The per-instance overrides exist so a host can match the source's own
+  // `TabsList` classes (flex-wrap justify-center, gap-*, rounded-*, trigger
+  // px-*/py-*) without hardcoding the variant defaults.
+  group('BeuiTabs list overrides', () {
+    Widget host({
+      bool wrap = false,
+      double? gap,
+      BorderRadiusGeometry? listBorderRadius,
+      EdgeInsetsGeometry? triggerPadding,
+      double width = 600,
+    }) => MaterialApp(
+      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      home: Scaffold(
+        body: Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(
+            width: width,
+            child: BeuiTabs<String>(
+              defaultValue: 'one',
+              wrap: wrap,
+              gap: gap,
+              listBorderRadius: listBorderRadius,
+              triggerPadding: triggerPadding,
+              tabs: const [
+                BeuiTab(value: 'one', label: Text('One')),
+                BeuiTab(value: 'two', label: Text('Two')),
+                BeuiTab(value: 'three', label: Text('Three')),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    testWidgets('defaults are unchanged: single row, no Wrap, 4px gap', (
+      tester,
+    ) async {
+      await tester.pumpWidget(host());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Wrap), findsNothing);
+      final one = tester.getTopLeft(find.text('One'));
+      expect(tester.getTopLeft(find.text('Two')).dy, one.dy);
+      expect(tester.getTopLeft(find.text('Three')).dy, one.dy);
+    });
+
+    testWidgets('gap overrides the variant default spacing', (tester) async {
+      await tester.pumpWidget(host());
+      await tester.pumpAndSettle();
+      final tightGap =
+          tester.getTopLeft(find.text('Two')).dx -
+          tester.getTopRight(find.text('One')).dx;
+
+      await tester.pumpWidget(host(gap: 24));
+      await tester.pumpAndSettle();
+      final wideGap =
+          tester.getTopLeft(find.text('Two')).dx -
+          tester.getTopRight(find.text('One')).dx;
+
+      expect(wideGap - tightGap, moreOrLessEquals(20, epsilon: 0.5));
+    });
+
+    testWidgets('wrap flows triggers onto multiple runs', (tester) async {
+      // Narrow enough that three triggers cannot share one run.
+      await tester.pumpWidget(host(wrap: true, width: 120));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Wrap), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Three')).dy,
+        greaterThan(tester.getTopLeft(find.text('One')).dy),
+      );
+    });
+
+    testWidgets('triggerPadding widens the trigger box', (tester) async {
+      await tester.pumpWidget(host());
+      await tester.pumpAndSettle();
+      final narrow = tester.getSize(
+        find
+            .ancestor(of: find.text('One'), matching: find.byType(Padding))
+            .first,
+      );
+
+      await tester.pumpWidget(
+        host(triggerPadding: const EdgeInsets.symmetric(horizontal: 40)),
+      );
+      await tester.pumpAndSettle();
+      final wide = tester.getSize(
+        find
+            .ancestor(of: find.text('One'), matching: find.byType(Padding))
+            .first,
+      );
+
+      expect(wide.width, greaterThan(narrow.width));
+    });
+
+    testWidgets('listBorderRadius overrides the pill default', (tester) async {
+      await tester.pumpWidget(host(listBorderRadius: BorderRadius.circular(4)));
+      await tester.pumpAndSettle();
+
+      final decorated = tester
+          .widgetList<DecoratedBox>(find.byType(DecoratedBox))
+          .map((d) => d.decoration)
+          .whereType<BoxDecoration>()
+          .where((d) => d.borderRadius == BorderRadius.circular(4));
+      expect(decorated, isNotEmpty);
+    });
+  });
 }
 
 class _VariantRow extends StatelessWidget {
