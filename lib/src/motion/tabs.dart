@@ -428,12 +428,17 @@ class _TabTriggerState<T> extends State<_TabTrigger<T>> {
           : null,
       child: AnimatedDefaultTextStyle(
         duration: const Duration(milliseconds: 150),
-        style: TextStyle(
+        // Built from the ambient style, not from scratch: `AnimatedDefaultText
+        // Style` *replaces* the inherited `DefaultTextStyle`, so a bare
+        // `TextStyle` here would drop the host font family and render the
+        // trigger in the platform fallback face.
+        style: DefaultTextStyle.of(context).style.copyWith(
           fontSize: 14,
           // `text-sm` is 14px/20px. Without an explicit line box the trigger
           // renders ~3px shorter than the source (29 vs 32).
           height: 20 / 14,
           fontWeight: FontWeight.w500,
+          letterSpacing: 0, // tracking-normal
           color: _textColor(colors),
         ),
         child: widget.label,

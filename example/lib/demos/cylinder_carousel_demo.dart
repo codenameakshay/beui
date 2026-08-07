@@ -103,8 +103,13 @@ class _CylinderDemoState extends State<_CylinderDemo> {
           // the rounded corner also clips the composited slides.
           Container(
             decoration: BoxDecoration(
-              color: colors.muted.withValues(alpha: 0.2),
-              border: Border.all(color: colors.border.withValues(alpha: 0.6)),
+              // Tailwind's `/60` opacity modifier *scales* the token's own
+              // alpha — `--border` is already white at 5%, so `border/60` is
+              // 3%, not 60%. Setting 0.6 outright drew a near-white hairline.
+              color: colors.muted.withValues(alpha: colors.muted.a * 0.2),
+              border: Border.all(
+                color: colors.border.withValues(alpha: colors.border.a * 0.6),
+              ),
               borderRadius: BorderRadius.circular(24), // rounded-3xl
             ),
             clipBehavior: Clip.antiAlias,
@@ -121,7 +126,9 @@ class _CylinderDemoState extends State<_CylinderDemo> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: colors.border.withValues(alpha: 0.4),
+                          color: colors.border.withValues(
+                            alpha: colors.border.a * 0.4,
+                          ),
                         ),
                       ),
                       child: BeuiShaderBackground(
@@ -140,6 +147,7 @@ class _CylinderDemoState extends State<_CylinderDemo> {
             style: TextStyle(
               fontSize: 12,
               height: 16 / 12,
+              letterSpacing: 0, // tracking-normal
               color: colors.mutedForeground,
             ),
           ),
