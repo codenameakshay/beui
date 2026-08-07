@@ -29,7 +29,9 @@ class _HostState extends State<_Host> {
       );
     }
     return MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
       home: Scaffold(body: Center(child: body)),
     );
   }
@@ -92,7 +94,9 @@ void main() {
     addTearDown(controller.dispose);
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: Scaffold(
           body: SingleChildScrollView(
             controller: controller,
@@ -132,7 +136,9 @@ void main() {
   testWidgets('honors a custom formatter', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: Scaffold(
           body: DefaultTextStyle(
             style: const TextStyle(fontSize: 28),

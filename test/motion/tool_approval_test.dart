@@ -44,7 +44,9 @@ Widget _host({
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }
@@ -253,7 +255,9 @@ void main() {
     testWidgets('BeuiToolApprovalCode renders code text', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
           home: const Scaffold(
             body: Center(
               child: BeuiToolApprovalCode(

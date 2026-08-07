@@ -50,7 +50,9 @@ Widget _app({
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: child),
   );
 }
@@ -130,7 +132,9 @@ void main() {
 
     testWidgets('panel stays left-aligned mid-transition', (tester) async {
       Widget build(String value) => MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: Scaffold(
           body: Align(
             alignment: Alignment.topLeft,
@@ -234,7 +238,9 @@ void main() {
   testWidgets('rest-state golden (all three variants)', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: const Scaffold(
           body: Padding(
             padding: EdgeInsets.all(24),
@@ -271,7 +277,9 @@ void main() {
       EdgeInsetsGeometry? triggerPadding,
       double width = 600,
     }) => MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
       home: Scaffold(
         body: Align(
           alignment: Alignment.topLeft,
@@ -355,7 +363,9 @@ void main() {
       // that to the left, shifting every run off-centre in a stretched list.
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
           home: Scaffold(
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

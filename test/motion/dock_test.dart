@@ -29,7 +29,9 @@ Widget _app({bool magnify = false, bool reduce = false, int activeIndex = 0}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: Center(child: dock)),
   );
 }
@@ -209,7 +211,9 @@ void main() {
       bool magnify = false,
       bool activeFirst = false,
     }) => MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
       home: Scaffold(
         body: Center(
           child: BeuiDock(
@@ -267,7 +271,9 @@ void main() {
       Future<double> barWidth(double gap) async {
         await tester.pumpWidget(
           MaterialApp(
-            theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+            theme: BeuiTextTheme.trackingNormal(
+              ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+            ),
             home: Scaffold(
               body: Center(
                 child: BeuiDock(
