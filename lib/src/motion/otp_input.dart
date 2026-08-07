@@ -422,11 +422,14 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
   static const _shakeFrames = [0.0, -5.0, 5.0, -3.0, 3.0, -1.0, 0.0];
 
   double _shakeX(double t) {
-    final eased = beuiEaseOut.transform(t);
-    final pos = eased * (_shakeFrames.length - 1);
-    final i = pos.floor().clamp(0, _shakeFrames.length - 2);
-    return _shakeFrames[i] +
-        (_shakeFrames[i + 1] - _shakeFrames[i]) * (pos - i);
+    // Framer eases *each* keyframe segment (a single `ease` is expanded to one
+    // per segment), so the six hops stay evenly spaced across the 450ms rather
+    // than the whole timeline being warped.
+    final segments = _shakeFrames.length - 1;
+    final pos = t.clamp(0.0, 1.0) * segments;
+    final i = pos.floor().clamp(0, segments - 1);
+    final local = beuiEaseOut.transform((pos - i).clamp(0.0, 1.0));
+    return _shakeFrames[i] + (_shakeFrames[i + 1] - _shakeFrames[i]) * local;
   }
 
   @override
@@ -709,15 +712,23 @@ class _CaretState extends State<_Caret> with SingleTickerProviderStateMixin {
     Widget caret = widget.reduce
         ? bar
         : FadeTransition(
-            // steps: visible for the first half of the loop, hidden after.
+            // opacity keyframes [1, 1, 0, 0] evenly spaced on a linear 1s loop:
+            // hold lit, fade out across the middle third, hold dark.
             opacity: _controller.drive(
-              Animatable.fromCallback((t) => t < 0.5 ? 1.0 : 0.0),
+              Animatable.fromCallback(
+                (t) => t < 1 / 3
+                    ? 1.0
+                    : t < 2 / 3
+                    ? 1 - (t - 1 / 3) * 3
+                    : 0.0,
+              ),
             ),
             child: bar,
           );
     caret = IgnorePointer(child: caret);
     if (widget.trailing) {
-      return Positioned(right: 10, child: caret); // right-3, inside border
+      // right-3, measured from the slot's padding box (inside the 1px border).
+      return Positioned(right: 12, child: caret);
     }
     return caret; // centered by the enclosing Stack
   }

@@ -15,31 +15,29 @@ class _OtpDemo extends StatefulWidget {
 }
 
 class _OtpDemoState extends State<_OtpDemo> {
+  // Controlled, exactly like the source preview: the parent owns the code and
+  // clears the status on any edit, so a re-filled wrong code replays the shake
+  // without the input ever losing the digits already typed.
+  String _value = '';
   BeuiOtpStatus _status = BeuiOtpStatus.idle;
-  int _attempt = 0;
-
-  void _check(String code) {
-    setState(() {
-      _attempt++;
-      _status = code == _code ? BeuiOtpStatus.success : BeuiOtpStatus.error;
-    });
-  }
 
   @override
   Widget build(BuildContext context) => Center(
     child: BeuiOtpInput(
-      key: ValueKey(_attempt <= 1 ? 0 : _attempt), // replay error shake
       label: 'Verification code',
       hint: 'Enter $_code to verify.',
       successMessage: 'Verified.',
       errorMessage: 'Wrong code, try again.',
+      value: _value,
       status: _status,
-      onChanged: (_) {
-        if (_status != BeuiOtpStatus.idle) {
-          setState(() => _status = BeuiOtpStatus.idle);
-        }
-      },
-      onComplete: _check,
+      onChanged: (v) => setState(() {
+        _value = v;
+        if (_status != BeuiOtpStatus.idle) _status = BeuiOtpStatus.idle;
+      }),
+      onComplete: (v) => setState(
+        () =>
+            _status = v == _code ? BeuiOtpStatus.success : BeuiOtpStatus.error,
+      ),
     ),
   );
 }
