@@ -60,7 +60,10 @@ void main() {
       );
       await tester.pumpAndSettle();
       // Drag the drum upward to advance toward later rows.
-      await tester.drag(find.byType(ListWheelScrollView), const Offset(0, -120));
+      await tester.drag(
+        find.byType(ListWheelScrollView),
+        const Offset(0, -120),
+      );
       await tester.pumpAndSettle();
       expect(changed, isNotNull);
       expect(changed, isNot('Apple'));
@@ -160,7 +163,8 @@ void main() {
           ? math.pi / 2
           : math.asin(1.0 / wheel.diameterRatio);
       final radius = height * wheel.diameterRatio / 2;
-      final angle = (itemHeight / height) * 2 * maxVisibleRadian / wheel.squeeze;
+      final angle =
+          (itemHeight / height) * 2 * maxVisibleRadian / wheel.squeeze;
 
       expect(radius, closeTo(srcRadius, 0.01), reason: 'drum radius');
       expect(angle, closeTo(srcAngle, 1e-6), reason: 'per-row angle');

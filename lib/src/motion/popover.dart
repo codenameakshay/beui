@@ -140,12 +140,43 @@ class _BeuiPopoverState extends State<BeuiPopover> {
   Size _triggerSize = Size.zero;
   Size _panelSize = Size.zero;
 
+  /// Owned by the state so the `Focus` that hosts the Esc binding can stay
+  /// mounted across the whole open/close cycle — see the note in [build].
+  final FocusNode _focusNode = FocusNode(debugLabel: 'BeuiPopover');
+
   bool get _open => widget.open ?? _internalOpen;
 
   @override
   void initState() {
     super.initState();
     _internalOpen = widget.defaultOpen;
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  /// Moves focus into the panel when it opens (so the Esc binding is live) and
+  /// releases it when it closes. Previously this fell out of the `Focus` widget
+  /// being mounted/unmounted with `autofocus: true`; the wrapper is now
+  /// permanent, so the focus move is explicit.
+  ///
+  /// Deliberately edge-triggered on [_open]. Re-asserting focus on every frame
+  /// would yank it back from anything the user tabbed to while the panel was
+  /// open — `autofocus` only ever fired once, and so does this.
+  bool? _focusSyncedOpen;
+
+  void _syncFocus() {
+    if (widget.trigger != BeuiPopoverTrigger.click) return;
+    if (_focusSyncedOpen == _open) return;
+    _focusSyncedOpen = _open;
+    if (_open) {
+      _focusNode.requestFocus();
+    } else if (_focusNode.hasFocus) {
+      _focusNode.unfocus();
+    }
   }
 
   void _setOpen(bool next) {
@@ -169,7 +200,11 @@ class _BeuiPopoverState extends State<BeuiPopover> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _measure();
+      _syncFocus();
+    });
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final reduce = MediaQuery.disableAnimationsOf(context);
 
@@ -273,26 +308,32 @@ class _BeuiPopoverState extends State<BeuiPopover> {
       ],
     );
 
-    Widget result = stack;
-    if (_open) {
-      result = CallbackShortcuts(
-        bindings: {
-          const SingleActivator(LogicalKeyboardKey.escape): () =>
-              _setOpen(false),
-        },
-        child: Focus(
-          autofocus: widget.trigger == BeuiPopoverTrigger.click,
-          child: TapRegion(
-            onTapOutside: widget.trigger == BeuiPopoverTrigger.click
-                ? (_) => _setOpen(false)
-                : null,
-            child: result,
-          ),
+    // The dismiss wrapper is mounted **unconditionally** and only its behaviour
+    // is gated on [_open]. Mounting it just while open changes the depth of the
+    // tree above the goo's `SingleMotionBuilder`, so Flutter cannot match the
+    // old element on a toggle: it discards the state and builds a fresh
+    // `MotionController` seeded at `initialValue: value` — i.e. already *at* the
+    // target. The result was that neither goo spring ever ran; the panel snapped
+    // open and snapped shut in a single frame. Keep this structure stable.
+    //
+    // `stack` is the inline-flex isolate: it sizes to the trigger.
+    final isClick = widget.trigger == BeuiPopoverTrigger.click;
+    return CallbackShortcuts(
+      bindings: _open
+          ? {
+              const SingleActivator(LogicalKeyboardKey.escape): () =>
+                  _setOpen(false),
+            }
+          : const <ShortcutActivator, VoidCallback>{},
+      child: Focus(
+        focusNode: _focusNode,
+        canRequestFocus: _open && isClick,
+        child: TapRegion(
+          onTapOutside: _open && isClick ? (_) => _setOpen(false) : null,
+          child: stack,
         ),
-      );
-    }
-    // inline-flex isolate: size to the trigger.
-    return result;
+      ),
+    );
   }
 
   void _scheduleClose() {

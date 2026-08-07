@@ -33,7 +33,9 @@ class _HarnessState extends State<_Harness> {
     }
     return MaterialApp(
       theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      home: Scaffold(body: Align(alignment: Alignment.topCenter, child: child)),
+      home: Scaffold(
+        body: Align(alignment: Alignment.topCenter, child: child),
+      ),
     );
   }
 }

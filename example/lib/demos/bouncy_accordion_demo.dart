@@ -86,10 +86,7 @@ class _BouncyAccordionDemo extends StatelessWidget {
           height: 480, // h-[480px]
           child: Align(
             alignment: Alignment.topCenter,
-            child: BeuiBouncyAccordion(
-              items: _items,
-              defaultValue: 'calendar',
-            ),
+            child: BeuiBouncyAccordion(items: _items, defaultValue: 'calendar'),
           ),
         ),
       ),
