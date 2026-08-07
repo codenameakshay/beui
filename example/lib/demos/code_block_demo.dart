@@ -3,8 +3,14 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery route for [BeuiCodeBlock] — streaming follow, highlight lines,
-/// copy feedback, and a static sample.
+/// Gallery route for [BeuiCodeBlock], mirroring the source
+/// `agents/code-block.preview.tsx` exactly: one streaming TypeScript block in a
+/// `relative h-[340px] w-full max-w-xl` frame, with the ghost `Replay` control
+/// pinned to `bottom-0 left-0`.
+///
+/// The source preview ships that single card and nothing else, so this route
+/// shows one. (Static / no-line-number / wrapping blocks are widget options,
+/// not preview states.)
 Widget codeBlockDemo(BuildContext context) => const _CodeBlockDemo();
 
 class _CodeBlockDemo extends StatefulWidget {
@@ -75,82 +81,30 @@ class _CodeBlockDemoState extends State<_CodeBlockDemo> {
     final complete = _visible >= _lines.length;
     final code = _lines.take(_visible).join('\n');
 
-    return SingleChildScrollView(
-      child: Center(
-        child: ConstrainedBox(
-          // source preview: `w-full max-w-xl` = 576px
-          constraints: const BoxConstraints(maxWidth: 576),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // source preview: `relative h-[340px] w-full max-w-xl` with the
-              // Replay control pinned to `bottom-0 left-0`.
-              SizedBox(
-                height: 340,
-                child: Stack(
-                  children: [
-                    BeuiCodeBlock(
-                      key: ValueKey(_run),
-                      code: code,
-                      filename: 'summarize.ts',
-                      language: BeuiCodeLanguage.typescript,
-                      status: complete
-                          ? BeuiCodeBlockStatus.complete
-                          : BeuiCodeBlockStatus.streaming,
-                      highlightLines: const [4, 5, 6, 7],
-                      maxHeight: 224,
-                    ),
-                    Positioned(
-                      left: 0,
-                      bottom: 0,
-                      child: _ReplayButton(onPressed: _replay, colors: colors),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-              Text(
-                'Static · JSON',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.4,
-                  color: colors.mutedForeground,
-                ),
-              ),
-              const SizedBox(height: 12),
-              const BeuiCodeBlock(
-                code: '''{
-  "model": "gpt-5",
-  "temperature": 0.2,
-  "stream": true
-}''',
-                filename: 'config.json',
-                language: BeuiCodeLanguage.json,
-                maxHeight: 160,
-              ),
-              const SizedBox(height: 32),
-              Text(
-                'No line numbers · wrap',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.4,
-                  color: colors.mutedForeground,
-                ),
-              ),
-              const SizedBox(height: 12),
-              const BeuiCodeBlock(
-                code:
-                    'curl -X POST https://api.example.com/v1/chat '
-                    r'-H "Authorization: Bearer $TOKEN"',
-                language: BeuiCodeLanguage.bash,
-                showLineNumbers: false,
-                wrap: true,
-                maxHeight: 120,
-              ),
-            ],
-          ),
+    return Align(
+      child: SizedBox(
+        // source preview: `relative h-[340px] w-full max-w-xl` (576).
+        width: 576,
+        height: 340,
+        child: Stack(
+          children: [
+            BeuiCodeBlock(
+              key: ValueKey(_run),
+              code: code,
+              filename: 'summarize.ts',
+              language: BeuiCodeLanguage.typescript,
+              status: complete
+                  ? BeuiCodeBlockStatus.complete
+                  : BeuiCodeBlockStatus.streaming,
+              highlightLines: const [4, 5, 6, 7],
+              maxHeight: 224,
+            ),
+            Positioned(
+              left: 0,
+              bottom: 0,
+              child: _ReplayButton(onPressed: _replay, colors: colors),
+            ),
+          ],
         ),
       ),
     );
