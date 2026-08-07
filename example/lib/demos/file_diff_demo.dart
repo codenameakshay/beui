@@ -3,8 +3,12 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery route for [BeuiFileDiff] — progressive streaming rows, live change
-/// counts, auto-follow, and completion collapse with a Replay control.
+/// Gallery route for [BeuiFileDiff], mirroring the source
+/// `agents/file-diff.preview.tsx` exactly: five diff rows streamed at the
+/// shared `useToolResultDemo(5, 360)` cadence inside a
+/// `relative h-[300px] w-full max-w-lg` frame, with the ghost `Replay` control
+/// pinned to `bottom-0 left-0`. The disclosure collapses itself once the run
+/// completes (`collapseOnComplete`), so the settled state is the header alone.
 Widget fileDiffDemo(BuildContext context) => const _FileDiffDemo();
 
 class _FileDiffDemo extends StatefulWidget {
@@ -112,42 +116,72 @@ class _FileDiffDemoState extends State<_FileDiffDemo> {
     final lines = _diffLines.take(_visible).toList(growable: false);
     final copyText = _diffLines.map((l) => l.content).join('\n');
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 512), // max-w-lg
-        child: SizedBox(
-          height: 300,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 48),
-                  child: BeuiFileDiff(
-                    key: ValueKey(_run),
-                    file: 'src/runner.ts',
-                    lines: lines,
-                    status: _status,
-                    copyText: copyText,
-                    maxHeight: 150,
-                    language: BeuiCodeLanguage.typescript,
-                  ),
-                ),
+    return Align(
+      child: SizedBox(
+        // source preview: `relative h-[300px] w-full max-w-lg` (512).
+        width: 512,
+        height: 300,
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: BeuiFileDiff(
+                key: ValueKey(_run),
+                file: 'src/runner.ts',
+                lines: lines,
+                status: _status,
+                copyText: copyText,
+                maxHeight: 150,
+                language: BeuiCodeLanguage.typescript,
               ),
-              Positioned(
-                left: 16,
-                bottom: 8,
-                child: TextButton.icon(
-                  onPressed: _replay,
-                  icon: const Icon(LucideIcons.rotate_ccw, size: 12),
-                  label: const Text('Replay'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: colors.mutedForeground,
-                    textStyle: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+            ),
+            Positioned(
+              left: 0,
+              bottom: 0,
+              child: _ReplayButton(onPressed: _replay, colors: colors),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Ghost "Replay" control matching the source preview's
+/// `rounded-md px-2 py-1 text-xs font-medium text-muted-foreground` button.
+class _ReplayButton extends StatelessWidget {
+  const _ReplayButton({required this.onPressed, required this.colors});
+
+  final VoidCallback onPressed;
+  final BeuiColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(6), // rounded-md
+        hoverColor: colors.muted,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                LucideIcons.rotate_ccw,
+                size: 12,
+                color: colors.mutedForeground,
+              ),
+              const SizedBox(width: 6), // gap-1.5
+              Text(
+                'Replay',
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 16 / 12,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0, // tracking-normal
+                  color: colors.mutedForeground,
                 ),
               ),
             ],

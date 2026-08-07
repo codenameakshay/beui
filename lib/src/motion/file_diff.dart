@@ -311,6 +311,10 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
         'monospace',
       ],
       fontSize: 12,
+      // Tailwind's default `tracking-normal`. Set explicitly: without it the
+      // span inherits Material's bodySmall/bodyMedium letterSpacing (0.25),
+      // which widens every mono line by 0.25px per character.
+      letterSpacing: 0,
       color: colors.foreground.withValues(alpha: 0.8),
       height: 16 / 12, // text-xs default leading-4
     );
@@ -567,6 +571,7 @@ class _HeaderState extends State<_Header> {
                       style: TextStyle(
                         fontFamily: 'monospace',
                         fontSize: 12,
+                        letterSpacing: 0, // tracking-normal
                         fontFeatures: const [FontFeature.tabularFigures()],
                         color: widget.addColor,
                       ),
@@ -579,6 +584,7 @@ class _HeaderState extends State<_Header> {
                       style: TextStyle(
                         fontFamily: 'monospace',
                         fontSize: 12,
+                        letterSpacing: 0, // tracking-normal
                         fontFeatures: const [FontFeature.tabularFigures()],
                         color: widget.delColor,
                       ),
@@ -778,6 +784,8 @@ class _DiffLines extends StatelessWidget {
         'monospace',
       ],
       fontSize: _fontSize,
+      // Tailwind `tracking-normal`; see _resolveFile for why this is explicit.
+      letterSpacing: 0,
       height: _lineHeight / _fontSize,
       color: palette.base,
     );
