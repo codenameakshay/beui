@@ -757,6 +757,9 @@ class _RenderContentSizeReporter extends RenderProxyBox {
 // Compact right-side message rail (source PreviewRail customisation)
 // ---------------------------------------------------------------------------
 
+/// One grid row per rail tick (source `<PreviewRail itemSize={14} …>`).
+const double _railItemSize = 14;
+
 class _MessageRail extends StatefulWidget {
   const _MessageRail({
     required this.label,
@@ -794,22 +797,28 @@ class _MessageRailState extends State<_MessageRail> {
     final displayedIndex = displayedId == null
         ? -1
         : items.indexWhere((i) => i.id == displayedId);
+    // Source `highlightActive` is on, so with no pointer the *active* item is
+    // the highlighted one (`highlightedId = displayedId || selectedId`) — the
+    // rail rests as a taper around the live edge, not a row of uniform stubs.
+    final highlightedIndex = displayedIndex >= 0
+        ? displayedIndex
+        : items.indexWhere((i) => i.id == widget.activeId);
 
-    // Source message-scroller ticks: origin-right, w-4, h-px, track ~equal
-    // distribution over the full height.
+    // Source message-scroller ticks: origin-right, w-4, h-px, one fixed
+    // `itemSize={14}` grid row each, `content-center` inside the rail box.
     return Semantics(
       label: widget.label,
       container: true,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final track = math.max(14.0, constraints.maxHeight / n);
+          const track = _railItemSize;
           final ticks = <Widget>[
             for (var i = 0; i < n; i++)
               _MessageRailTick(
                 item: items[i],
                 selected: items[i].id == widget.activeId,
-                highlighted: i == displayedIndex,
-                scale: _scaleFor(i, displayedIndex),
+                highlighted: i == highlightedIndex,
+                scale: _scaleFor(i, highlightedIndex),
                 track: track,
                 reduce: reduce,
                 activeColor: colors.foreground,
@@ -832,6 +841,13 @@ class _MessageRailState extends State<_MessageRail> {
                 )
               : null;
 
+          // `content-center`: the n×14 block is centred in the rail box, and
+          // the source's `overflow-hidden` clips it when it is taller.
+          final blockTop = math.max(
+            0.0,
+            (constraints.maxHeight - n * track) / 2,
+          );
+
           return MouseRegion(
             onExit: (_) => setState(() => _hoveredId = null),
             child: Stack(
@@ -845,13 +861,22 @@ class _MessageRailState extends State<_MessageRail> {
                     right: 32,
                     left: null,
                     width: 256,
-                    top: math.max(0, (displayedIndex + 0.5) * track - 40),
+                    top: math.max(
+                      0.0,
+                      blockTop + (displayedIndex + 0.5) * track - 40,
+                    ),
                     child: preview,
                   ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: ticks,
+                ClipRect(
+                  child: OverflowBox(
+                    alignment: Alignment.centerRight,
+                    maxHeight: double.infinity,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: ticks,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -861,9 +886,9 @@ class _MessageRailState extends State<_MessageRail> {
     );
   }
 
-  double _scaleFor(int index, int displayedIndex) {
-    if (displayedIndex < 0) return 0.25;
-    final distance = (index - displayedIndex).abs();
+  double _scaleFor(int index, int highlightedIndex) {
+    if (highlightedIndex < 0) return 0.25;
+    final distance = (index - highlightedIndex).abs();
     if (distance == 0) return 1.0;
     if (distance == 1) return 0.68;
     if (distance == 2) return 0.44;
@@ -906,7 +931,8 @@ class _MessageRailTick extends StatelessWidget {
     final line = Container(
       width: length,
       height: thickness,
-      color: highlighted || selected ? activeColor : inactiveColor,
+      // Source tints only the highlighted tick (`highlighted ? text-foreground`).
+      color: highlighted ? activeColor : inactiveColor,
     );
 
     Widget scaled(double value) => Transform(
@@ -980,22 +1006,27 @@ class _MessageRailPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final card = Material(
-      // source DefaultPreview: `bg-card text-card-foreground shadow-sm
-      // border-border rounded-2xl` on a `h-20` card.
-      color: colors.card,
-      elevation: 1, // shadow-sm
-      shadowColor: colors.foreground.withValues(alpha: 0.12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16), // rounded-2xl
-        side: BorderSide(color: colors.border),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: SizedBox(
-          height: 80, // h-20
+    // source DefaultPreview: `bg-card text-card-foreground shadow-sm
+    // border-border rounded-2xl`, sized by the scroller's
+    // `[&_[data-slot=preview-rail-card]]:h-20 … :p-3 … :overflow-hidden`.
+    // `h-20` is the *card* box (border-box, padding included) — putting the
+    // 80 inside the padding made the card 106 tall.
+    final card = SizedBox(
+      height: 80, // h-20
+      child: Material(
+        color: colors.card,
+        elevation: 1, // shadow-sm
+        shadowColor: colors.foreground.withValues(alpha: 0.12),
+        clipBehavior: Clip.antiAlias, // overflow-hidden
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16), // rounded-2xl
+          side: BorderSide(color: colors.border),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12), // p-3
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 item.label,
@@ -1010,14 +1041,16 @@ class _MessageRailPreview extends StatelessWidget {
               ),
               if (item.description != null) ...[
                 const SizedBox(height: 4),
-                Text(
-                  item.description!,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 12,
-                    height: 16 / 12,
-                    color: colors.mutedForeground,
+                Flexible(
+                  child: Text(
+                    item.description!,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 16 / 12,
+                      color: colors.mutedForeground,
+                    ),
                   ),
                 ),
               ],
