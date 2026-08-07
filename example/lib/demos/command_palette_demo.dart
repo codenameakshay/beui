@@ -134,7 +134,15 @@ class _HintLine extends StatelessWidget {
     ),
     child: Text(
       label,
-      style: TextStyle(fontSize: 12, color: colors.foreground),
+      // The source's `<kbd>` carries `font-mono`; without this the chips lay
+      // out in the proportional host face and the line measures ~10px short.
+      // `monospace` is Geist Mono in the gallery — same name code_block.dart
+      // asks for; see the `fonts:` block in example/pubspec.yaml.
+      style: TextStyle(
+        fontFamily: 'monospace',
+        fontSize: 12,
+        color: colors.foreground,
+      ),
     ),
   );
 
