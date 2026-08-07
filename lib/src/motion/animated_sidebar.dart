@@ -370,6 +370,7 @@ class BeuiAnimatedSidebar extends StatefulWidget {
     this.onSelected,
     this.header,
     this.footer,
+    this.panelContent,
     this.child,
     this.side = BeuiAnimatedSidebarSide.left,
     this.variant = BeuiAnimatedSidebarVariant.sidebar,
@@ -423,6 +424,13 @@ class BeuiAnimatedSidebar extends StatefulWidget {
 
   /// Optional footer slot (user card, etc.).
   final Widget? footer;
+
+  /// Optional free-form slot inside the sidebar panel, below [groups] and
+  /// above [footer] — the source's second `AnimatedSidebarGroup` holding
+  /// arbitrary content (ai-sidebar's resource tree, for example). It is given
+  /// the panel's remaining height so its own scroller can flex; [groups] then
+  /// shrink-wrap above it. Null keeps the plain nav-only layout.
+  final Widget? panelContent;
 
   /// Main content (source `AnimatedSidebarInset`). When null only the rail
   /// is rendered.
@@ -744,6 +752,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
       reduce: reduce,
       header: widget.header,
       footer: widget.footer,
+      panelContent: widget.panelContent,
       semanticLabel: widget.semanticLabel,
       onSelect: (id) => _select(id, isMobile: isMobile),
       onCloseMobile: isMobile ? () => _setOpenMobile(false) : null,
@@ -1161,6 +1170,7 @@ class _SidebarPanel extends StatelessWidget {
     required this.onSelect,
     this.header,
     this.footer,
+    this.panelContent,
     this.onCloseMobile,
     this.showMobileClose = false,
     super.key,
@@ -1179,6 +1189,7 @@ class _SidebarPanel extends StatelessWidget {
   final ValueChanged<String> onSelect;
   final Widget? header;
   final Widget? footer;
+  final Widget? panelContent;
   final VoidCallback? onCloseMobile;
   final bool showMobileClose;
 
@@ -1213,7 +1224,12 @@ class _SidebarPanel extends StatelessWidget {
                 ],
               ),
             ),
-          Expanded(
+          // With a [panelContent] slot the nav groups shrink-wrap and the
+          // free-form content takes the remaining height (source: group 1 is
+          // `shrink-0`, group 2 is `min-h-0 flex-1`). Without it the nav list
+          // keeps the whole panel, exactly as before.
+          Flexible(
+            fit: panelContent == null ? FlexFit.tight : FlexFit.loose,
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Stack(
@@ -1283,6 +1299,7 @@ class _SidebarPanel extends StatelessWidget {
               ),
             ),
           ),
+          if (panelContent != null) Expanded(child: panelContent!),
           if (footer != null)
             Padding(
               // Source `AnimatedSidebarFooter`: `p-3` — 12 on every edge.
