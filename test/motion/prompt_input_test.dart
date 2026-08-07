@@ -64,9 +64,7 @@ void main() {
     testWidgets('empty trim cannot submit', (tester) async {
       var calls = 0;
       await tester.pumpWidget(
-        _app(
-          BeuiPromptInput(defaultValue: '   ', onSubmit: (_, _) => calls++),
-        ),
+        _app(BeuiPromptInput(defaultValue: '   ', onSubmit: (_, _) => calls++)),
       );
       await tester.pumpAndSettle();
       // Send button is disabled — primary icon button with null onPressed.
@@ -143,9 +141,11 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.byIcon(LucideIcons.square), findsOneWidget);
+      // The stop mark is `<Square className="fill-current" />`, painted rather
+      // than an icon glyph, so it is matched through its semantics label.
+      expect(find.bySemanticsLabel('Stop generating'), findsOneWidget);
       expect(find.byIcon(LucideIcons.arrow_up), findsNothing);
-      await tester.tap(find.byIcon(LucideIcons.square));
+      await tester.tap(find.bySemanticsLabel('Stop generating'));
       await tester.pumpAndSettle();
       expect(stopped, isTrue);
     });
@@ -155,10 +155,13 @@ void main() {
         _app(const BeuiPromptInput(defaultValue: 'busy', loading: true)),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(LucideIcons.square), warnIfMissed: false);
+      await tester.tap(
+        find.bySemanticsLabel('Stop generating'),
+        warnIfMissed: false,
+      );
       await tester.pumpAndSettle();
       // No crash; stop not wired.
-      expect(find.byIcon(LucideIcons.square), findsOneWidget);
+      expect(find.bySemanticsLabel('Stop generating'), findsOneWidget);
     });
   });
 
@@ -256,7 +259,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.byIcon(LucideIcons.square), findsOneWidget);
+      expect(find.bySemanticsLabel('Stop generating'), findsOneWidget);
     });
   });
 

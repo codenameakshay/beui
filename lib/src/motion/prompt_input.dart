@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -84,6 +86,13 @@ const double _shellRadius = 16;
 
 /// Source footer `min-h-8` / icon buttons `size-8`.
 const double _footerMinH = 32;
+
+/// Select trigger chevron rotate — source `CHEVRON_TRANSITION =
+/// { duration: 0.4, bounce: 0.3 }`. ω = 2π/0.4 ≈ 15.71, ζ = 0.7 →
+/// stiffness ≈ 247, damping ≈ 22 (matches `select.dart`'s private token).
+const _promptChevronSpring = SpringMotion(
+  SpringDescription(mass: 1, stiffness: 247, damping: 22),
+);
 
 // ---------------------------------------------------------------------------
 // BeuiPromptInput
@@ -386,6 +395,77 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
     return KeyEventResult.handled;
   }
 
+  /// Composer text style — source `text-sm leading-6` with default tracking.
+  ///
+  /// [TextLeadingDistribution.even] is CSS's line-box model: the extra leading
+  /// splits evenly above and below the glyphs.
+  TextStyle _composerStyle(BeuiColors colors) => TextStyle(
+    fontSize: _fontSize,
+    height: _lineHeight / _fontSize,
+    leadingDistribution: TextLeadingDistribution.even,
+    // An unset letterSpacing inherits the host theme's body style (0.25–0.5
+    // under Material) and widens the line by ~0.5px per character.
+    letterSpacing: 0,
+    color: colors.foreground,
+  );
+
+  static const TextStyle _hiddenComposerStyle = TextStyle(
+    fontSize: _fontSize,
+    height: _lineHeight / _fontSize,
+    leadingDistribution: TextLeadingDistribution.even,
+    letterSpacing: 0,
+  );
+
+  static const StrutStyle _composerStrut = StrutStyle(
+    fontSize: _fontSize,
+    height: _lineHeight / _fontSize,
+    leadingDistribution: TextLeadingDistribution.even,
+  );
+
+  /// The source's `resizeTextarea`: measure the wrapped text in a mirror of the
+  /// field's content box, then clamp the row count to [minRows]…[maxRows].
+  double _composerHeight(BuildContext context, double maxWidth) {
+    // The field's content box is inset by the source's `px-2`.
+    final textWidth = maxWidth.isFinite ? maxWidth - 16 : double.infinity;
+    var rows = widget.minRows;
+    if (textWidth.isFinite && textWidth > 0) {
+      final painter = TextPainter(
+        // The source appends a zero-width space so a trailing newline counts.
+        text: TextSpan(
+          text: '${_controller.text}​',
+          style: _hiddenComposerStyle,
+        ),
+        strutStyle: _composerStrut,
+        textDirection: Directionality.of(context),
+      )..layout(maxWidth: textWidth);
+      rows = painter.computeLineMetrics().length;
+      painter.dispose();
+    }
+    return rows.clamp(widget.minRows, widget.maxRows) * _lineHeight;
+  }
+
+  /// Half of `leading-6`'s extra leading, in logical pixels.
+  ///
+  /// CSS centres a line's leading around the glyphs, so the first baseline sits
+  /// half a leading below the content box. Flutter's `EditableText` leaves the
+  /// first line's ascent at the font's natural value, so the composer renders
+  /// ~4px high against the site. Derived from the resolved font's own metrics
+  /// (never a hardcoded offset) and folded into the field's top padding.
+  double _firstLineLeading(BuildContext context) {
+    final painter = TextPainter(
+      // Height unset → the painter reports the font's natural line height.
+      text: const TextSpan(
+        text: 'x',
+        style: TextStyle(fontSize: _fontSize),
+      ),
+      textDirection: Directionality.of(context),
+    )..layout();
+    final natural = painter.preferredLineHeight;
+    painter.dispose();
+    final leading = (_lineHeight - natural) / 2;
+    return leading > 0 ? leading : 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -420,36 +500,58 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
             Semantics(
               label: widget.semanticLabel,
               textField: true,
-              child: TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                enabled: widget.enabled,
-                autofocus: widget.autofocus,
-                minLines: widget.minRows,
-                maxLines: widget.maxRows,
-                keyboardType: TextInputType.multiline,
-                textInputAction: TextInputAction.newline,
-                style: TextStyle(
-                  fontSize: _fontSize,
-                  height: _lineHeight / _fontSize,
-                  color: colors.foreground,
+              child: DefaultTextHeightBehavior(
+                // CSS puts half of `leading-6`'s extra leading above the first
+                // line; Flutter's paragraph default leaves the first ascent at
+                // the font's natural value, parking the text ~4px high.
+                textHeightBehavior: const TextHeightBehavior(
+                  leadingDistribution: TextLeadingDistribution.even,
                 ),
-                cursorColor: colors.foreground,
-                decoration: InputDecoration(
-                  isDense: true,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
-                  hintText: widget.placeholder,
-                  hintStyle: TextStyle(
-                    fontSize: _fontSize,
-                    height: _lineHeight / _fontSize,
-                    color: colors.mutedForeground.withValues(alpha: 0.55),
+                child: LayoutBuilder(
+                  builder: (context, constraints) => SizedBox(
+                    // The source sizes the textarea's *border box* to
+                    // `clamp(scrollHeight, minRows*24, maxRows*24)` off an
+                    // invisible mirror div, so the `pt-1.5` lives inside that
+                    // height. Flutter's minLines/maxLines would add the padding
+                    // on top and make the shell 6px taller than the site's.
+                    height: _composerHeight(context, constraints.maxWidth),
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      enabled: widget.enabled,
+                      autofocus: widget.autofocus,
+                      expands: true,
+                      maxLines: null,
+                      minLines: null,
+                      textAlignVertical: TextAlignVertical.top,
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.newline,
+                      style: _composerStyle(colors),
+                      strutStyle: _composerStrut,
+                      cursorColor: colors.foreground,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                        // source `px-2 pt-1.5`, plus the half-leading CSS puts
+                        // above the first line and Flutter's field does not.
+                        contentPadding: EdgeInsets.fromLTRB(
+                          8,
+                          6 + _firstLineLeading(context),
+                          8,
+                          0,
+                        ),
+                        hintText: widget.placeholder,
+                        hintStyle: _composerStyle(colors).copyWith(
+                          color: colors.mutedForeground.withValues(alpha: 0.55),
+                        ),
+                      ),
+                      onChanged: (v) {
+                        widget.onValueChange?.call(v);
+                        if (widget.value == null) setState(() {});
+                      },
+                    ),
                   ),
                 ),
-                onChanged: (v) {
-                  widget.onValueChange?.call(v);
-                  if (widget.value == null) setState(() {});
-                },
               ),
             ),
             const SizedBox(height: 4),
@@ -539,6 +641,8 @@ class _Footer extends StatelessWidget {
     return SizedBox(
       height: _footerMinH,
       child: Row(
+        // source: `mt-1 flex min-h-8 items-center gap-1`
+        spacing: 4,
         children: [
           if (actions.isNotEmpty)
             _ActionsButton(
@@ -833,6 +937,7 @@ class _ActionRowState extends State<_ActionRow> {
                         widget.action.label,
                         style: TextStyle(
                           fontSize: 14,
+                          letterSpacing: 0, // tracking-normal
                           color: widget.colors.foreground,
                         ),
                       ),
@@ -843,6 +948,7 @@ class _ActionRowState extends State<_ActionRow> {
                           style: TextStyle(
                             fontSize: 12,
                             height: 16 / 12,
+                            letterSpacing: 0, // tracking-normal
                             color: widget.colors.mutedForeground,
                           ),
                         ),
@@ -939,7 +1045,30 @@ class _ModelPicker extends StatelessWidget {
               child: Text(
                 label,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 12, color: colors.mutedForeground),
+                style: TextStyle(
+                  fontSize: 12,
+                  letterSpacing: 0, // tracking-normal
+                  color: colors.mutedForeground,
+                ),
+              ),
+            ),
+            // Source `SelectTrigger` always appends a `h-4 w-4` ChevronDown in
+            // `text-muted-foreground`, `gap-2` after the value, rotating 180°
+            // on open.
+            const SizedBox(width: 8),
+            SingleMotionBuilder(
+              value: open ? 1.0 : 0.0,
+              motion: motionFor(
+                context,
+                _promptChevronSpring,
+                isMovement: true,
+              ),
+              builder: (context, p, child) =>
+                  Transform.rotate(angle: p * math.pi, child: child),
+              child: Icon(
+                LucideIcons.chevron_down,
+                size: 16,
+                color: colors.mutedForeground,
               ),
             ),
           ],
@@ -1075,6 +1204,7 @@ class _ModelRowState extends State<_ModelRow> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 14,
+                      letterSpacing: 0, // tracking-normal
                       color: widget.selected
                           ? widget.colors.foreground
                           : widget.colors.mutedForeground,
@@ -1169,7 +1299,10 @@ class _SwapIcon extends StatelessWidget {
     // NoMotion under reduce we snap to the settled state.
     final key = loading ? 'stop' : 'send';
     final icon = loading
-        ? Icon(LucideIcons.square, size: 12, color: color)
+        ? SizedBox.square(
+            dimension: 12,
+            child: CustomPaint(painter: _StopSquarePainter(color: color)),
+          )
         : Icon(LucideIcons.arrow_up, size: 16, color: color);
 
     if (reduce || swapMotion is NoMotion) {
@@ -1178,6 +1311,42 @@ class _SwapIcon extends StatelessWidget {
 
     return _SpringSwapIcon(key: ValueKey(key), motion: swapMotion, child: icon);
   }
+}
+
+/// The stop mark — source `<Square className="size-3 fill-current" />`.
+///
+/// An [Icon] can only draw the icon font's stroked outline, which reads as a
+/// hollow box against the white disc. Lucide authors `square` as an 18×18 rect
+/// with `rx=2` in a 24-unit box, stroked 2 units wide; `fill-current` fills and
+/// strokes the same path (spec §3: paint it, never bundle an asset).
+class _StopSquarePainter extends CustomPainter {
+  const _StopSquarePainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final s = size.width / 24;
+    final rect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(3 * s, 3 * s, 18 * s, 18 * s),
+      Radius.circular(2 * s),
+    );
+    final paint = Paint()..color = color;
+    canvas
+      ..drawRRect(rect, paint)
+      ..drawRRect(
+        rect,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2 * s
+          ..strokeJoin = StrokeJoin.round,
+      );
+  }
+
+  @override
+  bool shouldRepaint(_StopSquarePainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 class _SpringSwapIcon extends StatefulWidget {

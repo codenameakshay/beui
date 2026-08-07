@@ -160,6 +160,7 @@ class _PromptInputDemoState extends State<_PromptInputDemo> {
                               style: TextStyle(
                                 fontSize: 12,
                                 height: 16 / 12,
+                                letterSpacing: 0,
                                 color: colors.mutedForeground,
                               ),
                             ),
