@@ -1,102 +1,177 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery route for [BeuiExpandableActionBar] — hover a segment to expand it.
+/// Gallery route for [BeuiExpandableActionBar] — mirrors
+/// `expandable-action-bar.preview.tsx`.
 Widget expandableActionBarDemo(BuildContext context) =>
-    const _RailDemo(overflow: false);
+    const _ExpandableActionBarDemo();
 
-/// Gallery route for [BeuiOverflowActions] — tap ⋯ to fan out the overflow.
-Widget overflowActionsDemo(BuildContext context) =>
-    const _RailDemo(overflow: true);
+/// Gallery route for [BeuiOverflowActions] — mirrors
+/// `overflow-actions.preview.tsx`.
+Widget overflowActionsDemo(BuildContext context) => const Center(
+  child: BeuiOverflowActions(
+    primaryActions: [
+      BeuiOverflowActionItem(
+        id: 'preview',
+        label: 'Preview',
+        icon: LucideIcons.eye,
+      ),
+      BeuiOverflowActionItem(id: 'pin', label: 'Pin', icon: LucideIcons.pin),
+    ],
+    overflowActions: [
+      BeuiOverflowActionItem(
+        id: 'branch',
+        label: 'Branch',
+        icon: LucideIcons.git_branch,
+      ),
+      BeuiOverflowActionItem(
+        id: 'schedule',
+        label: 'Schedule',
+        icon: LucideIcons.calendar_clock,
+      ),
+    ],
+    openLabel: 'Open action rail',
+    closeLabel: 'Collapse action rail',
+  ),
+);
 
-class _RailDemo extends StatefulWidget {
-  const _RailDemo({required this.overflow});
-  final bool overflow;
+class _ExpandableActionBarDemo extends StatefulWidget {
+  const _ExpandableActionBarDemo();
 
   @override
-  State<_RailDemo> createState() => _RailDemoState();
+  State<_ExpandableActionBarDemo> createState() =>
+      _ExpandableActionBarDemoState();
 }
 
-class _RailDemoState extends State<_RailDemo> {
-  String _last = '—';
+class _ExpandableActionBarDemoState extends State<_ExpandableActionBarDemo> {
+  bool _expanded = false;
+  String _activeId = 'send';
+
+  static const _actions = [
+    BeuiExpandableActionBarItem(
+      id: 'send',
+      label: 'Send',
+      icon: LucideIcons.send,
+      shortcut: 'S',
+    ),
+    BeuiExpandableActionBarItem(
+      id: 'copy',
+      label: 'Copy',
+      icon: LucideIcons.copy,
+      shortcut: 'C',
+    ),
+    BeuiExpandableActionBarItem(
+      id: 'download',
+      label: 'Export',
+      icon: LucideIcons.download,
+      shortcut: 'E',
+    ),
+    BeuiExpandableActionBarItem(
+      id: 'archive',
+      label: 'Archive',
+      icon: LucideIcons.archive,
+    ),
+    BeuiExpandableActionBarItem(
+      id: 'alerts',
+      label: 'Alerts',
+      icon: LucideIcons.bell,
+      badge: Text('3'),
+    ),
+    BeuiExpandableActionBarItem(
+      id: 'settings',
+      label: 'Settings',
+      icon: LucideIcons.settings,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: ConstrainedBox(
+      // `min-h-72 flex-col items-center justify-center gap-6`.
+      constraints: const BoxConstraints(minHeight: 288),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        spacing: 24, // gap-6
+        children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 96), // min-h-24
+            child: Center(
+              child: BeuiExpandableActionBar(
+                items: [
+                  for (final a in _actions)
+                    a.id == _activeId
+                        ? BeuiExpandableActionBarItem(
+                            id: a.id,
+                            label: a.label,
+                            icon: a.icon,
+                            shortcut: a.shortcut,
+                            badge: a.badge,
+                            active: true,
+                          )
+                        : a,
+                ],
+                expanded: _expanded,
+                onExpandedChange: (v) => setState(() => _expanded = v),
+                activeId: _activeId,
+                onAction: (item) => setState(() => _activeId = item.id),
+              ),
+            ),
+          ),
+          _ExpandToggle(
+            expanded: _expanded,
+            onPressed: () => setState(() => _expanded = !_expanded),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+/// The preview's own Expand/Collapse toggle: `h-9 w-[110px] rounded-full
+/// border bg-card text-xs`, with a maximize/minimize glyph.
+class _ExpandToggle extends StatelessWidget {
+  const _ExpandToggle({required this.expanded, required this.onPressed});
+
+  final bool expanded;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    void run(String id) => setState(() => _last = id);
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 40,
-        children: [
-          if (!widget.overflow)
-            BeuiExpandableActionBar(
-              onAction: (item) => run(item.id),
-              items: const [
-                BeuiExpandableActionBarItem(
-                  id: 'inbox',
-                  label: 'Inbox',
-                  icon: LucideIcons.inbox,
-                  badge: Text('3'),
-                ),
-                BeuiExpandableActionBarItem(
-                  id: 'send',
-                  label: 'Send',
-                  icon: LucideIcons.send,
-                  shortcut: '⌘↵',
-                ),
-                BeuiExpandableActionBarItem(
-                  id: 'archive',
-                  label: 'Archive',
-                  icon: LucideIcons.archive,
-                  active: true,
-                ),
-                BeuiExpandableActionBarItem(
-                  id: 'trash',
-                  label: 'Delete',
-                  icon: LucideIcons.trash_2,
-                ),
-              ],
-            )
-          else
-            BeuiOverflowActions(
-              onAction: (item) => run(item.id),
-              collapseOnAction: true,
-              primaryActions: const [
-                BeuiOverflowActionItem(
-                  id: 'reply',
-                  label: 'Reply',
-                  icon: LucideIcons.reply,
-                ),
-                BeuiOverflowActionItem(
-                  id: 'forward',
-                  label: 'Forward',
-                  icon: LucideIcons.forward,
-                ),
-              ],
-              overflowActions: const [
-                BeuiOverflowActionItem(
-                  id: 'archive',
-                  label: 'Archive',
-                  icon: LucideIcons.archive,
-                ),
-                BeuiOverflowActionItem(
-                  id: 'mute',
-                  label: 'Mute',
-                  icon: LucideIcons.bell_off,
-                ),
-                BeuiOverflowActionItem(
-                  id: 'delete',
-                  label: 'Delete',
-                  icon: LucideIcons.trash_2,
-                ),
-              ],
-            ),
-          Text(
-            'Last action: $_last',
-            style: TextStyle(color: colors.mutedForeground, fontSize: 13),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Container(
+          height: 36, // h-9
+          width: 110,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: colors.card,
+            border: Border.all(color: colors.border),
+            borderRadius: BorderRadius.circular(999),
           ),
-        ],
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 6, // gap-1.5
+            children: [
+              Icon(
+                expanded ? LucideIcons.minimize_2 : LucideIcons.maximize_2,
+                size: 14,
+                color: colors.foreground,
+              ),
+              Text(
+                expanded ? 'Collapse' : 'Expand',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: colors.foreground,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

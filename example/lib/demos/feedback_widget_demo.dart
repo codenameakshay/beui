@@ -18,7 +18,6 @@ class _FeedbackWidgetDemo extends StatefulWidget {
 
 class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
   int _attempts = 0;
-  String? _lastMessage;
 
   Future<void> _submit(BeuiFeedbackData data) async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
@@ -26,7 +25,7 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
     if (_attempts == 1) {
       throw StateError('Preview submission failed');
     }
-    if (mounted) setState(() => _lastMessage = data.message);
+    debugPrint('feedback received: ${data.message}');
   }
 
   @override
@@ -47,16 +46,25 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          // px-5 py-3; `width: infinity` so the divider spans the card the way
+          // a block-level div does, instead of shrink-wrapping the pill.
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: colors.border)),
           ),
-          child: Container(
-            height: 10,
-            width: 96,
-            decoration: BoxDecoration(
-              color: colors.mutedForeground.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(999),
+          // `Align` loosens the tight width the full-bleed header hands down —
+          // without it the `w-24` pill enforces against a tight 408px and goes
+          // full-bleed.
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              height: 10,
+              width: 96,
+              decoration: BoxDecoration(
+                color: colors.mutedForeground.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(999),
+              ),
             ),
           ),
         ),
@@ -65,9 +73,9 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              bar(220),
+              bar(306), // w-3/4 of the 408px content box
               const SizedBox(height: 12),
-              bar(150),
+              bar(204), // w-1/2
               const SizedBox(height: 12),
               Container(
                 height: 96,
@@ -77,7 +85,7 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
                 ),
               ),
               const SizedBox(height: 12),
-              bar(180),
+              bar(272), // w-2/3
             ],
           ),
         ),
@@ -85,41 +93,27 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
     );
 
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 448),
-            child: SizedBox(
-              height: 320,
-              child: ClipRRect(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 448),
+        child: SizedBox(
+          height: 320,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.background,
                 borderRadius: BorderRadius.circular(16),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.background,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: colors.border),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(child: fauxApp),
-                      Positioned.fill(
-                        child: BeuiFeedbackWidget(onSubmit: _submit),
-                      ),
-                    ],
-                  ),
-                ),
+                border: Border.all(color: colors.border),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(child: fauxApp),
+                  Positioned.fill(child: BeuiFeedbackWidget(onSubmit: _submit)),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 20),
-          Text(
-            _lastMessage == null
-                ? 'Open the corner trigger and submit feedback…'
-                : 'Received: $_lastMessage',
-            style: TextStyle(fontSize: 13, color: colors.mutedForeground),
-          ),
-        ],
+        ),
       ),
     );
   }

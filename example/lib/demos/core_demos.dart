@@ -42,28 +42,37 @@ Widget tiltCardDemo(BuildContext context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Source: `text-xs uppercase tracking-wider text-muted-foreground`
+          // — 12px/16px, 0.05em tracking, regular weight (no font-weight
+          // class). Tailwind's leading is set explicitly on each block below;
+          // without it Flutter's own defaults make the card ~5px taller.
           Text(
             'PREMIUM',
             style: TextStyle(
-              fontSize: 11,
-              letterSpacing: 1.5,
-              fontWeight: FontWeight.w500,
+              fontSize: 12,
+              height: 16 / 12, // text-xs
+              letterSpacing: 0.6,
               color: colors.mutedForeground,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 8), // mt-2
           Text(
             'Tilt me',
             style: TextStyle(
               fontSize: 24,
+              height: 32 / 24, // text-2xl
               fontWeight: FontWeight.w600,
               color: colors.foreground,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 12), // mt-3
           Text(
             'Move your cursor across the card to see 3D tilt + glare.',
-            style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+            style: TextStyle(
+              fontSize: 14,
+              height: 20 / 14, // text-sm
+              color: colors.mutedForeground,
+            ),
           ),
         ],
       ),
@@ -85,8 +94,10 @@ Widget marqueeDemo(BuildContext context) {
     'Loom',
     'Raycast',
   ];
+  // Mirrors MarqueePreview: a `w-full` marquee whose cards carry `mx-4`
+  // (16px) on top of the track's own 16px gap.
   return SizedBox(
-    width: 460,
+    width: double.infinity,
     child: BeuiMarquee(
       duration: const Duration(seconds: 25),
       children: [
@@ -94,6 +105,7 @@ Widget marqueeDemo(BuildContext context) {
           Container(
             height: 48,
             alignment: Alignment.center,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
             padding: const EdgeInsets.symmetric(horizontal: 24),
             decoration: BoxDecoration(
               color: colors.card,
@@ -121,12 +133,24 @@ Widget sharedLayoutDemo(BuildContext context) {
     ('Releases', 'Last shipped 2 days ago, v0.4.1.'),
     ('Billing', 'Plan renews on the 1st of next month.'),
   ];
-  return SizedBox(
-    width: 460,
-    child: BeuiSharedLayoutBg(
-      children: [
-        for (final (title, body) in items) _SharedRow(title: title, body: body),
-      ],
+  // Mirrors SharedLayoutBgPreview: `w-full max-w-lg px-2` (512px cap, 8px
+  // horizontal padding) around the row list.
+  //
+  // Align first: SizedBox enforces its width against the incoming constraints,
+  // so under a tight full-stage width it is widened past 512 rather than
+  // capped. Align loosens, and is a no-op when the parent is already loose.
+  return Align(
+    child: SizedBox(
+      width: 512,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: BeuiSharedLayoutBg(
+          children: [
+            for (final (title, body) in items)
+              _SharedRow(title: title, body: body),
+          ],
+        ),
+      ),
     ),
   );
 }
@@ -162,7 +186,8 @@ class _SharedRowState extends State<_SharedRow> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14, // text-sm — 20px line box
+                    height: 20 / 14,
                     fontWeight: FontWeight.w500,
                     color: colors.foreground,
                   ),
@@ -179,10 +204,18 @@ class _SharedRowState extends State<_SharedRow> {
                 ),
               ],
             ),
-            const SizedBox(height: 4),
+            // Two stacked text-sm line boxes and `py-3` make the row 64px on
+            // beui.dev (12 + 20 + 20 + 12), which is what the hover pill
+            // measures there. Relying on Geist's natural ~19px line height
+            // plus a 4px spacer put the row at 68 and the title-to-body step
+            // at 23px instead of the site's 20.
             Text(
               widget.body,
-              style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+              style: TextStyle(
+                fontSize: 14,
+                height: 20 / 14,
+                color: colors.mutedForeground,
+              ),
             ),
           ],
         ),
@@ -584,13 +617,18 @@ class _DrawerDemoState extends State<_DrawerDemo> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
     return Stack(
       children: [
+        // DrawerPreview: `flex items-center gap-3` — "Open left" is the
+        // bordered card pill, "Open right" the filled primary one.
         Wrap(
+          alignment: WrapAlignment.center,
           spacing: 12,
           runSpacing: 12,
           children: [
             BeuiButton(
+              variant: BeuiButtonVariant.secondary,
               onPressed: () => _show(BeuiDrawerSide.left),
               child: const Text('Open left'),
             ),
@@ -605,31 +643,33 @@ class _DrawerDemoState extends State<_DrawerDemo> {
           side: _side,
           label: 'Menu',
           onOpenChange: (v) => setState(() => _open = v),
+          // The source panel is `className="gap-4 p-6"` holding just a
+          // `text-sm font-semibold` heading and a `text-sm text-muted-
+          // foreground` paragraph — not a nav list.
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24), // p-6
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Settings',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 24),
-                for (final item in const [
-                  'Profile',
-                  'Account',
-                  'Notifications',
-                  'Privacy',
-                ])
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(item, style: const TextStyle(fontSize: 16)),
+                Text(
+                  'Drawer',
+                  style: TextStyle(
+                    fontSize: 14, // text-sm
+                    height: 20 / 14,
+                    fontWeight: FontWeight.w600,
+                    color: colors.foreground,
                   ),
-                const Spacer(),
-                BeuiButton(
-                  variant: BeuiButtonVariant.outline,
-                  onPressed: () => setState(() => _open = false),
-                  child: const Text('Close'),
+                ),
+                const SizedBox(height: 16), // gap-4
+                Text(
+                  'Slides in from the ${_side == BeuiDrawerSide.left ? 'left' : 'right'}. '
+                  'Press Esc or click outside to close.',
+                  style: TextStyle(
+                    fontSize: 14, // text-sm
+                    height: 20 / 14,
+                    color: colors.mutedForeground,
+                  ),
                 ),
               ],
             ),
@@ -640,37 +680,87 @@ class _DrawerDemoState extends State<_DrawerDemo> {
   }
 }
 
-Widget tooltipDemo(BuildContext context) => Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  mainAxisSize: MainAxisSize.min,
-  children: [
-    const Text('Hover (or long-press on touch) a button:'),
-    const SizedBox(height: 24),
-    Wrap(
-      spacing: 16,
-      runSpacing: 16,
-      children: [
-        for (final (side, label) in const [
-          (BeuiTooltipSide.top, 'Top'),
-          (BeuiTooltipSide.bottom, 'Bottom'),
-          (BeuiTooltipSide.left, 'Left'),
-          (BeuiTooltipSide.right, 'Right'),
-        ])
-          BeuiTooltip(
-            side: side,
-            content: Text('Tooltip on $label'),
-            child: BeuiButton(
-              variant: BeuiButtonVariant.outline,
-              onPressed: () {},
-              child: Text(label),
+/// Mirrors `TooltipPreview`: four round icon buttons, one per side, above a
+/// caption. `flex flex-col items-center gap-12` (48px) wrapping a
+/// `flex flex-wrap items-center justify-center gap-4` (16px) row.
+Widget tooltipDemo(BuildContext context) {
+  final colors = Theme.of(context).extension<BeuiColors>()!;
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 16, // gap-4
+        runSpacing: 16,
+        children: [
+          for (final (side, content, icon) in const [
+            (BeuiTooltipSide.top, 'Like this post', LucideIcons.heart),
+            (BeuiTooltipSide.bottom, 'Share', LucideIcons.share),
+            (BeuiTooltipSide.left, 'Open settings', LucideIcons.settings),
+            (BeuiTooltipSide.right, 'Move to trash', LucideIcons.trash_2),
+          ])
+            BeuiTooltip(
+              side: side,
+              content: Text(content),
+              child: _TooltipTrigger(icon: icon, semanticLabel: content),
             ),
-          ),
-      ],
-    ),
-  ],
-);
+        ],
+      ),
+      const SizedBox(height: 48), // gap-12
+      Text(
+        'Hover or focus each button. Content fades and un-blurs in.',
+        style: TextStyle(
+          fontSize: 12, // text-xs
+          color: colors.mutedForeground,
+        ),
+      ),
+    ],
+  );
+}
 
-/// Exercises button variants, sizes, the stateful lifecycle, and magnetic pull.
+/// The tooltip preview's trigger — preview chrome, not a beUI component:
+/// `h-10 w-10 rounded-full border border-border bg-card` around an `h-4 w-4`
+/// icon.
+class _TooltipTrigger extends StatelessWidget {
+  const _TooltipTrigger({required this.icon, required this.semanticLabel});
+
+  final IconData icon;
+  final String semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          width: 40, // w-10
+          height: 40, // h-10
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: colors.card,
+            border: Border.all(color: colors.border),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, size: 16, color: colors.foreground), // h-4 w-4
+        ),
+      ),
+    );
+  }
+}
+
+/// The button showcase — the three preview sections
+/// beui.dev/components/motion/button ships, in the page's own order:
+/// `Button` (`base.tsx`), `Stateful Button` (`stateful.tsx`) and
+/// `Magnetic Button` (`magnetic.tsx`). Every preview on that page is centred;
+/// the captions stand in for the site's per-section headings.
+///
+/// Measured off the live previews: base is three centred rows at `gap-3` (12px)
+/// with `gap-6` (24px) between rows; stateful stacks its two buttons in a
+/// centred column at `gap-3`; magnetic is one centred row at `gap-4` (16px).
 class _ButtonDemo extends StatefulWidget {
   const _ButtonDemo();
 
@@ -691,11 +781,28 @@ class _ButtonDemoState extends State<_ButtonDemo> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    Widget caption(String text) => Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.3,
+          color: colors.mutedForeground,
+        ),
+      ),
+    );
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Section 1 — Button (base.tsx).
+        caption('Button — press scale, hover lift, variants and sizes'),
         Wrap(
+          alignment: WrapAlignment.center,
           spacing: 12,
           runSpacing: 12,
           children: [
@@ -723,8 +830,9 @@ class _ButtonDemoState extends State<_ButtonDemo> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 24), // gap-6
         Wrap(
+          alignment: WrapAlignment.center,
           spacing: 12,
           runSpacing: 12,
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -752,8 +860,9 @@ class _ButtonDemoState extends State<_ButtonDemo> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 24), // gap-6
         Wrap(
+          alignment: WrapAlignment.center,
           spacing: 12,
           runSpacing: 12,
           children: [
@@ -770,11 +879,13 @@ class _ButtonDemoState extends State<_ButtonDemo> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        const SizedBox(height: 40),
+
+        // Section 2 — Stateful Button (stateful.tsx): a centred *column*, not
+        // a row.
+        caption('Stateful — idle → loading → success, morphing width'),
+        Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             BeuiStatefulButton(
               label: 'Save changes',
@@ -782,6 +893,7 @@ class _ButtonDemoState extends State<_ButtonDemo> {
               state: _state,
               onPressed: _runLifecycle,
             ),
+            const SizedBox(height: 12), // gap-3
             BeuiButton(
               variant: BeuiButtonVariant.outline,
               onPressed: () {},
@@ -789,10 +901,15 @@ class _ButtonDemoState extends State<_ButtonDemo> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 40),
+
+        // Section 3 — Magnetic Button (magnetic.tsx): one centred row at
+        // `gap-4`, wider than the base preview's `gap-3`.
+        caption('Magnetic — the button leans toward the cursor'),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          alignment: WrapAlignment.center,
+          spacing: 16,
+          runSpacing: 16,
           children: [
             BeuiMagneticButton(
               onPressed: () {},
@@ -840,47 +957,119 @@ class _TabsDemo extends StatefulWidget {
 }
 
 class _TabsDemoState extends State<_TabsDemo> {
-  String _tab = 'activity';
+  // Mirrors TabsPreview: three independently-stated groups, one per variant,
+  // each under an uppercase section label.
+  String _pill = 'overview';
+  String _segment = 'day';
+  String _underline = 'all';
 
   @override
   Widget build(BuildContext context) {
-    final tabs = [
-      const BeuiTab(
-        value: 'overview',
-        label: Text('Overview'),
-        content: Text('Project overview and summary.'),
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    // `text-sm text-muted-foreground` — 14px on a 20px line box.
+    final body = TextStyle(
+      fontSize: 14,
+      height: 20 / 14,
+      color: colors.mutedForeground,
+    );
+
+    // Outer `flex w-full max-w-md flex-col gap-8` (448px wide, 32px gaps).
+    //
+    // Align first: SizedBox narrows to the parent only when the incoming
+    // constraints are loose. Under a tight full-stage width it enforces the
+    // other way and is widened past 448, which is not what `max-w-md` means.
+    // Align loosens; it is a no-op when the parent is already loose.
+    return Align(
+      child: SizedBox(
+        width: 448,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _tabsSection(
+              colors,
+              'Pill',
+              BeuiTabs<String>(
+                variant: BeuiTabsVariant.pill,
+                value: _pill,
+                onChanged: (v) => setState(() => _pill = v),
+                tabs: [
+                  BeuiTab(
+                    value: 'overview',
+                    label: const Text('Overview'),
+                    content: Text('High-level summary.', style: body),
+                  ),
+                  BeuiTab(
+                    value: 'activity',
+                    label: const Text('Activity'),
+                    content: Text('Recent events.', style: body),
+                  ),
+                  BeuiTab(
+                    value: 'settings',
+                    label: const Text('Settings'),
+                    content: Text('Preferences.', style: body),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
+            _tabsSection(
+              colors,
+              'Segment',
+              BeuiTabs<String>(
+                variant: BeuiTabsVariant.segment,
+                value: _segment,
+                onChanged: (v) => setState(() => _segment = v),
+                tabs: const [
+                  BeuiTab(value: 'day', label: Text('Day')),
+                  BeuiTab(value: 'week', label: Text('Week')),
+                  BeuiTab(value: 'month', label: Text('Month')),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
+            _tabsSection(
+              colors,
+              'Underline',
+              BeuiTabs<String>(
+                variant: BeuiTabsVariant.underline,
+                value: _underline,
+                onChanged: (v) => setState(() => _underline = v),
+                tabs: const [
+                  BeuiTab(value: 'all', label: Text('All')),
+                  BeuiTab(value: 'open', label: Text('Open')),
+                  BeuiTab(value: 'closed', label: Text('Closed')),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      const BeuiTab(
-        value: 'activity',
-        label: Text('Activity'),
-        content: Text('Recent activity feed.'),
-      ),
-      const BeuiTab(
-        value: 'settings',
-        label: Text('Settings'),
-        content: Text('Configuration and preferences.'),
-      ),
-    ];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (final variant in BeuiTabsVariant.values) ...[
-          BeuiTabs<String>(
-            variant: variant,
-            value: _tab,
-            onChanged: (v) => setState(() => _tab = v),
-            tabs: variant == BeuiTabsVariant.pill ? tabs : _barOnly(tabs),
-          ),
-          const SizedBox(height: 24),
-        ],
-      ],
     );
   }
 
-  List<BeuiTab<String>> _barOnly(List<BeuiTab<String>> tabs) => [
-    for (final t in tabs) BeuiTab(value: t.value, label: t.label),
-  ];
+  /// `flex flex-col gap-2` under a `text-[10px] font-semibold uppercase
+  /// tracking-wider text-muted-foreground` caption.
+  Widget _tabsSection(BeuiColors colors, String title, Widget child) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(
+        title.toUpperCase(),
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5, // tracking-wider (0.05em)
+          // `text-[10px]` sets font-size only; the 1.5 line-height is
+          // inherited, giving a 15px line box (not Roboto's default 12).
+          height: 1.5,
+          color: colors.mutedForeground,
+        ),
+      ),
+      const SizedBox(height: 8),
+      child,
+    ],
+  );
 }
 
 /// Exercises the radio group's gliding selection dot.
@@ -896,15 +1085,19 @@ class _RadioDemoState extends State<_RadioDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return BeuiRadioGroup<String>(
-      value: _plan,
-      onChanged: (v) => setState(() => _plan = v),
-      items: const [
-        BeuiRadioItem(value: 'starter', label: 'Starter — free'),
-        BeuiRadioItem(value: 'pro', label: 'Pro — \$12/mo'),
-        BeuiRadioItem(value: 'team', label: 'Team — \$29/mo'),
-        BeuiRadioItem(value: 'legacy', label: 'Legacy plan', enabled: false),
-      ],
+    // Mirrors RadioPreview: the group carries `min-w-48` (192px).
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 192),
+      child: BeuiRadioGroup<String>(
+        value: _plan,
+        onChanged: (v) => setState(() => _plan = v),
+        items: const [
+          BeuiRadioItem(value: 'starter', label: 'Starter — free'),
+          BeuiRadioItem(value: 'pro', label: 'Pro — \$12/mo'),
+          BeuiRadioItem(value: 'team', label: 'Team — \$29/mo'),
+          BeuiRadioItem(value: 'legacy', label: 'Legacy plan', enabled: false),
+        ],
+      ),
     );
   }
 }
@@ -923,6 +1116,7 @@ class _CheckboxDemoState extends State<_CheckboxDemo> {
 
   @override
   Widget build(BuildContext context) {
+    // Mirrors CheckboxPreview: `flex flex-col gap-3` (12px).
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -932,20 +1126,20 @@ class _CheckboxDemoState extends State<_CheckboxDemo> {
           label: 'Accept terms and conditions',
           onChanged: (v) => setState(() => _terms = v),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         BeuiCheckbox(
           value: _updates,
           label: 'Email me product updates',
           onChanged: (v) => setState(() => _updates = v),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         BeuiCheckbox(
           value: true,
           indeterminate: true,
           label: 'Select all (partial)',
           onChanged: (_) {},
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         BeuiCheckbox(
           value: true,
           enabled: false,
@@ -967,10 +1161,12 @@ class _SwitchDemo extends StatefulWidget {
 
 class _SwitchDemoState extends State<_SwitchDemo> {
   bool _notifications = true;
-  bool _sounds = false;
+  bool _off = false;
 
   @override
   Widget build(BuildContext context) {
+    // Mirrors SwitchPreview: `flex flex-col gap-3` (12px) with the three
+    // labels the source ships. Preview parity is part of the port (spec §11).
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -980,13 +1176,13 @@ class _SwitchDemoState extends State<_SwitchDemo> {
           label: 'Enable notifications',
           onChanged: (v) => setState(() => _notifications = v),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         BeuiSwitch(
-          value: _sounds,
-          label: 'Sounds',
-          onChanged: (v) => setState(() => _sounds = v),
+          value: _off,
+          label: 'Off',
+          onChanged: (v) => setState(() => _off = v),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         BeuiSwitch(
           value: true,
           enabled: false,
@@ -1018,7 +1214,7 @@ class _DockDemoState extends State<_DockDemo> {
     ('discover', LucideIcons.sparkles),
   ];
 
-  List<BeuiDockItem?> _buildItems() => [
+  List<BeuiDockItem> _buildItems() => [
     for (final (id, icon) in _items)
       BeuiDockItem(
         icon: icon,
@@ -1026,70 +1222,102 @@ class _DockDemoState extends State<_DockDemo> {
         active: _active == id,
         onTap: () => setState(() => _active = id),
       ),
-    null, // separator
+    // Groups the settings action away from the five navigation actions
+    // (source: DockSeparator).
+    const BeuiDockItem.separator(),
     BeuiDockItem(
       icon: LucideIcons.settings,
       tooltip: 'settings',
       active: _active == 'settings',
       onTap: () => setState(() => _active = 'settings'),
     ),
+    // Source: a trailing GitHub item that carries its own link, so it has no
+    // active state and never joins the pill's selection. Lucide dropped brand
+    // marks, so the source's inline `GithubIcon` svg ports to a CustomPaint
+    // (spec §3: hand-drawn marks are painted, never bundled as assets).
+    const BeuiDockItem(child: _GithubMark(), tooltip: 'GitHub'),
   ];
 
   @override
   Widget build(BuildContext context) {
+    // Mirrors DockPreview: a single, source-faithful dock, centred.
+    return Center(child: BeuiDock(items: _buildItems()));
+  }
+}
+
+/// The source's inline GitHub mark (`components/app/icons.tsx`), transcribed
+/// from its 24x24 `fill-rule: evenodd` path. Painted rather than shipped as an
+/// asset, and sized like the source's `h-5 w-5`.
+class _GithubMark extends StatelessWidget {
+  const _GithubMark();
+
+  @override
+  Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    Widget label(String text) => Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: colors.mutedForeground,
-        ),
-      ),
-    );
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 24),
-          // Primary: the source-faithful flat dock (default).
-          label('Default — faithful port (active pill only)'),
-          BeuiDock(items: _buildItems()),
-          const SizedBox(height: 48),
-          // Opt-in: the Flutter-only macOS magnification.
-          label('magnify: true — Flutter-only enhancement (hover to magnify)'),
-          BeuiDock(magnify: true, items: _buildItems()),
-        ],
-      ),
+    return CustomPaint(
+      size: const Size(20, 20),
+      painter: _GithubMarkPainter(colors.foreground),
     );
   }
 }
 
-/// The action-swap showcase — replicates beui.dev/components/motion/action-swap:
-/// a hero that auto-alternates a blur button ⇄ a roll button, then a row of
-/// text / icon-only / CTA buttons per variant (blur, roll, cascade). Tap any
-/// button to swap its content.
-class _ActionSwapDemo extends StatefulWidget {
-  const _ActionSwapDemo();
+class _GithubMarkPainter extends CustomPainter {
+  const _GithubMarkPainter(this.color);
+
+  final Color color;
 
   @override
-  State<_ActionSwapDemo> createState() => _ActionSwapDemoState();
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 24.0);
+    final path = Path()
+      ..fillType = PathFillType.evenOdd
+      ..moveTo(12, 0.5)
+      ..cubicTo(5.65, 0.5, 0.5, 5.65, 0.5, 12.02)
+      ..cubicTo(0.5, 17.12, 3.79, 21.45, 8.36, 22.98)
+      ..cubicTo(8.94, 23.08, 9.15, 22.73, 9.15, 22.42)
+      ..lineTo(9.15, 20.41)
+      ..cubicTo(5.95, 21.11, 5.28, 18.87, 5.28, 18.87)
+      ..cubicTo(4.76, 17.54, 4.01, 17.19, 4.01, 17.19)
+      ..cubicTo(2.97, 16.48, 4.09, 16.5, 4.09, 16.5)
+      ..cubicTo(5.24, 16.58, 5.85, 17.68, 5.85, 17.68)
+      ..cubicTo(6.87, 19.44, 8.53, 18.93, 9.19, 18.64)
+      ..cubicTo(9.29, 17.9, 9.59, 17.39, 9.92, 17.1)
+      ..cubicTo(7.37, 16.81, 4.68, 15.82, 4.68, 11.41)
+      ..cubicTo(4.68, 10.15, 5.13, 9.12, 5.86, 8.31)
+      ..cubicTo(5.74, 8.02, 5.35, 6.85, 5.97, 5.27)
+      ..cubicTo(5.97, 5.27, 6.93, 4.96, 9.12, 6.45)
+      ..cubicTo(10.03, 6.2, 11.01, 6.07, 11.99, 6.06)
+      ..cubicTo(12.96, 6.06, 13.95, 6.19, 14.86, 6.45)
+      ..cubicTo(17.05, 4.96, 18.01, 5.27, 18.01, 5.27)
+      ..cubicTo(18.63, 6.85, 18.24, 8.02, 18.12, 8.31)
+      ..cubicTo(18.86, 9.12, 19.3, 10.15, 19.3, 11.41)
+      ..cubicTo(19.3, 15.83, 16.6, 16.81, 14.03, 17.09)
+      ..cubicTo(14.45, 17.45, 14.81, 18.16, 14.81, 19.25)
+      ..lineTo(14.81, 22.45)
+      ..cubicTo(14.81, 22.76, 15.02, 23.12, 15.61, 23.01)
+      ..cubicTo(20.18, 21.48, 23.46, 17.15, 23.46, 12.05)
+      ..cubicTo(23.5, 5.65, 18.35, 0.5, 12, 0.5)
+      ..close();
+    canvas.drawPath(path, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(_GithubMarkPainter old) => old.color != color;
 }
 
-class _ActionSwapDemoState extends State<_ActionSwapDemo> {
-  // Hero (the /action-swap page preview): blur ⇄ roll button every 2.6s.
-  static const _heroBlur = [
-    BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
-    BeuiActionSwapItem(id: 'copied', label: 'Copied', icon: LucideIcons.check),
-  ];
-  static const _heroRoll = [
-    BeuiActionSwapItem(id: 'send', label: 'Send', icon: LucideIcons.send),
-    BeuiActionSwapItem(id: 'sent', label: 'Sent', icon: LucideIcons.sparkles),
-  ];
+/// The action-swap showcase — replicates beui.dev/components/motion/action-swap,
+/// which ships three preview sections in the page's own order: `Cascade`
+/// (`action-swap-cascade.tsx`), `Blur` (`action-swap-blur.tsx`) and `Roll`
+/// (`action-swap-roll.tsx`). The page has no hero preview above them.
+///
+/// Cascade is a single centred primary CTA; Blur and Roll are a centred
+/// `gap-4` group of a text pill, an icon-only toggle and a primary CTA. Tap any
+/// button to swap its content. The captions stand in for the site's per-section
+/// headings.
+class _ActionSwapDemo extends StatelessWidget {
+  const _ActionSwapDemo();
 
-  // Per-variant rows (from the variant preview pages).
+  // Per-section rows, matching each preview on the page.
   static const _theme = [
     BeuiActionSwapItem(
       id: 'light',
@@ -1128,28 +1356,6 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
       icon: LucideIcons.sparkles,
     ),
   ];
-  static const _cascadeCta = [
-    BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: LucideIcons.copy),
-    BeuiActionSwapItem(id: 'copied', label: 'Copied!', icon: LucideIcons.check),
-  ];
-
-  bool _heroIsRoll = false;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(milliseconds: 2600), (_) {
-      if (mounted) setState(() => _heroIsRoll = !_heroIsRoll);
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
@@ -1166,11 +1372,14 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
       ),
     );
 
+    // The Blur / Roll previews: `flex items-center justify-center gap-3`
+    // (12px — measured off the live previews, not guessed).
     Widget row(
       BeuiActionSwapVariant anim,
       List<BeuiActionSwapItem> text,
       List<BeuiActionSwapItem> cta,
     ) => Wrap(
+      alignment: WrapAlignment.center,
       spacing: 12,
       runSpacing: 12,
       crossAxisAlignment: WrapCrossAlignment.center,
@@ -1196,65 +1405,42 @@ class _ActionSwapDemoState extends State<_ActionSwapDemo> {
     );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        caption('Tap to swap — the preview auto-alternates blur ⇄ roll'),
-        SizedBox(
-          height: 44,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 220),
-              switchInCurve: beuiEaseOut,
-              switchOutCurve: beuiEaseOut,
-              transitionBuilder: (child, anim) => FadeTransition(
-                opacity: anim,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 0.12),
-                    end: Offset.zero,
-                  ).animate(anim),
-                  child: child,
-                ),
-              ),
-              child: _heroIsRoll
-                  ? const BeuiActionSwapButton(
-                      key: ValueKey('roll'),
-                      items: _heroRoll,
-                      animation: BeuiActionSwapVariant.roll,
-                      variant: BeuiButtonVariant.primary,
-                    )
-                  : const BeuiActionSwapButton(
-                      key: ValueKey('blur'),
-                      items: _heroBlur,
-                      animation: BeuiActionSwapVariant.blur,
-                      variant: BeuiButtonVariant.secondary,
-                    ),
-            ),
+        // Section 1 — Cascade: a single centred primary CTA.
+        caption('Cascade — letter-by-letter slot roll'),
+        const Center(
+          child: BeuiActionSwapButton(
+            items: _blurCta,
+            animation: BeuiActionSwapVariant.cascade,
+            variant: BeuiButtonVariant.primary,
           ),
         ),
         const SizedBox(height: 40),
-        caption('Blur — blurred cross-fade'),
+
+        // Section 2 — Blur.
+        caption('Blur — swap with blur, opacity and scale'),
         row(BeuiActionSwapVariant.blur, _blurText, _blurCta),
-        const SizedBox(height: 28),
-        caption('Roll — old rolls out the top, new rolls up from below'),
+        const SizedBox(height: 40),
+
+        // Section 3 — Roll.
+        caption('Roll — the next text or icon rolls in from below'),
         row(BeuiActionSwapVariant.roll, _rollText, _rollCta),
-        const SizedBox(height: 28),
-        caption('Cascade — per-letter slot roll'),
-        const BeuiActionSwapButton(
-          items: _cascadeCta,
-          animation: BeuiActionSwapVariant.cascade,
-          variant: BeuiButtonVariant.primary,
-        ),
       ],
     );
   }
 }
 
-/// The text-animation showcase — mirrors
-/// beui.dev/components/motion/text-animation: a hero that auto-cycles reveal ⇄
-/// shimmer, then the reveal / shimmer / cascade examples from the variant pages.
+/// The text-animation showcase — the four previews
+/// beui.dev/components/motion/text-animation ships, in the page's own order:
+/// `ChromaticTextRevealPreview`, `TextRevealPreview`, `TextShimmerPreview`,
+/// `TextCascadePreview`. Each block mirrors its source preview verbatim; the
+/// captions stand in for the site's per-primitive section headings.
+///
+/// Type sizes take the source's `sm:` branch (the ≥640px one), which is what the
+/// site renders in the 824px-wide preview band: `text-5xl` = 48px,
+/// `tracking-[-0.04em]` = −1.92px at that size.
 class _TextAnimationDemo extends StatefulWidget {
   const _TextAnimationDemo();
 
@@ -1265,19 +1451,14 @@ class _TextAnimationDemo extends StatefulWidget {
 class _TextAnimationDemoState extends State<_TextAnimationDemo> {
   static const _phrases = ['Install skills', 'Open settings', 'Ship updates'];
 
-  bool _heroShimmer = false;
   int _phrase = 0;
   int _replay = 0;
-  Timer? _heroTimer;
   Timer? _cascadeTimer;
 
   @override
   void initState() {
     super.initState();
-    // Source preview cycles reveal ⇄ shimmer every 3s; cascade cycles every 2.4s.
-    _heroTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (mounted) setState(() => _heroShimmer = !_heroShimmer);
-    });
+    // Source TextCascadePreview cycles its phrases every 2.4s.
     _cascadeTimer = Timer.periodic(const Duration(milliseconds: 2400), (_) {
       if (mounted) setState(() => _phrase = (_phrase + 1) % _phrases.length);
     });
@@ -1285,7 +1466,6 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
 
   @override
   void dispose() {
-    _heroTimer?.cancel();
     _cascadeTimer?.cancel();
     super.dispose();
   }
@@ -1307,126 +1487,145 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
     );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Hero — the /text-animation page preview (auto-cycles reveal ⇄ shimmer).
-        caption('Auto-cycles reveal ⇄ shimmer'),
-        SizedBox(
-          height: 56,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 220),
-              switchInCurve: beuiEaseOut,
-              switchOutCurve: beuiEaseOut,
-              transitionBuilder: (child, anim) => FadeTransition(
-                opacity: anim,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 0.12),
-                    end: Offset.zero,
-                  ).animate(anim),
-                  child: child,
-                ),
-              ),
-              child: _heroShimmer
-                  ? BeuiTextShimmer(
-                      'Loading with shimmer',
-                      key: const ValueKey('shimmer'),
-                      duration: const Duration(milliseconds: 1800),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: colors.foreground,
-                      ),
-                    )
-                  : BeuiTextReveal(
-                      'Motion in words.',
-                      key: const ValueKey('reveal'),
-                      stagger: const Duration(milliseconds: 45),
-                      blur: 6,
-                      yOffset: 0.18,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -0.5,
-                        color: colors.foreground,
-                      ),
-                    ),
+        // ChromaticTextRevealPreview: prefix + cycling words, `text-5xl
+        // font-medium tracking-[-0.04em]`, started on mount (startOnView false).
+        caption('Dia text animation — a colour edge paints each word in'),
+        Center(
+          child: BeuiChromaticTextReveal(
+            prefix: 'Motion that feels',
+            words: const ['natural.', 'intentional.', 'alive.'],
+            startOnView: false,
+            style: TextStyle(
+              fontSize: 48,
+              fontWeight: FontWeight.w500,
+              letterSpacing: -1.92,
+              color: colors.foreground,
             ),
           ),
         ),
-        const SizedBox(height: 44),
+        const SizedBox(height: 48),
 
-        // Reveal — multi-line headline + delayed subtitle + Replay.
+        // TextRevealPreview: centred headline + delayed subtitle (`gap-2`), then
+        // `gap-8` to the Replay pill.
         caption('Reveal — word by word, with a soft blur'),
         KeyedSubtree(
           key: ValueKey(_replay),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               BeuiTextReveal(
                 const ['Motion that feels', 'considered.'],
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 40,
-                  height: 0.98,
+                  fontSize: 48,
+                  height: 0.95, // leading-[0.95]
                   fontWeight: FontWeight.w600,
-                  letterSpacing: -1.6,
+                  letterSpacing: -1.92, // tracking-[-0.04em]
                   color: colors.foreground,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8), // gap-2
               BeuiTextReveal(
                 'Word by word, with a soft blur.',
                 delay: const Duration(milliseconds: 900),
                 stagger: const Duration(milliseconds: 50),
                 blur: 6,
                 yOffset: 0.2,
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14, color: colors.mutedForeground),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 16),
-        BeuiButton(
-          onPressed: () => setState(() => _replay++),
-          variant: BeuiButtonVariant.secondary,
-          size: BeuiButtonSize.sm,
-          child: const Text('Replay'),
-        ),
-        const SizedBox(height: 44),
+        const SizedBox(height: 32), // gap-8
+        Center(child: _ReplayPill(onTap: () => setState(() => _replay++))),
+        const SizedBox(height: 48),
 
-        // Shimmer — two sweeps (one slower, one faster).
+        // TextShimmerPreview: `flex flex-col gap-4`, left-aligned inside a
+        // centred block.
         caption('Shimmer — gradient sweep'),
-        BeuiTextShimmer(
-          'Loading projects…',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.w600,
-            color: colors.foreground,
+        Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BeuiTextShimmer(
+                'Loading projects…',
+                style: TextStyle(
+                  fontSize: 30, // text-3xl
+                  fontWeight: FontWeight.w600,
+                  color: colors.foreground,
+                ),
+              ),
+              const SizedBox(height: 16), // gap-4
+              BeuiTextShimmer(
+                'Faster shimmer',
+                duration: const Duration(milliseconds: 1500),
+                style: TextStyle(fontSize: 14, color: colors.foreground),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 10),
-        BeuiTextShimmer(
-          'Faster shimmer',
-          duration: const Duration(milliseconds: 1500),
-          style: TextStyle(fontSize: 14, color: colors.foreground),
-        ),
-        const SizedBox(height: 44),
+        const SizedBox(height: 48),
 
-        // Cascade — per-letter slot roll, cycling phrases.
+        // TextCascadePreview: one centred `text-lg font-medium` line, cycling.
         caption('Cascade — per-letter slot roll (cycles)'),
-        BeuiTextCascade(
-          _phrases[_phrase],
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: colors.foreground,
+        Center(
+          child: BeuiTextCascade(
+            _phrases[_phrase],
+            style: TextStyle(
+              fontSize: 18, // text-lg
+              fontWeight: FontWeight.w500,
+              color: colors.foreground,
+            ),
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The Replay control from `TextRevealPreview` — preview chrome, not a beUI
+/// component: `h-9 rounded-full border border-border bg-card px-4 text-xs
+/// font-medium`.
+class _ReplayPill extends StatelessWidget {
+  const _ReplayPill({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    return GestureDetector(
+      onTap: onTap,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          height: 36, // h-9
+          padding: const EdgeInsets.symmetric(horizontal: 16), // px-4
+          decoration: BoxDecoration(
+            color: colors.card,
+            border: Border.all(color: colors.border),
+            borderRadius: BorderRadius.circular(18), // rounded-full
+          ),
+          // widthFactor: 1 shrink-wraps the pill to its label; without it the
+          // Container's alignment would expand to the row's full width.
+          child: Center(
+            widthFactor: 1,
+            child: Text(
+              'Replay',
+              style: TextStyle(
+                fontSize: 12, // text-xs
+                fontWeight: FontWeight.w500,
+                color: colors.foreground,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

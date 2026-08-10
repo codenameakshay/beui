@@ -140,9 +140,10 @@ export 'src/motion/preview_rail.dart'
         BeuiPreviewRail,
         BeuiPreviewRailItem,
         BeuiPreviewRailOrientation,
+        BeuiPreviewRailPreviewSide,
         BeuiPreviewRailStyle;
 export 'src/motion/radio.dart' show BeuiRadioGroup, BeuiRadioItem;
-export 'src/motion/range_slider.dart' show BeuiRangeSlider, BeuiRangeSliderDual;
+export 'src/motion/range_slider.dart' show BeuiRangeSlider;
 export 'src/motion/scroll_progress.dart' show BeuiScrollProgress;
 export 'src/motion/scroll_reveal.dart' show BeuiScrollReveal;
 export 'src/motion/scroll_to.dart' show BeuiScrollTo;
@@ -152,7 +153,11 @@ export 'src/motion/shader_background/shader_background.dart'
     show BeuiShaderBackground, BeuiShaderVariant;
 export 'src/motion/shared_layout_bg.dart' show BeuiSharedLayoutBg;
 export 'src/motion/smooth_scroll.dart'
-    show BeuiSmoothScroll, BeuiSmoothScrollApi, beuiEaseScroll;
+    show
+        BeuiSmoothScroll,
+        BeuiSmoothScrollApi,
+        BeuiSmoothScrollOrientation,
+        beuiEaseScroll;
 export 'src/motion/swipeable_list.dart'
     show
         BeuiSwipeAction,
@@ -197,3 +202,187 @@ export 'src/motion/wallet_card/wallet_card.dart'
     show BeuiWalletAccount, BeuiWalletCard;
 export 'src/motion/wheel_picker.dart'
     show BeuiWheelPicker, BeuiWheelPickerOption, BeuiWheelPickerStyle;
+
+// Motion — expanding CTA suite (expanding / hold / slide).
+export 'src/motion/expanding_arrow_button.dart'
+    show
+        BeuiExpandingArrowButton,
+        BeuiHoldActionButton,
+        BeuiHoldActionDirection,
+        BeuiSlideActionButton;
+
+// Motion — newly scaffolded (ported in a later pass; see docs/PORTING_SPEC.md §4).
+export 'src/motion/pull_to_refresh.dart'
+    show BeuiPullToRefresh, BeuiPullToRefreshStatus;
+export 'src/motion/bounce_sidebar.dart'
+    show
+        BeuiBounceSidebar,
+        BeuiBounceSidebarItem,
+        beuiBounceSidebarIndicatorKey;
+export 'src/motion/animated_sidebar.dart'
+    show
+        BeuiAnimatedSidebar,
+        BeuiAnimatedSidebarCollapsible,
+        BeuiAnimatedSidebarGroup,
+        BeuiAnimatedSidebarItem,
+        BeuiAnimatedSidebarScope,
+        BeuiAnimatedSidebarSide,
+        BeuiAnimatedSidebarTrigger,
+        BeuiAnimatedSidebarVariant,
+        beuiAnimatedSidebarActiveKey,
+        beuiAnimatedSidebarChromeKey,
+        beuiAnimatedSidebarInsetKey,
+        beuiAnimatedSidebarMobilePanelKey,
+        beuiAnimatedSidebarPanelKey,
+        kBeuiAnimatedSidebarIconWidth,
+        kBeuiAnimatedSidebarMobileBreakpoint,
+        kBeuiAnimatedSidebarMobileWidth,
+        kBeuiAnimatedSidebarWidth;
+export 'src/motion/context_menu.dart'
+    show
+        BeuiContextMenu,
+        BeuiContextMenuItem,
+        BeuiContextMenuItemKind,
+        BeuiContextMenuModality,
+        BeuiContextMenuTone;
+export 'src/motion/center_morph_modal.dart' show BeuiCenterMorphModal;
+
+// Agents — message primitives + bubble surface (ported); others scaffolded.
+export 'src/motion/message.dart'
+    show
+        BeuiMessage,
+        BeuiMessageAvatar,
+        BeuiMessageBubbleSide,
+        BeuiMessageContent,
+        BeuiMessageFooter,
+        BeuiMessageFrom,
+        BeuiMessageGroup,
+        BeuiMessageHeader,
+        BeuiMessageMarker,
+        BeuiMessageScope,
+        BeuiMessageSideScope,
+        BeuiMessageSpacing,
+        BeuiMessageTyping;
+export 'src/motion/message_bubble.dart'
+    show
+        BeuiMessageBubble,
+        BeuiMessageBubbleAlign,
+        BeuiMessageBubbleCollapsible,
+        BeuiMessageBubbleContent,
+        BeuiMessageBubbleGroup,
+        BeuiMessageBubbleSpacing,
+        BeuiMessageBubbleVariant;
+export 'src/motion/message_scroller.dart'
+    show
+        BeuiMessageScroller,
+        BeuiMessageScrollerAnchor,
+        BeuiMessageScrollerNavigation,
+        BeuiMessageScrollerRailItem,
+        BeuiMessageScrollerState;
+export 'src/motion/prompt_input.dart'
+    show BeuiPromptAction, BeuiPromptInput, BeuiPromptModel;
+export 'src/motion/todo_list.dart'
+    show BeuiTodoItem, BeuiTodoItemStatus, BeuiTodoList;
+export 'src/motion/code_block.dart'
+    show BeuiCodeBlock, BeuiCodeBlockStatus, BeuiCodeLanguage;
+export 'src/motion/approval_card.dart'
+    show
+        BeuiApprovalCard,
+        BeuiApprovalCardAnswer,
+        BeuiApprovalCardAnswers,
+        BeuiApprovalCardOption,
+        BeuiApprovalCardQuestion,
+        BeuiApprovalCardStatus;
+export 'src/motion/file_diff.dart'
+    show
+        BeuiFileDiff,
+        BeuiFileDiffLine,
+        BeuiFileDiffLineType,
+        BeuiFileDiffStatus;
+export 'src/motion/tool_result.dart'
+    show
+        BeuiToolResult,
+        BeuiToolResultKind,
+        BeuiToolResultOutput,
+        BeuiToolResultStatus;
+export 'src/motion/streaming_response.dart'
+    show
+        BeuiStreamingResponse,
+        BeuiStreamingResponseFeedback,
+        BeuiStreamingResponseStatus;
+export 'src/motion/image_generation.dart'
+    show
+        BeuiImageGeneration,
+        BeuiImageGenerationSize,
+        BeuiImageGenerationStatus;
+export 'src/motion/tool_approval.dart'
+    show
+        BeuiToolApproval,
+        BeuiToolApprovalCode,
+        BeuiToolApprovalParameter,
+        BeuiToolApprovalStatus;
+export 'src/motion/citations.dart'
+    show
+        BeuiCitation,
+        BeuiCitationFavicon,
+        BeuiCitationItem,
+        BeuiCitationList,
+        BeuiCitationStack,
+        BeuiCitations,
+        beuiFaviconUrl,
+        citationTargetId;
+export 'src/motion/agent_activity.dart'
+    show
+        BeuiAgentActivity,
+        BeuiAgentActivityContentType,
+        BeuiAgentActivityItem,
+        BeuiAgentActivitySearch,
+        BeuiAgentActivityStatus,
+        BeuiAgentActivityStep,
+        BeuiAgentActivityText,
+        BeuiAgentActivityTool,
+        BeuiAgentActivityTrace,
+        BeuiAgentSearchResult,
+        BeuiAgentStepStatus,
+        BeuiAgentTraceKind,
+        beuiFormatAgentActivityDuration;
+export 'src/motion/loading_states.dart'
+    show
+        BeuiAgentProgress,
+        BeuiReasoningText,
+        BeuiReasoningTextVariant,
+        BeuiThinkingShimmer,
+        beuiFormatAgentElapsed;
+export 'src/motion/ai_sidebar.dart'
+    show
+        BeuiAiSidebar,
+        BeuiSidebarResource,
+        BeuiSidebarResourceDropPosition,
+        BeuiSidebarResourceKind,
+        BeuiSidebarResourceMenuControls,
+        BeuiSidebarResourceMove,
+        beuiAiSidebarKey,
+        beuiAiSidebarRenameKey,
+        beuiAiSidebarRowKey,
+        beuiSidebarCanContain,
+        beuiSidebarContains,
+        beuiSidebarFind,
+        beuiSidebarInsert,
+        beuiSidebarMove,
+        beuiSidebarRemove,
+        beuiSidebarRename;
+export 'src/motion/chat_app.dart' show BeuiChatApp;
+export 'src/motion/range_slider_bubble.dart' show BeuiBubbleSlider;
+export 'src/motion/range_slider_fluid.dart' show BeuiFluidSlider;
+export 'src/motion/range_slider_ruler.dart' show BeuiRulerSlider;
+export 'src/motion/range_slider_wave.dart' show BeuiWaveSlider;
+export 'src/motion/knockout_wheel.dart' show BeuiKnockoutWheel;
+export 'src/motion/attachment_upload.dart'
+    show
+        BeuiAttachmentKind,
+        BeuiAttachmentRejectReason,
+        BeuiAttachmentStatus,
+        BeuiAttachmentUpload,
+        BeuiAttachmentUploadController,
+        BeuiAttachmentUploadItem;
+export 'src/motion/chromatic_text_reveal.dart' show BeuiChromaticTextReveal;

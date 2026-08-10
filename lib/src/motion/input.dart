@@ -226,7 +226,7 @@ class _BeuiInputState extends State<BeuiInput>
     _internalController?.dispose();
     _internalFocusNode?.removeListener(_onFocusChange);
     _internalFocusNode?.dispose();
-    if (widget.focusNode != null) widget.focusNode!.removeListener(_onFocusChange);
+    widget.focusNode?.removeListener(_onFocusChange);
     super.dispose();
   }
 
@@ -253,7 +253,9 @@ class _BeuiInputState extends State<BeuiInput>
     } else if (_focused) {
       borderColor =
           s?.focusedBorderColor ?? colors.foreground.withValues(alpha: 0.4);
-      ringColor = colors.ring.withValues(alpha: 0.4);
+      // `ring-ring/40` scales the ring token's *own* alpha by 40% — it does not
+      // replace it. The dark token is white@10%, so the ring lands at white@4%.
+      ringColor = colors.ring.withValues(alpha: colors.ring.a * 0.4);
     } else {
       borderColor = s?.borderColor ?? colors.border;
       ringColor = null;
@@ -272,17 +274,15 @@ class _BeuiInputState extends State<BeuiInput>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(color: borderColor),
-        // ring-2 → a 2px outer glow via a spread shadow, ramped by the same
-        // AnimatedContainer clock.
-        boxShadow: ringColor != null
-            ? [BoxShadow(color: ringColor, spreadRadius: 2)]
-            : null,
       ),
       child: Row(
         children: [
+          // Source geometry: the icon sits at `left-3` (12) and is 16 wide, and
+          // the input carries `pl-10` (40) — so the gap between icon and text
+          // is 40 - 12 - 16 = 12.
           if (hasLeft)
             Padding(
-              padding: const EdgeInsets.only(left: 12, right: 2),
+              padding: const EdgeInsets.only(left: 12, right: 12),
               child: IconTheme.merge(
                 data: IconThemeData(size: 16, color: colors.mutedForeground),
                 child: widget.leftIcon!,
@@ -291,8 +291,8 @@ class _BeuiInputState extends State<BeuiInput>
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(
-                left: hasLeft ? 4 : 14,
-                right: hasRight ? 4 : 14,
+                left: hasLeft ? 0 : 14,
+                right: hasRight ? 0 : 14,
               ),
               child: _EditableTextLine(
                 controller: _controller,
@@ -308,9 +308,16 @@ class _BeuiInputState extends State<BeuiInput>
               ),
             ),
           ),
+          // The success check is 20 wide at `right-3.5` (14); a right icon is 16
+          // wide, centred in a 44-square button flush to the right edge (so its
+          // right edge also lands at 14). The input reserves `pr-10` (40) for
+          // both, which fixes the leading gap at 6 and 10 respectively.
           if (hasRight)
             Padding(
-              padding: const EdgeInsets.only(right: 14, left: 2),
+              padding: EdgeInsets.only(
+                right: 14,
+                left: widget.success ? 6 : 10,
+              ),
               child: IconTheme.merge(
                 data: IconThemeData(size: 16, color: colors.mutedForeground),
                 child: rightSlot,
@@ -318,6 +325,39 @@ class _BeuiInputState extends State<BeuiInput>
             ),
         ],
       ),
+    );
+
+    // `ring-2` is a CSS *outset* ring: a 2px band sitting immediately outside
+    // the border box, never over the field's interior. A Flutter BoxShadow
+    // cannot express that — it paints the whole rounded rect behind the box,
+    // and because this decoration has no fill there is nothing to occlude the
+    // middle, so the field would flood with the ring colour on focus. Draw the
+    // ring as its own stroked rounded rect, inflated 2px and laid out-of-flow
+    // so it costs no space (as `ring` does in CSS).
+    field = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        field,
+        Positioned(
+          left: -2,
+          top: -2,
+          right: -2,
+          bottom: -2,
+          child: IgnorePointer(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.ease,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(radius + 2),
+                border: Border.all(
+                  color: ringColor ?? const Color(0x00000000),
+                  width: 2,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
 
     // Keyframed shake on error appearance: x: [0,-6,6,-4,4,-2,0] over 450ms.
@@ -332,47 +372,51 @@ class _BeuiInputState extends State<BeuiInput>
       );
     }
 
-    return Opacity(
-      opacity: widget.enabled ? 1 : 0.6,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (widget.label != null) ...[
-            Padding(
-              padding: const EdgeInsets.only(left: 4, bottom: 6),
-              child: Text(
-                widget.label!,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: colors.foreground,
-                ),
+    // Source dims the *field* only (`disabled && "opacity-60"` on the field
+    // div) — the label and the alert message keep full opacity.
+    if (!widget.enabled) {
+      field = Opacity(opacity: 0.6, child: field);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (widget.label != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 6),
+            child: Text(
+              widget.label!,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: colors.foreground,
               ),
             ),
-          ],
-          field,
-          // Error message reveal / removal — slide-down + unblur, opacity-only
-          // under reduced motion.
-          _ErrorMessage(
-            message: _errorMessage,
-            color: errorColor,
-            reduce: reduce,
           ),
-        ],
-      ),
+        field,
+        // Error message reveal / removal — slide-down + unblur, opacity-only
+        // under reduced motion.
+        _ErrorMessage(
+          message: _errorMessage,
+          color: errorColor,
+          reduce: reduce,
+        ),
+      ],
     );
   }
 
-  /// Piecewise-linear interpolation of the source keyframes
-  /// `[0, -6, 6, -4, 4, -2, 0]` evenly spaced across `t ∈ [0, 1]`.
+  /// Interpolation of the source keyframes `[0, -6, 6, -4, 4, -2, 0]`, evenly
+  /// spaced across `t ∈ [0, 1]`. The source passes no `ease`, and Framer eases
+  /// each keyframe segment with its multi-keyframe default (`easeInOut`) rather
+  /// than stepping linearly between them — so each segment is eased here too.
   static double _shakeX(double t) {
     const frames = [0.0, -6.0, 6.0, -4.0, 4.0, -2.0, 0.0];
     if (t <= 0) return 0;
     if (t >= 1) return 0;
     final scaled = t * (frames.length - 1);
     final i = scaled.floor();
-    final f = scaled - i;
+    final f = Curves.easeInOut.transform(scaled - i);
     return frames[i] + (frames[i + 1] - frames[i]) * f;
   }
 }

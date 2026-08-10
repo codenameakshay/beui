@@ -11,9 +11,10 @@ import '../theme/beui_colors.dart';
 /// the source's `linear-gradient(110deg, muted-foreground 30%, foreground 50%,
 /// muted-foreground 70%)` painted over a `200%`-wide background tile
 /// (`bg-[length:200%_100%]`) whose `background-position` runs from `200% 0` to
-/// `-200% 0` — so the highlight band is 0.8× the text width, sweeps fully
-/// across it once per cycle, and dwells off-text for roughly half of each
-/// cycle. The resting text is [BeuiColors.mutedForeground] and the moving
+/// `-200% 0` — so the highlight band is 0.8× the text width and, because the
+/// tile repeats (the source leaves `background-repeat` at its `repeat`
+/// default), two highlights pass through the glyphs per cycle with no gap
+/// between them. The resting text is [BeuiColors.mutedForeground] and the moving
 /// highlight is [BeuiColors.foreground].
 ///
 /// This is a pure opacity/color effect (no movement), so it is **not** gated on
@@ -129,9 +130,16 @@ class _BeuiTextShimmerState extends State<BeuiTextShimmer>
   /// The gradient tile is `2W` wide (source `bg-[length:200%_100%]`) with the
   /// band at stops 30% / 50% / 70% of that tile — a highlight `0.8W` wide. The
   /// tile's left edge travels from `-2W` to `+2W` over one cycle (CSS
-  /// `background-position: 200% 0 → -200% 0`), so the band sweeps fully across
-  /// the text and dwells off-text ~55% of the cycle. The `110deg` CSS angle is
-  /// the gradient axis rotated 20° past horizontal ([GradientRotation]).
+  /// `background-position: 200% 0 → -200% 0`). The `110deg` CSS angle is the
+  /// gradient axis rotated 20° past horizontal ([GradientRotation]).
+  ///
+  /// [TileMode.repeated] is the source's `background-repeat`, which it never
+  /// overrides and which therefore defaults to `repeat`: the `2W` tile repeats
+  /// across the text, so a `4W` travel puts **two** highlights through the
+  /// glyphs per cycle, back to back. Clamping instead ran a single pass and left
+  /// the text flat for half of every cycle — a visible stall the source does not
+  /// have. Tiling is seamless because the ramp rests at [base] on both sides of
+  /// the band (stops 30% and 70%).
   Shader _shimmerShader(Rect rect, Color base, Color highlight) {
     final t = _controller.value; // 0..1
     final w = rect.width;
@@ -143,6 +151,7 @@ class _BeuiTextShimmerState extends State<BeuiTextShimmer>
       end: Alignment.centerRight,
       colors: [base, highlight, base],
       stops: const [0.30, 0.50, 0.70],
+      tileMode: TileMode.repeated,
       transform: const GradientRotation(20 * math.pi / 180),
     ).createShader(tile);
   }

@@ -68,6 +68,10 @@ class BeuiTabs<T> extends StatefulWidget {
     this.defaultValue,
     this.onChanged,
     this.variant = BeuiTabsVariant.pill,
+    this.wrap = false,
+    this.gap,
+    this.listBorderRadius,
+    this.triggerPadding,
     super.key,
   });
 
@@ -85,6 +89,23 @@ class BeuiTabs<T> extends StatefulWidget {
 
   /// Which look to render.
   final BeuiTabsVariant variant;
+
+  /// Flows the triggers onto multiple centred runs instead of one row — the
+  /// source's `TabsList className="flex-wrap justify-center"`. The indicator
+  /// still measures each trigger's rect, so it glides between runs.
+  final bool wrap;
+
+  /// Gap between triggers, overriding the variant default (source list
+  /// `gap-*`: `gap-1` for pill/underline, `gap-0` for segment).
+  final double? gap;
+
+  /// The list's corner radius, overriding the variant default (source list
+  /// `rounded-*`).
+  final BorderRadiusGeometry? listBorderRadius;
+
+  /// Each trigger's padding, overriding the variant default (source trigger
+  /// `px-* py-*`).
+  final EdgeInsetsGeometry? triggerPadding;
 
   @override
   State<BeuiTabs<T>> createState() => _BeuiTabsState<T>();
@@ -159,11 +180,14 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       final topLeft = stackBox.globalToLocal(box.localToGlobal(Offset.zero));
       final rect = topLeft & box.size;
       next = switch (widget.variant) {
+        // Source: `absolute -bottom-px left-0 right-0 h-px` — a 1px rule that
+        // sits 1px *below* the trigger box, so it rides under the list's
+        // `border-b` rather than covering it.
         BeuiTabsVariant.underline => Rect.fromLTWH(
           rect.left,
-          rect.bottom - 2,
+          rect.bottom,
           rect.width,
-          2,
+          1,
         ),
         _ => rect,
       };
@@ -191,6 +215,7 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
           focusNode: _focusNodes[tab.value]!,
           label: tab.label,
           variant: variant,
+          padding: widget.triggerPadding,
           active: tab.value == _current,
           onSelect: () => _select(tab.value),
           onMove: (delta) => _move(tab.value, delta),
@@ -198,16 +223,24 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       );
     }
 
-    final gap = variant == BeuiTabsVariant.segment ? 0.0 : 4.0;
-    final row = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var i = 0; i < triggers.length; i++) ...[
-          if (i > 0) SizedBox(width: gap),
-          triggers[i],
-        ],
-      ],
-    );
+    final gap = widget.gap ?? (variant == BeuiTabsVariant.segment ? 0.0 : 4.0);
+    final row = widget.wrap
+        ? Wrap(
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            spacing: gap,
+            runSpacing: gap,
+            children: triggers,
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < triggers.length; i++) ...[
+                if (i > 0) SizedBox(width: gap),
+                triggers[i],
+              ],
+            ],
+          );
 
     final indicatorLayer = _indicator == null
         ? const SizedBox.shrink()
@@ -224,6 +257,16 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
 
     final stack = Stack(
       key: _stackKey,
+      // A wrapped list shrink-wraps to its widest run, so the Stack's default
+      // top-start placement would pin those runs to the left of a stretched
+      // list. Centre them, matching the source's `justify-center`. Harmless in
+      // row mode, where the Stack is already the row's width.
+      alignment: widget.wrap ? Alignment.center : AlignmentDirectional.topStart,
+      // The underline rule is deliberately 1px outside the list box (the
+      // source's `-bottom-px`), so it must not be clipped away.
+      clipBehavior: variant == BeuiTabsVariant.underline
+          ? Clip.none
+          : Clip.hardEdge,
       children: variant == BeuiTabsVariant.underline
           ? [row, indicatorLayer] // line on top
           : [indicatorLayer, row], // pill behind the text
@@ -289,11 +332,12 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
     return switch (variant) {
       BeuiTabsVariant.pill => BoxDecoration(
         color: colors.card,
-        borderRadius: BorderRadius.circular(9999),
+        borderRadius: widget.listBorderRadius ?? BorderRadius.circular(9999),
       ),
       BeuiTabsVariant.segment => BoxDecoration(
         color: colors.card,
-        borderRadius: BorderRadius.circular(8), // rounded-lg
+        borderRadius:
+            widget.listBorderRadius ?? BorderRadius.circular(8), // rounded-lg
       ),
       BeuiTabsVariant.underline => BoxDecoration(
         border: Border(bottom: BorderSide(color: colors.border)),
@@ -363,6 +407,7 @@ class _TabTrigger<T> extends StatefulWidget {
     required this.focusNode,
     required this.label,
     required this.variant,
+    required this.padding,
     required this.active,
     required this.onSelect,
     required this.onMove,
@@ -373,6 +418,7 @@ class _TabTrigger<T> extends StatefulWidget {
   final FocusNode focusNode;
   final Widget label;
   final BeuiTabsVariant variant;
+  final EdgeInsetsGeometry? padding;
   final bool active;
   final VoidCallback onSelect;
   final ValueChanged<int> onMove;
@@ -394,9 +440,11 @@ class _TabTriggerState<T> extends State<_TabTrigger<T>> {
     return _hovered ? colors.foreground : colors.mutedForeground;
   }
 
-  EdgeInsets get _padding => widget.variant == BeuiTabsVariant.underline
-      ? const EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 10)
-      : const EdgeInsets.symmetric(horizontal: 14, vertical: 6);
+  EdgeInsetsGeometry get _padding =>
+      widget.padding ??
+      (widget.variant == BeuiTabsVariant.underline
+          ? const EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 10)
+          : const EdgeInsets.symmetric(horizontal: 14, vertical: 6));
 
   @override
   Widget build(BuildContext context) {
@@ -410,7 +458,6 @@ class _TabTriggerState<T> extends State<_TabTrigger<T>> {
       constraints: widget.variant == BeuiTabsVariant.underline
           ? const BoxConstraints(minHeight: 44)
           : const BoxConstraints(),
-      alignment: Alignment.center,
       padding: _padding,
       decoration: _focusVisible
           ? BoxDecoration(
@@ -418,14 +465,31 @@ class _TabTriggerState<T> extends State<_TabTrigger<T>> {
               boxShadow: [BoxShadow(color: colors.ring, spreadRadius: 2)],
             )
           : null,
-      child: AnimatedDefaultTextStyle(
-        duration: const Duration(milliseconds: 150),
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: _textColor(colors),
+      // `widthFactor: 1` sizes the trigger to its label; a bare
+      // `Container(alignment:)` fills whatever bounded width it is given, which
+      // in a `Wrap` inflates every trigger to full width and puts each on its
+      // own run. Height still fills, so the underline variant's minHeight
+      // keeps centring the label vertically.
+      child: Align(
+        alignment: Alignment.center,
+        widthFactor: 1,
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 150),
+          // Built from the ambient style, not from scratch: `AnimatedDefaultText
+          // Style` *replaces* the inherited `DefaultTextStyle`, so a bare
+          // `TextStyle` here would drop the host font family and render the
+          // trigger in the platform fallback face.
+          style: DefaultTextStyle.of(context).style.copyWith(
+            fontSize: 14,
+            // `text-sm` is 14px/20px. Without an explicit line box the trigger
+            // renders ~3px shorter than the source (29 vs 32).
+            height: 20 / 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0, // tracking-normal
+            color: _textColor(colors),
+          ),
+          child: widget.label,
         ),
-        child: widget.label,
       ),
     );
 

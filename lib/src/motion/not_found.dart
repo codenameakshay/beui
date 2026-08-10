@@ -144,7 +144,6 @@ class _ActionPillState extends State<_ActionPill> {
     Widget pill = Container(
       height: 44, // h-11
       padding: const EdgeInsets.symmetric(horizontal: 24), // px-6
-      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: widget.background,
         border: widget.border != null
@@ -152,12 +151,19 @@ class _ActionPillState extends State<_ActionPill> {
             : null,
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(
-        widget.label,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: widget.foreground,
+      // `inline-flex`: the pill hugs its label. A bare `alignment:` on the
+      // Container would let it expand to the row's full width instead, which
+      // stacked the two CTAs full-bleed one per line.
+      child: Center(
+        widthFactor: 1,
+        child: Text(
+          widget.label,
+          style: TextStyle(
+            fontSize: 14, // text-sm
+            height: 20 / 14, // …/20
+            fontWeight: FontWeight.w500,
+            color: widget.foreground,
+          ),
         ),
       ),
     );

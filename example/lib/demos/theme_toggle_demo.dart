@@ -1,231 +1,104 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery demo for [BeuiThemeToggle] / [BeuiThemeSwitcher].
+/// Gallery demo for [BeuiThemeToggle] / [BeuiThemeSwitcher] — a faithful port of
+/// the source `theme-toggle.preview.tsx`: `flex h-full w-full items-center
+/// justify-center gap-5` holding one `flex flex-col items-center gap-2` cell per
+/// variant (rectangle, circle, circle-blur, blinds), each a
+/// `rounded-xl border border-border bg-background p-2.5` button with an
+/// `h-5 w-5` icon over an 11px muted label.
 ///
-/// Two ways to use the switcher:
-///  * a **bounded** surface — the source's preview card, whose brightness flips
-///    with a clip-path reveal confined to the card; and
-///  * a **full-screen** page — the same switcher wrapping an entire route, so
-///    the reveal spans the whole UI (wrap your `MaterialApp`'s home the same way
-///    to re-theme a real app).
+/// The switcher wraps the whole demo surface, so the reveal spans the full page
+/// exactly as the site's view transition does.
 Widget themeToggleDemo(BuildContext context) => const _ThemeToggleDemo();
 
 class _ThemeToggleDemo extends StatelessWidget {
   const _ThemeToggleDemo();
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Bounded: the reveal is confined to the card the switcher wraps.
-        Center(
-          child: BeuiThemeSwitcher(
-            initialBrightness: Brightness.dark,
-            builder: (context, brightness) {
-              final c = _Palette(brightness);
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: Container(
-                  width: 460,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    color: c.bg,
-                    border: Border.all(color: c.border),
-                  ),
-                  padding: const EdgeInsets.all(28),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _ModeLabel(c),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Appearance',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w600,
-                          color: c.fg,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Tap a toggle — the new theme wipes in from the bottom.',
-                        style: TextStyle(fontSize: 14, color: c.muted),
-                      ),
-                      const Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          for (final v in BeuiThemeRevealVariant.values)
-                            _ToggleChip(colors: c, variant: v),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 20),
-        Center(
-          child: FilledButton.tonalIcon(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                fullscreenDialog: true,
-                builder: (_) => const _FullScreenThemeDemo(),
-              ),
-            ),
-            icon: const Icon(Icons.fullscreen),
-            label: const Text('Toggle the whole screen'),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// The switcher wrapping an entire route — toggling here re-themes the full UI,
-/// exactly how you'd wrap a real app's home. The reveal spans the whole screen
-/// because the switcher's [RepaintBoundary] wraps the full-bleed surface.
-class _FullScreenThemeDemo extends StatelessWidget {
-  const _FullScreenThemeDemo();
+  static const _variants = <(BeuiThemeRevealVariant, String)>[
+    (BeuiThemeRevealVariant.rectangle, 'Rectangle'),
+    (BeuiThemeRevealVariant.circle, 'Circle'),
+    (BeuiThemeRevealVariant.circleBlur, 'Circle blur'),
+    (BeuiThemeRevealVariant.blinds, 'Blinds'),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return BeuiThemeSwitcher(
-      initialBrightness: Theme.of(context).brightness,
-      builder: (context, brightness) {
-        final c = _Palette(brightness);
-        return Material(
-          color: c.bg,
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(28),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+    final ambient = Theme.of(context).extension<BeuiColors>()!;
+    // A definite height, not `SizedBox.expand`: the gallery lays demos out
+    // inside a SingleChildScrollView, so an infinite height asserts in
+    // performLayout and the preview renders nothing at all.
+    return SizedBox(
+      width: double.infinity,
+      height: 420,
+      child: BeuiThemeSwitcher(
+        initialBrightness: ambient.brightness,
+        builder: (context, brightness) {
+          final c = BeuiColors.of(ambient.colorTheme, brightness);
+          return ColoredBox(
+            color: c.background,
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    children: [
-                      _ModeLabel(c),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: Icon(Icons.close, color: c.fg),
-                        tooltip: 'Close',
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Text(
-                    'Appearance',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.5,
-                      color: c.fg,
+                  for (var i = 0; i < _variants.length; i++) ...[
+                    if (i > 0) const SizedBox(width: 20), // gap-5
+                    _ToggleCell(
+                      colors: c,
+                      variant: _variants[i].$1,
+                      label: _variants[i].$2,
                     ),
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    'The whole screen re-themes with the reveal — the same '
-                    'switcher, just wrapping an entire page instead of a card.',
-                    style: TextStyle(fontSize: 16, height: 1.5, color: c.muted),
-                  ),
-                  const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      for (final v in BeuiThemeRevealVariant.values)
-                        _ToggleChip(colors: c, variant: v, size: 24),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
+                  ],
                 ],
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
 
-/// Resolved theme-toggle demo colors for a brightness (source's zinc palette).
-class _Palette {
-  _Palette(Brightness brightness) : _dark = brightness == Brightness.dark;
-
-  final bool _dark;
-
-  Color get bg => _dark ? const Color(0xFF09090B) : const Color(0xFFFFFFFF);
-  Color get fg => _dark ? const Color(0xFFFAFAFA) : const Color(0xFF09090B);
-  Color get muted => _dark ? const Color(0xFFA1A1AA) : const Color(0xFF71717A);
-  Color get border => _dark ? const Color(0x14FFFFFF) : const Color(0x12000000);
-  Color get chip => _dark ? const Color(0xFF18181B) : const Color(0xFFF4F4F5);
-  String get name => _dark ? 'DARK' : 'LIGHT';
-}
-
-class _ModeLabel extends StatelessWidget {
-  const _ModeLabel(this.colors);
-
-  final _Palette colors;
-
-  @override
-  Widget build(BuildContext context) => Text(
-    colors.name,
-    style: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      letterSpacing: 1.5,
-      color: colors.muted,
-    ),
-  );
-}
-
-/// A labelled theme-toggle button in a themed chip.
-class _ToggleChip extends StatelessWidget {
-  const _ToggleChip({
+/// One `flex flex-col items-center gap-2` cell: the toggle button and its label.
+class _ToggleCell extends StatelessWidget {
+  const _ToggleCell({
     required this.colors,
     required this.variant,
-    this.size = 20,
+    required this.label,
   });
 
-  final _Palette colors;
+  final BeuiColors colors;
   final BeuiThemeRevealVariant variant;
-  final double size;
-
-  static const _labels = {
-    BeuiThemeRevealVariant.rectangle: 'Rectangle',
-    BeuiThemeRevealVariant.circle: 'Circle',
-    BeuiThemeRevealVariant.circleBlur: 'Circle blur',
-  };
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        DecoratedBox(
+        // Container (not DecoratedBox) so the 1px border occupies layout space,
+        // like the source's `box-sizing: border-box`: 20 + 2×10 + 2×1 = 42.
+        Container(
           decoration: BoxDecoration(
-            color: colors.chip,
-            border: Border.all(color: colors.border),
-            borderRadius: BorderRadius.circular(14),
+            color: colors.background, // bg-background
+            border: Border.all(color: colors.border), // border-border
+            borderRadius: BorderRadius.circular(12), // rounded-xl
           ),
           child: Padding(
-            padding: const EdgeInsets.all(11),
+            padding: const EdgeInsets.all(10), // p-2.5
             child: BeuiThemeToggle(
               variant: variant,
               start: BeuiThemeRevealStart.bottomUp,
-              size: size,
-              color: colors.fg,
+              size: 20, // h-5 w-5
+              color: colors.foreground,
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 8), // gap-2
         Text(
-          _labels[variant]!,
-          style: TextStyle(fontSize: 11, color: colors.muted),
+          label,
+          style: TextStyle(fontSize: 11, color: colors.mutedForeground),
         ),
       ],
     );

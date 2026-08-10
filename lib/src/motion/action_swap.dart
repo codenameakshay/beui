@@ -359,9 +359,15 @@ class _BeuiActionSwapButtonState extends State<BeuiActionSwapButton> {
     ];
 
     // Source: `font-medium`, icon `h-4 w-4` (16px), `transition-colors`.
+    // The family is carried over from the ambient style: AnimatedDefaultTextStyle
+    // *replaces* rather than merges, so a bare TextStyle would silently reset the
+    // label to the platform default face.
+    final inherited = DefaultTextStyle.of(context).style;
     Widget content = AnimatedDefaultTextStyle(
       duration: const Duration(milliseconds: 150),
       style: TextStyle(
+        fontFamily: inherited.fontFamily,
+        fontFamilyFallback: inherited.fontFamilyFallback,
         fontSize: spec.textSize,
         fontWeight: FontWeight.w500,
         color: palette.text,

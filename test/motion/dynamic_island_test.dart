@@ -16,7 +16,9 @@ Widget _wrap(Widget child, {bool reduce = false}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }
@@ -82,6 +84,52 @@ void main() {
       expect(settled.height, moreOrLessEquals(64 + 32, epsilon: 2));
       expect(find.text('Timer running'), findsOneWidget);
       expect(find.text('REC'), findsNothing);
+    });
+
+    // The source's sizer is `w-max`, but it is also a flex item of the shell
+    // and the shell's width is driven *from* the sizer's measured width, so
+    // the two settle at the content's min-content width. beui.dev renders
+    // "INCOMING / CALL" and "Midnight / City" wrapped at the longest word;
+    // the port has to size the same way, not at the natural one-line width.
+    testWidgets('a view rests at its min-content width, wrapping at the '
+        'longest word', (tester) async {
+      const label = 'INCOMING CALL';
+
+      await tester.pumpWidget(
+        _wrap(
+          const BeuiDynamicIsland(
+            view: 'call',
+            compact: Text('REC'),
+            views: [
+              BeuiDynamicIslandView(
+                id: 'call',
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(label, style: TextStyle(fontSize: 10)),
+                    ),
+                    SizedBox(width: 72, height: 32),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // The test font is one em per glyph: 'INCOMING' is 80px, the whole
+      // label 130px. px-6 (48) + longest word (80) + the 72px trailing block.
+      final shell = tester.getSize(find.byType(BeuiDynamicIsland));
+      expect(shell.width, moreOrLessEquals(48 + 80 + 72, epsilon: 4));
+      expect(
+        shell.width,
+        lessThan(48 + 130 + 72),
+        reason: 'must not rest at the one-line (max-content) width',
+      );
+      // Two line boxes, not one.
+      expect(tester.getSize(find.text(label)).height, greaterThan(15));
     });
 
     testWidgets('switching views swaps content and resizes', (tester) async {

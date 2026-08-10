@@ -298,111 +298,133 @@ class _BeuiCommandPaletteState extends State<BeuiCommandPalette> {
     final grouped = _group(filtered);
     _schedulePillMeasure();
 
-    Widget panel = Material(
-      color: colors.card,
-      borderRadius: BorderRadius.circular(16), // rounded-2xl
+    // `rounded-2xl border border-border bg-card shadow-2xl`.
+    Widget panel = Container(
       clipBehavior: Clip.antiAlias,
-      shape: null,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _SearchRow(
-            controller: _query,
-            placeholder: widget.placeholder,
-            colors: colors,
-            onChanged: (_) {
-              _active = 0;
-              setState(() {});
-              _schedulePillMeasure();
-            },
-            onKeyEvent: _onListKey,
+      decoration: BoxDecoration(
+        color: colors.card,
+        borderRadius: BorderRadius.circular(16), // rounded-2xl
+        border: Border.all(color: colors.border),
+        boxShadow: const [
+          // shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25)
+          BoxShadow(
+            color: Color(0x40000000),
+            offset: Offset(0, 25),
+            blurRadius: 50,
+            spreadRadius: -12,
           ),
-          Flexible(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: media.size.height * 0.6, // max-h-[60vh]
-              ),
-              child: filtered.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.all(32), // p-8
-                      child: Text(
-                        widget.emptyMessage,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: colors.mutedForeground,
+        ],
+      ),
+      child: Material(
+        type: MaterialType.transparency,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _SearchRow(
+              controller: _query,
+              placeholder: widget.placeholder,
+              colors: colors,
+              onChanged: (_) {
+                _active = 0;
+                setState(() {});
+                _schedulePillMeasure();
+              },
+              onKeyEvent: _onListKey,
+            ),
+            Flexible(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: media.size.height * 0.6, // max-h-[60vh]
+                ),
+                child: filtered.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.all(32), // p-8
+                        child: Text(
+                          widget.emptyMessage,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: colors.mutedForeground,
+                          ),
                         ),
-                      ),
-                    )
-                  : SingleChildScrollView(
-                      padding: const EdgeInsets.all(8), // p-2
-                      child: Stack(
-                        key: _listKey,
-                        children: [
-                          if (_pillRect != null)
-                            MotionBuilder<Rect>(
-                              value: _pillRect!,
-                              motion: reduce ? const NoMotion() : _rowSpring,
-                              converter: const RectMotionConverter(),
-                              builder: (context, rect, _) => Positioned(
-                                left: rect.left,
-                                top: rect.top,
-                                width: rect.width,
-                                height: rect.height,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: colors.primary.withValues(
-                                      alpha: 0.05,
+                      )
+                    : SingleChildScrollView(
+                        padding: const EdgeInsets.all(8), // p-2
+                        child: Stack(
+                          key: _listKey,
+                          children: [
+                            if (_pillRect != null)
+                              MotionBuilder<Rect>(
+                                value: _pillRect!,
+                                motion: reduce ? const NoMotion() : _rowSpring,
+                                converter: const RectMotionConverter(),
+                                builder: (context, rect, _) => Positioned(
+                                  left: rect.left,
+                                  top: rect.top,
+                                  width: rect.width,
+                                  height: rect.height,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: colors.primary.withValues(
+                                        alpha: 0.05,
+                                      ),
+                                      borderRadius: BorderRadius.circular(6),
                                     ),
-                                    borderRadius: BorderRadius.circular(6),
                                   ),
                                 ),
                               ),
-                            ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              for (final entry in grouped.entries) ...[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 6,
-                                  ),
-                                  child: ExcludeSemantics(
-                                    child: Text(
-                                      entry.key.toUpperCase(),
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w600,
-                                        letterSpacing: 0.8,
-                                        color: colors.mutedForeground,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                for (final (i, entry)
+                                    in grouped.entries.indexed) ...[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 6,
+                                    ),
+                                    child: ExcludeSemantics(
+                                      child: Text(
+                                        entry.key.toUpperCase(),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          // The source's inherited leading —
+                                          // a 15px line box on a 10px face.
+                                          height: 1.5,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.8,
+                                          color: colors.mutedForeground,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                for (final item in entry.value)
-                                  _CommandRow(
-                                    key: _rowKeys.putIfAbsent(
-                                      item.id,
-                                      GlobalKey.new,
+                                  for (final item in entry.value)
+                                    _CommandRow(
+                                      key: _rowKeys.putIfAbsent(
+                                        item.id,
+                                        GlobalKey.new,
+                                      ),
+                                      item: item,
+                                      active: filtered.indexOf(item) == _active,
+                                      hasIcons: hasIcons,
+                                      colors: colors,
+                                      onHover: () =>
+                                          _setActive(filtered.indexOf(item)),
+                                      onTap: () => _select(item),
                                     ),
-                                    item: item,
-                                    active: filtered.indexOf(item) == _active,
-                                    hasIcons: hasIcons,
-                                    colors: colors,
-                                    onHover: () =>
-                                        _setActive(filtered.indexOf(item)),
-                                    onTap: () => _select(item),
-                                  ),
+                                  // `mb-1 last:mb-0` on the group wrapper.
+                                  if (i < grouped.length - 1)
+                                    const SizedBox(height: 4),
+                                ],
                               ],
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
 
@@ -471,8 +493,10 @@ class _SearchRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // `h-12` sits on the *input*, not the row — so the row is 48px of input
+    // plus the 1px `border-b`, 49 total. Container adds the border to its
+    // own padding, so the SizedBox keeps the input at exactly 48.
     return Container(
-      height: 48, // h-12
       padding: const EdgeInsets.symmetric(horizontal: 16), // px-4
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: colors.border)),
@@ -482,21 +506,28 @@ class _SearchRow extends StatelessWidget {
         children: [
           Icon(LucideIcons.search, size: 16, color: colors.mutedForeground),
           Expanded(
-            child: Focus(
-              onKeyEvent: onKeyEvent,
-              child: TextField(
-                controller: controller,
-                autofocus: true,
-                onChanged: onChanged,
-                style: TextStyle(fontSize: 14, color: colors.foreground),
-                cursorColor: colors.foreground,
-                decoration: InputDecoration(
-                  isCollapsed: true,
-                  border: InputBorder.none,
-                  hintText: placeholder,
-                  hintStyle: TextStyle(
-                    fontSize: 14,
-                    color: colors.mutedForeground,
+            child: SizedBox(
+              height: 48, // h-12 on the input
+              // `isCollapsed` fields align to the top of a tight box; the
+              // source centres the text in the 48px input.
+              child: Center(
+                child: Focus(
+                  onKeyEvent: onKeyEvent,
+                  child: TextField(
+                    controller: controller,
+                    autofocus: true,
+                    onChanged: onChanged,
+                    style: TextStyle(fontSize: 14, color: colors.foreground),
+                    cursorColor: colors.foreground,
+                    decoration: InputDecoration(
+                      isCollapsed: true,
+                      border: InputBorder.none,
+                      hintText: placeholder,
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: colors.mutedForeground,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -553,7 +584,13 @@ class _CommandRow extends StatelessWidget {
                     item.label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 14, color: color),
+                    // `text-sm` — 14px on a 20px line box, which is what makes
+                    // the row 36px tall (py-2 + 20).
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 20 / 14,
+                      color: color,
+                    ),
                   ),
                 ),
                 if (item.badge != null) item.badge!,
@@ -584,7 +621,12 @@ class _Kbd extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(fontSize: 10, color: colors.mutedForeground),
+        // 14px line box + py-0.5 + 1px borders = the source's 20px chip.
+        style: TextStyle(
+          fontSize: 10,
+          height: 1.4,
+          color: colors.mutedForeground,
+        ),
       ),
     );
   }

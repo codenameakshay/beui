@@ -52,7 +52,6 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
   double _ry = 0; // target rotateY (radians)
   double _gx = 0.5; // glare x (0..1)
   double _gy = 0.5; // glare y (0..1)
-  bool _hovering = false;
 
   void _onHover(PointerHoverEvent e) {
     final box = _key.currentContext?.findRenderObject() as RenderBox?;
@@ -67,7 +66,6 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
       _ry = (px - 0.5) * maxRad;
       _gx = px;
       _gy = py;
-      _hovering = true;
     });
   }
 
@@ -75,7 +73,6 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
     setState(() {
       _rx = 0;
       _ry = 0;
-      _hovering = false;
     });
   }
 
@@ -88,6 +85,21 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final glareColor = widget.glareColor ?? colors.foreground;
 
+    // Source glare: `radial-gradient(circle at gx% gy%, var(--foreground),
+    // transparent 50%)`. A CSS `circle` with no size keyword sizes to
+    // `farthest-corner` — the distance from the gradient's centre to the
+    // box corner furthest from it — and the `transparent` stop sits at half
+    // of that. Flutter states `RadialGradient.radius` as a fraction of the
+    // box's *shortest side*, so convert. Recomputed per frame because the
+    // farthest corner changes as the glare centre follows the cursor.
+    double glareRadius(Size size) {
+      final shortest = math.min(size.width, size.height);
+      if (shortest <= 0) return 0;
+      final fx = math.max(_gx, 1 - _gx) * size.width;
+      final fy = math.max(_gy, 1 - _gy) * size.height;
+      return 0.5 * math.sqrt(fx * fx + fy * fy) / shortest;
+    }
+
     final content = ClipRRect(
       key: _key,
       borderRadius: widget.borderRadius,
@@ -97,15 +109,19 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
           if (widget.glare && !reduce)
             Positioned.fill(
               child: IgnorePointer(
-                child: AnimatedOpacity(
-                  opacity: _hovering ? 0.15 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: RadialGradient(
-                        center: Alignment(_gx * 2 - 1, _gy * 2 - 1),
-                        radius: 0.7,
-                        colors: [glareColor, glareColor.withValues(alpha: 0)],
+                // Source: a plain `opacity-15` class — the glare is always
+                // painted (centred at 50%/50% until the cursor moves) and is
+                // not faded in on hover, nor recentred on exit.
+                child: Opacity(
+                  opacity: 0.15,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: RadialGradient(
+                          center: Alignment(_gx * 2 - 1, _gy * 2 - 1),
+                          radius: glareRadius(constraints.biggest),
+                          colors: [glareColor, glareColor.withValues(alpha: 0)],
+                        ),
                       ),
                     ),
                   ),

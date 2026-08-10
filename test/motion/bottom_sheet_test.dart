@@ -34,7 +34,9 @@ class _HostState extends State<_Host> {
       child: const SizedBox(height: 600, child: Center(child: Text('BODY'))),
     );
     return MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
       home: Scaffold(
         // Toggle reduced motion while keeping the ambient MediaQuery (size etc.).
         body: Builder(

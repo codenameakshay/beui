@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -16,7 +17,9 @@ Widget _wrap(Widget child, {bool reduce = false}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }
@@ -48,6 +51,35 @@ Widget _page({
   );
   if (overlay == null) return list;
   return Stack(children: [list, overlay]);
+}
+
+/// A tall scroller whose rows are hit-testable, so pointer input (wheel, drag,
+/// fling) actually lands on it — unlike [_page], which is built from empty
+/// boxes that no hit test can find.
+Widget _rows({required ScrollController controller}) => ListView.builder(
+  controller: controller,
+  itemCount: 40,
+  itemBuilder: (context, i) => SizedBox(height: 100, child: Text('row $i')),
+);
+
+/// A wide horizontal scroller.
+Widget _strip({required ScrollController controller}) => SizedBox(
+  height: 120,
+  child: ListView.builder(
+    controller: controller,
+    scrollDirection: Axis.horizontal,
+    itemCount: 20,
+    itemBuilder: (context, i) => SizedBox(width: 200, child: Text('$i')),
+  ),
+);
+
+/// Sends one wheel notch over [target].
+Future<void> _wheel(WidgetTester tester, Finder target, Offset delta) async {
+  final pointer = TestPointer(1, PointerDeviceKind.mouse);
+  final centre = tester.getCenter(target);
+  await tester.sendEventToBinding(pointer.hover(centre));
+  await tester.sendEventToBinding(pointer.scroll(delta));
+  await tester.pump();
 }
 
 void main() {
@@ -129,6 +161,221 @@ void main() {
       api.scrollTo(1500);
       await tester.pump();
       expect(controller.offset, 1500);
+    });
+  });
+
+  group('BeuiSmoothScroll orientation', () {
+    testWidgets('a vertical provider ignores a horizontal scrollable', (
+      tester,
+    ) async {
+      final horizontal = ScrollController();
+      addTearDown(horizontal.dispose);
+      late BeuiSmoothScrollApi api;
+      await tester.pumpWidget(
+        _wrap(
+          BeuiSmoothScroll(
+            child: Builder(
+              builder: (context) {
+                api = BeuiSmoothScroll.of(context);
+                return _strip(controller: horizontal);
+              },
+            ),
+          ),
+        ),
+      );
+      horizontal.jumpTo(400);
+      await tester.pump();
+      expect(
+        api.scrollY.value,
+        0,
+        reason: 'the wrong axis must not feed the shared state',
+      );
+      expect(api.progress.value, 0);
+    });
+
+    testWidgets('a horizontal provider tracks the horizontal scrollable', (
+      tester,
+    ) async {
+      final horizontal = ScrollController();
+      addTearDown(horizontal.dispose);
+      late BeuiSmoothScrollApi api;
+      await tester.pumpWidget(
+        _wrap(
+          BeuiSmoothScroll(
+            orientation: BeuiSmoothScrollOrientation.horizontal,
+            child: Builder(
+              builder: (context) {
+                api = BeuiSmoothScroll.of(context);
+                return _strip(controller: horizontal);
+              },
+            ),
+          ),
+        ),
+      );
+      horizontal.jumpTo(400);
+      await tester.pump();
+      expect(api.scrollY.value, 400);
+      expect(api.progress.value, greaterThan(0));
+      expect(api.progress.value, lessThan(1));
+    });
+
+    testWidgets('scrollTo glides the horizontal scrollable', (tester) async {
+      final horizontal = ScrollController();
+      addTearDown(horizontal.dispose);
+      late BeuiSmoothScrollApi api;
+      await tester.pumpWidget(
+        _wrap(
+          BeuiSmoothScroll(
+            orientation: BeuiSmoothScrollOrientation.horizontal,
+            child: Builder(
+              builder: (context) {
+                api = BeuiSmoothScroll.of(context);
+                return _strip(controller: horizontal);
+              },
+            ),
+          ),
+        ),
+      );
+      api.scrollTo(600);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(horizontal.offset, greaterThan(0));
+      expect(horizontal.offset, lessThan(600));
+      await tester.pumpAndSettle();
+      expect(horizontal.offset, moreOrLessEquals(600, epsilon: 1));
+    });
+
+    testWidgets('maps the vertical wheel onto the horizontal offset', (
+      tester,
+    ) async {
+      final horizontal = ScrollController();
+      addTearDown(horizontal.dispose);
+      await tester.pumpWidget(
+        _wrap(
+          BeuiSmoothScroll(
+            orientation: BeuiSmoothScrollOrientation.horizontal,
+            child: _strip(controller: horizontal),
+          ),
+        ),
+      );
+      horizontal.jumpTo(100);
+      await tester.pump();
+      await _wheel(tester, find.byType(ListView), const Offset(0, 120));
+      // Flutter alone would ignore dy here; the provider forwards it.
+      expect(horizontal.offset, moreOrLessEquals(220, epsilon: 0.5));
+    });
+  });
+
+  group('BeuiSmoothScroll wheelMultiplier', () {
+    Future<double> wheeled(
+      WidgetTester tester, {
+      required double multiplier,
+      bool reduce = false,
+    }) async {
+      final controller = ScrollController();
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(
+        _wrap(
+          BeuiSmoothScroll(
+            wheelMultiplier: multiplier,
+            child: _rows(controller: controller),
+          ),
+          reduce: reduce,
+        ),
+      );
+      controller.jumpTo(500);
+      await tester.pump();
+      await _wheel(tester, find.byType(ListView), const Offset(0, 100));
+      return controller.offset - 500;
+    }
+
+    testWidgets('1 (default) leaves the platform step untouched', (
+      tester,
+    ) async {
+      expect(
+        await wheeled(tester, multiplier: 1),
+        moreOrLessEquals(100, epsilon: 0.5),
+      );
+    });
+
+    testWidgets('scales the step up and down', (tester) async {
+      expect(
+        await wheeled(tester, multiplier: 2),
+        moreOrLessEquals(200, epsilon: 0.5),
+      );
+      expect(
+        await wheeled(tester, multiplier: 0.5),
+        moreOrLessEquals(50, epsilon: 0.5),
+      );
+    });
+
+    testWidgets('is bypassed under reduced motion', (tester) async {
+      expect(
+        await wheeled(tester, multiplier: 2, reduce: true),
+        moreOrLessEquals(100, epsilon: 0.5),
+        reason: 'reduced motion hands the wheel back to the platform',
+      );
+    });
+  });
+
+  group('BeuiSmoothScroll touch + lerp', () {
+    Future<double> flung(
+      WidgetTester tester, {
+      required bool touch,
+      required double lerp,
+      bool reduce = false,
+    }) async {
+      final controller = ScrollController();
+      addTearDown(controller.dispose);
+      // Drop any previous tree: a same-shaped rebuild would hand the old
+      // ScrollPosition (and its offset) to the new controller.
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpWidget(
+        _wrap(
+          BeuiSmoothScroll(
+            touch: touch,
+            lerp: lerp,
+            child: _rows(controller: controller),
+          ),
+          reduce: reduce,
+        ),
+      );
+      await tester.fling(find.byType(ListView), const Offset(0, -200), 1200);
+      await tester.pumpAndSettle();
+      return controller.offset;
+    }
+
+    testWidgets('a lower lerp is heavier: the fling carries further', (
+      tester,
+    ) async {
+      final light = await flung(tester, touch: true, lerp: 0.2);
+      final heavy = await flung(tester, touch: true, lerp: 0.04);
+      expect(heavy, greaterThan(light));
+    });
+
+    testWidgets('lerp is inert while touch is false', (tester) async {
+      final a = await flung(tester, touch: false, lerp: 0.2);
+      final b = await flung(tester, touch: false, lerp: 0.04);
+      expect(b, moreOrLessEquals(a, epsilon: 0.5));
+    });
+
+    testWidgets('touch smoothing replaces the platform settle', (tester) async {
+      final native = await flung(tester, touch: false, lerp: 0.1);
+      final smoothed = await flung(tester, touch: true, lerp: 0.02);
+      expect(smoothed, isNot(moreOrLessEquals(native, epsilon: 1)));
+    });
+
+    testWidgets('reduced motion hands the fling back to the platform', (
+      tester,
+    ) async {
+      final native = await flung(tester, touch: false, lerp: 0.1);
+      final reduced = await flung(
+        tester,
+        touch: true,
+        lerp: 0.02,
+        reduce: true,
+      );
+      expect(reduced, moreOrLessEquals(native, epsilon: 0.5));
     });
   });
 

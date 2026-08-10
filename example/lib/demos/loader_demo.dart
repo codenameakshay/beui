@@ -1,95 +1,66 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery route for [BeuiLoader] — every [BeuiLoaderVariant] looping side by
-/// side in a labelled grid.
+/// Gallery route for [BeuiLoader] — a faithful port of the source
+/// `loader.preview.tsx`: `flex flex-wrap items-center justify-center gap-8 p-8`
+/// holding one `flex flex-col items-center gap-4` cell per variant, each a
+/// 36px loader over a `text-xs text-muted-foreground` label. Variant order and
+/// label casing match the source's `VARIANTS` array exactly.
 Widget loaderDemo(BuildContext context) => const _LoaderDemo();
 
-const _labels = <BeuiLoaderVariant, String>{
-  BeuiLoaderVariant.spinner: 'spinner',
-  BeuiLoaderVariant.dots: 'dots',
-  BeuiLoaderVariant.bars: 'bars',
-  BeuiLoaderVariant.dotMatrix: 'dot-matrix',
-  BeuiLoaderVariant.dither: 'dither',
-  BeuiLoaderVariant.ascii: 'ascii',
-  BeuiLoaderVariant.asciiLine: 'ascii-line',
-  BeuiLoaderVariant.asciiBraille: 'ascii-braille',
-  BeuiLoaderVariant.asciiBlocks: 'ascii-blocks',
-  BeuiLoaderVariant.asciiBounce: 'ascii-bounce',
-  BeuiLoaderVariant.morph: 'morph',
-  BeuiLoaderVariant.comet: 'comet',
-  BeuiLoaderVariant.scramble: 'scramble',
-  BeuiLoaderVariant.metaballs: 'metaballs',
-  BeuiLoaderVariant.newton: 'newton',
-  BeuiLoaderVariant.helix: 'helix',
-  BeuiLoaderVariant.percent: 'percent',
-};
+const _variants = <(BeuiLoaderVariant, String)>[
+  (BeuiLoaderVariant.spinner, 'Spinner'),
+  (BeuiLoaderVariant.dots, 'Dots'),
+  (BeuiLoaderVariant.bars, 'Bars'),
+  (BeuiLoaderVariant.dotMatrix, 'Dot Matrix'),
+  (BeuiLoaderVariant.dither, 'Dither'),
+  (BeuiLoaderVariant.morph, 'Morph'),
+  (BeuiLoaderVariant.comet, 'Comet'),
+  (BeuiLoaderVariant.metaballs, 'Metaballs'),
+  (BeuiLoaderVariant.newton, 'Newton'),
+  (BeuiLoaderVariant.helix, 'Helix'),
+  (BeuiLoaderVariant.scramble, 'Scramble'),
+  (BeuiLoaderVariant.percent, 'Percent'),
+  (BeuiLoaderVariant.ascii, 'ASCII'),
+  (BeuiLoaderVariant.asciiLine, 'ASCII Line'),
+  (BeuiLoaderVariant.asciiBraille, 'ASCII Braille'),
+  (BeuiLoaderVariant.asciiBlocks, 'ASCII Blocks'),
+  (BeuiLoaderVariant.asciiBounce, 'ASCII Bounce'),
+];
 
 class _LoaderDemo extends StatelessWidget {
   const _LoaderDemo();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.extension<BeuiColors>()!;
+    final colors = Theme.of(context).extension<BeuiColors>()!;
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(32), // p-8
       child: Center(
         child: Wrap(
-          spacing: 20,
-          runSpacing: 20,
+          spacing: 32, // gap-8
+          runSpacing: 32,
           alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            for (final entry in _labels.entries)
-              _Cell(
-                label: entry.value,
-                borderColor: colors.border,
-                labelColor: colors.mutedForeground,
-                child: BeuiLoader(variant: entry.key),
+            for (final (variant, label) in _variants)
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BeuiLoader(variant: variant, size: 36),
+                  const SizedBox(height: 16), // gap-4
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 16 / 12,
+                      color: colors.mutedForeground,
+                    ),
+                  ),
+                ],
               ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _Cell extends StatelessWidget {
-  const _Cell({
-    required this.label,
-    required this.child,
-    required this.borderColor,
-    required this.labelColor,
-  });
-
-  final String label;
-  final Widget child;
-  final Color borderColor;
-  final Color labelColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 140,
-      height: 120,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: borderColor),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(child: Center(child: child)),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: 'monospace',
-              color: labelColor,
-            ),
-          ),
-        ],
       ),
     );
   }

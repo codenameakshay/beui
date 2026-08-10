@@ -52,7 +52,9 @@ Widget _app({
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: child),
   );
 }
@@ -190,7 +192,9 @@ void main() {
   testWidgets('rest-state golden (concave over convex)', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: Scaffold(
           body: Center(
             child: SizedBox(

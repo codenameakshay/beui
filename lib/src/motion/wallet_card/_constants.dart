@@ -38,7 +38,10 @@ const double kItemBlurPx = 3; // → σ1.5 via beuiBlurSigma
 /// Shared padding for the account trigger + panel header (source `HEAD`:
 /// `flex items-center gap-2 px-2 py-1.5`) so the avatar/name stay put as the box
 /// morphs — the panel reads as the trigger itself growing open.
-const EdgeInsets kHeadPadding = EdgeInsets.symmetric(horizontal: 8, vertical: 6);
+const EdgeInsets kHeadPadding = EdgeInsets.symmetric(
+  horizontal: 8,
+  vertical: 6,
+);
 const double kHeadGap = 8;
 
 /// Corner radius of the morphing trigger/panel surface (source `borderRadius:

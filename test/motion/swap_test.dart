@@ -16,7 +16,9 @@ Widget _wrap(Widget child, {bool reduce = false}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }
@@ -186,6 +188,14 @@ void main() {
     testWidgets('the token picker filters and picks; same-token swaps sides', (
       tester,
     ) async {
+      // The default 800x600 test surface is shorter than the card plus an open
+      // picker, so the list gets clipped and the row cannot be tapped. This
+      // test is about filtering and selection, not small-viewport behaviour —
+      // give it a surface the picker actually fits in.
+      tester.view.physicalSize = const Size(900, 1000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
       await tester.pumpWidget(_swap());
       await tester.pump(const Duration(milliseconds: 600));
       // Open the "from" picker.
@@ -200,6 +210,11 @@ void main() {
       expect(find.text('USD Coin'), findsOneWidget);
       expect(find.text('Solana'), findsNothing);
 
+      // The picker list can sit below the fold on the default test surface,
+      // so bring the row into view rather than relying on where it happens to
+      // land — the layout above it is free to change.
+      await tester.ensureVisible(find.text('USD Coin'));
+      await tester.pump();
       await tester.tap(find.text('USD Coin'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));

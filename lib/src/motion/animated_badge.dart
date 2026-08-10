@@ -255,7 +255,10 @@ class _BeuiAnimatedBadgeState extends State<BeuiAnimatedBadge> {
       ),
       child: Stack(
         clipBehavior: Clip.none,
-        alignment: Alignment.center,
+        // `inline-flex items-center` — cross-axis centred, main axis flex-start.
+        // Only observable when the badge is given a wider constraint than its
+        // content (e.g. as a stretched grid item, as in the source preview).
+        alignment: Alignment.centerLeft,
         children: [
           if (widget._pulse && !reduce)
             Positioned.fill(

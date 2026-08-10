@@ -24,8 +24,9 @@ class _EditableCell extends StatefulWidget {
 }
 
 class _EditableCellState extends State<_EditableCell> {
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.value);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.value,
+  );
   final FocusNode _focusNode = FocusNode();
   bool _focused = false;
 
@@ -66,8 +67,10 @@ class _EditableCellState extends State<_EditableCell> {
             color: colors.mutedForeground.withValues(alpha: 0.4),
             fontSize: 14,
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 6,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(6),
             borderSide: BorderSide.none,

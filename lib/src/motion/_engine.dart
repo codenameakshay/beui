@@ -24,5 +24,6 @@ export 'package:motor/motor.dart'
         RectMotionConverter,
         SingleMotionBuilder,
         SingleMotionController,
+        SingleVelocityMotionBuilder,
         SizeMotionConverter,
         SpringMotion;

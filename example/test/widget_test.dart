@@ -1,3 +1,4 @@
+import 'package:beui_example/explorer/catalog.dart';
 import 'package:beui_example/explorer/explorer_app.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,9 +16,11 @@ void main() {
     // The wordmark and the Components heading render.
     expect(find.text('beUI'), findsWidgets);
     expect(find.text('Components'), findsWidgets);
-    // The Components section count (33) renders near the top of the sidebar.
-    // (Blocks' 18 is below the fold in the lazy ListView, so not asserted here.)
-    expect(find.text('33'), findsOneWidget);
+    // The Components section count renders near the top of the sidebar. Read it
+    // off the catalog rather than hardcoding: this assertion silently rotted
+    // once already when the catalog grew past the literal it was written with.
+    // (Blocks' count is below the fold in the lazy ListView, so not asserted.)
+    expect(find.text('${kComponents.length}'), findsOneWidget);
     // A known sidebar entry is present.
     expect(find.text('Switch'), findsWidgets);
   });

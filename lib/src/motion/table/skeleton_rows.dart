@@ -101,7 +101,10 @@ class _SkeletonRowState<T> extends State<_SkeletonRow<T>>
       alignment: Alignment.center,
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: colors.border.withValues(alpha: 0.6)),
+          // `border-border/60` scales the token's own alpha, never replaces it.
+          bottom: BorderSide(
+            color: colors.border.withValues(alpha: colors.border.a * 0.6),
+          ),
         ),
       ),
       child: row,

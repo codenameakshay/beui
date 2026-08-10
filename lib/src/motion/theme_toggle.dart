@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 
 import '../tokens/icons.dart';
+import '../tokens/motion.dart' show beuiEaseOut;
+import '_engine.dart' show CurvedMotion, Motion, SingleMotionController;
 import 'action_swap.dart' show BeuiActionSwapIcon, BeuiActionSwapVariant;
 
 /// How a [BeuiThemeSwitcher] reveals the new theme — the Flutter port of beUI's
@@ -23,9 +25,22 @@ enum BeuiThemeRevealVariant {
   /// A circle expands from the origin, the seam softened with a fading blur
   /// (source `circle-blur`, 700ms + `blur(8px)`→0).
   circleBlur,
+
+  /// Vertical slats open across the whole surface like a shutter — the source's
+  /// `blinds` (700ms `EASE_OUT`). The source masks the incoming view with a
+  /// repeating 72px-tiled `linear-gradient(90deg, …)` whose opaque band widens
+  /// from `-20px` to `72px`; this port clips the same widening band per tile.
+  ///
+  /// The slats sweep the entire surface, so [BeuiThemeRevealStart] is
+  /// **ignored** for this variant — matching the source, which sets no
+  /// `--beui-vt-origin` for `blinds` ("there is no origin point to set").
+  blinds,
 }
 
 /// Origin the reveal grows from (source `RectStart`).
+///
+/// Ignored by [BeuiThemeRevealVariant.blinds], whose slats open across the
+/// whole surface rather than growing from a point.
 enum BeuiThemeRevealStart {
   topLeft,
   topRight,
@@ -34,6 +49,34 @@ enum BeuiThemeRevealStart {
   center,
   bottomUp,
 }
+
+/// The reveal's duration **and** easing for [variant], as the single [Motion]
+/// token the reveal controller runs on — the two things the source's `VT_CSS`
+/// sets per View Transition, folded into one value.
+///
+/// Durations are the source's verbatim: rectangle 400ms; circle, circle-blur
+/// and blinds 700ms. Curves likewise:
+/// - rectangle → the CSS `ease-out` *keyword*, cubic-bezier(0, 0, 0.58, 1)
+///   (NOT Flutter's Curves.easeOut, which is Material's (0, 0, 0.2, 1));
+/// - circle / circle-blur → cubic-bezier(.4, 0, .2, 1);
+/// - blinds → `${EASE_OUT_CSS}`, i.e. the shared [beuiEaseOut] token.
+///
+/// Carrying the curve in the motion (rather than reading a linear controller
+/// through `Curve.transform` at paint time) is what lets the reveal run on the
+/// `_engine.dart` facade's [SingleMotionController]: the eased progress the
+/// clipper wants comes straight off `controller.value`.
+Motion _revealMotion(BeuiThemeRevealVariant variant) => switch (variant) {
+  BeuiThemeRevealVariant.rectangle => const CurvedMotion(
+    Duration(milliseconds: 400),
+    Cubic(0, 0, 0.58, 1),
+  ),
+  BeuiThemeRevealVariant.circle || BeuiThemeRevealVariant.circleBlur =>
+    const CurvedMotion(Duration(milliseconds: 700), Cubic(0.4, 0, 0.2, 1)),
+  BeuiThemeRevealVariant.blinds => const CurvedMotion(
+    Duration(milliseconds: 700),
+    beuiEaseOut,
+  ),
+};
 
 /// Handle a [BeuiThemeToggle] uses to read the current brightness and request a
 /// switch. Obtain it with `BeuiThemeSwitcher.of(context)`.
@@ -100,7 +143,11 @@ class BeuiThemeSwitcher extends StatefulWidget {
 class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     with SingleTickerProviderStateMixin {
   final GlobalKey _boundaryKey = GlobalKey();
-  late final AnimationController _controller;
+
+  /// Drives the reveal 0 → 1 through the `_engine.dart` motor facade. Its
+  /// [Motion] is swapped per toggle ([_revealMotion]), so `value` is already the
+  /// eased progress the clipper consumes.
+  late final SingleMotionController _reveal;
 
   late Brightness _brightness = widget.initialBrightness;
   ui.Image? _oldImage; // snapshot of the outgoing theme
@@ -114,15 +161,20 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     super.initState();
     // Eager (not lazy) so a reduced-motion toggle that never animates still has
     // a constructed controller to dispose without a deactivated-element lookup.
-    _controller = AnimationController(vsync: this)
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) _clearOverlay();
-      });
+    // The motion passed here is only a placeholder — every toggle assigns the
+    // variant's own before starting.
+    _reveal =
+        SingleMotionController(
+          motion: _revealMotion(BeuiThemeRevealVariant.rectangle),
+          vsync: this,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed) _clearOverlay();
+        });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _reveal.dispose();
     _oldImage?.dispose();
     _newImage?.dispose();
     super.dispose();
@@ -166,7 +218,7 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     // guards programmatic calls too.) `_oldImage != null` for the whole reveal
     // window, including circle-blur's one-frame incoming-snapshot capture where
     // the controller is briefly idle.
-    if (_oldImage != null || _controller.isAnimating) return;
+    if (_oldImage != null || _reveal.isAnimating) return;
 
     final next = _brightness == Brightness.dark
         ? Brightness.light
@@ -187,14 +239,16 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
     // Snapshot the outgoing theme (the boundary wraps only the live surface, so
     // this is always the settled theme — a reveal can't be in flight here).
     final outgoing = boundary.toImageSync(pixelRatio: _dpr);
-    // Reset to 0 first so the frame that paints the new brightness is still
-    // fully covered by the outgoing snapshot (no flash of the settled theme).
-    _controller
-      ..stop()
-      ..value = 0
-      ..duration = variant == BeuiThemeRevealVariant.rectangle
-          ? const Duration(milliseconds: 400)
-          : const Duration(milliseconds: 700);
+    // Load the variant's timing + easing, then rewind to 0 so the frame that
+    // paints the new brightness is still fully covered by the outgoing snapshot
+    // (no flash of the settled theme). Rewinding *here*, while `_oldImage` is
+    // still null, also keeps the end-of-reveal `completed` status the only one
+    // `_clearOverlay` can act on: the rewind reports `completed` too (an
+    // unbounded MotionController is `completed` whenever it sits stopped away
+    // from its initial value), but with no overlay up that call is a no-op.
+    _reveal
+      ..motion = _revealMotion(variant)
+      ..value = 0;
     setState(() {
       _brightness = next;
       _oldImage = outgoing;
@@ -211,10 +265,10 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         setState(() => _newImage = _snapshot());
-        _controller.forward();
+        _reveal.animateTo(1, from: 0);
       });
     } else {
-      _controller.forward();
+      _reveal.animateTo(1, from: 0);
     }
   }
 
@@ -238,12 +292,6 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
 
     if (_oldImage == null) return live;
 
-    // rectangle = the CSS `ease-out` keyword, cubic-bezier(0, 0, 0.58, 1)
-    // (NOT Flutter's Curves.easeOut, which is Material's (0, 0, 0.2, 1));
-    // circle = the source's cubic-bezier(.4,0,.2,1).
-    final curve = _variant == BeuiThemeRevealVariant.rectangle
-        ? const Cubic(0, 0, 0.58, 1)
-        : const Cubic(0.4, 0, 0.2, 1);
     return Stack(
       children: [
         live, // live new theme (revealed as the overlay clips away)
@@ -253,12 +301,14 @@ class _BeuiThemeSwitcherState extends State<BeuiThemeSwitcher>
           // snapshot doing the same to the whole viewport.
           child: AbsorbPointer(
             child: AnimatedBuilder(
-              animation: _controller,
+              animation: _reveal,
               builder: (context, _) => _RevealOverlay(
                 oldImage: _oldImage!,
                 newImage: _newImage,
                 scale: _dpr,
-                progress: curve.transform(_controller.value),
+                // Already eased: the curve lives in the controller's motion
+                // ([_revealMotion]), not in a transform applied per frame.
+                progress: _reveal.value,
                 variant: _variant,
                 start: _start,
               ),
@@ -459,6 +509,7 @@ class _RevealClipper extends CustomClipper<Path> {
   }
 
   Path _revealPath(Size size) {
+    if (variant == BeuiThemeRevealVariant.blinds) return _blindsPath(size);
     if (variant == BeuiThemeRevealVariant.rectangle) {
       final f = _rectFrom(start); // (top, right, bottom, left) fractions
       final t = f[0] * (1 - progress);
@@ -479,6 +530,41 @@ class _RevealClipper extends CustomClipper<Path> {
     return Path()..addOval(
       Rect.fromCircle(center: center, radius: progress * _endRadius(size)),
     );
+  }
+
+  /// Width of one shutter tile — source `mask-size: 72px 100%`.
+  static const double blindsTile = 72;
+
+  /// Soft trailing edge of each slat — source's `+ 20px` gradient stop.
+  static const double blindsFeather = 20;
+
+  /// One widening slat per 72px tile, so the new theme opens across the surface
+  /// like a shutter (source `beui-blinds-reveal`).
+  ///
+  /// The source animates a registered custom property `--beui-vt-slat` from
+  /// `-20px` → `72px` and masks the incoming view with
+  /// `linear-gradient(90deg, #000 0 var(--slat), transparent calc(var(--slat) + 20px))`
+  /// repeated every 72px. A [ClipPath] has no soft edge, so the hard clip is
+  /// placed at the mask's **50%-alpha boundary** (`slat + 20/2`) — the closest
+  /// single-edge equivalent of the feathered band, and the reason the slats
+  /// still start closed at t=0 and land fully open at t=1.
+  Path _blindsPath(Size size) {
+    // slat = lerp(-20, 72, progress); edge = slat + feather / 2.
+    const span = blindsTile + blindsFeather; // -20 → 72
+    final edge = (-blindsFeather + span * progress + blindsFeather / 2).clamp(
+      0.0,
+      blindsTile,
+    );
+    final path = Path();
+    if (edge <= 0) return path;
+    final tiles = (size.width / blindsTile).ceil();
+    for (var i = 0; i < tiles; i++) {
+      final left = i * blindsTile;
+      path.addRect(
+        Rect.fromLTWH(left, 0, math.min(edge, size.width - left), size.height),
+      );
+    }
+    return path;
   }
 
   /// The source grows the clip to `circle(150%)`, and CSS resolves a circle()

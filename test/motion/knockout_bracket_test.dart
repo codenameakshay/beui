@@ -49,16 +49,32 @@ void _sizeView(WidgetTester tester, {Size size = const Size(1400, 1000)}) {
   addTearDown(tester.view.reset);
 }
 
+/// The source `THIRD_PLACE`: both slots stay TBD until the semi-finals resolve.
+const _thirdPlace = BeuiMatch(
+  id: 'tp1',
+  date: 'Sun, 6 Jan',
+  time: '3:00 pm',
+  status: BeuiMatchStatus.upcoming,
+  home: BeuiMatchSide(),
+  away: BeuiMatchSide(),
+);
+
 Widget _app({
   required List<BeuiBracketRound> rounds,
   int initialRound = 0,
   ValueChanged<int>? onRoundChanged,
   bool reduce = false,
+  BeuiMatch? thirdPlace,
+  String? thirdPlaceLabel,
+  Widget Function(BuildContext, BeuiTeam)? flagBuilder,
 }) {
   Widget child = BeuiKnockoutBracket(
     rounds: rounds,
     initialRound: initialRound,
     onRoundChanged: onRoundChanged,
+    thirdPlace: thirdPlace,
+    thirdPlaceLabel: thirdPlaceLabel ?? 'Third place play-off',
+    flagBuilder: flagBuilder,
   );
   if (reduce) {
     final inner = child;
@@ -70,7 +86,9 @@ Widget _app({
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: child),
   );
 }
@@ -168,6 +186,116 @@ void main() {
     });
   });
 
+  // Source `TeamCrest`: artwork if there is any, the team's initials if there is
+  // not, and the shield only for an undecided slot. The package ships no artwork,
+  // so a team always lands on the initials branch unless a flagBuilder is given.
+  group('BeuiKnockoutBracket team crest', () {
+    testWidgets('a team with no flagBuilder falls back to its initials', (
+      tester,
+    ) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pumpAndSettle();
+      expect(find.text('A'), findsWidgets); // Alpha
+      expect(find.text('B'), findsWidgets); // Bravo
+    });
+
+    testWidgets('the shield is reserved for an undecided slot', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pumpAndSettle();
+      // Fourteen sides are on stage (4 QF + 2 SF + 1 Final, two sides each) but
+      // only the Final's two are undecided, so exactly two shields are drawn —
+      // the other twelve carry a team and get initials.
+      expect(find.byIcon(LucideIcons.shield), findsNWidgets(2));
+
+      await tester.pumpWidget(
+        _app(rounds: _bracket(), thirdPlace: _thirdPlace),
+      );
+      await tester.pumpAndSettle();
+      // The third-place fixture is TBD v TBD as well, adding two more.
+      expect(find.byIcon(LucideIcons.shield), findsNWidgets(4));
+    });
+
+    testWidgets('a flagBuilder wins over the initials fallback', (
+      tester,
+    ) async {
+      _sizeView(tester);
+      await tester.pumpWidget(
+        _app(
+          rounds: _bracket(),
+          flagBuilder: (context, team) =>
+              ColoredBox(key: ValueKey('flag-${team.name}'), color: Colors.red),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('flag-Alpha')), findsWidgets);
+      expect(find.text('A'), findsNothing);
+    });
+  });
+
+  group('BeuiKnockoutBracket third place play-off', () {
+    testWidgets('is absent unless a thirdPlace fixture is passed', (
+      tester,
+    ) async {
+      _sizeView(tester);
+      await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pumpAndSettle();
+      expect(find.text('Third place play-off'), findsNothing);
+    });
+
+    testWidgets('renders its heading and card under the tree', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(
+        _app(rounds: _bracket(), thirdPlace: _thirdPlace),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Third place play-off'), findsOneWidget);
+      // The play-off's own card — its date/time header is unique to it.
+      expect(find.text('Sun, 6 Jan, 3:00 pm'), findsOneWidget);
+      // …and it sits below the bracket stage, not inside a column of it.
+      expect(
+        tester.getTopLeft(find.text('Third place play-off')).dy,
+        greaterThan(tester.getBottomLeft(find.text('Quarter-finals')).dy),
+      );
+    });
+
+    testWidgets('thirdPlaceLabel renames the fixture', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(
+        _app(
+          rounds: _bracket(),
+          thirdPlace: _thirdPlace,
+          thirdPlaceLabel: 'Bronze match',
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Bronze match'), findsOneWidget);
+      expect(find.text('Third place play-off'), findsNothing);
+    });
+
+    testWidgets('does not page with the tree', (tester) async {
+      _sizeView(tester);
+      await tester.pumpWidget(
+        _app(rounds: _bracket(), thirdPlace: _thirdPlace),
+      );
+      await tester.pumpAndSettle();
+      final before = tester.getTopLeft(find.text('Sun, 6 Jan, 3:00 pm'));
+
+      await tester.tap(find.bySemanticsLabel('Next round'));
+      await tester.pumpAndSettle();
+
+      // It feeds off the semi-finals rather than into the final, so it stays put
+      // below the rule while the columns page behind it — it only rides up with
+      // the stage as the shorter round collapses the bracket's height.
+      expect(find.text('Third place play-off'), findsOneWidget);
+      final after = tester.getTopLeft(find.text('Sun, 6 Jan, 3:00 pm'));
+      expect(after.dx, before.dx);
+      expect(after.dy, lessThan(before.dy));
+    });
+  });
+
   group('BeuiKnockoutBracket motion fidelity', () {
     testWidgets('cards ride a spring (MotionBuilder) under normal motion', (
       tester,
@@ -212,7 +340,9 @@ void main() {
     _sizeView(tester);
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: Scaffold(
           body: Center(child: BeuiKnockoutBracket(rounds: _bracket())),
         ),

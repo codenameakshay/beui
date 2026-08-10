@@ -287,7 +287,9 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
     final edgeInset = style?.edgeInset ?? 16.0;
     final maxWidth = style?.maxWidth ?? 320.0;
     final surface = style?.surfaceColor ?? colors.background;
-    final card = style?.cardColor ?? colors.border.withValues(alpha: 0.6);
+    final card =
+        style?.cardColor ??
+        colors.border.withValues(alpha: colors.border.a * 0.6);
     final success = style?.successColor ?? colors.success;
 
     final left = widget.position == BeuiFeedbackPosition.bottomLeft;
@@ -317,10 +319,7 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
           switchOutCurve: Curves.linear,
           layoutBuilder: (currentChild, previousChildren) => Stack(
             alignment: left ? Alignment.bottomLeft : Alignment.bottomRight,
-            children: [
-              ...previousChildren,
-              ?currentChild,
-            ],
+            children: [...previousChildren, ?currentChild],
           ),
           transitionBuilder: (child, animation) => _MorphSlot(
             animation: animation,
@@ -546,9 +545,7 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
                 child: BeuiStatefulButton(
                   label: 'Submit',
                   loadingText: 'Sending',
-                  state: _busy
-                      ? BeuiButtonState.loading
-                      : BeuiButtonState.idle,
+                  state: _busy ? BeuiButtonState.loading : BeuiButtonState.idle,
                   onPressed: (_busy || _text.text.trim().isEmpty)
                       ? null
                       : _submit,
@@ -589,7 +586,8 @@ class _MorphSlot extends StatelessWidget {
     return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
-        final t = animation.value; // linear 0..1 (reversed for the exiting view)
+        final t =
+            animation.value; // linear 0..1 (reversed for the exiting view)
         final fadeRaw = (t / _morphFadeFraction).clamp(0.0, 1.0);
         final opacity = _morphCloseEase.transform(fadeRaw);
         if (reduce) return Opacity(opacity: opacity, child: child);
@@ -696,11 +694,7 @@ class _CloseButton extends StatelessWidget {
               color: colors.foreground.withValues(alpha: 0.07),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              LucideIcons.x,
-              size: 12,
-              color: colors.mutedForeground,
-            ),
+            child: Icon(LucideIcons.x, size: 12, color: colors.mutedForeground),
           ),
         ),
       ),
@@ -823,8 +817,8 @@ class _SuccessBadgeState extends State<_SuccessBadge>
 
   @override
   Widget build(BuildContext context) {
-    final accent = Theme.of(context).extension<BeuiColors>()?.accent ??
-        widget.success;
+    final accent =
+        Theme.of(context).extension<BeuiColors>()?.accent ?? widget.success;
 
     final disc = SingleMotionBuilder(
       value: _popped ? 1.0 : 0.0,
@@ -832,7 +826,10 @@ class _SuccessBadgeState extends State<_SuccessBadge>
       builder: (context, scale, child) =>
           Transform.scale(scale: scale, child: child),
       child: DecoratedBox(
-        decoration: BoxDecoration(color: widget.success, shape: BoxShape.circle),
+        decoration: BoxDecoration(
+          color: widget.success,
+          shape: BoxShape.circle,
+        ),
         child: SizedBox(
           width: 48,
           height: 48,

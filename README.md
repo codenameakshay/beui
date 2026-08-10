@@ -20,7 +20,7 @@ Spring-physics UI primitives and composed blocks, built on the [`motor`](https:/
 
 ## What this is
 
-beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React motion library. It ships **49 components** across two groups — expressive **Components** (motion primitives with composable APIs) and product-ready **Blocks** (composed patterns like a command palette, wallet card, or availability scheduler).
+beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React motion library. It covers all **72 catalog entries** across the source's three groups — expressive **Components** (motion primitives with composable APIs), product-ready **Blocks** (composed patterns like a command palette, wallet card, or availability scheduler), and **AI Agents** (conversational and agent-reasoning surfaces).
 
 The port's defining goal is **motion fidelity**. Framer Motion springs are parameterized by `stiffness`, `damping`, and `mass` — the exact same physical parameters as Flutter's `SpringDescription` — so the source's spring tokens carry over with no fidelity loss. Components don't approximate the feel with `Curves.elasticOut`; they use the real physics through [`motor`](https://pub.dev/packages/motor).
 
@@ -30,7 +30,7 @@ The port's defining goal is **motion fidelity**. Framer Motion springs are param
 - 🧩 **Native APIs** — controlled/uncontrolled `value` + `onChanged` pairs, framework-native `IconData`/`Widget` icon props, variants as Dart enums.
 - 🪟 **One overlay foundation** — every floating surface (tooltip, drawer, sheet, modal, command palette) builds on a shared `BeuiOverlay`.
 
-> **Status:** actively developed. 49 of 51 catalog entries are ported (Pull to Refresh and Animated CTA Buttons are pending). Not yet published to pub.dev — install from Git (see below).
+> **Status:** actively developed. All 72 beui.dev catalog entries are ported, including the pages that ship more than one component (five range sliders, four text primitives, both fixture styles, both upload patterns). Not yet published to pub.dev — install from Git (see below).
 
 ## Live gallery
 
@@ -160,14 +160,18 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Checkbox ✨ | `BeuiCheckbox` | Draw-on checkmark with spring press feedback and indeterminate |
 | Radio Group ✨ | `BeuiRadioGroup` | Single-select with a gliding indicator dot and spring feedback |
 | Bottom Sheet | `BeuiBottomSheet` | Draggable sheet with snap points, inertia and a glass surface |
-| Pull to Refresh ✨ | _pending_ | Pull-to-refresh with drag resistance and async handling |
+| Pull to Refresh ✨ | `BeuiPullToRefresh` | Pull-to-refresh with drag resistance and async handling |
 | Shared Layout Background | `BeuiSharedLayoutBg` | A pill that glides between hovered items with a blur enter/exit |
+| Bounce Sidebar ✨ | `BeuiBounceSidebar` | Vertical rail whose active dot jumps between destinations on a curved path |
+| Animated Sidebar ✨ | `BeuiAnimatedSidebar` | App sidebar that folds to an icon rail, in sidebar, floating or inset chrome |
 | Preview Rail ✨ | `BeuiPreviewRail` | Navigation rail of ticks that reveal a floating destination preview |
-| Dock | `BeuiDock` | macOS-style dock with grouped actions and a gliding active pill |
+| Dock | `BeuiDock` | macOS-style dock with separator-grouped actions and a gliding active pill |
 | Tooltip | `BeuiTooltip` | Hover or focus tooltip with a blur enter/exit and spring spawn |
+| Context Menu ✨ | `BeuiContextMenu` | Pointer-origin clip morph with checkbox/radio rows, keyboard nav and typeahead |
 | Popover ✨ | `BeuiPopover`, `BeuiMorphPopover` | Gooey popover that oozes from the trigger, plus a Morph variant |
 | Morphing Modal | `BeuiMorphingModal` | A panel that morphs its height between inner views, blur cross-fade |
-| Text Animation | `BeuiTextReveal`, `BeuiTextShimmer`, `BeuiTextCascade` | Reveal sequences, shimmer loading states and letter-cascade swaps |
+| Center Morph Modal ✨ | `BeuiCenterMorphModal` | A surface that unfolds from its exact center toward every edge |
+| Text Animation | `BeuiTextReveal`, `BeuiTextShimmer`, `BeuiTextCascade`, `BeuiChromaticTextReveal` | Reveal sequences, shimmer loading states, letter-cascade swaps and a chromatic sweep over cycling words |
 | Number Animation | `BeuiAnimatedNumber`, `BeuiNumberTicker` | Count-up values and rolling digit tickers |
 | Animated Badge | `BeuiAnimatedBadge` | Status badge with animated state icons and pulse feedback |
 | Action Swap | `BeuiActionSwapButton` | Swap a button's text and icons with blur, roll or cascade motion |
@@ -175,8 +179,8 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Theme Toggle | `BeuiThemeToggle`, `BeuiThemeSwitcher` | Theme toggle with a full-page clip-path reveal |
 | Bouncy Accordion | `BeuiBouncyAccordion` | Single-open accordion with a weighted spring layout |
 | Drawer | `BeuiDrawer` | Side panel that springs in with a backdrop blur and esc-to-close |
-| Scroll Animation | `BeuiSmoothScroll`, `BeuiScrollProgress`, `BeuiScrollReveal`, `BeuiScrollTo` | Smooth-scroll provider and a reading-progress indicator |
-| Range Slider ✨ | `BeuiRangeSlider`, `BeuiRangeSliderDual` | Tick dots and a bouncy vertical-bar thumb that snaps between steps |
+| Scroll Animation | `BeuiSmoothScroll`, `BeuiScrollProgress`, `BeuiScrollReveal`, `BeuiScrollTo`, `BeuiParallax` | Smooth-scroll provider (vertical or horizontal), reading-progress indicator, reveal, scroll-to and parallax |
+| Range Slider ✨ | `BeuiRangeSlider`, `BeuiFluidSlider`, `BeuiWaveSlider`, `BeuiBubbleSlider`, `BeuiRulerSlider` | Five sliders: ticked bar thumb, thumbless liquid fill, equalizer wave, velocity-leaning bubble, and a scale that scrolls under a fixed needle |
 | Wheel Picker ✨ | `BeuiWheelPicker` | iOS-style 3D picker drum with momentum snap |
 | Table ✨ | `BeuiTable` | Virtualized table smooth at 10k+ rows: sort, select, resize, reorder |
 | Shader Background ✨ | `BeuiShaderBackground` | 21 GPU shader backgrounds (mesh, grain, warp, waves, voronoi…) |
@@ -184,7 +188,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Loader ✨ | `BeuiLoader` | Loading indicator with seventeen variants from one size prop |
 | Tilt Card | `BeuiTiltCard` | 3D perspective tilt on hover with a cursor-tracked glare |
 | Button | `BeuiButton`, `BeuiStatefulButton`, `BeuiMagneticButton` | Spring-pressed Button, StatefulButton and MagneticButton |
-| Animated CTA Buttons ✨ | _pending_ | CTA buttons with expanding, hold and slide interactions |
+| Animated CTA Buttons ✨ | `BeuiExpandingArrowButton`, `BeuiHoldActionButton`, `BeuiSlideActionButton` | CTA buttons with expanding, hold-to-confirm and slide-to-confirm interactions |
 
 ### Blocks — composed patterns
 
@@ -198,7 +202,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Overflow Actions | `BeuiOverflowActions` | Primary actions with an overflow that fans out from a ⋯ toggle |
 | Expandable Tabs | `BeuiExpandableTabs` | Icon tabs where the active tab expands to show its label |
 | Swipeable List | `BeuiSwipeableList` | List rows with spring-backed swipe-to-reveal actions |
-| File Upload | `BeuiFileUpload` | Drop zone with per-file progress and status transitions |
+| File Upload | `BeuiFileUpload`, `BeuiAttachmentUpload` | Drop zone with per-file progress and status transitions, plus an attachment workspace for mixed files, links, images and audio |
 | Prediction Market | `BeuiPredictionMarket` | Market card with a gliding outcome pill and animated odds |
 | Wallet Card ✨ | `BeuiWalletCard` | Wallet card with an account switcher and morphing search |
 | OTP Input | `BeuiOtpInput` | One-time-code field with per-cell focus and a success check |
@@ -207,9 +211,31 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | 404 / Not Found | `BeuiNotFoundGlitch`, `…Magnetic`, `…Spotlight`, `…Stacked`, `…Terminal` | Five expressive 404 treatments |
 | Infinite Masonry ✨ | `BeuiInfiniteMasonry` | Masonry grid that lazily appends tiles as you scroll |
 | Notification Stack ✨ | `BeuiNotificationStack` | Collapsed notification stack that expands with layout-aware motion |
-| Knockout Bracket ✨ | `BeuiKnockoutBracket` | Tournament bracket with connectors that animate as rounds fill |
+| Knockout Bracket ✨ | `BeuiKnockoutBracket`, `BeuiKnockoutWheel` | Tournament fixtures in two styles: a paging bracket with a third-place playoff, and a wheel wrapping the same tree around the champion |
 
-Also exported as standalone primitives: `BeuiMagnetic` (cursor-follow pull), `BeuiParallax` (scroll parallax), and the `BeuiOverlay` foundation.
+### AI Agents — conversational and agent-reasoning interfaces
+
+| Component | Widget(s) | What it does |
+| --- | --- | --- |
+| Message Bubble | `BeuiMessageBubble` | Conversational surface with tones, alignment, grouping and expandable content |
+| Message | `BeuiMessage` | Primitives for rows, avatars, metadata, live markers and a mount-only pop-up |
+| Message Scroller | `BeuiMessageScroller` | Viewport that follows streamed output and releases when the reader scrolls away |
+| Prompt Input | `BeuiPromptInput` | Auto-growing composer with actions, model selection and animated send/stop |
+| Todo List | `BeuiTodoList` | Collapsible task plan with morphing status marks and a completion count |
+| Code Block | `BeuiCodeBlock` | Highlighted code that stays stable while streaming, with copy feedback |
+| Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals and single or multi-choice questions |
+| File Diff | `BeuiFileDiff` | Change disclosure with progressive rows, live counts and completion collapse |
+| Tool Result | `BeuiToolResult` | Execution disclosure for terminal or request output that collapses when done |
+| Streaming Response | `BeuiStreamingResponse` | Response surface with completion actions and an expandable source summary |
+| Image Generation | `BeuiImageGeneration` | Queued → refining → complete image surface with no layout shift |
+| Tool Approval | `BeuiToolApproval` | Permission card: allow once, remember access, or deny |
+| Citations | `BeuiCitations` | Inline markers plus a collapsible, progressively rendered reference list |
+| Agent Activity | `BeuiAgentActivity` | One adaptive stream for reasoning, searches, tool calls and traces |
+| Agent Loading States | `BeuiThinkingShimmer`, `BeuiAgentProgress`, `BeuiReasoningText` | Shimmering status text, live progress and cycling reasoning phrases |
+| AI Sidebar | `BeuiAiSidebar` | Workspace sidebar for folders, projects, files and bookmarks with inline rename |
+| Chat App | `BeuiChatApp` | A complete conversation workspace composing the widgets above |
+
+Also exported as standalone primitives: `BeuiMagnetic` (cursor-follow pull) and the `BeuiOverlay` foundation.
 
 ## Theming
 

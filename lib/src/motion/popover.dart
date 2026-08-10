@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
@@ -36,13 +37,22 @@ enum BeuiPopoverTrigger {
   hover,
 }
 
-/// The source's gooey open spring — Framer `{visualDuration: 0.32, bounce:
-/// 0.28}`. Converted to a [SpringDescription] (mass 1): `ω = 2π/0.32 ≈ 19.6`,
-/// damping ratio `ζ = 1 - bounce ≈ 0.72`, so `stiffness = ω² ≈ 385`,
-/// `damping = 2ζω ≈ 28`. A component-local bespoke spring (the spec sanctions
-/// these where tuning is genuinely component-specific).
-const _gooSpring = SpringMotion(
-  SpringDescription(mass: 1, stiffness: 385, damping: 28),
+// The source runs two different goo springs — a slower one opening, a snappier
+// one closing (`open ? GOO_OPEN_SPRING : GOO_CLOSE_SPRING`), keeping the exit
+// faster than the entrance. Framer's `{visualDuration, bounce}` converts to a
+// [SpringDescription] at mass 1 by `ω = 2π/visualDuration`, `ζ = 1 - bounce`,
+// `stiffness = ω²`, `damping = 2ζω`.
+
+/// `GOO_OPEN_SPRING` — Framer `{visualDuration: 0.3, bounce: 0.15}`:
+/// `ω = 2π/0.3 ≈ 20.94`, `ζ = 0.85`.
+const _gooOpenSpring = SpringMotion(
+  SpringDescription(mass: 1, stiffness: 438.6, damping: 35.6),
+);
+
+/// `GOO_CLOSE_SPRING` — Framer `{visualDuration: 0.21, bounce: 0.15}`:
+/// `ω = 2π/0.21 ≈ 29.92`, `ζ = 0.85`.
+const _gooCloseSpring = SpringMotion(
+  SpringDescription(mass: 1, stiffness: 895.2, damping: 50.9),
 );
 
 const int _hoverCloseDelayMs = 120;
@@ -55,7 +65,7 @@ double _lerp(double a, double b, double t) => a + (b - a) * t;
 /// The trigger pill and a growing blob are painted into one layer and run
 /// through a **goo filter** (Gaussian blur → alpha threshold), so the panel
 /// appears to stretch out of the trigger through a molten neck as it opens on
-/// the [_gooSpring]. The same rounded-rect morph clips the content, so the text
+/// the [_gooOpenSpring]. The same rounded-rect morph clips the content, so text
 /// reveals with the blob. Geometry (trigger and panel rects in a shared box) is
 /// measured at runtime and springs one frame late, matching the source.
 ///
@@ -130,12 +140,43 @@ class _BeuiPopoverState extends State<BeuiPopover> {
   Size _triggerSize = Size.zero;
   Size _panelSize = Size.zero;
 
+  /// Owned by the state so the `Focus` that hosts the Esc binding can stay
+  /// mounted across the whole open/close cycle — see the note in [build].
+  final FocusNode _focusNode = FocusNode(debugLabel: 'BeuiPopover');
+
   bool get _open => widget.open ?? _internalOpen;
 
   @override
   void initState() {
     super.initState();
     _internalOpen = widget.defaultOpen;
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  /// Moves focus into the panel when it opens (so the Esc binding is live) and
+  /// releases it when it closes. Previously this fell out of the `Focus` widget
+  /// being mounted/unmounted with `autofocus: true`; the wrapper is now
+  /// permanent, so the focus move is explicit.
+  ///
+  /// Deliberately edge-triggered on [_open]. Re-asserting focus on every frame
+  /// would yank it back from anything the user tabbed to while the panel was
+  /// open — `autofocus` only ever fired once, and so does this.
+  bool? _focusSyncedOpen;
+
+  void _syncFocus() {
+    if (widget.trigger != BeuiPopoverTrigger.click) return;
+    if (_focusSyncedOpen == _open) return;
+    _focusSyncedOpen = _open;
+    if (_open) {
+      _focusNode.requestFocus();
+    } else if (_focusNode.hasFocus) {
+      _focusNode.unfocus();
+    }
   }
 
   void _setOpen(bool next) {
@@ -159,7 +200,11 @@ class _BeuiPopoverState extends State<BeuiPopover> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _measure();
+      _syncFocus();
+    });
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final reduce = MediaQuery.disableAnimationsOf(context);
 
@@ -196,8 +241,12 @@ class _BeuiPopoverState extends State<BeuiPopover> {
           child: Offstage(
             child: ConstrainedBox(
               key: _measureKey,
+              // Source: `max-w-[min(92vw,20rem)]` — the 20rem arm was missing.
               constraints: BoxConstraints(
-                maxWidth: MediaQuery.sizeOf(context).width * 0.92,
+                maxWidth: math.min(
+                  MediaQuery.sizeOf(context).width * 0.92,
+                  320,
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -212,7 +261,7 @@ class _BeuiPopoverState extends State<BeuiPopover> {
               ? const SpringMotion(
                   SpringDescription(mass: 1, stiffness: 700, damping: 60),
                 )
-              : _gooSpring,
+              : (_open ? _gooOpenSpring : _gooCloseSpring),
           builder: (context, p, _) {
             return Stack(
               clipBehavior: Clip.none,
@@ -259,37 +308,40 @@ class _BeuiPopoverState extends State<BeuiPopover> {
       ],
     );
 
-    Widget result = stack;
-    if (_open) {
-      result = CallbackShortcuts(
-        bindings: {
-          const SingleActivator(LogicalKeyboardKey.escape): () =>
-              _setOpen(false),
-        },
-        child: Focus(
-          autofocus: widget.trigger == BeuiPopoverTrigger.click,
-          child: TapRegion(
-            onTapOutside: widget.trigger == BeuiPopoverTrigger.click
-                ? (_) => _setOpen(false)
-                : null,
-            child: result,
-          ),
+    // The dismiss wrapper is mounted **unconditionally** and only its behaviour
+    // is gated on [_open]. Mounting it just while open changes the depth of the
+    // tree above the goo's `SingleMotionBuilder`, so Flutter cannot match the
+    // old element on a toggle: it discards the state and builds a fresh
+    // `MotionController` seeded at `initialValue: value` — i.e. already *at* the
+    // target. The result was that neither goo spring ever ran; the panel snapped
+    // open and snapped shut in a single frame. Keep this structure stable.
+    //
+    // `stack` is the inline-flex isolate: it sizes to the trigger.
+    final isClick = widget.trigger == BeuiPopoverTrigger.click;
+    return CallbackShortcuts(
+      bindings: _open
+          ? {
+              const SingleActivator(LogicalKeyboardKey.escape): () =>
+                  _setOpen(false),
+            }
+          : const <ShortcutActivator, VoidCallback>{},
+      child: Focus(
+        focusNode: _focusNode,
+        canRequestFocus: _open && isClick,
+        child: TapRegion(
+          onTapOutside: _open && isClick ? (_) => _setOpen(false) : null,
+          child: stack,
         ),
-      );
-    }
-    // inline-flex isolate: size to the trigger.
-    return result;
+      ),
+    );
   }
 
   void _scheduleClose() {
-    Future<void>.delayed(
-      const Duration(milliseconds: _hoverCloseDelayMs),
-      () {
-        if (mounted && widget.trigger == BeuiPopoverTrigger.hover) {
-          _setOpen(false);
-        }
-      },
-    );
+    Future<void>.delayed(const Duration(milliseconds: _hoverCloseDelayMs), () {
+      if (mounted && widget.trigger == BeuiPopoverTrigger.hover) {
+        _setOpen(false);
+      }
+    });
   }
 }
 

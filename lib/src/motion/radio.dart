@@ -5,8 +5,17 @@ import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 
-const double _inset =
-    4; // source `inset-1` — dot is the circle minus 4px each side.
+/// Ring stroke width — the source's `border-2`.
+const double _borderWidth = 2;
+
+/// The source's `inset-1` on the dot. CSS resolves `inset` against the ring's
+/// *padding* box, i.e. inside the 2px border, so the dot is inset by
+/// `_borderWidth + _inset` from the ring's outer edge: a 20px ring yields an
+/// 8px dot (20 − 2×(2+4)), not 12px.
+const double _inset = 4;
+
+/// Total inset from the ring's outer edge to the dot.
+const double _dotInset = _borderWidth + _inset;
 
 /// Test handle on the shared selection dot, so motion tests can read its position.
 @visibleForTesting
@@ -108,10 +117,10 @@ class _BeuiRadioGroupState<T> extends State<BeuiRadioGroup<T>> {
         circleBox.localToGlobal(Offset.zero),
       );
       next = Rect.fromLTWH(
-        topLeft.dx + _inset,
-        topLeft.dy + _inset,
-        circleBox.size.width - 2 * _inset,
-        circleBox.size.height - 2 * _inset,
+        topLeft.dx + _dotInset,
+        topLeft.dy + _dotInset,
+        circleBox.size.width - 2 * _dotInset,
+        circleBox.size.height - 2 * _dotInset,
       );
     }
     if (next != _dotTarget) setState(() => _dotTarget = next);
@@ -342,14 +351,24 @@ class _BeuiRadioItemState<T> extends State<BeuiRadioItem<T>> {
             children: [
               control,
               const SizedBox(width: 12),
-              GestureDetector(
-                onTap: enabled ? () => scope.onSelect(widget.value) : null,
-                child: ExcludeSemantics(
-                  child: Opacity(
-                    opacity: enabled ? 1.0 : 0.6,
-                    child: Text(
-                      widget.label!,
-                      style: TextStyle(fontSize: 14, color: colors.foreground),
+              // Flexible so a long label wraps instead of overflowing: the row
+              // is `mainAxisSize.min`, so without this the Text takes its
+              // intrinsic width and any narrower parent (the approval-card
+              // question list, which insets its rows by the source's `px-1.5`)
+              // overflows rather than reflowing.
+              Flexible(
+                child: GestureDetector(
+                  onTap: enabled ? () => scope.onSelect(widget.value) : null,
+                  child: ExcludeSemantics(
+                    child: Opacity(
+                      opacity: enabled ? 1.0 : 0.6,
+                      child: Text(
+                        widget.label!,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: colors.foreground,
+                        ),
+                      ),
                     ),
                   ),
                 ),

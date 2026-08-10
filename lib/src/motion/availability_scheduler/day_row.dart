@@ -283,11 +283,20 @@ class _DayRowState extends State<DayRow> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final slot in _slots)
+        for (final (i, slot) in _slots.indexed)
           _PresenceSlot(
             key: ValueKey(slot.key),
             exiting: slot.exiting,
             reduce: reduce,
+            // Source column is `flex flex-col gap-2`: 8px *between* slots, with
+            // no trailing gap after the last one.
+            //
+            // A slot that follows an *exiting* one carries no gap: the source's
+            // `AnimatePresence mode="popLayout"` pulls a leaving slot out of
+            // flow, so it never spaces the slot that replaces it. Keeping the
+            // gap here instead made the column bulge while both were mounted
+            // and then jump 8px the frame the leaver unmounted.
+            gapBefore: i == 0 || _slots[i - 1].exiting ? 0 : 8,
             // Ranges enter from y -6 with a 4px blur; the unavailable line from
             // y -4 with no blur (source initial/exit specs).
             enterY: slot.range != null ? -6 : -4,
@@ -330,10 +339,21 @@ class _RangeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Each field is `min-w-0 flex-1 sm:max-w-[132px]`: it grows into its flex
+    // share but stops at 132px, so a wide row keeps trailing slack rather than
+    // stretching the fields (which is why the remove button does not sit flush
+    // against the actions column).
+    Widget field(Widget child) => Flexible(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 132),
+        child: SizedBox(width: double.infinity, child: child),
+      ),
+    );
+
     return Row(
       children: [
-        Expanded(
-          child: TimeSelect(
+        field(
+          TimeSelect(
             key: ValueKey('${range.id}-start'),
             value: range.start,
             options: options,
@@ -344,8 +364,8 @@ class _RangeContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text('–', style: TextStyle(color: colors.mutedForeground)),
         ),
-        Expanded(
-          child: TimeSelect(
+        field(
+          TimeSelect(
             key: ValueKey('${range.id}-end'),
             value: range.end,
             options: options,
@@ -375,10 +395,15 @@ class _UnavailableContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      // `py-1 sm:py-2` — 8px at the desktop breakpoint this port renders.
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         'Unavailable',
-        style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+        style: TextStyle(
+          fontSize: 14, // text-sm
+          height: 20 / 14, // …/20
+          color: colors.mutedForeground,
+        ),
       ),
     );
   }
@@ -387,8 +412,8 @@ class _UnavailableContent extends StatelessWidget {
 /// The presence wrapper — the same enter/exit/height-reflow contract as the
 /// toast stack's `_ToastItem`, applied to a scheduler slot. Enter runs `0 → 1`
 /// on `SPRING_LAYOUT`; exit runs `1 → 0` on the same spring and unmounts on
-/// completion. An 8px bottom gap is included in the collapsing area so the
-/// spacing reflows with the slot.
+/// completion. [gapBefore] is included in the collapsing area so the spacing
+/// reflows with the slot.
 class _PresenceSlot extends StatelessWidget {
   const _PresenceSlot({
     required this.exiting,
@@ -396,6 +421,7 @@ class _PresenceSlot extends StatelessWidget {
     required this.enterY,
     required this.exitY,
     required this.blurPx,
+    required this.gapBefore,
     required this.onExited,
     required this.child,
     super.key,
@@ -406,6 +432,7 @@ class _PresenceSlot extends StatelessWidget {
   final double enterY;
   final double exitY;
   final double blurPx;
+  final double gapBefore;
   final VoidCallback onExited;
   final Widget child;
 
@@ -446,10 +473,13 @@ class _PresenceSlot extends StatelessWidget {
         final heightFactor = reduce ? 1.0 : opacity;
         return ClipRect(
           child: Align(
-            alignment: Alignment.topCenter,
+            // `topStart`, not `topCenter`: the slot content is left-aligned in
+            // the ranges column (the "Unavailable" line sits at the same left
+            // edge as the start-time select).
+            alignment: AlignmentDirectional.topStart,
             heightFactor: heightFactor,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: EdgeInsets.only(top: gapBefore),
               child: body,
             ),
           ),

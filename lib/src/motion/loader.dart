@@ -67,7 +67,20 @@ const Map<BeuiLoaderVariant, List<String>> _asciiSets = {
   BeuiLoaderVariant.asciiLine: ['|', '/', '-', r'\'],
   BeuiLoaderVariant.asciiBraille: ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'],
   BeuiLoaderVariant.asciiBlocks: [
-    '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█', '▇', '▆', '▅', '▄', '▃', '▂',
+    '▁',
+    '▂',
+    '▃',
+    '▄',
+    '▅',
+    '▆',
+    '▇',
+    '█',
+    '▇',
+    '▆',
+    '▅',
+    '▄',
+    '▃',
+    '▂',
   ],
   BeuiLoaderVariant.asciiBounce: ['⠁', '⠂', '⠄', '⡀', '⢀', '⠠', '⠐', '⠈'],
 };
@@ -335,10 +348,7 @@ class _LoaderViewState extends State<_LoaderView>
               final o = statik ? 1.0 : _kf(const [0.5, 1, 0.5], lt);
               return Transform.translate(
                 offset: Offset(0, y),
-                child: Opacity(
-                  opacity: o,
-                  child: _circle(dot),
-                ),
+                child: Opacity(opacity: o, child: _circle(dot)),
               );
             },
           ),
@@ -400,16 +410,14 @@ class _LoaderViewState extends State<_LoaderView>
                 Builder(
                   builder: (_) {
                     // source: diagonal wave, delay (x+y)/4; opacity+scale pulse.
-                    final lt =
-                        statik ? 0.5 : _wrap(t - (x + y) / (2 * (n - 1)));
+                    final lt = statik
+                        ? 0.5
+                        : _wrap(t - (x + y) / (2 * (n - 1)));
                     final o = statik ? 1.0 : _kf(const [0.2, 1, 0.2], lt);
                     final sc = statik ? 1.0 : _kf(const [0.7, 1, 0.7], lt);
                     return Opacity(
                       opacity: o,
-                      child: Transform.scale(
-                        scale: sc,
-                        child: _circle(dot),
-                      ),
+                      child: Transform.scale(scale: sc, child: _circle(dot)),
                     );
                   },
                 ),
@@ -442,8 +450,7 @@ class _LoaderViewState extends State<_LoaderView>
                     final idx = row * n + col;
                     final order = _bayer4[idx];
                     // source: delay order/16, opacity [0.1,1,0.1].
-                    final lt =
-                        statik ? 0.5 : _wrap(t - order / _bayer4.length);
+                    final lt = statik ? 0.5 : _wrap(t - order / _bayer4.length);
                     final o = statik ? 1.0 : _kf(const [0.1, 1, 0.1], lt);
                     return Opacity(
                       opacity: o,
@@ -497,7 +504,9 @@ class _LoaderViewState extends State<_LoaderView>
       final local = beuiEaseInOut.transform(segT - i);
       final a = _morphShapes[_morphSeq[i]];
       final b = _morphShapes[_morphSeq[i + 1]];
-      pts = [for (var k = 0; k < _morphPoints; k++) Offset.lerp(a[k], b[k], local)!];
+      pts = [
+        for (var k = 0; k < _morphPoints; k++) Offset.lerp(a[k], b[k], local)!,
+      ];
       rot = lerpDouble(_morphRot[i], _morphRot[i + 1], local)!;
       scl = lerpDouble(_morphScale[i], _morphScale[i + 1], local)!;
     }
@@ -713,8 +722,8 @@ double _kf(
 }) {
   final n = values.length;
   if (n == 1) return values.first;
-  final ts = times ??
-      List<double>.generate(n, (i) => i / (n - 1), growable: false);
+  final ts =
+      times ?? List<double>.generate(n, (i) => i / (n - 1), growable: false);
   if (t <= ts.first) return values.first.toDouble();
   if (t >= ts.last) return values.last.toDouble();
   var i = 0;
@@ -783,7 +792,19 @@ final List<List<Offset>> _morphShapes = [
 // Each shape appears twice (form + hold) then back to the first (source
 // MORPH_SEQ). Rotation/scale only change across morph segments.
 const List<int> _morphSeq = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 0];
-const List<double> _morphRot = [0, 0, 72, 72, 144, 144, 216, 216, 288, 288, 360];
+const List<double> _morphRot = [
+  0,
+  0,
+  72,
+  72,
+  144,
+  144,
+  216,
+  216,
+  288,
+  288,
+  360,
+];
 const List<double> _morphScale = [1, 1, 0.88, 0.88, 1, 1, 0.88, 0.88, 1, 1, 1];
 
 // ---------------------------------------------------------------------------
@@ -843,11 +864,7 @@ class _SpinnerPainter extends CustomPainter {
 }
 
 class _CometPainter extends CustomPainter {
-  _CometPainter({
-    required this.color,
-    required this.turns,
-    required this.size,
-  });
+  _CometPainter({required this.color, required this.turns, required this.size});
 
   final Color color;
   final double turns;
@@ -867,11 +884,7 @@ class _CometPainter extends CustomPainter {
       final o = (1 - i * 0.16).clamp(0.0, 1.0);
       final theta = groupRad - i * 15 * math.pi / 180;
       final c = center + Offset(r * math.sin(theta), -r * math.cos(theta));
-      canvas.drawCircle(
-        c,
-        sz / 2,
-        Paint()..color = color.withValues(alpha: o),
-      );
+      canvas.drawCircle(c, sz / 2, Paint()..color = color.withValues(alpha: o));
     }
   }
 
@@ -944,7 +957,10 @@ class _MetaballsPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_MetaballsPainter old) =>
-      old.c1 != c1 || old.c2 != c2 || old.radius != radius || old.color != color;
+      old.c1 != c1 ||
+      old.c2 != c2 ||
+      old.radius != radius ||
+      old.color != color;
 }
 
 class _HelixPainter extends CustomPainter {
@@ -1001,6 +1017,8 @@ class _HelixPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_HelixPainter old) =>
-      old.t != t || old.color != color || old.size != size ||
+      old.t != t ||
+      old.color != color ||
+      old.size != size ||
       old.statik != statik;
 }

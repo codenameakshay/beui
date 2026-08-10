@@ -24,7 +24,18 @@ class _BeuiExplorerAppState extends State<BeuiExplorerApp> {
 
   ThemeData _themeData(Brightness brightness) {
     final colors = BeuiColors.of(_colorTheme, brightness);
-    final base = ThemeData(brightness: brightness, useMaterial3: true);
+    // Geist is the face beui.dev serves; the gallery renders in it so it reads
+    // like the site. Bundled in `example/` only — see example/pubspec.yaml.
+    // Material bakes a non-zero letterSpacing into every 2021 text style; the
+    // Tailwind source leaves tracking at normal. Strip it so labels measure
+    // like the site — see BeuiTextTheme.trackingNormal.
+    final base = BeuiTextTheme.trackingNormal(
+      ThemeData(
+        brightness: brightness,
+        useMaterial3: true,
+        fontFamily: 'Geist',
+      ),
+    );
     return base.copyWith(
       scaffoldBackgroundColor: colors.background,
       canvasColor: colors.background,

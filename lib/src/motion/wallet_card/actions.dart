@@ -48,7 +48,8 @@ class WalletActions extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final a in actions) Expanded(child: _WalletActionButton(action: a)),
+        for (final a in actions)
+          Expanded(child: _WalletActionButton(action: a)),
       ],
     );
   }
@@ -110,7 +111,8 @@ class _WalletActionButtonState extends State<_WalletActionButton> {
                 Text(
                   widget.action.label,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 12, // text-xs
+                    height: 16 / 12, // …/16
                     fontWeight: FontWeight.w500,
                     color: colors.mutedForeground,
                   ),

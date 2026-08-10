@@ -101,9 +101,25 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
     return size;
   }
 
+  /// The style [Text] will actually paint with — [BeuiTextCascade.style] merged
+  /// over the ambient [DefaultTextStyle], exactly as [Text] resolves it.
+  ///
+  /// Resolving it here rather than using the raw prop is load-bearing: the
+  /// rolling slot is sized from [_measure]'s [TextPainter], while the resting
+  /// state is a plain [Text]. A caller that passes a partial style (say just a
+  /// size and weight — the common case) inherits the ambient `height`, so
+  /// measuring the raw style produced a slot several px shorter than the settled
+  /// text and the whole line jumped every time the cascade rolled.
+  TextStyle _effectiveStyle(BuildContext context) {
+    final ambient = DefaultTextStyle.of(context).style;
+    final style = widget.style;
+    if (style == null) return ambient;
+    return style.inherit ? ambient.merge(style) : style;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final style = widget.style ?? DefaultTextStyle.of(context).style;
+    final style = _effectiveStyle(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     // At rest (or reduced motion): plain crisp text, no per-letter overhead.

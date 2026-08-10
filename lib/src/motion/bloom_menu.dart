@@ -332,9 +332,11 @@ class _TriggerState extends State<_Trigger> {
     // the width content-sized with a min of 144 — so the default "Create" keeps
     // the exact source resting width (144) and
     // longer labels grow instead of overflowing.
+    // No `alignment:` here — a Container with one expands to the incoming
+    // constraints even when they are merely loose, which rendered the pill
+    // full-bleed. The label Row centres itself inside the min-width instead.
     Widget body = Container(
       height: _triggerSize.height,
-      alignment: Alignment.center,
       constraints: BoxConstraints(minWidth: _triggerSize.width),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
@@ -389,6 +391,7 @@ class _TriggerLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       spacing: 8, // gap-2
       children: [
         Text(
@@ -508,21 +511,7 @@ class _PanelContent extends StatelessWidget {
                   ),
                 ),
               ),
-              Semantics(
-                button: true,
-                label: 'Close menu',
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: onClose,
-                    child: Icon(
-                      LucideIcons.x,
-                      size: 16,
-                      color: colors.mutedForeground,
-                    ),
-                  ),
-                ),
-              ),
+              _CloseButton(colors: colors, onTap: onClose),
             ],
           ),
         ),
@@ -530,6 +519,50 @@ class _PanelContent extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Tailwind `transition-colors` — 150ms on its default ease.
+const _hoverFade = Duration(milliseconds: 150);
+const _hoverCurve = Cubic(0.4, 0, 0.2, 1);
+
+/// The header dismiss glyph (source `hover:text-foreground`).
+class _CloseButton extends StatefulWidget {
+  const _CloseButton({required this.colors, required this.onTap});
+
+  final BeuiColors colors;
+  final VoidCallback? onTap;
+
+  @override
+  State<_CloseButton> createState() => _CloseButtonState();
+}
+
+class _CloseButtonState extends State<_CloseButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: 'Close menu',
+    child: MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: TweenAnimationBuilder<Color?>(
+          duration: _hoverFade,
+          curve: _hoverCurve,
+          tween: ColorTween(
+            end: _hovered
+                ? widget.colors.foreground
+                : widget.colors.mutedForeground,
+          ),
+          builder: (context, color, _) =>
+              Icon(LucideIcons.x, size: 16, color: color),
+        ),
+      ),
+    ),
+  );
 }
 
 /// Iris clip: `inset(45% 34% 45% 34%)` → `inset(0)`.
@@ -549,7 +582,7 @@ class _IrisClipper extends CustomClipper<Rect> {
   bool shouldReclip(_IrisClipper old) => old.progress != progress;
 }
 
-class _Cell extends StatelessWidget {
+class _Cell extends StatefulWidget {
   const _Cell({
     required this.item,
     required this.colors,
@@ -571,30 +604,53 @@ class _Cell extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
+  State<_Cell> createState() => _CellState();
+}
+
+class _CellState extends State<_Cell> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    Widget content = Column(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 8, // gap-2
-      children: [
-        Icon(item.icon, size: 20, color: colors.mutedForeground),
-        Text(
-          item.label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: colors.mutedForeground,
+    final item = widget.item;
+    final colors = widget.colors;
+    final clock = widget.clock;
+    final reduce = widget.reduce;
+    final delayMs = widget.delayMs;
+    final onTap = widget.onTap;
+
+    // Source cell: `text-muted-foreground transition-colors
+    // hover:text-foreground` — icon and label brighten together.
+    Widget content = TweenAnimationBuilder<Color?>(
+      duration: _hoverFade,
+      curve: _hoverCurve,
+      tween: ColorTween(
+        end: _hovered ? colors.foreground : colors.mutedForeground,
+      ),
+      builder: (context, color, _) => Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8, // gap-2
+        children: [
+          Icon(item.icon, size: 20, color: color),
+          Text(
+            item.label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: color,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
 
     // Bloom-in: released at the radial delay, spring 440/34 from scale 0.85
     // through a 6px blur.
     if (clock != null && !reduce) {
       content = AnimatedBuilder(
-        animation: clock!,
+        animation: clock,
         builder: (context, child) {
-          final released = clock!.value * _enterMs >= delayMs;
+          final released = clock.value * _enterMs >= delayMs;
           return SingleMotionBuilder(
             value: released ? 1.0 : 0.0,
             from: 0.0,
@@ -632,6 +688,8 @@ class _Cell extends StatelessWidget {
       label: item.label,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: onTap,
@@ -639,11 +697,12 @@ class _Cell extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
             decoration: BoxDecoration(
               border: Border(
-                right: borderRight
-                    ? BorderSide(color: colors.border, width: 0.5)
+                // Tailwind `border-r` / `border-b` are a full 1px.
+                right: widget.borderRight
+                    ? BorderSide(color: colors.border)
                     : BorderSide.none,
-                bottom: borderBottom
-                    ? BorderSide(color: colors.border, width: 0.5)
+                bottom: widget.borderBottom
+                    ? BorderSide(color: colors.border)
                     : BorderSide.none,
               ),
             ),

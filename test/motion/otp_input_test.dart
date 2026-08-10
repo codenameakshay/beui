@@ -17,7 +17,9 @@ Widget _wrap(Widget child, {bool reduce = false}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }
@@ -211,6 +213,23 @@ void main() {
           .map((t) => t.transform.getTranslation().x.abs())
           .fold<double>(0, math.max);
       expect(xs, greaterThan(0.5), reason: 'row displaced mid-shake');
+
+      // The source eases each keyframe segment, not the whole timeline, so the
+      // six hops stay spread over the full 450ms. At 270ms (segment 4 of 6) the
+      // row is still well off-centre; a globally-eased timeline would have
+      // collapsed to ~0 by here.
+      await tester.pump(const Duration(milliseconds: 190));
+      final late = tester
+          .widgetList<Transform>(
+            find.descendant(
+              of: find.byType(BeuiOtpInput),
+              matching: find.byType(Transform),
+            ),
+          )
+          .map((t) => t.transform.getTranslation().x.abs())
+          .fold<double>(0, math.max);
+      expect(late, greaterThan(1.5), reason: 'shake spans the full duration');
+
       await tester.pumpAndSettle();
       expect(find.text('Wrong code'), findsOneWidget);
     });

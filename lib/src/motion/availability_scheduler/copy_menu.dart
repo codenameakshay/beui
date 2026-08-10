@@ -30,11 +30,7 @@ import 'types.dart';
 class CopyMenu extends StatefulWidget {
   /// Creates a copy menu for the day labelled [fromLabel] (excluded from the
   /// target list).
-  const CopyMenu({
-    required this.fromLabel,
-    required this.onApply,
-    super.key,
-  });
+  const CopyMenu({required this.fromLabel, required this.onApply, super.key});
 
   /// Label of the source day (its row's day, excluded from the picker).
   final String fromLabel;
@@ -357,9 +353,7 @@ class _FooterButtonState extends State<_FooterButton> {
         enabled: enabled,
         label: widget.label,
         child: MouseRegion(
-          cursor: enabled
-              ? SystemMouseCursors.click
-              : SystemMouseCursors.basic,
+          cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
           onEnter: (_) => setState(() => _hovered = true),
           onExit: (_) => setState(() => _hovered = false),
           child: GestureDetector(

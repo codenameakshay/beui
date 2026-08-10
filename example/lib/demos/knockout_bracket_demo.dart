@@ -1,31 +1,35 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-/// Gallery route for [BeuiKnockoutBracket] — a full World Cup knockout stage
-/// (Round of 32 → Final) that pages between rounds with the REFLOW glide.
+/// Gallery route for the two "Fixtures" components: [BeuiKnockoutBracket] — a
+/// full World Cup knockout stage (Round of 32 → Final) that pages between
+/// rounds with the REFLOW glide, plus its third place play-off — and
+/// [BeuiKnockoutWheel], the same tree drawn radially around the champion.
 Widget knockoutBracketDemo(BuildContext context) =>
     const _KnockoutBracketDemo();
 
 class _KnockoutBracketDemo extends StatelessWidget {
   const _KnockoutBracketDemo();
 
+  // The site renders these as two bare previews (the prose lives in the page
+  // chrome, not the preview), so the route is just the two components: the
+  // wheel first, matching the "Fixtures" page order, each in the source
+  // preview's own `w-full py-8` wrapper.
   @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          'Use the chevrons to page between rounds — cards, connectors and the '
-          'stage height glide as one piece.',
-          style: TextStyle(fontSize: 14, color: colors.mutedForeground),
-        ),
-        const SizedBox(height: 24),
-        BeuiKnockoutBracket(rounds: _rounds),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32), // py-8
+        child: BeuiKnockoutWheel(rounds: _wheelRounds),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32), // py-8
+        child: BeuiKnockoutBracket(rounds: _rounds, thirdPlace: _thirdPlace),
+      ),
+    ],
+  );
 }
 
 // ── Mock data ────────────────────────────────────────────────────────────────
@@ -340,5 +344,115 @@ final List<BeuiBracketRound> _rounds = [
         away: BeuiMatchSide(),
       ),
     ],
+  ),
+];
+
+/// Both slots stay TBD until the semi-finals resolve, same as the final
+/// (source `THIRD_PLACE`).
+const _thirdPlace = BeuiMatch(
+  id: 'tp-1',
+  date: 'Sun, 19 Jul',
+  time: '3:00 am',
+  status: BeuiMatchStatus.upcoming,
+  home: BeuiMatchSide(),
+  away: BeuiMatchSide(),
+);
+
+// ── Wheel data ───────────────────────────────────────────────────────────────
+// The source's own wheel `ROUNDS` export: a *finished* 32-team cup, so the hub
+// carries a champion, the trophy and glow render, and the winning run stays lit
+// at rest. It is an ordinary `BeuiBracketRound` list — the wheel just ignores
+// the fields it never draws (date, time, status), which is why those are
+// optional on the shared model.
+
+const _uruguay = BeuiTeam(name: 'Uruguay', code: 'uy');
+const _italy = BeuiTeam(name: 'Italy', code: 'it');
+const _costaRica = BeuiTeam(name: 'Costa Rica', code: 'cr');
+const _serbia = BeuiTeam(name: 'Serbia', code: 'rs');
+const _wales = BeuiTeam(name: 'Wales', code: 'gb-wls');
+const _denmark = BeuiTeam(name: 'Denmark', code: 'dk');
+const _cameroon = BeuiTeam(name: 'Cameroon', code: 'cm');
+const _poland = BeuiTeam(name: 'Poland', code: 'pl');
+const _tunisia = BeuiTeam(name: 'Tunisia', code: 'tn');
+const _peru = BeuiTeam(name: 'Peru', code: 'pe');
+const _qatar = BeuiTeam(name: 'Qatar', code: 'qa');
+
+/// A played fixture, scores only — the winner follows the shootout when there
+/// is one.
+BeuiMatch _played(
+  String id,
+  BeuiTeam home,
+  int homeScore,
+  BeuiTeam away,
+  int awayScore, {
+  int? homePens,
+  int? awayPens,
+}) {
+  final homeWon = homePens != null && awayPens != null
+      ? homePens > awayPens
+      : homeScore > awayScore;
+  return BeuiMatch(
+    id: id,
+    status: BeuiMatchStatus.finished,
+    home: BeuiMatchSide(team: home, score: homeScore, penalties: homePens),
+    away: BeuiMatchSide(team: away, score: awayScore, penalties: awayPens),
+    winner: homeWon ? BeuiMatchWinner.home : BeuiMatchWinner.away,
+  );
+}
+
+final List<BeuiBracketRound> _wheelRounds = [
+  BeuiBracketRound(
+    name: 'Round of 32',
+    matches: [
+      _played('w-r32-1', _spain, 3, _costaRica, 0),
+      _played('w-r32-2', _japan, 2, _serbia, 1),
+      _played('w-r32-3', _netherlands, 2, _ecuador, 0),
+      _played('w-r32-4', _ghana, 2, _portugal, 3),
+      _played('w-r32-5', _england, 4, _wales, 0),
+      _played('w-r32-6', _canada, 0, _uruguay, 2),
+      _played('w-r32-7', _croatia, 1, _denmark, 0),
+      _played('w-r32-8', _brazil, 3, _cameroon, 1),
+      _played('w-r32-9', _france, 2, _poland, 1),
+      _played('w-r32-10', _senegal, 0, _morocco, 1),
+      _played('w-r32-11', _belgium, 2, _tunisia, 0),
+      _played('w-r32-12', _switzerland, 1, _italy, 3),
+      _played('w-r32-13', _argentina, 2, _peru, 0),
+      _played('w-r32-14', _qatar, 0, _mexico, 1),
+      _played('w-r32-15', _germany, 4, _sweden, 2),
+      _played('w-r32-16', _austria, 1, _norway, 2),
+    ],
+  ),
+  BeuiBracketRound(
+    name: 'Round of 16',
+    matches: [
+      _played('w-r16-1', _spain, 2, _japan, 0),
+      _played('w-r16-2', _netherlands, 1, _portugal, 3),
+      _played('w-r16-3', _england, 2, _uruguay, 1),
+      _played('w-r16-4', _croatia, 0, _brazil, 1),
+      _played('w-r16-5', _france, 3, _morocco, 1),
+      _played('w-r16-6', _belgium, 1, _italy, 2),
+      _played('w-r16-7', _argentina, 2, _mexico, 0),
+      _played('w-r16-8', _germany, 1, _norway, 1, homePens: 4, awayPens: 2),
+    ],
+  ),
+  BeuiBracketRound(
+    name: 'Quarter-finals',
+    matches: [
+      _played('w-qf-1', _spain, 1, _portugal, 0),
+      _played('w-qf-2', _england, 2, _brazil, 3),
+      _played('w-qf-3', _france, 2, _italy, 1),
+      _played('w-qf-4', _argentina, 3, _germany, 1),
+    ],
+  ),
+  BeuiBracketRound(
+    name: 'Semi-finals',
+    matches: [
+      _played('w-sf-1', _spain, 2, _brazil, 1),
+      _played('w-sf-2', _france, 0, _argentina, 0, homePens: 3, awayPens: 4),
+    ],
+  ),
+  BeuiBracketRound(
+    name: 'Final',
+    matches: [_played('w-f-1', _spain, 2, _argentina, 1)],
   ),
 ];

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 /// Gallery route for [BeuiPreviewRail] — hover (or focus) the ticks to magnify
 /// the nearest one and glide the preview card along the rail. Mirrors the
 /// source `preview-rail.preview.tsx`: the same items, `defaultActiveId: 'docs'`,
-/// shown in both orientations.
+/// shown in both orientations, plus the mirrored [BeuiPreviewRailPreviewSide],
+/// a preview-less rail, and the resting `highlightActive` highlight.
 Widget previewRailDemo(BuildContext context) => const _PreviewRailDemo();
 
 const _items = <BeuiPreviewRailItem>[
@@ -93,51 +94,32 @@ class _PreviewRailDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-
-    Widget section(String title, Widget child) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 12),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: colors.mutedForeground,
+    // Source preview: two rails in a `flex flex-col gap-8` (32) — a vertical
+    // one at `h-[360px] max-w-2xl` (672) and a horizontal one at `h-[280px]`,
+    // both `defaultActiveId: 'docs'`. The remaining variants
+    // (previewSide/showPreview/highlightActive) are covered by the widget
+    // tests rather than shown here, matching the source page.
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 672),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
+            SizedBox(
+              height: 360,
+              child: BeuiPreviewRail(items: _items, defaultActiveId: 'docs'),
             ),
-          ),
-        ),
-        child,
-      ],
-    );
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              section(
-                'VERTICAL',
-                const BeuiPreviewRail(items: _items, defaultActiveId: 'docs'),
+            SizedBox(height: 32),
+            SizedBox(
+              height: 280,
+              child: BeuiPreviewRail(
+                items: _items,
+                orientation: BeuiPreviewRailOrientation.horizontal,
+                defaultActiveId: 'docs',
               ),
-              const SizedBox(height: 48),
-              section(
-                'HORIZONTAL',
-                const BeuiPreviewRail(
-                  items: _items,
-                  orientation: BeuiPreviewRailOrientation.horizontal,
-                  defaultActiveId: 'docs',
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -127,7 +127,9 @@ class _BeuiAvailabilitySchedulerState extends State<BeuiAvailabilityScheduler> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var i = 0; i < BeuiDayKey.values.length; i++)
-            DecoratedBox(
+            // `divide-y`: a Container (not a DecoratedBox) so the 1px rule
+            // occupies layout height the way a CSS border-top does.
+            Container(
               decoration: BoxDecoration(
                 border: i == 0
                     ? null

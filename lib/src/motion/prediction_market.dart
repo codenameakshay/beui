@@ -345,19 +345,24 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
         (_shakeFrames[i + 1] - _shakeFrames[i]) * (pos - i);
   }
 
-  double _amountFontSize(String amount) {
+  /// Source `amountInputSize`. Each rung carries an `sm:` step that doubles as
+  /// the desktop size, so the ticket reads far larger at/above the 640px
+  /// breakpoint than the mobile base — the port previously used the base sizes
+  /// everywhere and rendered the amount ~20% too small on desktop.
+  double _amountFontSize(String amount, bool wide) {
     final length = amount.replaceAll(RegExp(r'\D'), '').length;
-    if (length >= 10) return 30; // text-3xl
-    if (length >= 8) return 36; // text-4xl
-    if (length >= 6) return 44;
-    return 48; // text-5xl
+    if (length >= 10) return wide ? 36 : 30; // text-3xl sm:text-4xl
+    if (length >= 8) return wide ? 48 : 36; // text-4xl sm:text-5xl
+    if (length >= 6) return wide ? 56 : 44; // text-[44px] sm:text-[56px]
+    return wide ? 60 : 48; // text-5xl sm:text-6xl
   }
 
-  double _payoutFontSize(double payout) {
+  /// Source `payoutTickerSize`. Only the longest rung has an `sm:` step.
+  double _payoutFontSize(double payout, bool wide) {
     final length = _formatCurrency(payout).length;
-    if (length >= 16) return 20;
-    if (length >= 13) return 24;
-    if (length >= 10) return 30;
+    if (length >= 16) return wide ? 24 : 20; // text-xl sm:text-2xl
+    if (length >= 13) return 24; // text-2xl
+    if (length >= 10) return 30; // text-3xl
     return 36; // text-4xl
   }
 
@@ -365,6 +370,9 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final reduce = MediaQuery.disableAnimationsOf(context);
+    // Tailwind `sm:` keys off the viewport, not the element box (the ticket is
+    // capped at 400px yet still takes the `sm:` type scale on desktop).
+    final wide = MediaQuery.sizeOf(context).width >= 640;
     final order = _order;
     final quote = _quote;
     final buy = order.mode == BeuiPredictionMarketMode.buy;
@@ -394,7 +402,9 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(color: colors.border.withValues(alpha: 0.8)),
+                bottom: BorderSide(
+                  color: colors.border.withValues(alpha: colors.border.a * 0.8),
+                ),
               ),
             ),
             child: Row(
@@ -466,7 +476,7 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
                     order: order,
                     controller: _input,
                     focusNode: _inputFocus,
-                    fontSize: _amountFontSize(order.amount),
+                    fontSize: _amountFontSize(order.amount, wide),
                     disabled: placing,
                     reduce: reduce,
                     colors: colors,
@@ -511,13 +521,20 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: colors.border.withValues(alpha: 0.8)),
+                  top: BorderSide(
+                    color: colors.border.withValues(
+                      alpha: colors.border.a * 0.8,
+                    ),
+                  ),
                 ),
               ),
               child: Column(
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
+                    // `justify-between` + the payout's `ml-auto`: the label
+                    // block hugs the left edge, the payout the right.
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
                         child: Column(
@@ -575,7 +592,7 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
                             startOnView: false,
                             format: (cents) => _formatCurrency(cents / 100),
                             style: TextStyle(
-                              fontSize: _payoutFontSize(quote.payout),
+                              fontSize: _payoutFontSize(quote.payout, wide),
                               fontWeight: FontWeight.w600,
                               letterSpacing: -0.5,
                               color: const Color(0xFF10B981),
@@ -804,47 +821,61 @@ class _OutcomeCellsState extends State<_OutcomeCells> {
         ? const Color(0xFFEF4444).withValues(alpha: 0.12)
         : const Color(0xFF10B981).withValues(alpha: 0.2);
 
-    return Stack(
-      key: _stackKey,
-      children: [
-        if (_pill != null)
-          MotionBuilder<Rect>(
-            value: _pill!,
-            motion: widget.reduce ? const NoMotion() : _outcomePillSpring,
-            converter: const RectMotionConverter(),
-            builder: (context, rect, _) {
-              final r = widget.reduce ? _pill! : rect;
-              return Positioned.fromRect(
-                rect: r,
-                child: IgnorePointer(
-                  child: DecoratedBox(
-                    // Stable handle so motion tests can read the pill's bounds.
-                    key: const ValueKey<String>('beui_prediction_market_pill'),
-                    decoration: BoxDecoration(
-                      color: pillColor,
-                      borderRadius: BorderRadius.circular(r.height / 2),
+    // The source `TabsList` keeps its `pill` variant's `rounded-full bg-card`
+    // track and only overrides the layout classes, so the two cells sit inside
+    // a card-tinted stadium with `p-1.5` around them. Without it the pill's
+    // `bg-emerald-500/20` also composited over the page background instead of
+    // the track, reading several steps too dark.
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.card,
+        borderRadius: BorderRadius.circular(999), // rounded-full
+      ),
+      padding: const EdgeInsets.all(6), // p-1.5
+      child: Stack(
+        key: _stackKey,
+        children: [
+          if (_pill != null)
+            MotionBuilder<Rect>(
+              value: _pill!,
+              motion: widget.reduce ? const NoMotion() : _outcomePillSpring,
+              converter: const RectMotionConverter(),
+              builder: (context, rect, _) {
+                final r = widget.reduce ? _pill! : rect;
+                return Positioned.fromRect(
+                  rect: r,
+                  child: IgnorePointer(
+                    child: DecoratedBox(
+                      // Stable handle so motion tests can read the pill's bounds.
+                      key: const ValueKey<String>(
+                        'beui_prediction_market_pill',
+                      ),
+                      decoration: BoxDecoration(
+                        color: pillColor,
+                        borderRadius: BorderRadius.circular(r.height / 2),
+                      ),
                     ),
                   ),
+                );
+              },
+            ),
+          Row(
+            spacing: 8, // gap-2
+            children: [
+              for (final outcome in widget.outcomes)
+                Expanded(
+                  child: _OutcomeLabel(
+                    key: _keyFor(outcome.id),
+                    outcome: outcome,
+                    selected: outcome.id == widget.selectedId,
+                    colors: colors,
+                    onTap: () => widget.onTap(outcome),
+                  ),
                 ),
-              );
-            },
+            ],
           ),
-        Row(
-          spacing: 8, // gap-2
-          children: [
-            for (final outcome in widget.outcomes)
-              Expanded(
-                child: _OutcomeLabel(
-                  key: _keyFor(outcome.id),
-                  outcome: outcome,
-                  selected: outcome.id == widget.selectedId,
-                  colors: colors,
-                  onTap: () => widget.onTap(outcome),
-                ),
-              ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -870,8 +901,10 @@ class _OutcomeLabel extends StatelessWidget {
     final isNo = _isNoOutcome(outcome.label);
     const emerald = Color(0xFF34D399); // emerald-400
     const red = Color(0xFFFCA5A5); // red-300
+    // `text-red-300/55 dark:text-red-300/50` when unselected.
+    final dark = Theme.of(context).brightness == Brightness.dark;
     final foreground = isNo
-        ? (selected ? red : red.withValues(alpha: 0.55))
+        ? (selected ? red : red.withValues(alpha: dark ? 0.50 : 0.55))
         : (selected ? emerald : colors.mutedForeground);
 
     return Semantics(
@@ -942,17 +975,22 @@ class _AmountCard extends StatelessWidget {
           child: Container(
             height: 36, // h-9
             padding: const EdgeInsets.symmetric(horizontal: 14), // px-3.5
-            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colors.background,
               borderRadius: BorderRadius.circular(12), // rounded-xl
             ),
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: colors.foreground,
+            // `widthFactor: 1` keeps the chip hugging its label. A bare
+            // `alignment:` on the Container would let it expand to the Wrap's
+            // full width, stacking the chips one per line.
+            child: Center(
+              widthFactor: 1,
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: colors.foreground,
+                ),
               ),
             ),
           ),
@@ -972,7 +1010,8 @@ class _AmountCard extends StatelessWidget {
           Text(
             buy ? 'Amount' : 'Shares',
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 20, // text-xl
+              height: 28 / 20, // …/28
               fontWeight: FontWeight.w500,
               color: colors.foreground,
             ),

@@ -3,6 +3,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:beui/beui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const _icons = <IconData>[
@@ -28,7 +29,9 @@ Widget _app({bool magnify = false, bool reduce = false, int activeIndex = 0}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: Center(child: dock)),
   );
 }
@@ -203,16 +206,32 @@ void main() {
   });
 
   group('separator', () {
-    Widget dockWith(double size) => MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    Widget dockWith({
+      double size = 44,
+      bool magnify = false,
+      bool activeFirst = false,
+    }) => MaterialApp(
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
       home: Scaffold(
         body: Center(
           child: BeuiDock(
             size: size,
+            magnify: magnify,
             items: [
-              BeuiDockItem(icon: LucideIcons.house, onTap: () {}),
-              null, // renders a vertical separator
-              BeuiDockItem(icon: LucideIcons.mail, onTap: () {}),
+              BeuiDockItem(
+                icon: LucideIcons.house,
+                tooltip: 'home',
+                active: activeFirst,
+                onTap: () {},
+              ),
+              const BeuiDockItem.separator(),
+              BeuiDockItem(
+                icon: LucideIcons.mail,
+                tooltip: 'mail',
+                onTap: () {},
+              ),
             ],
           ),
         ),
@@ -229,7 +248,7 @@ void main() {
     testWidgets('line is a fixed 24px tall at the default size', (
       tester,
     ) async {
-      await tester.pumpWidget(dockWith(44));
+      await tester.pumpWidget(dockWith());
       await tester.pumpAndSettle();
       expect(tester.getSize(separatorLine()).height, 24.0);
     });
@@ -237,9 +256,125 @@ void main() {
     testWidgets('line stays 24px even when items are much larger', (
       tester,
     ) async {
-      await tester.pumpWidget(dockWith(88));
+      await tester.pumpWidget(dockWith(size: 88));
       await tester.pumpAndSettle();
       expect(tester.getSize(separatorLine()).height, 24.0);
+    });
+
+    testWidgets('bar padding is a fixed px-2, independent of gap', (
+      tester,
+    ) async {
+      // Source sets `px-2` and `gap-1.5` with separate utilities, so a custom
+      // gap must not shift the end items relative to the bar's edge. Measured on
+      // beui.dev/components/motion/dock: 44px items, 6px gaps and 8px padding
+      // give a 377px bar, which is what the site renders.
+      Future<double> barWidth(double gap) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: BeuiTextTheme.trackingNormal(
+              ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+            ),
+            home: Scaffold(
+              body: Center(
+                child: BeuiDock(
+                  gap: gap,
+                  items: [
+                    BeuiDockItem(icon: LucideIcons.house, onTap: () {}),
+                    BeuiDockItem(icon: LucideIcons.mail, onTap: () {}),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        return tester.getSize(find.byType(BeuiDock)).width;
+      }
+
+      // Two 44px items + the gap + 2 x 8px padding + 2 x 1px border.
+      expect(await barWidth(6), moreOrLessEquals(112, epsilon: 0.5));
+      expect(
+        await barWidth(20),
+        moreOrLessEquals(126, epsilon: 0.5),
+        reason: 'a wider gap must widen only the gap, never the bar padding',
+      );
+    });
+
+    testWidgets('is skipped by hover magnification while its neighbours grow', (
+      tester,
+    ) async {
+      await tester.pumpWidget(dockWith(magnify: true));
+      await tester.pumpAndSettle();
+      final resting = tester.getSize(separatorLine());
+
+      final g = await _mouse(tester);
+      await g.moveTo(tester.getCenter(separatorLine()));
+      await tester.pumpAndSettle();
+
+      // The rule itself never scales...
+      expect(tester.getSize(separatorLine()), resting);
+      expect(
+        find.descendant(
+          of: find.byType(BeuiDock),
+          matching: find.ancestor(
+            of: separatorLine(),
+            matching: find.byType(Transform),
+          ),
+        ),
+        findsNothing,
+      );
+      // ...while the actions on either side of it do magnify, proving the
+      // pointer was tracked.
+      expect(_scaleOf(tester, LucideIcons.house)!, greaterThan(1.0));
+      expect(_scaleOf(tester, LucideIcons.mail)!, greaterThan(1.0));
+    });
+
+    testWidgets('is decorative: no semantics node, nothing focusable', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(dockWith());
+      await tester.pumpAndSettle();
+
+      // Only the two actions are announced; the rule contributes nothing
+      // (source: aria-hidden).
+      final labels = <String>[];
+      void collect(SemanticsNode node) {
+        if (node.label.isNotEmpty) labels.add(node.label);
+        node.visitChildren((child) {
+          collect(child);
+          return true;
+        });
+      }
+
+      collect(tester.getSemantics(find.byType(BeuiDock)));
+      labels.sort();
+      expect(labels, ['home', 'mail']);
+
+      // Nothing inside it can take focus, so keyboard traversal skips it.
+      expect(
+        find.descendant(
+          of: find.byType(BeuiDock),
+          matching: find.ancestor(
+            of: separatorLine(),
+            matching: find.byType(Focus),
+          ),
+        ),
+        findsNothing,
+      );
+
+      handle.dispose();
+    });
+
+    testWidgets('never attracts the active pill', (tester) async {
+      await tester.pumpWidget(dockWith(activeFirst: true));
+      await tester.pumpAndSettle();
+
+      expect(_pillCount(tester), 1);
+      expect(
+        _pillCenterX(tester),
+        closeTo(_iconCenterX(tester, LucideIcons.house), 4),
+      );
     });
   });
 }

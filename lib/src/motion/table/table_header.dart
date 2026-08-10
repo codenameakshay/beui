@@ -1,5 +1,14 @@
 part of 'table.dart';
 
+/// The header/body rule under `border-collapse: collapse`.
+///
+/// A collapsed border is painted on the grid line *between* the two cells, over
+/// the table's own background — the header's `bg-muted` fill does not extend
+/// under it. Compositing the semi-transparent `--border` token over
+/// `--background` (rather than over `--muted`) reproduces that exactly.
+Color _collapsedRule(BeuiColors colors) =>
+    Color.alphaBlend(colors.border, colors.background);
+
 /// The sticky header row — the Flutter port of `table-header.tsx`.
 ///
 /// Each header cell hosts (in source order) an optional reorder grip, the sort
@@ -56,7 +65,7 @@ class _TableHeader<T> extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colors.muted,
-              border: Border(bottom: BorderSide(color: colors.border)),
+              border: Border(bottom: BorderSide(color: _collapsedRule(colors))),
             ),
             child: BeuiCheckbox(
               value: allSelected,
@@ -82,7 +91,7 @@ class _TableHeader<T> extends StatelessWidget {
             height: state.widget.rowHeight,
             decoration: BoxDecoration(
               color: colors.muted,
-              border: Border(bottom: BorderSide(color: colors.border)),
+              border: Border(bottom: BorderSide(color: _collapsedRule(colors))),
             ),
           ),
         ),
@@ -191,7 +200,7 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
       decoration: BoxDecoration(
         color: colors.muted,
         border: Border(
-          bottom: BorderSide(color: colors.border),
+          bottom: BorderSide(color: _collapsedRule(colors)),
           top: isActive ? BorderSide(color: colors.primary) : BorderSide.none,
         ),
       ),

@@ -402,9 +402,7 @@ void main() {
   }
   _line();
 
-  _line(
-    '// ── Semantic status (brightness-independent) ─────────────────────',
-  );
+  _line('// ── Semantic status (brightness-independent) ─────────────────────');
   _colConst('_success', _success);
   _colConst('_warning', _warning);
   _line();

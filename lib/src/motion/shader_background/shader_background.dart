@@ -198,7 +198,9 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
   static Future<ui.Image> _loadNoise() async {
     ByteData data;
     try {
-      data = await rootBundle.load('packages/beui/assets/beui_shader_noise.png');
+      data = await rootBundle.load(
+        'packages/beui/assets/beui_shader_noise.png',
+      );
     } on Exception {
       data = await rootBundle.load('assets/beui_shader_noise.png');
     }
@@ -287,7 +289,11 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
     final colors = (widget.colors ?? spec.defaultColors)
         .take(kBeuiShaderMaxColors)
         .toList(growable: false);
-    final params = {...spec.defaultParams, ...widget.params, 'scale': widget.scale};
+    final params = {
+      ...spec.defaultParams,
+      ...widget.params,
+      'scale': widget.scale,
+    };
     return SizedBox.expand(
       child: CustomPaint(
         painter: _ShaderPainter(

@@ -74,12 +74,20 @@ class _BouncyAccordionDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The source preview reserves a fixed 480px-tall box (`h-[480px]`) inside a
+    // centred `max-w-sm` column and top-anchors the accordion in it. That box is
+    // load-bearing, not decoration: with it, opening a row only pushes the rows
+    // *below* it: without it the stack re-centres on every toggle and the rows
+    // above the one you tapped slide up too.
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 384), // max-w-sm
-        child: const BeuiBouncyAccordion(
-          items: _items,
-          defaultValue: 'calendar',
+        child: const SizedBox(
+          height: 480, // h-[480px]
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: BeuiBouncyAccordion(items: _items, defaultValue: 'calendar'),
+          ),
         ),
       ),
     );

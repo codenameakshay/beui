@@ -1,31 +1,47 @@
 // The explorer catalog — the single source of truth for what the gallery shows.
 //
-// Mirrors the section/order of beui.dev's component explorer: a Components
-// ("motion") group and a Blocks group, each in the same order as the site's
-// sidebar, wired to the Flutter demo builders. Two source components
-// (Pull to Refresh, Animated CTA Buttons) are not yet ported to the library, so
-// their [ExploreEntry.builder] is null and the detail view shows a "not yet
-// ported" state rather than inventing a component.
+// Mirrors the section/order of beui.dev's component explorer: Components
+// ("motion"), AI Agents, and Blocks — each in the same order as the site's
+// sidebar, wired to the Flutter demo builders. Entries that are not yet ported
+// still have a builder (a stub demo that shows "not yet ported") so the gallery
+// route resolves; the real widget lives under lib/src/motion/ as a scaffold.
 import 'package:flutter/widgets.dart';
 
 import '../demos/action_rails_demo.dart';
+import '../demos/agent_activity_demo.dart';
+import '../demos/ai_sidebar_demo.dart';
 import '../demos/animated_badge_demo.dart';
+import '../demos/animated_sidebar_demo.dart';
 import '../demos/animated_toast_stack_demo.dart';
+import '../demos/approval_card_demo.dart';
 import '../demos/availability_scheduler_demo.dart';
 import '../demos/bloom_menu_demo.dart';
+import '../demos/bounce_sidebar_demo.dart';
 import '../demos/bottom_sheet_demo.dart';
 import '../demos/bouncy_accordion_demo.dart';
+import '../demos/center_morph_modal_demo.dart';
+import '../demos/chat_app_demo.dart';
+import '../demos/citations_demo.dart';
+import '../demos/code_block_demo.dart';
 import '../demos/command_palette_demo.dart';
+import '../demos/context_menu_demo.dart';
 import '../demos/core_demos.dart';
 import '../demos/cylinder_carousel_demo.dart';
 import '../demos/dynamic_island_demo.dart';
 import '../demos/expandable_tabs_demo.dart';
+import '../demos/expanding_arrow_button_demo.dart';
 import '../demos/feedback_widget_demo.dart';
+import '../demos/file_diff_demo.dart';
 import '../demos/file_upload_demo.dart';
+import '../demos/image_generation_demo.dart';
 import '../demos/infinite_masonry_demo.dart';
 import '../demos/input_demo.dart';
 import '../demos/knockout_bracket_demo.dart';
 import '../demos/loader_demo.dart';
+import '../demos/loading_states_demo.dart';
+import '../demos/message_bubble_demo.dart';
+import '../demos/message_demo.dart';
+import '../demos/message_scroller_demo.dart';
 import '../demos/not_found_demo.dart';
 import '../demos/notification_stack_demo.dart';
 import '../demos/number_demo.dart';
@@ -34,28 +50,39 @@ import '../demos/popover_demo.dart';
 import '../demos/popover_morph_demo.dart';
 import '../demos/prediction_market_demo.dart';
 import '../demos/preview_rail_demo.dart';
+import '../demos/prompt_input_demo.dart';
+import '../demos/pull_to_refresh_demo.dart';
 import '../demos/range_slider_demo.dart';
 import '../demos/scroll_animation_demo.dart';
 import '../demos/select_demo.dart';
 import '../demos/shader_background_demo.dart';
+import '../demos/streaming_response_demo.dart';
 import '../demos/swap_demo.dart';
 import '../demos/swipeable_list_demo.dart';
 import '../demos/table_demo.dart';
 import '../demos/theme_toggle_demo.dart';
+import '../demos/todo_list_demo.dart';
+import '../demos/tool_approval_demo.dart';
+import '../demos/tool_result_demo.dart';
 import '../demos/wallet_card_demo.dart';
 import '../demos/wheel_picker_demo.dart';
 
-/// The two top-level groups in the explorer, mirroring the site's sidebar.
+/// The three top-level groups in the explorer, mirroring the site's sidebar.
 enum ExploreSection {
   components('Components', 'motion', 'Motion primitives with composable APIs.'),
+  agents(
+    'AI Agents',
+    'agents',
+    'Conversational and agent-reasoning interfaces.',
+  ),
   blocks('Blocks', 'blocks', 'Composed, product-ready motion patterns.');
 
   const ExploreSection(this.title, this.slug, this.subtitle);
 
-  /// Display title ("Components" / "Blocks").
+  /// Display title ("Components" / "AI Agents" / "Blocks").
   final String title;
 
-  /// URL-ish slug used in breadcrumbs ("motion" / "blocks").
+  /// URL-ish slug used in breadcrumbs ("motion" / "agents" / "blocks").
   final String slug;
 
   /// One-line subtitle shown under the index heading.
@@ -120,7 +147,7 @@ class _StackedDemos extends StatelessWidget {
   }
 }
 
-/// Components ("motion") — same order as the source sidebar (33 entries).
+/// Components ("motion") — same order as the source sidebar (37 entries).
 const List<ExploreEntry> kComponents = [
   ExploreEntry(
     title: 'Marquee',
@@ -188,6 +215,7 @@ const List<ExploreEntry> kComponents = [
     section: ExploreSection.components,
     isNew: true,
     blurb: 'Pull-to-refresh with drag resistance and async refresh handling.',
+    builder: pullToRefreshDemo,
   ),
   ExploreEntry(
     title: 'Shared Layout Background',
@@ -195,6 +223,23 @@ const List<ExploreEntry> kComponents = [
     section: ExploreSection.components,
     blurb: 'A pill that glides between hovered items with a blur enter/exit.',
     builder: sharedLayoutDemo,
+  ),
+  ExploreEntry(
+    title: 'Bounce Sidebar',
+    slug: 'bounce-sidebar',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'A vertical sidebar whose active dot springs along a curved path.',
+    builder: bounceSidebarDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated Sidebar',
+    slug: 'animated-sidebar',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'App sidebar that folds to an icon rail on desktop, sheet on mobile.',
+    builder: animatedSidebarDemo,
   ),
   ExploreEntry(
     title: 'Preview Rail',
@@ -220,6 +265,15 @@ const List<ExploreEntry> kComponents = [
     builder: tooltipDemo,
   ),
   ExploreEntry(
+    title: 'Context Menu',
+    slug: 'context-menu',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Context-menu primitives with a pointer-origin clip morph and typeahead.',
+    builder: contextMenuDemo,
+  ),
+  ExploreEntry(
     title: 'Popover',
     slug: 'popover',
     section: ExploreSection.components,
@@ -234,6 +288,15 @@ const List<ExploreEntry> kComponents = [
     blurb:
         'A panel that morphs its height between inner views, blur cross-fade.',
     builder: morphingModalDemo,
+  ),
+  ExploreEntry(
+    title: 'Center Morph Modal',
+    slug: 'center-morph-modal',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'A full-size surface that unfolds from its exact center and folds back.',
+    builder: centerMorphModalDemo,
   ),
   ExploreEntry(
     title: 'Text Animation',
@@ -371,6 +434,7 @@ const List<ExploreEntry> kComponents = [
     isNew: true,
     blurb:
         'Call-to-action buttons with expanding, hold and slide interactions.',
+    builder: expandingArrowButtonDemo,
   ),
 ];
 
@@ -513,9 +577,155 @@ const List<ExploreEntry> kBlocks = [
   ),
 ];
 
-/// All entries across both sections, in display order.
-const List<ExploreEntry> kAllEntries = [...kComponents, ...kBlocks];
+/// AI Agents — same order as the source sidebar (17 entries).
+const List<ExploreEntry> kAgents = [
+  ExploreEntry(
+    title: 'Message Bubble',
+    slug: 'message-bubble',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Conversational surface with tones, alignment and grouped messages.',
+    builder: messageBubbleDemo,
+  ),
+  ExploreEntry(
+    title: 'Message',
+    slug: 'message',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Primitives for rows, grouped bubbles, avatars and live markers.',
+    builder: messageDemo,
+  ),
+  ExploreEntry(
+    title: 'Message Scroller',
+    slug: 'message-scroller',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'A conversation viewport that follows the live edge of new output.',
+    builder: messageScrollerDemo,
+  ),
+  ExploreEntry(
+    title: 'Prompt Input',
+    slug: 'prompt-input',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb:
+        'Auto-growing composer with model selection and animated send states.',
+    builder: promptInputDemo,
+  ),
+  ExploreEntry(
+    title: 'Todo List',
+    slug: 'todo-list',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Collapsible task plan with morphing status marks and a count.',
+    builder: todoListDemo,
+  ),
+  ExploreEntry(
+    title: 'Code Block',
+    slug: 'code-block',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Syntax-highlighted code with stable streaming and line numbers.',
+    builder: codeBlockDemo,
+  ),
+  ExploreEntry(
+    title: 'Approval Card',
+    slug: 'approval-card',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb:
+        'Decision surface for approvals and single or multi-choice questions.',
+    builder: approvalCardDemo,
+  ),
+  ExploreEntry(
+    title: 'File Diff',
+    slug: 'file-diff',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Syntax-highlighted change disclosure with progressive rows.',
+    builder: fileDiffDemo,
+  ),
+  ExploreEntry(
+    title: 'Tool Result',
+    slug: 'tool-result',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Execution disclosure for terminal output that collapses when done.',
+    builder: toolResultDemo,
+  ),
+  ExploreEntry(
+    title: 'Streaming Response',
+    slug: 'streaming-response',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb:
+        'Stable response surface with completion actions and source summary.',
+    builder: streamingResponseDemo,
+  ),
+  ExploreEntry(
+    title: 'Image Generation',
+    slug: 'image-generation',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Generated-image surface that refines without layout shift.',
+    builder: imageGenerationDemo,
+  ),
+  ExploreEntry(
+    title: 'Tool Approval',
+    slug: 'tool-approval',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Permission card: allow once, remember access, or deny.',
+    builder: toolApprovalDemo,
+  ),
+  ExploreEntry(
+    title: 'Citations',
+    slug: 'citations',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Inline markers paired with a collapsible reference collection.',
+    builder: citationsDemo,
+  ),
+  ExploreEntry(
+    title: 'Agent Activity',
+    slug: 'agent-activity',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'A single stream for reasoning, searches, tool calls and traces.',
+    builder: agentActivityDemo,
+  ),
+  ExploreEntry(
+    title: 'Loading States',
+    slug: 'loading-states',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Shimmering reasoning text, progress and cycling phrases.',
+    builder: loadingStatesDemo,
+  ),
+  ExploreEntry(
+    title: 'AI Sidebar',
+    slug: 'ai-sidebar',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Collapsible AI workspace sidebar with keyboard navigation.',
+    builder: aiSidebarDemo,
+  ),
+  ExploreEntry(
+    title: 'Chat App',
+    slug: 'chat-app',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Complete agent workspace composing all conversation surfaces.',
+    builder: chatAppDemo,
+  ),
+];
+
+/// All entries across every section, in display order.
+const List<ExploreEntry> kAllEntries = [...kComponents, ...kAgents, ...kBlocks];
 
 /// The entries for [section].
-List<ExploreEntry> entriesFor(ExploreSection section) =>
-    section == ExploreSection.components ? kComponents : kBlocks;
+List<ExploreEntry> entriesFor(ExploreSection section) => switch (section) {
+  ExploreSection.components => kComponents,
+  ExploreSection.agents => kAgents,
+  ExploreSection.blocks => kBlocks,
+};

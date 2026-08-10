@@ -7,8 +7,9 @@ import '../../tokens/motion.dart';
 import '../_engine.dart';
 import 'types.dart';
 
-/// Row height of one option in the dropdown list.
-const double _optionExtent = 36;
+/// Row height of one option in the dropdown list — `py-1.5 text-sm`
+/// (6 + 20 + 6).
+const double _optionExtent = 32;
 
 /// `max-h-56` (14rem) — the panel caps its height and scrolls the 48 options
 /// instead of unfolding them all (source `time-select.tsx`).
@@ -105,7 +106,8 @@ class _TimeSelectState extends State<TimeSelect> {
     final controller = ScrollController(
       initialScrollOffset: selectedIndex <= 0
           ? 0
-          : (selectedIndex * _optionExtent - _panelMaxHeight / 2 +
+          : (selectedIndex * _optionExtent -
+                    _panelMaxHeight / 2 +
                     _optionExtent / 2)
                 .clamp(0.0, double.infinity),
     );
@@ -116,7 +118,8 @@ class _TimeSelectState extends State<TimeSelect> {
         width: width,
         constraints: const BoxConstraints(maxHeight: _panelMaxHeight),
         decoration: BoxDecoration(
-          color: colors.popover,
+          // Source panel is `bg-background`, not the popover surface.
+          color: colors.background,
           border: Border.all(color: colors.border),
           borderRadius: BorderRadius.circular(12),
           boxShadow: const [
@@ -154,7 +157,8 @@ class _TimeSelectState extends State<TimeSelect> {
       showWhenUnlinked: false,
       targetAnchor: Alignment.bottomLeft,
       followerAnchor: Alignment.topLeft,
-      offset: const Offset(0, 4),
+      // Source opens an 8px gap between trigger and panel (`nearGap = 8`).
+      offset: const Offset(0, 8),
       child: Align(
         alignment: Alignment.topLeft,
         child: AnimatedBuilder(
@@ -233,12 +237,13 @@ class _TriggerState extends State<_Trigger> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             curve: Curves.ease,
-            height: 36,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            // `px-3 py-2 text-sm` + 1px border: 12+12 wide, 8+20+8+2 = 38 tall.
+            height: 38,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               color: colors.background,
               border: Border.all(color: borderColor),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12), // rounded-xl
             ),
             child: Row(
               children: [
@@ -249,16 +254,17 @@ class _TriggerState extends State<_Trigger> {
                     softWrap: false,
                     overflow: TextOverflow.clip,
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 14, // text-sm
+                      height: 20 / 14, // …/20
                       color: colors.foreground,
                       fontFeatures: const [FontFeature.tabularFigures()],
                     ),
                   ),
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: 8), // gap-2
                 Icon(
                   LucideIcons.chevron_down,
-                  size: 15,
+                  size: 16, // h-4 w-4
                   color: colors.mutedForeground,
                 ),
               ],
@@ -305,10 +311,10 @@ class _OptionState extends State<_Option> {
         onTap: widget.onTap,
         child: Container(
           alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10), // px-2.5
           decoration: BoxDecoration(
             color: highlight ? colors.muted : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8), // rounded-lg
           ),
           child: Row(
             children: [
@@ -316,17 +322,19 @@ class _OptionState extends State<_Option> {
                 child: Text(
                   widget.option.label,
                   style: TextStyle(
-                    fontSize: 13,
-                    color: colors.popoverForeground,
-                    fontWeight: widget.selected
-                        ? FontWeight.w600
-                        : FontWeight.w400,
+                    fontSize: 14, // text-sm
+                    height: 20 / 14,
+                    // `text-muted-foreground`, going `text-foreground` when
+                    // selected or hovered (source `SelectItem`).
+                    color: highlight
+                        ? colors.foreground
+                        : colors.mutedForeground,
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),
               ),
               if (widget.selected)
-                Icon(LucideIcons.check, size: 15, color: colors.foreground),
+                Icon(LucideIcons.check, size: 14, color: colors.foreground),
             ],
           ),
         ),

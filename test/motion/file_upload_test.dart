@@ -16,7 +16,9 @@ Widget _wrap(Widget child, {bool reduce = false}) {
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(body: body),
   );
 }
@@ -71,6 +73,22 @@ void main() {
       expect(find.byIcon(LucideIcons.circle_alert), findsOneWidget);
       // Retry appears only on the error row.
       expect(find.byIcon(LucideIcons.rotate_ccw), findsOneWidget);
+    });
+
+    testWidgets('the queue is a space-y-2 list under a space-y-3 root', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const BeuiFileUpload(value: _items)));
+      await tester.pump(const Duration(milliseconds: 400));
+
+      final a = tester.getRect(find.byKey(const ValueKey('a')));
+      final b = tester.getRect(find.byKey(const ValueKey('b')));
+      final c = tester.getRect(find.byKey(const ValueKey('c')));
+
+      // Source `<ul className="space-y-2">`: rows sit 8px apart. They used to
+      // be direct children of the root, which gave them its `space-y-3` 12px.
+      expect(b.top - a.bottom, closeTo(8, 0.5));
+      expect(c.top - b.bottom, closeTo(8, 0.5));
     });
 
     testWidgets('remove reports and drops the row', (tester) async {

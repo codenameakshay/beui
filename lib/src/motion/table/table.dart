@@ -452,19 +452,28 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     if (s == null) return rows;
     final column = widget.columns.where((c) => c.key == s.key).firstOrNull;
     if (column == null) return rows;
-    final copy = [...rows];
-    copy.sort((a, b) {
-      final av = _sortKey(column, a.row);
-      final bv = _sortKey(column, b.row);
+    // Stable, like the source: `Array.prototype.sort` is required to be stable
+    // by the ES spec, so equal keys keep their original order. Dart's
+    // `List.sort` is an unstable introsort, which would shuffle ties (very
+    // visible on the 10k-row preview, where hundreds of rows share an MRR), so
+    // the original index is carried as the tie-breaker.
+    final indexed = [
+      for (var i = 0; i < rows.length; i++)
+        (i, rows[i], _sortKey(column, rows[i].row)),
+    ];
+    indexed.sort((a, b) {
+      final av = a.$3;
+      final bv = b.$3;
       int cmp;
       if (av is num && bv is num) {
         cmp = av.compareTo(bv);
       } else {
         cmp = _localeCompare(av.toString(), bv.toString());
       }
+      if (cmp == 0) return a.$1.compareTo(b.$1);
       return s.direction == BeuiSortDirection.asc ? cmp : -cmp;
     });
-    return copy;
+    return [for (final e in indexed) e.$2];
   }
 
   Object _sortKey(BeuiTableColumn<T> column, T row) {
@@ -887,7 +896,11 @@ class _DataRowState<T> extends State<_DataRow<T>> {
         decoration: BoxDecoration(
           color: bg,
           border: Border(
-            bottom: BorderSide(color: colors.border.withValues(alpha: 0.6)),
+            // `border-border/60` scales the token's own alpha (white/5%) — it
+            // does not replace it, which would paint a near-white rule.
+            bottom: BorderSide(
+              color: colors.border.withValues(alpha: colors.border.a * 0.6),
+            ),
           ),
         ),
         child: cells,

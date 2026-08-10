@@ -79,7 +79,9 @@ Widget _app({
     );
   }
   return MaterialApp(
-    theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    theme: BeuiTextTheme.trackingNormal(
+      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    ),
     home: Scaffold(
       body: Padding(padding: const EdgeInsets.all(24), child: table),
     ),
@@ -324,6 +326,60 @@ void main() {
       // Past the grace window it finally unmounts.
       await tester.pump(const Duration(milliseconds: 80));
       expect(handleIcon, findsNothing);
+    });
+  });
+
+  group('BeuiTable chrome', () {
+    testWidgets('row rule scales the border token alpha, never replaces it', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(data: _people, columns: _columns()));
+      await tester.pumpAndSettle();
+
+      final border = BeuiColors.light().border;
+      // `border-border/60` == 60% *of* the token's own alpha.
+      final expected = border.a * 0.6;
+
+      final rules = <double>[
+        for (final c in tester.widgetList<Container>(find.byType(Container)))
+          if (c.decoration case final BoxDecoration d)
+            if (d.border case final Border b)
+              if (b.bottom.style == BorderStyle.solid &&
+                  b.bottom.color.a > 0 &&
+                  b.bottom.color.a < border.a)
+                b.bottom.color.a,
+      ];
+      expect(rules, isNotEmpty);
+      for (final a in rules) {
+        expect(a, closeTo(expected, 0.001));
+      }
+    });
+  });
+
+  group('BeuiTable sort', () {
+    testWidgets('sort is stable: ties keep their original order', (
+      tester,
+    ) async {
+      // Every row shares an MRR, so a stable sort must preserve input order —
+      // Dart's `List.sort` is an unstable introsort and would shuffle these.
+      final tied = [
+        for (var i = 0; i < 24; i++)
+          {'id': '$i', 'name': 'P$i', 'role': 'Member', 'mrr': '100'},
+      ];
+      await tester.pumpWidget(
+        _app(data: tied, columns: _columns(), onSortChange: (_) {}),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('MRR'));
+      await tester.pumpAndSettle();
+
+      final names = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((t) => t.data)
+          .whereType<String>()
+          .where((s) => s.startsWith('P'))
+          .toList();
+      expect(names.take(3).toList(), ['P0', 'P1', 'P2']);
     });
   });
 

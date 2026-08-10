@@ -88,6 +88,7 @@ class _WheelPickerDemoState extends State<_WheelPickerDemo> {
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
+            spacing: 4, // gap-1
             children: [
               BeuiWheelPicker(
                 options: _opts(_months),

@@ -32,8 +32,12 @@ class _HarnessState extends State<_Harness> {
       );
     }
     return MaterialApp(
-      theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      home: Scaffold(body: Align(alignment: Alignment.topCenter, child: child)),
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
+      home: Scaffold(
+        body: Align(alignment: Alignment.topCenter, child: child),
+      ),
     );
   }
 }
@@ -124,7 +128,9 @@ void main() {
   testWidgets('rest-state golden (default week)', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
         home: Scaffold(
           body: Align(
             alignment: Alignment.topCenter,
