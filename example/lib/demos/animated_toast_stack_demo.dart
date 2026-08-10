@@ -86,117 +86,128 @@ class _AnimatedToastStackDemoState extends State<_AnimatedToastStackDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
-    return Stack(
-      children: [
-        // `flex min-h-72 w-full flex-col items-center justify-center gap-6`
-        Positioned.fill(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 288),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Copy block: `flex flex-col items-center gap-2 text-center`.
-                  Text(
-                    'Open a real toast',
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 20 / 14,
-                      fontWeight: FontWeight.w500,
-                      color: colors.foreground,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: 384, // max-w-sm
-                    child: Text(
-                      'Toasts render fixed on the screen. Change position to '
-                      'open a toast from that edge.',
-                      textAlign: TextAlign.center,
+    // A Stack whose children are all `Positioned` has no child to size itself
+    // from, so it needs bounded constraints. The gallery lays demos out inside
+    // a SingleChildScrollView (unbounded height), where that asserts and the
+    // preview renders nothing — hence the definite height here.
+    return SizedBox(
+      width: double.infinity,
+      height: 380,
+      child: Stack(
+        children: [
+          // `flex min-h-72 w-full flex-col items-center justify-center gap-6`
+          Positioned.fill(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 288),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Copy block: `flex flex-col items-center gap-2 text-center`.
+                    Text(
+                      'Open a real toast',
                       style: TextStyle(
-                        fontSize: 12,
-                        height: 20 / 12, // leading-5
-                        color: colors.mutedForeground,
+                        fontSize: 14,
+                        height: 20 / 14,
+                        fontWeight: FontWeight.w500,
+                        color: colors.foreground,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 24), // gap-6
-                  // Action buttons: `flex flex-wrap justify-center gap-2`.
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    alignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      _PillButton(
-                        icon: LucideIcons.loader_circle,
-                        label: 'Promise',
-                        onPressed: _promise,
-                      ),
-                      _PillButton(
-                        icon: LucideIcons.check,
-                        label: 'Success',
-                        onPressed: _success,
-                      ),
-                      _PillButton(
-                        icon: LucideIcons.x,
-                        label: 'Error',
-                        onPressed: _error,
-                      ),
-                      _PillButton(label: 'Clear', onPressed: _toasts.clear),
-                    ],
-                  ),
-                  const SizedBox(height: 24), // gap-6
-                  // Position pills: `flex flex-wrap justify-center gap-1.5`.
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      for (final (value, label) in _positions)
-                        _PositionPill(
-                          label: label,
-                          selected: _position == value,
-                          onPressed: () => _move(value, label),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: 384, // max-w-sm
+                      child: Text(
+                        'Toasts render fixed on the screen. Change position to '
+                        'open a toast from that edge.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          height: 20 / 12, // leading-5
+                          color: colors.mutedForeground,
                         ),
-                    ],
-                  ),
-                ],
+                      ),
+                    ),
+                    const SizedBox(height: 24), // gap-6
+                    // Action buttons: `flex flex-wrap justify-center gap-2`.
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        _PillButton(
+                          icon: LucideIcons.loader_circle,
+                          label: 'Promise',
+                          onPressed: _promise,
+                        ),
+                        _PillButton(
+                          icon: LucideIcons.check,
+                          label: 'Success',
+                          onPressed: _success,
+                        ),
+                        _PillButton(
+                          icon: LucideIcons.x,
+                          label: 'Error',
+                          onPressed: _error,
+                        ),
+                        _PillButton(label: 'Clear', onPressed: _toasts.clear),
+                      ],
+                    ),
+                    const SizedBox(height: 24), // gap-6
+                    // Position pills: `flex flex-wrap justify-center gap-1.5`.
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        for (final (value, label) in _positions)
+                          _PositionPill(
+                            label: label,
+                            selected: _position == value,
+                            onPressed: () => _move(value, label),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        // The "fixed" stack — POSITION_CLASS insets: top-4 / bottom-6 / x-4.
-        Positioned(
-          top: _position.isBottom ? null : 16,
-          bottom: _position.isBottom ? 24 : null,
-          left: 16,
-          right: 16,
-          child: Align(
-            alignment: switch (_position) {
-              BeuiToastPosition.topLeft ||
-              BeuiToastPosition.bottomLeft => Alignment.centerLeft,
-              BeuiToastPosition.topCenter ||
-              BeuiToastPosition.bottomCenter => Alignment.center,
-              BeuiToastPosition.topRight ||
-              BeuiToastPosition.bottomRight => Alignment.centerRight,
-            },
-            child: ListenableBuilder(
-              listenable: _toasts,
-              builder: (context, _) => BeuiAnimatedToastStack(
-                toasts: _toasts.toasts,
-                onDismiss: _toasts.dismiss,
-                position: _position,
-                maxVisible: 4,
-                icons: const {
-                  BeuiToastStatus.neutral: Icon(LucideIcons.sparkles, size: 14),
-                },
+          // The "fixed" stack — POSITION_CLASS insets: top-4 / bottom-6 / x-4.
+          Positioned(
+            top: _position.isBottom ? null : 16,
+            bottom: _position.isBottom ? 24 : null,
+            left: 16,
+            right: 16,
+            child: Align(
+              alignment: switch (_position) {
+                BeuiToastPosition.topLeft ||
+                BeuiToastPosition.bottomLeft => Alignment.centerLeft,
+                BeuiToastPosition.topCenter ||
+                BeuiToastPosition.bottomCenter => Alignment.center,
+                BeuiToastPosition.topRight ||
+                BeuiToastPosition.bottomRight => Alignment.centerRight,
+              },
+              child: ListenableBuilder(
+                listenable: _toasts,
+                builder: (context, _) => BeuiAnimatedToastStack(
+                  toasts: _toasts.toasts,
+                  onDismiss: _toasts.dismiss,
+                  position: _position,
+                  maxVisible: 4,
+                  icons: const {
+                    BeuiToastStatus.neutral: Icon(
+                      LucideIcons.sparkles,
+                      size: 14,
+                    ),
+                  },
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

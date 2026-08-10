@@ -25,7 +25,12 @@ class _ThemeToggleDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ambient = Theme.of(context).extension<BeuiColors>()!;
-    return SizedBox.expand(
+    // A definite height, not `SizedBox.expand`: the gallery lays demos out
+    // inside a SingleChildScrollView, so an infinite height asserts in
+    // performLayout and the preview renders nothing at all.
+    return SizedBox(
+      width: double.infinity,
+      height: 420,
       child: BeuiThemeSwitcher(
         initialBrightness: ambient.brightness,
         builder: (context, brightness) {

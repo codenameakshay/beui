@@ -49,7 +49,13 @@ class _ApprovalCardDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
+    // Sizes to its content instead of demanding a bounded height: the gallery
+    // lays demos out inside a SingleChildScrollView, where an ordinary
+    // ListView asserts and the preview renders nothing. Scrolling is left to
+    // that outer view rather than nesting a second scrollable.
     return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       children: [
         Text(
