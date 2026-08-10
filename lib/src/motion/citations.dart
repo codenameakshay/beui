@@ -547,7 +547,7 @@ class _BeuiCitationListState extends State<BeuiCitationList> {
 /// responses — the Flutter port of beUI's `citations`.
 ///
 /// Header shows a book glyph, title, count badge, and spring-rotated chevron.
-/// Body is an [AgentDisclosure]-style clip/fade reveal containing a
+/// Body is an `AgentDisclosure`-style clip/fade reveal containing a
 /// [BeuiCitationList]. Controlled when [open] is non-null; otherwise internal
 /// state seeded by [defaultOpen].
 ///

@@ -18,7 +18,7 @@ export 'types.dart'
 /// Seven [DayRow]s (Monday → Sunday) separated by hairline dividers: each has a
 /// [BeuiSwitch] enable toggle, editable `start – end` time ranges with
 /// spring-animated add/remove ([beuiSpringLayout]), a per-day add button, and a
-/// [CopyMenu] that copies a day's hours to any other days. The row and range
+/// `CopyMenu` that copies a day's hours to any other days. The row and range
 /// reflow, the time-select dropdown, the copy popover, and the icon-button press
 /// feedback all match the source's springs and timings; the overlay surfaces
 /// (time-select, copy-menu) render through the shared [BeuiOverlay] foundation.

@@ -227,7 +227,7 @@ class BeuiPreviewRail extends StatefulWidget {
   /// selected item.
   final ValueChanged<BeuiPreviewRailItem>? onItemSelect;
 
-  /// Builds the preview card body for [item]. When null a default card (label +
+  /// Builds the preview card body for `item`. When null a default card (label +
   /// description) is used.
   final Widget Function(BeuiPreviewRailItem item)? renderPreview;
 

@@ -30,7 +30,8 @@ enum BeuiStreamingResponseStatus {
 /// Thumb-vote state for a completed response
 /// (source `StreamingResponseFeedback`: `"up" | "down" | null`).
 ///
-/// [none] maps to the source's `null` (no selection). When the [feedback]
+/// [none] maps to the source's `null` (no selection). When the
+/// [BeuiStreamingResponse.feedback]
 /// prop on [BeuiStreamingResponse] is itself null the widget is *uncontrolled*;
 /// pass [none] explicitly for a controlled cleared vote.
 enum BeuiStreamingResponseFeedback {

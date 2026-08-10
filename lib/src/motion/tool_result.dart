@@ -509,7 +509,7 @@ int _scanStr(String s, int start, {String? quote}) {
 /// `tool-result`.
 ///
 /// **Layout.** A header row (kind icon · title · meta · tool · status · chevron)
-/// toggles an [AgentDisclosure]-style panel. The body is a capped, scrollable
+/// toggles an `AgentDisclosure`-style panel. The body is a capped, scrollable
 /// viewport (follows the live edge while [status] is
 /// [BeuiToolResultStatus.running]) with optional copy / retry chrome.
 ///
