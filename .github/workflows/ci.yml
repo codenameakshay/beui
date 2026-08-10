@@ -44,6 +44,14 @@ jobs:
       - name: Test
         # The shader tests compile real fragment shaders and are the slow part
         # of this suite (~40s idle, minutes under load).
+        #
+        # Goldens are skipped here, not because they fail legitimately but
+        # because they cannot pass: they were authored on macOS, and text
+        # rasterisation and shader compilation differ on Linux runners (19 of
+        # the 21 fail for that reason alone). They stay a macOS-local gate —
+        # see test/flutter_test_config.dart. Every other assertion runs.
+        env:
+          BEUI_SKIP_GOLDENS: "1"
         run: flutter test
 
   example:
