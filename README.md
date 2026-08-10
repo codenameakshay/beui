@@ -64,7 +64,7 @@ Once published, it will be a normal hosted dependency:
 
 ```yaml
 dependencies:
-  beui: ^0.0.1
+  beui: ^1.0.0
 ```
 
 Then import the single public entrypoint:
