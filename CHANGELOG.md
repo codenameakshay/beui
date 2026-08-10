@@ -1,4 +1,4 @@
-## 0.0.1
+## 1.0.0
 
 Initial release — a one-to-one Flutter port of beUI v2, built on the
 [`motor`](https://pub.dev/packages/motor) motion engine so the source's exact

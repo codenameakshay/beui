@@ -146,7 +146,7 @@ class BeuiInfiniteMasonry<T> extends StatefulWidget {
   /// `estimateSize = () => 240`).
   final BeuiMasonrySizeEstimator<T>? estimateSize;
 
-  /// Builds a loading skeleton for the tail at [index] (0-based within the tail).
+  /// Builds a loading skeleton for the tail at `index` (0-based within the tail).
   /// Defaults to a pulsing placeholder card (source `renderLoadingItem`).
   final Widget Function(int index)? renderLoadingItem;
 

@@ -93,7 +93,7 @@ abstract interface class BeuiSmoothScrollApi {
 /// reduced-motion branch renders a plain `<div>` with no Lenis at all. State
 /// tracking and an instant [BeuiSmoothScrollApi.scrollTo] remain.
 ///
-/// Scroll-group widgets ([progress bars/rings, scroll-to buttons]) find this
+/// Scroll-group widgets (progress bars/rings, scroll-to buttons) find this
 /// via [BeuiSmoothScroll.of].
 class BeuiSmoothScroll extends StatefulWidget {
   /// Creates a smooth-scroll provider around a subtree containing the

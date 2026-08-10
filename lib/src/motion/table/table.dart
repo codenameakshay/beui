@@ -151,7 +151,8 @@ class BeuiTableColumn<T> {
 /// Feature-complete against the source's three registry examples:
 ///
 /// * **data** — [selectable] checkbox column with an indeterminate select-all,
-///   [sortable] headers (arrow rotates on the 180ms `EASE_OUT` curve, source
+///   [BeuiTableColumn.sortable] headers (arrow rotates on the 180ms `EASE_OUT`
+///   curve, source
 ///   `table-header.tsx`), [resizable] columns (drag the right edge; widths are
 ///   **measured** from the live header cells at drag start so only the dragged
 ///   column moves), and [reorderable] columns (drag the grip; the header cell
@@ -161,7 +162,7 @@ class BeuiTableColumn<T> {
 ///   renameable headers ([onColumnRename]), and row / column insert-delete
 ///   menus ([onInsertRow]/[onDeleteRow]/[onInsertColumn]/[onDeleteColumn]) whose
 ///   popup springs open on `SPRING_PANEL`.
-/// * **async** — [loading] shows pulsing [_SkeletonRows]; [onEndReached] fires
+/// * **async** — [loading] shows pulsing skeleton rows; [onEndReached] fires
 ///   once per near-bottom dwell (paused while [loading]) for infinite scroll.
 ///
 /// **Motion engine.** Springs run through `motor` (via `_engine.dart` +

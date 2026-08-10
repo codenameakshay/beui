@@ -51,7 +51,8 @@ class BeuiSidebarResource {
   /// Visual / structural kind.
   final BeuiSidebarResourceKind kind;
 
-  /// Nested resources. Only [folder] / [project] kinds accept children on
+  /// Nested resources. Only [BeuiSidebarResourceKind.folder] /
+  /// [BeuiSidebarResourceKind.project] kinds accept children on
   /// "inside" moves; empty containers still expand/collapse.
   final List<BeuiSidebarResource>? children;
 

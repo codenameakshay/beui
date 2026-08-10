@@ -162,7 +162,7 @@ bool _isInWindow(int r, int page, int visibleCols) =>
 /// A tournament knockout bracket that pages between rounds — the Flutter port of
 /// beUI's `knockout-bracket`.
 ///
-/// The layout is **computed, not scrolled**: the leftmost visible round ([page])
+/// The layout is **computed, not scrolled**: the leftmost visible round (`page`)
 /// is the base and stacks at a fixed rhythm; every later match centers on its
 /// two feeders, and behind rounds keep their natural (halving) spread so paging
 /// back slides a formed column in from the left just as paging forward does.

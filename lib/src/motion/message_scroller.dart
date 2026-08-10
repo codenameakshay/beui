@@ -27,7 +27,8 @@ enum BeuiMessageScrollerNavigation {
 /// (source rail items derived from `[data-slot="message"]` rows).
 ///
 /// Prefer wrapping each message with [BeuiMessageScrollerAnchor] so the
-/// scroller can measure and scroll-to targets. Explicit [railItems] override
+/// scroller can measure and scroll-to targets. Explicit
+/// [BeuiMessageScroller.railItems] override
 /// auto-collected anchors when provided.
 @immutable
 class BeuiMessageScrollerRailItem {
@@ -118,7 +119,7 @@ class BeuiMessageScrollerAnchor extends StatefulWidget {
     super.key,
   });
 
-  /// Stable identity used by the rail and [BeuiMessageScroller.scrollToId].
+  /// Stable identity used by the rail and [BeuiMessageScrollerState.scrollToId].
   final String id;
 
   /// Message content — usually a [BeuiMessage].

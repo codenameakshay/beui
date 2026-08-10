@@ -19,7 +19,7 @@ export '_types.dart' show BeuiWalletAccount;
 ///
 /// Combines four motion pieces on one surface:
 /// * an **account switcher** whose trigger morphs open into a full-width panel
-///   ([WalletAccountSwitcher], on the shared [kWalletMorph] spring),
+///   ([WalletAccountSwitcher], on the shared `kWalletMorph` spring),
 /// * a **search icon** that morphs into a search bar ([WalletSearchBar]),
 /// * a **rolling balance** ([BeuiActionSwapText] `cascade`) with an eye toggle
 ///   that masks it, and a transient [WalletBalanceDelta] change pill, and
