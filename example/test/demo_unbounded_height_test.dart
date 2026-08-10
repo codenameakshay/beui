@@ -8,9 +8,8 @@
 //   * assertion-class errors ("requires bounded constraints", "forces an
 //     infinite", "hasSize") abort layout, so the preview is blank. These FAIL.
 //   * a RenderFlex overflow still paints (with the stripe overlay), so it is a
-//     cosmetic defect at this width, not a blank route. Those are reported
-//     below but do not fail, and are listed in `_knownOverflow` so a NEW one
-//     stands out.
+//     cosmetic defect rather than a blank route — but it is still a defect, so
+//     it fails too. There are currently none.
 //
 // visual_harness.dart hands demos a bounded height, which is why these routes
 // looked fine there and only broke in the gallery.
@@ -18,10 +17,6 @@ import 'package:beui/beui.dart';
 import 'package:beui_example/explorer/catalog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-/// Demos that overflow horizontally at the stage width used here. They render;
-/// they are not blank. Tracked so a new entry is visible rather than silent.
-const _knownOverflow = {'text-animation', 'image-generation', 'loading-states'};
 
 /// Errors raised while the previous demo is torn down, not by the demo under
 /// test. Attributing these to the next slug produces false positives.
@@ -42,7 +37,10 @@ bool _isBlankMaking(Object e) {
 
 void main() {
   testWidgets('no demo goes blank under an unbounded height', (tester) async {
-    tester.view.physicalSize = const Size(1200, 2000);
+    // 760 stage - 2x32 PreviewSurface padding = 696, the width a demo
+    // actually gets in the explorer on a wide screen (1120 content column,
+    // minus 40px page padding each side, minus the 240px rail and its 40 gap).
+    tester.view.physicalSize = const Size(760, 2000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
@@ -54,7 +52,14 @@ void main() {
       if (builder == null) continue;
 
       final colors = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.dark);
-      final base = ThemeData(brightness: Brightness.dark, useMaterial3: true);
+      // `fontFamily: 'Geist'` mirrors explorer_app.dart. Without it the tree
+      // renders in the fallback test face, whose wider metrics manufacture
+      // overflow that does not exist in the gallery.
+      final base = ThemeData(
+        brightness: Brightness.dark,
+        useMaterial3: true,
+        fontFamily: 'Geist',
+      );
       await tester.pumpWidget(
         MaterialApp(
           theme: base.copyWith(extensions: [colors]),
@@ -100,12 +105,6 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
     while (tester.takeException() != null) {}
 
-    final unexpectedOverflow = overflow
-        .where((s) => !_knownOverflow.contains(s))
-        .toList();
-    // ignore: avoid_print
-    print('demos that overflow (render, not blank): $overflow');
-
     expect(
       blank,
       isEmpty,
@@ -115,11 +114,12 @@ void main() {
           'shrinkWrap a root ListView).\n$blank',
     );
     expect(
-      unexpectedOverflow,
+      overflow,
       isEmpty,
       reason:
-          'New horizontal overflow in these demos; add to _knownOverflow only '
-          'after confirming it is cosmetic.\n$unexpectedOverflow',
+          'These demos overflow horizontally at the width the gallery gives '
+          'them. They still paint, so the route is not blank, but the content '
+          'is clipped.\n$overflow',
     );
   });
 }

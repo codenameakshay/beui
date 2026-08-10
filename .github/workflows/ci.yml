@@ -1,0 +1,77 @@
+name: CI
+
+# Static analysis, formatting and tests for both the published package and the
+# `example/` gallery. Until this existed the only gate was a maintainer running
+# the suites locally, which meant the catalog-wide guard tests
+# (demo_width_cap_test, demo_unbounded_height_test) could not actually block a
+# regression.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A new push to a PR supersedes the previous run.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: Package (analyze + test)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # Pinned to match deploy-example.yml so both workflows agree.
+          flutter-version: 3.44.4
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        # The shader tests compile real fragment shaders and are the slow part
+        # of this suite (~40s idle, minutes under load).
+        run: flutter test
+
+  example:
+    name: Example (analyze + test)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.44.4
+          cache: true
+
+      - name: Install dependencies
+        working-directory: example
+        run: flutter pub get
+
+      - name: Verify formatting
+        working-directory: example
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        working-directory: example
+        run: flutter analyze
+
+      - name: Test
+        working-directory: example
+        run: flutter test
