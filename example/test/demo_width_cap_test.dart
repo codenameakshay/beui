@@ -44,7 +44,15 @@ List<({double cap, double actual})> _caps(RenderObject root) {
 
 Widget _wrap(Widget child) {
   final colors = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.dark);
-  final base = ThemeData(brightness: Brightness.dark, useMaterial3: true);
+  // `fontFamily: 'Geist'` mirrors explorer_app.dart and visual_harness.dart.
+  // flutter_test_config.dart registers the real face; without asking for it
+  // here the tree renders in the much wider fallback test font, which
+  // manufactures RenderFlex overflow that does not exist in the gallery.
+  final base = ThemeData(
+    brightness: Brightness.dark,
+    useMaterial3: true,
+    fontFamily: 'Geist',
+  );
   return MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: base.copyWith(
@@ -108,6 +116,13 @@ void main() {
         }
       }
     }
+
+    // With real Geist metrics the masonry demo fits fewer items per column, so
+    // its fill check schedules a load timer. Tear the last tree down and let it
+    // fire, or the binding's end-of-test invariant trips on a pending timer.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(seconds: 2));
+    while (tester.takeException() != null) {}
 
     expect(
       defeated,
