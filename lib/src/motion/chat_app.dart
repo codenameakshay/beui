@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 
 // ---------------------------------------------------------------------------
@@ -38,7 +39,7 @@ class BeuiChatApp extends StatelessWidget {
     this.header,
     this.prompt,
     this.sidebarWidth = kBeuiChatAppSidebarWidth,
-    this.borderRadius = 16,
+    this.borderRadius,
     this.showBorder = true,
     this.backgroundColor,
     this.semanticLabel = 'Agent workspace',
@@ -70,8 +71,9 @@ class BeuiChatApp extends StatelessWidget {
   /// [kBeuiChatAppSidebarWidth]).
   final double sidebarWidth;
 
-  /// Corner radius of the outer shell (source `rounded-2xl` = 16).
-  final double borderRadius;
+  /// Corner radius of the outer shell. Null uses [BeuiAgentShapes.cardRadius]
+  /// (source `rounded-2xl` = 16).
+  final double? borderRadius;
 
   /// Whether to paint the hairline outer border (source `border border-border`).
   final bool showBorder;
@@ -85,18 +87,32 @@ class BeuiChatApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
+    final agent = BeuiAgentTheme.of(context);
     final bg = backgroundColor ?? colors.background;
+    final radius = borderRadius ?? agent.shapes.cardRadius;
+    final borderSide = BorderSide(
+      color: colors.border,
+      width: agent.structure.borderWidth,
+    );
 
     final mainColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (header != null) ...[
           header!,
-          Divider(height: 1, thickness: 1, color: colors.border),
+          Divider(
+            height: 1,
+            thickness: agent.structure.borderWidth,
+            color: colors.border,
+          ),
         ],
         Expanded(child: body),
         if (prompt != null) ...[
-          Divider(height: 1, thickness: 1, color: colors.border),
+          Divider(
+            height: 1,
+            thickness: agent.structure.borderWidth,
+            color: colors.border,
+          ),
           prompt!,
         ],
       ],
@@ -110,9 +126,7 @@ class BeuiChatApp extends StatelessWidget {
               SizedBox(
                 width: sidebarWidth,
                 child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border(right: BorderSide(color: colors.border)),
-                  ),
+                  decoration: BoxDecoration(border: Border(right: borderSide)),
                   child: sidebar,
                 ),
               ),
@@ -127,11 +141,16 @@ class BeuiChatApp extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: BorderRadius.circular(borderRadius),
-          border: showBorder ? Border.all(color: colors.border) : null,
+          borderRadius: BorderRadius.circular(radius),
+          border: showBorder
+              ? Border.all(
+                  color: colors.border,
+                  width: agent.structure.borderWidth,
+                )
+              : null,
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(radius),
           child: content,
         ),
       ),

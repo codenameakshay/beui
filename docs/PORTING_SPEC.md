@@ -187,6 +187,12 @@ Brightness (light/dark) and `colorTheme` are **independent, runtime-combinable**
 
 The published package ships **no bundled fonts**; only the `example/` gallery may bundle Inter/JetBrains Mono for visual parity.
 
+### Agent semantics (`BeuiAgentTheme`)
+
+The AI-agent family previously inlined source Tailwind metrics (`text-sm`, `rounded-2xl`, `p-4`, Lucide defaults). Those are now a `ThemeExtension<BeuiAgentTheme>` with semantic roles (body/title/metadata type, bubble vs card radii, turn vs grouped spacing, density, borders, optional glass, icon slots). **Defaults are the current source-fidelity values** — omitting the extension is identical to 1.0.0. `BeuiColors` still owns the palette; `ThemeData.fontFamily` still owns the sans face. Do not fold this into a library-wide style object that would force migrating all 72 catalog entries.
+
+`BeuiApprovalCard` also gained an additive compact-to-expanded composition (`expanded` / `expandedChild` / `headerAction`) for proposals that start as a summary and reveal an editor. Motion stays on `beuiSpringLayout`.
+
 ---
 
 ## 3. Iconography
@@ -281,7 +287,7 @@ The source registry now has **three categories** — `motion` (37 primitives, sh
 | `prompt-input` | Auto-growing agent composer with prompt actions, model selection, keyboard submission, animated send/stop states |
 | `todo-list` | Collapsible agent task plan with morphing status marks, completion count, compact metadata, smooth list updates |
 | `code-block` | Syntax-highlighted code surface with stable streaming updates, line numbers, focused lines, smooth following, copy feedback |
-| `approval-card` | Human-in-the-loop decision surface: approvals, single/multiple-choice questions, custom responses, multi-step review |
+| `approval-card` | Human-in-the-loop decision surface: approvals, single/multiple-choice questions, custom responses, multi-step review. Flutter also adds a generic compact-to-expanded body (`expanded` / `expandedChild`) that the source card does not have — additive, opt-in, no domain knowledge. |
 | `file-diff` | Syntax-highlighted file change disclosure with progressive rows, line numbers, live change counts, completion collapse |
 | `tool-result` | Lightweight execution disclosure for terminal output / request responses, collapsing to a compact completed state |
 | `streaming-response` | Stable response surface with completion actions, rendered content, expandable source summary |

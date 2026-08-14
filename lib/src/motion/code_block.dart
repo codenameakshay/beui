@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -588,6 +589,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
     final colors =
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final palette = _CodePalette.of(colors, theme.brightness);
     final highlight = widget.highlightLines.toSet();
@@ -613,7 +615,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.muted.withValues(alpha: 0.8),
-          borderRadius: BorderRadius.circular(16), // rounded-2xl
+          borderRadius: agent.shapes.card, // rounded-2xl
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -627,7 +629,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                 child: Row(
                   children: [
                     Icon(
-                      LucideIcons.file_code,
+                      agent.icons.file,
                       size: 14,
                       color: colors.mutedForeground.withValues(alpha: 0.7),
                     ),
@@ -725,8 +727,8 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                                 ),
                                 child: Icon(
                                   _copied
-                                      ? LucideIcons.check
-                                      : LucideIcons.copy,
+                                      ? agent.icons.copied
+                                      : agent.icons.copy,
                                   size: 14,
                                   color: _copyHovered
                                       ? colors.foreground

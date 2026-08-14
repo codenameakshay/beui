@@ -1,6 +1,7 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const _questions = <BeuiApprovalCardQuestion>[
@@ -53,6 +54,12 @@ Widget _host({
   String submitLabel = 'Submit response',
   Widget? result,
   bool reduce = false,
+  bool? expanded,
+  bool defaultExpanded = false,
+  ValueChanged<bool>? onExpandedChanged,
+  Widget? headerAction,
+  Widget? compactChild,
+  Widget? expandedChild,
 }) {
   Widget body = Center(
     child: SizedBox(
@@ -76,6 +83,12 @@ Widget _host({
         approveLabel: approveLabel,
         submitLabel: submitLabel,
         result: result,
+        expanded: expanded,
+        defaultExpanded: defaultExpanded,
+        onExpandedChanged: onExpandedChanged,
+        headerAction: headerAction,
+        compactChild: compactChild,
+        expandedChild: expandedChild,
         child: child,
       ),
     ),
@@ -463,6 +476,179 @@ void main() {
         isTrue,
         reason: 'expected the mt-1.5 + p-0.5 slot around the input',
       );
+    });
+  });
+
+  group('BeuiApprovalCard — compact-to-expanded', () {
+    testWidgets('shows compact content until expanded', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Review proposal',
+          onApprove: () {},
+          compactChild: const Text('Summary only'),
+          expandedChild: const Text('Full editor body'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Summary only'), findsOneWidget);
+      expect(find.text('Full editor body'), findsNothing);
+      expect(find.text('Approve'), findsOneWidget);
+    });
+
+    testWidgets('header action renders without toggling expansion', (
+      tester,
+    ) async {
+      var headerTaps = 0;
+      await tester.pumpWidget(
+        _host(
+          onApprove: () {},
+          headerAction: IconButton(
+            key: const ValueKey('edit-action'),
+            onPressed: () => headerTaps++,
+            icon: const Icon(Icons.edit),
+          ),
+          compactChild: const Text('Summary only'),
+          expandedChild: const SizedBox(
+            height: 120,
+            child: Text('Full editor body'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('edit-action')));
+      await tester.pump();
+      expect(headerTaps, 1);
+      expect(find.text('Full editor body'), findsNothing);
+    });
+
+    testWidgets('controlled expansion updates', (tester) async {
+      var expanded = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 400,
+                child: StatefulBuilder(
+                  builder: (context, setState) {
+                    return BeuiApprovalCard(
+                      title: 'Approval required',
+                      onApprove: () {},
+                      expanded: expanded,
+                      onExpandedChanged: (v) => setState(() => expanded = v),
+                      compactChild: const Text('Summary only'),
+                      expandedChild: const SizedBox(
+                        height: 80,
+                        child: Text('Full editor body'),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Full editor body'), findsNothing);
+
+      await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
+      await tester.pumpAndSettle();
+      expect(expanded, isTrue);
+      expect(find.text('Full editor body'), findsWidgets);
+    });
+
+    testWidgets('uncontrolled toggle reveals expanded content', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          onApprove: () {},
+          compactChild: const Text('Summary only'),
+          expandedChild: const SizedBox(
+            height: 80,
+            child: Text('Full editor body'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
+      await tester.pumpAndSettle();
+      expect(find.text('Full editor body'), findsWidgets);
+    });
+
+    testWidgets('reversing expansion mid-motion does not throw', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          onApprove: () {},
+          compactChild: const Text('Summary only'),
+          expandedChild: const SizedBox(
+            height: 160,
+            child: Text('Full editor body'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
+      await tester.pump(const Duration(milliseconds: 40));
+      await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
+      await tester.pump(const Duration(milliseconds: 40));
+      await tester.pumpAndSettle();
+      expect(find.text('Summary only'), findsOneWidget);
+    });
+
+    testWidgets('reduced motion snaps expanded content', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          reduce: true,
+          onApprove: () {},
+          compactChild: const Text('Summary only'),
+          expandedChild: const SizedBox(
+            height: 80,
+            child: Text('Full editor body'),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
+      await tester.pump();
+      expect(find.text('Full editor body'), findsOneWidget);
+    });
+
+    testWidgets('expand control exposes semantics and keyboard activation', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          onApprove: () {},
+          compactChild: const Text('Summary only'),
+          expandedChild: const SizedBox(
+            height: 80,
+            child: Text('Full editor body'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.bySemanticsLabel('Show details'), findsOneWidget);
+
+      final expander = find.byKey(const ValueKey('beui-approval-expand'));
+      final focus = Focus.maybeOf(tester.element(expander));
+      expect(focus, isNotNull);
+      focus!.requestFocus();
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel('Hide details'), findsOneWidget);
+      expect(find.text('Full editor body'), findsWidgets);
     });
   });
 }

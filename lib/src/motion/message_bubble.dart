@@ -3,8 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
-import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 import 'message.dart';
@@ -64,9 +64,6 @@ const _bubblePop = SpringMotion(
 /// (source `BUBBLE_CONTENT_REVEAL`: 0.12s EASE_OUT, delay 0.04s).
 const _contentReveal = CurvedMotion(Duration(milliseconds: 120), beuiEaseOut);
 const Duration _contentRevealDelay = Duration(milliseconds: 40);
-
-/// Line height used for collapsed-line clamping (source `leading-6` = 24px).
-const double _lineHeight = 24;
 
 // ---------------------------------------------------------------------------
 // Inherited bubble context
@@ -197,7 +194,7 @@ class BeuiMessageBubbleContent extends StatefulWidget {
   const BeuiMessageBubbleContent({
     required this.child,
     this.onTap,
-    this.maxWidthFactor = 0.82,
+    this.maxWidthFactor,
     super.key,
   });
 
@@ -210,7 +207,8 @@ class BeuiMessageBubbleContent extends StatefulWidget {
 
   /// Max width as a fraction of the parent (source `max-w-[82%]`).
   /// Ignored for [BeuiMessageBubbleVariant.ghost] (full width).
-  final double maxWidthFactor;
+  /// Null uses [BeuiAgentLayout.maxBubbleWidthFactor].
+  final double? maxWidthFactor;
 
   @override
   State<BeuiMessageBubbleContent> createState() =>
@@ -246,12 +244,17 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
+    final agent = BeuiAgentTheme.of(context);
     final scope = _BubbleScope.maybeOf(context);
     final variant = scope?.variant ?? BeuiMessageBubbleVariant.soft;
     final align = scope?.align ?? BeuiMessageBubbleSide.start;
     final reduce = MediaQuery.disableAnimationsOf(context);
     final interactive = widget.onTap != null;
     final ghost = variant == BeuiMessageBubbleVariant.ghost;
+    final user = align == BeuiMessageBubbleSide.end;
+    final radius = agent.bubbleRadius(user: user);
+    final widthFactor =
+        widget.maxWidthFactor ?? agent.layout.maxBubbleWidthFactor;
 
     final textColor = switch (variant) {
       BeuiMessageBubbleVariant.solid => colors.background,
@@ -273,17 +276,14 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
     final border = variant == BeuiMessageBubbleVariant.outline
         ? Border.all(
             color: colors.border.withValues(alpha: colors.border.a * 0.7),
+            width: agent.structure.borderWidth,
           )
         : null;
 
     final content = DefaultTextStyle.merge(
-      style: TextStyle(
-        fontSize: 14, // text-sm
-        height: _lineHeight / 14, // leading-6
-        color: textColor,
-      ),
+      style: agent.bodyStyle(user: user).copyWith(color: textColor),
       child: IconTheme.merge(
-        data: IconThemeData(size: 16, color: textColor),
+        data: IconThemeData(size: agent.layout.iconSize, color: textColor),
         child: widget.child,
       ),
     );
@@ -305,7 +305,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
         final maxW = ghost
             ? constraints.maxWidth
             : (constraints.maxWidth.isFinite
-                  ? constraints.maxWidth * widget.maxWidthFactor
+                  ? constraints.maxWidth * widthFactor
                   : double.infinity);
 
         Widget shell = Stack(
@@ -332,9 +332,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
                           decoration: BoxDecoration(
                             color: surfaceColor,
                             border: border,
-                            borderRadius: BorderRadius.circular(
-                              16,
-                            ), // rounded-2xl
+                            borderRadius: radius, // rounded-2xl
                           ),
                         ),
                       ),
@@ -347,12 +345,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
               animateIn: _animateIn,
               reduce: reduce,
               child: Padding(
-                padding: ghost
-                    ? EdgeInsets.zero
-                    : const EdgeInsets.symmetric(
-                        horizontal: 14, // px-3.5
-                        vertical: 10, // py-2.5
-                      ),
+                padding: ghost ? EdgeInsets.zero : agent.layout.bubblePadding,
                 child: content,
               ),
             ),
@@ -394,9 +387,12 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 150),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: radius,
                   border: _focused
-                      ? Border.all(color: colors.ring, width: 2)
+                      ? Border.all(
+                          color: colors.ring,
+                          width: agent.structure.emphasisBorderWidth,
+                        )
                       : null,
                 ),
                 child: shell,
@@ -490,19 +486,19 @@ class BeuiMessageBubbleGroup extends StatelessWidget {
   /// Vertical gap between bubbles.
   final BeuiMessageBubbleSpacing spacing;
 
-  double get _gap => switch (spacing) {
-    BeuiMessageBubbleSpacing.compact => 6, // gap-1.5
-    BeuiMessageBubbleSpacing.standard => 12, // gap-3
-  };
-
   @override
   Widget build(BuildContext context) {
+    final layout = BeuiAgentTheme.of(context).layout;
+    final gap = switch (spacing) {
+      BeuiMessageBubbleSpacing.compact => layout.groupedMessageSpacing,
+      BeuiMessageBubbleSpacing.standard => layout.groupedMessageSpacingRelaxed,
+    };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
         for (var i = 0; i < children.length; i++) ...[
-          if (i > 0) SizedBox(height: _gap),
+          if (i > 0) SizedBox(height: gap),
           children[i],
         ],
       ],
@@ -577,12 +573,15 @@ class _BeuiMessageBubbleCollapsibleState
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
+    final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final chevronMotion = motionFor(context, beuiSpringSwap, isMovement: true);
 
     final more = widget.moreLabel ?? const Text('Show more');
     final less = widget.lessLabel ?? const Text('Show less');
-    final collapsedH = widget.collapsedLines * _lineHeight;
+    final body = agent.typography.assistantBody;
+    final lineH = (body.height ?? 24 / 14) * (body.fontSize ?? 14);
+    final collapsedH = widget.collapsedLines * lineH;
 
     Widget content = widget.child;
     if (!_open) {
@@ -652,11 +651,12 @@ class _CollapsibleTrigger extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final agent = BeuiAgentTheme.of(context);
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onPressed,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: agent.shapes.pill,
         hoverColor: colors.muted,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -666,9 +666,7 @@ class _CollapsibleTrigger extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 DefaultTextStyle.merge(
-                  style: TextStyle(
-                    fontSize: 12, // text-xs
-                    fontWeight: FontWeight.w500,
+                  style: agent.typography.action.copyWith(
                     color: colors.mutedForeground,
                   ),
                   child: open ? less : more,
@@ -684,7 +682,7 @@ class _CollapsibleTrigger extends StatelessWidget {
                     );
                   },
                   child: Icon(
-                    LucideIcons.chevron_down,
+                    agent.icons.expand,
                     size: 14, // size-3.5
                     color: colors.mutedForeground,
                   ),

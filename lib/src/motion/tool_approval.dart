@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -373,6 +374,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
     final colors =
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isLight = theme.brightness == Brightness.light;
     final badge = _badgeScheme(widget.status, isLight);
@@ -381,24 +383,25 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
       container: true,
       liveRegion: _busy,
       child: DefaultTextStyle.merge(
-        style: const TextStyle(fontSize: 14),
+        style: agent.typography.assistantBody,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colors.muted.withValues(alpha: 0.20),
-            borderRadius: BorderRadius.circular(16), // rounded-2xl
+            borderRadius: agent.shapes.card, // rounded-2xl
             border: Border.all(
               color: colors.border.withValues(alpha: colors.border.a * 0.60),
+              width: agent.structure.borderWidth,
             ),
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: agent.shapes.card,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
                 // ----- header -----
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: agent.layout.cardPadding,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -694,21 +697,25 @@ class _LeadingGlyph extends StatelessWidget {
   final AnimationController spin;
   final BeuiColors colors;
 
-  IconData get _icon {
-    if (busy) return LucideIcons.loader_circle;
-    if (error) return LucideIcons.circle_alert;
-    if (status == BeuiToolApprovalStatus.denied) return LucideIcons.x;
+  IconData _icon(BeuiAgentIcons icons) {
+    if (busy) return icons.spinner;
+    if (error) return icons.warning;
+    if (status == BeuiToolApprovalStatus.denied) return icons.rejected;
     if (status == BeuiToolApprovalStatus.approved ||
         status == BeuiToolApprovalStatus.complete) {
-      return LucideIcons.check;
+      return icons.approved;
     }
-    return LucideIcons.shield_check;
+    return icons.shield;
   }
 
   @override
   Widget build(BuildContext context) {
     final color = error ? colors.destructive : colors.mutedForeground;
-    final icon = Icon(_icon, size: 16, color: color);
+    final icon = Icon(
+      _icon(BeuiAgentTheme.of(context).icons),
+      size: 16,
+      color: color,
+    );
     final glyph = busy && !reduce
         ? RotationTransition(turns: spin, child: icon)
         : icon;

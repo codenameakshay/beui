@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 
 import '../demos/action_rails_demo.dart';
 import '../demos/agent_activity_demo.dart';
+import '../demos/agent_theme_demo.dart';
 import '../demos/ai_sidebar_demo.dart';
 import '../demos/animated_badge_demo.dart';
 import '../demos/animated_sidebar_demo.dart';
@@ -717,6 +718,14 @@ const List<ExploreEntry> kAgents = [
     isNew: true,
     blurb: 'Complete agent workspace composing all conversation surfaces.',
     builder: chatAppDemo,
+  ),
+  ExploreEntry(
+    title: 'Agent Theme',
+    slug: 'agent-theme',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Install BeuiAgentTheme once and restyle the real agent widgets.',
+    builder: agentThemeDemo,
   ),
 ];
 

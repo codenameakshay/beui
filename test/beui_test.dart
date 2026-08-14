@@ -5,6 +5,6 @@ void main() {
   // Placeholder smoke test — verifies the package and barrel compile.
   // Replaced by per-component widget + golden tests as components are ported.
   test('beui package scaffolds and imports cleanly', () {
-    expect(beuiVersion, '1.0.0');
+    expect(beuiVersion, '1.1.0');
   });
 }

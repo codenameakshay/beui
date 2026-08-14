@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -79,18 +80,20 @@ Color _statusColor(BeuiToolResultStatus status, bool isLight, BeuiColors c) =>
       BeuiToolResultStatus.cancelled => c.mutedForeground,
     };
 
-IconData _kindIcon(BeuiToolResultKind kind) => switch (kind) {
-  BeuiToolResultKind.terminal => LucideIcons.square_terminal,
-  BeuiToolResultKind.request => LucideIcons.braces,
-  BeuiToolResultKind.custom => LucideIcons.wrench,
-};
+IconData _kindIcon(BeuiToolResultKind kind, BeuiAgentIcons icons) =>
+    switch (kind) {
+      BeuiToolResultKind.terminal => icons.terminal,
+      BeuiToolResultKind.request => icons.request,
+      BeuiToolResultKind.custom => icons.tool,
+    };
 
-IconData _statusIcon(BeuiToolResultStatus status) => switch (status) {
-  BeuiToolResultStatus.running => LucideIcons.loader_circle,
-  BeuiToolResultStatus.success => LucideIcons.circle_check,
-  BeuiToolResultStatus.error => LucideIcons.circle_x,
-  BeuiToolResultStatus.cancelled => LucideIcons.ban,
-};
+IconData _statusIcon(BeuiToolResultStatus status, BeuiAgentIcons icons) =>
+    switch (status) {
+      BeuiToolResultStatus.running => icons.spinner,
+      BeuiToolResultStatus.success => LucideIcons.circle_check,
+      BeuiToolResultStatus.error => LucideIcons.circle_x,
+      BeuiToolResultStatus.cancelled => LucideIcons.ban,
+    };
 
 String _swapKey(Object? value, String fallback) {
   if (value is String || value is num) return value.toString();
@@ -727,6 +730,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
     final colors =
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isLight = theme.brightness == Brightness.light;
     final statusColor = _statusColor(widget.status, isLight, colors);
@@ -739,7 +743,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       container: true,
       liveRegion: _running,
       child: DefaultTextStyle.merge(
-        style: const TextStyle(fontSize: 14),
+        style: agent.typography.assistantBody,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
@@ -749,7 +753,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
               type: MaterialType.transparency,
               child: InkWell(
                 onTap: _toggle,
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: agent.shapes.chip,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 36),
                   child: Padding(
@@ -763,8 +767,8 @@ class _BeuiToolResultState extends State<BeuiToolResult>
                             child:
                                 widget.icon ??
                                 Icon(
-                                  _kindIcon(widget.kind),
-                                  size: 16,
+                                  _kindIcon(widget.kind, agent.icons),
+                                  size: agent.layout.iconSize,
                                   color: colors.mutedForeground,
                                 ),
                           ),
@@ -895,7 +899,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: colors.muted.withValues(alpha: 0.8),
-                    borderRadius: BorderRadius.circular(12), // rounded-xl
+                    borderRadius: agent.shapes.nested, // rounded-xl
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -935,8 +939,8 @@ class _BeuiToolResultState extends State<BeuiToolResult>
                                   onTap: _handleCopy,
                                   child: Icon(
                                     _copied
-                                        ? LucideIcons.check
-                                        : LucideIcons.copy,
+                                        ? agent.icons.copied
+                                        : agent.icons.copy,
                                     size: 14,
                                     color: _copyHovered
                                         ? colors.foreground
@@ -956,7 +960,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
                                       setState(() => _retryPressed = p),
                                   onTap: widget.onRetry!,
                                   child: Icon(
-                                    LucideIcons.rotate_ccw,
+                                    agent.icons.retry,
                                     size: 14,
                                     color: _retryHovered
                                         ? colors.foreground
@@ -1009,7 +1013,11 @@ class _StatusGlyph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = Icon(_statusIcon(status), size: 12, color: color);
+    final icon = Icon(
+      _statusIcon(status, BeuiAgentTheme.of(context).icons),
+      size: 12,
+      color: color,
+    );
     if (status == BeuiToolResultStatus.running && !reduce) {
       return RotationTransition(turns: spin, child: icon);
     }
@@ -1030,7 +1038,11 @@ class _Chevron extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = Icon(LucideIcons.chevron_down, size: 14, color: color);
+    final icon = Icon(
+      BeuiAgentTheme.of(context).icons.expand,
+      size: 14,
+      color: color,
+    );
     if (reduce) {
       return Transform.rotate(angle: open ? math.pi : 0, child: icon);
     }

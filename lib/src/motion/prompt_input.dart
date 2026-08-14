@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../overlay/beui_overlay.dart';
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
-import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 import 'button/base.dart';
@@ -80,9 +80,6 @@ const double _lineHeight = 24;
 
 /// Source `text-sm` for the composer.
 const double _fontSize = 14;
-
-/// Source form `rounded-2xl` = 16.
-const double _shellRadius = 16;
 
 /// Source footer `min-h-8` / icon buttons `size-8`.
 const double _footerMinH = 32;
@@ -399,32 +396,58 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
   ///
   /// [TextLeadingDistribution.even] is CSS's line-box model: the extra leading
   /// splits evenly above and below the glyphs.
-  TextStyle _composerStyle(BeuiColors colors) => TextStyle(
-    fontSize: _fontSize,
-    height: _lineHeight / _fontSize,
-    leadingDistribution: TextLeadingDistribution.even,
-    // An unset letterSpacing inherits the host theme's body style (0.25–0.5
-    // under Material) and widens the line by ~0.5px per character.
-    letterSpacing: 0,
-    color: colors.foreground,
-  );
+  TextStyle _composerStyle(BeuiColors colors, BeuiAgentTheme agent) {
+    final body = agent.typography.assistantBody;
+    final fontSize = body.fontSize ?? _fontSize;
+    final height = body.height ?? _lineHeight / _fontSize;
+    return TextStyle(
+      fontSize: fontSize,
+      height: height,
+      leadingDistribution: TextLeadingDistribution.even,
+      // An unset letterSpacing inherits the host theme's body style (0.25–0.5
+      // under Material) and widens the line by ~0.5px per character.
+      letterSpacing: 0,
+      color: colors.foreground,
+    );
+  }
 
-  static const TextStyle _hiddenComposerStyle = TextStyle(
-    fontSize: _fontSize,
-    height: _lineHeight / _fontSize,
-    leadingDistribution: TextLeadingDistribution.even,
-    letterSpacing: 0,
-  );
+  TextStyle _hiddenComposerStyle(BeuiAgentTheme agent) {
+    final body = agent.typography.assistantBody;
+    final fontSize = body.fontSize ?? _fontSize;
+    final height = body.height ?? _lineHeight / _fontSize;
+    return TextStyle(
+      fontSize: fontSize,
+      height: height,
+      leadingDistribution: TextLeadingDistribution.even,
+      letterSpacing: 0,
+    );
+  }
 
-  static const StrutStyle _composerStrut = StrutStyle(
-    fontSize: _fontSize,
-    height: _lineHeight / _fontSize,
-    leadingDistribution: TextLeadingDistribution.even,
-  );
+  StrutStyle _composerStrut(BeuiAgentTheme agent) {
+    final body = agent.typography.assistantBody;
+    final fontSize = body.fontSize ?? _fontSize;
+    final height = body.height ?? _lineHeight / _fontSize;
+    return StrutStyle(
+      fontSize: fontSize,
+      height: height,
+      leadingDistribution: TextLeadingDistribution.even,
+    );
+  }
+
+  double _resolvedLineHeight(BeuiAgentTheme agent) {
+    final body = agent.typography.assistantBody;
+    return (body.height ?? _lineHeight / _fontSize) *
+        (body.fontSize ?? _fontSize);
+  }
+
+  double _resolvedFontSize(BeuiAgentTheme agent) =>
+      agent.typography.assistantBody.fontSize ?? _fontSize;
 
   /// The source's `resizeTextarea`: measure the wrapped text in a mirror of the
   /// field's content box, then clamp the row count to [minRows]…[maxRows].
   double _composerHeight(BuildContext context, double maxWidth) {
+    final agent = BeuiAgentTheme.of(context);
+    final lineHeight = _resolvedLineHeight(agent);
     // The field's content box is inset by the source's `px-2`.
     final textWidth = maxWidth.isFinite ? maxWidth - 16 : double.infinity;
     var rows = widget.minRows;
@@ -433,15 +456,15 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
         // The source appends a zero-width space so a trailing newline counts.
         text: TextSpan(
           text: '${_controller.text}​',
-          style: _hiddenComposerStyle,
+          style: _hiddenComposerStyle(agent),
         ),
-        strutStyle: _composerStrut,
+        strutStyle: _composerStrut(agent),
         textDirection: Directionality.of(context),
       )..layout(maxWidth: textWidth);
       rows = painter.computeLineMetrics().length;
       painter.dispose();
     }
-    return rows.clamp(widget.minRows, widget.maxRows) * _lineHeight;
+    return rows.clamp(widget.minRows, widget.maxRows) * lineHeight;
   }
 
   /// Half of `leading-6`'s extra leading, in logical pixels.
@@ -454,15 +477,18 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
   double _firstLineLeading(BuildContext context) {
     final painter = TextPainter(
       // Height unset → the painter reports the font's natural line height.
-      text: const TextSpan(
+      text: TextSpan(
         text: 'x',
-        style: TextStyle(fontSize: _fontSize),
+        style: TextStyle(
+          fontSize: _resolvedFontSize(BeuiAgentTheme.of(context)),
+        ),
       ),
       textDirection: Directionality.of(context),
     )..layout();
     final natural = painter.preferredLineHeight;
     painter.dispose();
-    final leading = (_lineHeight - natural) / 2;
+    final leading =
+        (_resolvedLineHeight(BeuiAgentTheme.of(context)) - natural) / 2;
     return leading > 0 ? leading : 0;
   }
 
@@ -472,6 +498,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
     final colors =
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final swapMotion = motionFor(context, beuiSpringSwap, isMovement: true);
 
@@ -489,8 +516,13 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
           // `border-0` in the source removes the box entirely — a transparent
           // 1px border would still inset the child and make the shell 2px
           // taller than the site's.
-          border: widget.bordered ? Border.all(color: borderColor) : null,
-          borderRadius: BorderRadius.circular(_shellRadius),
+          border: widget.bordered
+              ? Border.all(
+                  color: borderColor,
+                  width: agent.structure.borderWidth,
+                )
+              : null,
+          borderRadius: agent.shapes.card,
         ),
         padding: const EdgeInsets.all(8),
         child: Column(
@@ -526,8 +558,8 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
                       textAlignVertical: TextAlignVertical.top,
                       keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.newline,
-                      style: _composerStyle(colors),
-                      strutStyle: _composerStrut,
+                      style: _composerStyle(colors, agent),
+                      strutStyle: _composerStrut(agent),
                       cursorColor: colors.foreground,
                       decoration: InputDecoration(
                         isDense: true,
@@ -541,7 +573,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
                           0,
                         ),
                         hintText: widget.placeholder,
-                        hintStyle: _composerStyle(colors).copyWith(
+                        hintStyle: _composerStyle(colors, agent).copyWith(
                           color: colors.mutedForeground.withValues(alpha: 0.55),
                         ),
                       ),
@@ -734,7 +766,11 @@ class _ActionsButton extends StatelessWidget {
           child: child,
         );
       },
-      child: Icon(LucideIcons.plus, size: 16, color: colors.mutedForeground),
+      child: Icon(
+        BeuiAgentTheme.of(context).icons.add,
+        size: 16,
+        color: colors.mutedForeground,
+      ),
     );
 
     return BeuiOverlay(
@@ -1066,7 +1102,7 @@ class _ModelPicker extends StatelessWidget {
               builder: (context, p, child) =>
                   Transform.rotate(angle: p * math.pi, child: child),
               child: Icon(
-                LucideIcons.chevron_down,
+                BeuiAgentTheme.of(context).icons.expand,
                 size: 16,
                 color: colors.mutedForeground,
               ),
@@ -1213,7 +1249,7 @@ class _ModelRowState extends State<_ModelRow> {
                 ),
                 if (widget.selected)
                   Icon(
-                    LucideIcons.check,
+                    BeuiAgentTheme.of(context).icons.approved,
                     size: 14,
                     color: widget.colors.foreground,
                   ),
@@ -1303,7 +1339,7 @@ class _SwapIcon extends StatelessWidget {
             dimension: 12,
             child: CustomPaint(painter: _StopSquarePainter(color: color)),
           )
-        : Icon(LucideIcons.arrow_up, size: 16, color: color);
+        : Icon(BeuiAgentTheme.of(context).icons.send, size: 16, color: color);
 
     if (reduce || swapMotion is NoMotion) {
       return KeyedSubtree(key: ValueKey(key), child: icon);

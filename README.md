@@ -25,12 +25,12 @@ beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React m
 The port's defining goal is **motion fidelity**. Framer Motion springs are parameterized by `stiffness`, `damping`, and `mass` — the exact same physical parameters as Flutter's `SpringDescription` — so the source's spring tokens carry over with no fidelity loss. Components don't approximate the feel with `Curves.elasticOut`; they use the real physics through [`motor`](https://pub.dev/packages/motor).
 
 - 🎬 **Spring-accurate motion** — five spring tokens + three easings ported verbatim from the source's `ease.ts`.
-- 🎨 **Themeable** — `BeuiColors` `ThemeExtension` with light/dark and 11 color themes.
+- 🎨 **Themeable** — `BeuiColors` for palette, `BeuiAgentTheme` for AI-agent typography/shape/layout/icons, and `ThemeData.fontFamily` for the typeface.
 - ♿ **Reduced-motion aware** — one resolver drops *movement* while keeping opacity/color feedback (not a blanket duration-zeroing).
 - 🧩 **Native APIs** — controlled/uncontrolled `value` + `onChanged` pairs, framework-native `IconData`/`Widget` icon props, variants as Dart enums.
 - 🪟 **One overlay foundation** — every floating surface (tooltip, drawer, sheet, modal, command palette) builds on a shared `BeuiOverlay`.
 
-> **Status:** actively developed. All 72 beui.dev catalog entries are ported, including the pages that ship more than one component (five range sliders, four text primitives, both fixture styles, both upload patterns). Not yet published to pub.dev — install from Git (see below).
+> **Status:** actively developed. All 72 beui.dev catalog entries are ported. 1.1.0 adds semantic theming for the AI-agent family (`BeuiAgentTheme`) and compact-to-expanded approval cards.
 
 ## Live gallery
 
@@ -51,20 +51,18 @@ The [`example/`](example) app is a beui.dev-style component explorer — sidebar
 
 ## Install
 
-Not yet on pub.dev — add it from Git:
+```yaml
+dependencies:
+  beui: ^1.1.0
+```
+
+Or from Git:
 
 ```yaml
 dependencies:
   beui:
     git:
       url: https://github.com/codenameakshay/beui.git
-```
-
-Once published, it will be a normal hosted dependency:
-
-```yaml
-dependencies:
-  beui: ^1.0.0
 ```
 
 Then import the single public entrypoint:
@@ -86,9 +84,14 @@ import 'package:flutter/material.dart';
 ThemeData beuiTheme(Brightness brightness) {
   final colors = BeuiColors.of(BeuiColorTheme.violet, brightness);
   final base = ThemeData(brightness: brightness, useMaterial3: true);
-  return base.copyWith(
-    scaffoldBackgroundColor: colors.background,
-    extensions: [colors], // ← the only required line
+  return BeuiTextTheme.trackingNormal(
+    base.copyWith(
+      scaffoldBackgroundColor: colors.background,
+      extensions: [
+        colors,
+        const BeuiAgentTheme(), // optional — omit to keep source-fidelity agent styling
+      ],
+    ),
   );
 }
 
@@ -223,7 +226,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Prompt Input | `BeuiPromptInput` | Auto-growing composer with actions, model selection and animated send/stop |
 | Todo List | `BeuiTodoList` | Collapsible task plan with morphing status marks and a completion count |
 | Code Block | `BeuiCodeBlock` | Highlighted code that stays stable while streaming, with copy feedback |
-| Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals and single or multi-choice questions |
+| Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals, questions, and compact-to-expanded proposals |
 | File Diff | `BeuiFileDiff` | Change disclosure with progressive rows, live counts and completion collapse |
 | Tool Result | `BeuiToolResult` | Execution disclosure for terminal or request output that collapses when done |
 | Streaming Response | `BeuiStreamingResponse` | Response surface with completion actions and an expandable source summary |
@@ -239,6 +242,44 @@ Also exported as standalone primitives: `BeuiMagnetic` (cursor-follow pull) and 
 
 ## Theming
 
+Three layers, installed once on [ThemeData](https://api.flutter.dev/flutter/material/ThemeData-class.html). Ordinary widgets then pick the values up — no per-component style wrappers.
+
+| Layer | Owns | Install |
+| --- | --- | --- |
+| `ThemeData.fontFamily` / `BeuiTextTheme` | Global sans/mono **family names** and Material letter-spacing normalisation. The package ships no font files. | `ThemeData(fontFamily: 'General Sans')` plus `BeuiTextTheme.trackingNormal(...)` |
+| `BeuiColors` | Palette: core tokens, brand themes, `BeuiGlass`. Not typography, radii, or spacing. | `extensions: [BeuiColors.of(theme, brightness)]` |
+| `BeuiAgentTheme` | AI-agent **semantics**: type roles, bubble/card radii, conversation spacing, density, borders, optional glass cards, default icons. | `extensions: [BeuiAgentTheme(...)]` — omit it and widgets use source-fidelity defaults identical to 1.0.0 |
+
+```dart
+ThemeData(
+  fontFamily: 'General Sans',
+  extensions: [
+    BeuiColors.of(BeuiColorTheme.green, Brightness.light).copyWith(
+      primary: Color(0xFF3D6B2F),
+    ),
+    BeuiAgentTheme(
+      shapes: BeuiAgentShapes(
+        userBubble: BorderRadius.circular(20),
+        assistantBubble: BorderRadius.circular(12),
+        card: BorderRadius.circular(18),
+      ),
+      layout: BeuiAgentLayout(
+        density: BeuiAgentDensity.compact,
+        turnSpacing: 12,
+        bubblePadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+      ),
+      icons: BeuiAgentIcons(edit: Icons.edit_outlined),
+    ),
+  ],
+);
+
+BeuiMessageBubble(...);
+BeuiApprovalCard(
+  expandedChild: ..., // compact-to-expanded; omit to keep the 1.0.0 API
+);
+BeuiToolResult(...);
+```
+
 `BeuiColors` is a `ThemeExtension` ported from the source's design tokens. Read colors in your own widgets the same way components do:
 
 ```dart
@@ -251,6 +292,10 @@ Container(color: colors.card /* colors.foreground, .primary, .border, .muted, �
 `Mono` (neutral base) · `Violet` · `Blue` · `Green` · `Amber` · `Blood Orange` · `Rose` · `Red` · `Teal` · `Indigo` · `Lime`
 
 Each `BeuiColorTheme` value carries picker metadata (`name`, `slug`, `swatch`) for building a theme switcher. Overlay surfaces use a dedicated frosted-glass tier (`BeuiGlass`) with the source's 12–20px backdrop blur.
+
+Agent widgets that previously hard-coded `text-sm` / `rounded-2xl` / Lucide defaults now resolve those from `BeuiAgentTheme.of(context)`, which falls back to the same numbers and glyphs when the extension is missing. See the **Agent Theme** gallery route for a live custom palette, radii, density, icons, and an expandable approval card:
+
+![Custom BeuiAgentTheme applied to real agent widgets](docs/screenshots/agent-theme.png)
 
 ## Motion system
 
