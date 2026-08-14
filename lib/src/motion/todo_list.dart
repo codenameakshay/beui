@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
-import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 import 'action_swap.dart';
@@ -229,6 +229,7 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
+    final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isDark = colors.brightness == Brightness.dark;
     final completeCountColor = _allComplete
@@ -240,13 +241,14 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
       label: 'Agent task list',
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16), // rounded-2xl
+          borderRadius: agent.shapes.card, // rounded-2xl
           border: Border.all(
             color: colors.border.withValues(alpha: colors.border.a * 0.7),
+            width: agent.structure.borderWidth,
           ),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: agent.shapes.card,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -384,7 +386,7 @@ class _HeaderState extends State<_Header> {
             height: 44, // h-11
             padding: const EdgeInsets.symmetric(horizontal: 14), // px-3.5
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BeuiAgentTheme.of(context).shapes.card,
               border: _focused
                   ? Border.all(color: colors.ring, width: 2)
                   : Border.all(color: Colors.transparent, width: 2),
@@ -472,7 +474,11 @@ class _Chevron extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = Icon(LucideIcons.chevron_down, size: 14, color: color);
+    final icon = Icon(
+      BeuiAgentTheme.of(context).icons.expand,
+      size: 14,
+      color: color,
+    );
     if (reduce) {
       return Transform.rotate(angle: open ? math.pi : 0, child: icon);
     }
@@ -535,7 +541,7 @@ class _TodoHeaderIcon extends StatelessWidget {
             : KeyedSubtree(
                 key: const ValueKey('todo'),
                 child: Icon(
-                  LucideIcons.list_todo,
+                  BeuiAgentTheme.of(context).icons.todo,
                   size: 16,
                   color: colors.mutedForeground,
                 ),

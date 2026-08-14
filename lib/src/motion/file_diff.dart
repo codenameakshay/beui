@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -448,8 +449,12 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
                                     ),
                                     child: Icon(
                                       _copied
-                                          ? LucideIcons.check
-                                          : LucideIcons.copy,
+                                          ? BeuiAgentTheme.of(
+                                              context,
+                                            ).icons.copied
+                                          : BeuiAgentTheme.of(
+                                              context,
+                                            ).icons.copy,
                                       size: 14,
                                       color: _copyHovered
                                           ? colors.foreground
@@ -557,7 +562,7 @@ class _HeaderState extends State<_Header> {
             child: Row(
               children: [
                 Icon(
-                  LucideIcons.file_code,
+                  BeuiAgentTheme.of(context).icons.file,
                   size: 16,
                   color: colors.mutedForeground,
                 ),
@@ -657,7 +662,11 @@ class _Chevron extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = Icon(LucideIcons.chevron_down, size: 14, color: color);
+    final icon = Icon(
+      BeuiAgentTheme.of(context).icons.expand,
+      size: 14,
+      color: color,
+    );
     if (reduce) {
       return Transform.rotate(angle: open ? math.pi : 0, child: icon);
     }

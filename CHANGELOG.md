@@ -1,3 +1,34 @@
+## 1.1.0
+
+Semantic theming for the AI-agent family, plus compact-to-expanded approval
+cards. Default visuals and motion are unchanged: omit `BeuiAgentTheme` and
+every agent widget still resolves to the 1.0.0 source-fidelity look.
+
+### Agent theming
+
+* New `BeuiAgentTheme` `ThemeExtension` — typography roles, bubble/card
+  radii, conversation spacing, density, borders, optional glass cards, and
+  semantic icon slots. Install it next to `BeuiColors`; `ThemeData.fontFamily`
+  still owns the typeface.
+* AI-agent widgets read those tokens instead of hard-coded source sizes,
+  padding, and Lucide defaults. Constructor overrides remain.
+* Gallery route **Agent Theme** shows a custom warm-green palette, inherited
+  font, radii, density, icons, and an expandable approval card using the real
+  widgets.
+
+### Approval card
+
+* Additive compact-to-expanded API: `expanded` / `defaultExpanded` /
+  `onExpandedChanged`, `compactChild` / `expandedChild`, `headerAction`.
+  Existing call sites are unchanged. Height uses `beuiSpringLayout` and is
+  interruptible; reduced motion snaps.
+
+### Compatibility
+
+* Minor release. No required migrations. `BeuiChatApp.borderRadius` and
+  `BeuiMessageBubbleContent.maxWidthFactor` are now nullable so the theme can
+  supply the default; omitted arguments still resolve to 16 and 0.82.
+
 ## 1.0.0
 
 Initial release — a one-to-one Flutter port of beUI v2, built on the

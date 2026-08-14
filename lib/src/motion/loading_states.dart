@@ -5,6 +5,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
@@ -213,7 +214,7 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
     final elapsed = widget.elapsedSeconds ?? _internalSeconds;
     final base =
         widget.style ??
-        TextStyle(
+        BeuiAgentTheme.of(context).typography.status.copyWith(
           fontSize: 14,
           height: 1.25,
           color: colors.mutedForeground,

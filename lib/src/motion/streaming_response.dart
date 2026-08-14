@@ -4,8 +4,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
-import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 import 'citations.dart';
@@ -266,6 +266,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
+    final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final contentColor = colors.foreground.withValues(alpha: 0.9);
 
@@ -283,9 +284,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
         children: [
           // ----- rendered content -----
           DefaultTextStyle.merge(
-            style: TextStyle(
-              fontSize: 14, // text-sm
-              height: 24 / 14, // leading-6
+            style: agent.typography.assistantBody.copyWith(
               // Tailwind `tracking-normal`. Explicit because an unset
               // letterSpacing inherits the host theme's body style — 0.25 on
               // stock Material — and widens every prose line.
@@ -293,7 +292,10 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
               color: contentColor,
             ),
             child: IconTheme.merge(
-              data: IconThemeData(size: 16, color: contentColor),
+              data: IconThemeData(
+                size: agent.layout.iconSize,
+                color: contentColor,
+              ),
               child: widget.child,
             ),
           ),
@@ -323,7 +325,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                           onPressed: (p) => setState(() => _copyPressed = p),
                           onTap: _handleCopy,
                           child: Icon(
-                            _copied ? LucideIcons.check : LucideIcons.copy,
+                            _copied ? agent.icons.copied : agent.icons.copy,
                             size: 14, // size-3.5
                             color: _copyHovered
                                 ? colors.foreground
@@ -342,7 +344,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                           onPressed: (p) => setState(() => _retryPressed = p),
                           onTap: widget.onRetry!,
                           child: Icon(
-                            LucideIcons.rotate_ccw,
+                            agent.icons.retry,
                             size: 14,
                             color: _retryHovered
                                 ? colors.foreground
@@ -365,7 +367,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                           onTap: () =>
                               _setFeedback(BeuiStreamingResponseFeedback.up),
                           child: Icon(
-                            LucideIcons.thumbs_up,
+                            agent.icons.thumbsUp,
                             size: 14,
                             color:
                                 _upHovered ||
@@ -390,7 +392,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                           onTap: () =>
                               _setFeedback(BeuiStreamingResponseFeedback.down),
                           child: Icon(
-                            LucideIcons.thumbs_down,
+                            agent.icons.thumbsDown,
                             size: 14,
                             color:
                                 _downHovered ||
@@ -696,7 +698,11 @@ class _Chevron extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = Icon(LucideIcons.chevron_down, size: 12, color: color);
+    final icon = Icon(
+      BeuiAgentTheme.of(context).icons.expand,
+      size: 12,
+      color: color,
+    );
     if (reduce) {
       // Source: transition duration 0 under reduce → snap.
       return Transform.rotate(angle: open ? math.pi : 0, child: icon);

@@ -4,6 +4,7 @@ import 'dart:ui' show ImageFilter, lerpDouble;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -334,7 +335,9 @@ class _ImageFrame extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colors.muted,
-            borderRadius: BorderRadius.circular(12), // rounded-xl
+            borderRadius: BeuiAgentTheme.of(
+              context,
+            ).shapes.nested, // rounded-xl
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),

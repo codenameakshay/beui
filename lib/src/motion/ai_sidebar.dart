@@ -4,8 +4,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
-import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 import 'popover_morph.dart';
@@ -912,13 +912,14 @@ class _ResourceRowState extends State<_ResourceRow> {
 
   Widget _defaultIcon() {
     final item = widget.row.item;
+    final icons = BeuiAgentTheme.of(context).icons;
     final IconData data;
     if (item.canContain) {
-      data = widget.expanded ? LucideIcons.folder_open : LucideIcons.folder;
+      data = widget.expanded ? icons.folderOpen : icons.folder;
     } else if (item.kind == BeuiSidebarResourceKind.bookmark) {
-      data = LucideIcons.bookmark;
+      data = icons.bookmark;
     } else {
-      data = LucideIcons.file_text;
+      data = icons.document;
     }
     return Icon(
       data,
@@ -943,7 +944,7 @@ class _ResourceRowState extends State<_ResourceRow> {
           child: Row(
             children: [
               Icon(
-                LucideIcons.pencil,
+                BeuiAgentTheme.of(context).icons.edit,
                 size: 14,
                 color: widget.colors.foreground,
               ),
@@ -1082,7 +1083,7 @@ class _ResourceRowState extends State<_ResourceRow> {
                     height: 28,
                     child: Center(
                       child: Icon(
-                        LucideIcons.ellipsis,
+                        BeuiAgentTheme.of(context).icons.more,
                         size: 16,
                         color: colors.mutedForeground,
                       ),

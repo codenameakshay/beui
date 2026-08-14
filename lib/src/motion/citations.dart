@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -737,7 +738,11 @@ class _CitationsHeaderState extends State<_CitationsHeader> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(LucideIcons.book_open_text, size: 16, color: fg),
+                    Icon(
+                      BeuiAgentTheme.of(context).icons.citations,
+                      size: 16,
+                      color: fg,
+                    ),
                     const SizedBox(width: 8), // gap-2
                     DefaultTextStyle.merge(
                       style: TextStyle(
@@ -800,7 +805,11 @@ class _Chevron extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = Icon(LucideIcons.chevron_down, size: 14, color: color);
+    final icon = Icon(
+      BeuiAgentTheme.of(context).icons.expand,
+      size: 14,
+      color: color,
+    );
     if (reduce) {
       return Transform.rotate(angle: open ? math.pi : 0, child: icon);
     }

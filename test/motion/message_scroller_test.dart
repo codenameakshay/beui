@@ -466,5 +466,184 @@ void main() {
       // First message still reachable near top.
       expect(find.textContaining('User message number 0'), findsOneWidget);
     });
+
+    testWidgets(
+      'stays pinned at the live edge while an approval card expands',
+      (tester) async {
+        final key = GlobalKey<BeuiMessageScrollerState>();
+        var expanded = false;
+
+        await tester.pumpWidget(
+          _wrap(
+            StatefulBuilder(
+              builder: (context, setState) {
+                return BeuiMessageScroller(
+                  key: key,
+                  followOutput: true,
+                  smooth: false,
+                  child: BeuiMessageGroup(
+                    spacing: BeuiMessageSpacing.standard,
+                    children: [
+                      ...List<Widget>.generate(
+                        6,
+                        (i) => BeuiMessage(
+                          from: i.isEven
+                              ? BeuiMessageFrom.user
+                              : BeuiMessageFrom.assistant,
+                          children: [
+                            BeuiMessageContent(
+                              children: [
+                                BeuiMessageBubble(
+                                  variant: i.isEven
+                                      ? BeuiMessageBubbleVariant.solid
+                                      : BeuiMessageBubbleVariant.soft,
+                                  child: BeuiMessageBubbleContent(
+                                    child: SizedBox(
+                                      height: 48,
+                                      child: Text('row $i'),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      BeuiMessage(
+                        from: BeuiMessageFrom.assistant,
+                        children: [
+                          BeuiMessageContent(
+                            children: [
+                              BeuiApprovalCard(
+                                title: 'Confirm this step?',
+                                onApprove: () {},
+                                expanded: expanded,
+                                onExpandedChanged: (v) =>
+                                    setState(() => expanded = v),
+                                compactChild: const Text('Compact proposal'),
+                                expandedChild: const SizedBox(
+                                  height: 220,
+                                  child: Text('Expanded editor'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            surface: const Size(400, 360),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(key.currentState!.isFollowing, isTrue);
+
+        await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
+        await tester.pumpAndSettle();
+        expect(expanded, isTrue);
+        expect(key.currentState!.isFollowing, isTrue);
+        expect(find.text('Expanded editor'), findsWidgets);
+      },
+    );
+
+    testWidgets(
+      'does not re-pin when an approval card expands after the reader left',
+      (tester) async {
+        final key = GlobalKey<BeuiMessageScrollerState>();
+        var expanded = false;
+
+        await tester.pumpWidget(
+          _wrap(
+            StatefulBuilder(
+              builder: (context, setState) {
+                return Column(
+                  children: [
+                    TextButton(
+                      onPressed: () => setState(() => expanded = true),
+                      child: const Text('expand-card'),
+                    ),
+                    Expanded(
+                      child: BeuiMessageScroller(
+                        key: key,
+                        followOutput: true,
+                        smooth: false,
+                        child: BeuiMessageGroup(
+                          spacing: BeuiMessageSpacing.standard,
+                          children: [
+                            ...List<Widget>.generate(
+                              8,
+                              (i) => BeuiMessage(
+                                from: i.isEven
+                                    ? BeuiMessageFrom.user
+                                    : BeuiMessageFrom.assistant,
+                                children: [
+                                  BeuiMessageContent(
+                                    children: [
+                                      BeuiMessageBubble(
+                                        variant: i.isEven
+                                            ? BeuiMessageBubbleVariant.solid
+                                            : BeuiMessageBubbleVariant.soft,
+                                        child: BeuiMessageBubbleContent(
+                                          child: SizedBox(
+                                            height: 64,
+                                            child: Text('history $i'),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            BeuiMessage(
+                              from: BeuiMessageFrom.assistant,
+                              children: [
+                                BeuiMessageContent(
+                                  children: [
+                                    BeuiApprovalCard(
+                                      title: 'Confirm this step?',
+                                      onApprove: () {},
+                                      expanded: expanded,
+                                      compactChild: const Text(
+                                        'Compact proposal',
+                                      ),
+                                      expandedChild: const SizedBox(
+                                        height: 220,
+                                        child: Text('Expanded editor'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+            surface: const Size(400, 360),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(key.currentState!.isFollowing, isTrue);
+
+        await tester.drag(
+          find.byType(SingleChildScrollView),
+          const Offset(0, 500),
+        );
+        await tester.pumpAndSettle();
+        expect(key.currentState!.isFollowing, isFalse);
+
+        await tester.tap(find.text('expand-card'));
+        await tester.pumpAndSettle();
+        expect(key.currentState!.isFollowing, isFalse);
+      },
+    );
   });
 }

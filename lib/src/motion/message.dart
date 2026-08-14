@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
@@ -202,12 +203,13 @@ class _BeuiMessageState extends State<BeuiMessage> {
 
     // Source: `flex w-full items-start gap-2` + `flex-row-reverse` for user.
     // Reverse the child list (not textDirection) so text stays LTR/ambient.
+    final agent = BeuiAgentTheme.of(context);
     final ordered = widget.from == BeuiMessageFrom.user
         ? widget.children.reversed.toList(growable: false)
         : widget.children;
     final slots = <Widget>[];
     for (var i = 0; i < ordered.length; i++) {
-      if (i > 0) slots.add(const SizedBox(width: 8)); // gap-2
+      if (i > 0) slots.add(SizedBox(width: agent.layout.rowGap)); // gap-2
       slots.add(ordered[i]);
     }
 
@@ -294,19 +296,19 @@ class BeuiMessageGroup extends StatelessWidget {
   /// Vertical gap between rows.
   final BeuiMessageSpacing spacing;
 
-  double get _gap => switch (spacing) {
-    BeuiMessageSpacing.compact => 6, // gap-1.5
-    BeuiMessageSpacing.standard => 16, // gap-4
-  };
-
   @override
   Widget build(BuildContext context) {
+    final layout = BeuiAgentTheme.of(context).layout;
+    final gap = switch (spacing) {
+      BeuiMessageSpacing.compact => layout.groupedMessageSpacing, // gap-1.5
+      BeuiMessageSpacing.standard => layout.turnSpacing, // gap-4
+    };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
         for (var i = 0; i < children.length; i++) ...[
-          if (i > 0) SizedBox(height: _gap),
+          if (i > 0) SizedBox(height: gap),
           children[i],
         ],
       ],
@@ -336,16 +338,17 @@ class BeuiMessageAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
+    final agent = BeuiAgentTheme.of(context);
+    final size = agent.layout.avatarSize;
     final avatar = SizedBox(
-      width: 28, // size-7
-      height: 28,
+      width: size, // size-7
+      height: size,
       child: DecoratedBox(
         decoration: BoxDecoration(color: colors.muted, shape: BoxShape.circle),
         child: ClipOval(
           child: Center(
             child: DefaultTextStyle.merge(
-              style: TextStyle(
-                fontSize: 12, // text-xs
+              style: agent.typography.status.copyWith(
                 fontWeight: FontWeight.w500,
                 color: colors.mutedForeground,
                 height: 1,
@@ -394,6 +397,7 @@ class BeuiMessageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final from = BeuiMessageScope.maybeOf(context) ?? BeuiMessageFrom.assistant;
+    final gap = BeuiAgentTheme.of(context).layout.groupedMessageSpacing;
     final align = from == BeuiMessageFrom.user
         ? CrossAxisAlignment.end
         : CrossAxisAlignment.start;
@@ -404,7 +408,7 @@ class BeuiMessageContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           for (var i = 0; i < children.length; i++) ...[
-            if (i > 0) const SizedBox(height: 6), // gap-1.5
+            if (i > 0) SizedBox(height: gap), // gap-1.5
             children[i],
           ],
         ],
@@ -425,12 +429,11 @@ class BeuiMessageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final from = BeuiMessageScope.maybeOf(context) ?? BeuiMessageFrom.assistant;
+    final agent = BeuiAgentTheme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4), // px-1
       child: DefaultTextStyle.merge(
-        style: TextStyle(
-          fontSize: 11, // text-[11px]
-          height: 1,
+        style: agent.typography.metadata.copyWith(
           color: colors.mutedForeground,
         ),
         child: Row(
@@ -462,13 +465,13 @@ class BeuiMessageFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final from = BeuiMessageScope.maybeOf(context) ?? BeuiMessageFrom.assistant;
+    final agent = BeuiAgentTheme.of(context);
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 20), // min-h-5
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4), // px-1
         child: DefaultTextStyle.merge(
-          style: TextStyle(
-            fontSize: 11, // text-[11px]
+          style: agent.typography.metadata.copyWith(
             color: colors.mutedForeground,
           ),
           child: Row(
@@ -505,6 +508,7 @@ class BeuiMessageMarker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
+    final agent = BeuiAgentTheme.of(context);
     // source: `mx-auto flex w-fit max-w-[88%] …` — shrink to fit, capped at
     // 88% of the row.
     return LayoutBuilder(
@@ -519,7 +523,7 @@ class BeuiMessageMarker extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: colors.muted.withValues(alpha: 0.7), // bg-muted/70
-                borderRadius: BorderRadius.circular(999),
+                borderRadius: agent.shapes.pill,
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -527,8 +531,7 @@ class BeuiMessageMarker extends StatelessWidget {
                   vertical: 4, // py-1
                 ),
                 child: DefaultTextStyle.merge(
-                  style: TextStyle(
-                    fontSize: 12, // text-xs
+                  style: agent.typography.status.copyWith(
                     height: 16 / 12, // leading-4
                     color: colors.mutedForeground,
                   ),

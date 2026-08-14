@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -730,7 +731,7 @@ class _Chevron extends StatelessWidget {
   Widget build(BuildContext context) {
     final target = expanded ? math.pi : 0.0;
     final icon = Icon(
-      LucideIcons.chevron_down,
+      BeuiAgentTheme.of(context).icons.expand,
       size: 14, // size-3.5
       color: color,
     );

@@ -14,9 +14,10 @@ export 'src/tokens/motion.dart';
 // Default Lucide icon set (consumer-facing transitive dependency — see README).
 export 'src/tokens/icons.dart';
 
-// Theme (BeuiColors ThemeExtension + typography).
+// Theme (BeuiColors ThemeExtension + typography + agent semantics).
 export 'src/theme/beui_colors.dart';
 export 'src/theme/beui_text_theme.dart';
+export 'src/theme/beui_agent_theme.dart';
 
 // Components (lib/src/motion/...). Exported as they are ported.
 export 'src/motion/action_swap.dart'

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
@@ -628,7 +629,9 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
             child: SingleChildScrollView(
               controller: _controller,
               physics: widget.scrollPhysics,
-              padding: widget.padding,
+              padding:
+                  widget.padding ??
+                  BeuiAgentTheme.of(context).layout.conversationGutter,
               // Source `[overflow-anchor:none]` — Flutter has no CSS overflow
               // anchor; programmatic follow replaces browser anchoring.
               child: Semantics(
@@ -1012,6 +1015,7 @@ class _MessageRailPreview extends StatelessWidget {
     // `[&_[data-slot=preview-rail-card]]:h-20 … :p-3 … :overflow-hidden`.
     // `h-20` is the *card* box (border-box, padding included) — putting the
     // 80 inside the padding made the card 106 tall.
+    final agent = BeuiAgentTheme.of(context);
     final card = SizedBox(
       height: 80, // h-20
       child: Material(
@@ -1020,8 +1024,11 @@ class _MessageRailPreview extends StatelessWidget {
         shadowColor: colors.foreground.withValues(alpha: 0.12),
         clipBehavior: Clip.antiAlias, // overflow-hidden
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16), // rounded-2xl
-          side: BorderSide(color: colors.border),
+          borderRadius: agent.shapes.card,
+          side: BorderSide(
+            color: colors.border,
+            width: agent.structure.borderWidth,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(12), // p-3
@@ -1033,10 +1040,8 @@ class _MessageRailPreview extends StatelessWidget {
                 item.label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 12,
+                style: agent.typography.action.copyWith(
                   height: 16 / 12,
-                  fontWeight: FontWeight.w500,
                   color: colors.cardForeground,
                 ),
               ),
@@ -1047,8 +1052,7 @@ class _MessageRailPreview extends StatelessWidget {
                     item.description!,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12,
+                    style: agent.typography.status.copyWith(
                       height: 16 / 12,
                       color: colors.mutedForeground,
                     ),
