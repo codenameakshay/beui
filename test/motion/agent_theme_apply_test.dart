@@ -337,6 +337,49 @@ void main() {
       expect(badge.style?.color, const Color(0xFF110011));
     });
 
+    testWidgets('BeuiToolResult takes the success status foreground', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          const BeuiToolResult(
+            tool: 'terminal.run',
+            title: 'Tests passed',
+            status: BeuiToolResultStatus.success,
+            child: BeuiToolResultOutput(code: 'ok'),
+          ),
+          agent: themed,
+        ),
+      );
+      await tester.pump();
+
+      final label = tester.widget<Text>(find.text('Completed'));
+      expect(label.style?.color, const Color(0xFF330033));
+    });
+
+    testWidgets('BeuiToolResult strings come from the theme', (tester) async {
+      // The copy action is an icon chip; its label lives on the semantics
+      // node that handles the tap, not in a Text.
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _host(
+          const BeuiToolResult(
+            tool: 'terminal.run',
+            title: 'Tests passed',
+            status: BeuiToolResultStatus.success,
+            copyText: 'ok',
+            child: BeuiToolResultOutput(code: 'ok'),
+          ),
+          agent: const BeuiAgentTheme(
+            strings: BeuiAgentStrings(copyResult: 'Copier'),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(find.bySemanticsLabel('Copier'), findsOneWidget);
+      handle.dispose();
+    });
+
     testWidgets('BeuiToolApproval strings come from the theme', (tester) async {
       await tester.pumpWidget(
         _host(
