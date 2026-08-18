@@ -71,7 +71,6 @@ class _Rendered {
     required this.content,
     this.animateIn = false,
     this.streaming = false,
-    this.status = BeuiStreamingResponseStatus.complete,
   });
 
   final String id;
@@ -81,7 +80,7 @@ class _Rendered {
   bool streaming;
 
   /// Terminal status once [streaming] goes false.
-  BeuiStreamingResponseStatus status;
+  BeuiStreamingResponseStatus status = BeuiStreamingResponseStatus.complete;
 }
 
 /// The source `ChatPreview` component.

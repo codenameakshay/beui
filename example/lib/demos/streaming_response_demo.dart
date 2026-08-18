@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Gallery route for [BeuiStreamingResponse] — character-streamed response
 /// with completion actions, sources disclosure, and a Replay control. Mirrors
@@ -89,8 +90,32 @@ class _StreamingResponseDemo extends StatefulWidget {
   State<_StreamingResponseDemo> createState() => _StreamingResponseDemoState();
 }
 
+/// How the demonstrated stream ends.
+///
+/// C20/C32: `error` was reachable only from a unit test and `stopped` did not
+/// exist, so the gallery — the de-facto documentation — showed a response that
+/// could only ever succeed, while the demo copy talked about recovery.
+enum _Outcome {
+  /// Streams to the end and completes.
+  complete,
+
+  /// Fails partway through: destructive notice plus an inline retry.
+  error,
+
+  /// The reader stops it: neutral notice plus an inline continue.
+  stopped,
+}
+
 class _StreamingResponseDemoState extends State<_StreamingResponseDemo> {
   int _run = 0;
+  _Outcome _outcome = _Outcome.complete;
+
+  void _replay([_Outcome? outcome]) {
+    setState(() {
+      if (outcome != null) _outcome = outcome;
+      _run++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,19 +136,113 @@ class _StreamingResponseDemoState extends State<_StreamingResponseDemo> {
                 padding: const EdgeInsets.only(bottom: 48),
                 child: _ResponseDemo(
                   key: ValueKey<int>(_run),
-                  onReplay: () => setState(() => _run++),
+                  outcome: _outcome,
+                  onReplay: _replay,
                 ),
               ),
             ),
-            Positioned(
-              left: 0,
+            PositionedDirectional(
+              start: 0,
               bottom: 0,
-              child: _ReplayButton(
-                colors: colors,
-                onPressed: () => setState(() => _run++),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _ReplayButton(colors: colors, onPressed: _replay),
+                  const SizedBox(width: 12),
+                  for (final o in _Outcome.values)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 6),
+                      child: _OutcomeChip(
+                        label: switch (o) {
+                          _Outcome.complete => 'Completes',
+                          _Outcome.error => 'Fails',
+                          _Outcome.stopped => 'Stopped',
+                        },
+                        selected: _outcome == o,
+                        colors: colors,
+                        onPressed: () => _replay(o),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Selects which ending the demo plays. A real control, with the full
+/// contract — the gallery should model what it documents.
+class _OutcomeChip extends StatefulWidget {
+  const _OutcomeChip({
+    required this.label,
+    required this.selected,
+    required this.colors,
+    required this.onPressed,
+  });
+
+  final String label;
+  final bool selected;
+  final BeuiColors colors;
+  final VoidCallback onPressed;
+
+  @override
+  State<_OutcomeChip> createState() => _OutcomeChipState();
+}
+
+class _OutcomeChipState extends State<_OutcomeChip> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    return Semantics(
+      button: true,
+      selected: widget.selected,
+      label: widget.label,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        onShowHoverHighlight: (v) => setState(() => _hovered = v),
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onPressed();
+              return null;
+            },
+          ),
+        },
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onPressed,
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 28),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: widget.selected
+                  ? colors.foreground
+                  : (_hovered ? colors.secondary : colors.muted),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              widget.label,
+              style: TextStyle(
+                fontSize: 12,
+                height: 16 / 12,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0,
+                color: widget.selected
+                    ? colors.background
+                    : colors.mutedForeground,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -178,9 +297,14 @@ class _ReplayButton extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _ResponseDemo extends StatefulWidget {
-  const _ResponseDemo({required this.onReplay, super.key});
+  const _ResponseDemo({
+    required this.onReplay,
+    required this.outcome,
+    super.key,
+  });
 
   final VoidCallback onReplay;
+  final _Outcome outcome;
 
   @override
   State<_ResponseDemo> createState() => _ResponseDemoState();
@@ -191,6 +315,22 @@ class _ResponseDemoState extends State<_ResponseDemo> {
   bool _complete = false;
   Timer? _tick;
   Timer? _completeTimer;
+
+  /// Fraction of the answer produced before a non-complete outcome lands.
+  static const double _cutAt = 0.6;
+
+  bool get _cuts => widget.outcome != _Outcome.complete;
+  int get _target =>
+      _cuts ? (_responseLength * _cutAt).floor() : _responseLength;
+
+  BeuiStreamingResponseStatus get _status {
+    if (!_complete) return BeuiStreamingResponseStatus.streaming;
+    return switch (widget.outcome) {
+      _Outcome.complete => BeuiStreamingResponseStatus.complete,
+      _Outcome.error => BeuiStreamingResponseStatus.error,
+      _Outcome.stopped => BeuiStreamingResponseStatus.stopped,
+    };
+  }
 
   @override
   void initState() {
@@ -213,7 +353,7 @@ class _ResponseDemoState extends State<_ResponseDemo> {
 
     if (reduce) {
       setState(() {
-        _cursor = _responseLength;
+        _cursor = _target;
         _complete = true;
       });
       return;
@@ -224,6 +364,7 @@ class _ResponseDemoState extends State<_ResponseDemo> {
       _complete = false;
     });
 
+    final target = _target;
     final startedAt = DateTime.now();
     // ~60fps ticker approximating requestAnimationFrame + chars/sec.
     _tick = Timer.periodic(const Duration(milliseconds: 16), (_) {
@@ -231,14 +372,16 @@ class _ResponseDemoState extends State<_ResponseDemo> {
       final elapsed = DateTime.now().difference(startedAt).inMilliseconds;
       final next = (elapsed / 1000 * _charactersPerSecond).floor().clamp(
         0,
-        _responseLength,
+        target,
       );
       if (next != _cursor) {
         setState(() => _cursor = next);
       }
-      if (next >= _responseLength) {
+      if (next >= target) {
         _tick?.cancel();
-        _completeTimer = Timer(const Duration(milliseconds: 450), () {
+        // A failure or a stop lands immediately; only a clean completion has
+        // the settle beat before the actions appear.
+        _completeTimer = Timer(Duration(milliseconds: _cuts ? 0 : 450), () {
           if (mounted) setState(() => _complete = true);
         });
       }
@@ -267,11 +410,18 @@ class _ResponseDemoState extends State<_ResponseDemo> {
     );
 
     return BeuiStreamingResponse(
-      status: _complete
-          ? BeuiStreamingResponseStatus.complete
-          : BeuiStreamingResponseStatus.streaming,
+      status: _status,
       copyText: _responseMarkdown,
+      // Feeds the transcript's live region at sentence boundaries. Here there
+      // is no scroller above, so the response announces through its own node.
+      announceText: _responseMarkdown.substring(
+        0,
+        _cursor.clamp(0, _responseMarkdown.length),
+      ),
       onRetry: widget.onReplay,
+      onContinue: widget.onReplay,
+      errorMessage: 'The model stopped responding',
+      stoppedMessage: 'You stopped this response',
       sources: _sources,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
