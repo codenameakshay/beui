@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show FontFeature, ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,8 +8,12 @@ import 'package:flutter/services.dart';
 
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
+import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
+import '_hit_target.dart';
+import '_transcript.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
@@ -226,10 +230,26 @@ class _BeuiMessageScrollerAnchorState extends State<BeuiMessageScrollerAnchor> {
 ///
 /// Wheel / drag / ArrowUp / PageUp / Home clear the programmatic-scroll guard
 /// so the next user scroll can leave the live edge (source `leaveLiveEdge`).
+///
+/// ## Announcements
+///
+/// The scroller owns the conversation's **single** live region. Descendant
+/// streaming surfaces push whole sentences into it rather than opening live
+/// regions of their own — see [BeuiStreamingResponse.announce], which resolves
+/// to false by default when a scroller is above it. Set [announce] to false to
+/// silence the transcript entirely (for a preview, or when the host app owns
+/// announcements).
+///
+/// ## Long transcripts
+///
+/// The default constructor lays every message out eagerly, which re-measures
+/// the whole transcript on each streamed token. Past a few dozen turns use
+/// [BeuiMessageScroller.builder], which builds rows lazily through a
+/// [ListView.builder] and keeps token cadence O(visible rows).
 class BeuiMessageScroller extends StatefulWidget {
-  /// Creates a message scroller.
+  /// Creates a message scroller over an eagerly built transcript.
   const BeuiMessageScroller({
-    required this.child,
+    required Widget this.child,
     this.controller,
     this.followOutput = true,
     this.followThreshold = 56,
@@ -237,16 +257,70 @@ class BeuiMessageScroller extends StatefulWidget {
     this.onFollowChange,
     this.label = 'Conversation',
     this.busy = false,
+    this.announce = true,
     this.navigation,
     this.navigationLabel = 'Message navigation',
     this.railItems,
     this.padding,
     this.scrollPhysics,
+    this.showJumpToLatest = true,
+    this.jumpToLatestLabel = 'Jump to latest',
+    this.onUnreadCountChange,
     super.key,
-  });
+  }) : itemCount = null,
+       itemBuilder = null;
+
+  /// Creates a message scroller over a **lazily built** transcript.
+  ///
+  /// Rows are built on demand, so a thousand-turn conversation costs the same
+  /// per streamed token as a ten-turn one. Everything else — follow behaviour,
+  /// the rail, the jump-to-latest pill, announcements — is identical.
+  ///
+  /// Rail anchors still register through [BeuiMessageScrollerAnchor], but only
+  /// rows that have been built are registered, so supply [railItems]
+  /// explicitly when using the rail with a lazy transcript.
+  ///
+  /// ```dart
+  /// BeuiMessageScroller.builder(
+  ///   itemCount: messages.length,
+  ///   itemBuilder: (context, i) => BeuiMessage(...),
+  /// )
+  /// ```
+  const BeuiMessageScroller.builder({
+    required int this.itemCount,
+    required IndexedWidgetBuilder this.itemBuilder,
+    this.controller,
+    this.followOutput = true,
+    this.followThreshold = 56,
+    this.smooth = true,
+    this.onFollowChange,
+    this.label = 'Conversation',
+    this.busy = false,
+    this.announce = true,
+    this.navigation,
+    this.navigationLabel = 'Message navigation',
+    this.railItems,
+    this.padding,
+    this.scrollPhysics,
+    this.showJumpToLatest = true,
+    this.jumpToLatestLabel = 'Jump to latest',
+    this.onUnreadCountChange,
+    super.key,
+  }) : child = null,
+       assert(itemCount >= 0);
 
   /// Transcript content — typically a [BeuiMessageGroup] of anchored messages.
-  final Widget child;
+  ///
+  /// Null when built through [BeuiMessageScroller.builder].
+  final Widget? child;
+
+  /// Row count for [BeuiMessageScroller.builder]. Null for the eager
+  /// constructor.
+  final int? itemCount;
+
+  /// Row builder for [BeuiMessageScroller.builder]. Null for the eager
+  /// constructor.
+  final IndexedWidgetBuilder? itemBuilder;
 
   /// Optional external scroll controller. When null an internal one is created.
   final ScrollController? controller;
@@ -274,6 +348,15 @@ class BeuiMessageScroller extends StatefulWidget {
   /// (source `busy` → `aria-busy`).
   final bool busy;
 
+  /// Whether the transcript speaks streamed text through its single live
+  /// region (default true).
+  ///
+  /// This is the *only* live region in a conversation. Descendant
+  /// [BeuiStreamingResponse]s detect the scroller and stay quiet, pushing whole
+  /// sentences here instead, so a reader hears the answer once rather than
+  /// hearing the transcript re-read on every token.
+  final bool announce;
+
   /// Optional compact rail for navigating between message anchors
   /// (source `navigation`).
   final BeuiMessageScrollerNavigation? navigation;
@@ -286,12 +369,31 @@ class BeuiMessageScroller extends StatefulWidget {
   /// built from registered [BeuiMessageScrollerAnchor]s.
   final List<BeuiMessageScrollerRailItem>? railItems;
 
-  /// Padding inside the scroll viewport (source `viewportClassName` px-3 py-4
-  /// equivalent is supplied by the consumer / demo).
+  /// Padding inside the scroll viewport.
+  ///
+  /// Defaults to the theme's `layout.conversationGutter` when it has been set,
+  /// otherwise to the source's own `px-3 py-4`. Prior to the UX pass this
+  /// defaulted to zero and *every* call site in the repo overrode it, which is
+  /// the definition of a wrong default (C27).
   final EdgeInsetsGeometry? padding;
 
   /// Scroll physics for the viewport. Defaults to platform clamping physics.
   final ScrollPhysics? scrollPhysics;
+
+  /// Shows the built-in "jump to latest" pill when the reader has scrolled
+  /// away from the live edge (default true).
+  ///
+  /// The pill carries an unread count of messages that arrived while detached.
+  /// Set false to render nothing and drive your own affordance from
+  /// [onFollowChange] / [onUnreadCountChange] + [BeuiMessageScrollerState.scrollToEnd].
+  final bool showJumpToLatest;
+
+  /// Accessible label and tooltip for the jump-to-latest pill.
+  final String jumpToLatestLabel;
+
+  /// Reports the number of messages that have arrived since the reader left
+  /// the live edge. Fires with 0 when the reader returns.
+  final ValueChanged<int>? onUnreadCountChange;
 
   @override
   State<BeuiMessageScroller> createState() => BeuiMessageScrollerState();
@@ -314,8 +416,28 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
   double _lastMaxExtent = 0;
   bool _postFramePending = false;
 
+  /// Guards the programmatic-scroll flag against a stale timer or a settled
+  /// animation belonging to an earlier follow. Every [scrollToEnd] /
+  /// [scrollToId] bumps it; late callbacks compare and bail (C5).
+  int _scrollToken = 0;
+
+  /// True while a smooth follow glide is in flight. A second growth arriving
+  /// inside that window is the signal that the stream is outpacing the 320ms
+  /// animation, and the next follow jumps instead (C5).
+  bool _animatingFollow = false;
+
+  /// Messages registered since the reader left the live edge (C4).
+  int _unread = 0;
+
+  final GlobalKey<BeuiTranscriptLiveRegionState> _liveRegionKey =
+      GlobalKey<BeuiTranscriptLiveRegionState>();
+
   /// Whether the scroller currently tracks the live edge.
   bool get isFollowing => widget.followOutput && _following;
+
+  /// Messages that arrived while the reader was away from the live edge.
+  /// Resets to 0 the moment following resumes.
+  int get unreadCount => _unread;
 
   @override
   void initState() {
@@ -357,12 +479,35 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
 
   void _setFollowing(bool next) {
     if (_following == next) return;
-    setState(() => _following = next);
+    setState(() {
+      _following = next;
+      // Returning to the live edge clears the backlog — the reader has now
+      // seen everything (C4).
+      if (next && _unread != 0) {
+        _unread = 0;
+        widget.onUnreadCountChange?.call(0);
+      }
+    });
     widget.onFollowChange?.call(next);
+  }
+
+  /// Counts one newly registered message toward the unread badge.
+  ///
+  /// Anchors register from `didChangeDependencies`, i.e. inside the build
+  /// phase, so the state change is deferred to the next frame rather than
+  /// calling `setState` mid-build.
+  void _bumpUnread() {
+    if (isFollowing) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || isFollowing) return;
+      setState(() => _unread++);
+      widget.onUnreadCountChange?.call(_unread);
+    });
   }
 
   void _register(_AnchorEntry entry) {
     final existing = _anchors[entry.id];
+    if (existing == null) _bumpUnread();
     if (existing != null) {
       existing.label = entry.label;
       existing.description = entry.description;
@@ -425,32 +570,60 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
   }
 
   /// Scrolls to the live edge. Public for hosts/tests.
+  ///
+  /// Pass `smooth: false` to force a jump. Otherwise the choice is made here:
+  /// a discrete append glides, a stream jumps. See [_followDuration].
   void scrollToEnd({bool? smooth}) {
     if (!_controller.hasClients) return;
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final useSmooth = (smooth ?? widget.smooth) && !reduce;
+    var useSmooth = (smooth ?? widget.smooth) && !reduce;
+
+    // C5. The pre-fix code restarted a 320ms `animateTo` on every growth. At a
+    // 16ms token cadence that is ~20 restarts before one completes, so the
+    // viewport permanently trailed the live edge and `_programmaticClear` was
+    // re-armed every tick — the guard never cleared for the whole stream and
+    // the reader's own scrolls were swallowed.
+    //
+    // The discriminator is cadence, not distance: if the previous glide has
+    // not finished, this growth is part of a stream, so jump. A discrete
+    // append (a whole message arriving, seconds apart) still glides.
+    if (useSmooth && _animatingFollow) useSmooth = false;
+
     final max = _controller.position.maxScrollExtent;
-    _programmatic = true;
+    final token = ++_scrollToken;
     _programmaticClear?.cancel();
+    _programmatic = true;
+
     if (useSmooth) {
+      _animatingFollow = true;
       _controller
-          .animateTo(
-            max,
-            duration: const Duration(milliseconds: 320),
-            curve: Curves.easeOut,
-          )
-          .whenComplete(() {
-            _programmatic = false;
-          });
+          .animateTo(max, duration: _followDuration, curve: Curves.easeOut)
+          .whenComplete(() => _clearProgrammatic(token));
       // Source clears the guard after ~320ms even if animation is interrupted.
-      _programmaticClear = Timer(const Duration(milliseconds: 320), () {
-        _programmatic = false;
-      });
+      // Token-gated so a *later* follow's guard is never cleared by an earlier
+      // timer — the re-arm loop the audit found.
+      _programmaticClear = Timer(
+        _followDuration,
+        () => _clearProgrammatic(token),
+      );
     } else {
+      _animatingFollow = false;
       _controller.jumpTo(max);
-      _programmatic = false;
+      _clearProgrammatic(token);
     }
     _lastMaxExtent = max;
+  }
+
+  /// Live-edge glide duration, matching the source's programmatic-scroll lock.
+  static const Duration _followDuration = Duration(milliseconds: 320);
+
+  /// Releases the programmatic guard if [token] is still the current scroll.
+  void _clearProgrammatic(int token) {
+    if (token != _scrollToken) return;
+    _animatingFollow = false;
+    _programmatic = false;
+    _programmaticClear?.cancel();
+    _programmaticClear = null;
   }
 
   /// Scrolls so the anchor with [id] is centered in the viewport.
@@ -472,25 +645,25 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
 
     _setFollowing(false);
     setState(() => _activeRailId = id);
-    _programmatic = true;
+    final token = ++_scrollToken;
     _programmaticClear?.cancel();
+    _programmatic = true;
 
     final reduce = MediaQuery.disableAnimationsOf(context);
     final useSmooth = widget.smooth && !reduce;
     Scrollable.ensureVisible(
       ctx,
       alignment: 0.5,
-      duration: useSmooth ? const Duration(milliseconds: 320) : Duration.zero,
+      duration: useSmooth ? _followDuration : Duration.zero,
       curve: Curves.easeOut,
-    ).whenComplete(() {
-      _programmatic = false;
-    });
+    ).whenComplete(() => _clearProgrammatic(token));
     if (useSmooth) {
-      _programmaticClear = Timer(const Duration(milliseconds: 320), () {
-        _programmatic = false;
-      });
+      _programmaticClear = Timer(
+        _followDuration,
+        () => _clearProgrammatic(token),
+      );
     } else {
-      _programmatic = false;
+      _clearProgrammatic(token);
     }
   }
 
@@ -569,7 +742,13 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
   }
 
   void _leaveLiveEdge() {
+    // Invalidate any in-flight follow so its completion callback cannot
+    // re-assert the guard over the reader's own scroll.
+    _scrollToken++;
+    _animatingFollow = false;
     _programmatic = false;
+    _programmaticClear?.cancel();
+    _programmaticClear = null;
   }
 
   bool _onScrollNotification(ScrollNotification notification) {
@@ -607,56 +786,89 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
     return KeyEventResult.ignored;
   }
 
+  /// The viewport padding, with a real default (C27).
+  ///
+  /// `BeuiAgentLayout.conversationGutter` ships as `EdgeInsets.zero`, so before
+  /// this fallback the scroller rendered messages flush against its own edges
+  /// and every demo in the repo passed `padding:` to undo it.
+  EdgeInsetsGeometry _resolvedPadding(BuildContext context) {
+    final explicit = widget.padding;
+    if (explicit != null) return explicit;
+    final gutter = BeuiAgentTheme.of(context).layout.conversationGutter;
+    if (gutter != EdgeInsets.zero) return gutter;
+    // Source `viewportClassName="px-3 py-4"`.
+    return const EdgeInsets.symmetric(horizontal: 12, vertical: 16);
+  }
+
+  Widget _buildScrollable(BuildContext context, {required bool showRail}) {
+    final padding = _resolvedPadding(context);
+    final behavior = ScrollConfiguration.of(
+      context,
+    ).copyWith(scrollbars: !showRail, overscroll: false);
+
+    // C15. The lazy path builds only the rows in (and near) the viewport, so a
+    // streamed token re-measures a screenful rather than the whole transcript.
+    final itemBuilder = widget.itemBuilder;
+    if (itemBuilder != null) {
+      return ScrollConfiguration(
+        behavior: behavior,
+        child: ListView.builder(
+          controller: _controller,
+          physics: widget.scrollPhysics,
+          padding: padding,
+          itemCount: widget.itemCount ?? 0,
+          itemBuilder: itemBuilder,
+        ),
+      );
+    }
+
+    return ScrollConfiguration(
+      behavior: behavior,
+      child: SingleChildScrollView(
+        controller: _controller,
+        physics: widget.scrollPhysics,
+        padding: padding,
+        // Source `[overflow-anchor:none]` — Flutter has no CSS overflow
+        // anchor; programmatic follow replaces browser anchoring.
+        child: _ContentSizeReporter(
+          onSize: (size) {
+            if (!isFollowing) return;
+            if ((size.height - _lastMaxExtent).abs() < 0.5 &&
+                _controller.hasClients &&
+                (_controller.position.maxScrollExtent - _controller.offset)
+                        .abs() <
+                    0.5) {
+              return;
+            }
+            _scheduleFollowIfNeeded();
+          },
+          child: widget.child ?? const SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final colors =
+        Theme.of(context).extension<BeuiColors>() ??
+        BeuiColors.of(BeuiColorTheme.defaultMono, Theme.of(context).brightness);
     final railItems = _resolvedRailItems();
     final showRail =
         widget.navigation == BeuiMessageScrollerNavigation.rail &&
         _isOverflowing() &&
         railItems.length > 1;
 
-    final viewport = Focus(
-      onKeyEvent: _onKey,
-      child: Semantics(
-        label: widget.label,
-        liveRegion: true,
-        child: NotificationListener<ScrollNotification>(
-          onNotification: _onScrollNotification,
-          child: ScrollConfiguration(
-            behavior: ScrollConfiguration.of(
-              context,
-            ).copyWith(scrollbars: !showRail, overscroll: false),
-            child: SingleChildScrollView(
-              controller: _controller,
-              physics: widget.scrollPhysics,
-              padding:
-                  widget.padding ??
-                  BeuiAgentTheme.of(context).layout.conversationGutter,
-              // Source `[overflow-anchor:none]` — Flutter has no CSS overflow
-              // anchor; programmatic follow replaces browser anchoring.
-              child: Semantics(
-                container: true,
-                liveRegion: true,
-                explicitChildNodes: true,
-                child: _ContentSizeReporter(
-                  onSize: (size) {
-                    if (!isFollowing) return;
-                    if ((size.height - _lastMaxExtent).abs() < 0.5 &&
-                        _controller.hasClients &&
-                        (_controller.position.maxScrollExtent -
-                                    _controller.offset)
-                                .abs() <
-                            0.5) {
-                      return;
-                    }
-                    _scheduleFollowIfNeeded();
-                  },
-                  child: widget.child,
-                ),
-              ),
-            ),
-          ),
-        ),
+    // C30. The transcript is a real, *visible* tab stop. Before this the
+    // keyboard escape hatch (ArrowUp / PageUp / Home releasing follow) sat
+    // behind a bare `Focus` with no indicator, so a keyboard reader had to Tab
+    // into something invisible before it worked.
+    final viewport = _ScrollerFocus(
+      onKey: _onKey,
+      label: widget.label,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: _onScrollNotification,
+        child: _buildScrollable(context, showRail: showRail),
       ),
     );
 
@@ -667,50 +879,372 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
       child: viewport,
     );
 
-    // Source exposes `aria-busy={busy}`. Flutter's Semantics has no `busy`
-    // flag on this SDK — surface the state in the region label when set.
-    final body = widget.busy
-        ? Semantics(
-            label: '${widget.label}, busy',
-            container: true,
-            liveRegion: true,
-            child: scoped,
-          )
-        : scoped;
+    // C6. One live region for the whole conversation, mounted here, above the
+    // transcript. It replaces the three-to-five nested regions the audit found
+    // — all with constant labels, so none of them ever announced the streamed
+    // text they were wrapping. Descendant streaming surfaces detect this scope
+    // and push whole sentences into it instead of opening their own.
+    //
+    // Source exposes `aria-busy={busy}`; Flutter's Semantics has no busy flag
+    // on this SDK, so the state rides the *static* container label — which is
+    // safe precisely because it is no longer a live region.
+    Widget body = BeuiTranscriptLiveRegion(
+      key: _liveRegionKey,
+      label: widget.busy ? '${widget.label}, busy' : widget.label,
+      enabled: widget.announce,
+      child: scoped,
+    );
+
+    if (widget.showJumpToLatest) {
+      body = Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(child: body),
+          PositionedDirectional(
+            start: 0,
+            end: 0,
+            bottom: 12,
+            child: Align(
+              child: _JumpToLatest(
+                visible: widget.followOutput && !isFollowing,
+                label: widget.jumpToLatestLabel,
+                unread: _unread,
+                colors: colors,
+                onTap: () {
+                  _setFollowing(true);
+                  scrollToEnd(smooth: true);
+                },
+              ),
+            ),
+          ),
+        ],
+      );
+    }
 
     if (widget.navigation != BeuiMessageScrollerNavigation.rail) {
       return body;
     }
 
-    // Source: PreviewRail wraps the viewport; rail is absolute on the right.
-    // BeuiPreviewRail is content-sized (n × track) and left-aligned, so this
-    // port embeds a compact right-side rail that matches the message-scroller
-    // layout (ticks origin-right, preview card to the left).
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned.fill(
-          child: Padding(
-            padding: EdgeInsets.only(right: showRail ? 40 : 0),
-            child: body,
+    // Source: PreviewRail wraps the viewport; rail is absolute on the trailing
+    // edge. BeuiPreviewRail is content-sized (n × track) and start-aligned, so
+    // this port embeds a compact trailing rail that matches the message-scroller
+    // layout (ticks origin-end, preview card before them).
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final hostWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : _railPreviewWidth + 64;
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Positioned.fill(
+              child: Padding(
+                padding: EdgeInsetsDirectional.only(end: showRail ? 40 : 0),
+                child: body,
+              ),
+            ),
+            if (showRail)
+              PositionedDirectional(
+                top: 12,
+                bottom: 12,
+                end: 4,
+                width: 28,
+                child: _MessageRail(
+                  label: widget.navigationLabel,
+                  items: railItems,
+                  maxPreviewWidth: hostWidth,
+                  activeId: _activeRailId.isEmpty
+                      ? (railItems.isNotEmpty ? railItems.last.id : '')
+                      : _activeRailId,
+                  onSelect: scrollToId,
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// The transcript's focusable viewport (C30).
+///
+/// A keyboard reader can Tab to the transcript, see that it has focus, and use
+/// ArrowUp / PageUp / Home to leave the live edge. The ring is painted outside
+/// layout so taking focus does not reflow the conversation.
+class _ScrollerFocus extends StatefulWidget {
+  const _ScrollerFocus({
+    required this.onKey,
+    required this.label,
+    required this.child,
+  });
+
+  final KeyEventResult Function(FocusNode, KeyEvent) onKey;
+  final String label;
+  final Widget child;
+
+  @override
+  State<_ScrollerFocus> createState() => _ScrollerFocusState();
+}
+
+class _ScrollerFocusState extends State<_ScrollerFocus> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: widget.label,
+      focusable: true,
+      focused: _focused,
+      child: Focus(
+        onKeyEvent: widget.onKey,
+        onFocusChange: (v) {
+          if (_focused == v) return;
+          setState(() => _focused = v);
+        },
+        child: BeuiFocusRing(
+          focused: _focused,
+          borderRadius: BorderRadius.circular(
+            BeuiAgentTheme.of(context).shapes.cardRadius,
           ),
+          child: widget.child,
         ),
-        if (showRail)
-          Positioned(
-            top: 12,
-            bottom: 12,
-            right: 4,
-            width: 28,
-            child: _MessageRail(
-              label: widget.navigationLabel,
-              items: railItems,
-              activeId: _activeRailId.isEmpty
-                  ? (railItems.isNotEmpty ? railItems.last.id : '')
-                  : _activeRailId,
-              onSelect: scrollToId,
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Jump-to-latest pill (C4)
+// ---------------------------------------------------------------------------
+
+/// Pill exit — deliberately faster than the spring entrance, per the repo
+/// motion rules.
+const _jumpExitMotion = CurvedMotion(Duration(milliseconds: 140), beuiEaseOut);
+
+/// Reduced-motion cross-fade for the pill: no travel, no scale, keep opacity.
+const _jumpReduceMotion = CurvedMotion(Duration(milliseconds: 120), beuiEaseOut);
+
+/// "Jump to latest" affordance shown while the reader is away from the live
+/// edge (C4).
+///
+/// The scroller already computed everything this needs — `_following`,
+/// `onFollowChange`, `scrollToEnd()` — and rendered nothing, so a reader who
+/// scrolled up during a stream had no way back other than dragging.
+///
+/// Visual language: a muted pill with a hairline edge, matching
+/// [BeuiMessageMarker]. It springs in (opacity + 8px rise + 0.92→1 scale) and
+/// leaves on a 140ms fade.
+class _JumpToLatest extends StatefulWidget {
+  const _JumpToLatest({
+    required this.visible,
+    required this.label,
+    required this.unread,
+    required this.colors,
+    required this.onTap,
+  });
+
+  final bool visible;
+  final String label;
+  final int unread;
+  final BeuiColors colors;
+  final VoidCallback onTap;
+
+  @override
+  State<_JumpToLatest> createState() => _JumpToLatestState();
+}
+
+class _JumpToLatestState extends State<_JumpToLatest> {
+  bool _hovered = false;
+  bool _pressed = false;
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final agent = BeuiAgentTheme.of(context);
+    final colors = widget.colors;
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final unread = widget.unread;
+    final label = unread > 0
+        ? '${widget.label}, $unread new ${unread == 1 ? 'message' : 'messages'}'
+        : widget.label;
+
+    final pill = Semantics(
+      button: true,
+      label: label,
+      child: Tooltip(
+        message: widget.label,
+        // C22: the Semantics label above already names this control; a
+        // Tooltip that also contributes semantics makes a reader say it twice.
+        excludeFromSemantics: true,
+        child: FocusableActionDetector(
+          mouseCursor: SystemMouseCursors.click,
+          onShowHoverHighlight: (v) => setState(() => _hovered = v),
+          onShowFocusHighlight: (v) => setState(() => _focused = v),
+          shortcuts: const <ShortcutActivator, Intent>{
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                widget.onTap();
+                return null;
+              },
+            ),
+          },
+          child: BeuiMinHitTarget(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapUp: (_) => setState(() => _pressed = false),
+              onTapCancel: () => setState(() => _pressed = false),
+              onTap: widget.onTap,
+              child: BeuiFocusRing(
+                focused: _focused,
+                borderRadius: BorderRadius.circular(999),
+                child: SingleMotionBuilder(
+                  // C31: 0.97 is this library's press scale.
+                  value: (_pressed && !reduce) ? 0.97 : 1.0,
+                  motion: motionFor(
+                    context,
+                    beuiSpringPress,
+                    isMovement: true,
+                  ),
+                  builder: (context, scale, child) =>
+                      Transform.scale(scale: scale, child: child),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: _hovered ? colors.secondary : colors.muted,
+                      borderRadius: agent.shapes.pill,
+                      border: Border.all(
+                        color: colors.borderStrong,
+                        width: agent.structure.borderWidth,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: colors.foreground.withValues(alpha: 0.10),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                        10,
+                        6,
+                        12,
+                        6,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            LucideIcons.arrow_down,
+                            size: 14,
+                            color: colors.foreground,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            widget.label,
+                            style: agent.typography.action.copyWith(
+                              color: colors.foreground,
+                            ),
+                          ),
+                          if (unread > 0) ...[
+                            const SizedBox(width: 6),
+                            _UnreadBadge(count: unread, colors: colors),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-      ],
+        ),
+      ),
+    );
+
+    final target = widget.visible ? 1.0 : 0.0;
+    final base = widget.visible ? beuiSpringSwap : _jumpExitMotion;
+
+    if (reduce) {
+      // Movement dropped, opacity kept — per channel, per the project rule.
+      return SingleMotionBuilder(
+        value: target,
+        motion: motionFor(context, _jumpReduceMotion, isMovement: false),
+        builder: (context, t, child) {
+          final v = t.clamp(0.0, 1.0);
+          if (v <= 0.001) return const SizedBox.shrink();
+          return IgnorePointer(
+            ignoring: !widget.visible,
+            child: ExcludeSemantics(
+              excluding: !widget.visible,
+              child: Opacity(opacity: v, child: child),
+            ),
+          );
+        },
+        child: pill,
+      );
+    }
+
+    return SingleMotionBuilder(
+      value: target,
+      motion: motionFor(context, base, isMovement: true),
+      builder: (context, t, child) {
+        final v = t.clamp(0.0, 1.0);
+        if (v <= 0.001) return const SizedBox.shrink();
+        return IgnorePointer(
+          ignoring: !widget.visible,
+          child: ExcludeSemantics(
+            excluding: !widget.visible,
+            child: Opacity(
+              opacity: v,
+              child: Transform.translate(
+                offset: Offset(0, 8 * (1 - v)),
+                child: Transform.scale(scale: 0.92 + 0.08 * v, child: child),
+              ),
+            ),
+          ),
+        );
+      },
+      child: pill,
+    );
+  }
+}
+
+/// Count of messages that landed while the reader was away.
+class _UnreadBadge extends StatelessWidget {
+  const _UnreadBadge({required this.count, required this.colors});
+
+  final int count;
+  final BeuiColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 18),
+        height: 18,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+          color: colors.foreground,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          count > 99 ? '99+' : '$count',
+          style: TextStyle(
+            fontSize: 11,
+            height: 1,
+            letterSpacing: 0,
+            fontWeight: FontWeight.w600,
+            color: colors.background,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -764,18 +1298,42 @@ class _RenderContentSizeReporter extends RenderProxyBox {
 /// One grid row per rail tick (source `<PreviewRail itemSize={14} …>`).
 const double _railItemSize = 14;
 
+/// Floor for the compressed rail pitch (C16).
+///
+/// The source's fixed 14px pitch clips silently past ~28 messages in a 400px
+/// rail — the ticks for older turns are simply not rendered, with no scroll,
+/// no fade, and no cue that they exist. The rail now compresses toward this
+/// floor instead, which fits ~66 turns in the same 400px, and only becomes
+/// scrollable beyond that.
+const double _railMinItemSize = 6;
+
+/// Height of the fade at each end of a scrollable rail.
+const double _railFadeExtent = 12;
+
+/// Preview card geometry (source `[&_[data-slot=preview-rail-card]]:h-20`).
+const double _railPreviewHeight = 80;
+const double _railPreviewWidth = 256;
+
+/// Gap the preview card leaves between itself and the transcript's edge.
+const double _railPreviewMargin = 8;
+
 class _MessageRail extends StatefulWidget {
   const _MessageRail({
     required this.label,
     required this.items,
     required this.activeId,
     required this.onSelect,
+    required this.maxPreviewWidth,
   });
 
   final String label;
   final List<BeuiMessageScrollerRailItem> items;
   final String activeId;
   final ValueChanged<String> onSelect;
+
+  /// Width of the transcript the rail overlays — the ceiling for the preview
+  /// card (C28).
+  final double maxPreviewWidth;
 
   @override
   State<_MessageRail> createState() => _MessageRailState();
@@ -784,8 +1342,31 @@ class _MessageRail extends StatefulWidget {
 class _MessageRailState extends State<_MessageRail> {
   String? _hoveredId;
   String? _focusedId;
+  final ScrollController _railScroll = ScrollController();
+  double _railOffset = 0;
 
   String? get _displayedId => _hoveredId ?? _focusedId;
+
+  @override
+  void initState() {
+    super.initState();
+    _railScroll.addListener(_onRailScroll);
+  }
+
+  @override
+  void dispose() {
+    _railScroll
+      ..removeListener(_onRailScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onRailScroll() {
+    if (!mounted) return;
+    // The preview card is positioned against tick geometry, so it has to track
+    // the rail's own scroll or it detaches from the tick it describes.
+    setState(() => _railOffset = _railScroll.offset);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -808,14 +1389,27 @@ class _MessageRailState extends State<_MessageRail> {
         ? displayedIndex
         : items.indexWhere((i) => i.id == widget.activeId);
 
-    // Source message-scroller ticks: origin-right, w-4, h-px, one fixed
+    // Source message-scroller ticks: origin-end, w-4, h-px, one fixed
     // `itemSize={14}` grid row each, `content-center` inside the rail box.
     return Semantics(
       label: widget.label,
       container: true,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          const track = _railItemSize;
+          final available = constraints.maxHeight.isFinite
+              ? constraints.maxHeight
+              : n * _railItemSize;
+
+          // C16. Compress the pitch before clipping anything. Only when even
+          // the floor overflows does the rail become scrollable — and then it
+          // says so, with a fade at each end.
+          var track = _railItemSize;
+          if (n * track > available && n > 0) {
+            track = (available / n).clamp(_railMinItemSize, _railItemSize);
+          }
+          final blockHeight = n * track;
+          final scrollable = blockHeight > available + 0.5;
+
           final ticks = <Widget>[
             for (var i = 0; i < n; i++)
               _MessageRailTick(
@@ -837,51 +1431,102 @@ class _MessageRailState extends State<_MessageRail> {
               ),
           ];
 
-          final preview = displayedIndex >= 0
-              ? _MessageRailPreview(
-                  item: items[displayedIndex],
-                  colors: colors,
-                  reduce: reduce,
-                )
-              : null;
-
-          // `content-center`: the n×14 block is centred in the rail box, and
-          // the source's `overflow-hidden` clips it when it is taller.
-          final blockTop = math.max(
-            0.0,
-            (constraints.maxHeight - n * track) / 2,
+          final column = Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: ticks,
           );
+
+          // `content-center`: the n×track block is centred in the rail box
+          // while it fits; once it scrolls it starts at the top.
+          final blockTop = scrollable
+              ? -_railOffset
+              : math.max(0.0, (available - blockHeight) / 2);
+
+          Widget stack;
+          if (scrollable) {
+            stack = ScrollConfiguration(
+              behavior: ScrollConfiguration.of(
+                context,
+              ).copyWith(scrollbars: false, overscroll: false),
+              child: ShaderMask(
+                blendMode: BlendMode.dstIn,
+                shaderCallback: (bounds) {
+                  final fade = (_railFadeExtent / bounds.height).clamp(
+                    0.0,
+                    0.4,
+                  );
+                  return LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: const [
+                      Colors.transparent,
+                      Colors.black,
+                      Colors.black,
+                      Colors.transparent,
+                    ],
+                    stops: [0.0, fade, 1 - fade, 1.0],
+                  ).createShader(bounds);
+                },
+                child: SingleChildScrollView(
+                  controller: _railScroll,
+                  child: column,
+                ),
+              ),
+            );
+          } else {
+            stack = ClipRect(
+              child: OverflowBox(
+                alignment: AlignmentDirectional.centerEnd,
+                maxHeight: double.infinity,
+                child: column,
+              ),
+            );
+          }
+
+          Widget? preview;
+          if (displayedIndex >= 0) {
+            preview = _MessageRailPreview(
+              item: items[displayedIndex],
+              colors: colors,
+              reduce: reduce,
+            );
+          }
 
           return MouseRegion(
             onExit: (_) => setState(() => _hoveredId = null),
             child: Stack(
               clipBehavior: Clip.none,
-              alignment: Alignment.centerRight,
+              alignment: AlignmentDirectional.centerEnd,
               children: [
-                // Preview card sits to the left of the ticks (source
+                // Preview card sits before the ticks (source
                 // previewSide="before", previewContainer left-3 right-8).
                 if (preview != null)
-                  Positioned(
-                    right: 32,
-                    left: null,
-                    width: 256,
-                    top: math.max(
-                      0.0,
-                      blockTop + (displayedIndex + 0.5) * track - 40,
+                  PositionedDirectional(
+                    end: 32,
+                    // C28. The card is 256px wide and used to be pinned there
+                    // regardless of how much room existed — below about 290px
+                    // of component width it painted outside its own bounds and
+                    // over the neighbouring UI. It now takes whatever the
+                    // transcript can spare, down to a readable floor.
+                    width: math.min(
+                      _railPreviewWidth,
+                      math.max(
+                        120.0,
+                        widget.maxPreviewWidth - 32 - _railPreviewMargin,
+                      ),
                     ),
+                    top:
+                        (blockTop +
+                                (displayedIndex + 0.5) * track -
+                                _railPreviewHeight / 2)
+                            .clamp(
+                              0.0,
+                              math.max(0.0, available - _railPreviewHeight),
+                            ),
                     child: preview,
                   ),
-                ClipRect(
-                  child: OverflowBox(
-                    alignment: Alignment.centerRight,
-                    maxHeight: double.infinity,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: ticks,
-                    ),
-                  ),
-                ),
+                Positioned.fill(child: stack),
               ],
             ),
           );
@@ -899,6 +1544,7 @@ class _MessageRailState extends State<_MessageRail> {
     return 0.25;
   }
 }
+
 
 class _MessageRailTick extends StatelessWidget {
   const _MessageRailTick({
@@ -939,8 +1585,11 @@ class _MessageRailTick extends StatelessWidget {
       color: highlighted ? activeColor : inactiveColor,
     );
 
+    // C17. Directional origin: ticks grow from the trailing edge, which is the
+    // right in LTR and the left in RTL — `Transform` resolves the geometry
+    // against the ambient `Directionality`.
     Widget scaled(double value) => Transform(
-      alignment: Alignment.centerRight,
+      alignment: AlignmentDirectional.centerEnd,
       transform: Matrix4.diagonal3Values(value, 1.0, 1.0),
       child: line,
     );
@@ -988,7 +1637,10 @@ class _MessageRailTick extends StatelessWidget {
             child: SizedBox(
               width: 28,
               height: track,
-              child: Align(alignment: Alignment.centerRight, child: animated),
+              child: Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: animated,
+              ),
             ),
           ),
         ),
@@ -1017,7 +1669,7 @@ class _MessageRailPreview extends StatelessWidget {
     // 80 inside the padding made the card 106 tall.
     final agent = BeuiAgentTheme.of(context);
     final card = SizedBox(
-      height: 80, // h-20
+      height: _railPreviewHeight, // h-20
       child: Material(
         color: colors.card,
         elevation: 1, // shadow-sm
