@@ -1008,7 +1008,9 @@ class _HeaderState extends State<_Header> {
             icon: widget.copied
                 ? BeuiAgentTheme.of(context).icons.copied
                 : BeuiAgentTheme.of(context).icons.copy,
-            label: widget.copied ? 'Copied' : 'Copy diff',
+            label: widget.copied
+                ? BeuiAgentTheme.of(context).strings.copied
+                : BeuiAgentTheme.of(context).strings.copyDiff,
             // Live only while the confirmation is up, so it is announced
             // rather than silently relabelled (audit R28).
             liveRegion: widget.copied,
@@ -1327,11 +1329,13 @@ class _HunkSeparatorState extends State<_HunkSeparator> {
   Widget build(BuildContext context) {
     final colors = widget.colors;
     final count = widget.gap.hiddenCount;
-    final plural = count == 1 ? 'line' : 'lines';
     final expandable = widget.onExpand != null;
+    // F13: pluralization is the theme's problem, not a `count == 1 ? …` here —
+    // languages with more than two plural forms cannot be served by a ternary.
+    final strings = BeuiAgentTheme.of(context).strings;
     final text = expandable
-        ? 'Expand $count hidden $plural'
-        : '$count hidden $plural';
+        ? strings.expandHiddenLines(count)
+        : strings.hiddenLinesCollapsed(count);
 
     final body = DecoratedBox(
       decoration: BoxDecoration(
@@ -1374,33 +1378,41 @@ class _HunkSeparatorState extends State<_HunkSeparator> {
     );
 
     if (!expandable) {
-      return Semantics(label: '$count hidden $plural', child: body);
+      return Semantics(label: strings.hiddenLinesCollapsed(count), child: body);
     }
 
-    return Semantics(
-      button: true,
-      label: text,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _hovered = true),
-        onExit: (_) => setState(() => _hovered = false),
-        child: FocusableActionDetector(
-          mouseCursor: SystemMouseCursors.click,
-          onShowFocusHighlight: (v) {
-            if (mounted) setState(() => _focused = v);
-          },
-          actions: <Type, Action<Intent>>{
-            ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) {
-                widget.onExpand!(widget.gap);
-                return null;
-              },
+    // F14: the band paints 20px tall — half the 44px floor. The slop wrapper is
+    // OUTERMOST because every box below it (Semantics, MouseRegion,
+    // FocusableActionDetector) is sized to the paint and would reject an
+    // out-of-bounds pointer before this widget ever saw it. Width already
+    // clears the floor, so only the vertical 12px of overhang is doing work,
+    // and it overhangs into inert diff rows.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        label: text,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() => _hovered = false),
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowFocusHighlight: (v) {
+              if (mounted) setState(() => _focused = v);
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onExpand!(widget.gap);
+                  return null;
+                },
+              ),
+            },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => widget.onExpand!(widget.gap),
+              child: BeuiFocusRing(focused: _focused, child: body),
             ),
-          },
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => widget.onExpand!(widget.gap),
-            child: BeuiFocusRing(focused: _focused, child: body),
           ),
         ),
       ),
