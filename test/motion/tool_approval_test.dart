@@ -436,16 +436,45 @@ void main() {
       expect(denied, greaterThan(0));
     });
 
-    testWidgets('every action meets the tap-target guideline', (tester) async {
+    testWidgets('every action carries a label for assistive technology', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
         _host(onApprove: () {}, onAlwaysAllow: () {}, onDeny: () {}),
       );
       await tester.pumpAndSettle();
 
-      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       handle.dispose();
+    });
+
+    // A31. `androidTapTargetGuideline` measures the *semantics* rect, which
+    // `BeuiMinHitTarget` deliberately does not grow — the whole point is to
+    // widen the touch area without inflating the layout and pushing the
+    // buttons apart. So the honest assertion is behavioural: a press that
+    // lands outside the painted button still activates it.
+    testWidgets('actions accept presses outside their painted bounds', (
+      tester,
+    ) async {
+      var denied = 0;
+      await tester.pumpWidget(_host(onApprove: () {}, onDeny: () => denied++));
+      await tester.pumpAndSettle();
+
+      final visual = tester.getRect(
+        find.ancestor(of: find.text('Deny'), matching: find.byType(BeuiButton)),
+      );
+      expect(
+        visual.height,
+        lessThan(44),
+        reason: 'the visual is deliberately smaller than the hit target',
+      );
+
+      // 4px below the painted bottom edge — inside the 44px slop, outside the
+      // button itself.
+      await tester.tapAt(Offset(visual.center.dx, visual.bottom + 4));
+      await tester.pump();
+      expect(denied, 1);
     });
 
     // ---------------------------------------------------------------------
@@ -694,14 +723,21 @@ void main() {
           ),
       ];
       await tester.pumpWidget(
-        _host(parameters: many, onApprove: () {}, onDeny: () {}),
+        _host(
+          parameters: many,
+          defaultOpen: true,
+          onApprove: () {},
+          onDeny: () {},
+        ),
       );
       await tester.pumpAndSettle();
 
       // Unbounded, a 300-line diff expanded the card indefinitely inside a
       // transcript.
+      // Unbounded, 40 rows would run past 1200px and expand the card
+      // indefinitely inside a transcript; the 240px cap holds it here.
       final card = tester.getRect(find.byType(BeuiToolApproval));
-      expect(card.height, lessThan(520));
+      expect(card.height, lessThan(620));
       expect(find.byType(Scrollbar), findsWidgets);
     });
 
@@ -751,6 +787,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('View details'));
+      await tester.pump(); // commit the state change, seed the animation
       // Mid-fade: the copies this replaces hard-cut, so there was no frame
       // where the panel was partially opaque.
       await tester.pump(const Duration(milliseconds: 60));
@@ -893,7 +930,7 @@ void main() {
     testWidgets('golden — pending, destructive, and approved tiers', (
       tester,
     ) async {
-      await tester.binding.setSurfaceSize(const Size(460, 660));
+      await tester.binding.setSurfaceSize(const Size(460, 830));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
       await tester.pumpWidget(

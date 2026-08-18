@@ -896,7 +896,18 @@ class _HeaderTriggerState extends State<_HeaderTrigger> {
               key: const ValueKey<String>('beui-approval-expand'),
               behavior: HitTestBehavior.opaque,
               onTap: widget.onToggle,
-              child: ExcludeSemantics(child: widget.child),
+              // A31: the row is the control, so the *row* has to clear the
+              // touch floor. `BeuiMinHitTarget` widens hit testing but cannot
+              // grow the semantics rect an accessibility audit measures, and a
+              // title's line box is only ~20px tall — so the minimum height is
+              // real, and the content stays top-aligned inside it.
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 48),
+                child: Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: ExcludeSemantics(child: widget.child),
+                ),
+              ),
             ),
           ),
         ),

@@ -863,19 +863,34 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
       required VoidCallback? onPressed,
       Color? textColor,
     }) {
-      // A31: 44px hit target over the 32px visual.
-      return BeuiMinHitTarget(
-        child: BeuiButton(
-          variant: variant,
-          size: BeuiButtonSize.sm,
-          pressScale: beuiAgentPressScale,
-          borderRadius: radius,
-          // A4 belt-and-braces: a null handler is a disabled button, which
-          // BeuiButton renders dimmed and refuses to activate (A5).
-          onPressed: onPressed,
-          child: Text(
-            label,
-            style: textColor == null ? null : TextStyle(color: textColor),
+      // A31: a 44px touch target over the 32px pill.
+      //
+      // The `SizedBox` is load-bearing, not decoration. `BeuiMinHitTarget`
+      // widens hit testing by accepting out-of-bounds points, but a parent
+      // only ever dispatches points inside *its own* box — so in a `Wrap`
+      // sized exactly to its 32px children the slop was unreachable and the
+      // wrapper did nothing at all. Giving the row real height is what makes
+      // the extra 12px actually touchable; the pill still paints at 32.
+      return SizedBox(
+        height: 44,
+        // `widthFactor: 1` shrink-wraps horizontally. Without it the Center
+        // expands to the Wrap's full width and the row reads as centred.
+        child: Center(
+          widthFactor: 1,
+          child: BeuiMinHitTarget(
+            child: BeuiButton(
+              variant: variant,
+              size: BeuiButtonSize.sm,
+              pressScale: beuiAgentPressScale,
+              borderRadius: radius,
+              // A4 belt-and-braces: a null handler is a disabled button, which
+              // BeuiButton renders dimmed and refuses to activate (A5).
+              onPressed: onPressed,
+              child: Text(
+                label,
+                style: textColor == null ? null : TextStyle(color: textColor),
+              ),
+            ),
           ),
         ),
       );
@@ -898,20 +913,22 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
       onPressed: widget.onDeny,
     );
 
+    final alwaysAllow = _showAlwaysAllow
+        ? button(
+            label: widget.alwaysAllowLabel ?? strings.alwaysAllow,
+            variant: BeuiButtonVariant.outline,
+            onPressed: widget.onAlwaysAllow,
+          )
+        : null;
+
     if (destructive) {
-      return [deny, allowOnce];
+      // Deny leads. `Always allow` is suppressed by default here, but a caller
+      // who explicitly passes `allowAlways: true` gets it back — last, and
+      // behind the safe exit.
+      return [deny, allowOnce, ?alwaysAllow];
     }
 
-    return [
-      allowOnce,
-      if (_showAlwaysAllow)
-        button(
-          label: widget.alwaysAllowLabel ?? strings.alwaysAllow,
-          variant: BeuiButtonVariant.outline,
-          onPressed: widget.onAlwaysAllow,
-        ),
-      deny,
-    ];
+    return [allowOnce, ?alwaysAllow, deny];
   }
 }
 
@@ -1095,7 +1112,7 @@ class _DetailsToggle extends StatelessWidget {
 }
 
 /// The capped, scrollable parameter list (A23).
-class _DetailsPanel extends StatelessWidget {
+class _DetailsPanel extends StatefulWidget {
   const _DetailsPanel({
     required this.parameters,
     required this.colors,
@@ -1109,7 +1126,27 @@ class _DetailsPanel extends StatelessWidget {
   final double maxHeight;
 
   @override
+  State<_DetailsPanel> createState() => _DetailsPanelState();
+}
+
+class _DetailsPanelState extends State<_DetailsPanel> {
+  // The scrollbar needs a controller it shares with the view; falling back to
+  // the PrimaryScrollController would attach it to the enclosing transcript.
+  final ScrollController _scroll = ScrollController();
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final parameters = widget.parameters;
+    final colors = widget.colors;
+    final agent = widget.agent;
+    final maxHeight = widget.maxHeight;
+
     final rows = Padding(
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -1136,8 +1173,9 @@ class _DetailsPanel extends StatelessWidget {
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: maxHeight),
       child: Scrollbar(
+        controller: _scroll,
         thumbVisibility: true,
-        child: SingleChildScrollView(primary: false, child: rows),
+        child: SingleChildScrollView(controller: _scroll, child: rows),
       ),
     );
   }

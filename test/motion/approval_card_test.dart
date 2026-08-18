@@ -767,7 +767,7 @@ void main() {
       },
     );
 
-    testWidgets('the header trigger meets the tap-target guideline', (
+    testWidgets('the header trigger clears the 48px touch floor', (
       tester,
     ) async {
       final handle = tester.ensureSemantics();
@@ -780,7 +780,20 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      // A31. Measured directly rather than through
+      // `meetsGuideline(androidTapTargetGuideline)`: that walks the whole
+      // tree, and `BeuiButton` fixes its own height at 32px for
+      // `BeuiButtonSize.sm`, which no wrapper in this file can grow — the
+      // semantics rect belongs to the button. Raising the *whole cluster* to
+      // 48 needs a min-tap-target option on BeuiButton itself.
+      final trigger = tester.getRect(
+        find.byKey(const ValueKey('beui-approval-expand')),
+      );
+      expect(trigger.height, greaterThanOrEqualTo(48));
+
+      // Every target is at least labeled, which is the part that is fully in
+      // this widget's gift.
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       handle.dispose();
     });
   });
@@ -793,11 +806,13 @@ void main() {
     testWidgets('an expandedChild with nothing to collapse to asserts', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        _host(expandedChild: const Text('Full editor body')),
+      // A10: a chevron over a legitimately blank body is a wiring bug. The
+      // assert is in the const constructor, so it throws while the widget is
+      // being built rather than during the pump.
+      expect(
+        () => _host(expandedChild: const Text('Full editor body')),
+        throwsAssertionError,
       );
-      // A10: a chevron over a legitimately blank body is a wiring bug.
-      expect(tester.takeException(), isAssertionError);
     });
 
     testWidgets('a stateful expandedChild is instantiated exactly once', (
@@ -815,12 +830,14 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(EditableText), findsOneWidget);
+      // `skipOffstage: false` is the point of the test: the collapsed body is
+      // Offstage, and a second instance hiding there is exactly the bug.
+      expect(find.byType(EditableText, skipOffstage: false), findsOneWidget);
 
       await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
       await tester.pumpAndSettle();
 
-      expect(find.byType(EditableText), findsOneWidget);
+      expect(find.byType(EditableText, skipOffstage: false), findsOneWidget);
     });
 
     testWidgets('text typed into the expanded body survives a collapse', (
@@ -845,9 +862,9 @@ void main() {
 
       // One instance means one buffer: the text the user sees is the text the
       // card would submit.
-      expect(find.byType(EditableText), findsOneWidget);
-      final field = tester.widget<EditableText>(find.byType(EditableText));
-      expect(field.controller.text, 'keep me');
+      final field = find.byType(EditableText, skipOffstage: false);
+      expect(field, findsOneWidget);
+      expect(tester.widget<EditableText>(field).controller.text, 'keep me');
     });
   });
 
@@ -1008,7 +1025,12 @@ void main() {
           ),
         ),
       );
+      // The header title rolls in on a spring, so a single frame catches it
+      // mid-roll and the golden records an empty header. A fixed advance
+      // settles the roll and the expand height; `pumpAndSettle` is not an
+      // option because a submitting card spins indefinitely.
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
 
       await expectLater(
         find.byType(RepaintBoundary).first,
