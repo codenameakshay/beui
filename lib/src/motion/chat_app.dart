@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
+import '_engine.dart';
 
 // ---------------------------------------------------------------------------
 // BeuiChatApp
@@ -23,9 +26,20 @@ import '../theme/beui_colors.dart';
 /// sidebar column. Conversation content, streaming, tools, and input state
 /// stay with the consumer (see the gallery demo for a full agent turn).
 ///
+/// ## Narrow windows
+///
+/// Below [sidebarBreakpoint] the sidebar leaves the flow (C3). The source
+/// hardcodes a 272px rail with no responsive behaviour at all, which on a
+/// 300px window left the conversation 28px — narrow enough to trip the message
+/// bubble's own minimum-width assert. Below the breakpoint the sidebar either
+/// hides (the default) or slides in over the transcript when [sidebarOpen] is
+/// true, dismissible through [onSidebarDismiss].
+///
 /// ```dart
 /// BeuiChatApp(
 ///   sidebar: BeuiAiSidebar(...),
+///   sidebarOpen: _drawerOpen,
+///   onSidebarDismiss: () => setState(() => _drawerOpen = false),
 ///   header: Text('Checkout release'),
 ///   body: BeuiMessageScroller(child: BeuiMessageGroup(...)),
 ///   prompt: BeuiPromptInput(onSubmit: ...),
@@ -39,15 +53,26 @@ class BeuiChatApp extends StatelessWidget {
     this.header,
     this.prompt,
     this.sidebarWidth = kBeuiChatAppSidebarWidth,
+    this.sidebarBreakpoint = kBeuiChatAppSidebarBreakpoint,
+    this.sidebarOpen,
+    this.onSidebarDismiss,
     this.borderRadius,
     this.showBorder = true,
     this.backgroundColor,
+    this.avoidKeyboardInset = true,
     this.semanticLabel = 'Agent workspace',
     super.key,
-  }) : assert(sidebarWidth > 0);
+  }) : assert(sidebarWidth > 0),
+       assert(sidebarBreakpoint >= 0);
 
   /// Source default sidebar width — `17rem` ≈ 272 logical px.
   static const double kBeuiChatAppSidebarWidth = 272;
+
+  /// Width below which the sidebar collapses out of the flow.
+  ///
+  /// 768 is the conventional tablet breakpoint and leaves ~496px for the
+  /// conversation at the default [kBeuiChatAppSidebarWidth].
+  static const double kBeuiChatAppSidebarBreakpoint = 768;
 
   /// Main conversation region (source `AnimatedSidebarInset` body).
   ///
@@ -71,6 +96,22 @@ class BeuiChatApp extends StatelessWidget {
   /// [kBeuiChatAppSidebarWidth]).
   final double sidebarWidth;
 
+  /// Shell width below which [sidebar] leaves the flow (default
+  /// [kBeuiChatAppSidebarBreakpoint]). Pass 0 to keep the sidebar inline at
+  /// every size — the pre-UX-pass behaviour.
+  final double sidebarBreakpoint;
+
+  /// Whether the collapsed sidebar is shown as an overlay drawer.
+  ///
+  /// Only consulted below [sidebarBreakpoint]; above it the sidebar is always
+  /// inline. Null (the default) means "hidden when collapsed", so a shell that
+  /// never wires a trigger degrades to a single conversation column instead of
+  /// crushing it.
+  final bool? sidebarOpen;
+
+  /// Called when the reader dismisses the overlay sidebar — scrim tap or Esc.
+  final VoidCallback? onSidebarDismiss;
+
   /// Corner radius of the outer shell. Null uses [BeuiAgentShapes.cardRadius]
   /// (source `rounded-2xl` = 16).
   final double? borderRadius;
@@ -81,6 +122,14 @@ class BeuiChatApp extends StatelessWidget {
   /// Shell fill. Defaults to [BeuiColors.background].
   final Color? backgroundColor;
 
+  /// Lifts [prompt] clear of the soft keyboard (default true).
+  ///
+  /// The shell pins the composer to its own bottom edge, so outside a resizing
+  /// `Scaffold` the keyboard covered the thing the reader was typing into. The
+  /// inset is consumed here and removed from the subtree, so a nested
+  /// `MediaQuery` consumer cannot apply it a second time.
+  final bool avoidKeyboardInset;
+
   /// Accessible label for the workspace region.
   final String semanticLabel;
 
@@ -90,10 +139,30 @@ class BeuiChatApp extends StatelessWidget {
     final agent = BeuiAgentTheme.of(context);
     final bg = backgroundColor ?? colors.background;
     final radius = borderRadius ?? agent.shapes.cardRadius;
+    // C17: the rail's divider is on its *trailing* edge, which is the right in
+    // LTR and the left in RTL.
     final borderSide = BorderSide(
       color: colors.border,
       width: agent.structure.borderWidth,
     );
+
+    final keyboardInset = avoidKeyboardInset
+        ? MediaQuery.viewInsetsOf(context).bottom
+        : 0.0;
+
+    Widget composer(Widget child) {
+      if (keyboardInset <= 0) return child;
+      // Consume the inset here and strip it below, so a nested consumer (a
+      // `BeuiPromptInput` in a `Scaffold`, say) cannot double-apply it.
+      return MediaQuery.removeViewInsets(
+        context: context,
+        removeBottom: true,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: keyboardInset),
+          child: child,
+        ),
+      );
+    }
 
     final mainColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -113,26 +182,56 @@ class BeuiChatApp extends StatelessWidget {
             thickness: agent.structure.borderWidth,
             color: colors.border,
           ),
-          prompt!,
+          composer(prompt!),
         ],
       ],
     );
 
-    final content = sidebar == null
-        ? mainColumn
-        : Row(
+    final rail = sidebar == null
+        ? null
+        : DecoratedBox(
+            decoration: BoxDecoration(
+              border: BorderDirectional(end: borderSide),
+            ),
+            child: sidebar,
+          );
+
+    final shell = LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final collapsed =
+            rail != null && width.isFinite && width < sidebarBreakpoint;
+
+        if (rail == null) return mainColumn;
+
+        if (!collapsed) {
+          return Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
-                width: sidebarWidth,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(border: Border(right: borderSide)),
-                  child: sidebar,
-                ),
-              ),
+              SizedBox(width: sidebarWidth, child: rail),
               Expanded(child: mainColumn),
             ],
           );
+        }
+
+        // Collapsed: the conversation gets the whole shell, and the rail
+        // becomes an overlay drawer over it when asked for.
+        final open = sidebarOpen ?? false;
+        return Stack(
+          children: [
+            Positioned.fill(child: mainColumn),
+            if (sidebarOpen != null)
+              _SidebarDrawer(
+                open: open,
+                width: sidebarWidth > width ? width * 0.86 : sidebarWidth,
+                scrimColor: colors.foreground.withValues(alpha: 0.32),
+                onDismiss: onSidebarDismiss,
+                child: ColoredBox(color: colors.background, child: rail),
+              ),
+          ],
+        );
+      },
+    );
 
     return Semantics(
       container: true,
@@ -151,9 +250,109 @@ class BeuiChatApp extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(radius),
-          child: content,
+          child: shell,
         ),
       ),
+    );
+  }
+}
+
+/// The collapsed sidebar, as a scrimmed drawer inside the shell (C3).
+///
+/// Deliberately *not* routed through the root overlay: the shell is a bordered,
+/// clipped surface that is frequently embedded inside a page, and a drawer that
+/// escaped it would cover unrelated UI.
+class _SidebarDrawer extends StatelessWidget {
+  const _SidebarDrawer({
+    required this.open,
+    required this.width,
+    required this.scrimColor,
+    required this.onDismiss,
+    required this.child,
+  });
+
+  final bool open;
+  final double width;
+  final Color scrimColor;
+  final VoidCallback? onDismiss;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    // Panel travel is movement, so reduced motion snaps it; the scrim is
+    // opacity, so it keeps fading. One channel each, as the project rule says.
+    final panelMotion = motionFor(
+      context,
+      open
+          ? const CurvedMotion(Duration(milliseconds: 220), beuiEaseOut)
+          : const CurvedMotion(Duration(milliseconds: 140), beuiEaseOut),
+      isMovement: true,
+    );
+    final scrimMotion = motionFor(
+      context,
+      const CurvedMotion(Duration(milliseconds: 160), beuiEaseOut),
+      isMovement: false,
+    );
+
+    return SingleMotionBuilder(
+      value: open ? 1.0 : 0.0,
+      motion: reduce ? scrimMotion : panelMotion,
+      builder: (context, t, child) {
+        final v = t.clamp(0.0, 1.0);
+        if (v <= 0.001) return const SizedBox.shrink();
+        return Positioned.fill(
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Semantics(
+                  button: true,
+                  label: 'Close navigation',
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onDismiss,
+                    child: SingleMotionBuilder(
+                      value: open ? 1.0 : 0.0,
+                      motion: scrimMotion,
+                      builder: (context, s, _) => ColoredBox(
+                        color: scrimColor.withValues(
+                          alpha: scrimColor.a * s.clamp(0.0, 1.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              PositionedDirectional(
+                top: 0,
+                bottom: 0,
+                start: reduce ? 0 : -width * (1 - v),
+                width: width,
+                child: FocusScope(
+                  child: Shortcuts(
+                    shortcuts: <ShortcutActivator, Intent>{
+                      const SingleActivator(LogicalKeyboardKey.escape):
+                          const DismissIntent(),
+                    },
+                    child: Actions(
+                      actions: <Type, Action<Intent>>{
+                        DismissIntent: CallbackAction<DismissIntent>(
+                          onInvoke: (_) {
+                            onDismiss?.call();
+                            return null;
+                          },
+                        ),
+                      },
+                      child: child!,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      child: child,
     );
   }
 }

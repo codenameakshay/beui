@@ -1,12 +1,19 @@
+import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
+import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
+import '_hit_target.dart';
 import 'message.dart';
 
 // ---------------------------------------------------------------------------
@@ -123,7 +130,7 @@ class BeuiMessageBubble extends StatefulWidget {
     required this.child,
     this.variant = BeuiMessageBubbleVariant.soft,
     this.align,
-    this.animateIn = false,
+    this.animateIn = true,
     super.key,
   });
 
@@ -137,8 +144,18 @@ class BeuiMessageBubble extends StatefulWidget {
   /// [BeuiMessageBubbleSide.start].
   final BeuiMessageBubbleAlign? align;
 
-  /// Plays the surface pop once when this bubble mounts (source `animateIn`,
-  /// default `false`).
+  /// Plays the surface pop once when this bubble mounts.
+  ///
+  /// Defaults to **true** (C12). The source defaults it off, and the audit
+  /// found the consequence: nothing in the library animated out of the box and
+  /// the flagship preview opted assistant rows out entirely, so the port's
+  /// best asset — its entrance motion — was invisible unless you knew to ask
+  /// for it.
+  ///
+  /// "New" is derived from key identity, not from this flag: the entrance is
+  /// seeded once at mount and never replays, so a bubble whose content streams
+  /// pops exactly once. Give rows stable keys and this does the right thing.
+  /// Reduced motion drops the scale and keeps the fade.
   final bool animateIn;
 
   @override
@@ -164,9 +181,11 @@ class _BeuiMessageBubbleState extends State<BeuiMessageBubble> {
       variant: widget.variant,
       notifyLayout: _notifyLayout,
       child: Align(
+        // C17: bubbles align to the *logical* end/start, so the bubble and the
+        // column it lives in can no longer disagree about sides in RTL.
         alignment: resolved == BeuiMessageBubbleSide.end
-            ? Alignment.centerRight
-            : Alignment.centerLeft,
+            ? AlignmentDirectional.centerEnd
+            : AlignmentDirectional.centerStart,
         child: Column(
           crossAxisAlignment: resolved == BeuiMessageBubbleSide.end
               ? CrossAxisAlignment.end
@@ -195,6 +214,7 @@ class BeuiMessageBubbleContent extends StatefulWidget {
     required this.child,
     this.onTap,
     this.maxWidthFactor,
+    this.semanticLabel,
     super.key,
   });
 
@@ -207,8 +227,20 @@ class BeuiMessageBubbleContent extends StatefulWidget {
 
   /// Max width as a fraction of the parent (source `max-w-[82%]`).
   /// Ignored for [BeuiMessageBubbleVariant.ghost] (full width).
-  /// Null uses [BeuiAgentLayout.maxBubbleWidthFactor].
+  /// Null uses the theme's `layout.maxBubbleWidthFactor`.
+  ///
+  /// The resolved width is clamped to never fall below the bubble's own
+  /// minimum, so a narrow shell can no longer produce impossible constraints
+  /// (C3).
   final double? maxWidthFactor;
+
+  /// Accessible name for an interactive bubble (C7).
+  ///
+  /// Only meaningful when [onTap] is set — the bubble then reports itself as a
+  /// button, and this is what a screen reader announces. Defaults to the
+  /// bubble's own text content, which is usually what you want; pass something
+  /// shorter when the body is long.
+  final String? semanticLabel;
 
   @override
   State<BeuiMessageBubbleContent> createState() =>
@@ -226,11 +258,27 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_seeded) return;
-    _seeded = true;
-    _animateIn = _BubbleScope.maybeOf(context)?.animateIn ?? false;
-    _progress = _animateIn ? 0.0 : 1.0;
-    if (_animateIn) _scheduleEnter();
+    final wants = _BubbleScope.maybeOf(context)?.animateIn ?? false;
+
+    if (!_seeded) {
+      _seeded = true;
+      _animateIn = wants;
+      _progress = _animateIn ? 0.0 : 1.0;
+      if (_animateIn) _scheduleEnter();
+      return;
+    }
+
+    // C12. The seed used to be strictly one-shot, so a later prop change was
+    // silently ignored. Turning the entrance *off* mid-flight now settles the
+    // bubble immediately — a caller disabling animation should not leave a
+    // half-scaled surface on screen. Turning it *on* after mount is
+    // deliberately ignored: the entrance is mount-only by contract, and
+    // retro-animating an already-visible bubble would replay it on every
+    // streamed token.
+    if (!wants && _animateIn) {
+      _animateIn = false;
+      if (_progress < 1.0) _progress = 1.0;
+    }
   }
 
   void _scheduleEnter() {
@@ -256,9 +304,18 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
     final widthFactor =
         widget.maxWidthFactor ?? agent.layout.maxBubbleWidthFactor;
 
+    // C9. `danger` was `colors.destructive` on a 10% wash — 3.43:1, and colour
+    // was its *only* signal. It now uses the themeable destructive status tier
+    // (a 700/300 foreground) and gains a leading `triangle_alert`, so the state
+    // survives both a contrast check and a colourblind reader.
+    final danger = variant == BeuiMessageBubbleVariant.danger;
+    final dangerPalette = agent
+        .statusColorsFor(Theme.of(context).brightness)
+        .destructive;
+
     final textColor = switch (variant) {
       BeuiMessageBubbleVariant.solid => colors.background,
-      BeuiMessageBubbleVariant.danger => colors.destructive,
+      BeuiMessageBubbleVariant.danger => dangerPalette.foreground,
       _ => colors.foreground,
     };
 
@@ -266,25 +323,53 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
       BeuiMessageBubbleVariant.solid => colors.foreground,
       BeuiMessageBubbleVariant.soft => colors.muted,
       BeuiMessageBubbleVariant.tint => colors.primary.withValues(alpha: 0.1),
-      BeuiMessageBubbleVariant.outline => colors.background,
-      BeuiMessageBubbleVariant.danger => colors.destructive.withValues(
-        alpha: 0.1,
-      ),
+      // C9. `outline` was `background` behind a border multiplied down to
+      // ~1.1:1 — an invisible bubble on an invisible edge. A `card` fill gives
+      // it a surface you can actually see even where the hairline cannot carry
+      // the shape alone.
+      BeuiMessageBubbleVariant.outline => colors.card,
+      BeuiMessageBubbleVariant.danger => dangerPalette.background,
       BeuiMessageBubbleVariant.ghost => Colors.transparent,
     };
 
-    final border = variant == BeuiMessageBubbleVariant.outline
-        ? Border.all(
-            color: colors.border.withValues(alpha: colors.border.a * 0.7),
-            width: agent.structure.borderWidth,
-          )
-        : null;
+    final border = switch (variant) {
+      // Full-strength `borderStrong`, not `border × 0.7`.
+      BeuiMessageBubbleVariant.outline => Border.all(
+        color: colors.borderStrong,
+        width: agent.structure.borderWidth,
+      ),
+      BeuiMessageBubbleVariant.danger => Border.all(
+        color: dangerPalette.border,
+        width: agent.structure.borderWidth,
+      ),
+      _ => null,
+    };
+
+    Widget inner = widget.child;
+    if (danger) {
+      // Redundant encoding: shape as well as colour.
+      inner = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsetsDirectional.only(end: 8, top: 2),
+            child: Icon(
+              LucideIcons.triangle_alert,
+              size: 14,
+              color: dangerPalette.foreground,
+            ),
+          ),
+          Flexible(child: widget.child),
+        ],
+      );
+    }
 
     final content = DefaultTextStyle.merge(
       style: agent.bodyStyle(user: user).copyWith(color: textColor),
       child: IconTheme.merge(
         data: IconThemeData(size: agent.layout.iconSize, color: textColor),
-        child: widget.child,
+        child: inner,
       ),
     );
 
@@ -300,13 +385,20 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
       isMovement: false,
     );
 
+    // C3. `min-w-9` against `0.82 × available` asserts in debug the moment the
+    // shell gets narrower than ~44px — reachable through a `BeuiChatApp` whose
+    // 272px sidebar left the body 28px on a 300px window. Clamp rather than
+    // crash: a bubble narrower than its own minimum is simply the minimum.
+    const minW = 36.0; // min-w-9
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        final maxW = ghost
+        var maxW = ghost
             ? constraints.maxWidth
             : (constraints.maxWidth.isFinite
                   ? constraints.maxWidth * widthFactor
                   : double.infinity);
+        if (!ghost && maxW.isFinite && maxW < minW) maxW = minW;
 
         Widget shell = Stack(
           children: [
@@ -325,9 +417,12 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
                       opacity: tt,
                       child: Transform.scale(
                         scale: scale,
+                        // C17: the pop grows out of the bubble's own corner,
+                        // which is the trailing corner in LTR and the leading
+                        // one in RTL.
                         alignment: align == BeuiMessageBubbleSide.end
-                            ? Alignment.bottomRight
-                            : Alignment.bottomLeft,
+                            ? AlignmentDirectional.bottomEnd
+                            : AlignmentDirectional.bottomStart,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             color: surfaceColor,
@@ -354,7 +449,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
 
         shell = ConstrainedBox(
           constraints: BoxConstraints(
-            minWidth: ghost ? 0 : 36, // min-w-9
+            minWidth: ghost ? 0 : minW,
             maxWidth: maxW.isFinite ? maxW : double.infinity,
           ),
           child: shell,
@@ -362,40 +457,53 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
 
         if (!interactive) return shell;
 
-        return FocusableActionDetector(
-          onShowFocusHighlight: (v) => setState(() => _focused = v),
-          actions: <Type, Action<Intent>>{
-            ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) {
-                widget.onTap?.call();
-                return null;
-              },
-            ),
-          },
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown: (_) => setState(() => _pressed = true),
-            onTapUp: (_) {
-              setState(() => _pressed = false);
-              widget.onTap?.call();
+        // C7. An interactive bubble is a button and must say so. Before this
+        // it carried a tap handler, no role, and no name — its own rail tick
+        // twenty files away had the complete contract.
+        return Semantics(
+          button: true,
+          label: widget.semanticLabel,
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowFocusHighlight: (v) => setState(() => _focused = v),
+            shortcuts: const <ShortcutActivator, Intent>{
+              SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+              SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
             },
-            onTapCancel: () => setState(() => _pressed = false),
-            child: AnimatedScale(
-              scale: _pressed ? 0.99 : 1.0,
-              duration: const Duration(milliseconds: 150),
-              curve: beuiEaseOut,
-              child: AnimatedContainer(
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onTap?.call();
+                  return null;
+                },
+              ),
+            },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapUp: (_) {
+                setState(() => _pressed = false);
+                widget.onTap?.call();
+              },
+              onTapCancel: () => setState(() => _pressed = false),
+              child: AnimatedScale(
+                // C31: 0.99 is imperceptible. 0.97 is the library's press
+                // scale.
+                scale: _pressed && !reduce ? 0.97 : 1.0,
                 duration: const Duration(milliseconds: 150),
-                decoration: BoxDecoration(
+                curve: beuiEaseOut,
+                // C2. The ring used to be a `Border` inside a `BoxDecoration`,
+                // so focusing both inset the child by 2px — the "indicator"
+                // was a layout jitter — and painted in `colors.ring`, a 12%
+                // hairline token that composites to 1.29:1 against 3:1
+                // required. This paints outside layout in the dedicated
+                // `focusRing` role.
+                child: BeuiFocusRing(
+                  focused: _focused,
                   borderRadius: radius,
-                  border: _focused
-                      ? Border.all(
-                          color: colors.ring,
-                          width: agent.structure.emphasisBorderWidth,
-                        )
-                      : null,
+                  width: agent.structure.emphasisBorderWidth,
+                  child: shell,
                 ),
-                child: shell,
               ),
             ),
           ),
@@ -427,6 +535,11 @@ class _ContentRevealState extends State<_ContentReveal> {
   double _value = 0;
   bool _started = false;
 
+  /// C34. This was a bare `Future.delayed` with only a `mounted` guard, so a
+  /// bubble disposed inside the 40ms window left a pending callback holding
+  /// the State alive. A cancellable timer, cancelled in `dispose`.
+  Timer? _delay;
+
   @override
   void initState() {
     super.initState();
@@ -441,14 +554,31 @@ class _ContentRevealState extends State<_ContentReveal> {
   @override
   void didUpdateWidget(covariant _ContentReveal oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // The entrance was switched off mid-flight — settle rather than hold a
+    // half-faded body (C12).
+    if (!widget.animateIn && oldWidget.animateIn) {
+      _delay?.cancel();
+      _delay = null;
+      _started = true;
+      if (_value != 1) _value = 1;
+      return;
+    }
     if (widget.progress >= 1.0 && !_started) _kick();
+  }
+
+  @override
+  void dispose() {
+    _delay?.cancel();
+    super.dispose();
   }
 
   void _kick() {
     if (_started) return;
     _started = true;
     final delay = widget.reduce ? Duration.zero : _contentRevealDelay;
-    Future<void>.delayed(delay, () {
+    _delay?.cancel();
+    _delay = Timer(delay, () {
+      _delay = null;
       if (mounted) setState(() => _value = 1);
     });
   }
@@ -579,36 +709,62 @@ class _BeuiMessageBubbleCollapsibleState
 
     final more = widget.moreLabel ?? const Text('Show more');
     final less = widget.lessLabel ?? const Text('Show less');
-    final body = agent.typography.assistantBody;
+
+    // C25. The collapsed height was always measured with the *assistant* body
+    // style, so a user-side bubble whose type ramp differs clipped at the
+    // wrong line. Read the side the bubble actually renders on.
+    final user =
+        _BubbleScope.maybeOf(context)?.align == BeuiMessageBubbleSide.end;
+    final body = agent.bodyStyle(user: user);
     final lineH = (body.height ?? 24 / 14) * (body.fontSize ?? 14);
     final collapsedH = widget.collapsedLines * lineH;
 
-    Widget content = widget.child;
-    if (!_open) {
-      content = ShaderMask(
-        blendMode: BlendMode.dstIn,
-        shaderCallback: (bounds) {
-          // source: linear-gradient(to bottom, #000 68%, transparent 100%)
-          return const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.black, Colors.black, Colors.transparent],
-            stops: [0.0, 0.68, 1.0],
-          ).createShader(bounds);
-        },
-        child: SizedBox(
-          height: collapsedH,
-          width: double.infinity,
-          child: ClipRect(
-            child: OverflowBox(
-              alignment: Alignment.topLeft,
-              maxHeight: double.infinity,
-              child: widget.child,
-            ),
+    // C11. Expanding used to snap: the chevron sprang while the content
+    // popped to full height in one frame. Height now rides the same
+    // 220ms/140ms disclosure curve as the rest of the library, and the fade
+    // mask dissolves with it rather than switching off.
+    final target = _open ? 1.0 : 0.0;
+    final motion = reduce
+        ? const NoMotion()
+        : motionFor(
+            context,
+            _open
+                ? const CurvedMotion(Duration(milliseconds: 220), beuiEaseOut)
+                : const CurvedMotion(Duration(milliseconds: 140), beuiEaseOut),
+            isMovement: true,
+          );
+
+    final content = SingleMotionBuilder(
+      value: target,
+      motion: motion,
+      builder: (context, t, child) {
+        final v = t.clamp(0.0, 1.0);
+        return _CollapseBox(
+          collapsedHeight: collapsedH,
+          t: v,
+          child: ShaderMask(
+            blendMode: BlendMode.dstIn,
+            shaderCallback: (bounds) {
+              // source: linear-gradient(to bottom, #000 68%, transparent 100%)
+              // The stop travels to 1.0 and the tail turns opaque as the panel
+              // opens, so the mask cross-fades out instead of vanishing.
+              return LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black,
+                  Colors.black,
+                  Color.lerp(Colors.transparent, Colors.black, v)!,
+                ],
+                stops: [0.0, lerpDouble(0.68, 1.0, v)!, 1.0],
+              ).createShader(bounds);
+            },
+            child: child,
           ),
-        ),
-      );
-    }
+        );
+      },
+      child: SizedBox(width: double.infinity, child: widget.child),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -630,7 +786,110 @@ class _BeuiMessageBubbleCollapsibleState
   }
 }
 
-class _CollapsibleTrigger extends StatelessWidget {
+/// Animates between a clamped height and the child's natural height (C11).
+///
+/// Lays the child out unconstrained vertically, then sizes itself to
+/// `lerp(collapsedHeight, naturalHeight, t)` and clips. No offstage measuring
+/// pass and no second instantiation of the child — the layout it already
+/// performs is the measurement.
+class _CollapseBox extends SingleChildRenderObjectWidget {
+  const _CollapseBox({
+    required this.collapsedHeight,
+    required this.t,
+    required Widget super.child,
+  });
+
+  /// Height shown at `t == 0`. Ignored when the child is shorter than it.
+  final double collapsedHeight;
+
+  /// 0 = collapsed, 1 = fully expanded.
+  final double t;
+
+  @override
+  _RenderCollapseBox createRenderObject(BuildContext context) =>
+      _RenderCollapseBox(collapsedHeight: collapsedHeight, t: t);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderCollapseBox renderObject,
+  ) {
+    renderObject
+      ..collapsedHeight = collapsedHeight
+      ..t = t;
+  }
+}
+
+class _RenderCollapseBox extends RenderProxyBox {
+  _RenderCollapseBox({
+    required double collapsedHeight,
+    required double t,
+  }) : this._(collapsedHeight, t);
+
+  _RenderCollapseBox._(this._collapsedHeight, this._t);
+
+  double _collapsedHeight;
+  double get collapsedHeight => _collapsedHeight;
+  set collapsedHeight(double value) {
+    if (_collapsedHeight == value) return;
+    _collapsedHeight = value;
+    markNeedsLayout();
+  }
+
+  double _t;
+  double get t => _t;
+  set t(double value) {
+    if (_t == value) return;
+    _t = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+    child.layout(
+      BoxConstraints(
+        minWidth: constraints.minWidth,
+        maxWidth: constraints.maxWidth,
+      ),
+      parentUsesSize: true,
+    );
+    final natural = child.size.height;
+    final collapsed = math.min(_collapsedHeight, natural);
+    size = constraints.constrain(
+      Size(child.size.width, lerpDouble(collapsed, natural, _t)!),
+    );
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    final child = this.child;
+    if (child == null) return;
+    if (child.size.height <= size.height + 0.01) {
+      context.paintChild(child, offset);
+      return;
+    }
+    context.pushClipRect(
+      needsCompositing,
+      offset,
+      Offset.zero & size,
+      (context, offset) => context.paintChild(child, offset),
+    );
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    // Clipped-away content is not tappable.
+    if (!(Offset.zero & size).contains(position)) return false;
+    return super.hitTestChildren(result, position: position);
+  }
+}
+
+class _CollapsibleTrigger extends StatefulWidget {
   const _CollapsibleTrigger({
     required this.open,
     required this.more,
@@ -650,44 +909,101 @@ class _CollapsibleTrigger extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
+  State<_CollapsibleTrigger> createState() => _CollapsibleTriggerState();
+}
+
+class _CollapsibleTriggerState extends State<_CollapsibleTrigger> {
+  bool _focused = false;
+  bool _hovered = false;
+  bool _pressed = false;
+
+  @override
   Widget build(BuildContext context) {
     final agent = BeuiAgentTheme.of(context);
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: agent.shapes.pill,
-        hoverColor: colors.muted,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: SizedBox(
-            height: 28, // h-7
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DefaultTextStyle.merge(
-                  style: agent.typography.action.copyWith(
-                    color: colors.mutedForeground,
+    final colors = widget.colors;
+
+    // C26. The trigger reported `button` (via InkWell) but never `expanded`,
+    // so a screen-reader user could not tell whether the body was open — the
+    // one fact this control exists to change.
+    return Semantics(
+      button: true,
+      expanded: widget.open,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        onShowHoverHighlight: (v) => setState(() => _hovered = v),
+        onShowFocusHighlight: (v) => setState(() => _focused = v),
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onPressed();
+              return null;
+            },
+          ),
+        },
+        child: BeuiMinHitTarget(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: (_) => setState(() => _pressed = true),
+            onTapUp: (_) => setState(() => _pressed = false),
+            onTapCancel: () => setState(() => _pressed = false),
+            onTap: widget.onPressed,
+            child: BeuiFocusRing(
+              focused: _focused,
+              borderRadius: agent.shapes.pill,
+              child: SingleMotionBuilder(
+                value: (_pressed && !widget.reduce) ? 0.97 : 1.0, // C31
+                motion: motionFor(context, beuiSpringPress, isMovement: true),
+                builder: (context, scale, child) =>
+                    Transform.scale(scale: scale, child: child),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  curve: beuiEaseOut,
+                  decoration: BoxDecoration(
+                    color: _hovered ? colors.muted : Colors.transparent,
+                    borderRadius: agent.shapes.pill,
                   ),
-                  child: open ? less : more,
-                ),
-                const SizedBox(width: 4), // gap-1
-                SingleMotionBuilder(
-                  value: open ? 1.0 : 0.0,
-                  motion: reduce ? const NoMotion() : chevronMotion,
-                  builder: (context, t, child) {
-                    return Transform.rotate(
-                      angle: t * math.pi, // 0 → 180°
-                      child: child,
-                    );
-                  },
-                  child: Icon(
-                    agent.icons.expand,
-                    size: 14, // size-3.5
-                    color: colors.mutedForeground,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  child: SizedBox(
+                    height: 28, // h-7
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DefaultTextStyle.merge(
+                          style: agent.typography.action.copyWith(
+                            color: colors.mutedForeground,
+                          ),
+                          child: widget.open ? widget.less : widget.more,
+                        ),
+                        const SizedBox(width: 4), // gap-1
+                        SingleMotionBuilder(
+                          value: widget.open ? 1.0 : 0.0,
+                          motion: widget.reduce
+                              ? const NoMotion()
+                              : widget.chevronMotion,
+                          builder: (context, t, child) {
+                            return Transform.rotate(
+                              angle: t * math.pi, // 0 → 180°
+                              child: child,
+                            );
+                          },
+                          child: Icon(
+                            agent.icons.expand,
+                            size: 14, // size-3.5
+                            color: colors.mutedForeground,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ),

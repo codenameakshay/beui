@@ -67,7 +67,8 @@ void main() {
         ),
       );
       expect(find.text('End-aligned'), findsOneWidget);
-      // Bubble Align should be centerRight for user.
+      // C17: alignment is logical, so a user bubble sits at the *end* — the
+      // right in LTR, the left in RTL — rather than at a hardcoded right.
       final align = tester.widget<Align>(
         find
             .descendant(
@@ -76,7 +77,7 @@ void main() {
             )
             .first,
       );
-      expect(align.alignment, Alignment.centerRight);
+      expect(align.alignment, AlignmentDirectional.centerEnd);
     });
 
     testWidgets('explicit align overrides message side', (tester) async {
@@ -107,7 +108,7 @@ void main() {
             )
             .first,
       );
-      expect(align.alignment, Alignment.centerLeft);
+      expect(align.alignment, AlignmentDirectional.centerStart);
     });
 
     testWidgets('animateIn settles', (tester) async {
