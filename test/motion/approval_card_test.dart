@@ -60,6 +60,9 @@ Widget _host({
   Widget? headerAction,
   Widget? compactChild,
   Widget? expandedChild,
+  bool showExpandToggle = true,
+  String? rejectLabel,
+  String? requestChangesLabel,
 }) {
   Widget body = Center(
     child: SizedBox(
@@ -89,6 +92,9 @@ Widget _host({
         headerAction: headerAction,
         compactChild: compactChild,
         expandedChild: expandedChild,
+        showExpandToggle: showExpandToggle,
+        rejectLabel: rejectLabel,
+        requestChangesLabel: requestChangesLabel,
         child: child,
       ),
     ),
@@ -649,6 +655,387 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.bySemanticsLabel('Hide details'), findsOneWidget);
       expect(find.text('Full editor body'), findsWidgets);
+    });
+  });
+
+  // =======================================================================
+  // A11 — the header-is-a-trigger invariant
+  // =======================================================================
+
+  group('BeuiApprovalCard header trigger invariant', () {
+    testWidgets('the whole header row toggles expansion, not just a chevron', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Publish the update?',
+          compactChild: const Text('Summary only'),
+          expandedChild: const Text('Full editor body'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Summary only'), findsWidgets);
+
+      // Tap the *title*, which is nowhere near the 20x20 chevron that used to
+      // be the only target.
+      await tester.tap(find.text('Publish the update?'));
+      await tester.pumpAndSettle();
+      expect(find.text('Full editor body'), findsWidgets);
+    });
+
+    testWidgets('a card with only child + headerAction has an inert header', (
+      tester,
+    ) async {
+      var actionTaps = 0;
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(
+        _host(
+          title: 'Publish the update?',
+          child: const Text('Summary only'),
+          headerAction: IconButton(
+            key: const ValueKey('header-action'),
+            icon: const Icon(Icons.edit),
+            onPressed: () => actionTaps++,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // The invariant: no expandedChild means the header is not a control.
+      expect(find.byKey(const ValueKey('beui-approval-expand')), findsNothing);
+      expect(find.bySemanticsLabel('Show details'), findsNothing);
+      expect(find.bySemanticsLabel('Hide details'), findsNothing);
+
+      // Tapping the title does nothing at all — no hidden second control.
+      await tester.tap(find.text('Publish the update?'));
+      await tester.pumpAndSettle();
+      expect(actionTaps, 0);
+
+      // ...and headerAction is untouched.
+      await tester.tap(find.byKey(const ValueKey('header-action')));
+      await tester.pumpAndSettle();
+      expect(actionTaps, 1);
+
+      handle.dispose();
+    });
+
+    testWidgets('showExpandToggle:false makes the header inert too', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Publish the update?',
+          compactChild: const Text('Summary only'),
+          expandedChild: const Text('Full editor body'),
+          showExpandToggle: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey('beui-approval-expand')), findsNothing);
+      await tester.tap(find.text('Publish the update?'));
+      await tester.pumpAndSettle();
+      // Still collapsed: the caller turned the affordance off.
+      expect(find.text('Full editor body'), findsNothing);
+    });
+
+    testWidgets(
+      'headerAction stays independent while the header IS a trigger',
+      (tester) async {
+        var actionTaps = 0;
+        await tester.pumpWidget(
+          _host(
+            title: 'Publish the update?',
+            compactChild: const Text('Summary only'),
+            expandedChild: const Text('Full editor body'),
+            headerAction: IconButton(
+              key: const ValueKey('header-action'),
+              icon: const Icon(Icons.edit),
+              onPressed: () => actionTaps++,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const ValueKey('header-action')));
+        await tester.pumpAndSettle();
+
+        expect(actionTaps, 1);
+        // The action fired and the card did NOT expand.
+        expect(find.text('Full editor body'), findsNothing);
+      },
+    );
+
+    testWidgets('the header trigger clears the 48px touch floor', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _host(
+          compactChild: const Text('Summary only'),
+          expandedChild: const Text('Full editor body'),
+          onApprove: () {},
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // A31. Measured directly rather than through
+      // `meetsGuideline(androidTapTargetGuideline)`: that walks the whole
+      // tree, and `BeuiButton` fixes its own height at 32px for
+      // `BeuiButtonSize.sm`, which no wrapper in this file can grow — the
+      // semantics rect belongs to the button. Raising the *whole cluster* to
+      // 48 needs a min-tap-target option on BeuiButton itself.
+      final trigger = tester.getRect(
+        find.byKey(const ValueKey('beui-approval-expand')),
+      );
+      expect(trigger.height, greaterThanOrEqualTo(48));
+
+      // Every target is at least labeled, which is the part that is fully in
+      // this widget's gift.
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+  });
+
+  // =======================================================================
+  // A10 / A12 — expandable body correctness
+  // =======================================================================
+
+  group('BeuiApprovalCard expandable body', () {
+    testWidgets('an expandedChild with nothing to collapse to asserts', (
+      tester,
+    ) async {
+      // A10: a chevron over a legitimately blank body is a wiring bug. The
+      // assert is in the const constructor, so it throws while the widget is
+      // being built rather than during the pump.
+      expect(
+        () => _host(expandedChild: const Text('Full editor body')),
+        throwsAssertionError,
+      );
+    });
+
+    testWidgets('a stateful expandedChild is instantiated exactly once', (
+      tester,
+    ) async {
+      // A12. The old implementation rendered each child twice — once offstage
+      // to measure it, once to display it — so a BeuiInput here became two
+      // EditableTexts with two FocusNodes and two independent buffers. The
+      // agent-theme demo does exactly this, which is how it was found.
+      await tester.pumpWidget(
+        _host(
+          compactChild: const Text('Summary only'),
+          expandedChild: const BeuiInput(placeholder: 'Add a note'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // `skipOffstage: false` is the point of the test: the collapsed body is
+      // Offstage, and a second instance hiding there is exactly the bug.
+      expect(find.byType(EditableText, skipOffstage: false), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EditableText, skipOffstage: false), findsOneWidget);
+    });
+
+    testWidgets('text typed into the expanded body survives a collapse', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          defaultExpanded: true,
+          compactChild: const Text('Summary only'),
+          expandedChild: const BeuiInput(placeholder: 'Add a note'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(EditableText), 'keep me');
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('beui-approval-expand')));
+      await tester.pumpAndSettle();
+
+      // One instance means one buffer: the text the user sees is the text the
+      // card would submit.
+      final field = find.byType(EditableText, skipOffstage: false);
+      expect(field, findsOneWidget);
+      expect(tester.widget<EditableText>(field).controller.text, 'keep me');
+    });
+  });
+
+  // =======================================================================
+  // Strings, status roles, and the golden
+  // =======================================================================
+
+  group('BeuiApprovalCard theming', () {
+    testWidgets('reject and request-changes labels come from the theme', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(
+              extensions: [
+                BeuiColors.light(),
+                BeuiAgentTheme(
+                  strings: const BeuiAgentStrings(
+                    reject: 'Refuser',
+                    requestChanges: 'Demander des modifications',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 460,
+                child: BeuiApprovalCard(
+                  title: 'Publish?',
+                  onApprove: () {},
+                  onReject: () {},
+                  onRequestChanges: () {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Refuser'), findsOneWidget);
+      expect(find.text('Demander des modifications'), findsOneWidget);
+    });
+
+    testWidgets('per-instance labels beat the theme strings', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          onApprove: () {},
+          onReject: () {},
+          onRequestChanges: () {},
+          rejectLabel: 'Turn it down',
+          requestChangesLabel: 'Send it back',
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Turn it down'), findsOneWidget);
+      expect(find.text('Send it back'), findsOneWidget);
+    });
+
+    testWidgets('the status badge reads the themed status role', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(
+              extensions: [
+                BeuiColors.light(),
+                BeuiAgentTheme(
+                  statusLight: BeuiAgentStatusColors.light.copyWith(
+                    pending: const BeuiAgentStatusPalette(
+                      foreground: Color(0xFF112233),
+                      background: Color(0xFF445566),
+                      border: Color(0xFF778899),
+                      solid: Color(0xFFAABBCC),
+                      onSolid: Color(0xFFFFFFFF),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 460,
+                child: BeuiApprovalCard(title: 'Publish?', onApprove: () {}),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final badge = tester.widget<Text>(find.text('Input required'));
+      expect(badge.style?.color, const Color(0xFF112233));
+    });
+
+    testWidgets('a terminal outcome is announced through the live region', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _host(status: BeuiApprovalCardStatus.rejected, onApprove: () {}),
+      );
+      await tester.pump();
+
+      final node = tester.getSemantics(find.byType(BeuiApprovalCard));
+      expect(node.flagsCollection.isLiveRegion, isTrue);
+      handle.dispose();
+    });
+
+    testWidgets('golden — pending, expandable, and rejected', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(500, 520));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: RepaintBoundary(
+                child: SizedBox(
+                  width: 460,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      BeuiApprovalCard(
+                        title: 'Publish the component update?',
+                        description: 'Ships to the shared registry.',
+                        onApprove: () {},
+                        onRequestChanges: () {},
+                        onReject: () {},
+                      ),
+                      const SizedBox(height: 12),
+                      BeuiApprovalCard(
+                        title: 'Review the release notes?',
+                        compactChild: const Text('3 entries, 1 breaking'),
+                        expandedChild: const Text('Full editor body'),
+                        onApprove: () {},
+                      ),
+                      const SizedBox(height: 12),
+                      const BeuiApprovalCard(
+                        title: 'Publish the component update?',
+                        status: BeuiApprovalCardStatus.rejected,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      // The header title rolls in on a spring, so a single frame catches it
+      // mid-roll and the golden records an empty header. A fixed advance
+      // settles the roll and the expand height; `pumpAndSettle` is not an
+      // option because a submitting card spins indefinitely.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+
+      await expectLater(
+        find.byType(RepaintBoundary).first,
+        matchesGoldenFile('goldens/beui_approval_card.png'),
+      );
     });
   });
 }

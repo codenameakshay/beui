@@ -9,8 +9,12 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_disclosure.dart';
 import '_engine.dart';
-import 'code_block.dart' show BeuiCodeLanguage;
+import '_focus_ring.dart';
+import '_hit_target.dart';
+import '_syntax.dart';
+import '_viewport_follow.dart';
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -35,6 +39,26 @@ enum BeuiFileDiffLineType {
 
   /// Unchanged context line.
   context,
+}
+
+/// How a [BeuiFileDiff] handles lines wider than its viewport.
+enum BeuiFileDiffWrap {
+  /// Soft-wrap long lines onto the next row. Nothing is hidden, but line
+  /// numbers stop lining up with visual rows.
+  wrap,
+
+  /// Keep one line per row and scroll horizontally — the desktop default, and
+  /// the only mode in which a wide line can be read exactly as written.
+  scroll,
+
+  /// Wrap when the viewport is narrower than
+  /// [BeuiFileDiff.wrapBreakpoint], scroll otherwise.
+  ///
+  /// The default. A phone-width bubble has roughly 260 logical pixels left for
+  /// code after the gutters, which is about 30 characters of 12px mono; that is
+  /// where horizontal scrolling stops being a convenience and starts being the
+  /// only way to see the change.
+  adaptive,
 }
 
 /// One row of a [BeuiFileDiff] — the Flutter port of the source's `FileDiffLine`.
@@ -63,14 +87,39 @@ class BeuiFileDiffLine {
 
   /// Raw source text for this row (no leading `+`/`-` prefix required).
   final String content;
+
+  /// Whether this row represents an actual change (not context).
+  bool get isChange => type != BeuiFileDiffLineType.context;
+}
+
+/// A gap between two rendered rows — unchanged lines the consumer did not send.
+///
+/// Derived, not supplied: [BeuiFileDiff] infers a hunk boundary whenever two
+/// consecutive rows' line numbers are discontinuous, which needs no change to
+/// [BeuiFileDiffLine] at all.
+@immutable
+class BeuiFileDiffHunkGap {
+  /// Creates a gap descriptor.
+  const BeuiFileDiffHunkGap({
+    required this.hiddenCount,
+    required this.before,
+    required this.after,
+  });
+
+  /// How many unchanged lines are missing between [before] and [after].
+  final int hiddenCount;
+
+  /// The last row rendered above the gap.
+  final BeuiFileDiffLine before;
+
+  /// The first row rendered below the gap.
+  final BeuiFileDiffLine after;
 }
 
 // ---------------------------------------------------------------------------
 // Motion tokens
 // ---------------------------------------------------------------------------
 
-const _disclosureOpen = CurvedMotion(Duration(milliseconds: 220), beuiEaseOut);
-const _disclosureClose = CurvedMotion(Duration(milliseconds: 140), beuiEaseOut);
 const _chevronMotion = beuiSpringSwap;
 const _pressMotion = beuiSpringPress;
 const _spinPeriod = Duration(milliseconds: 900);
@@ -83,6 +132,17 @@ const _rose600 = Color(0xFFEC003F);
 const _rose400 = Color(0xFFFF637E);
 const _emerald500 = Color(0xFF00BC7D);
 const _rose500 = Color(0xFFFF2056);
+
+/// Row tint alpha for a changed line.
+///
+/// 0.14, not 0.07. At 0.07 the added and removed washes measured **1.04:1
+/// against each other** — the two states a diff exists to distinguish were
+/// visually identical, and the whole signal rested on one 12px glyph.
+const double _rowTintAlpha = 0.14;
+
+/// Width of the leading colour bar on a changed row, in logical pixels.
+/// Reserved (transparent) on context rows so nothing shifts between them.
+const double _rowBarWidth = 2;
 
 // Unicode minus (source `−`), not ASCII hyphen.
 const _minus = '−';
@@ -97,27 +157,41 @@ const _minus = '−';
 /// `file-diff`.
 ///
 /// **Highlighting.** The source uses Shiki via `AgentCode`. This port uses the
-/// same lightweight [TextSpan] tokeniser approach as [BeuiCodeBlock]
-/// (keywords, strings, comments, numbers) so the package stays free of heavy
-/// highlighting dependencies.
+/// shared lightweight tokeniser in `_syntax.dart`, the same one
+/// [BeuiCodeBlock] uses. It previously carried its own forked copy, which had
+/// drifted far enough to paint added lines in the *deletion* red.
 ///
-/// **Motion.** Chevron rotates on [beuiSpringSwap]; copy press scales on
-/// [beuiSpringPress]; disclosure open/close uses EASE_OUT at 220ms / 140ms
-/// (source `AgentDisclosure`). While [BeuiFileDiffStatus.streaming] the
-/// viewport auto-scrolls to the live edge. Transitioning streaming → complete
-/// with [collapseOnComplete] closes the panel; resuming streaming re-opens it.
+/// **Wide lines.** One row per line with horizontal scroll by default, wrapping
+/// on narrow viewports — see [wrap]. The widget used to ellipsise instead, which
+/// hid the end of exactly the lines a reviewer needs to see.
+///
+/// **Motion.** Chevron rotates on [beuiSpringSwap]; presses scale to 0.97 on
+/// [beuiSpringPress]; the disclosure is the shared
+/// [BeuiAgentDisclosureInternal] (220ms open / 140ms close, and a real
+/// cross-fade under reduced motion rather than a hard cut). While
+/// [BeuiFileDiffStatus.streaming] the viewport follows the live edge until the
+/// reader scrolls away from it. Transitioning streaming → complete with
+/// [collapseOnComplete] closes the panel; resuming streaming re-opens it.
 ///
 /// **API mapping** (source → Flutter):
-/// * `file` → [file] ([String] or [Widget])
+/// * `file` → [file] ([String]) / [fileWidget] ([Widget])
 /// * `lines` → [lines]
 /// * `status` → [status]
 /// * `open` / `defaultOpen` / `onOpenChange` / `collapseOnComplete` → same
 /// * `maxHeight` / `language` / `copyText` / `onCopy` → same
 class BeuiFileDiff extends StatefulWidget {
   /// Creates a file-diff disclosure surface.
+  ///
+  /// Supply the header label through [file] (a path) or [fileWidget].
   const BeuiFileDiff({
-    required this.file,
     required this.lines,
+    this.file,
+    this.fileWidget,
+    @Deprecated(
+      'Split into file (String) and fileWidget (Widget) so the compiler can '
+      'reject file: 42. Pass one of those instead.',
+    )
+    this.fileNode,
     this.status = BeuiFileDiffStatus.streaming,
     this.open,
     this.defaultOpen = true,
@@ -125,14 +199,41 @@ class BeuiFileDiff extends StatefulWidget {
     this.collapseOnComplete = true,
     this.maxHeight = 220,
     this.language = BeuiCodeLanguage.typescript,
+    this.wrap = BeuiFileDiffWrap.adaptive,
+    this.wrapBreakpoint = 480,
     this.copyText,
+    this.copyable = true,
     this.onCopy,
+    this.onExpandContext,
+    this.emptyPlaceholder,
     super.key,
-  });
+  }) : assert(
+         file != null ||
+             fileWidget != null ||
+             // ignore: deprecated_member_use_from_same_package
+             fileNode != null,
+         'BeuiFileDiff needs a header label: pass file (a path String) or '
+         'fileWidget (a Widget).',
+       );
 
-  /// File path / label shown in the header. Accepts a [String] or any [Widget]
-  /// (source `file: ReactNode`).
-  final Object file;
+  /// File path shown in the header, as plain text.
+  ///
+  /// Middle-truncated when it does not fit, so the basename — the part that
+  /// identifies *which* file — always survives. End-ellipsis turned
+  /// `src/components/button.tsx` into `src/compon…`.
+  final String? file;
+
+  /// File label shown in the header, as an arbitrary widget
+  /// (source `file: ReactNode`). Wins over [file] when both are set, and is
+  /// rendered verbatim — truncation is the caller's business.
+  final Widget? fileWidget;
+
+  /// Deprecated untyped file slot, kept so existing call sites compile.
+  @Deprecated(
+    'Split into file (String) and fileWidget (Widget) so the compiler can '
+    'reject file: 42. Pass one of those instead.',
+  )
+  final Object? fileNode;
 
   /// Diff rows, top to bottom. Progressive streaming is achieved by growing
   /// this list over time (source preview slices visible rows).
@@ -153,6 +254,13 @@ class BeuiFileDiff extends StatefulWidget {
 
   /// When true (default), auto-collapses on streaming → complete and re-opens
   /// when status returns to streaming (source `collapseOnComplete`).
+  ///
+  /// **This hides the finished diff at the moment it becomes reviewable.** The
+  /// source does it, so it stays the default and stays faithful; the copy
+  /// control has been moved into the header precisely so it survives the
+  /// collapse. If your surface is a review step rather than a progress log,
+  /// pass `false` — a reviewer who has to re-open the panel to see what
+  /// changed is one who will approve without looking.
   final bool collapseOnComplete;
 
   /// Max viewport height in logical pixels (source `maxHeight`, default 220).
@@ -161,13 +269,44 @@ class BeuiFileDiff extends StatefulWidget {
   /// Language for the lightweight highlighter (source `language`).
   final BeuiCodeLanguage language;
 
-  /// Text written to the clipboard when the copy button is pressed. When null
-  /// and [onCopy] is also null, the copy control is hidden.
+  /// How lines wider than the viewport are handled. Defaults to
+  /// [BeuiFileDiffWrap.adaptive].
+  ///
+  /// Matches [BeuiCodeBlock.wrap] semantics: wrapping keeps everything on
+  /// screen, scrolling keeps one line per row.
+  final BeuiFileDiffWrap wrap;
+
+  /// Viewport width below which [BeuiFileDiffWrap.adaptive] wraps, in logical
+  /// pixels. Defaults to 480.
+  final double wrapBreakpoint;
+
+  /// Text written to the clipboard when the copy control is pressed.
+  ///
+  /// Defaults to the diff the widget already holds, serialised as a unified
+  /// diff body (`+` / `-` / space prefixes, ASCII so it pastes into `git
+  /// apply`). Supply this only to override that.
   final String? copyText;
+
+  /// Whether the copy control is shown at all (default `true`). Still shown
+  /// when [onCopy] is non-null even if this is false.
+  final bool copyable;
 
   /// Optional override for the copy action. Prefer this when you need custom
   /// side-effects; otherwise [copyText] is written to the system clipboard.
   final FutureOr<void> Function()? onCopy;
+
+  /// Called when the reader activates an "expand N hidden lines" separator.
+  ///
+  /// [BeuiFileDiff] can *detect* a context gap from discontinuous line numbers,
+  /// but it cannot invent the lines that fill it — only the consumer has the
+  /// file. Wire this up and grow [lines] in response to make gaps expandable;
+  /// leave it null and gaps render as a static, honest marker instead of
+  /// pretending the diff is contiguous.
+  final void Function(BeuiFileDiffHunkGap gap)? onExpandContext;
+
+  /// Shown in place of the row list when [lines] is empty and the diff is not
+  /// streaming. Defaults to a muted "No changes in this file".
+  final Widget? emptyPlaceholder;
 
   @override
   State<BeuiFileDiff> createState() => _BeuiFileDiffState();
@@ -176,17 +315,20 @@ class BeuiFileDiff extends StatefulWidget {
 class _BeuiFileDiffState extends State<BeuiFileDiff>
     with SingleTickerProviderStateMixin {
   late bool _internalOpen = widget.defaultOpen;
-  final ScrollController _scroll = ScrollController();
+  late final BeuiLiveEdgeFollower _follow;
   late final AnimationController _spin;
   bool _copied = false;
-  bool _copyHovered = false;
-  bool _copyPressed = false;
   Timer? _copyTimer;
+
+  /// Anchors for change-to-change navigation, keyed by line id.
+  final Map<String, GlobalKey> _changeKeys = <String, GlobalKey>{};
+  int _changeCursor = -1;
 
   bool get _isControlled => widget.open != null;
   bool get _currentOpen => widget.open ?? _internalOpen;
   bool get _streaming => widget.status == BeuiFileDiffStatus.streaming;
-  bool get _canCopy => widget.copyText != null || widget.onCopy != null;
+  bool get _canCopy => widget.copyable || widget.onCopy != null;
+  bool get _isEmpty => widget.lines.isEmpty && !_streaming;
 
   int get _additions =>
       widget.lines.where((l) => l.type == BeuiFileDiffLineType.added).length;
@@ -194,9 +336,17 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
   int get _deletions =>
       widget.lines.where((l) => l.type == BeuiFileDiffLineType.removed).length;
 
+  List<BeuiFileDiffLine> get _changes =>
+      widget.lines.where((l) => l.isChange).toList(growable: false);
+
   @override
   void initState() {
     super.initState();
+    _follow = BeuiLiveEdgeFollower(
+      onPinnedChanged: () {
+        if (mounted) setState(() {});
+      },
+    )..attach();
     _spin = AnimationController(vsync: this, duration: _spinPeriod);
     if (_streaming) {
       _spin.repeat();
@@ -243,7 +393,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
   @override
   void dispose() {
     _copyTimer?.cancel();
-    _scroll.dispose();
+    _follow.dispose();
     _spin.dispose();
     super.dispose();
   }
@@ -264,23 +414,29 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
   void _toggle() => _setOpen(!_currentOpen);
 
   void _scheduleFollow() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_scroll.hasClients || !_currentOpen || !_streaming) {
-        return;
-      }
-      final max = _scroll.position.maxScrollExtent;
-      if (max <= 0) return;
-      final reduce = MediaQuery.disableAnimationsOf(context);
-      if (reduce) {
-        _scroll.jumpTo(max);
-      } else {
-        _scroll.animateTo(
-          max,
-          duration: const Duration(milliseconds: 220),
-          curve: beuiEaseOut,
-        );
-      }
-    });
+    if (!mounted) return;
+    if (!_currentOpen || !_streaming) return;
+    _follow.follow(context);
+  }
+
+  /// The clipboard payload: the caller's override, or the diff serialised as a
+  /// unified diff body so consumers never have to re-derive what we already
+  /// hold (audit R35).
+  String get _resolvedCopyText {
+    final override = widget.copyText;
+    if (override != null) return override;
+    return widget.lines
+        .map((line) {
+          final prefix = switch (line.type) {
+            BeuiFileDiffLineType.added => '+',
+            // ASCII hyphen, not the U+2212 the header renders: this string is
+            // meant to survive a paste into `git apply`.
+            BeuiFileDiffLineType.removed => '-',
+            BeuiFileDiffLineType.context => ' ',
+          };
+          return '$prefix${line.content}';
+        })
+        .join('\n');
   }
 
   Future<void> _handleCopy() async {
@@ -288,10 +444,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
     if (custom != null) {
       await custom();
     } else {
-      final text = widget.copyText;
-      if (text != null) {
-        await Clipboard.setData(ClipboardData(text: text));
-      }
+      await Clipboard.setData(ClipboardData(text: _resolvedCopyText));
     }
     if (!mounted) return;
     setState(() => _copied = true);
@@ -299,6 +452,34 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
     _copyTimer = Timer(_copyFeedback, () {
       if (mounted) setState(() => _copied = false);
     });
+  }
+
+  /// Moves the viewport to the next / previous changed row.
+  void _stepChange(int direction) {
+    final changes = _changes;
+    if (changes.isEmpty) return;
+    if (!_currentOpen) _setOpen(true);
+    final nextCursor = _changeCursor < 0
+        ? (direction > 0 ? 0 : changes.length - 1)
+        : (_changeCursor + direction) % changes.length;
+    _changeCursor = nextCursor < 0 ? changes.length - 1 : nextCursor;
+    final target = changes[_changeCursor];
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    // Stepping is an explicit reader action; it should not be undone by the
+    // stream yanking the viewport back a frame later, so it pins.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final anchor = _changeKeys[target.id]?.currentContext;
+      if (anchor == null) return;
+      unawaited(
+        Scrollable.ensureVisible(
+          anchor,
+          alignment: 0.2,
+          duration: reduce ? Duration.zero : const Duration(milliseconds: 220),
+          curve: beuiEaseOut,
+        ),
+      );
+    });
+    setState(() {});
   }
 
   Widget _resolveFile(BeuiColors colors) {
@@ -319,15 +500,27 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
       color: colors.foreground.withValues(alpha: 0.8),
       height: 16 / 12, // text-xs default leading-4
     );
-    final child = widget.file is Widget
-        ? widget.file as Widget
-        : Text(widget.file.toString());
-    return DefaultTextStyle(
-      style: style,
-      overflow: TextOverflow.ellipsis,
-      maxLines: 1,
-      child: child,
-    );
+
+    if (widget.fileWidget != null) {
+      return DefaultTextStyle(
+        style: style,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+        child: widget.fileWidget!,
+      );
+    }
+    // ignore: deprecated_member_use_from_same_package
+    final legacy = widget.fileNode;
+    if (widget.file == null && legacy is Widget) {
+      return DefaultTextStyle(
+        style: style,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+        child: legacy,
+      );
+    }
+    final path = widget.file ?? legacy?.toString() ?? '';
+    return _MiddleTruncatedText(text: path, style: style);
   }
 
   @override
@@ -338,10 +531,31 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isLight = theme.brightness == Brightness.light;
-    final palette = _DiffPalette.of(colors, theme.brightness);
+    final palette = BeuiSyntaxPalette.of(theme.brightness);
     final addColor = isLight ? _emerald600 : _emerald400;
     final delColor = isLight ? _rose600 : _rose400;
-    final pressTarget = (_copyPressed && !reduce) ? 0.9 : 1.0;
+
+    _follow.syncMetrics();
+
+    // Prune anchors for rows that are gone, so a long-running stream does not
+    // leak a GlobalKey per line it ever rendered.
+    final changes = _changes;
+    final liveChangeIds = {for (final c in changes) c.id};
+    _changeKeys.removeWhere((id, _) => !liveChangeIds.contains(id));
+    for (final change in changes) {
+      _changeKeys.putIfAbsent(change.id, GlobalKey.new);
+    }
+
+    // Navigation earns its place only when the changes cannot all be on screen
+    // at once — below that the reader can just look.
+    final contentHeight = widget.lines.length * _DiffLines.lineHeight;
+    final showChangeNav =
+        changes.length > 1 && contentHeight > widget.maxHeight;
+
+    final surface = Color.alphaBlend(
+      colors.muted.withValues(alpha: 0.8),
+      colors.background,
+    );
 
     return Semantics(
       container: true,
@@ -363,8 +577,19 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
             reduce: reduce,
             spin: _spin,
             onToggle: _toggle,
+            // The copy control lives in the header so `collapseOnComplete`
+            // cannot take it away at the exact moment the diff is finished and
+            // the reader wants it (audit R21).
+            canCopy: _canCopy,
+            copied: _copied,
+            onCopy: _handleCopy,
+            showChangeNav: showChangeNav,
+            changeCount: changes.length,
+            changeCursor: _changeCursor,
+            onPreviousChange: () => _stepChange(-1),
+            onNextChange: () => _stepChange(1),
           ),
-          _AgentDisclosure(
+          BeuiAgentDisclosureInternal(
             open: _currentOpen,
             reduce: reduce,
             child: Padding(
@@ -374,105 +599,218 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
                   color: colors.muted.withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(12), // rounded-xl
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: widget.maxHeight),
-                      child: ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(
-                          context,
-                        ).copyWith(scrollbars: false),
-                        child: SingleChildScrollView(
-                          controller: _scroll,
-                          child: _DiffLines(
-                            lines: widget.lines,
-                            language: widget.language,
-                            palette: palette,
-                            colors: colors,
-                            addColor: addColor,
-                            delColor: delColor,
-                          ),
+                child: _isEmpty
+                    ? _EmptyDiff(
+                        colors: colors,
+                        placeholder: widget.emptyPlaceholder,
+                      )
+                    : ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: widget.maxHeight,
                         ),
-                      ),
-                    ),
-                    if (_canCopy)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 4, 8, 6),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Semantics(
-                            button: true,
-                            label: _copied ? 'Copied' : 'Copy diff',
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              onEnter: (_) =>
-                                  setState(() => _copyHovered = true),
-                              onExit: (_) => setState(() {
-                                _copyHovered = false;
-                                _copyPressed = false;
-                              }),
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTapDown: (_) =>
-                                    setState(() => _copyPressed = true),
-                                onTapUp: (_) =>
-                                    setState(() => _copyPressed = false),
-                                onTapCancel: () =>
-                                    setState(() => _copyPressed = false),
-                                onTap: _handleCopy,
-                                child: SingleMotionBuilder(
-                                  value: pressTarget,
-                                  motion: motionFor(
-                                    context,
-                                    _pressMotion,
-                                    isMovement: true,
-                                  ),
-                                  builder: (context, scale, child) =>
-                                      Transform.scale(
-                                        scale: scale,
-                                        child: child,
+                        child: Stack(
+                          children: [
+                            ScrollConfiguration(
+                              behavior: ScrollConfiguration.of(
+                                context,
+                              ).copyWith(scrollbars: false),
+                              child: SingleChildScrollView(
+                                controller: _follow.controller,
+                                child: LayoutBuilder(
+                                  builder: (context, viewport) {
+                                    final shouldWrap = switch (widget.wrap) {
+                                      BeuiFileDiffWrap.wrap => true,
+                                      BeuiFileDiffWrap.scroll => false,
+                                      BeuiFileDiffWrap.adaptive =>
+                                        viewport.maxWidth.isFinite &&
+                                            viewport.maxWidth <
+                                                widget.wrapBreakpoint,
+                                    };
+                                    final rows = _DiffLines(
+                                      lines: widget.lines,
+                                      language: widget.language,
+                                      palette: palette,
+                                      colors: colors,
+                                      addColor: addColor,
+                                      delColor: delColor,
+                                      wrap: shouldWrap,
+                                      changeKeys: _changeKeys,
+                                      onExpandContext: widget.onExpandContext,
+                                    );
+                                    if (shouldWrap) return rows;
+                                    // Mirrors the code block: the row track is
+                                    // at least as wide as the viewport, so the
+                                    // change tints fill the whole row instead
+                                    // of stopping at the end of the text.
+                                    return SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          minWidth: viewport.maxWidth,
+                                        ),
+                                        child: IntrinsicWidth(child: rows),
                                       ),
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 150),
-                                    width: 28,
-                                    height: 28,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: _copyHovered
-                                          ? colors.background.withValues(
-                                              alpha: 0.7,
-                                            )
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Icon(
-                                      _copied
-                                          ? BeuiAgentTheme.of(
-                                              context,
-                                            ).icons.copied
-                                          : BeuiAgentTheme.of(
-                                              context,
-                                            ).icons.copy,
-                                      size: 14,
-                                      color: _copyHovered
-                                          ? colors.foreground
-                                          : colors.mutedForeground,
-                                    ),
-                                  ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
-                          ),
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              child: BeuiHiddenContentFooter(
+                                extentBelow: _follow.extentBelow,
+                                rowExtent: _DiffLines.lineHeight,
+                                surface: surface,
+                              ),
+                            ),
+                            Positioned(
+                              right: 10,
+                              bottom: 8,
+                              child: BeuiJumpToLatest(
+                                visible: _streaming && _follow.pinned,
+                                onTap: () =>
+                                    _follow.follow(context, force: true),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                  ],
-                ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Empty-state body — a finished diff that touched nothing.
+class _EmptyDiff extends StatelessWidget {
+  const _EmptyDiff({required this.colors, required this.placeholder});
+
+  final BeuiColors colors;
+  final Widget? placeholder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: DefaultTextStyle.merge(
+          style: TextStyle(
+            fontSize: 12,
+            height: 16 / 12,
+            letterSpacing: 0,
+            color: colors.mutedForeground,
+          ),
+          child: placeholder ?? const Text('No changes in this file'),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Middle truncation
+// ---------------------------------------------------------------------------
+
+/// Text that drops characters from the *middle* rather than the end.
+///
+/// Package-private for now: it is a genuinely reusable primitive, but the
+/// public surface stays as small as the audit's findings require.
+///
+/// For a path, the tail is the part that identifies the file, so an
+/// end-ellipsis destroys exactly the information the label exists to carry
+/// (`src/components/button.tsx` → `src/compon…`). This keeps the basename whole
+/// and eats into the directories instead
+/// (`src/components/button.tsx` → `src/…/button.tsx`).
+class _MiddleTruncatedText extends StatelessWidget {
+  /// Creates a middle-truncating label.
+  const _MiddleTruncatedText({required this.text, required this.style});
+
+  /// The full string. Also the semantics label, so assistive technology hears
+  /// the whole path however it is painted.
+  final String text;
+
+  /// Text style. Must be fully resolved — the measurement uses it directly.
+  final TextStyle style;
+
+  /// Replacement for the elided middle.
+  static const String ellipsis = '…';
+
+  /// The index the tail starts at: the last path separator, so the basename
+  /// survives. Falls back to the last third of a separator-less string.
+  int _tailStart() {
+    final slash = text.lastIndexOf('/');
+    if (slash >= 0 && slash < text.length - 1) return slash;
+    return (text.length * 2 / 3).floor();
+  }
+
+  double _widthOf(String value, TextDirection direction) {
+    final painter = TextPainter(
+      text: TextSpan(text: value, style: style),
+      maxLines: 1,
+      textDirection: direction,
+    )..layout();
+    final width = painter.width;
+    painter.dispose();
+    return width;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final direction = Directionality.of(context);
+    return Semantics(
+      label: text,
+      child: ExcludeSemantics(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxWidth = constraints.maxWidth;
+            if (!maxWidth.isFinite ||
+                text.isEmpty ||
+                _widthOf(text, direction) <= maxWidth) {
+              return Text(
+                text,
+                style: style,
+                maxLines: 1,
+                softWrap: false,
+                overflow: TextOverflow.clip,
+              );
+            }
+
+            final tail = text.substring(_tailStart());
+            // Binary search the longest head that still fits alongside the
+            // ellipsis and the whole tail. O(log n) layouts, and only when the
+            // label actually overflows.
+            var low = 0;
+            var high = _tailStart();
+            var best = 0;
+            while (low <= high) {
+              final mid = (low + high) ~/ 2;
+              final candidate = '${text.substring(0, mid)}$ellipsis$tail';
+              if (_widthOf(candidate, direction) <= maxWidth) {
+                best = mid;
+                low = mid + 1;
+              } else {
+                high = mid - 1;
+              }
+            }
+
+            final head = text.substring(0, best);
+            return Text(
+              '$head$ellipsis$tail',
+              style: style,
+              maxLines: 1,
+              softWrap: false,
+              // The tail itself can still be wider than the box on a very
+              // narrow viewport; clip rather than re-ellipsise it.
+              overflow: TextOverflow.clip,
+            );
+          },
+        ),
       ),
     );
   }
@@ -495,6 +833,14 @@ class _Header extends StatefulWidget {
     required this.reduce,
     required this.spin,
     required this.onToggle,
+    required this.canCopy,
+    required this.copied,
+    required this.onCopy,
+    required this.showChangeNav,
+    required this.changeCount,
+    required this.changeCursor,
+    required this.onPreviousChange,
+    required this.onNextChange,
   });
 
   final bool open;
@@ -508,6 +854,14 @@ class _Header extends StatefulWidget {
   final bool reduce;
   final AnimationController spin;
   final VoidCallback onToggle;
+  final bool canCopy;
+  final bool copied;
+  final Future<void> Function() onCopy;
+  final bool showChangeNav;
+  final int changeCount;
+  final int changeCursor;
+  final VoidCallback onPreviousChange;
+  final VoidCallback onNextChange;
 
   @override
   State<_Header> createState() => _HeaderState();
@@ -524,7 +878,7 @@ class _HeaderState extends State<_Header> {
         ? colors.mutedForeground
         : colors.mutedForeground.withValues(alpha: 0.45);
 
-    return Semantics(
+    final toggle = Semantics(
       button: true,
       expanded: widget.open,
       label:
@@ -549,72 +903,221 @@ class _HeaderState extends State<_Header> {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: widget.onToggle,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 120),
-            constraints: const BoxConstraints(minHeight: 36), // min-h-9
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              border: _focused
-                  ? Border.all(color: colors.ring, width: 2)
-                  : Border.all(color: Colors.transparent, width: 2),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  BeuiAgentTheme.of(context).icons.file,
-                  size: 16,
-                  color: colors.mutedForeground,
-                ),
-                const SizedBox(width: 8),
-                Expanded(child: widget.file),
-                if (widget.additions > 0 || widget.deletions > 0) ...[
+          // Ring painted outside layout, in the dedicated focusRing role: the
+          // old in-decoration `colors.ring` border was a 1.3:1 hairline token
+          // doing a focus indicator's job (audit R6).
+          child: BeuiFocusRing(
+            focused: _focused,
+            borderRadius: BorderRadius.circular(6),
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 36), // min-h-9
+              // 6 + 2: the geometry the old always-present transparent 2px
+              // border used to contribute, preserved now that the ring has
+              // moved out of the box model.
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+              child: Row(
+                children: [
+                  ExcludeSemantics(
+                    child: Icon(
+                      BeuiAgentTheme.of(context).icons.file,
+                      size: 16,
+                      color: colors.mutedForeground,
+                    ),
+                  ),
                   const SizedBox(width: 8),
-                  if (widget.additions > 0)
-                    Text(
-                      '+${widget.additions}',
-                      style: TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 12,
-                        letterSpacing: 0, // tracking-normal
-                        fontFeatures: const [FontFeature.tabularFigures()],
-                        color: widget.addColor,
-                      ),
-                    ),
-                  if (widget.additions > 0 && widget.deletions > 0)
+                  Expanded(child: widget.file),
+                  if (widget.additions > 0 || widget.deletions > 0) ...[
                     const SizedBox(width: 8),
-                  if (widget.deletions > 0)
-                    Text(
-                      '$_minus${widget.deletions}',
-                      style: TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 12,
-                        letterSpacing: 0, // tracking-normal
-                        fontFeatures: const [FontFeature.tabularFigures()],
-                        color: widget.delColor,
+                    if (widget.additions > 0)
+                      Text(
+                        '+${widget.additions}',
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 12,
+                          letterSpacing: 0, // tracking-normal
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                          color: widget.addColor,
+                        ),
+                      ),
+                    if (widget.additions > 0 && widget.deletions > 0)
+                      const SizedBox(width: 8),
+                    if (widget.deletions > 0)
+                      Text(
+                        '$_minus${widget.deletions}',
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 12,
+                          letterSpacing: 0, // tracking-normal
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                          color: widget.delColor,
+                        ),
+                      ),
+                  ],
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: Center(
+                      child: _StatusIcon(
+                        streaming: widget.streaming,
+                        reduce: widget.reduce,
+                        color: colors.mutedForeground.withValues(alpha: 0.6),
+                        spin: widget.spin,
                       ),
                     ),
+                  ),
+                  const SizedBox(width: 8), // gap-2
+                  _Chevron(
+                    open: widget.open,
+                    reduce: widget.reduce,
+                    color: chevronColor,
+                  ),
                 ],
-                const SizedBox(width: 8),
-                SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: Center(
-                    child: _StatusIcon(
-                      streaming: widget.streaming,
-                      reduce: widget.reduce,
-                      color: colors.mutedForeground.withValues(alpha: 0.6),
-                      spin: widget.spin,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return Row(
+      children: [
+        Expanded(child: toggle),
+        if (widget.showChangeNav) ...[
+          _HeaderAction(
+            icon: LucideIcons.chevron_up,
+            label: widget.changeCursor < 0
+                ? 'Go to last change of ${widget.changeCount}'
+                : 'Previous change, ${widget.changeCursor + 1} of '
+                      '${widget.changeCount}',
+            colors: colors,
+            onTap: widget.onPreviousChange,
+          ),
+          _HeaderAction(
+            icon: LucideIcons.chevron_down,
+            label: widget.changeCursor < 0
+                ? 'Go to first change of ${widget.changeCount}'
+                : 'Next change, ${widget.changeCursor + 1} of '
+                      '${widget.changeCount}',
+            colors: colors,
+            onTap: widget.onNextChange,
+          ),
+        ],
+        if (widget.canCopy)
+          _HeaderAction(
+            icon: widget.copied
+                ? BeuiAgentTheme.of(context).icons.copied
+                : BeuiAgentTheme.of(context).icons.copy,
+            label: widget.copied
+                ? BeuiAgentTheme.of(context).strings.copied
+                : BeuiAgentTheme.of(context).strings.copyDiff,
+            // Live only while the confirmation is up, so it is announced
+            // rather than silently relabelled (audit R28).
+            liveRegion: widget.copied,
+            colors: colors,
+            onTap: () => unawaited(widget.onCopy()),
+          ),
+      ],
+    );
+  }
+}
+
+/// A 28px icon control in the diff header, with the full interactive contract:
+/// semantics, keyboard activation, a visible focus ring, a 44px hit target, a
+/// click cursor, and the library's 0.97 press scale.
+class _HeaderAction extends StatefulWidget {
+  const _HeaderAction({
+    required this.icon,
+    required this.label,
+    required this.colors,
+    required this.onTap,
+    this.liveRegion = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final BeuiColors colors;
+  final VoidCallback onTap;
+  final bool liveRegion;
+
+  @override
+  State<_HeaderAction> createState() => _HeaderActionState();
+}
+
+class _HeaderActionState extends State<_HeaderAction> {
+  bool _hovered = false;
+  bool _pressed = false;
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    final reduce = MediaQuery.disableAnimationsOf(context);
+
+    // BeuiMinHitTarget sits outermost: every proxy between it and the pointer
+    // is sized to the 28px paint, and a RenderBox refuses a hit outside its own
+    // size, so slop nested any deeper is unreachable.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        container: true,
+        button: true,
+        liveRegion: widget.liveRegion,
+        label: widget.label,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() {
+            _hovered = false;
+            _pressed = false;
+          }),
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowFocusHighlight: (v) {
+              if (mounted) setState(() => _focused = v);
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onTap();
+                  return null;
+                },
+              ),
+            },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapUp: (_) => setState(() => _pressed = false),
+              onTapCancel: () => setState(() => _pressed = false),
+              onTap: widget.onTap,
+              child: SingleMotionBuilder(
+                value: (_pressed && !reduce) ? 0.97 : 1.0,
+                motion: motionFor(context, _pressMotion, isMovement: true),
+                builder: (context, scale, child) =>
+                    Transform.scale(scale: scale, child: child),
+                child: BeuiFocusRing(
+                  focused: _focused,
+                  borderRadius: BorderRadius.circular(6),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: _hovered
+                          ? colors.muted.withValues(alpha: 0.8)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Icon(
+                      widget.icon,
+                      size: 14,
+                      color: _hovered
+                          ? colors.foreground
+                          : colors.mutedForeground,
                     ),
                   ),
                 ),
-                const SizedBox(width: 8), // gap-2
-                _Chevron(
-                  open: widget.open,
-                  reduce: widget.reduce,
-                  color: chevronColor,
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -681,81 +1184,6 @@ class _Chevron extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Agent disclosure (height + opacity + y clip reveal)
-// ---------------------------------------------------------------------------
-
-/// Shared transform-only reveal for collapsible agent content — the Flutter
-/// port of the source's `AgentDisclosure`.
-class _AgentDisclosure extends StatelessWidget {
-  const _AgentDisclosure({
-    required this.open,
-    required this.reduce,
-    required this.child,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final target = open ? 1.0 : 0.0;
-    final motion = open ? _disclosureOpen : _disclosureClose;
-
-    if (reduce) {
-      return Offstage(
-        offstage: !open,
-        child: IgnorePointer(
-          ignoring: !open,
-          child: ExcludeSemantics(
-            excluding: !open,
-            child: ClipRect(
-              child: Align(
-                alignment: Alignment.topCenter,
-                heightFactor: open ? 1.0 : 0.0,
-                child: child,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return SingleMotionBuilder(
-      value: target,
-      motion: motionFor(context, motion, isMovement: true),
-      builder: (context, t, child) {
-        final tt = t.clamp(0.0, 1.0);
-        final closed = tt < 0.01;
-        return Offstage(
-          offstage: closed,
-          child: IgnorePointer(
-            ignoring: closed,
-            child: ExcludeSemantics(
-              excluding: closed,
-              child: ClipRect(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  heightFactor: tt,
-                  child: Opacity(
-                    opacity: tt,
-                    child: Transform.translate(
-                      offset: Offset(0, -4 * (1 - tt)),
-                      child: child,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-      child: child,
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Diff lines
 // ---------------------------------------------------------------------------
 
@@ -767,19 +1195,41 @@ class _DiffLines extends StatelessWidget {
     required this.colors,
     required this.addColor,
     required this.delColor,
+    required this.wrap,
+    required this.changeKeys,
+    required this.onExpandContext,
   });
 
   final List<BeuiFileDiffLine> lines;
   final BeuiCodeLanguage language;
-  final _DiffPalette palette;
+  final BeuiSyntaxPalette palette;
   final BeuiColors colors;
   final Color addColor;
   final Color delColor;
+  final bool wrap;
+  final Map<String, GlobalKey> changeKeys;
+  final void Function(BeuiFileDiffHunkGap gap)? onExpandContext;
 
   static const _gutterW = 36.0; // 2.25rem
   static const _markerW = 16.0; // 1rem
-  static const _lineHeight = 20.0;
+
+  /// One rendered row, matching the code block's `leading-5`.
+  static const lineHeight = 20.0;
   static const _fontSize = 12.0;
+
+  /// Unchanged lines missing between [a] and [b], or 0 when they are
+  /// contiguous (or when there is not enough information to tell).
+  static int gapBetween(BeuiFileDiffLine a, BeuiFileDiffLine b) {
+    // Additions have no old-file number and deletions have no new-file one, so
+    // compare on whichever axis both rows are anchored to.
+    final aOld = a.oldLine;
+    final bOld = b.oldLine;
+    if (aOld != null && bOld != null) return math.max(0, bOld - aOld - 1);
+    final aNew = a.newLine;
+    final bNew = b.newLine;
+    if (aNew != null && bNew != null) return math.max(0, bNew - aNew - 1);
+    return 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -795,29 +1245,184 @@ class _DiffLines extends StatelessWidget {
       fontSize: _fontSize,
       // Tailwind `tracking-normal`; see _resolveFile for why this is explicit.
       letterSpacing: 0,
-      height: _lineHeight / _fontSize,
+      height: lineHeight / _fontSize,
       color: palette.base,
     );
     final gutterStyle = baseStyle.copyWith(
-      color: colors.mutedForeground.withValues(alpha: 0.4),
+      // 0.75, not 0.4: at 0.4 the dual gutters measured 1.78:1, and the gutter
+      // is how a reviewer maps "line 19" onto the row in front of them.
+      color: colors.mutedForeground.withValues(alpha: 0.75),
       fontFeatures: const [FontFeature.tabularFigures()],
     );
+
+    final children = <Widget>[];
+    for (var i = 0; i < lines.length; i++) {
+      final line = lines[i];
+      if (i > 0) {
+        final hidden = gapBetween(lines[i - 1], line);
+        if (hidden > 0) {
+          children.add(
+            _HunkSeparator(
+              key: ValueKey<String>('gap-${lines[i - 1].id}-${line.id}'),
+              gap: BeuiFileDiffHunkGap(
+                hiddenCount: hidden,
+                before: lines[i - 1],
+                after: line,
+              ),
+              colors: colors,
+              baseStyle: baseStyle,
+              onExpand: onExpandContext,
+            ),
+          );
+        }
+      }
+      final row = _DiffLineRow(
+        key: ValueKey<String>(line.id),
+        line: line,
+        tokens: beuiHighlightLine(line.content, language, palette),
+        baseStyle: baseStyle,
+        gutterStyle: gutterStyle,
+        addColor: addColor,
+        delColor: delColor,
+        wrap: wrap,
+      );
+      final anchor = changeKeys[line.id];
+      children.add(
+        anchor == null ? row : KeyedSubtree(key: anchor, child: row),
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
-      children: [
-        for (final line in lines)
-          _DiffLineRow(
-            key: ValueKey<String>(line.id),
-            line: line,
-            tokens: _highlightLine(line.content, language, palette),
-            baseStyle: baseStyle,
-            gutterStyle: gutterStyle,
-            addColor: addColor,
-            delColor: delColor,
+      children: children,
+    );
+  }
+}
+
+/// The `@@`-equivalent: unchanged lines the consumer did not send.
+///
+/// Static text when [onExpand] is null, a button when it is not.
+class _HunkSeparator extends StatefulWidget {
+  const _HunkSeparator({
+    required this.gap,
+    required this.colors,
+    required this.baseStyle,
+    required this.onExpand,
+    super.key,
+  });
+
+  final BeuiFileDiffHunkGap gap;
+  final BeuiColors colors;
+  final TextStyle baseStyle;
+  final void Function(BeuiFileDiffHunkGap gap)? onExpand;
+
+  @override
+  State<_HunkSeparator> createState() => _HunkSeparatorState();
+}
+
+class _HunkSeparatorState extends State<_HunkSeparator> {
+  bool _hovered = false;
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    final count = widget.gap.hiddenCount;
+    final expandable = widget.onExpand != null;
+    // F13: pluralization is the theme's problem, not a `count == 1 ? …` here —
+    // languages with more than two plural forms cannot be served by a ternary.
+    final strings = BeuiAgentTheme.of(context).strings;
+    final text = expandable
+        ? strings.expandHiddenLines(count)
+        : strings.hiddenLinesCollapsed(count);
+
+    final body = DecoratedBox(
+      decoration: BoxDecoration(
+        color: _hovered && expandable
+            ? colors.foreground.withValues(alpha: 0.05)
+            : colors.foreground.withValues(alpha: 0.02),
+        border: Border(
+          top: BorderSide(color: colors.foreground.withValues(alpha: 0.06)),
+          bottom: BorderSide(color: colors.foreground.withValues(alpha: 0.06)),
+        ),
+      ),
+      child: SizedBox(
+        height: _DiffLines.lineHeight,
+        child: Row(
+          children: [
+            SizedBox(
+              width:
+                  _DiffLines._gutterW * 2 + _DiffLines._markerW + _rowBarWidth,
+              child: Text(
+                '⋯',
+                textAlign: TextAlign.center,
+                style: widget.baseStyle.copyWith(
+                  color: colors.mutedForeground.withValues(alpha: 0.75),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Text(
+                text,
+                style: widget.baseStyle.copyWith(
+                  color: colors.mutedForeground,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (!expandable) {
+      return Semantics(label: strings.hiddenLinesCollapsed(count), child: body);
+    }
+
+    // F14: the band paints 20px tall — half the 44px floor. The slop wrapper is
+    // OUTERMOST because every box below it (Semantics, MouseRegion,
+    // FocusableActionDetector) is sized to the paint and would reject an
+    // out-of-bounds pointer before this widget ever saw it. Width already
+    // clears the floor, so only the vertical overhang is doing work.
+    //
+    // The overhang is asymmetric in practice, and knowingly so: diff rows paint
+    // their change tint through a hit-opaque box, and Flutter tests later
+    // siblings first, so the row *below* claims the downward slop while the row
+    // above yields the upward one. The reachable target is the 20px band plus
+    // 12px above it — past WCAG 2.5.8 AA's 24px, short of the AAA 44px. Closing
+    // the rest would mean growing the band's paint, which is a diff-rhythm and
+    // source-fidelity change this fix is not licensed to make.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        label: text,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() => _hovered = false),
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowFocusHighlight: (v) {
+              if (mounted) setState(() => _focused = v);
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onExpand!(widget.gap);
+                  return null;
+                },
+              ),
+            },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => widget.onExpand!(widget.gap),
+              child: BeuiFocusRing(focused: _focused, child: body),
+            ),
           ),
-      ],
+        ),
+      ),
     );
   }
 }
@@ -830,23 +1435,34 @@ class _DiffLineRow extends StatelessWidget {
     required this.gutterStyle,
     required this.addColor,
     required this.delColor,
+    required this.wrap,
     super.key,
   });
 
   final BeuiFileDiffLine line;
-  final List<_CodeToken> tokens;
+  final List<BeuiSyntaxToken> tokens;
   final TextStyle baseStyle;
   final TextStyle gutterStyle;
   final Color addColor;
   final Color delColor;
+  final bool wrap;
 
   @override
   Widget build(BuildContext context) {
     final type = line.type;
     final bg = switch (type) {
-      BeuiFileDiffLineType.added => _emerald500.withValues(alpha: 0.07),
-      BeuiFileDiffLineType.removed => _rose500.withValues(alpha: 0.07),
+      BeuiFileDiffLineType.added => _emerald500.withValues(
+        alpha: _rowTintAlpha,
+      ),
+      BeuiFileDiffLineType.removed => _rose500.withValues(alpha: _rowTintAlpha),
       BeuiFileDiffLineType.context => null,
+    };
+    // The redundant channel the tints alone could not carry. Reserved as a
+    // transparent strip on context rows so the code column never shifts.
+    final bar = switch (type) {
+      BeuiFileDiffLineType.added => addColor,
+      BeuiFileDiffLineType.removed => delColor,
+      BeuiFileDiffLineType.context => Colors.transparent,
     };
     final marker = switch (type) {
       BeuiFileDiffLineType.added => '+',
@@ -871,9 +1487,22 @@ class _DiffLineRow extends StatelessWidget {
               ),
           ];
 
+    final code = Text.rich(
+      TextSpan(style: baseStyle, children: spans),
+      softWrap: wrap,
+      // Never `ellipsis`. Truncating the end of a changed line hides the part
+      // that changed — the single P0 this component carried (audit R1).
+      overflow: wrap ? TextOverflow.visible : TextOverflow.clip,
+    );
+
     final row = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: wrap ? MainAxisSize.max : MainAxisSize.min,
       children: [
+        SizedBox(
+          width: _rowBarWidth,
+          child: ColoredBox(color: bar),
+        ),
         SizedBox(
           width: _DiffLines._gutterW,
           child: Padding(
@@ -904,342 +1533,24 @@ class _DiffLineRow extends StatelessWidget {
             style: baseStyle.copyWith(color: markerColor),
           ),
         ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: Text.rich(
-              TextSpan(style: baseStyle, children: spans),
-              softWrap: false,
-              overflow: TextOverflow.ellipsis,
+        if (wrap)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: code,
             ),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: code,
           ),
-        ),
       ],
     );
 
-    if (bg == null) return row;
-    return ColoredBox(color: bg, child: row);
+    // IntrinsicHeight so the leading bar spans a wrapped row's full height.
+    final sized = wrap ? IntrinsicHeight(child: row) : row;
+    if (bg == null) return sized;
+    return ColoredBox(color: bg, child: sized);
   }
-}
-
-// ---------------------------------------------------------------------------
-// Lightweight highlighter (reduced Shiki substitute — no new deps)
-// ---------------------------------------------------------------------------
-
-@immutable
-class _DiffPalette {
-  const _DiffPalette({
-    required this.base,
-    required this.keyword,
-    required this.string,
-    required this.comment,
-    required this.number,
-    required this.entity,
-    required this.punct,
-  });
-
-  // Shiki `github-light-high-contrast` / `github-dark-high-contrast` — the
-  // themes the source's AgentCode highlighter is created with
-  // (agent-code.tsx LIGHT_THEME / DARK_THEME).
-  factory _DiffPalette.of(BeuiColors colors, Brightness brightness) {
-    final isLight = brightness == Brightness.light;
-    return _DiffPalette(
-      // file-diff.tsx renders its grid with no `text-foreground/NN` dimming.
-      base: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
-      keyword: isLight ? const Color(0xFFA0111F) : const Color(0xFFFF9492),
-      string: isLight ? const Color(0xFF032563) : const Color(0xFFADDCFF),
-      comment: isLight ? const Color(0xFF4B535D) : const Color(0xFFBDC4CC),
-      number: isLight ? const Color(0xFF023B95) : const Color(0xFF91CBFF),
-      entity: isLight ? const Color(0xFF622CBC) : const Color(0xFFDBB7FF),
-      punct: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
-    );
-  }
-
-  final Color base;
-  final Color keyword;
-  final Color string;
-  final Color comment;
-  final Color number;
-  final Color entity;
-  final Color punct;
-}
-
-@immutable
-class _CodeToken {
-  const _CodeToken(this.text, this.color);
-  final String text;
-  final Color color;
-}
-
-const _tsKeywords = <String>{
-  'abstract',
-  'as',
-  'async',
-  'await',
-  'break',
-  'case',
-  'catch',
-  'class',
-  'const',
-  'continue',
-  'debugger',
-  'default',
-  'delete',
-  'do',
-  'else',
-  'enum',
-  'export',
-  'extends',
-  'false',
-  'finally',
-  'for',
-  'from',
-  'function',
-  'get',
-  'if',
-  'implements',
-  'import',
-  'in',
-  'instanceof',
-  'interface',
-  'let',
-  'new',
-  'null',
-  'of',
-  'package',
-  'private',
-  'protected',
-  'public',
-  'return',
-  'set',
-  'static',
-  'super',
-  'switch',
-  'this',
-  'throw',
-  'true',
-  'try',
-  'type',
-  'typeof',
-  'undefined',
-  'var',
-  'void',
-  'while',
-  'with',
-  'yield',
-};
-
-const _bashKeywords = <String>{
-  'if',
-  'then',
-  'else',
-  'elif',
-  'fi',
-  'for',
-  'while',
-  'do',
-  'done',
-  'case',
-  'esac',
-  'function',
-  'in',
-  'return',
-  'export',
-  'local',
-  'readonly',
-  'source',
-  'alias',
-  'cd',
-  'echo',
-  'exit',
-  'set',
-  'unset',
-  'true',
-  'false',
-};
-
-List<_CodeToken> _highlightLine(
-  String line,
-  BeuiCodeLanguage language,
-  _DiffPalette palette,
-) {
-  if (line.isEmpty) return const [];
-  if (language == BeuiCodeLanguage.text) {
-    return [_CodeToken(line, palette.base)];
-  }
-  if (language == BeuiCodeLanguage.diff) {
-    if (line.startsWith('+') && !line.startsWith('+++')) {
-      return [_CodeToken(line, palette.keyword)];
-    }
-    if (line.startsWith('-') && !line.startsWith('---')) {
-      return [_CodeToken(line, palette.comment)];
-    }
-    return [_CodeToken(line, palette.base)];
-  }
-  if (language == BeuiCodeLanguage.json) {
-    return _highlightJson(line, palette);
-  }
-  final keywords = switch (language) {
-    BeuiCodeLanguage.bash => _bashKeywords,
-    BeuiCodeLanguage.typescript || BeuiCodeLanguage.tsx => _tsKeywords,
-    _ => const <String>{},
-  };
-  return _highlightGeneric(line, keywords, palette, language);
-}
-
-List<_CodeToken> _highlightJson(String line, _DiffPalette palette) {
-  final out = <_CodeToken>[];
-  var i = 0;
-  while (i < line.length) {
-    final ch = line[i];
-    if (ch == '"') {
-      final end = _scanString(line, i);
-      final slice = line.substring(i, end);
-      final after = line.substring(end).trimLeft();
-      final isKey = after.startsWith(':');
-      out.add(_CodeToken(slice, isKey ? palette.number : palette.string));
-      i = end;
-      continue;
-    }
-    if (_isDigit(ch) ||
-        (ch == '-' && i + 1 < line.length && _isDigit(line[i + 1]))) {
-      final end = _scanNumber(line, i);
-      out.add(_CodeToken(line.substring(i, end), palette.number));
-      i = end;
-      continue;
-    }
-    if (_isIdentStart(ch)) {
-      final end = _scanIdent(line, i);
-      final word = line.substring(i, end);
-      final color = (word == 'true' || word == 'false' || word == 'null')
-          ? palette.keyword
-          : palette.base;
-      out.add(_CodeToken(word, color));
-      i = end;
-      continue;
-    }
-    out.add(_CodeToken(ch, palette.punct));
-    i++;
-  }
-  return out;
-}
-
-List<_CodeToken> _highlightGeneric(
-  String line,
-  Set<String> keywords,
-  _DiffPalette palette,
-  BeuiCodeLanguage language,
-) {
-  final out = <_CodeToken>[];
-  var i = 0;
-  while (i < line.length) {
-    final ch = line[i];
-    if (ch == '/' && i + 1 < line.length && line[i + 1] == '/') {
-      out.add(_CodeToken(line.substring(i), palette.comment));
-      break;
-    }
-    if (language == BeuiCodeLanguage.bash && ch == '#') {
-      out.add(_CodeToken(line.substring(i), palette.comment));
-      break;
-    }
-    if (ch == '/' && i + 1 < line.length && line[i + 1] == '*') {
-      out.add(_CodeToken(line.substring(i), palette.comment));
-      break;
-    }
-    if (ch == "'" || ch == '"' || ch == '`') {
-      final end = _scanString(line, i, quote: ch);
-      out.add(_CodeToken(line.substring(i, end), palette.string));
-      i = end;
-      continue;
-    }
-    if (_isDigit(ch) ||
-        (ch == '.' && i + 1 < line.length && _isDigit(line[i + 1]))) {
-      final end = _scanNumber(line, i);
-      out.add(_CodeToken(line.substring(i, end), palette.number));
-      i = end;
-      continue;
-    }
-    if (_isIdentStart(ch) || ch == r'$') {
-      final end = _scanIdent(line, i);
-      final word = line.substring(i, end);
-      final color = keywords.contains(word)
-          ? palette.keyword
-          : _callsAhead(line, end)
-          ? palette.entity
-          : palette.base;
-      out.add(_CodeToken(word, color));
-      i = end;
-      continue;
-    }
-    final color = ch.trim().isEmpty ? palette.base : palette.punct;
-    out.add(_CodeToken(ch, color));
-    i++;
-  }
-  return out;
-}
-
-/// True when the next non-space character after [end] opens a call — the
-/// source's Shiki themes paint those identifiers with the `entity` colour.
-bool _callsAhead(String line, int end) {
-  var j = end;
-  while (j < line.length && line[j] == ' ') {
-    j++;
-  }
-  return j < line.length && line[j] == '(';
-}
-
-bool _isDigit(String ch) =>
-    ch.codeUnitAt(0) >= 0x30 && ch.codeUnitAt(0) <= 0x39;
-
-bool _isIdentStart(String ch) {
-  final c = ch.codeUnitAt(0);
-  return (c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A) || c == 0x5F;
-}
-
-bool _isIdentPart(String ch) {
-  final c = ch.codeUnitAt(0);
-  return _isIdentStart(ch) || _isDigit(ch) || c == 0x24;
-}
-
-int _scanIdent(String s, int start) {
-  var i = start + 1;
-  while (i < s.length && _isIdentPart(s[i])) {
-    i++;
-  }
-  return i;
-}
-
-int _scanNumber(String s, int start) {
-  var i = start;
-  if (s[i] == '-') i++;
-  while (i < s.length &&
-      (_isDigit(s[i]) ||
-          s[i] == '.' ||
-          s[i] == 'e' ||
-          s[i] == 'E' ||
-          s[i] == '+' ||
-          s[i] == '-')) {
-    if ((s[i] == '+' || s[i] == '-') &&
-        i > start &&
-        s[i - 1] != 'e' &&
-        s[i - 1] != 'E') {
-      break;
-    }
-    i++;
-  }
-  return i;
-}
-
-int _scanString(String s, int start, {String? quote}) {
-  final q = quote ?? s[start];
-  var i = start + 1;
-  while (i < s.length) {
-    if (s[i] == r'\' && i + 1 < s.length) {
-      i += 2;
-      continue;
-    }
-    if (s[i] == q) return i + 1;
-    i++;
-  }
-  return s.length;
 }

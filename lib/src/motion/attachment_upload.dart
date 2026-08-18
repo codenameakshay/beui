@@ -10,6 +10,7 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
 import 'tooltip.dart';
 
 // ---------------------------------------------------------------------------
@@ -117,8 +118,12 @@ class BeuiAttachmentUploadItem {
     this.currentTime,
     this.duration,
     this.status = BeuiAttachmentStatus.idle,
+    this.progress,
     this.error,
-  });
+  }) : assert(
+         progress == null || (progress >= 0 && progress <= 1),
+         'progress is a 0-1 fraction.',
+       );
 
   /// Stable identity — drives row keying, the arrival stagger and removal.
   final String id;
@@ -153,6 +158,16 @@ class BeuiAttachmentUploadItem {
   /// Row status.
   final BeuiAttachmentStatus status;
 
+  /// Real upload progress as a 0-1 fraction, when the consumer knows it.
+  ///
+  /// Without this the wash was a fixed 900ms animation with no relationship to
+  /// the actual transfer: a 2MB file and a 200MB file filled the bar at exactly
+  /// the same rate, and the simulation raced the consumer's own `status` — the
+  /// bar could sit full while the row was still uploading, or still be crawling
+  /// when it had already finished. Set it and the wash tracks the transfer;
+  /// leave it null and the timed simulation stays as the fallback.
+  final double? progress;
+
   /// Failure note shown under the name when [status] is
   /// [BeuiAttachmentStatus.failed]. Falls back to "Upload failed".
   final String? error;
@@ -167,6 +182,7 @@ class BeuiAttachmentUploadItem {
     Duration? currentTime,
     Duration? duration,
     BeuiAttachmentStatus? status,
+    double? progress,
     String? error,
     bool clearError = false,
   }) => BeuiAttachmentUploadItem(
@@ -179,6 +195,7 @@ class BeuiAttachmentUploadItem {
     currentTime: currentTime ?? this.currentTime,
     duration: duration ?? this.duration,
     status: status ?? this.status,
+    progress: progress ?? this.progress,
     error: clearError ? null : (error ?? this.error),
   );
 }
@@ -318,6 +335,8 @@ class BeuiAttachmentUpload extends StatefulWidget {
     this.onOpenLink,
     this.playingId,
     this.onAudioToggle,
+    this.onSeek,
+    this.onCancel,
     this.maxFiles = 12,
     this.maxFileSize = _defaultMaxFileSize,
     this.disabled = false,
@@ -357,6 +376,24 @@ class BeuiAttachmentUpload extends StatefulWidget {
     BeuiAttachmentRejectReason reason,
   )?
   onAttachmentsRejected;
+
+  /// Fires with an audio row and the position the user scrubbed to.
+  ///
+  /// The waveform is documented as a scrubber but was decoration: it lit the
+  /// bars left of the playhead and accepted no input at all. Wire this and it
+  /// becomes seekable by tap and drag, with arrow-key and screen-reader support
+  /// through a slider role. Leave it null and the waveform stays the read-only
+  /// meter it was.
+  final void Function(BeuiAttachmentUploadItem item, Duration position)? onSeek;
+
+  /// Fires when an in-flight upload is cancelled, as distinct from removing a
+  /// row that has already settled.
+  ///
+  /// While a row was uploading its action slot went blank, so a mistaken 200MB
+  /// attachment could not be stopped — the only way out was to wait for it to
+  /// finish and then delete it. Wire this and the slot holds a cancel control
+  /// for the whole transfer.
+  final ValueChanged<BeuiAttachmentUploadItem>? onCancel;
 
   /// Fires with the row once its pending-removal spinner has run out and the
   /// row has actually left the list.
@@ -661,6 +698,20 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
                           retryable: widget.onRetry != null,
                           onRemove: () => _requestRemove(entry.item),
                           onRetry: () => widget.onRetry?.call(entry.item),
+                          onCancel: widget.onCancel == null
+                              ? null
+                              : () {
+                                  // Stop the simulated lifecycle too, or the
+                                  // row would still flip to "complete" after
+                                  // the transfer the user just cancelled.
+                                  _uploadingIds.remove(entry.item.id);
+                                  _completeIds.remove(entry.item.id);
+                                  widget.onCancel!(entry.item);
+                                },
+                          onSeek: widget.onSeek == null
+                              ? null
+                              : (position) =>
+                                    widget.onSeek!(entry.item, position),
                           onAudioToggle: widget.onAudioToggle == null
                               ? null
                               : () => widget.onAudioToggle!(entry.item),
@@ -978,6 +1029,8 @@ class _AttachmentRow extends StatefulWidget {
     required this.retryable,
     required this.onRemove,
     required this.onRetry,
+    required this.onCancel,
+    required this.onSeek,
     required this.onAudioToggle,
     required this.onOpenLink,
     required this.onPreview,
@@ -998,6 +1051,8 @@ class _AttachmentRow extends StatefulWidget {
   final bool retryable;
   final VoidCallback onRemove;
   final VoidCallback onRetry;
+  final VoidCallback? onCancel;
+  final ValueChanged<Duration>? onSeek;
   final VoidCallback? onAudioToggle;
   final VoidCallback? onOpenLink;
   final ValueChanged<Rect>? onPreview;
@@ -1114,6 +1169,8 @@ class _AttachmentRowState extends State<_AttachmentRow> {
           thumbKey: _thumbKey,
           onRemove: widget.onRemove,
           onRetry: widget.onRetry,
+          onCancel: widget.onCancel,
+          onSeek: widget.onSeek,
           onAudioToggle: widget.onAudioToggle,
           onOpenLink: widget.onOpenLink,
           onPreview: widget.onPreview == null
@@ -1147,6 +1204,8 @@ class _RowBody extends StatelessWidget {
     required this.thumbKey,
     required this.onRemove,
     required this.onRetry,
+    required this.onCancel,
+    required this.onSeek,
     required this.onAudioToggle,
     required this.onOpenLink,
     required this.onPreview,
@@ -1164,6 +1223,8 @@ class _RowBody extends StatelessWidget {
   final GlobalKey thumbKey;
   final VoidCallback onRemove;
   final VoidCallback onRetry;
+  final VoidCallback? onCancel;
+  final ValueChanged<Duration>? onSeek;
   final VoidCallback? onAudioToggle;
   final VoidCallback? onOpenLink;
   final VoidCallback? onPreview;
@@ -1218,7 +1279,13 @@ class _RowBody extends StatelessWidget {
                 child: _UploadWash(
                   show: uploading || uploadComplete,
                   reduce: reduce,
-                  label: 'Uploading ${item.name}',
+                  // Non-null drives the fill directly; null keeps the timed
+                  // simulation as the fallback.
+                  progress: item.progress,
+                  label: item.progress == null
+                      ? 'Uploading ${item.name}'
+                      : 'Uploading ${item.name}, '
+                            '${(item.progress! * 100).round()}%',
                   // bg-emerald-400/25 · dark:bg-emerald-500/20
                   color: isDark
                       ? const Color(0x3310B981)
@@ -1266,6 +1333,7 @@ class _RowBody extends StatelessWidget {
               retryable: retryable,
               onRemove: onRemove,
               onRetry: onRetry,
+              onCancel: onCancel,
             ),
           ),
         ],
@@ -1348,6 +1416,9 @@ class _RowBody extends StatelessWidget {
           playing: playing,
           reduce: reduce,
           colors: colors,
+          name: item.name,
+          duration: duration,
+          onSeek: onSeek,
         ),
       ),
       SizedBox(
@@ -1377,12 +1448,16 @@ class _UploadWash extends StatefulWidget {
     required this.reduce,
     required this.label,
     required this.color,
+    this.progress,
   });
 
   final bool show;
   final bool reduce;
   final String label;
   final Color color;
+
+  /// Real transfer progress, 0-1. Null keeps the timed simulation.
+  final double? progress;
 
   @override
   State<_UploadWash> createState() => _UploadWashState();
@@ -1403,9 +1478,43 @@ class _UploadWashState extends State<_UploadWash> {
     }
   }
 
+  Widget _fillBar(double t) => Align(
+    alignment: Alignment.centerLeft,
+    child: FractionallySizedBox(
+      widthFactor: t.clamp(0.0, 1.0),
+      heightFactor: 1,
+      child: ColoredBox(color: widget.color),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     if (!_alive && !widget.show) return const SizedBox.shrink();
+    // With a real progress value the bar tracks the transfer and eases to each
+    // new value; without one it replays the source's fixed-duration sweep.
+    final fill = widget.progress != null
+        ? SingleMotionBuilder(
+            value: widget.progress!.clamp(0.0, 1.0),
+            motion: const CurvedMotion(
+              Duration(milliseconds: 280),
+              beuiEaseOut,
+            ),
+            active: !widget.reduce,
+            builder: (context, t, _) => _fillBar(t),
+          )
+        : SingleMotionBuilder(
+            key: ValueKey(_epoch),
+            value: 1,
+            from: 0,
+            motion: CurvedMotion(
+              widget.reduce
+                  ? const Duration(milliseconds: 100)
+                  : _uploadProgress,
+              beuiEaseOut,
+            ),
+            builder: (context, t, _) => _fillBar(t),
+          );
+
     return IgnorePointer(
       child: Semantics(
         label: widget.label,
@@ -1422,25 +1531,7 @@ class _UploadWashState extends State<_UploadWash> {
           },
           builder: (context, opacity, child) =>
               Opacity(opacity: opacity.clamp(0.0, 1.0), child: child),
-          child: SingleMotionBuilder(
-            key: ValueKey(_epoch),
-            value: 1,
-            from: 0,
-            motion: CurvedMotion(
-              widget.reduce
-                  ? const Duration(milliseconds: 100)
-                  : _uploadProgress,
-              beuiEaseOut,
-            ),
-            builder: (context, t, _) => Align(
-              alignment: Alignment.centerLeft,
-              child: FractionallySizedBox(
-                widthFactor: t.clamp(0.0, 1.0),
-                heightFactor: 1,
-                child: ColoredBox(color: widget.color),
-              ),
-            ),
-          ),
+          child: fill,
         ),
       ),
     );
@@ -1456,6 +1547,9 @@ class _Waveform extends StatefulWidget {
     required this.playing,
     required this.reduce,
     required this.colors,
+    required this.name,
+    required this.duration,
+    required this.onSeek,
   });
 
   final double progress;
@@ -1463,12 +1557,36 @@ class _Waveform extends StatefulWidget {
   final bool reduce;
   final BeuiColors colors;
 
+  /// Attachment name, for the scrubber's accessible label.
+  final String name;
+
+  /// Total length, needed to turn an x position into a playhead [Duration].
+  final Duration? duration;
+
+  /// Non-null makes the waveform a real scrubber. See
+  /// [BeuiAttachmentUpload.onSeek].
+  final ValueChanged<Duration>? onSeek;
+
+  /// Whether this instance accepts input at all.
+  bool get seekable =>
+      onSeek != null && duration != null && duration! > Duration.zero;
+
   @override
   State<_Waveform> createState() => _WaveformState();
 }
 
+/// Keyboard scrub step, as a fraction of the total. |delta| > 1 means "jump to
+/// the end in that direction".
+class _SeekIntent extends Intent {
+  const _SeekIntent(this.delta);
+
+  final double delta;
+}
+
 class _WaveformState extends State<_Waveform>
     with SingleTickerProviderStateMixin {
+  bool _focusVisible = false;
+
   // An endless decorative loop. `motor` has no repeat primitive, so this follows
   // the precedent already set by the sibling BeuiFileUpload's spinner: raw
   // controller for the loop, `motor` for every discrete transition.
@@ -1518,28 +1636,93 @@ class _WaveformState extends State<_Waveform>
     final inactive = colors.mutedForeground.withValues(alpha: 0.35);
     final cycleSeconds = _waveformCycle.inMilliseconds / 1000;
 
-    return ExcludeSemantics(
-      child: SizedBox(
-        height: 44, // h-11
-        child: ClipRect(
-          child: OverflowBox(
-            alignment: Alignment.centerLeft,
-            maxWidth: double.infinity,
-            child: AnimatedBuilder(
-              animation: _pulse,
-              builder: (context, _) => Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 3, // gap-[3px]
-                children: [
-                  for (var i = 0; i < _waveformBars.length; i++)
-                    _bar(i, active, inactive, cycleSeconds),
-                ],
-              ),
+    final bars = SizedBox(
+      height: 44, // h-11
+      child: ClipRect(
+        child: OverflowBox(
+          alignment: Alignment.centerLeft,
+          maxWidth: double.infinity,
+          child: AnimatedBuilder(
+            animation: _pulse,
+            builder: (context, _) => Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 3, // gap-[3px]
+              children: [
+                for (var i = 0; i < _waveformBars.length; i++)
+                  _bar(i, active, inactive, cycleSeconds),
+              ],
             ),
           ),
         ),
       ),
     );
+
+    // Read-only: stays decoration, and stays out of the semantics tree so it
+    // does not clutter the row with 28 anonymous nodes.
+    if (!widget.seekable) return ExcludeSemantics(child: bars);
+
+    // Seekable: a real slider. Tap or drag anywhere along it to scrub, and
+    // arrow keys step in 5% increments for anyone not using a pointer.
+    return Semantics(
+      slider: true,
+      label: 'Seek ${widget.name}',
+      value: _formatDuration(_positionFor(widget.progress)),
+      increasedValue: _formatDuration(
+        _positionFor((widget.progress + 0.05).clamp(0.0, 1.0)),
+      ),
+      decreasedValue: _formatDuration(
+        _positionFor((widget.progress - 0.05).clamp(0.0, 1.0)),
+      ),
+      onIncrease: () => _seekFraction(widget.progress + 0.05),
+      onDecrease: () => _seekFraction(widget.progress - 0.05),
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.arrowRight): _SeekIntent(0.05),
+          SingleActivator(LogicalKeyboardKey.arrowLeft): _SeekIntent(-0.05),
+          SingleActivator(LogicalKeyboardKey.home): _SeekIntent(-2),
+          SingleActivator(LogicalKeyboardKey.end): _SeekIntent(2),
+        },
+        actions: <Type, Action<Intent>>{
+          _SeekIntent: CallbackAction<_SeekIntent>(
+            onInvoke: (intent) {
+              _seekFraction(widget.progress + intent.delta);
+              return null;
+            },
+          ),
+        },
+        onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapDown: (d) => _seekAt(d.localPosition.dx),
+          onHorizontalDragStart: (d) => _seekAt(d.localPosition.dx),
+          onHorizontalDragUpdate: (d) => _seekAt(d.localPosition.dx),
+          child: BeuiFocusRing(
+            focused: _focusVisible,
+            borderRadius: BorderRadius.circular(6),
+            child: ExcludeSemantics(child: bars),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Duration _positionFor(double fraction) => Duration(
+    milliseconds: (widget.duration!.inMilliseconds * fraction.clamp(0.0, 1.0))
+        .round(),
+  );
+
+  void _seekFraction(double fraction) {
+    if (!widget.seekable) return;
+    widget.onSeek!(_positionFor(fraction.clamp(0.0, 1.0)));
+  }
+
+  void _seekAt(double dx) {
+    if (!widget.seekable) return;
+    final box = context.findRenderObject() as RenderBox?;
+    final width = box?.size.width ?? 0;
+    if (width <= 0) return;
+    _seekFraction(dx / width);
   }
 
   Widget _bar(int index, Color active, Color inactive, double cycleSeconds) {
@@ -1730,6 +1913,7 @@ class _PlayToggleState extends State<_PlayToggle> {
 /// The trailing slot — source `RowAction`.
 class _RowAction extends StatelessWidget {
   const _RowAction({
+    required this.onCancel,
     required this.state,
     required this.label,
     required this.colors,
@@ -1746,13 +1930,32 @@ class _RowAction extends StatelessWidget {
   final bool retryable;
   final VoidCallback onRemove;
   final VoidCallback onRetry;
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
     final isDark = colors.brightness == Brightness.dark;
     switch (state) {
       case _RowActionState.uploading:
-        return const SizedBox(width: 36, height: 36);
+        // The slot used to go blank for the whole transfer, so a mistaken
+        // 200MB attachment could not be stopped — you waited for it to finish
+        // and then deleted it. With `onCancel` wired it holds a cancel
+        // control, deliberately labelled as cancelling rather than removing.
+        if (onCancel == null) return const SizedBox(width: 36, height: 36);
+        return _IconButton(
+          icon: LucideIcons.x,
+          semanticsLabel: 'Cancel upload of $label',
+          tooltip: 'Cancel upload',
+          size: 36,
+          radius: 12,
+          iconSize: 16,
+          colors: colors,
+          reduce: reduce,
+          foreground: colors.mutedForeground,
+          hoverForeground: colors.foreground,
+          hoverBackground: colors.muted,
+          onPressed: onCancel!,
+        );
 
       case _RowActionState.complete:
         return BeuiTooltip(
@@ -2103,7 +2306,11 @@ class _ImageThumbnailState extends State<_ImageThumbnail> {
             Padding(
               padding: const EdgeInsets.only(top: 4, bottom: 2),
               child: Text(
-                'Click to preview',
+                // Device-neutral: this caption rides a hover tooltip a touch
+                // user never sees, so telling them to 'click' was both wrong
+                // and invisible. The thumbnail itself is the touch affordance,
+                // and it already announces 'Preview <name>'.
+                'Preview',
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w500,

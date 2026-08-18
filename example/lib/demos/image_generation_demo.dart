@@ -104,7 +104,9 @@ class _GenerationRun extends StatefulWidget {
 
 class _GenerationRunState extends State<_GenerationRun> {
   BeuiImageGenerationStatus _status = BeuiImageGenerationStatus.queued;
+  double _progress = 0;
   final List<Timer> _timers = <Timer>[];
+  Timer? _progressTimer;
 
   @override
   void initState() {
@@ -123,6 +125,8 @@ class _GenerationRunState extends State<_GenerationRun> {
       t.cancel();
     }
     _timers.clear();
+    _progressTimer?.cancel();
+    _progressTimer = null;
   }
 
   void _arm() {
@@ -131,11 +135,23 @@ class _GenerationRunState extends State<_GenerationRun> {
     _cancel();
 
     if (reduce) {
-      setState(() => _status = BeuiImageGenerationStatus.complete);
+      setState(() {
+        _status = BeuiImageGenerationStatus.complete;
+        _progress = 1;
+      });
       return;
     }
 
-    setState(() => _status = BeuiImageGenerationStatus.queued);
+    setState(() {
+      _status = BeuiImageGenerationStatus.queued;
+      _progress = 0;
+    });
+    // Drives the frame's determinate hairline with a real value instead of
+    // leaving it indeterminate for the whole run.
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 120), (t) {
+      if (!mounted) return;
+      setState(() => _progress = (_progress + 0.02).clamp(0.0, 1.0));
+    });
     _timers.addAll([
       Timer(const Duration(milliseconds: 500), () {
         if (mounted) {
@@ -149,15 +165,30 @@ class _GenerationRunState extends State<_GenerationRun> {
       }),
       Timer(const Duration(milliseconds: 5200), () {
         if (mounted) {
-          setState(() => _status = BeuiImageGenerationStatus.complete);
+          _progressTimer?.cancel();
+          setState(() {
+            _status = BeuiImageGenerationStatus.complete;
+            _progress = 1;
+          });
         }
       }),
     ]);
   }
 
+  /// Cancels the run: stops every timer and lands the surface on the error
+  /// status, so the cancel path shows somewhere concrete.
+  void _cancelRun() {
+    _cancel();
+    setState(() => _status = BeuiImageGenerationStatus.error);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
+    final active =
+        _status == BeuiImageGenerationStatus.queued ||
+        _status == BeuiImageGenerationStatus.generating ||
+        _status == BeuiImageGenerationStatus.refining;
 
     return Column(
       children: [
@@ -166,6 +197,10 @@ class _GenerationRunState extends State<_GenerationRun> {
           prompt: 'a quiet mountain landscape at sunset',
           resolution: '1024 × 1024',
           status: _status,
+          // Non-null only while the run is active; complete/error carry no
+          // progress value.
+          progress: active ? _progress : null,
+          onCancel: active ? _cancelRun : null,
           onRetry: widget.onReplay,
           child: const _GeneratedArtwork(),
         ),

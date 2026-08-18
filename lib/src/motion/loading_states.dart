@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:clock/clock.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -9,6 +10,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_transcript.dart';
 import 'loader.dart';
 import 'text_shimmer.dart';
 
@@ -95,11 +97,19 @@ class BeuiAgentProgress extends StatefulWidget {
     this.initialSeconds = 0,
     this.running = true,
     this.style,
+    this.announce,
     super.key,
   });
 
   /// Verb describing the agent's current activity (source `label`).
   final String label;
+
+  /// Whether this indicator is a live region.
+  ///
+  /// Null (the default) resolves to false when a [BeuiMessageScroller] is
+  /// above it and true otherwise — the transcript owns the conversation's one
+  /// live region (C6).
+  final bool? announce;
 
   /// Controlled elapsed time in seconds. When set, the internal timer is
   /// ignored (source `elapsedSeconds`).
@@ -119,6 +129,10 @@ class BeuiAgentProgress extends StatefulWidget {
   @override
   State<BeuiAgentProgress> createState() => _BeuiAgentProgressState();
 }
+
+/// Phase the reduced-motion grid rests at — mid-cycle, where the wave is at
+/// its peak and every cell reads at a calm, even opacity.
+const double _kReducedPulsePhase = 0.5;
 
 class _BeuiAgentProgressState extends State<BeuiAgentProgress>
     with SingleTickerProviderStateMixin {
@@ -163,10 +177,20 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // C21. The two branches here used to be identical — the `if (reduce)` was
+    // dead code — so the controller looped either way. Under reduced motion
+    // the painter pins scale to 1.0 and narrows opacity to a 0.35–0.8 band,
+    // and `shouldRepaint` returns true on every tick, so the setting meant to
+    // *reduce* motion bought a permanent 60fps repaint of a grid whose cells
+    // barely move.
+    //
+    // Reduced motion keeps the opacity channel, but a pulse is decorative:
+    // freezing it at the calm mid-point is the movement-free rendering of the
+    // same state, and it is what `BeuiMessageTyping` does two files away.
     final reduce = MediaQuery.disableAnimationsOf(context);
     if (reduce) {
-      // Still loop — reduced branch is opacity-only, not movement-free halt.
-      if (!_pulse.isAnimating) _pulse.repeat();
+      if (_pulse.isAnimating) _pulse.stop();
+      _pulse.value = _kReducedPulsePhase;
     } else if (!_pulse.isAnimating) {
       _pulse.repeat();
     }
@@ -232,7 +256,11 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
 
     return Semantics(
       label: '${widget.label}, in progress',
-      liveRegion: true,
+      // C6. This label only changes if the caller changes `label`, so as a
+      // live region it announced once and then went inert while adding another
+      // region to the transcript's nest. Inside a scroller the transcript owns
+      // announcements; standalone it keeps its own.
+      liveRegion: widget.announce ?? !BeuiTranscriptScope.isPresent(context),
       container: true,
       child: ExcludeSemantics(
         child: Row(
@@ -384,8 +412,21 @@ class BeuiReasoningText extends StatefulWidget {
     this.shimmerDuration = const Duration(milliseconds: 2200),
     this.indicator,
     this.style,
+    this.announce = false,
     super.key,
   });
+
+  /// Whether each phrase change is announced.
+  ///
+  /// **False by default**, and deliberately so. The phrases cycle on
+  /// [interval] — 1800ms by default, floor 600ms — so as a live region this
+  /// interrupted itself up to 1.6 times a second with decorative filler
+  /// ("Thinking", "Reading the context", …) that carries no information the
+  /// reader can act on. The status a screen reader needs is the *transcript's*
+  /// busy state, which [BeuiMessageScroller] already reports (C6).
+  ///
+  /// Set true only when this is the sole indication that work is happening.
+  final bool announce;
 
   /// Phrases cycled while the agent works. Empty falls back to the source
   /// defaults.
@@ -433,8 +474,10 @@ class _BeuiReasoningTextState extends State<BeuiReasoningText> {
   @override
   void didUpdateWidget(BeuiReasoningText old) {
     super.didUpdateWidget(old);
+    // Compare contents, not just length: swapping ['a','b'] for ['c','d'] used
+    // to keep the old cycle running against a stale index.
     if (old.interval != widget.interval ||
-        old.phrases.length != widget.phrases.length) {
+        !listEquals(old.phrases, widget.phrases)) {
       _startCycle();
     }
   }
@@ -485,7 +528,8 @@ class _BeuiReasoningTextState extends State<BeuiReasoningText> {
 
     return Semantics(
       label: _phrase,
-      liveRegion: true,
+      // C6: off by default — see [BeuiReasoningText.announce].
+      liveRegion: widget.announce,
       container: true,
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -535,7 +579,8 @@ class _PhraseSlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.centerLeft,
+      // C17: phrase slots are start-aligned, which mirrors under RTL.
+      alignment: AlignmentDirectional.centerStart,
       children: [
         // Invisible sizer so the slot never collapses between phrases.
         Opacity(
@@ -662,10 +707,11 @@ class _CascadePhraseState extends State<_CascadePhrase>
             final totalMs = _controller.duration!.inMilliseconds;
             return Stack(
               clipBehavior: Clip.hardEdge,
-              alignment: Alignment.centerLeft,
+              // C17: phrase slots are start-aligned, which mirrors under RTL.
+              alignment: AlignmentDirectional.centerStart,
               children: [
-                Positioned(
-                  left: 0,
+                PositionedDirectional(
+                  start: 0,
                   top: 0,
                   bottom: 0,
                   child: _letters(_previous!, t, totalMs, roll, exiting: true),
@@ -820,7 +866,8 @@ class _SwapPhraseState extends State<_SwapPhrase>
         final inOp = t;
         final inY = slide * (1 - t);
         return Stack(
-          alignment: Alignment.centerLeft,
+          // C17: phrase slots are start-aligned, which mirrors under RTL.
+          alignment: AlignmentDirectional.centerStart,
           children: [
             Opacity(
               opacity: outOp.clamp(0.0, 1.0),
@@ -870,7 +917,8 @@ class _ScramblePhrase extends StatefulWidget {
   State<_ScramblePhrase> createState() => _ScramblePhraseState();
 }
 
-class _ScramblePhraseState extends State<_ScramblePhrase> {
+class _ScramblePhraseState extends State<_ScramblePhrase>
+    with SingleTickerProviderStateMixin {
   late String _display = widget.phrase;
   Ticker? _ticker;
   final _rng = math.Random();
@@ -898,7 +946,10 @@ class _ScramblePhraseState extends State<_ScramblePhrase> {
         .toDouble();
     var lastUpdate = Duration.zero;
 
-    _ticker = Ticker((elapsed) {
+    // `createTicker`, not a bare `Ticker`: an unmanaged ticker ignores the
+    // ambient `TickerMode`, so the scramble kept running while the widget was
+    // off-screen or on an inactive route.
+    _ticker = createTicker((elapsed) {
       if (elapsed - lastUpdate < const Duration(milliseconds: 40)) return;
       lastUpdate = elapsed;
       final progress = math.min(elapsed.inMilliseconds / durationMs, 1.0);

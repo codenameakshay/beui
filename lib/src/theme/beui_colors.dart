@@ -179,6 +179,7 @@ class _Brand {
     required this.accent,
     required this.accentForeground,
     required this.ring,
+    required this.focusRing,
   });
 
   final Color primary;
@@ -186,6 +187,7 @@ class _Brand {
   final Color accent;
   final Color accentForeground;
   final Color ring;
+  final Color focusRing;
 }
 
 /// The resolved beUI palette for one [colorTheme] × [brightness] combination,
@@ -227,6 +229,7 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
     required this.input,
     required this.ring,
     required this.borderStrong,
+    required this.focusRing,
     required this.success,
     required this.warning,
     required this.glass,
@@ -239,7 +242,8 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
   ///
   /// Colored themes start from the neutral base and override only the brand
   /// tokens ([primary], [primaryForeground], [accent], [accentForeground],
-  /// [ring]), exactly as the source `brand()` helper does.
+  /// [ring]), exactly as the source `brand()` helper does — plus the port-added
+  /// [focusRing], which follows the same brand hue.
   factory BeuiColors.of(BeuiColorTheme theme, Brightness brightness) {
     final base = _base(theme, brightness);
     final brand = _brandFor(theme, brightness);
@@ -250,6 +254,7 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
       accent: brand.accent,
       accentForeground: brand.accentForeground,
       ring: brand.ring,
+      focusRing: brand.focusRing,
     );
   }
 
@@ -320,6 +325,22 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
   /// radio, checkbox and otp-input (source `--border-strong`).
   final Color borderStrong;
 
+  /// **Use this for keyboard focus indicators.** [ring] is for hairline
+  /// borders — it is the source's 6–12% `--border-strong` alias and composites
+  /// to ~1.3:1 on [background], well under WCAG 2.2 SC 1.4.11's 3:1 floor for a
+  /// focus indicator. This role exists so the two jobs stop sharing one token.
+  ///
+  /// A **port addition** with no source counterpart. Every value clears 3:1
+  /// against [background] in both brightnesses: the neutral theme is
+  /// [foreground] at 0.55 light (4.36:1) / 0.6 dark (6.49:1); colored themes use
+  /// their brand hue at full opacity (4.18–6.26:1 light, 5.80–10.27:1 dark),
+  /// with amber and lime darkened to 60% oklch lightness because their light
+  /// brand hues cannot clear 3:1 at *any* alpha.
+  ///
+  /// Paint it **outside layout** — a `foregroundDecoration` or an overlay — so
+  /// focusing never insets the child. See `lib/src/motion/_focus_ring.dart`.
+  final Color focusRing;
+
   /// Positive / success accent (source `--success`, `oklch(70% 0.18 155)`).
   /// Brightness-independent — the source defines it once with no dark override.
   /// Read by input (success check) and feedback-widget.
@@ -367,6 +388,7 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
     Color? input,
     Color? ring,
     Color? borderStrong,
+    Color? focusRing,
     Color? success,
     Color? warning,
     BeuiGlass? glass,
@@ -393,6 +415,7 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
       input: input ?? this.input,
       ring: ring ?? this.ring,
       borderStrong: borderStrong ?? this.borderStrong,
+      focusRing: focusRing ?? this.focusRing,
       success: success ?? this.success,
       warning: warning ?? this.warning,
       glass: glass ?? this.glass,
@@ -440,6 +463,7 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
       input: Color.lerp(input, other.input, t)!,
       ring: Color.lerp(ring, other.ring, t)!,
       borderStrong: Color.lerp(borderStrong, other.borderStrong, t)!,
+      focusRing: Color.lerp(focusRing, other.focusRing, t)!,
       success: Color.lerp(success, other.success, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
       glass: BeuiGlass.lerp(glass, other.glass, t),
@@ -484,6 +508,7 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
         other.input == input &&
         other.ring == ring &&
         other.borderStrong == borderStrong &&
+        other.focusRing == focusRing &&
         other.success == success &&
         other.warning == warning &&
         other.glass == glass &&
@@ -491,7 +516,7 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
         other.brightness == brightness;
   }
 
-  // 24 fields — past `Object.hash`'s 20-argument ceiling, so hash the list.
+  // 25 fields — past `Object.hash`'s 20-argument ceiling, so hash the list.
   @override
   int get hashCode => Object.hashAll([
     background,
@@ -513,6 +538,7 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
     input,
     ring,
     borderStrong,
+    focusRing,
     success,
     warning,
     glass,
@@ -545,6 +571,7 @@ BeuiColors _base(BeuiColorTheme theme, Brightness brightness) {
       input: _lInput,
       ring: _lRing,
       borderStrong: _lBorderStrong,
+      focusRing: _lFocusRing,
       success: _success,
       warning: _warning,
       glass: _glassLight,
@@ -572,6 +599,7 @@ BeuiColors _base(BeuiColorTheme theme, Brightness brightness) {
     input: _dInput,
     ring: _dRing,
     borderStrong: _dBorderStrong,
+    focusRing: _dFocusRing,
     success: _success,
     warning: _warning,
     glass: _glassDark,

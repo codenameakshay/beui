@@ -1,11 +1,14 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
+import '_hit_target.dart';
 
 /// Upload state of one row (source `FileUploadStatus`).
 enum BeuiFileUploadStatus {
@@ -102,6 +105,16 @@ String beuiFormatBytes(int bytes) {
   return '$text ${units[exponent]}';
 }
 
+/// Rejection-notice copy for files [BeuiFileUpload.maxFileSize] filtered out
+/// of the queue.
+String _rejectionMessage(List<BeuiFileUploadItem> rejected, int maxFileSize) {
+  final limit = beuiFormatBytes(maxFileSize);
+  if (rejected.length == 1) {
+    return '"${rejected.first.name}" is larger than the $limit limit';
+  }
+  return '${rejected.length} files exceed the $limit limit';
+}
+
 String _fileKind(BeuiFileUploadItem item) {
   final dot = item.name.lastIndexOf('.');
   if (dot > 0 && dot < item.name.length - 1) {
@@ -175,6 +188,13 @@ IconData _fileIcon(BeuiFileUploadItem item) {
 /// through `value`/`defaultValue` (with [BeuiFileUploadItem] metadata) using
 /// whatever picker or drop plugin fits their platform. Everything visual —
 /// rows, status morphs, progress motion — is ported one-to-one.
+///
+/// The dropzone and every row action are keyboard-reachable: Tab focuses
+/// them, Enter/Space activate them, and focus paints a [BeuiFocusRing]
+/// rather than shifting layout. [onCancel] distinguishes stopping an
+/// in-flight upload from [onRemove]'s discard-a-finished-row, and
+/// [maxFileSize] + [onRejected] let a caller reject oversized files before
+/// they ever reach the queue, with an inline notice surfacing why.
 class BeuiFileUpload extends StatefulWidget {
   /// Creates an upload queue.
   const BeuiFileUpload({
@@ -183,13 +203,18 @@ class BeuiFileUpload extends StatefulWidget {
     this.onValueChange,
     this.onBrowse,
     this.onRemove,
+    this.onCancel,
     this.onRetry,
     this.maxFiles,
+    this.maxFileSize,
+    this.onRejected,
+    this.showRejectionNotice = true,
     this.disabled = false,
     this.variant = BeuiFileUploadVariant.standard,
-    this.title = 'Drop files here',
-    this.description = 'Add files to the upload queue',
-    this.browseLabel = 'Browse',
+    this.title,
+    this.description,
+    this.browseLabel = 'Browse files',
+    this.dragAndDrop = false,
     super.key,
   });
 
@@ -208,11 +233,31 @@ class BeuiFileUpload extends StatefulWidget {
   /// Fires with the removed row.
   final ValueChanged<BeuiFileUploadItem>? onRemove;
 
+  /// Fires when an in-flight upload is cancelled — as opposed to
+  /// [onRemove], which discards a finished or failed row. While a row is
+  /// [BeuiFileUploadStatus.uploading] and this is set, the row's trailing X
+  /// becomes a cancel control instead of a remove control.
+  final ValueChanged<BeuiFileUploadItem>? onCancel;
+
   /// Fires with the reset row (progress 0, uploading) after a retry.
   final ValueChanged<BeuiFileUploadItem>? onRetry;
 
   /// Queue cap; reaching it disables the dropzone (source `maxFiles`).
   final int? maxFiles;
+
+  /// Per-file size cap in bytes; null means no limit. Files over the cap
+  /// are never added as rows — see [onRejected] and [showRejectionNotice].
+  final int? maxFileSize;
+
+  /// Fires once per new batch of oversized files filtered out by
+  /// [maxFileSize]. Called after the frame that filtered them, never
+  /// during build.
+  final void Function(List<BeuiFileUploadItem> rejected)? onRejected;
+
+  /// Shows an inline destructive-tinted notice above the queue while
+  /// [maxFileSize] has rejected files. Defaults to true; the notice clears
+  /// itself once the offending items stop being passed in.
+  final bool showRejectionNotice;
 
   /// Disables the dropzone.
   final bool disabled;
@@ -220,14 +265,23 @@ class BeuiFileUpload extends StatefulWidget {
   /// Dropzone layout.
   final BeuiFileUploadVariant variant;
 
-  /// Dropzone headline.
-  final String title;
+  /// Dropzone headline. Defaults to 'Add files', or 'Drop files here' when
+  /// [dragAndDrop] is true and this is left unset.
+  final String? title;
 
-  /// Dropzone byline.
-  final String description;
+  /// Dropzone byline. Defaults to 'Choose files to upload', or 'Or browse
+  /// to add them to the queue' when [dragAndDrop] is true and this is left
+  /// unset.
+  final String? description;
 
   /// Trailing browse chip label.
   final String browseLabel;
+
+  /// Set true only if you have wired a real drop target (a desktop drop
+  /// plugin); it opts the default [title]/[description] copy into
+  /// drag-and-drop wording. The package ships no drop handling of its own —
+  /// this flag changes only what the dropzone says, not what it does.
+  final bool dragAndDrop;
 
   @override
   State<BeuiFileUpload> createState() => _BeuiFileUploadState();
@@ -240,11 +294,39 @@ class _RowEntry {
   bool exiting = false;
 }
 
+/// Single-slot state for the [_RejectionNotice] banner — mirrors
+/// [_RowEntry]'s exit-before-unmount contract for one persistent widget
+/// instead of a list.
+class _RejectionSlot {
+  _RejectionSlot(this.text);
+
+  String text;
+  bool exiting = false;
+}
+
 class _BeuiFileUploadState extends State<BeuiFileUpload> {
   late List<BeuiFileUploadItem> _internal = List.of(widget.defaultValue);
   final List<_RowEntry> _entries = [];
+  _RejectionSlot? _rejectionSlot;
+  String _lastRejectedKey = '';
 
   List<BeuiFileUploadItem> get _items => widget.value ?? _internal;
+
+  /// Items actually queued as rows — anything over
+  /// [BeuiFileUpload.maxFileSize] never reaches [_entries]; see
+  /// [_rejectedItems].
+  List<BeuiFileUploadItem> get _acceptedItems {
+    final cap = widget.maxFileSize;
+    if (cap == null) return _items;
+    return _items.where((item) => item.size <= cap).toList();
+  }
+
+  /// Items over [BeuiFileUpload.maxFileSize], filtered out of the queue.
+  List<BeuiFileUploadItem> get _rejectedItems {
+    final cap = widget.maxFileSize;
+    if (cap == null) return const [];
+    return _items.where((item) => item.size > cap).toList();
+  }
 
   void _setItems(List<BeuiFileUploadItem> next) {
     if (widget.value == null) {
@@ -259,18 +341,21 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
   void initState() {
     super.initState();
     _sync();
+    _checkRejections();
   }
 
   @override
   void didUpdateWidget(BeuiFileUpload oldWidget) {
     super.didUpdateWidget(oldWidget);
     _sync();
+    _checkRejections();
   }
 
-  /// Mirrors [_items] into row entries; vanished rows animate out before
-  /// unmounting (the AnimatePresence contract).
+  /// Mirrors [_acceptedItems] into row entries; vanished rows animate out
+  /// before unmounting (the AnimatePresence contract).
   void _sync() {
-    final byId = {for (final item in _items) item.id: item};
+    final accepted = _acceptedItems;
+    final byId = {for (final item in accepted) item.id: item};
     final known = {for (final e in _entries) e.item.id};
     for (final entry in _entries) {
       final match = byId[entry.item.id];
@@ -282,14 +367,34 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
         entry.exiting = true;
       }
     }
-    for (final item in _items) {
+    for (final item in accepted) {
       if (!known.contains(item.id)) _entries.add(_RowEntry(item));
     }
+  }
+
+  /// Fires [BeuiFileUpload.onRejected] once per new batch of oversized
+  /// files. Scheduled for after the frame, so a consumer callback never
+  /// runs mid-build.
+  void _checkRejections() {
+    final rejected = _rejectedItems;
+    final key = rejected.map((e) => e.id).join(',');
+    if (key == _lastRejectedKey) return;
+    _lastRejectedKey = key;
+    final callback = widget.onRejected;
+    if (rejected.isEmpty || callback == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) callback(rejected);
+    });
   }
 
   void _remove(BeuiFileUploadItem item) {
     _setItems([..._items]..removeWhere((e) => e.id == item.id));
     widget.onRemove?.call(item);
+  }
+
+  void _cancel(BeuiFileUploadItem item) {
+    _setItems([..._items]..removeWhere((e) => e.id == item.id));
+    widget.onCancel?.call(item);
   }
 
   void _retry(BeuiFileUploadItem item) {
@@ -311,6 +416,29 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
     final maxReached =
         widget.maxFiles != null && _items.length >= widget.maxFiles!;
     _sync();
+    _checkRejections();
+
+    final rejectedItems = _rejectedItems;
+    if (widget.showRejectionNotice && rejectedItems.isNotEmpty) {
+      final text = _rejectionMessage(rejectedItems, widget.maxFileSize!);
+      if (_rejectionSlot == null) {
+        _rejectionSlot = _RejectionSlot(text);
+      } else {
+        _rejectionSlot!
+          ..text = text
+          ..exiting = false;
+      }
+    } else if (_rejectionSlot != null) {
+      _rejectionSlot!.exiting = true;
+    }
+
+    final resolvedTitle =
+        widget.title ?? (widget.dragAndDrop ? 'Drop files here' : 'Add files');
+    final resolvedDescription =
+        widget.description ??
+        (widget.dragAndDrop
+            ? 'Or browse to add them to the queue'
+            : 'Choose files to upload');
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -318,10 +446,10 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
       children: [
         _Dropzone(
           variant: widget.variant,
-          title: maxReached ? 'Upload limit reached' : widget.title,
+          title: maxReached ? 'Upload limit reached' : resolvedTitle,
           description: maxReached
               ? '${_items.length} of ${widget.maxFiles} files added'
-              : widget.description,
+              : resolvedDescription,
           browseLabel: widget.browseLabel,
           enabled: !widget.disabled && !maxReached && widget.onBrowse != null,
           dimmed: widget.disabled || maxReached,
@@ -329,6 +457,17 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
           colors: colors,
           onBrowse: widget.onBrowse,
         ),
+        if (_rejectionSlot != null)
+          _RejectionNotice(
+            key: const ValueKey('file-upload-rejection'),
+            text: _rejectionSlot!.text,
+            exiting: _rejectionSlot!.exiting,
+            reduce: reduce,
+            colors: colors,
+            onExited: () {
+              if (mounted) setState(() => _rejectionSlot = null);
+            },
+          ),
         // The queue is its own list: the source nests the rows in a
         // `<ul className="space-y-2">` inside the root's `space-y-3`, so rows
         // sit 8px apart while the dropzone keeps its 12px from the list. Kept
@@ -347,6 +486,9 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
                   reduce: reduce,
                   colors: colors,
                   onRemove: () => _remove(entry.item),
+                  onCancel: widget.onCancel == null
+                      ? null
+                      : () => _cancel(entry.item),
                   onRetry: () => _retry(entry.item),
                   onExited: () {
                     if (mounted) setState(() => _entries.remove(entry));
@@ -389,6 +531,7 @@ class _Dropzone extends StatefulWidget {
 class _DropzoneState extends State<_Dropzone> {
   bool _hovered = false;
   bool _pressed = false;
+  bool _focusVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -507,17 +650,36 @@ class _DropzoneState extends State<_Dropzone> {
       child: zone,
     );
     if (widget.dimmed) zone = Opacity(opacity: 0.55, child: zone);
+    zone = BeuiFocusRing(
+      focused: _focusVisible,
+      borderRadius: BorderRadius.circular(24),
+      child: zone,
+    );
 
     return Semantics(
       button: true,
       enabled: widget.enabled,
       label: 'Upload files',
-      child: MouseRegion(
-        cursor: widget.enabled
+      onTap: widget.enabled ? widget.onBrowse : null,
+      child: FocusableActionDetector(
+        enabled: widget.enabled,
+        mouseCursor: widget.enabled
             ? SystemMouseCursors.click
             : SystemMouseCursors.basic,
-        onEnter: (_) => setState(() => _hovered = true),
-        onExit: (_) => setState(() => _hovered = false),
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onBrowse?.call();
+              return null;
+            },
+          ),
+        },
+        onShowFocusHighlight: (value) => setState(() => _focusVisible = value),
+        onShowHoverHighlight: (value) => setState(() => _hovered = value),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTapDown: widget.enabled
@@ -542,6 +704,7 @@ class _Row extends StatelessWidget {
     required this.onRemove,
     required this.onRetry,
     required this.onExited,
+    this.onCancel,
     super.key,
   });
 
@@ -553,6 +716,11 @@ class _Row extends StatelessWidget {
   final VoidCallback onRetry;
   final VoidCallback onExited;
 
+  /// Set (from [BeuiFileUpload.onCancel]) only while this row is uploading;
+  /// when non-null the trailing X becomes a cancel control instead of
+  /// remove.
+  final VoidCallback? onCancel;
+
   @override
   Widget build(BuildContext context) {
     final status = item.status;
@@ -562,12 +730,10 @@ class _Row extends StatelessWidget {
     final showProgress =
         status == BeuiFileUploadStatus.uploading ||
         status == BeuiFileUploadStatus.success;
-    final meta = StringBuffer(
-      '${_fileKind(item)} · ${beuiFormatBytes(item.size)}',
-    );
-    if (status == BeuiFileUploadStatus.error && item.error != null) {
-      meta.write(' · ${item.error}');
-    }
+    final canCancel =
+        status == BeuiFileUploadStatus.uploading && onCancel != null;
+    final metaBase = '${_fileKind(item)} · ${beuiFormatBytes(item.size)}';
+    final metaError = status == BeuiFileUploadStatus.error ? item.error : null;
 
     final card = Container(
       width: double.infinity,
@@ -618,32 +784,51 @@ class _Row extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 2),
-                            child: Text(
-                              meta.toString(),
+                            child: Text.rich(
+                              TextSpan(
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: colors.mutedForeground,
+                                ),
+                                children: [
+                                  TextSpan(text: metaBase),
+                                  if (metaError != null)
+                                    TextSpan(
+                                      text: ' · $metaError',
+                                      style: TextStyle(
+                                        color: colors.destructive,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                ],
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: colors.mutedForeground,
-                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                     _StatusIcon(status: status, reduce: reduce, colors: colors),
-                    if (status == BeuiFileUploadStatus.error)
-                      _RowAction(
-                        icon: LucideIcons.rotate_ccw,
-                        label: 'Retry ${item.name}',
-                        colors: colors,
-                        onTap: onRetry,
-                      ),
-                    _RowAction(
-                      icon: LucideIcons.x,
-                      label: 'Remove ${item.name}',
-                      colors: colors,
-                      onTap: onRemove,
+                    Row(
+                      spacing: 4,
+                      children: [
+                        if (status == BeuiFileUploadStatus.error)
+                          _RowAction(
+                            icon: LucideIcons.rotate_ccw,
+                            label: 'Retry ${item.name}',
+                            colors: colors,
+                            onTap: onRetry,
+                          ),
+                        _RowAction(
+                          icon: LucideIcons.x,
+                          label: canCancel
+                              ? 'Cancel upload of ${item.name}'
+                              : 'Remove ${item.name}',
+                          colors: colors,
+                          onTap: canCancel ? onCancel! : onRemove,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -652,7 +837,8 @@ class _Row extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 12), // mt-3
                     child: Semantics(
                       label: '${item.name} upload progress',
-                      value: '${progress.round()}',
+                      value: '${progress.round()}%',
+                      liveRegion: status == BeuiFileUploadStatus.success,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(999),
                         child: Container(
@@ -676,7 +862,7 @@ class _Row extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       color:
                                           status == BeuiFileUploadStatus.success
-                                          ? const Color(0xFF10B981)
+                                          ? colors.success
                                           : colors.foreground,
                                       borderRadius: BorderRadius.circular(999),
                                     ),
@@ -727,6 +913,81 @@ class _Row extends StatelessWidget {
   }
 }
 
+/// Inline notice for files [BeuiFileUpload.maxFileSize] filtered out of the
+/// queue — same enter/exit contract as [_Row] (220ms in, faster 160ms out)
+/// so the banner doesn't jump when a mixed batch settles.
+class _RejectionNotice extends StatelessWidget {
+  const _RejectionNotice({
+    required this.text,
+    required this.exiting,
+    required this.reduce,
+    required this.colors,
+    required this.onExited,
+    super.key,
+  });
+
+  final String text;
+  final bool exiting;
+  final bool reduce;
+  final BeuiColors colors;
+  final VoidCallback onExited;
+
+  @override
+  Widget build(BuildContext context) {
+    final card = Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: colors.destructive.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        spacing: 8,
+        children: [
+          Icon(LucideIcons.circle_alert, size: 16, color: colors.destructive),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 12, color: colors.destructive),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return Semantics(
+      liveRegion: true,
+      container: true,
+      child: SingleMotionBuilder(
+        value: exiting ? 0.0 : 1.0,
+        from: 0.0,
+        motion: CurvedMotion(
+          Duration(milliseconds: exiting ? 160 : 220),
+          beuiEaseOut,
+        ),
+        onAnimationStatusChanged: (animationStatus) {
+          if (exiting &&
+              (animationStatus == AnimationStatus.completed ||
+                  animationStatus == AnimationStatus.dismissed)) {
+            onExited();
+          }
+        },
+        builder: (context, t, child) {
+          final clamped = t.clamp(0.0, 1.0);
+          return ClipRect(
+            child: Align(
+              alignment: Alignment.topCenter,
+              heightFactor: reduce ? 1 : clamped,
+              child: Opacity(opacity: clamped, child: child),
+            ),
+          );
+        },
+        child: card,
+      ),
+    );
+  }
+}
+
 /// Status glyph swap: y ±4 fade over 160ms EASE_OUT (source `StatusIcon`).
 class _StatusIcon extends StatelessWidget {
   const _StatusIcon({
@@ -741,11 +1002,10 @@ class _StatusIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = colors.brightness == Brightness.dark;
     final (IconData icon, Color color) = switch (status) {
       BeuiFileUploadStatus.success => (
         LucideIcons.circle_check,
-        isDark ? const Color(0xFF34D399) : const Color(0xFF059669),
+        colors.success,
       ),
       BeuiFileUploadStatus.error => (
         LucideIcons.circle_alert,
@@ -830,32 +1090,55 @@ class _RowAction extends StatefulWidget {
 
 class _RowActionState extends State<_RowAction> {
   bool _hovered = false;
+  bool _focusVisible = false;
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: widget.label,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _hovered = true),
-        onExit: (_) => setState(() => _hovered = false),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: Container(
-            width: 28, // h-7 w-7
-            height: 28,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: _hovered ? widget.colors.muted : Colors.transparent,
-              shape: BoxShape.circle,
+    final circle = Container(
+      width: 28, // h-7 w-7
+      height: 28,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: _hovered ? widget.colors.muted : Colors.transparent,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        widget.icon,
+        size: 14,
+        color: _hovered
+            ? widget.colors.foreground
+            : widget.colors.mutedForeground,
+      ),
+    );
+
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        label: widget.label,
+        onTap: widget.onTap,
+        child: FocusableActionDetector(
+          mouseCursor: SystemMouseCursors.click,
+          shortcuts: const <ShortcutActivator, Intent>{
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                widget.onTap();
+                return null;
+              },
             ),
-            child: Icon(
-              widget.icon,
-              size: 14,
-              color: _hovered
-                  ? widget.colors.foreground
-                  : widget.colors.mutedForeground,
+          },
+          onShowFocusHighlight: (value) =>
+              setState(() => _focusVisible = value),
+          onShowHoverHighlight: (value) => setState(() => _hovered = value),
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: BeuiFocusRing(
+              focused: _focusVisible,
+              borderRadius: BorderRadius.circular(14),
+              child: circle,
             ),
           ),
         ),

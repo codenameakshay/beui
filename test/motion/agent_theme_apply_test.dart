@@ -241,4 +241,303 @@ void main() {
     await tester.pumpAndSettle();
     expect(_bubbleDecoration(tester)!.borderRadius, BorderRadius.circular(20));
   });
+
+  // =========================================================================
+  // A37 — every one of the five agent widgets reads the theme
+  //
+  // The audit measured theme consumption at 6/4/4 roles in `approval_card`
+  // against 0/0/0 in `agent_activity`, and the apply-test only ever exercised
+  // two of the five widgets — which is precisely why the drift went unnoticed.
+  // These cases pin all five.
+  // =========================================================================
+
+  group('every agent widget consumes the theme roles', () {
+    /// A status palette with values that could not occur by accident.
+    const loudStatus = BeuiAgentStatusColors(
+      pending: BeuiAgentStatusPalette(
+        foreground: Color(0xFF110011),
+        background: Color(0xFF111111),
+        border: Color(0xFF112211),
+        solid: Color(0xFF113311),
+        onSolid: Color(0xFFFFFFFF),
+      ),
+      running: BeuiAgentStatusPalette(
+        foreground: Color(0xFF220022),
+        background: Color(0xFF222222),
+        border: Color(0xFF223322),
+        solid: Color(0xFF224422),
+        onSolid: Color(0xFFFFFFFF),
+      ),
+      success: BeuiAgentStatusPalette(
+        foreground: Color(0xFF330033),
+        background: Color(0xFF333333),
+        border: Color(0xFF334433),
+        solid: Color(0xFF335533),
+        onSolid: Color(0xFFFFFFFF),
+      ),
+      failed: BeuiAgentStatusPalette(
+        foreground: Color(0xFF440044),
+        background: Color(0xFF444444),
+        border: Color(0xFF445544),
+        solid: Color(0xFF446644),
+        onSolid: Color(0xFFFFFFFF),
+      ),
+      denied: BeuiAgentStatusPalette(
+        foreground: Color(0xFF550055),
+        background: Color(0xFF555555),
+        border: Color(0xFF556655),
+        solid: Color(0xFF557755),
+        onSolid: Color(0xFFFFFFFF),
+      ),
+      neutral: BeuiAgentStatusPalette(
+        foreground: Color(0xFF660066),
+        background: Color(0xFF666666),
+        border: Color(0xFF667766),
+        solid: Color(0xFF668866),
+        onSolid: Color(0xFFFFFFFF),
+      ),
+      destructive: BeuiAgentStatusPalette(
+        foreground: Color(0xFF770077),
+        background: Color(0xFF777777),
+        border: Color(0xFF778877),
+        solid: Color(0xFF779977),
+        onSolid: Color(0xFFFFFFFF),
+      ),
+    );
+
+    const themed = BeuiAgentTheme(statusLight: loudStatus);
+
+    testWidgets('BeuiToolApproval takes the pending status foreground', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          BeuiToolApproval(tool: 'terminal.run', onApprove: () {}),
+          agent: themed,
+        ),
+      );
+      await tester.pump();
+
+      final badge = tester.widget<Text>(find.text('Approval required'));
+      expect(badge.style?.color, const Color(0xFF110011));
+    });
+
+    testWidgets('BeuiApprovalCard takes the pending status foreground', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          BeuiApprovalCard(title: 'Approve transfer?', onApprove: () {}),
+          agent: themed,
+        ),
+      );
+      await tester.pump();
+
+      final badge = tester.widget<Text>(find.text('Input required'));
+      expect(badge.style?.color, const Color(0xFF110011));
+    });
+
+    testWidgets('BeuiToolResult takes the success status foreground', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          const BeuiToolResult(
+            tool: 'terminal.run',
+            title: 'Tests passed',
+            status: BeuiToolResultStatus.success,
+            child: BeuiToolResultOutput(code: 'ok'),
+          ),
+          agent: themed,
+        ),
+      );
+      await tester.pump();
+
+      final label = tester.widget<Text>(find.text('Completed'));
+      expect(label.style?.color, const Color(0xFF330033));
+    });
+
+    testWidgets('BeuiToolResult strings come from the theme', (tester) async {
+      // The copy action is an icon chip; its label lives on the semantics
+      // node that handles the tap, not in a Text.
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _host(
+          const BeuiToolResult(
+            tool: 'terminal.run',
+            title: 'Tests passed',
+            status: BeuiToolResultStatus.success,
+            copyText: 'ok',
+            child: BeuiToolResultOutput(code: 'ok'),
+          ),
+          agent: const BeuiAgentTheme(
+            strings: BeuiAgentStrings(copyResult: 'Copier'),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(find.bySemanticsLabel('Copier'), findsOneWidget);
+      handle.dispose();
+    });
+
+    testWidgets('BeuiToolApproval strings come from the theme', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          BeuiToolApproval(tool: 'terminal.run', onApprove: () {}),
+          agent: const BeuiAgentTheme(
+            strings: BeuiAgentStrings(allowOnce: 'Once only'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Once only'), findsOneWidget);
+    });
+
+    testWidgets('BeuiApprovalCard strings come from the theme', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          BeuiApprovalCard(
+            title: 'Approve transfer?',
+            onApprove: () {},
+            onReject: () {},
+          ),
+          agent: const BeuiAgentTheme(
+            strings: BeuiAgentStrings(approve: 'Ship it', reject: 'Hold it'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Ship it'), findsOneWidget);
+      expect(find.text('Hold it'), findsOneWidget);
+    });
+
+    testWidgets('BeuiAgentActivity takes the failed status foreground', (
+      tester,
+    ) async {
+      // The audit measured this widget at 0/0/0 theme roles — it is the whole
+      // reason A37 exists.
+      await tester.pumpWidget(
+        _host(
+          const BeuiAgentActivity(
+            status: BeuiAgentActivityStatus.failed,
+            items: [
+              BeuiAgentActivityText(id: 'a', content: 'Compared the draft.'),
+            ],
+          ),
+          agent: themed,
+        ),
+      );
+      await tester.pump();
+
+      final painted = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((t) => t.style?.color)
+          .toSet();
+      expect(painted, contains(const Color(0xFF440044)));
+    });
+
+    testWidgets('BeuiTodoList takes the success status foreground', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          const BeuiTodoList(
+            items: [
+              BeuiTodoItem(
+                id: 'a',
+                title: Text('Ship it'),
+                status: BeuiTodoItemStatus.completed,
+              ),
+            ],
+          ),
+          agent: themed,
+        ),
+      );
+      // An all-complete list arms a short auto-collapse timer; pump past it so
+      // the test does not tear down with it pending.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+
+      final painted = tester
+          .widgetList<Text>(find.byType(Text, skipOffstage: false))
+          .map((t) => t.style?.color)
+          .toSet();
+      expect(painted, contains(const Color(0xFF330033)));
+    });
+
+    testWidgets('BeuiTodoList falls back when BeuiColors is absent', (
+      tester,
+    ) async {
+      // A40: this widget used to null-assert on the extension, so a consumer
+      // whose theme lacked it got a crash out of a published package.
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: BeuiTodoList(
+              items: [BeuiTodoItem(id: 'a', title: Text('Ship it'))],
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Ship it'), findsOneWidget);
+    });
+
+    testWidgets('BeuiToolApproval honours the emphasis border width', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          BeuiToolApproval(
+            tool: 'fs.remove',
+            severity: BeuiToolApprovalSeverity.destructive,
+            onApprove: () {},
+            onDeny: () {},
+          ),
+          agent: const BeuiAgentTheme(
+            structure: BeuiAgentStructure(emphasisBorderWidth: 5),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final box = tester.widget<DecoratedBox>(
+        find
+            .descendant(
+              of: find.byType(BeuiToolApproval),
+              matching: find.byType(DecoratedBox),
+            )
+            .first,
+      );
+      final decoration = box.decoration as BoxDecoration;
+      expect(decoration.border!.top.width, 5);
+    });
+
+    testWidgets('BeuiToolApproval honours the card radius role', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          BeuiToolApproval(tool: 'terminal.run', onApprove: () {}),
+          agent: const BeuiAgentTheme(
+            shapes: BeuiAgentShapes(card: BorderRadius.all(Radius.circular(3))),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final box = tester.widget<DecoratedBox>(
+        find
+            .descendant(
+              of: find.byType(BeuiToolApproval),
+              matching: find.byType(DecoratedBox),
+            )
+            .first,
+      );
+      final decoration = box.decoration as BoxDecoration;
+      expect(decoration.borderRadius, BorderRadius.circular(3));
+    });
+  });
 }

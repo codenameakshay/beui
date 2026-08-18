@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:motor/motor.dart' show MotionBuilder;
 
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = Center(child: child);
@@ -315,6 +316,67 @@ void main() {
       );
       await _openSecondary(tester, find.text('Trigger'));
       expect(find.text('Open'), findsNothing);
+    });
+
+    // F7. Same defect as the command palette's: the active-row highlight is a
+    // `MotionBuilder<Rect>` fed `const NoMotion()` under reduced motion, and
+    // NoMotion holds the rect it was seeded with forever rather than reaching
+    // the target (see `_no_motion_semantics_test.dart`). The highlight stuck
+    // on whichever row was first activated, so keyboard navigation had no
+    // visible indicator.
+    //
+    // Reduced motion is forced through the platform dispatcher, not an in-tree
+    // MediaQuery: the panel renders into the ROOT overlay, above the test's
+    // wrapper, so a wrapper-level MediaQuery never reaches it.
+    testWidgets('reduced motion: arrow keys move the active-row highlight', (
+      tester,
+    ) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+
+      await tester.pumpWidget(
+        _wrap(
+          BeuiContextMenu(
+            items: _items(),
+            child: const SizedBox(
+              width: 160,
+              height: 80,
+              child: Center(child: Text('Trigger')),
+            ),
+          ),
+        ),
+      );
+      await _openSecondary(tester, find.text('Trigger'));
+
+      Rect highlight() => tester.getRect(
+        find
+            .descendant(
+              of: find.byType(MotionBuilder<Rect>),
+              matching: find.byType(DecoratedBox),
+            )
+            .first,
+      );
+
+      // The pill only exists once a row is active, so the first arrow both
+      // creates it (seeded on 'Open') and gives us the baseline.
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      final first = highlight();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(
+        highlight().top,
+        greaterThan(first.top),
+        reason:
+            'the highlight must follow the active row under reduced motion '
+            'instead of freezing on the row it was seeded with',
+      );
     });
   });
 }

@@ -2,11 +2,16 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../theme/beui_agent_status_colors.dart';
+import '../theme/beui_agent_strings.dart';
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_disclosure.dart';
 import '_engine.dart';
+import '_hit_target.dart';
+import 'button/base.dart';
 import 'code_block.dart' show BeuiCodeLanguage;
 import 'tool_result.dart' show BeuiToolResultOutput;
 
@@ -36,6 +41,55 @@ enum BeuiToolApprovalStatus {
 
   /// Tool failed.
   error,
+
+  /// The request lapsed without a decision — the agent gave up waiting.
+  ///
+  /// A *terminal* state, distinct from [timedOut]: nothing ran, and the agent
+  /// is no longer holding the turn open. Renders greyed with no action row.
+  expired,
+
+  /// The request was granted but the tool exceeded its execution budget.
+  ///
+  /// Distinct from [expired] (which never ran) and from [error] (which failed
+  /// on its own terms): the run was cut off from outside.
+  timedOut,
+}
+
+/// How consequential the requested capability is — the risk tier that drives
+/// [BeuiToolApproval]'s glyph, border, badge, and action emphasis.
+///
+/// The audit's A3: `rm -rf ~/project` and `ls` rendered byte-identically, so
+/// the card could not warn. Severity is *declared by the caller*, never
+/// inferred from the tool slug — guessing risk from a string is exactly the
+/// kind of silent heuristic a permission prompt must not have.
+enum BeuiToolApprovalSeverity {
+  /// Ordinary read-or-write capability. Allow-once leads; the card is neutral.
+  normal,
+
+  /// Worth a second look — the card takes an amber emphasis border and the
+  /// badge warms, but the action hierarchy is unchanged.
+  elevated,
+
+  /// Irreversible or destructive. The shield becomes a warning triangle, the
+  /// card takes a destructive emphasis border, `Deny` is promoted to the solid
+  /// lead action, `Allow once` is demoted to outlined, and `Always allow` is
+  /// suppressed by default (see [BeuiToolApproval.allowAlways]) — a standing
+  /// grant for a destructive capability is not something to offer in passing.
+  destructive,
+}
+
+/// Which grant a [BeuiToolApproval] was approved under.
+///
+/// The audit's A43: after the fact, "approved once" and "always allowed" were
+/// indistinguishable, so a user could not tell whether they had handed over a
+/// standing permission. Pass it back on the approved/complete states and the
+/// badge says which — and, with [BeuiToolApproval.onRevoke], offers a way out.
+enum BeuiToolApprovalGrant {
+  /// Approved for this call only.
+  once,
+
+  /// A standing grant — the agent may run this tool again without asking.
+  always,
 }
 
 /// One parameter row inside the "View details" disclosure
@@ -43,19 +97,53 @@ enum BeuiToolApprovalStatus {
 @immutable
 class BeuiToolApprovalParameter {
   /// Creates a parameter row.
+  ///
+  /// [label] and [value] each accept a [String] or a [Widget]; anything else
+  /// is a debug assertion failure (the audit's A41 — `value: 42` used to
+  /// compile and render `"42"` through `toString()`). Prefer the typed
+  /// [BeuiToolApprovalParameter.text] and [BeuiToolApprovalParameter.widget]
+  /// constructors in new code.
   const BeuiToolApprovalParameter({
     required this.id,
     required this.label,
     required this.value,
-  });
+  }) : assert(
+         label is String || label is Widget,
+         'BeuiToolApprovalParameter.label must be a String or a Widget.',
+       ),
+       assert(
+         value is String || value is Widget,
+         'BeuiToolApprovalParameter.value must be a String or a Widget.',
+       );
+
+  /// Creates a plain text parameter row — the statically-typed path.
+  ///
+  /// The initializers deliberately narrow [Object] to [String]; an
+  /// initializing formal cannot express that, hence the ignores.
+  // ignore_for_file: prefer_initializing_formals
+  const BeuiToolApprovalParameter.text({
+    required this.id,
+    required String label,
+    required String value,
+  }) : label = label,
+       value = value;
+
+  /// Creates a parameter row whose value is a widget (typically a
+  /// [BeuiToolApprovalCode]) — the statically-typed path.
+  const BeuiToolApprovalParameter.widget({
+    required this.id,
+    required String label,
+    required Widget value,
+  }) : label = label,
+       value = value;
 
   /// Stable identity for the row (source `id`).
   final String id;
 
-  /// Left-column label. Accepts a [String] or any [Widget].
+  /// Left-column label. A [String] or a [Widget].
   final Object label;
 
-  /// Right-column value. Accepts a [String] or any [Widget] — typically
+  /// Right-column value. A [String] or a [Widget] — typically
   /// [BeuiToolApprovalCode] for shell / request snippets.
   final Object value;
 }
@@ -64,92 +152,43 @@ class BeuiToolApprovalParameter {
 // Motion tokens
 // ---------------------------------------------------------------------------
 
-const _disclosureOpen = CurvedMotion(Duration(milliseconds: 220), beuiEaseOut);
-const _disclosureClose = CurvedMotion(Duration(milliseconds: 140), beuiEaseOut);
 const _actionsIn = CurvedMotion(Duration(milliseconds: 220), beuiEaseOut);
 const _actionsInReduced = CurvedMotion(
   Duration(milliseconds: 120),
   beuiEaseOut,
 );
-const _actionsOut = CurvedMotion(Duration(milliseconds: 220), beuiEaseOut);
+// Exit is faster than the entrance, per the repo motion rules.
+const _actionsOut = CurvedMotion(Duration(milliseconds: 140), beuiEaseOut);
 const _actionsOutReduced = CurvedMotion(
-  Duration(milliseconds: 120),
+  Duration(milliseconds: 100),
   beuiEaseOut,
 );
 const _spinPeriod = Duration(milliseconds: 900);
 
-// Status palette — Tailwind amber / blue / emerald / rose matching the source.
-const _amber500 = Color(0xFFFE9A00);
-const _amber600 = Color(0xFFE17100);
-const _amber400 = Color(0xFFFFB900);
-const _blue500 = Color(0xFF2B7FFF);
-const _blue600 = Color(0xFF155DFC);
-const _blue400 = Color(0xFF51A2FF);
-const _emerald500 = Color(0xFF00BC7D);
-const _emerald600 = Color(0xFF009966);
-const _emerald400 = Color(0xFF00D492);
-const _rose500 = Color(0xFFFF2056);
-const _rose600 = Color(0xFFEC003F);
-const _rose400 = Color(0xFFFF637E);
+/// Press scale for every control in the agent cluster (the audit's A17 — this
+/// file used 0.97, `tool_result` used 0.9, `message_bubble` 0.99).
+const double beuiAgentPressScale = 0.97;
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-String _statusCopy(BeuiToolApprovalStatus status) => switch (status) {
-  BeuiToolApprovalStatus.approving => 'Approving',
-  BeuiToolApprovalStatus.approved => 'Approved',
-  BeuiToolApprovalStatus.denied => 'Denied',
-  BeuiToolApprovalStatus.running => 'Running',
-  BeuiToolApprovalStatus.complete => 'Completed',
-  BeuiToolApprovalStatus.error => 'Failed',
-  BeuiToolApprovalStatus.pending => 'Approval required',
+/// Maps an approval status onto the themeable status role.
+///
+/// [expired] and [timedOut] deliberately land on `neutral` rather than
+/// `failed`: nothing went wrong, the window simply closed. Colouring a lapsed
+/// request rose would cry wolf next to a genuine failure.
+BeuiAgentStatus _statusRole(BeuiToolApprovalStatus status) => switch (status) {
+  BeuiToolApprovalStatus.pending => BeuiAgentStatus.pending,
+  BeuiToolApprovalStatus.approving => BeuiAgentStatus.running,
+  BeuiToolApprovalStatus.running => BeuiAgentStatus.running,
+  BeuiToolApprovalStatus.approved => BeuiAgentStatus.success,
+  BeuiToolApprovalStatus.complete => BeuiAgentStatus.success,
+  BeuiToolApprovalStatus.denied => BeuiAgentStatus.denied,
+  BeuiToolApprovalStatus.error => BeuiAgentStatus.failed,
+  BeuiToolApprovalStatus.expired => BeuiAgentStatus.neutral,
+  BeuiToolApprovalStatus.timedOut => BeuiAgentStatus.neutral,
 };
-
-@immutable
-class _BadgeScheme {
-  const _BadgeScheme({
-    required this.background,
-    required this.border,
-    required this.foreground,
-  });
-
-  final Color background;
-  final Color border;
-  final Color foreground;
-}
-
-_BadgeScheme _badgeScheme(BeuiToolApprovalStatus status, bool isLight) {
-  switch (status) {
-    case BeuiToolApprovalStatus.pending:
-      return _BadgeScheme(
-        background: _amber500.withValues(alpha: 0.10),
-        border: _amber500.withValues(alpha: 0.30),
-        foreground: isLight ? _amber600 : _amber400,
-      );
-    case BeuiToolApprovalStatus.approving:
-    case BeuiToolApprovalStatus.running:
-      return _BadgeScheme(
-        background: _blue500.withValues(alpha: 0.10),
-        border: _blue500.withValues(alpha: 0.30),
-        foreground: isLight ? _blue600 : _blue400,
-      );
-    case BeuiToolApprovalStatus.approved:
-    case BeuiToolApprovalStatus.complete:
-      return _BadgeScheme(
-        background: _emerald500.withValues(alpha: 0.10),
-        border: _emerald500.withValues(alpha: 0.30),
-        foreground: isLight ? _emerald600 : _emerald400,
-      );
-    case BeuiToolApprovalStatus.denied:
-    case BeuiToolApprovalStatus.error:
-      return _BadgeScheme(
-        background: _rose500.withValues(alpha: 0.10),
-        border: _rose500.withValues(alpha: 0.30),
-        foreground: isLight ? _rose600 : _rose400,
-      );
-  }
-}
 
 Widget _asWidget(Object value, {TextStyle? style, int? maxLines}) {
   if (value is Widget) return value;
@@ -192,13 +231,15 @@ class BeuiToolApprovalCode extends StatelessWidget {
     final colors =
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final agent = BeuiAgentTheme.of(context);
 
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.muted.withValues(alpha: 0.30),
-        borderRadius: BorderRadius.circular(8), // rounded-lg
+        borderRadius: agent.shapes.control, // rounded-lg
         border: Border.all(
           color: colors.border.withValues(alpha: colors.border.a * 0.50),
+          width: agent.structure.borderWidth,
         ),
       ),
       child: Padding(
@@ -219,17 +260,42 @@ class BeuiToolApprovalCode extends StatelessWidget {
 ///
 /// **Layout.** Leading status glyph · title / tool / status badge · optional
 /// description · "View details" disclosure of [parameters] · pending action
-/// row ("Allow once" / "Always allow" / "Deny").
+/// row.
+///
+/// **This is the trust surface.** Four properties are load-bearing and are
+/// tested as such:
+///
+/// 1. *The command is visible when there is one.* [defaultOpen] is null by
+///    default, which resolves to `parameters.isNotEmpty` — a card that has
+///    something to show shows it. Being asked to allow `terminal.run` with the
+///    command folded away is not consent. Parameterless approvals still start
+///    collapsed, because there is nothing behind the chevron.
+/// 2. *Every action is keyboard-reachable.* [BeuiButton] backs Allow once /
+///    Always allow / Deny and the details toggle, so Tab reaches them,
+///    Enter/Space activates, and the focus ring is visible. `Deny` is in the
+///    traversal order like everything else — the previous implementation had
+///    no keyboard path to *refuse*.
+/// 3. *Risk is declarable.* See [severity] and [BeuiToolApprovalSeverity].
+/// 4. *A decision fires once.* The exiting action row stops hit-testing the
+///    moment the decision lands, not 220ms later when the fade finishes.
 ///
 /// **Open state.** Controlled when [open] is non-null (drive via
 /// [onOpenChange]); otherwise internal state seeded by [defaultOpen]. Leaving
-/// [BeuiToolApprovalStatus.pending] auto-collapses the details panel.
+/// [BeuiToolApprovalStatus.pending] auto-collapses the details panel — the
+/// decision is made, so the evidence folds away.
 ///
-/// **Motion.** Chevron rotates on [beuiSpringSwap]; disclosure opens in 220ms
-/// / closes in 140ms [beuiEaseOut]; pending actions fade/slide on [beuiEaseOut]
-/// (0.22s enter / exit, 0.12s under reduced motion); allow buttons press-scale
-/// to 0.97 on [beuiSpringPress]. Busy status spins the loader. Reduced motion
-/// drops movement while keeping opacity / color.
+/// **`defaultOpen` policy (the audit's A42).** Across the transcript the rule
+/// is: *a surface that is still asking or still running opens; a historical
+/// record collapses.* This card is asking, so it opens whenever it has
+/// parameters. [BeuiToolResult] force-opens while running and collapses on
+/// completion for the same reason.
+///
+/// **Motion.** Chevron rotates on [beuiSpringSwap]; the disclosure opens in
+/// 220ms / closes in 140ms [beuiEaseOut] via [BeuiAgentDisclosureInternal];
+/// pending actions fade/slide on [beuiEaseOut] (0.22s enter, 0.14s exit);
+/// buttons press-scale to [beuiAgentPressScale] on [beuiSpringPress]. Busy
+/// status spins the loader. Reduced motion drops movement while keeping
+/// opacity / colour on every channel.
 ///
 /// **API mapping** (source → Flutter):
 /// * `tool` / `title` / `description` → [tool] / [title] / [description]
@@ -240,31 +306,69 @@ class BeuiToolApprovalCode extends StatelessWidget {
 class BeuiToolApproval extends StatefulWidget {
   /// Creates a tool-approval permission card.
   const BeuiToolApproval({
-    required this.tool,
-    this.title = 'Allow this tool to run?',
+    this.tool,
+    this.toolWidget,
+    this.title,
+    this.titleWidget,
     this.description,
+    this.descriptionWidget,
     this.parameters = const [],
     this.status = BeuiToolApprovalStatus.pending,
+    this.severity = BeuiToolApprovalSeverity.normal,
+    this.grant,
     this.open,
-    this.defaultOpen = false,
+    this.defaultOpen,
+    this.detailsMaxHeight = 240,
+    this.allowAlways,
     this.onOpenChange,
     this.onApprove,
     this.onAlwaysAllow,
     this.onDeny,
+    this.onRevoke,
+    this.allowOnceLabel,
+    this.alwaysAllowLabel,
+    this.denyLabel,
+    this.viewDetailsLabel,
+    this.revokeLabel,
+    this.alwaysAllowedLabel,
+    this.expiredLabel,
+    this.timedOutLabel,
     super.key,
-  });
+  }) : assert(
+         tool == null || toolWidget == null,
+         'Pass either tool or toolWidget, not both.',
+       ),
+       assert(
+         title == null || titleWidget == null,
+         'Pass either title or titleWidget, not both.',
+       ),
+       assert(
+         description == null || descriptionWidget == null,
+         'Pass either description or descriptionWidget, not both.',
+       );
 
   /// Tool slug shown mono under the title (e.g. `terminal.run`).
-  /// Accepts a [String] or any [Widget].
-  final Object tool;
+  ///
+  /// This is the string that says *what will run*, so it is rendered at full
+  /// foreground contrast rather than as muted metadata (the audit's A8/A14).
+  /// For a non-text slug use [toolWidget].
+  final String? tool;
 
-  /// Primary header label (source `title`, default
-  /// `"Allow this tool to run?"`). Accepts a [String] or any [Widget].
-  final Object title;
+  /// Widget form of [tool], for callers that need more than a string.
+  final Widget? toolWidget;
 
-  /// Optional body copy under the title cluster. Accepts a [String] or
-  /// any [Widget].
-  final Object? description;
+  /// Primary header label. Defaults to
+  /// [BeuiAgentStrings.toolApprovalTitle] ("Allow this tool to run?").
+  final String? title;
+
+  /// Widget form of [title].
+  final Widget? titleWidget;
+
+  /// Optional body copy under the title cluster.
+  final String? description;
+
+  /// Widget form of [description].
+  final Widget? descriptionWidget;
 
   /// Parameter rows revealed by "View details" (source `parameters`).
   final List<BeuiToolApprovalParameter> parameters;
@@ -272,26 +376,94 @@ class BeuiToolApproval extends StatefulWidget {
   /// Approval lifecycle (source `status`, default `pending`).
   final BeuiToolApprovalStatus status;
 
+  /// Risk tier. See [BeuiToolApprovalSeverity]; defaults to
+  /// [BeuiToolApprovalSeverity.normal].
+  final BeuiToolApprovalSeverity severity;
+
+  /// Which grant produced the current approved/complete state.
+  ///
+  /// Null (the default) leaves the badge as a plain "Approved". Pass
+  /// [BeuiToolApprovalGrant.always] and the badge says so — and, with
+  /// [onRevoke], the card grows a "Revoke" affordance.
+  final BeuiToolApprovalGrant? grant;
+
   /// Controlled open state for the details disclosure. When non-null, the
   /// widget does not hold internal open state (source `open`).
   final bool? open;
 
-  /// Initial open state when uncontrolled (source `defaultOpen`, default
-  /// false).
-  final bool defaultOpen;
+  /// Initial open state when uncontrolled.
+  ///
+  /// **Null (the default) means "open when there is something to show"** —
+  /// it resolves to `parameters.isNotEmpty`. Pass `false` to force a card with
+  /// parameters to start collapsed; pass `true` to open a parameterless one.
+  final bool? defaultOpen;
+
+  /// Height cap on the details panel before it scrolls. Defaults to 240.
+  ///
+  /// Without a cap a 300-line diff expanded the card indefinitely inside a
+  /// transcript (the audit's A23). Pass [double.infinity] for the old
+  /// unbounded behaviour.
+  final double detailsMaxHeight;
+
+  /// Whether to offer "Always allow" at all.
+  ///
+  /// Null (the default) resolves to `severity != destructive` — a standing
+  /// grant is suppressed on the destructive tier. The button additionally
+  /// requires [onAlwaysAllow] to be non-null, as before.
+  final bool? allowAlways;
 
   /// Fired whenever the details disclosure toggles (source `onOpenChange`).
   final ValueChanged<bool>? onOpenChange;
 
-  /// Allow-once handler (source `onApprove`) — shows "Allow once" when set.
+  /// Allow-once handler (source `onApprove`).
+  ///
+  /// Null renders the button disabled and dimmed rather than live-but-inert
+  /// (the audit's A5), and trips a debug assertion while the card is pending —
+  /// a pending approval with no way to approve is a wiring bug.
   final VoidCallback? onApprove;
 
   /// Remember-access handler (source `onAlwaysAllow`) — shows "Always allow"
-  /// only when non-null.
+  /// only when non-null and [allowAlways] resolves true.
   final VoidCallback? onAlwaysAllow;
 
-  /// Deny handler (source `onDeny`).
+  /// Deny handler (source `onDeny`). Null renders disabled and dimmed.
   final VoidCallback? onDeny;
+
+  /// Revokes a standing grant. When non-null and [grant] is
+  /// [BeuiToolApprovalGrant.always], the approved card grows an
+  /// "Always allowed · Revoke" row.
+  final VoidCallback? onRevoke;
+
+  /// Overrides [BeuiAgentStrings.allowOnce] for this card.
+  final String? allowOnceLabel;
+
+  /// Overrides [BeuiAgentStrings.alwaysAllow] for this card.
+  final String? alwaysAllowLabel;
+
+  /// Overrides [BeuiAgentStrings.deny] for this card.
+  ///
+  /// "Deny" is a *permission* refusal and is deliberately not "Reject", which
+  /// [BeuiApprovalCard] uses for a *review* verdict. See [BeuiAgentStrings].
+  final String? denyLabel;
+
+  /// Overrides [BeuiAgentStrings.viewDetails] for this card.
+  final String? viewDetailsLabel;
+
+  /// Label for the revoke control. Overrides [BeuiAgentStrings.revoke] for
+  /// this card.
+  final String? revokeLabel;
+
+  /// Badge copy for an always-allowed grant. Overrides
+  /// [BeuiAgentStrings.statusAlwaysAllowed] for this card.
+  final String? alwaysAllowedLabel;
+
+  /// Badge copy for [BeuiToolApprovalStatus.expired]. Overrides
+  /// [BeuiAgentStrings.statusExpired] for this card.
+  final String? expiredLabel;
+
+  /// Badge copy for [BeuiToolApprovalStatus.timedOut]. Overrides
+  /// [BeuiAgentStrings.statusTimedOut] for this card.
+  final String? timedOutLabel;
 
   @override
   State<BeuiToolApproval> createState() => _BeuiToolApprovalState();
@@ -303,11 +475,6 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
   late BeuiToolApprovalStatus _previousStatus;
   late final AnimationController _spin;
 
-  // Action-button press tracking.
-  bool _allowPressed = false;
-  bool _alwaysPressed = false;
-  bool _denyHovered = false;
-  bool _alwaysHovered = false;
   bool _detailsHovered = false;
 
   bool get _busy =>
@@ -315,12 +482,24 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
       widget.status == BeuiToolApprovalStatus.running;
   bool get _pending => widget.status == BeuiToolApprovalStatus.pending;
   bool get _error => widget.status == BeuiToolApprovalStatus.error;
+  bool get _lapsed =>
+      widget.status == BeuiToolApprovalStatus.expired ||
+      widget.status == BeuiToolApprovalStatus.timedOut;
   bool get _currentOpen => widget.open ?? _internalOpen;
+
+  /// A1: a card with something to show, shows it.
+  bool get _resolvedDefaultOpen =>
+      widget.defaultOpen ?? widget.parameters.isNotEmpty;
+
+  bool get _showAlwaysAllow =>
+      (widget.allowAlways ??
+          widget.severity != BeuiToolApprovalSeverity.destructive) &&
+      widget.onAlwaysAllow != null;
 
   @override
   void initState() {
     super.initState();
-    _internalOpen = widget.defaultOpen;
+    _internalOpen = _resolvedDefaultOpen;
     _previousStatus = widget.status;
     _spin = AnimationController(vsync: this, duration: _spinPeriod);
     if (_busy) _spin.repeat();
@@ -368,6 +547,35 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
 
   void _toggleDetails() => _setOpen(!_currentOpen);
 
+  String _statusCopy(BeuiAgentStrings strings) {
+    switch (widget.status) {
+      case BeuiToolApprovalStatus.approving:
+        return strings.statusApproving;
+      case BeuiToolApprovalStatus.approved:
+      case BeuiToolApprovalStatus.complete:
+        // A43: say *which* grant was used, so a standing permission is never
+        // silently indistinguishable from a one-off.
+        if (widget.grant == BeuiToolApprovalGrant.always) {
+          return widget.alwaysAllowedLabel ?? strings.statusAlwaysAllowed;
+        }
+        return widget.status == BeuiToolApprovalStatus.approved
+            ? strings.statusApproved
+            : strings.statusCompleted;
+      case BeuiToolApprovalStatus.denied:
+        return strings.statusDenied;
+      case BeuiToolApprovalStatus.running:
+        return strings.statusRunning;
+      case BeuiToolApprovalStatus.error:
+        return strings.statusFailed;
+      case BeuiToolApprovalStatus.expired:
+        return widget.expiredLabel ?? strings.statusExpired;
+      case BeuiToolApprovalStatus.timedOut:
+        return widget.timedOutLabel ?? strings.statusTimedOut;
+      case BeuiToolApprovalStatus.pending:
+        return strings.statusApprovalRequired;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -375,13 +583,43 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final agent = BeuiAgentTheme.of(context);
+    final strings = agent.strings;
+    final statusColors = agent.statusColorsFor(theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final isLight = theme.brightness == Brightness.light;
-    final badge = _badgeScheme(widget.status, isLight);
+
+    final destructive = widget.severity == BeuiToolApprovalSeverity.destructive;
+    final elevated = widget.severity == BeuiToolApprovalSeverity.elevated;
+
+    // A5: a pending card that cannot be acted on is a wiring bug, not a
+    // design. Surfaced in debug; in release the buttons simply render
+    // disabled, which is at least honest.
+    assert(
+      !_pending || widget.onApprove != null || widget.onDeny != null,
+      'BeuiToolApproval is pending but has neither onApprove nor onDeny — the '
+      'user is being asked a question with no way to answer it.',
+    );
+
+    // The badge tracks status, except that a pending destructive request is
+    // coloured by its *risk*, not by its lifecycle.
+    final badge = destructive && _pending
+        ? statusColors.destructive
+        : statusColors.palette(_statusRole(widget.status));
+
+    // Emphasis border: the card itself carries the risk tier, so the warning
+    // survives even when the badge scrolls out of view.
+    final BeuiAgentStatusPalette? emphasis = destructive
+        ? statusColors.destructive
+        : elevated
+        ? statusColors.pending
+        : null;
+
+    final titleWidget =
+        widget.titleWidget ?? Text(widget.title ?? strings.toolApprovalTitle);
+    final toolWidget = widget.toolWidget;
+    final descriptionWidget = widget.descriptionWidget;
 
     return Semantics(
       container: true,
-      liveRegion: _busy,
       child: DefaultTextStyle.merge(
         style: agent.typography.assistantBody,
         child: DecoratedBox(
@@ -389,8 +627,12 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
             color: colors.muted.withValues(alpha: 0.20),
             borderRadius: agent.shapes.card, // rounded-2xl
             border: Border.all(
-              color: colors.border.withValues(alpha: colors.border.a * 0.60),
-              width: agent.structure.borderWidth,
+              color:
+                  emphasis?.border ??
+                  colors.border.withValues(alpha: colors.border.a * 0.60),
+              width: emphasis != null
+                  ? agent.structure.emphasisBorderWidth
+                  : agent.structure.borderWidth,
             ),
           ),
           child: ClipRRect(
@@ -407,13 +649,16 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                     children: [
                       _LeadingGlyph(
                         status: widget.status,
+                        severity: widget.severity,
                         busy: _busy,
                         error: _error,
                         reduce: reduce,
                         spin: _spin,
                         colors: colors,
+                        palette: badge,
+                        lapsed: _lapsed,
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: agent.layout.rowGap + 4),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,59 +671,77 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      // A14: the tool identity leads. It is
+                                      // the answer to "what am I allowing?",
+                                      // so it is the first and most legible
+                                      // line, not muted metadata underneath.
                                       DefaultTextStyle.merge(
-                                        style: TextStyle(
-                                          fontSize: 14,
+                                        style: agent.typography.mono.copyWith(
+                                          fontSize: 13,
                                           fontWeight: FontWeight.w500,
                                           color: colors.foreground,
                                         ),
-                                        child: _asWidget(widget.title),
+                                        child:
+                                            toolWidget ??
+                                            Text(
+                                              widget.tool ?? '',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                       ),
                                       const SizedBox(height: 2),
                                       DefaultTextStyle.merge(
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: 'monospace',
+                                        style: agent.typography.title.copyWith(
                                           color: colors.mutedForeground,
                                         ),
-                                        child: _asWidget(
-                                          widget.tool,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontFamily: 'monospace',
-                                            color: colors.mutedForeground,
-                                          ),
-                                        ),
+                                        child: titleWidget,
                                       ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 12),
-                                _StatusBadge(
-                                  label: _statusCopy(widget.status),
-                                  scheme: badge,
+                                SizedBox(width: agent.layout.rowGap + 4),
+                                // A30: the badge is the live region, and it is
+                                // live for every non-pending state — the old
+                                // code gated it on `busy`, i.e. switched it off
+                                // exactly when "Denied" / "Failed" arrived.
+                                Semantics(
+                                  container: true,
+                                  liveRegion: !_pending,
+                                  label: _statusCopy(strings),
+                                  child: ExcludeSemantics(
+                                    child: _StatusBadge(
+                                      label: _statusCopy(strings),
+                                      palette: badge,
+                                      agent: agent,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            if (widget.description != null) ...[
+                            if (widget.description != null ||
+                                descriptionWidget != null) ...[
                               const SizedBox(height: 8),
                               DefaultTextStyle.merge(
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  height: 20 / 14, // leading-5 at text-sm
+                                style: agent.typography.description.copyWith(
                                   color: colors.mutedForeground,
                                 ),
-                                child: _asWidget(widget.description!),
+                                child:
+                                    descriptionWidget ??
+                                    Text(widget.description!),
                               ),
                             ],
                             if (widget.parameters.isNotEmpty) ...[
                               const SizedBox(height: 8),
+                              // A13: a real control, not a caption-styled row.
                               _DetailsToggle(
                                 open: _currentOpen,
                                 hovered: _detailsHovered,
                                 reduce: reduce,
                                 colors: colors,
+                                agent: agent,
+                                label:
+                                    widget.viewDetailsLabel ??
+                                    strings.viewDetails,
                                 onHover: (h) =>
                                     setState(() => _detailsHovered = h),
                                 onTap: _toggleDetails,
@@ -493,7 +756,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
 
                 // ----- details disclosure -----
                 if (widget.parameters.isNotEmpty)
-                  _AgentDisclosure(
+                  BeuiAgentDisclosureInternal(
                     open: _currentOpen,
                     reduce: reduce,
                     child: Padding(
@@ -501,35 +764,36 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: colors.background.withValues(alpha: 0.70),
-                          borderRadius: BorderRadius.circular(12), // rounded-xl
+                          borderRadius: agent.shapes.nested, // rounded-xl
                           border: Border.all(
                             color: colors.border.withValues(
                               alpha: colors.border.a * 0.50,
                             ),
+                            width: agent.structure.borderWidth,
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              for (
-                                var i = 0;
-                                i < widget.parameters.length;
-                                i++
-                              ) ...[
-                                if (i > 0) const SizedBox(height: 8),
-                                _ParameterRow(
-                                  parameter: widget.parameters[i],
-                                  colors: colors,
-                                ),
-                              ],
-                            ],
-                          ),
+                        child: _DetailsPanel(
+                          parameters: widget.parameters,
+                          colors: colors,
+                          agent: agent,
+                          maxHeight: widget.detailsMaxHeight,
                         ),
                       ),
                     ),
+                  ),
+
+                // ----- revocation row (standing grant) -----
+                if (!_pending &&
+                    widget.grant == BeuiToolApprovalGrant.always &&
+                    widget.onRevoke != null)
+                  _RevokeRow(
+                    colors: colors,
+                    agent: agent,
+                    grantLabel:
+                        widget.alwaysAllowedLabel ??
+                        strings.statusAlwaysAllowed,
+                    revokeLabel: widget.revokeLabel ?? strings.revoke,
+                    onRevoke: widget.onRevoke!,
                   ),
 
                 // ----- pending actions -----
@@ -543,6 +807,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                           color: colors.border.withValues(
                             alpha: colors.border.a * 0.60,
                           ),
+                          width: agent.structure.borderWidth,
                         ),
                       ),
                     ),
@@ -552,117 +817,20 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                         vertical: 12,
                       ),
                       child: Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
+                        // A31: real spacing, not just hit-slop overhang — the
+                        // 44px targets overhang their siblings, so the gap has
+                        // to be wide enough that the slop does not steal the
+                        // neighbour's taps.
+                        spacing: agent.layout.actionSpacing + 4,
+                        runSpacing: agent.layout.actionSpacing,
                         crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          // Source always renders Allow once / Deny; Always
-                          // allow only when onAlwaysAllow is provided.
-                          _PressButton(
-                            label: 'Allow once',
-                            pressed: _allowPressed,
-                            reduce: reduce,
-                            onPressed: (p) => setState(() => _allowPressed = p),
-                            onTap: () => widget.onApprove?.call(),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: colors.foreground,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                child: Text(
-                                  'Allow once',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: colors.background,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          if (widget.onAlwaysAllow != null)
-                            _PressButton(
-                              label: 'Always allow',
-                              pressed: _alwaysPressed,
-                              reduce: reduce,
-                              onPressed: (p) =>
-                                  setState(() => _alwaysPressed = p),
-                              onTap: widget.onAlwaysAllow!,
-                              child: MouseRegion(
-                                onEnter: (_) =>
-                                    setState(() => _alwaysHovered = true),
-                                onExit: (_) =>
-                                    setState(() => _alwaysHovered = false),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 150),
-                                  decoration: BoxDecoration(
-                                    color: _alwaysHovered
-                                        ? colors.muted
-                                        : colors.background,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: colors.border.withValues(
-                                        alpha: colors.border.a * 0.60,
-                                      ),
-                                    ),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  child: Text(
-                                    'Always allow',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: colors.foreground,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            onEnter: (_) => setState(() => _denyHovered = true),
-                            onExit: (_) => setState(() => _denyHovered = false),
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () => widget.onDeny?.call(),
-                              child: Semantics(
-                                button: true,
-                                label: 'Deny',
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 150),
-                                  decoration: BoxDecoration(
-                                    color: _denyHovered
-                                        ? colors.muted
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  child: Text(
-                                    'Deny',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: _denyHovered
-                                          ? colors.foreground
-                                          : colors.mutedForeground,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                        children: _buildActions(
+                          colors: colors,
+                          agent: agent,
+                          strings: strings,
+                          statusColors: statusColors,
+                          destructive: destructive,
+                        ),
                       ),
                     ),
                   ),
@@ -674,6 +842,97 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
       ),
     );
   }
+
+  /// The action row.
+  ///
+  /// **A6 — visual weight follows safety.** The old row put the maximum-
+  /// emphasis solid on `Allow once`, outlined the *most consequential* grant
+  /// (`Always allow`), and left `Deny` as a ghost, last and faintest: the
+  /// safest exit was the hardest thing on the card to see. Now `Deny` always
+  /// has a container, and on the destructive tier it leads as the solid
+  /// action while `Allow once` is demoted to outlined.
+  List<Widget> _buildActions({
+    required BeuiColors colors,
+    required BeuiAgentTheme agent,
+    required BeuiAgentStrings strings,
+    required BeuiAgentStatusColors statusColors,
+    required bool destructive,
+  }) {
+    final radius = agent.shapes.control;
+
+    Widget button({
+      required String label,
+      required BeuiButtonVariant variant,
+      required VoidCallback? onPressed,
+      Color? textColor,
+    }) {
+      // A31: a 44px touch target over the 32px pill.
+      //
+      // The `SizedBox` is load-bearing, not decoration. `BeuiMinHitTarget`
+      // widens hit testing by accepting out-of-bounds points, but a parent
+      // only ever dispatches points inside *its own* box — so in a `Wrap`
+      // sized exactly to its 32px children the slop was unreachable and the
+      // wrapper did nothing at all. Giving the row real height is what makes
+      // the extra 12px actually touchable; the pill still paints at 32.
+      return SizedBox(
+        height: 44,
+        // `widthFactor: 1` shrink-wraps horizontally. Without it the Center
+        // expands to the Wrap's full width and the row reads as centred.
+        child: Center(
+          widthFactor: 1,
+          child: BeuiMinHitTarget(
+            child: BeuiButton(
+              variant: variant,
+              size: BeuiButtonSize.sm,
+              pressScale: beuiAgentPressScale,
+              borderRadius: radius,
+              // A4 belt-and-braces: a null handler is a disabled button, which
+              // BeuiButton renders dimmed and refuses to activate (A5).
+              onPressed: onPressed,
+              child: Text(
+                label,
+                style: textColor == null ? null : TextStyle(color: textColor),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final allowOnce = button(
+      label: widget.allowOnceLabel ?? strings.allowOnce,
+      variant: destructive
+          ? BeuiButtonVariant.outline
+          : BeuiButtonVariant.primary,
+      onPressed: widget.onApprove,
+    );
+
+    final deny = button(
+      label: widget.denyLabel ?? strings.deny,
+      // Never ghost. On the destructive tier the safe exit is the solid lead.
+      variant: destructive
+          ? BeuiButtonVariant.primary
+          : BeuiButtonVariant.outline,
+      onPressed: widget.onDeny,
+    );
+
+    final alwaysAllow = _showAlwaysAllow
+        ? button(
+            label: widget.alwaysAllowLabel ?? strings.alwaysAllow,
+            variant: BeuiButtonVariant.outline,
+            onPressed: widget.onAlwaysAllow,
+          )
+        : null;
+
+    if (destructive) {
+      // Deny leads. `Always allow` is suppressed by default here, but a caller
+      // who explicitly passes `allowAlways: true` gets it back — last, and
+      // behind the safe exit.
+      return [deny, allowOnce, ?alwaysAllow];
+    }
+
+    return [allowOnce, ?alwaysAllow, deny];
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -683,19 +942,25 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
 class _LeadingGlyph extends StatelessWidget {
   const _LeadingGlyph({
     required this.status,
+    required this.severity,
     required this.busy,
     required this.error,
     required this.reduce,
     required this.spin,
     required this.colors,
+    required this.palette,
+    required this.lapsed,
   });
 
   final BeuiToolApprovalStatus status;
+  final BeuiToolApprovalSeverity severity;
   final bool busy;
   final bool error;
   final bool reduce;
   final AnimationController spin;
   final BeuiColors colors;
+  final BeuiAgentStatusPalette palette;
+  final bool lapsed;
 
   IconData _icon(BeuiAgentIcons icons) {
     if (busy) return icons.spinner;
@@ -705,15 +970,23 @@ class _LeadingGlyph extends StatelessWidget {
         status == BeuiToolApprovalStatus.complete) {
       return icons.approved;
     }
+    if (lapsed) return LucideIcons.clock;
+    // A3: the destructive tier swaps the reassuring shield for a warning
+    // triangle while the decision is still open.
+    if (severity == BeuiToolApprovalSeverity.destructive) return icons.warning;
     return icons.shield;
   }
 
   @override
   Widget build(BuildContext context) {
-    final color = error ? colors.destructive : colors.mutedForeground;
+    final agent = BeuiAgentTheme.of(context);
+    // The glyph carries status colour too, so the card still reads at a glance
+    // when the badge is clipped — and colour is never the only channel (the
+    // shape changes with it).
+    final color = lapsed ? colors.mutedForeground : palette.foreground;
     final icon = Icon(
-      _icon(BeuiAgentTheme.of(context).icons),
-      size: 16,
+      _icon(agent.icons),
+      size: agent.layout.iconSize,
       color: color,
     );
     final glyph = busy && !reduce
@@ -725,9 +998,10 @@ class _LeadingGlyph extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: BorderRadius.circular(12), // rounded-xl
+          borderRadius: agent.shapes.nested, // rounded-xl
           border: Border.all(
             color: colors.border.withValues(alpha: colors.border.a * 0.60),
+            width: agent.structure.borderWidth,
           ),
         ),
         child: SizedBox(width: 32, height: 32, child: Center(child: glyph)),
@@ -737,40 +1011,53 @@ class _LeadingGlyph extends StatelessWidget {
 }
 
 class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({required this.label, required this.scheme});
+  const _StatusBadge({
+    required this.label,
+    required this.palette,
+    required this.agent,
+  });
 
   final String label;
-  final _BadgeScheme scheme;
+  final BeuiAgentStatusPalette palette;
+  final BeuiAgentTheme agent;
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: scheme.background,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: scheme.border),
+        color: palette.background,
+        borderRadius: agent.shapes.pill,
+        border: Border.all(
+          color: palette.border,
+          width: agent.structure.borderWidth,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: Text(
           label,
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
-            color: scheme.foreground,
-          ),
+          style: agent.typography.status.copyWith(color: palette.foreground),
         ),
       ),
     );
   }
 }
 
+/// The "View details" gateway.
+///
+/// A13: this used to be a 12px caption row with a chevron and no affordance
+/// beyond a hover colour — the single control standing between the user and
+/// the command they are approving. It is now a real ghost button: focusable,
+/// Enter/Space-activatable, 44px of hit target, and it reports its expanded
+/// state to assistive technology.
 class _DetailsToggle extends StatelessWidget {
   const _DetailsToggle({
     required this.open,
     required this.hovered,
     required this.reduce,
     required this.colors,
+    required this.agent,
+    required this.label,
     required this.onHover,
     required this.onTap,
   });
@@ -779,13 +1066,18 @@ class _DetailsToggle extends StatelessWidget {
   final bool hovered;
   final bool reduce;
   final BeuiColors colors;
+  final BeuiAgentTheme agent;
+  final String label;
   final ValueChanged<bool> onHover;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final color = hovered ? colors.foreground : colors.mutedForeground;
-    final chevron = Icon(LucideIcons.chevron_down, size: 14, color: color);
+    final chevron = Icon(
+      LucideIcons.chevron_down,
+      size: 14,
+      color: colors.foreground,
+    );
     final rotated = reduce
         ? Transform.rotate(angle: open ? math.pi : 0, child: chevron)
         : SingleMotionBuilder(
@@ -796,31 +1088,25 @@ class _DetailsToggle extends StatelessWidget {
             child: chevron,
           );
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => onHover(true),
-      onExit: (_) => onHover(false),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Semantics(
-          button: true,
-          expanded: open,
-          label: 'View details',
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'View details',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: color,
-                ),
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Semantics(
+        expanded: open,
+        child: MouseRegion(
+          onEnter: (_) => onHover(true),
+          onExit: (_) => onHover(false),
+          child: BeuiMinHitTarget(
+            child: BeuiButton(
+              variant: BeuiButtonVariant.outline,
+              size: BeuiButtonSize.sm,
+              pressScale: beuiAgentPressScale,
+              borderRadius: agent.shapes.control,
+              onPressed: onTap,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [Text(label), const SizedBox(width: 4), rotated],
               ),
-              const SizedBox(width: 4),
-              rotated,
-            ],
+            ),
           ),
         ),
       ),
@@ -828,43 +1114,114 @@ class _DetailsToggle extends StatelessWidget {
   }
 }
 
-class _ParameterRow extends StatelessWidget {
-  const _ParameterRow({required this.parameter, required this.colors});
+/// The capped, scrollable parameter list (A23).
+class _DetailsPanel extends StatefulWidget {
+  const _DetailsPanel({
+    required this.parameters,
+    required this.colors,
+    required this.agent,
+    required this.maxHeight,
+  });
 
-  final BeuiToolApprovalParameter parameter;
+  final List<BeuiToolApprovalParameter> parameters;
   final BeuiColors colors;
+  final BeuiAgentTheme agent;
+  final double maxHeight;
+
+  @override
+  State<_DetailsPanel> createState() => _DetailsPanelState();
+}
+
+class _DetailsPanelState extends State<_DetailsPanel> {
+  // The scrollbar needs a controller it shares with the view; falling back to
+  // the PrimaryScrollController would attach it to the enclosing transcript.
+  final ScrollController _scroll = ScrollController();
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final parameters = widget.parameters;
+    final colors = widget.colors;
+    final agent = widget.agent;
+    final maxHeight = widget.maxHeight;
+
+    final rows = Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < parameters.length; i++) ...[
+            if (i > 0) const SizedBox(height: 8),
+            _ParameterRow(
+              parameter: parameters[i],
+              colors: colors,
+              agent: agent,
+            ),
+          ],
+        ],
+      ),
+    );
+
+    if (!maxHeight.isFinite) return rows;
+
+    // A23: cap the panel and scroll it, with a visible thumb — the sibling
+    // surfaces that hide their scrollbars are exactly the T6 complaint, so
+    // this one shows its.
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      child: Scrollbar(
+        controller: _scroll,
+        thumbVisibility: true,
+        child: SingleChildScrollView(controller: _scroll, child: rows),
+      ),
+    );
+  }
+}
+
+class _ParameterRow extends StatelessWidget {
+  const _ParameterRow({
+    required this.parameter,
+    required this.colors,
+    required this.agent,
+  });
+
+  final BeuiToolApprovalParameter parameter;
+  final BeuiColors colors;
+  final BeuiAgentTheme agent;
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = agent.typography.metadata.copyWith(
+      color: colors.mutedForeground,
+    );
+    // A8: the value is information-bearing — it is the argument the tool will
+    // run with — so it is no longer multiplied down to 0.85 alpha.
+    final valueStyle = agent.typography.mono.copyWith(
+      fontSize: 12,
+      color: colors.foreground,
+    );
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
           width: 112, // minmax(0, 7rem)
           child: DefaultTextStyle.merge(
-            style: TextStyle(fontSize: 12, color: colors.mutedForeground),
-            child: _asWidget(
-              parameter.label,
-              style: TextStyle(fontSize: 12, color: colors.mutedForeground),
-            ),
+            style: labelStyle,
+            child: _asWidget(parameter.label, style: labelStyle),
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: DefaultTextStyle.merge(
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: 'monospace',
-              color: colors.foreground.withValues(alpha: 0.85),
-            ),
-            child: _asWidget(
-              parameter.value,
-              style: TextStyle(
-                fontSize: 12,
-                fontFamily: 'monospace',
-                color: colors.foreground.withValues(alpha: 0.85),
-              ),
-            ),
+            style: valueStyle,
+            child: _asWidget(parameter.value, style: valueStyle),
           ),
         ),
       ],
@@ -872,46 +1229,61 @@ class _ParameterRow extends StatelessWidget {
   }
 }
 
-/// Press-scale button (source `whileTap={{ scale: 0.97 }}` + SPRING_PRESS).
-class _PressButton extends StatelessWidget {
-  const _PressButton({
-    required this.label,
-    required this.pressed,
-    required this.reduce,
-    required this.onPressed,
-    required this.onTap,
-    required this.child,
+/// "Always allowed · Revoke" (A21).
+///
+/// A standing grant that cannot be taken back is a trap. This row is the
+/// minimum honest affordance: it states that the permission persists, and puts
+/// the way out one keystroke away.
+class _RevokeRow extends StatelessWidget {
+  const _RevokeRow({
+    required this.colors,
+    required this.agent,
+    required this.grantLabel,
+    required this.revokeLabel,
+    required this.onRevoke,
   });
 
-  final String label;
-  final bool pressed;
-  final bool reduce;
-  final ValueChanged<bool> onPressed;
-  final VoidCallback onTap;
-  final Widget child;
+  final BeuiColors colors;
+  final BeuiAgentTheme agent;
+  final String grantLabel;
+  final String revokeLabel;
+  final VoidCallback onRevoke;
 
   @override
   Widget build(BuildContext context) {
-    final pressTarget = (pressed && !reduce) ? 0.97 : 1.0;
-    return Semantics(
-      button: true,
-      label: label,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onExit: (_) => onPressed(false),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTapDown: (_) => onPressed(true),
-          onTapUp: (_) => onPressed(false),
-          onTapCancel: () => onPressed(false),
-          onTap: onTap,
-          child: SingleMotionBuilder(
-            value: pressTarget,
-            motion: motionFor(context, beuiSpringPress, isMovement: true),
-            builder: (context, scale, child) =>
-                Transform.scale(scale: scale, child: child),
-            child: child,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: colors.border.withValues(alpha: colors.border.a * 0.60),
+            width: agent.structure.borderWidth,
           ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                grantLabel,
+                style: agent.typography.metadata.copyWith(
+                  color: colors.mutedForeground,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            BeuiMinHitTarget(
+              child: BeuiButton(
+                variant: BeuiButtonVariant.ghost,
+                size: BeuiButtonSize.sm,
+                pressScale: beuiAgentPressScale,
+                borderRadius: agent.shapes.control,
+                onPressed: onRevoke,
+                child: Text(revokeLabel),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -919,7 +1291,7 @@ class _PressButton extends StatelessWidget {
 }
 
 /// Fade / slide presence for the pending actions row (source AnimatePresence
-/// on the footer with EASE_OUT 0.22 / reduced 0.12).
+/// on the footer with EASE_OUT 0.22 enter / 0.14 exit).
 class _ActionsPresence extends StatelessWidget {
   const _ActionsPresence({
     required this.visible,
@@ -938,141 +1310,62 @@ class _ActionsPresence extends StatelessWidget {
         ? (reduce ? _actionsInReduced : _actionsIn)
         : (reduce ? _actionsOutReduced : _actionsOut);
 
+    // A4 — the double-fire fix, and the reason it is spelled `!visible ||
+    // hidden` rather than `hidden` alone.
+    //
+    // The gate used to be driven purely by the animation value, so for the
+    // ~220ms the row spent fading out it was still fully hit-testable: a fast
+    // double-tap on "Allow once" fired `onApprove` twice, the second time
+    // *after* the decision had already been taken. Deriving it from `visible`
+    // makes the row inert on the very frame the decision lands, while the
+    // animated value keeps it inert for the whole tail of a re-entry.
+    Widget frame(double t, Widget child, {required bool movement}) {
+      final tt = t.clamp(0.0, 1.0);
+      final hidden = tt < 0.01;
+      final inert = !visible || hidden;
+      final y = movement && visible ? 4 * (1 - tt) : 0.0;
+
+      Widget content = Opacity(opacity: tt, child: child);
+      if (y != 0) {
+        content = Transform.translate(offset: Offset(0, y), child: content);
+      }
+      if (movement) {
+        content = ClipRect(
+          child: Align(
+            alignment: Alignment.topCenter,
+            heightFactor: tt,
+            // `Align` loosens, so without this the action row shrink-wraps to
+            // its buttons and `topCenter` centres it — the source's row is
+            // `flex … px-4` with no `justify-*`, i.e. full width and
+            // flex-start.
+            child: SizedBox(width: double.infinity, child: content),
+          ),
+        );
+      }
+
+      return Offstage(
+        offstage: hidden,
+        child: IgnorePointer(
+          ignoring: inert,
+          child: ExcludeSemantics(excluding: inert, child: content),
+        ),
+      );
+    }
+
     // Under reduced motion: opacity only (source initial { opacity: 0 }).
     if (reduce) {
       return SingleMotionBuilder(
         value: target,
         motion: motionFor(context, motion, isMovement: false),
-        builder: (context, t, child) {
-          final tt = t.clamp(0.0, 1.0);
-          final hidden = tt < 0.01;
-          return Offstage(
-            offstage: hidden,
-            child: IgnorePointer(
-              ignoring: hidden,
-              child: ExcludeSemantics(
-                excluding: hidden,
-                child: Opacity(opacity: tt, child: child),
-              ),
-            ),
-          );
-        },
+        builder: (context, t, child) => frame(t, child!, movement: false),
         child: child,
       );
     }
 
-    // Full motion: opacity + y: 4 → 0 enter; exit opacity only (source).
     return SingleMotionBuilder(
       value: target,
       motion: motionFor(context, motion, isMovement: true),
-      builder: (context, t, child) {
-        final tt = t.clamp(0.0, 1.0);
-        final hidden = tt < 0.01;
-        // Exit is opacity-only in the source; enter slides up from y: 4.
-        // Driving both with the same t approximates AnimatePresence enter/exit.
-        final y = visible ? 4 * (1 - tt) : 0.0;
-        return Offstage(
-          offstage: hidden,
-          child: IgnorePointer(
-            ignoring: hidden,
-            child: ExcludeSemantics(
-              excluding: hidden,
-              child: ClipRect(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  heightFactor: tt,
-                  // `Align` loosens, so without this the action row shrink-
-                  // wraps to its buttons and `topCenter` centres it — the
-                  // source's row is `flex … px-4` with no `justify-*`, i.e.
-                  // full width and flex-start. The reduced-motion branch has no
-                  // Align, so it was already correct; only this path drifted.
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Opacity(
-                      opacity: tt,
-                      child: Transform.translate(
-                        offset: Offset(0, y),
-                        child: child,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-      child: child,
-    );
-  }
-}
-
-/// Shared transform-only reveal for collapsible agent content — the Flutter
-/// port of the source's `AgentDisclosure` (height + opacity + y: -4).
-class _AgentDisclosure extends StatelessWidget {
-  const _AgentDisclosure({
-    required this.open,
-    required this.reduce,
-    required this.child,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final target = open ? 1.0 : 0.0;
-    final motion = open ? _disclosureOpen : _disclosureClose;
-
-    if (reduce) {
-      return Offstage(
-        offstage: !open,
-        child: IgnorePointer(
-          ignoring: !open,
-          child: ExcludeSemantics(
-            excluding: !open,
-            child: ClipRect(
-              child: Align(
-                alignment: Alignment.topCenter,
-                heightFactor: open ? 1.0 : 0.0,
-                child: child,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return SingleMotionBuilder(
-      value: target,
-      motion: motionFor(context, motion, isMovement: true),
-      builder: (context, t, child) {
-        final tt = t.clamp(0.0, 1.0);
-        final closed = tt < 0.01;
-        return Offstage(
-          offstage: closed,
-          child: IgnorePointer(
-            ignoring: closed,
-            child: ExcludeSemantics(
-              excluding: closed,
-              child: ClipRect(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  heightFactor: tt,
-                  child: Opacity(
-                    opacity: tt,
-                    child: Transform.translate(
-                      offset: Offset(0, -4 * (1 - tt)),
-                      child: child,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+      builder: (context, t, child) => frame(t, child!, movement: true),
       child: child,
     );
   }

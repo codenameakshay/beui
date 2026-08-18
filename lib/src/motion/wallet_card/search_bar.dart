@@ -283,7 +283,7 @@ class _RecentRowState extends State<_RecentRow> {
           child: Row(
             children: [
               Icon(
-                LucideIcons.history,
+                LucideIcons.rotate_ccw_clock,
                 size: 16,
                 color: hoverActive ? colors.foreground : colors.mutedForeground,
               ),

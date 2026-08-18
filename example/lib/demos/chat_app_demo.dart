@@ -157,7 +157,15 @@ class _AddedMessage {
   final BeuiMessageFrom from;
   String content;
   bool streaming;
+
+  /// Whether generation was stopped before this reply finished (C32/C13):
+  /// renders as [BeuiStreamingResponseStatus.stopped] with a real Continue
+  /// affordance instead of silently presenting a truncated answer as done.
+  bool stopped = false;
 }
+
+/// The three sidebar nav actions (source `New task` / `Search` / `Runs`).
+enum _SidebarNav { newTask, search, runs }
 
 class _ChatAppDemoState extends State<_ChatAppDemo> {
   final List<Timer> _toolTimers = [];
@@ -169,10 +177,18 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
   List<BeuiSidebarResource> _items = List.of(_resources);
   String _activeResource = 'checkout';
   bool _sidebarVisible = true;
+  _SidebarNav? _activeNav;
 
   bool _pending = false;
   String? _activeReplyId;
   final List<_AddedMessage> _messages = [];
+
+  /// F17: "Attach file" was an action the composer offered and then swallowed.
+  /// The demo now owns real attachment state so the chip row, its upload
+  /// progress, removal and retry are all reachable from the gallery.
+  List<BeuiPromptAttachment> _attachments = const [];
+  final List<Timer> _uploadTimers = [];
+  int _attachmentSeq = 0;
 
   BeuiToolApprovalStatus _toolStatus = BeuiToolApprovalStatus.pending;
   BeuiApprovalCardStatus _approvalStatus = BeuiApprovalCardStatus.pending;
@@ -184,8 +200,16 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
     _clearToolTimers();
     _clearChatTimers();
     _clearApprovalTimers();
+    _clearUploadTimers();
     _streamTimer?.cancel();
     super.dispose();
+  }
+
+  void _clearUploadTimers() {
+    for (final t in _uploadTimers) {
+      t.cancel();
+    }
+    _uploadTimers.clear();
   }
 
   void _clearToolTimers() {
@@ -265,7 +289,9 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
     ]);
   }
 
-  void _startStream(String assistantId) {
+  /// Starts (or, with [startCursor], resumes) streaming [_reply] into the
+  /// assistant message identified by [assistantId].
+  void _startStream(String assistantId, {int startCursor = 0}) {
     _streamTimer?.cancel();
     final reduce = MediaQuery.disableAnimationsOf(context);
     if (reduce) {
@@ -274,6 +300,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
           if (m.id == assistantId) {
             m.content = _reply;
             m.streaming = false;
+            m.stopped = false;
           }
         }
         _activeReplyId = null;
@@ -288,7 +315,10 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
         return;
       }
       final elapsed = DateTime.now().difference(startedAt).inMilliseconds;
-      final cursor = (elapsed / 1000 * 92).floor().clamp(0, _reply.length);
+      final cursor = (startCursor + elapsed / 1000 * 92).floor().clamp(
+        0,
+        _reply.length,
+      );
       final content = _reply.substring(0, cursor);
       setState(() {
         for (final m in _messages) {
@@ -301,7 +331,10 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
         timer.cancel();
         setState(() {
           for (final m in _messages) {
-            if (m.id == assistantId) m.streaming = false;
+            if (m.id == assistantId) {
+              m.streaming = false;
+              m.stopped = false;
+            }
           }
           _activeReplyId = null;
         });
@@ -323,6 +356,19 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
           content: value,
         ),
       );
+      // F15: the assistant turn is created *now*, empty and streaming, rather
+      // than after the think delay. Its typing indicator is the streaming
+      // response's own `placeholder`, so it cross-fades into the first token
+      // instead of a separate shimmer row unmounting and a blank bubble
+      // taking its place — the pattern agents_chat_preview already uses.
+      _messages.add(
+        _AddedMessage(
+          id: assistantId,
+          from: BeuiMessageFrom.assistant,
+          content: '',
+          streaming: true,
+        ),
+      );
       _pending = true;
     });
 
@@ -330,14 +376,6 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
       Timer(Duration(milliseconds: reduce ? 0 : 420), () {
         if (!mounted) return;
         setState(() {
-          _messages.add(
-            _AddedMessage(
-              id: assistantId,
-              from: BeuiMessageFrom.assistant,
-              content: '',
-              streaming: true,
-            ),
-          );
           _pending = false;
           _activeReplyId = assistantId;
         });
@@ -346,15 +384,134 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
     );
   }
 
+  /// Demo file names, cycled so repeated taps produce distinct chips. The
+  /// `.csv` is the one that always fails, so the retry path is reachable in
+  /// the gallery rather than theoretical.
+  static const _attachmentNames = <String>[
+    'checkout-flow.png',
+    'pricing-notes.md',
+    'legacy-export.csv',
+  ];
+
+  void _handlePromptAction(String action) {
+    if (action != 'attach') return;
+    final name = _attachmentNames[_attachmentSeq % _attachmentNames.length];
+    final id = 'file-${_attachmentSeq++}';
+    setState(() {
+      _attachments = [
+        ..._attachments,
+        BeuiPromptAttachment(
+          id: id,
+          name: name,
+          status: BeuiPromptAttachmentStatus.uploading,
+          progress: 0,
+        ),
+      ];
+    });
+    _runUpload(id, shouldFail: name.endsWith('.csv'));
+  }
+
+  /// Walks one chip from 0 to done over ~900ms, then settles it on `ready`, or
+  /// on `failed` with a note when [shouldFail]. A retry always succeeds, so
+  /// the failure is a state the reader can get into *and* out of.
+  void _runUpload(String id, {bool shouldFail = false}) {
+    final startedAt = DateTime.now();
+    late Timer timer;
+    timer = Timer.periodic(const Duration(milliseconds: 60), (t) {
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
+      final progress =
+          (DateTime.now().difference(startedAt).inMilliseconds / 900).clamp(
+            0.0,
+            1.0,
+          );
+      final done = progress >= 1;
+      if (done) t.cancel();
+      setState(() {
+        _attachments = [
+          for (final a in _attachments)
+            if (a.id != id)
+              a
+            else if (!done)
+              BeuiPromptAttachment(
+                id: a.id,
+                name: a.name,
+                status: BeuiPromptAttachmentStatus.uploading,
+                progress: progress,
+              )
+            else if (shouldFail)
+              BeuiPromptAttachment(
+                id: a.id,
+                name: a.name,
+                status: BeuiPromptAttachmentStatus.failed,
+                error: 'Upload failed — the file is larger than 10 MB.',
+              )
+            else
+              BeuiPromptAttachment(id: a.id, name: a.name),
+        ];
+      });
+    });
+    _uploadTimers.add(timer);
+  }
+
   void _stop() {
     _clearChatTimers();
     _streamTimer?.cancel();
     setState(() {
       _pending = false;
       for (final m in _messages) {
-        if (m.streaming) m.streaming = false;
+        if (m.streaming) {
+          m.streaming = false;
+          m.stopped = true;
+        }
       }
       _activeReplyId = null;
+    });
+  }
+
+  /// Resumes a [_AddedMessage.stopped] reply (the Continue control on a
+  /// [BeuiStreamingResponseStatus.stopped] notice).
+  void _continueStream(String assistantId) {
+    final index = _messages.indexWhere((m) => m.id == assistantId);
+    if (index == -1) return;
+    final startCursor = _messages[index].content.length;
+    setState(() {
+      _messages[index].streaming = true;
+      _messages[index].stopped = false;
+      _activeReplyId = assistantId;
+    });
+    _startStream(assistantId, startCursor: startCursor);
+  }
+
+  /// Resets the transcript to a fresh task (the "New task" nav button).
+  void _resetConversation() {
+    _clearToolTimers();
+    _clearChatTimers();
+    _clearApprovalTimers();
+    _streamTimer?.cancel();
+    _streamTimer = null;
+    _messages.clear();
+    _pending = false;
+    _activeReplyId = null;
+    _toolStatus = BeuiToolApprovalStatus.pending;
+    _approvalStatus = BeuiApprovalCardStatus.pending;
+  }
+
+  /// Handles the three sidebar nav buttons (C33) — each selects a distinct,
+  /// visibly different state the demo already holds rather than a no-op.
+  void _selectNav(_SidebarNav nav) {
+    setState(() {
+      _activeNav = nav;
+      switch (nav) {
+        case _SidebarNav.newTask:
+          _resetConversation();
+        case _SidebarNav.search:
+          _activeResource = 'references';
+        case _SidebarNav.runs:
+          _activeResource = 'archive';
+      }
     });
   }
 
@@ -392,14 +549,20 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
             child: Column(
               children: [
                 for (final entry in [
-                  (LucideIcons.message_square_plus, 'New task'),
-                  (LucideIcons.search, 'Search'),
-                  (LucideIcons.clock_3, 'Runs'),
+                  (
+                    LucideIcons.message_square_plus,
+                    'New task',
+                    _SidebarNav.newTask,
+                  ),
+                  (LucideIcons.search, 'Search', _SidebarNav.search),
+                  (LucideIcons.clock_3, 'Runs', _SidebarNav.runs),
                 ])
                   _SidebarNavButton(
                     icon: entry.$1,
                     label: entry.$2,
                     colors: colors,
+                    active: _activeNav == entry.$3,
+                    onTap: () => _selectNav(entry.$3),
                   ),
               ],
             ),
@@ -457,10 +620,14 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
   }
 
   Widget _buildHeader(BeuiColors colors) {
-    const emerald600 = Color(0xFF059669);
-    const emerald400 = Color(0xFF34D399);
-    const emerald500 = Color(0xFF10B981);
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final working =
+        _busy ||
+        _toolStatus == BeuiToolApprovalStatus.approving ||
+        _toolStatus == BeuiToolApprovalStatus.running;
+    final statusColors = BeuiAgentTheme.of(
+      context,
+    ).statusColorsFor(Theme.of(context).brightness);
+    final statusPalette = working ? statusColors.running : statusColors.success;
 
     return SizedBox(
       height: 56,
@@ -513,7 +680,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
             ),
             DecoratedBox(
               decoration: BoxDecoration(
-                color: emerald500.withValues(alpha: 0.10),
+                color: statusPalette.background,
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Padding(
@@ -521,13 +688,27 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                   horizontal: 10,
                   vertical: 4,
                 ),
-                child: Text(
-                  'Connected',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                    color: isLight ? emerald600 : emerald400,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: statusPalette.solid,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      working ? 'Working' : 'Connected',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: colors.mutedForeground,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -562,16 +743,10 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                       BeuiMessageBubble(
                         variant: BeuiMessageBubbleVariant.solid,
                         child: BeuiMessageBubbleContent(
-                          child: Text(
+                          child: const Text(
                             'Audit the checkout flow, fix the validation gap, '
                             'and prepare a release-ready patch.',
-                            style: TextStyle(
-                              fontSize: 14,
-                              height: 1.45,
-                              color: Theme.of(
-                                context,
-                              ).extension<BeuiColors>()!.primaryForeground,
-                            ),
+                            style: TextStyle(fontSize: 14, height: 1.45),
                           ),
                         ),
                       ),
@@ -679,7 +854,6 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                   _toolStatus == BeuiToolApprovalStatus.complete)
                 BeuiMessage(
                   from: BeuiMessageFrom.assistant,
-                  animateIn: true,
                   children: [
                     const BeuiMessageAvatar(placeholder: true),
                     BeuiMessageContent(
@@ -733,7 +907,6 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                   _toolStatus == BeuiToolApprovalStatus.error)
                 BeuiMessage(
                   from: BeuiMessageFrom.assistant,
-                  animateIn: true,
                   children: [
                     const BeuiMessageAvatar(placeholder: true),
                     BeuiMessageContent(
@@ -762,7 +935,6 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
               if (_toolStatus == BeuiToolApprovalStatus.complete)
                 BeuiMessage(
                   from: BeuiMessageFrom.assistant,
-                  animateIn: true,
                   children: [
                     const BeuiMessageAvatar(placeholder: true),
                     BeuiMessageContent(
@@ -841,7 +1013,6 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
               if (_toolStatus == BeuiToolApprovalStatus.complete)
                 BeuiMessage(
                   from: BeuiMessageFrom.assistant,
-                  animateIn: true,
                   children: [
                     const BeuiMessageAvatar(placeholder: true),
                     BeuiMessageContent(
@@ -880,7 +1051,6 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                 BeuiMessage(
                   key: ValueKey(message.id),
                   from: message.from,
-                  animateIn: true,
                   children: [
                     BeuiMessageAvatar(
                       child: Icon(
@@ -904,13 +1074,29 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                                 ? BeuiStreamingResponse(
                                     status: message.streaming
                                         ? BeuiStreamingResponseStatus.streaming
+                                        : message.stopped
+                                        ? BeuiStreamingResponseStatus.stopped
                                         : BeuiStreamingResponseStatus.complete,
                                     showActions: !message.streaming,
                                     copyText: message.content,
+                                    onContinue: message.stopped
+                                        ? () => _continueStream(message.id)
+                                        : null,
+                                    stoppedMessage:
+                                        'Response stopped before it finished.',
+                                    continueLabel: 'Continue generating',
+                                    // F16: the scroller owns the transcript's
+                                    // live region; without this it had nothing
+                                    // to announce and a screen-reader user
+                                    // heard the whole reply as silence.
+                                    announceText: message.content,
+                                    // F15: one indicator identity — the dots
+                                    // are this response's placeholder and
+                                    // cross-fade into the first token.
+                                    placeholder: const BeuiMessageTyping(),
+                                    hasContent: message.content.isNotEmpty,
                                     child: Text(
-                                      message.content.isEmpty
-                                          ? ' '
-                                          : message.content,
+                                      message.content,
                                       style: TextStyle(
                                         fontSize: 14,
                                         height: 1.45,
@@ -922,33 +1108,15 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                                   )
                                 : Text(
                                     message.content,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14,
                                       height: 1.45,
-                                      color: Theme.of(context)
-                                          .extension<BeuiColors>()!
-                                          .primaryForeground,
                                     ),
                                   ),
                           ),
                         ),
                         if (message.from == BeuiMessageFrom.user)
                           const BeuiMessageFooter(children: [Text('Sent')]),
-                      ],
-                    ),
-                  ],
-                ),
-
-              // Pending thinking
-              if (_pending)
-                const BeuiMessage(
-                  from: BeuiMessageFrom.assistant,
-                  animateIn: true,
-                  children: [
-                    BeuiMessageAvatar(child: Icon(LucideIcons.bot)),
-                    BeuiMessageContent(
-                      children: [
-                        BeuiThinkingShimmer(text: 'Reviewing your direction'),
                       ],
                     ),
                   ],
@@ -976,6 +1144,31 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
             models: _models,
             defaultModel: 'balanced',
             actions: _actions,
+            onAction: _handlePromptAction,
+            attachments: _attachments,
+            onAttachmentRemoved: (a) => setState(() {
+              _attachments = [
+                for (final x in _attachments)
+                  if (x.id != a.id) x,
+              ];
+            }),
+            onAttachmentRetry: (a) {
+              setState(() {
+                _attachments = [
+                  for (final x in _attachments)
+                    if (x.id != a.id)
+                      x
+                    else
+                      BeuiPromptAttachment(
+                        id: x.id,
+                        name: x.name,
+                        status: BeuiPromptAttachmentStatus.uploading,
+                        progress: 0,
+                      ),
+                ];
+              });
+              _runUpload(a.id);
+            },
           ),
         ),
       ),
@@ -992,36 +1185,46 @@ class _SidebarNavButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.colors,
+    required this.active,
+    required this.onTap,
   });
 
   final IconData icon;
   final String label;
   final BeuiColors colors;
+  final bool active;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {},
+      child: Semantics(
+        button: true,
+        selected: active,
+        label: label,
+        child: Material(
+          color: active ? colors.muted : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            child: Row(
-              children: [
-                Icon(icon, size: 16, color: colors.mutedForeground),
-                const SizedBox(width: 10),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                    color: colors.foreground,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(10),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: Row(
+                children: [
+                  Icon(icon, size: 16, color: colors.mutedForeground),
+                  const SizedBox(width: 10),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: colors.foreground,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

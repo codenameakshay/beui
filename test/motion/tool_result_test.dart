@@ -1,31 +1,48 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+ThemeData _theme({Brightness brightness = Brightness.light}) {
+  final base = brightness == Brightness.dark
+      ? ThemeData.dark().copyWith(extensions: [BeuiColors.dark()])
+      : ThemeData.light().copyWith(extensions: [BeuiColors.light()]);
+  return BeuiTextTheme.trackingNormal(base);
+}
+
 Widget _host({
-  Object tool = 'terminal.run',
-  Object title = 'Running checks',
+  String? tool = 'terminal.run',
+  Widget? toolWidget,
+  String? title = 'Running checks',
+  Widget? titleWidget,
   Widget? child,
   BeuiToolResultStatus status = BeuiToolResultStatus.running,
   BeuiToolResultKind kind = BeuiToolResultKind.terminal,
-  Object? meta,
+  String? meta,
   Widget? icon,
   bool? open,
   bool defaultOpen = true,
   ValueChanged<bool>? onOpenChange,
   bool collapseOnComplete = true,
+  bool keepActionsVisibleWhenCollapsed = true,
+  double maxHeight = 220,
+  int? hiddenLineCount,
   String? copyText,
   Future<void> Function()? onCopy,
   VoidCallback? onRetry,
   bool reduce = false,
+  double width = 400,
+  Brightness brightness = Brightness.light,
 }) {
   Widget body = Center(
     child: SizedBox(
-      width: 400,
+      width: width,
       child: BeuiToolResult(
         tool: tool,
+        toolWidget: toolWidget,
         title: title,
+        titleWidget: titleWidget,
         status: status,
         kind: kind,
         meta: meta,
@@ -34,6 +51,9 @@ Widget _host({
         defaultOpen: defaultOpen,
         onOpenChange: onOpenChange,
         collapseOnComplete: collapseOnComplete,
+        keepActionsVisibleWhenCollapsed: keepActionsVisibleWhenCollapsed,
+        maxHeight: maxHeight,
+        hiddenLineCount: hiddenLineCount,
         copyText: copyText,
         onCopy: onCopy,
         onRetry: onRetry,
@@ -53,11 +73,45 @@ Widget _host({
     );
   }
   return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
+    theme: _theme(brightness: brightness),
     home: Scaffold(body: body),
   );
+}
+
+/// Every node in the semantics tree at or below the app root.
+List<SemanticsNode> _semanticsNodes(WidgetTester tester) {
+  final root = tester.getSemantics(find.byType(MaterialApp));
+  final out = <SemanticsNode>[];
+  void walk(SemanticsNode node) {
+    out.add(node);
+    node.visitChildren((child) {
+      walk(child);
+      return true;
+    });
+  }
+
+  walk(root);
+  return out;
+}
+
+/// Whether [node] is a live region (the non-deprecated flag read).
+bool _isLiveRegion(SemanticsNode node) =>
+    node.getSemanticsData().flagsCollection.isLiveRegion;
+
+/// The first painted colour of [text] inside any [RichText] in the tree.
+Color? _spanColor(WidgetTester tester, String text) {
+  Color? found;
+  for (final rt in tester.widgetList<RichText>(find.byType(RichText))) {
+    rt.text.visitChildren((span) {
+      if (span is TextSpan && span.text == text) {
+        found = span.style?.color;
+        return false;
+      }
+      return true;
+    });
+    if (found != null) break;
+  }
+  return found;
 }
 
 void main() {
@@ -103,6 +157,84 @@ void main() {
         await tester.pump();
         expect(find.text(entry.value), findsWidgets);
       }
+    });
+
+    testWidgets('per-instance and theme string overrides win in order', (
+      tester,
+    ) async {
+      // Theme strings replace the defaults…
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(
+              extensions: [
+                BeuiColors.light(),
+                const BeuiAgentTheme(
+                  strings: BeuiAgentStrings(
+                    statusFailed: 'Échec',
+                    copyResult: 'Copier',
+                    runAgain: 'Relancer',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 400,
+                child: BeuiToolResult(
+                  tool: 'terminal.run',
+                  title: 'Localised',
+                  status: BeuiToolResultStatus.error,
+                  collapseOnComplete: false,
+                  copyText: 'x',
+                  onRetry: () {},
+                  child: const BeuiToolResultOutput(code: 'x'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Échec'), findsWidgets);
+      expect(find.byTooltip('Copier'), findsOneWidget);
+      expect(find.byTooltip('Relancer'), findsOneWidget);
+
+      // …and a per-instance label beats the theme.
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(
+              extensions: [
+                BeuiColors.light(),
+                const BeuiAgentTheme(
+                  strings: BeuiAgentStrings(copyResult: 'Copier'),
+                ),
+              ],
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 400,
+                child: BeuiToolResult(
+                  tool: 'terminal.run',
+                  title: 'Localised',
+                  status: BeuiToolResultStatus.error,
+                  collapseOnComplete: false,
+                  copyText: 'x',
+                  copyLabel: 'Kopieren',
+                  child: const BeuiToolResultOutput(code: 'x'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Kopieren'), findsOneWidget);
     });
 
     testWidgets('tapping header toggles open state (uncontrolled)', (
@@ -249,6 +381,40 @@ void main() {
       );
     });
 
+    testWidgets('copying announces "Copied" through a live region', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async => null,
+      );
+
+      await tester.pumpWidget(
+        _host(
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+          copyText: 'copied-output',
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Copy result'));
+      await tester.pump();
+
+      final announced = _semanticsNodes(
+        tester,
+      ).where((n) => n.label == 'Copied').toList();
+      expect(announced, isNotEmpty);
+      expect(announced.any(_isLiveRegion), isTrue);
+
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      );
+      handle.dispose();
+    });
+
     testWidgets('onRetry is invoked from the action button', (tester) async {
       var retries = 0;
       await tester.pumpWidget(
@@ -289,6 +455,22 @@ void main() {
       expect(find.byIcon(Icons.star), findsOneWidget);
     });
 
+    testWidgets('widget-form tool / title / meta render', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          tool: null,
+          toolWidget: const Text('slug-widget'),
+          title: null,
+          titleWidget: const Text('title-widget'),
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('slug-widget'), findsOneWidget);
+      expect(find.text('title-widget'), findsOneWidget);
+    });
+
     testWidgets('reduced motion still toggles open without throwing', (
       tester,
     ) async {
@@ -306,7 +488,366 @@ void main() {
 
       await tester.tap(find.text('Reduced'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
       expect(find.textContaining('line one'), findsNothing);
+    });
+
+    testWidgets('reduced motion keeps an opacity fade, not a hard cut', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Reduced',
+          defaultOpen: true,
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+          reduce: true,
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.text('Reduced'));
+      await tester.pump();
+      // Mid-exit: the shared disclosure drops movement but keeps the ~120ms
+      // cross-fade, so a partial Opacity must exist over the panel.
+      await tester.pump(const Duration(milliseconds: 55));
+
+      final opacities = tester
+          .widgetList<Opacity>(find.byType(Opacity))
+          .map((o) => o.opacity)
+          .where((v) => v > 0.001 && v < 0.999);
+      expect(
+        opacities,
+        isNotEmpty,
+        reason: 'reduced motion must fade the disclosure, not cut it',
+      );
+    });
+
+    testWidgets('status colours resolve from the dark role set', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Dark',
+          status: BeuiToolResultStatus.error,
+          collapseOnComplete: false,
+          brightness: Brightness.dark,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final failed = BeuiAgentTheme.standard
+          .statusColorsFor(Brightness.dark)
+          .palette(BeuiAgentStatus.failed);
+      final label = tester.widgetList<Text>(find.text('Failed')).first;
+      expect(label.style?.color, failed.foreground);
+
+      // …and light mode uses the light role, not the same value.
+      await tester.pumpWidget(
+        _host(
+          title: 'Light',
+          status: BeuiToolResultStatus.error,
+          collapseOnComplete: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+      final lightFailed = BeuiAgentTheme.standard
+          .statusColorsFor(Brightness.light)
+          .palette(BeuiAgentStatus.failed);
+      expect(
+        tester.widgetList<Text>(find.text('Failed')).first.style?.color,
+        lightFailed.foreground,
+      );
+      expect(lightFailed.foreground, isNot(failed.foreground));
+    });
+
+    testWidgets('terminal status is announced through a live region', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(
+        _host(
+          title: 'Will fail',
+          status: BeuiToolResultStatus.running,
+          collapseOnComplete: false,
+        ),
+      );
+      await tester.pump();
+
+      await tester.pumpWidget(
+        _host(
+          title: 'Will fail',
+          status: BeuiToolResultStatus.error,
+          collapseOnComplete: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final failing = _semanticsNodes(
+        tester,
+      ).where((n) => n.label.contains('Failed')).toList();
+      expect(
+        failing,
+        isNotEmpty,
+        reason: 'the terminal outcome must reach the semantics tree',
+      );
+      expect(
+        failing.any(_isLiveRegion),
+        isTrue,
+        reason: 'liveRegion must survive the transition to a terminal status',
+      );
+
+      handle.dispose();
+    });
+
+    testWidgets('header toggle is reachable and activatable by keyboard', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Keyboard',
+          defaultOpen: true,
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('line one'), findsOneWidget);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      expect(FocusManager.instance.primaryFocus, isNotNull);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.textContaining('line one'), findsNothing);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pumpAndSettle();
+      expect(find.textContaining('line one'), findsOneWidget);
+    });
+
+    testWidgets('actions stay reachable while the panel is collapsed', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Collapsed',
+          defaultOpen: false,
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: true,
+          copyText: 'out',
+          onRetry: () {},
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('line one'), findsNothing);
+      expect(find.byTooltip('Copy result'), findsOneWidget);
+      expect(find.byTooltip('Run again'), findsOneWidget);
+    });
+
+    testWidgets(
+      'keepActionsVisibleWhenCollapsed: false hides them with the panel',
+      (tester) async {
+        await tester.pumpWidget(
+          _host(
+            title: 'Legacy',
+            defaultOpen: false,
+            status: BeuiToolResultStatus.success,
+            collapseOnComplete: true,
+            keepActionsVisibleWhenCollapsed: false,
+            copyText: 'out',
+            onRetry: () {},
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.byTooltip('Copy result'), findsNothing);
+      },
+    );
+
+    testWidgets('header wraps onto two lines below 400px', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Narrow header',
+          tool: 'terminal.run',
+          meta: '2.9s',
+          width: 360,
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final titleY = tester.getTopLeft(find.text('Narrow header')).dy;
+      final toolY = tester.getTopLeft(find.text('terminal.run')).dy;
+      expect(
+        toolY - titleY,
+        greaterThan(8),
+        reason: 'the slug must drop to a second line under 400px',
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('header stays on one line at 500px', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Wide header',
+          tool: 'terminal.run',
+          meta: '2.9s',
+          width: 500,
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final titleY = tester.getTopLeft(find.text('Wide header')).dy;
+      final toolY = tester.getTopLeft(find.text('terminal.run')).dy;
+      expect((toolY - titleY).abs(), lessThan(8));
+      expect(
+        tester.getTopLeft(find.text('terminal.run')).dx,
+        greaterThan(tester.getTopRight(find.text('Wide header')).dx),
+      );
+    });
+
+    testWidgets('actions do not overflow at 320px', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(320, 640));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        _host(
+          title: 'Very narrow tool result header label',
+          meta: '2.9s',
+          width: 320,
+          status: BeuiToolResultStatus.error,
+          collapseOnComplete: false,
+          copyText: 'out',
+          onRetry: () {},
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('capped output shows a fade and a hidden-line count', (
+      tester,
+    ) async {
+      final long = List<String>.generate(60, (i) => 'line $i').join('\n');
+      await tester.pumpWidget(
+        _host(
+          title: 'Long output',
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+          maxHeight: 120,
+          copyText: long,
+          child: BeuiToolResultOutput(code: long),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ShaderMask), findsOneWidget);
+      expect(find.textContaining('more'), findsOneWidget);
+    });
+
+    testWidgets('short output shows neither fade nor count', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          title: 'Short output',
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ShaderMask), findsNothing);
+      expect(find.textContaining('more'), findsNothing);
+    });
+
+    testWidgets('hiddenLineCount overrides the derived count', (tester) async {
+      final long = List<String>.generate(60, (i) => 'line $i').join('\n');
+      await tester.pumpWidget(
+        _host(
+          title: 'Explicit count',
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+          maxHeight: 120,
+          hiddenLineCount: 1234,
+          child: BeuiToolResultOutput(code: long),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('1234'), findsOneWidget);
+    });
+
+    testWidgets('action buttons meet the tap-target guidelines', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _host(
+          title: 'Targets',
+          defaultOpen: false,
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: true,
+          copyText: 'out',
+          onRetry: () {},
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(iOSTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('golden — completed result with actions', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(520, 200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: RepaintBoundary(
+                key: const ValueKey('golden'),
+                child: SizedBox(
+                  width: 460,
+                  child: BeuiToolResult(
+                    tool: 'terminal.run',
+                    title: 'Tests passed',
+                    meta: '2.9s',
+                    kind: BeuiToolResultKind.terminal,
+                    status: BeuiToolResultStatus.success,
+                    collapseOnComplete: false,
+                    copyText: '49 pass · 0 fail',
+                    onRetry: _noop,
+                    child: const BeuiToolResultOutput(
+                      code:
+                          r'$ bun test tests/a11y.test.tsx'
+                          '\n49 pass · 0 fail',
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      // Fixed pumps, never pumpAndSettle: the header labels roll in through
+      // an AnimatedSwitcher, so frame one would capture them mid-entrance
+      // (clipped out of their slot). 600ms lands well past every entrance and
+      // is exactly reproducible at a terminal status.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+      await expectLater(
+        find.byKey(const ValueKey('golden')),
+        matchesGoldenFile('goldens/beui_tool_result.png'),
+      );
     });
   });
 
@@ -346,26 +887,165 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 600));
 
-      Color? colorOf(String text) {
-        Color? found;
-        for (final rt in tester.widgetList<RichText>(find.byType(RichText))) {
-          rt.text.visitChildren((span) {
-            if (span is TextSpan && span.text == text) {
-              found = span.style?.color;
-              return false;
-            }
-            return true;
-          });
-          if (found != null) break;
-        }
-        return found;
-      }
-
       // Shiki scopes a property name as `support.type.property-name.json`,
       // which github-*-high-contrast paints green. Painting it with the keyword
       // red was the divergence measured against beui.dev.
-      expect(colorOf('"error"'), const Color(0xFF024C1A));
-      expect(colorOf('"rate_limit_exceeded"'), const Color(0xFF032563));
+      expect(_spanColor(tester, '"error"'), const Color(0xFF024C1A));
+      expect(
+        _spanColor(tester, '"rate_limit_exceeded"'),
+        const Color(0xFF032563),
+      );
+    });
+
+    testWidgets('body text is not alpha-multiplied', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: const Scaffold(
+            body: BeuiToolResultOutput(
+              code: 'plain output',
+              language: BeuiCodeLanguage.text,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      // The base text colour is the un-multiplied foreground. (The painted
+      // spans then take their Shiki colours on top of it — A8 is about the
+      // base, which used to be `foreground @ 0.8`.)
+      final base = tester.widget<DefaultTextStyle>(
+        find
+            .descendant(
+              of: find.byType(BeuiToolResultOutput),
+              matching: find.byType(DefaultTextStyle),
+            )
+            .first,
+      );
+      expect(base.style.color, BeuiColors.light().foreground);
+      expect(base.style.color!.a, 1.0);
+    });
+  });
+
+  // F12: the last streaming viewport in the library with no pin concept. It
+  // now shares BeuiLiveEdgeFollower with the code block and the file diff.
+  group('BeuiToolResult live edge (F12)', () {
+    String longOutput(int n) =>
+        [for (var i = 0; i < n; i++) 'line $i'].join('\n');
+
+    Future<void> frames(WidgetTester tester, int count) async {
+      for (var i = 0; i < count; i++) {
+        await tester.pump(const Duration(milliseconds: 20));
+      }
+    }
+
+    ScrollController controllerOf(WidgetTester tester) => tester
+        .widget<SingleChildScrollView>(
+          find
+              .descendant(
+                of: find.byType(BeuiToolResult),
+                matching: find.byWidgetPredicate(
+                  (w) => w is SingleChildScrollView && w.controller != null,
+                ),
+              )
+              .first,
+        )
+        .controller!;
+
+    testWidgets('an unpinned viewport follows arriving output', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          child: BeuiToolResultOutput(code: longOutput(20)),
+          maxHeight: 120,
+        ),
+      );
+      await frames(tester, 20);
+
+      await tester.pumpWidget(
+        _host(
+          child: BeuiToolResultOutput(code: longOutput(60)),
+          maxHeight: 120,
+        ),
+      );
+      await frames(tester, 30);
+      final controller = controllerOf(tester);
+      expect(
+        controller.offset,
+        closeTo(controller.position.maxScrollExtent, 1),
+      );
+    });
+
+    testWidgets(
+      'scrolling away mid-stream keeps the reader put and offers a way back',
+      (tester) async {
+        await tester.pumpWidget(
+          _host(
+            child: BeuiToolResultOutput(code: longOutput(60)),
+            maxHeight: 120,
+          ),
+        );
+        await frames(tester, 30);
+        expect(find.text('Jump to latest'), findsNothing);
+
+        final controller = controllerOf(tester);
+        controller.jumpTo(controller.position.maxScrollExtent - 200);
+        await frames(tester, 20);
+        expect(find.text('Jump to latest'), findsOneWidget);
+        final pinnedAt = controller.offset;
+
+        // The tool keeps writing; the viewport must not yank.
+        await tester.pumpWidget(
+          _host(
+            child: BeuiToolResultOutput(code: longOutput(90)),
+            maxHeight: 120,
+          ),
+        );
+        await frames(tester, 20);
+        expect(controller.offset, closeTo(pinnedAt, 1));
+
+        await tester.tap(find.text('Jump to latest'));
+        await frames(tester, 30);
+        expect(
+          controller.offset,
+          closeTo(controller.position.maxScrollExtent, 1),
+        );
+        expect(find.text('Jump to latest'), findsNothing);
+      },
+    );
+
+    testWidgets('a settled result never offers the pill', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          child: BeuiToolResultOutput(code: longOutput(60)),
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+          maxHeight: 120,
+        ),
+      );
+      await tester.pumpAndSettle();
+      final controller = controllerOf(tester);
+      controller.jumpTo(0);
+      await frames(tester, 20);
+      // Nothing is arriving, so there is no live edge to return to.
+      expect(find.text('Jump to latest'), findsNothing);
+    });
+
+    testWidgets('the overflow cue speaks the shared hidden-lines copy (F13)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          child: BeuiToolResultOutput(code: longOutput(60)),
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+          maxHeight: 120,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('more lines'), findsOneWidget);
     });
   });
 }
+
+void _noop() {}

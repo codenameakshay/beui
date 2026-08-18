@@ -18,6 +18,8 @@ export 'src/tokens/icons.dart';
 export 'src/theme/beui_colors.dart';
 export 'src/theme/beui_text_theme.dart';
 export 'src/theme/beui_agent_theme.dart';
+export 'src/theme/beui_agent_status_colors.dart';
+export 'src/theme/beui_agent_strings.dart';
 
 // Components (lib/src/motion/...). Exported as they are ported.
 export 'src/motion/action_swap.dart'
@@ -85,6 +87,7 @@ export 'src/motion/feedback_widget.dart'
     show
         BeuiFeedbackData,
         BeuiFeedbackPosition,
+        BeuiFeedbackSentiment,
         BeuiFeedbackWidget,
         BeuiFeedbackWidgetStyle;
 export 'src/motion/file_upload.dart'
@@ -281,7 +284,14 @@ export 'src/motion/message_scroller.dart'
         BeuiMessageScrollerRailItem,
         BeuiMessageScrollerState;
 export 'src/motion/prompt_input.dart'
-    show BeuiPromptAction, BeuiPromptInput, BeuiPromptModel;
+    show
+        BeuiPromptAction,
+        BeuiPromptAttachment,
+        BeuiPromptAttachmentStatus,
+        BeuiPromptBlockedReason,
+        BeuiPromptInput,
+        BeuiPromptModel,
+        BeuiPromptSubmission;
 export 'src/motion/todo_list.dart'
     show BeuiTodoItem, BeuiTodoItemStatus, BeuiTodoList;
 export 'src/motion/code_block.dart'
@@ -297,9 +307,11 @@ export 'src/motion/approval_card.dart'
 export 'src/motion/file_diff.dart'
     show
         BeuiFileDiff,
+        BeuiFileDiffHunkGap,
         BeuiFileDiffLine,
         BeuiFileDiffLineType,
-        BeuiFileDiffStatus;
+        BeuiFileDiffStatus,
+        BeuiFileDiffWrap;
 export 'src/motion/tool_result.dart'
     show
         BeuiToolResult,
@@ -320,7 +332,9 @@ export 'src/motion/tool_approval.dart'
     show
         BeuiToolApproval,
         BeuiToolApprovalCode,
+        BeuiToolApprovalGrant,
         BeuiToolApprovalParameter,
+        BeuiToolApprovalSeverity,
         BeuiToolApprovalStatus;
 export 'src/motion/citations.dart'
     show

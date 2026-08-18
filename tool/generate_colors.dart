@@ -122,6 +122,10 @@ final _light = <String, Col>{
   'input': oklch(15, 0, 0, a: 0.06),
   'ring': oklch(15, 0, 0, a: 0.12), // = --border-strong (theme-css.ts alias)
   'borderStrong': oklch(15, 0, 0, a: 0.12),
+  // NOT a source token — a port addition. `--ring` is a 6-12% hairline and
+  // composites to 1.30:1, far under WCAG 2.2's 3:1 floor for a focus
+  // indicator. This is `--foreground` at 0.55 → 4.36:1 on `--background`.
+  'focusRing': oklch(15, 0, 0, a: 0.55),
 };
 
 final _lightGlass = <String, Col>{
@@ -152,6 +156,8 @@ final _dark = <String, Col>{
   'input': rgb(255, 255, 255, a: 0.05),
   'ring': rgb(255, 255, 255, a: 0.1), // = --border-strong (theme-css.ts alias)
   'borderStrong': rgb(255, 255, 255, a: 0.1),
+  // Port addition — see the light note above. `--foreground` at 0.6 → 6.49:1.
+  'focusRing': oklch(96, 0, 0, a: 0.6),
 };
 
 final _darkGlass = <String, Col>{
@@ -163,7 +169,8 @@ final _darkGlass = <String, Col>{
 
 // A colored theme overrides only the five brand tokens (themes.ts brand()):
 // primary, primary-foreground, accent (== primary hue), accent-foreground,
-// ring (== a hue-tinted primary at alpha 0.5 light / 0.55 dark).
+// ring (== a hue-tinted primary at alpha 0.5 light / 0.55 dark) — plus the
+// port-added `focusRing` (see _focusRing below).
 class Brand {
   Brand(this.name, this.slug, this.swatch, this.light, this.dark);
   final String name;
@@ -173,46 +180,82 @@ class Brand {
   final Map<String, Col> dark;
 }
 
-Map<String, Col> _brand(Col hue, Col onHue, Col ring) => {
+Map<String, Col> _brand(Col hue, Col onHue, Col ring, Col focusRing) => {
   'primary': hue,
   'primaryForeground': onHue,
   'accent': hue,
   'accentForeground': onHue,
   'ring': ring,
+  'focusRing': focusRing,
 };
+
+/// The port-added focus-ring hue for a colored theme: the brand hue at **full
+/// opacity**, with its oklch lightness clamped to [_focusRingMaxL] in light
+/// mode.
+///
+/// The source's `--ring` is the brand hue at 0.5 / 0.55 alpha, which composites
+/// to 1.5-2.5:1 on `--background` in light mode (and 2.55-3.90:1 in dark) —
+/// under WCAG 2.2's 3:1 floor for a focus indicator on every light theme. Full
+/// opacity clears 3:1 for eight of the ten hues; amber (2.30:1) and lime
+/// (2.29:1) are too bright to clear it at *any* alpha, so the clamp darkens
+/// those two only (74% → 60% and 72% → 60%, giving 3.97:1 and 3.64:1) while
+/// preserving their chroma and hue. Dark mode needs no clamp — every dark brand
+/// hue is 5.80:1 or better on `--background`.
+const _focusRingMaxL = 60.0;
+
+Col focusRingLight(double lPct, double c, double h) =>
+    oklch(math.min(lPct, _focusRingMaxL), c, h);
 
 final _brands = <Brand>[
   Brand(
     'Violet',
     'violet',
     oklch(55, 0.2, 290),
-    _brand(oklch(55, 0.2, 290), oklch(99, 0, 0), oklch(55, 0.2, 290, a: 0.5)),
+    _brand(
+      oklch(55, 0.2, 290),
+      oklch(99, 0, 0),
+      oklch(55, 0.2, 290, a: 0.5),
+      focusRingLight(55, 0.2, 290),
+    ),
     _brand(
       oklch(72, 0.16, 290),
       oklch(15, 0, 0),
       oklch(72, 0.16, 290, a: 0.55),
+      oklch(72, 0.16, 290),
     ),
   ),
   Brand(
     'Blue',
     'blue',
     oklch(55, 0.18, 255),
-    _brand(oklch(55, 0.18, 255), oklch(99, 0, 0), oklch(55, 0.18, 255, a: 0.5)),
+    _brand(
+      oklch(55, 0.18, 255),
+      oklch(99, 0, 0),
+      oklch(55, 0.18, 255, a: 0.5),
+      focusRingLight(55, 0.18, 255),
+    ),
     _brand(
       oklch(70, 0.15, 255),
       oklch(15, 0, 0),
       oklch(70, 0.15, 255, a: 0.55),
+      oklch(70, 0.15, 255),
     ),
   ),
   Brand(
     'Green',
     'green',
     oklch(56, 0.14, 150),
-    _brand(oklch(56, 0.14, 150), oklch(99, 0, 0), oklch(56, 0.14, 150, a: 0.5)),
+    _brand(
+      oklch(56, 0.14, 150),
+      oklch(99, 0, 0),
+      oklch(56, 0.14, 150, a: 0.5),
+      focusRingLight(56, 0.14, 150),
+    ),
     _brand(
       oklch(72, 0.15, 150),
       oklch(15, 0, 0),
       oklch(72, 0.15, 150, a: 0.55),
+      oklch(72, 0.15, 150),
     ),
   ),
   Brand(
@@ -223,54 +266,98 @@ final _brands = <Brand>[
       oklch(74, 0.15, 70),
       oklch(20, 0.02, 70),
       oklch(74, 0.15, 70, a: 0.5),
+      focusRingLight(74, 0.15, 70), // clamped 74% → 60%
     ),
     _brand(
       oklch(80, 0.15, 75),
       oklch(18, 0.02, 75),
       oklch(80, 0.15, 75, a: 0.55),
+      oklch(80, 0.15, 75),
     ),
   ),
   Brand(
     'Blood Orange',
     'blood-orange',
     oklch(60, 0.19, 40),
-    _brand(oklch(60, 0.19, 40), oklch(99, 0, 0), oklch(60, 0.19, 40, a: 0.5)),
-    _brand(oklch(72, 0.17, 42), oklch(15, 0, 0), oklch(72, 0.17, 42, a: 0.55)),
+    _brand(
+      oklch(60, 0.19, 40),
+      oklch(99, 0, 0),
+      oklch(60, 0.19, 40, a: 0.5),
+      focusRingLight(60, 0.19, 40),
+    ),
+    _brand(
+      oklch(72, 0.17, 42),
+      oklch(15, 0, 0),
+      oklch(72, 0.17, 42, a: 0.55),
+      oklch(72, 0.17, 42),
+    ),
   ),
   Brand(
     'Rose',
     'rose',
     oklch(58, 0.2, 12),
-    _brand(oklch(58, 0.2, 12), oklch(99, 0, 0), oklch(58, 0.2, 12, a: 0.5)),
-    _brand(oklch(70, 0.17, 12), oklch(15, 0, 0), oklch(70, 0.17, 12, a: 0.55)),
+    _brand(
+      oklch(58, 0.2, 12),
+      oklch(99, 0, 0),
+      oklch(58, 0.2, 12, a: 0.5),
+      focusRingLight(58, 0.2, 12),
+    ),
+    _brand(
+      oklch(70, 0.17, 12),
+      oklch(15, 0, 0),
+      oklch(70, 0.17, 12, a: 0.55),
+      oklch(70, 0.17, 12),
+    ),
   ),
   Brand(
     'Red',
     'red',
     oklch(55, 0.22, 25),
-    _brand(oklch(55, 0.22, 25), oklch(99, 0, 0), oklch(55, 0.22, 25, a: 0.5)),
-    _brand(oklch(68, 0.19, 25), oklch(15, 0, 0), oklch(68, 0.19, 25, a: 0.55)),
+    _brand(
+      oklch(55, 0.22, 25),
+      oklch(99, 0, 0),
+      oklch(55, 0.22, 25, a: 0.5),
+      focusRingLight(55, 0.22, 25),
+    ),
+    _brand(
+      oklch(68, 0.19, 25),
+      oklch(15, 0, 0),
+      oklch(68, 0.19, 25, a: 0.55),
+      oklch(68, 0.19, 25),
+    ),
   ),
   Brand(
     'Teal',
     'teal',
     oklch(55, 0.12, 185),
-    _brand(oklch(55, 0.12, 185), oklch(99, 0, 0), oklch(55, 0.12, 185, a: 0.5)),
+    _brand(
+      oklch(55, 0.12, 185),
+      oklch(99, 0, 0),
+      oklch(55, 0.12, 185, a: 0.5),
+      focusRingLight(55, 0.12, 185),
+    ),
     _brand(
       oklch(72, 0.13, 185),
       oklch(15, 0, 0),
       oklch(72, 0.13, 185, a: 0.55),
+      oklch(72, 0.13, 185),
     ),
   ),
   Brand(
     'Indigo',
     'indigo',
     oklch(50, 0.2, 275),
-    _brand(oklch(50, 0.2, 275), oklch(99, 0, 0), oklch(50, 0.2, 275, a: 0.5)),
+    _brand(
+      oklch(50, 0.2, 275),
+      oklch(99, 0, 0),
+      oklch(50, 0.2, 275, a: 0.5),
+      focusRingLight(50, 0.2, 275),
+    ),
     _brand(
       oklch(70, 0.16, 275),
       oklch(15, 0, 0),
       oklch(70, 0.16, 275, a: 0.55),
+      oklch(70, 0.16, 275),
     ),
   ),
   Brand(
@@ -281,11 +368,13 @@ final _brands = <Brand>[
       oklch(72, 0.18, 130),
       oklch(20, 0.04, 130),
       oklch(72, 0.18, 130, a: 0.5),
+      focusRingLight(72, 0.18, 130), // clamped 72% → 60%
     ),
     _brand(
       oklch(80, 0.18, 130),
       oklch(18, 0.04, 130),
       oklch(80, 0.18, 130, a: 0.55),
+      oklch(80, 0.18, 130),
     ),
   ),
 ];
@@ -301,7 +390,8 @@ final _monoSwatch = oklch(40, 0, 0);
 final _success = oklch(70, 0.18, 155);
 final _warning = oklch(78, 0.18, 75);
 
-// Order of the 18 core + borderStrong fields, for emitting base consts.
+// Order of the 18 core + borderStrong + focusRing fields, for emitting base
+// consts.
 const _fieldOrder = <String>[
   'background',
   'foreground',
@@ -322,6 +412,7 @@ const _fieldOrder = <String>[
   'input',
   'ring',
   'borderStrong',
+  'focusRing',
 ];
 
 // ---------------------------------------------------------------------------
@@ -359,6 +450,7 @@ void _brandConst(String name, Map<String, Col> b) {
     'accent',
     'accentForeground',
     'ring',
+    'focusRing',
   ]) {
     _line('  $k: ${b[k]!.literal}, // ${b[k]!.source}');
   }

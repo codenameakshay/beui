@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_agent_theme.dart';
@@ -9,6 +8,16 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
+import '_hit_target.dart';
+import '_syntax.dart';
+import '_viewport_follow.dart';
+
+// `BeuiCodeLanguage` moved to `_syntax.dart` — the language enum belongs with
+// the tokenizer, and keeping it here forced an import cycle once the shared
+// highlighter landed. Re-exported so the public API is unchanged: consumers
+// and the barrel still see it on this library.
+export '_syntax.dart' show BeuiCodeLanguage;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -23,402 +32,6 @@ enum BeuiCodeBlockStatus {
   complete,
 }
 
-/// Supported language labels / lightweight highlighters for [BeuiCodeBlock]
-/// (source `AgentCodeLanguage`).
-///
-/// Highlighting is a **reduced** port of the source's Shiki themes: a small
-/// regex tokeniser paints keywords, strings, comments, and numbers. Full
-/// Shiki fidelity is intentionally omitted so the package stays free of heavy
-/// highlighting dependencies.
-enum BeuiCodeLanguage {
-  /// Shell / bash scripts.
-  bash('bash'),
-
-  /// Unified diffs.
-  diff('diff'),
-
-  /// JSON payloads.
-  json('json'),
-
-  /// Plain text — no token colouring.
-  text('text'),
-
-  /// TypeScript / TSX (shared keyword set).
-  tsx('tsx'),
-
-  /// TypeScript.
-  typescript('typescript');
-
-  const BeuiCodeLanguage(this.label);
-
-  /// Display label shown in the chrome bar (source uppercase language slug).
-  final String label;
-}
-
-// ---------------------------------------------------------------------------
-// Highlight palette (reduced Shiki substitute)
-// ---------------------------------------------------------------------------
-
-/// Colours used by the lightweight tokeniser. Tuned to read like a soft
-/// github-light / github-dark contrast theme against [BeuiColors].
-@immutable
-class _CodePalette {
-  const _CodePalette({
-    required this.base,
-    required this.keyword,
-    required this.string,
-    required this.comment,
-    required this.number,
-    required this.entity,
-    required this.punct,
-    required this.diffAdd,
-    required this.diffDel,
-  });
-
-  // Shiki `github-light-high-contrast` / `github-dark-high-contrast` — the
-  // themes the source's AgentCode highlighter is created with
-  // (agent-code.tsx LIGHT_THEME / DARK_THEME).
-  factory _CodePalette.of(BeuiColors colors, Brightness brightness) {
-    final isLight = brightness == Brightness.light;
-    return _CodePalette(
-      base: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
-      keyword: isLight ? const Color(0xFFA0111F) : const Color(0xFFFF9492),
-      string: isLight ? const Color(0xFF032563) : const Color(0xFFADDCFF),
-      comment: isLight ? const Color(0xFF4B535D) : const Color(0xFFBDC4CC),
-      number: isLight ? const Color(0xFF023B95) : const Color(0xFF91CBFF),
-      entity: isLight ? const Color(0xFF622CBC) : const Color(0xFFDBB7FF),
-      punct: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
-      diffAdd: isLight ? const Color(0xFF055D20) : const Color(0xFF26CD4D),
-      diffDel: isLight ? const Color(0xFFA0111F) : const Color(0xFFFF9492),
-    );
-  }
-
-  final Color base;
-  final Color keyword;
-  final Color string;
-  final Color comment;
-  final Color number;
-  final Color entity;
-  final Color punct;
-  final Color diffAdd;
-  final Color diffDel;
-}
-
-// ---------------------------------------------------------------------------
-// Lightweight tokeniser
-// ---------------------------------------------------------------------------
-
-/// A single coloured span inside a code line.
-@immutable
-class _CodeToken {
-  const _CodeToken(this.text, this.color);
-  final String text;
-  final Color color;
-}
-
-/// Keywords shared by TypeScript / TSX.
-const _tsKeywords = <String>{
-  'abstract',
-  'as',
-  'async',
-  'await',
-  'break',
-  'case',
-  'catch',
-  'class',
-  'const',
-  'continue',
-  'debugger',
-  'default',
-  'delete',
-  'do',
-  'else',
-  'enum',
-  'export',
-  'extends',
-  'false',
-  'finally',
-  'for',
-  'from',
-  'function',
-  'get',
-  'if',
-  'implements',
-  'import',
-  'in',
-  'instanceof',
-  'interface',
-  'let',
-  'new',
-  'null',
-  'of',
-  'package',
-  'private',
-  'protected',
-  'public',
-  'return',
-  'set',
-  'static',
-  'super',
-  'switch',
-  'this',
-  'throw',
-  'true',
-  'try',
-  'type',
-  'typeof',
-  'undefined',
-  'var',
-  'void',
-  'while',
-  'with',
-  'yield',
-};
-
-const _bashKeywords = <String>{
-  'if',
-  'then',
-  'else',
-  'elif',
-  'fi',
-  'for',
-  'while',
-  'do',
-  'done',
-  'case',
-  'esac',
-  'function',
-  'in',
-  'return',
-  'export',
-  'local',
-  'readonly',
-  'source',
-  'alias',
-  'cd',
-  'echo',
-  'exit',
-  'set',
-  'unset',
-  'true',
-  'false',
-};
-
-/// Tokenise [line] for [language] using a small regex pass.
-///
-/// Reduced highlighting — not a full lexer. Comments, strings, numbers, and a
-/// keyword set are coloured; everything else stays [palette.base].
-List<_CodeToken> _highlightLine(
-  String line,
-  BeuiCodeLanguage language,
-  _CodePalette palette,
-) {
-  if (line.isEmpty) return const [];
-  if (language == BeuiCodeLanguage.text) {
-    return [_CodeToken(line, palette.base)];
-  }
-
-  if (language == BeuiCodeLanguage.diff) {
-    if (line.startsWith('+') && !line.startsWith('+++')) {
-      return [_CodeToken(line, palette.diffAdd)];
-    }
-    if (line.startsWith('-') && !line.startsWith('---')) {
-      return [_CodeToken(line, palette.diffDel)];
-    }
-    if (line.startsWith('@@')) {
-      return [_CodeToken(line, palette.keyword)];
-    }
-    return [_CodeToken(line, palette.base)];
-  }
-
-  if (language == BeuiCodeLanguage.json) {
-    return _highlightJson(line, palette);
-  }
-
-  final keywords = switch (language) {
-    BeuiCodeLanguage.bash => _bashKeywords,
-    BeuiCodeLanguage.typescript || BeuiCodeLanguage.tsx => _tsKeywords,
-    _ => const <String>{},
-  };
-
-  return _highlightGeneric(line, keywords, palette, language);
-}
-
-List<_CodeToken> _highlightJson(String line, _CodePalette palette) {
-  final out = <_CodeToken>[];
-  var i = 0;
-  while (i < line.length) {
-    final ch = line[i];
-    if (ch == '"') {
-      final end = _scanString(line, i);
-      final slice = line.substring(i, end);
-      // Key vs value: a key is followed (after whitespace) by `:`.
-      final after = line.substring(end).trimLeft();
-      final isKey = after.startsWith(':');
-      // github-*-high-contrast paints JSON property names with the constant
-      // colour, not the keyword colour.
-      out.add(_CodeToken(slice, isKey ? palette.number : palette.string));
-      i = end;
-      continue;
-    }
-    if (_isDigit(ch) ||
-        (ch == '-' && i + 1 < line.length && _isDigit(line[i + 1]))) {
-      final end = _scanNumber(line, i);
-      out.add(_CodeToken(line.substring(i, end), palette.number));
-      i = end;
-      continue;
-    }
-    if (_isIdentStart(ch)) {
-      final end = _scanIdent(line, i);
-      final word = line.substring(i, end);
-      final color = (word == 'true' || word == 'false' || word == 'null')
-          ? palette.keyword
-          : palette.base;
-      out.add(_CodeToken(word, color));
-      i = end;
-      continue;
-    }
-    out.add(_CodeToken(ch, palette.punct));
-    i++;
-  }
-  return out;
-}
-
-List<_CodeToken> _highlightGeneric(
-  String line,
-  Set<String> keywords,
-  _CodePalette palette,
-  BeuiCodeLanguage language,
-) {
-  final out = <_CodeToken>[];
-  var i = 0;
-  while (i < line.length) {
-    final ch = line[i];
-
-    // Line comments
-    if (ch == '/' && i + 1 < line.length && line[i + 1] == '/') {
-      out.add(_CodeToken(line.substring(i), palette.comment));
-      break;
-    }
-    if (language == BeuiCodeLanguage.bash && ch == '#') {
-      out.add(_CodeToken(line.substring(i), palette.comment));
-      break;
-    }
-
-    // Block comment open — colour rest of line (multi-line not tracked).
-    if (ch == '/' && i + 1 < line.length && line[i + 1] == '*') {
-      out.add(_CodeToken(line.substring(i), palette.comment));
-      break;
-    }
-
-    // Strings: ' " `
-    if (ch == "'" || ch == '"' || ch == '`') {
-      final end = _scanString(line, i, quote: ch);
-      out.add(_CodeToken(line.substring(i, end), palette.string));
-      i = end;
-      continue;
-    }
-
-    // Numbers
-    if (_isDigit(ch) ||
-        (ch == '.' && i + 1 < line.length && _isDigit(line[i + 1]))) {
-      final end = _scanNumber(line, i);
-      out.add(_CodeToken(line.substring(i, end), palette.number));
-      i = end;
-      continue;
-    }
-
-    // Identifiers / keywords
-    if (_isIdentStart(ch) || ch == r'$') {
-      final end = _scanIdent(line, i);
-      final word = line.substring(i, end);
-      final color = keywords.contains(word)
-          ? palette.keyword
-          : _callsAhead(line, end)
-          ? palette.entity
-          : palette.base;
-      out.add(_CodeToken(word, color));
-      i = end;
-      continue;
-    }
-
-    // Punctuation / whitespace
-    final color = ch.trim().isEmpty ? palette.base : palette.punct;
-    out.add(_CodeToken(ch, color));
-    i++;
-  }
-  return out;
-}
-
-/// True when the next non-space character after [end] opens a call — the
-/// source's Shiki themes paint those identifiers with the `entity` colour.
-bool _callsAhead(String line, int end) {
-  var j = end;
-  while (j < line.length && line[j] == ' ') {
-    j++;
-  }
-  return j < line.length && line[j] == '(';
-}
-
-bool _isDigit(String ch) =>
-    ch.codeUnitAt(0) >= 0x30 && ch.codeUnitAt(0) <= 0x39;
-
-bool _isIdentStart(String ch) {
-  final c = ch.codeUnitAt(0);
-  return (c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A) || c == 0x5F; // _
-}
-
-bool _isIdentPart(String ch) {
-  final c = ch.codeUnitAt(0);
-  return _isIdentStart(ch) || _isDigit(ch) || c == 0x24; // $
-}
-
-int _scanIdent(String s, int start) {
-  var i = start + 1;
-  while (i < s.length && _isIdentPart(s[i])) {
-    i++;
-  }
-  return i;
-}
-
-int _scanNumber(String s, int start) {
-  var i = start;
-  if (s[i] == '-') i++;
-  while (i < s.length &&
-      (_isDigit(s[i]) ||
-          s[i] == '.' ||
-          s[i] == 'e' ||
-          s[i] == 'E' ||
-          s[i] == '+' ||
-          s[i] == '-')) {
-    // Keep simple — stop on non-number-ish after first char of exponent.
-    if ((s[i] == '+' || s[i] == '-') &&
-        i > start &&
-        s[i - 1] != 'e' &&
-        s[i - 1] != 'E') {
-      break;
-    }
-    i++;
-  }
-  return i;
-}
-
-int _scanString(String s, int start, {String? quote}) {
-  final q = quote ?? s[start];
-  var i = start + 1;
-  while (i < s.length) {
-    if (s[i] == r'\' && i + 1 < s.length) {
-      i += 2;
-      continue;
-    }
-    if (s[i] == q) {
-      return i + 1;
-    }
-    i++;
-  }
-  return s.length;
-}
-
 // ---------------------------------------------------------------------------
 // BeuiCodeBlock
 // ---------------------------------------------------------------------------
@@ -428,20 +41,25 @@ int _scanString(String s, int start, {String? quote}) {
 /// port of beUI's agent `CodeBlock`.
 ///
 /// **Highlighting.** The source uses Shiki (`github-light/dark-high-contrast`).
-/// This port uses a lightweight [TextSpan] tokeniser for keywords, strings,
-/// comments, and numbers so the package stays free of heavy highlighting
+/// This port uses the shared lightweight tokeniser in `_syntax.dart` (keywords,
+/// strings, comments, numbers) so the package stays free of heavy highlighting
 /// dependencies. Visual fidelity is reduced relative to Shiki; structure
 /// (chrome, streaming follow, focus lines, copy feedback) matches the source.
 ///
-/// **Motion.** Copy-button press scales to 0.9 on [beuiSpringPress]. While
-/// [BeuiCodeBlockStatus.streaming], the viewport auto-scrolls to the live edge
-/// (smooth when animations are enabled, jump when reduced motion is on). The
-/// loader icon spins while writing.
+/// **Motion.** Copy-button press scales to 0.97 on [beuiSpringPress] — the
+/// library's single press token, which this widget used to undercut at 0.9.
+/// While [BeuiCodeBlockStatus.streaming], the viewport follows the live edge
+/// *until the reader scrolls away from it*, at which point following stops and
+/// a "Jump to latest" pill appears. The loader icon spins while writing.
+///
+/// **Hidden content.** The viewport caps at [maxHeight] with scrollbars off, to
+/// match the source. A bottom fade plus an "N more lines" count make the
+/// remainder discoverable rather than silently clipped.
 ///
 /// **API mapping** (source → Flutter):
 /// * `code` → [code]
 /// * `language` → [language] ([BeuiCodeLanguage])
-/// * `filename` → [filename] ([String] or [Widget])
+/// * `filename` → [filename] ([String]) / [filenameWidget] ([Widget])
 /// * `status` → [status]
 /// * `showLineNumbers` / `highlightLines` / `maxHeight` / `wrap` / `copyable` → same
 /// * `onCopy` → [onCopy]
@@ -451,6 +69,12 @@ class BeuiCodeBlock extends StatefulWidget {
     required this.code,
     this.language = BeuiCodeLanguage.typescript,
     this.filename,
+    this.filenameWidget,
+    @Deprecated(
+      'Split into filename (String) and filenameWidget (Widget) so the '
+      'compiler can reject filename: 42. Pass one of those instead.',
+    )
+    this.filenameNode,
     this.status = BeuiCodeBlockStatus.complete,
     this.showLineNumbers = true,
     this.highlightLines = const [],
@@ -458,6 +82,7 @@ class BeuiCodeBlock extends StatefulWidget {
     this.wrap = false,
     this.copyable = true,
     this.onCopy,
+    this.emptyPlaceholder,
     super.key,
   });
 
@@ -467,9 +92,25 @@ class BeuiCodeBlock extends StatefulWidget {
   /// Language label + highlighter (source `language`, default `typescript`).
   final BeuiCodeLanguage language;
 
-  /// Optional filename shown in the chrome bar. Accepts a [String] or any
-  /// [Widget] (source `filename?: ReactNode`).
-  final Object? filename;
+  /// Optional filename shown in the chrome bar, as plain text.
+  ///
+  /// Narrowed from the old `Object?`: the untyped slot accepted `filename: 42`
+  /// and rendered `"42"`. Pass a widget through [filenameWidget] instead.
+  final String? filename;
+
+  /// Optional filename shown in the chrome bar, as an arbitrary widget
+  /// (source `filename?: ReactNode`). Wins over [filename] when both are set.
+  final Widget? filenameWidget;
+
+  /// Deprecated untyped filename slot, kept so existing call sites compile.
+  ///
+  /// A [String] renders as text, a [Widget] renders as-is, and anything else
+  /// falls back to `toString()` — the old behaviour, bug included.
+  @Deprecated(
+    'Split into filename (String) and filenameWidget (Widget) so the '
+    'compiler can reject filename: 42. Pass one of those instead.',
+  )
+  final Object? filenameNode;
 
   /// Streaming vs complete chrome (source `status`, default `complete`).
   final BeuiCodeBlockStatus status;
@@ -478,6 +119,9 @@ class BeuiCodeBlock extends StatefulWidget {
   final bool showLineNumbers;
 
   /// 1-based line numbers to soft-highlight (source `highlightLines`).
+  ///
+  /// Rendered as a tinted row *and* a 2px leading bar: the wash alone measured
+  /// 1.08:1 against the code surface, which is not a cue.
   final List<int> highlightLines;
 
   /// Max viewport height in logical pixels (source `maxHeight`, default 280).
@@ -495,25 +139,41 @@ class BeuiCodeBlock extends StatefulWidget {
   /// [code]. Called before the copied checkmark feedback.
   final FutureOr<void> Function()? onCopy;
 
+  /// Shown in place of the line list when [code] is empty and the block is not
+  /// streaming. Defaults to a muted "No code to show".
+  ///
+  /// Without this an empty block rendered a single blank numbered line — a
+  /// gutter `1` next to nothing, which reads as a bug rather than a state.
+  final Widget? emptyPlaceholder;
+
   @override
   State<BeuiCodeBlock> createState() => _BeuiCodeBlockState();
 }
 
 class _BeuiCodeBlockState extends State<BeuiCodeBlock>
     with SingleTickerProviderStateMixin {
-  final ScrollController _scroll = ScrollController();
+  late final BeuiLiveEdgeFollower _follow;
   bool _copied = false;
   bool _copyHovered = false;
   bool _copyPressed = false;
+  bool _copyFocused = false;
   Timer? _copyTimer;
   late final AnimationController _spin;
 
   bool get _streaming => widget.status == BeuiCodeBlockStatus.streaming;
   bool get _showCopy => widget.copyable || widget.onCopy != null;
 
+  /// True when there is nothing to render but the stream has finished.
+  bool get _isEmpty => widget.code.isEmpty && !_streaming;
+
   @override
   void initState() {
     super.initState();
+    _follow = BeuiLiveEdgeFollower(
+      onPinnedChanged: () {
+        if (mounted) setState(() {});
+      },
+    )..attach();
     _spin = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
@@ -545,27 +205,14 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
   @override
   void dispose() {
     _copyTimer?.cancel();
-    _scroll.dispose();
+    _follow.dispose();
     _spin.dispose();
     super.dispose();
   }
 
   void _scheduleFollow() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_scroll.hasClients) return;
-      final max = _scroll.position.maxScrollExtent;
-      if (max <= 0) return;
-      final reduce = MediaQuery.disableAnimationsOf(context);
-      if (reduce) {
-        _scroll.jumpTo(max);
-      } else {
-        _scroll.animateTo(
-          max,
-          duration: const Duration(milliseconds: 220),
-          curve: beuiEaseOut,
-        );
-      }
-    });
+    if (!mounted) return;
+    _follow.follow(context);
   }
 
   Future<void> _handleCopy() async {
@@ -583,6 +230,18 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
     });
   }
 
+  /// Resolves the chrome-bar filename across the typed pair and the deprecated
+  /// untyped slot, newest API first.
+  Widget? _resolveFilename() {
+    if (widget.filenameWidget != null) return widget.filenameWidget;
+    if (widget.filename != null) return Text(widget.filename!);
+    // ignore: deprecated_member_use_from_same_package
+    final legacy = widget.filenameNode;
+    if (legacy == null) return null;
+    if (legacy is Widget) return legacy;
+    return Text(legacy.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -591,11 +250,14 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final palette = _CodePalette.of(colors, theme.brightness);
+    final palette = BeuiSyntaxPalette.of(theme.brightness);
     final highlight = widget.highlightLines.toSet();
 
     final lines = widget.code.split('\n');
     // Preserve trailing empty line behaviour of split — matches source.
+
+    // Keep the hidden-content cue honest as the content grows.
+    _follow.syncMetrics();
 
     // Status chrome colours: blue while writing, emerald when ready.
     const writingBlue = Color(0xFF155DFC); // blue-600
@@ -607,7 +269,14 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
         ? (isLight ? writingBlue : writingBlueDark)
         : (isLight ? readyGreen : readyGreenDark);
 
-    final pressTarget = (_copyPressed && !reduce) ? 0.9 : 1.0;
+    // 0.97, the library press token. This widget used to press to 0.9, which
+    // read as a different component on the same screen (audit T8).
+    final pressTarget = (_copyPressed && !reduce) ? 0.97 : 1.0;
+    final filename = _resolveFilename();
+    final surface = Color.alphaBlend(
+      colors.muted.withValues(alpha: 0.8),
+      colors.background,
+    );
 
     return Semantics(
       container: true,
@@ -628,12 +297,14 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Row(
                   children: [
-                    Icon(
-                      agent.icons.file,
-                      size: 14,
-                      color: colors.mutedForeground.withValues(alpha: 0.7),
+                    ExcludeSemantics(
+                      child: Icon(
+                        agent.icons.file,
+                        size: 14,
+                        color: colors.mutedForeground.withValues(alpha: 0.7),
+                      ),
                     ),
-                    if (widget.filename != null) ...[
+                    if (filename != null) ...[
                       const SizedBox(width: 10),
                       Flexible(
                         child: DefaultTextStyle(
@@ -655,9 +326,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          child: widget.filename is Widget
-                              ? widget.filename! as Widget
-                              : Text(widget.filename.toString()),
+                          child: filename,
                         ),
                       ),
                     ],
@@ -668,7 +337,9 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.25, // tracking-wide (0.025em @ 10px)
-                        color: colors.mutedForeground.withValues(alpha: 0.55),
+                        // Un-multiplied: which language a block is in is
+                        // information, and at 0.55 alpha it measured 2.3:1.
+                        color: colors.mutedForeground,
                       ),
                     ),
                     const Spacer(),
@@ -690,49 +361,89 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                     ),
                     if (_showCopy) ...[
                       const SizedBox(width: 10), // gap-2.5
-                      Semantics(
-                        button: true,
-                        label: _copied ? 'Copied' : 'Copy code',
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          onEnter: (_) => setState(() => _copyHovered = true),
-                          onExit: (_) => setState(() {
-                            _copyHovered = false;
-                            _copyPressed = false;
-                          }),
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTapDown: (_) =>
-                                setState(() => _copyPressed = true),
-                            onTapUp: (_) =>
-                                setState(() => _copyPressed = false),
-                            onTapCancel: () =>
-                                setState(() => _copyPressed = false),
-                            onTap: _handleCopy,
-                            child: SingleMotionBuilder(
-                              value: pressTarget,
-                              motion: beuiSpringPress,
-                              builder: (context, scale, child) =>
-                                  Transform.scale(scale: scale, child: child),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 150),
-                                width: 28,
-                                height: 28,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: _copyHovered
-                                      ? colors.background.withValues(alpha: 0.7)
-                                      : Colors.transparent,
-                                  shape: BoxShape.circle,
+                      // Outermost, so the 44px slop is not clipped by a
+                      // proxy ancestor sized to the 28px paint.
+                      BeuiMinHitTarget(
+                        child: Semantics(
+                          container: true,
+                          button: true,
+                          // Live only while the confirmation is up, so the
+                          // swap to "Copied" is announced instead of just
+                          // relabelling a silent node (audit R28 / T7).
+                          liveRegion: _copied,
+                          label: _copied
+                              ? agent.strings.copied
+                              : agent.strings.copyCode,
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            onEnter: (_) => setState(() => _copyHovered = true),
+                            onExit: (_) => setState(() {
+                              _copyHovered = false;
+                              _copyPressed = false;
+                            }),
+                            child: FocusableActionDetector(
+                              mouseCursor: SystemMouseCursors.click,
+                              onShowFocusHighlight: (v) {
+                                if (mounted) setState(() => _copyFocused = v);
+                              },
+                              actions: <Type, Action<Intent>>{
+                                ActivateIntent: CallbackAction<ActivateIntent>(
+                                  onInvoke: (_) {
+                                    unawaited(_handleCopy());
+                                    return null;
+                                  },
                                 ),
-                                child: Icon(
-                                  _copied
-                                      ? agent.icons.copied
-                                      : agent.icons.copy,
-                                  size: 14,
-                                  color: _copyHovered
-                                      ? colors.foreground
-                                      : colors.mutedForeground,
+                              },
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTapDown: (_) =>
+                                    setState(() => _copyPressed = true),
+                                onTapUp: (_) =>
+                                    setState(() => _copyPressed = false),
+                                onTapCancel: () =>
+                                    setState(() => _copyPressed = false),
+                                onTap: _handleCopy,
+                                child: SingleMotionBuilder(
+                                  value: pressTarget,
+                                  motion: motionFor(
+                                    context,
+                                    beuiSpringPress,
+                                    isMovement: true,
+                                  ),
+                                  builder: (context, scale, child) =>
+                                      Transform.scale(
+                                        scale: scale,
+                                        child: child,
+                                      ),
+                                  child: BeuiFocusRing(
+                                    focused: _copyFocused,
+                                    borderRadius: BorderRadius.circular(999),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 150,
+                                      ),
+                                      width: 28,
+                                      height: 28,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: _copyHovered
+                                            ? colors.background.withValues(
+                                                alpha: 0.7,
+                                              )
+                                            : Colors.transparent,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        _copied
+                                            ? agent.icons.copied
+                                            : agent.icons.copy,
+                                        size: 14,
+                                        color: _copyHovered
+                                            ? colors.foreground
+                                            : colors.mutedForeground,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -756,55 +467,117 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
               ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxHeight: widget.maxHeight),
-                child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(
-                    context,
-                  ).copyWith(scrollbars: false),
-                  child: SingleChildScrollView(
-                    controller: _scroll,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    // Horizontal scroll when not wrapping.
-                    scrollDirection: Axis.vertical,
-                    child: widget.wrap
-                        ? _CodeLines(
-                            lines: lines,
-                            language: widget.language,
-                            palette: palette,
-                            colors: colors,
-                            showLineNumbers: widget.showLineNumbers,
-                            highlight: highlight,
-                            wrap: true,
-                          )
-                        // source `pre` is `min-w-max` inside the scroller, so
-                        // every line row is at least as wide as the viewport
-                        // and the highlight band fills the whole row.
-                        : LayoutBuilder(
-                            builder: (context, viewport) =>
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      minWidth: viewport.maxWidth,
+                child: _isEmpty
+                    ? _EmptyCode(
+                        colors: colors,
+                        placeholder: widget.emptyPlaceholder,
+                      )
+                    : Stack(
+                        children: [
+                          ScrollConfiguration(
+                            behavior: ScrollConfiguration.of(
+                              context,
+                            ).copyWith(scrollbars: false),
+                            child: SingleChildScrollView(
+                              controller: _follow.controller,
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              // Horizontal scroll when not wrapping.
+                              scrollDirection: Axis.vertical,
+                              child: widget.wrap
+                                  ? _CodeLines(
+                                      lines: lines,
+                                      language: widget.language,
+                                      palette: palette,
+                                      colors: colors,
+                                      showLineNumbers: widget.showLineNumbers,
+                                      highlight: highlight,
+                                      wrap: true,
+                                    )
+                                  // source `pre` is `min-w-max` inside the
+                                  // scroller, so every line row is at least as
+                                  // wide as the viewport and the highlight band
+                                  // fills the whole row.
+                                  : LayoutBuilder(
+                                      builder: (context, viewport) =>
+                                          SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: ConstrainedBox(
+                                              constraints: BoxConstraints(
+                                                minWidth: viewport.maxWidth,
+                                              ),
+                                              child: IntrinsicWidth(
+                                                child: _CodeLines(
+                                                  lines: lines,
+                                                  language: widget.language,
+                                                  palette: palette,
+                                                  colors: colors,
+                                                  showLineNumbers:
+                                                      widget.showLineNumbers,
+                                                  highlight: highlight,
+                                                  wrap: false,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                     ),
-                                    child: IntrinsicWidth(
-                                      child: _CodeLines(
-                                        lines: lines,
-                                        language: widget.language,
-                                        palette: palette,
-                                        colors: colors,
-                                        showLineNumbers: widget.showLineNumbers,
-                                        highlight: highlight,
-                                        wrap: false,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                            ),
                           ),
-                  ),
-                ),
+                          // Hidden-content cue: the viewport turns scrollbars
+                          // off for fidelity, so without this a long file reads
+                          // as a short one that stops mid-statement (R12).
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: BeuiHiddenContentFooter(
+                              extentBelow: _follow.extentBelow,
+                              rowExtent: _CodeLines.lineHeight,
+                              surface: surface,
+                            ),
+                          ),
+                          // The reader owns the viewport: once they scroll off
+                          // the live edge, following stops and this is how they
+                          // opt back in (R7).
+                          Positioned(
+                            right: 10,
+                            bottom: 8,
+                            child: BeuiJumpToLatest(
+                              visible: _streaming && _follow.pinned,
+                              onTap: () => _follow.follow(context, force: true),
+                            ),
+                          ),
+                        ],
+                      ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Empty-state body — a finished block with no code at all.
+class _EmptyCode extends StatelessWidget {
+  const _EmptyCode({required this.colors, required this.placeholder});
+
+  final BeuiColors colors;
+  final Widget? placeholder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: DefaultTextStyle.merge(
+          style: TextStyle(
+            fontSize: 12,
+            height: 16 / 12,
+            letterSpacing: 0,
+            color: colors.mutedForeground,
+          ),
+          child: placeholder ?? const Text('No code to show'),
         ),
       ),
     );
@@ -853,15 +626,21 @@ class _CodeLines extends StatelessWidget {
 
   final List<String> lines;
   final BeuiCodeLanguage language;
-  final _CodePalette palette;
+  final BeuiSyntaxPalette palette;
   final BeuiColors colors;
   final bool showLineNumbers;
   final Set<int> highlight;
   final bool wrap;
 
   static const _gutterWidth = 44.0; // ~2.75rem
-  static const _lineHeight = 20.0; // leading-5
+
+  /// One rendered row, `leading-5`. Public to the library so the hidden-content
+  /// footer can turn scroll extent into a line count.
+  static const lineHeight = 20.0;
   static const _fontSize = 12.0; // text-xs
+
+  /// Blue-500 focus wash (source `highlightLines`).
+  static const highlightHue = Color(0xFF2B7FFF);
 
   @override
   Widget build(BuildContext context) {
@@ -877,7 +656,7 @@ class _CodeLines extends StatelessWidget {
       fontSize: _fontSize,
       // Tailwind `tracking-normal`; see the filename style for why.
       letterSpacing: 0,
-      height: _lineHeight / _fontSize,
+      height: lineHeight / _fontSize,
       color: palette.base,
     );
 
@@ -889,13 +668,16 @@ class _CodeLines extends StatelessWidget {
           _CodeLineRow(
             lineNumber: i + 1,
             content: lines[i],
-            tokens: _highlightLine(lines[i], language, palette),
+            tokens: beuiHighlightLine(lines[i], language, palette),
             showLineNumbers: showLineNumbers,
             highlighted: highlight.contains(i + 1),
             wrap: wrap,
             colors: colors,
             baseStyle: baseStyle,
-            highlightFill: const Color(0xFF2B7FFF).withValues(alpha: 0.07),
+            // 0.10 fill (was 0.07 → a 1.08:1 wash) plus a 2px leading bar at
+            // 0.6, so the highlight survives as more than a rounding error.
+            highlightFill: highlightHue.withValues(alpha: 0.10),
+            highlightBar: highlightHue.withValues(alpha: 0.6),
           ),
       ],
     );
@@ -913,17 +695,19 @@ class _CodeLineRow extends StatelessWidget {
     required this.colors,
     required this.baseStyle,
     required this.highlightFill,
+    required this.highlightBar,
   });
 
   final int lineNumber;
   final String content;
-  final List<_CodeToken> tokens;
+  final List<BeuiSyntaxToken> tokens;
   final bool showLineNumbers;
   final bool highlighted;
   final bool wrap;
   final BeuiColors colors;
   final TextStyle baseStyle;
   final Color highlightFill;
+  final Color highlightBar;
 
   @override
   Widget build(BuildContext context) {
@@ -957,7 +741,10 @@ class _CodeLineRow extends StatelessWidget {
                   '$lineNumber',
                   textAlign: TextAlign.right,
                   style: baseStyle.copyWith(
-                    color: colors.mutedForeground.withValues(alpha: 0.35),
+                    // 0.75, not 0.35. The gutter is the cross-reference channel
+                    // for "I changed line 19"; at 0.35 it measured 1.63:1 and
+                    // could not be read at all (audit R8).
+                    color: colors.mutedForeground.withValues(alpha: 0.75),
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),
@@ -987,6 +774,16 @@ class _CodeLineRow extends StatelessWidget {
 
     if (!highlighted) return row;
 
-    return ColoredBox(color: highlightFill, child: row);
+    // Fill *and* a leading bar: colour alone at this alpha is not a cue, and a
+    // 2px edge survives both low-contrast displays and colour blindness.
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: highlightFill,
+        border: BorderDirectional(
+          start: BorderSide(color: highlightBar, width: 2),
+        ),
+      ),
+      child: row,
+    );
   }
 }

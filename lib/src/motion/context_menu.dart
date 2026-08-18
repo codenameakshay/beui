@@ -843,11 +843,17 @@ class _MenuPanel extends StatelessWidget {
                         : null;
                     final destructive =
                         activeItem?.tone == BeuiContextMenuTone.destructive;
+                    // NoMotion holds the rect it was seeded with, so under
+                    // reduced motion the highlight parked on the first row and
+                    // arrow-key navigation had no visible indicator at all.
+                    // Read the target rect directly instead — the same
+                    // compensation `expandable_action_bar` uses.
+                    final r = reduce ? pillRect! : rect;
                     return Positioned(
-                      left: rect.left,
-                      top: rect.top,
-                      width: rect.width,
-                      height: rect.height,
+                      left: r.left,
+                      top: r.top,
+                      width: r.width,
+                      height: r.height,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: destructive

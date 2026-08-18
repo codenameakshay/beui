@@ -37,7 +37,7 @@ Widget _app({
   ValueChanged<BeuiPreviewRailItem>? onItemSelect,
   bool showPreview = true,
   BeuiPreviewRailPreviewSide previewSide = BeuiPreviewRailPreviewSide.after,
-  bool highlightActive = false,
+  bool highlightActive = true,
   BeuiPreviewRailStyle? style,
   bool reduce = false,
 }) {
@@ -121,7 +121,10 @@ void main() {
       String? changed;
       await tester.pumpWidget(_app(onActiveChange: (id) => changed = id));
       await tester.pumpAndSettle();
-      await tester.tap(find.bySemanticsLabel('Beta'));
+      await tester.tap(
+        find.bySemanticsLabel('Beta'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
       expect(changed, 'b');
     });
@@ -134,7 +137,10 @@ void main() {
         _app(activeId: 'a', onActiveChange: (id) => changed = id),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.bySemanticsLabel('Gamma'));
+      await tester.tap(
+        find.bySemanticsLabel('Gamma'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
       // Callback fires, but selection stays where the controller put it.
       expect(changed, 'c');
@@ -305,7 +311,10 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.bySemanticsLabel('Beta'));
+      await tester.tap(
+        find.bySemanticsLabel('Beta'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
       expect(calls, ['change:b', 'select:b:Beta']);
     });
@@ -321,9 +330,15 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.bySemanticsLabel('Gamma'));
+      await tester.tap(
+        find.bySemanticsLabel('Gamma'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
-      await tester.tap(find.bySemanticsLabel('Gamma'));
+      await tester.tap(
+        find.bySemanticsLabel('Gamma'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
       expect(selected, ['c', 'c']);
     });
@@ -360,7 +375,7 @@ void main() {
     });
 
     testWidgets('false keeps the hover pyramid working', (tester) async {
-      await tester.pumpWidget(_app(showPreview: false));
+      await tester.pumpWidget(_app(showPreview: false, highlightActive: false));
       await tester.pumpAndSettle();
       expect(_tickScale(tester, 'Beta'), moreOrLessEquals(0.25, epsilon: 0.02));
       await _hover(tester, _tick('Beta'));
@@ -403,7 +418,9 @@ void main() {
     testWidgets('false leaves every tick at rest with nothing hovered', (
       tester,
     ) async {
-      await tester.pumpWidget(_app(defaultActiveId: 'b'));
+      await tester.pumpWidget(
+        _app(defaultActiveId: 'b', highlightActive: false),
+      );
       await tester.pumpAndSettle();
       for (final label in ['Alpha', 'Beta', 'Gamma', 'Delta']) {
         expect(
@@ -417,9 +434,7 @@ void main() {
     testWidgets('true anchors the pyramid on the selection at rest', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        _app(defaultActiveId: 'b', highlightActive: true),
-      );
+      await tester.pumpWidget(_app(defaultActiveId: 'b'));
       await tester.pumpAndSettle();
       expect(_tickScale(tester, 'Beta'), moreOrLessEquals(1.0, epsilon: 0.02));
       expect(
@@ -437,17 +452,13 @@ void main() {
     });
 
     testWidgets('true still never summons the preview card', (tester) async {
-      await tester.pumpWidget(
-        _app(defaultActiveId: 'b', highlightActive: true),
-      );
+      await tester.pumpWidget(_app(defaultActiveId: 'b'));
       await tester.pumpAndSettle();
       expect(find.text('Second item.'), findsNothing);
     });
 
     testWidgets('hover wins over the resting highlight', (tester) async {
-      await tester.pumpWidget(
-        _app(defaultActiveId: 'b', highlightActive: true),
-      );
+      await tester.pumpWidget(_app(defaultActiveId: 'b'));
       await tester.pumpAndSettle();
       await _hover(tester, _tick('Delta'));
       await tester.pumpAndSettle();
@@ -513,7 +524,11 @@ void main() {
     });
   });
 
-  testWidgets('rest-state golden (vertical, nothing displayed)', (
+  // The resting truth changed with `highlightActive` defaulting to true: the
+  // selected tick ('b') now sits at full scale with its neighbours stepping
+  // down, instead of four identical grey dashes that told the reader nothing
+  // about where they were. Regenerated deliberately.
+  testWidgets('rest-state golden (vertical, selection highlighted)', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -572,6 +587,384 @@ void main() {
       // so its bottom lands 38 above the centre line.
       final card = tester.getRect(find.text('Beta'));
       expect(card.bottom, lessThan(box.center.dy - 38));
+    });
+  });
+
+  // ---------------------------------------------------------------------
+  // UX remediation — R2, R11, R31, R32, R37, R38
+  // ---------------------------------------------------------------------
+
+  group('BeuiPreviewRail touch (R2)', () {
+    testWidgets('the first tap previews instead of navigating blind', (
+      tester,
+    ) async {
+      final changed = <String>[];
+      await tester.pumpWidget(_app(onActiveChange: changed.add));
+      await tester.pumpAndSettle();
+
+      await tester.tap(_tick('Gamma'));
+      await tester.pumpAndSettle();
+      // The destination is now identifiable — and nothing has been committed.
+      expect(find.text('Third item.'), findsOneWidget);
+      expect(changed, isEmpty);
+    });
+
+    testWidgets('a second tap on the same tick commits', (tester) async {
+      final changed = <String>[];
+      await tester.pumpWidget(_app(onActiveChange: changed.add));
+      await tester.pumpAndSettle();
+
+      await tester.tap(_tick('Gamma'));
+      await tester.pumpAndSettle();
+      await tester.tap(_tick('Gamma'));
+      await tester.pumpAndSettle();
+      expect(changed, ['c']);
+    });
+
+    testWidgets('tapping a different tick re-previews rather than committing', (
+      tester,
+    ) async {
+      final changed = <String>[];
+      await tester.pumpWidget(_app(onActiveChange: changed.add));
+      await tester.pumpAndSettle();
+
+      await tester.tap(_tick('Gamma'));
+      await tester.pumpAndSettle();
+      await tester.tap(_tick('Delta'));
+      await tester.pumpAndSettle();
+      expect(changed, isEmpty);
+      expect(find.text('Fourth item.'), findsOneWidget);
+
+      await tester.tap(_tick('Delta'));
+      await tester.pumpAndSettle();
+      expect(changed, ['d']);
+    });
+
+    testWidgets('a mouse still commits on one tap — hover already showed it', (
+      tester,
+    ) async {
+      final changed = <String>[];
+      await tester.pumpWidget(_app(onActiveChange: changed.add));
+      await tester.pumpAndSettle();
+      await tester.tap(_tick('Beta'), kind: PointerDeviceKind.mouse);
+      await tester.pump();
+      expect(changed, ['b']);
+    });
+
+    testWidgets('with no preview to show, touch commits on the first tap', (
+      tester,
+    ) async {
+      final changed = <String>[];
+      await tester.pumpWidget(
+        _app(showPreview: false, onActiveChange: changed.add),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(_tick('Beta'));
+      await tester.pump();
+      expect(changed, ['b']);
+    });
+
+    testWidgets('the intermediate state is announced, not silent', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+      await tester.tap(_tick('Gamma'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSemantics(_tick('Gamma')),
+        isSemantics(hint: 'Previewing. Activate again to open'),
+      );
+      handle.dispose();
+    });
+  });
+
+  group('BeuiPreviewRail current location (R2)', () {
+    testWidgets('highlightActive defaults on, so the rail says where you are', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: const Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 480,
+                height: 320,
+                child: BeuiPreviewRail(items: _items, defaultActiveId: 'c'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      // Four identical grey dashes told the reader nothing.
+      expect(_tickScale(tester, 'Gamma'), moreOrLessEquals(1.0, epsilon: 0.02));
+    });
+  });
+
+  group('BeuiPreviewRail fitting its box (R11, R31)', () {
+    List<BeuiPreviewRailItem> many(int n) => [
+      for (var i = 0; i < n; i++)
+        BeuiPreviewRailItem(id: '$i', label: 'Item $i'),
+    ];
+
+    testWidgets('30 items in 300px do not overflow (vertical)', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 480,
+                height: 300,
+                child: BeuiPreviewRail(items: many(30)),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.getSize(find.byType(BeuiPreviewRail)).height,
+        lessThanOrEqualTo(300),
+      );
+    });
+
+    testWidgets('20 items in 320px do not overflow (horizontal)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 320,
+                height: 200,
+                child: BeuiPreviewRail(
+                  items: many(20),
+                  orientation: BeuiPreviewRailOrientation.horizontal,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      // 20 x 24 = 480 in a 320px box was a plain RenderFlex overflow.
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('the pitch compresses before the rail resorts to scrolling', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 480,
+                height: 200,
+                child: BeuiPreviewRail(items: many(20)),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      // 200 / 20 = 10 per slot, under the requested 24 but over the floor.
+      final pitch =
+          tester.getCenter(_tick('Item 5')).dy -
+          tester.getCenter(_tick('Item 4')).dy;
+      expect(pitch, moreOrLessEquals(10, epsilon: 0.6));
+    });
+
+    testWidgets('adjacent ticks do not abut, so a sweep crosses dead zones', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+      Rect hoverRegion(String label) => tester.getRect(
+        find.descendant(
+          of: _tick(label),
+          matching: find.byType(GestureDetector),
+        ),
+      );
+      final first = hoverRegion('Alpha');
+      final second = hoverRegion('Beta');
+      expect(
+        second.top - first.bottom,
+        greaterThan(0),
+        reason: 'a 0px gap re-fired the whole spring cascade on every sweep',
+      );
+      // The pitch itself is unchanged: the ticks did not move.
+      expect(second.center.dy - first.center.dy, 24);
+    });
+  });
+
+  group('BeuiPreviewRailStyle.itemSize deprecation path (R37)', () {
+    test('resolvedItemSize is the single precedence rule', () {
+      expect(const BeuiPreviewRailStyle().resolvedItemSize, 24);
+      expect(const BeuiPreviewRailStyle(itemSize: 32).resolvedItemSize, 32);
+      expect(
+        // ignore: deprecated_member_use_from_same_package
+        const BeuiPreviewRailStyle(trackExtent: 28).resolvedItemSize,
+        28,
+      );
+      expect(
+        const BeuiPreviewRailStyle(
+          itemSize: 32,
+          // ignore: deprecated_member_use_from_same_package
+          trackExtent: 12,
+        ).resolvedItemSize,
+        32,
+      );
+    });
+
+    test('copyWith(itemSize:) drops an inherited trackExtent', () {
+      const legacy = BeuiPreviewRailStyle(
+        // ignore: deprecated_member_use_from_same_package
+        trackExtent: 12,
+      );
+      final migrated = legacy.copyWith(itemSize: 32);
+      // ignore: deprecated_member_use_from_same_package
+      expect(migrated.trackExtent, isNull);
+      expect(migrated.resolvedItemSize, 32);
+    });
+
+    test('equality is on the resolved value, not on which alias set it', () {
+      expect(
+        const BeuiPreviewRailStyle(itemSize: 28),
+        // ignore: deprecated_member_use_from_same_package
+        const BeuiPreviewRailStyle(trackExtent: 28),
+      );
+      expect(
+        const BeuiPreviewRailStyle(itemSize: 28).hashCode,
+        // ignore: deprecated_member_use_from_same_package
+        const BeuiPreviewRailStyle(trackExtent: 28).hashCode,
+      );
+    });
+  });
+
+  group('BeuiPreviewRail selection reconciliation (R38)', () {
+    testWidgets('defaultActiveId is re-read when the caller changes it', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(defaultActiveId: 'a'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Alpha')),
+        isSemantics(isSelected: true),
+      );
+
+      // A parent swapping datasets used to keep the seed from the first build.
+      await tester.pumpWidget(_app(defaultActiveId: 'c'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Gamma')),
+        isSemantics(isSelected: true),
+      );
+    });
+
+    testWidgets('a selection that leaves the list is reported, not swallowed', (
+      tester,
+    ) async {
+      final changed = <String>[];
+      await tester.pumpWidget(
+        _app(defaultActiveId: 'd', onActiveChange: changed.add),
+      );
+      await tester.pumpAndSettle();
+      expect(changed, isEmpty);
+
+      // 'd' is gone; the rail falls back to the first item and says so, rather
+      // than leaving the parent pointing at a row that is not there.
+      await tester.pumpWidget(
+        _app(
+          items: _items.sublist(0, 2),
+          defaultActiveId: 'd',
+          onActiveChange: changed.add,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(changed, ['a']);
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Alpha')),
+        isSemantics(isSelected: true),
+      );
+    });
+
+    testWidgets('a controlled rail hears the fallback too', (tester) async {
+      final changed = <String>[];
+      await tester.pumpWidget(_app(activeId: 'c', onActiveChange: changed.add));
+      await tester.pumpAndSettle();
+      expect(changed, isEmpty);
+
+      await tester.pumpWidget(
+        _app(
+          items: _items.sublist(0, 2),
+          activeId: 'c',
+          onActiveChange: changed.add,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(changed, ['a']);
+    });
+  });
+
+  group('BeuiPreviewRail preview card (R32)', () {
+    testWidgets('the card takes no pointers, as its docs now say', (
+      tester,
+    ) async {
+      var taps = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 480,
+                height: 320,
+                child: BeuiPreviewRail(
+                  items: _items,
+                  renderPreview: (item) => GestureDetector(
+                    onTap: () => taps++,
+                    child: Container(
+                      height: 80,
+                      color: const Color(0xFFEEEEEE),
+                      alignment: Alignment.center,
+                      child: Text('Open ${item.label}'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _hover(tester, _tick('Beta'));
+      await tester.pumpAndSettle();
+      expect(find.text('Open Beta'), findsOneWidget);
+
+      await tester.tap(find.text('Open Beta'), warnIfMissed: false);
+      await tester.pump();
+      // Documented on renderPreview: the card is the source's
+      // pointer-events-none overlay.
+      expect(taps, 0);
     });
   });
 }

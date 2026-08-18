@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 /// `relative h-[340px] w-full max-w-xl` frame, with the ghost `Replay` control
 /// pinned to `bottom-0 left-0`.
 ///
-/// The source preview ships that single card and nothing else, so this route
-/// shows one. (Static / no-line-number / wrapping blocks are widget options,
-/// not preview states.)
+/// The source preview ships that single card, so this route leads with it.
+/// Below it sits a second, static block exercising `wrap: true` — a widget
+/// option rather than a preview state, but worth modelling since it is the
+/// only way a wide line stays fully on screen.
 Widget codeBlockDemo(BuildContext context) => const _CodeBlockDemo();
 
 class _CodeBlockDemo extends StatefulWidget {
@@ -36,6 +37,13 @@ class _CodeBlockDemoState extends State<_CodeBlockDemo> {
     '  };',
     '}',
   ];
+
+  // Deliberately wide: with `wrap: true` this stays fully on screen instead
+  // of requiring horizontal scroll.
+  static const _wrapCode =
+      'const summary = await generateText({ model: "openai/gpt-5", '
+      r'prompt: `Summarize this clearly, preserving every citation and '
+      r'footnote reference exactly as written: ${input}` });';
 
   int _visible = 1;
   int _run = 0;
@@ -85,24 +93,42 @@ class _CodeBlockDemoState extends State<_CodeBlockDemo> {
       child: SizedBox(
         // source preview: `relative h-[340px] w-full max-w-xl` (576).
         width: 576,
-        height: 340,
-        child: Stack(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            BeuiCodeBlock(
-              key: ValueKey(_run),
-              code: code,
+            SizedBox(
+              height: 340,
+              child: Stack(
+                children: [
+                  BeuiCodeBlock(
+                    key: ValueKey(_run),
+                    code: code,
+                    filename: 'summarize.ts',
+                    language: BeuiCodeLanguage.typescript,
+                    status: complete
+                        ? BeuiCodeBlockStatus.complete
+                        : BeuiCodeBlockStatus.streaming,
+                    highlightLines: const [4, 5, 6, 7],
+                    maxHeight: 224,
+                  ),
+                  Positioned(
+                    left: 0,
+                    bottom: 0,
+                    child: _ReplayButton(onPressed: _replay, colors: colors),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Static, non-streaming block demonstrating `wrap: true`: the long
+            // line soft-wraps instead of requiring horizontal scroll.
+            const BeuiCodeBlock(
+              code: _wrapCode,
               filename: 'summarize.ts',
               language: BeuiCodeLanguage.typescript,
-              status: complete
-                  ? BeuiCodeBlockStatus.complete
-                  : BeuiCodeBlockStatus.streaming,
-              highlightLines: const [4, 5, 6, 7],
-              maxHeight: 224,
-            ),
-            Positioned(
-              left: 0,
-              bottom: 0,
-              child: _ReplayButton(onPressed: _replay, colors: colors),
+              wrap: true,
+              maxHeight: 160,
             ),
           ],
         ),

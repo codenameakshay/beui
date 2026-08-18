@@ -51,6 +51,19 @@ const _charactersPerSecond = 96;
 const _streamDelay = Duration(milliseconds: 140);
 const _replyDelay = Duration(milliseconds: 420);
 
+/// How a streamed turn ended — the preview models all three so the gallery
+/// stops teaching that a response only ever succeeds (C20, C32).
+enum ChatPreviewOutcome {
+  /// Streams to the end and completes.
+  complete,
+
+  /// Fails partway through.
+  error,
+
+  /// The reader presses stop mid-stream.
+  stopped,
+}
+
 class _Rendered {
   _Rendered({
     required this.id,
@@ -65,6 +78,9 @@ class _Rendered {
   String content;
   final bool animateIn;
   bool streaming;
+
+  /// Terminal status once [streaming] goes false.
+  BeuiStreamingResponseStatus status = BeuiStreamingResponseStatus.complete;
 }
 
 /// The source `ChatPreview` component.
@@ -80,6 +96,9 @@ class ChatPreview extends StatefulWidget {
     this.assistantVariant = BeuiMessageBubbleVariant.soft,
     this.userVariant = BeuiMessageBubbleVariant.solid,
     this.placeholder = 'Send a message…',
+    this.outcome = ChatPreviewOutcome.complete,
+    this.showActions = true,
+    this.announce = true,
   });
 
   /// Seed transcript.
@@ -105,6 +124,25 @@ class ChatPreview extends StatefulWidget {
 
   /// Composer placeholder.
   final String placeholder;
+
+  /// How the canned reply ends (C20). `complete` streams to the end; `error`
+  /// fails partway; `stopped` is what the composer's stop button produces.
+  final ChatPreviewOutcome outcome;
+
+  /// Whether responses carry copy / retry / feedback controls.
+  ///
+  /// True by default (C20/T10). The flagship preview used to pass `false`,
+  /// so the library's "real chat" showcase had no copy, no retry, and no
+  /// feedback on any response — the gallery modelling the wrong pattern.
+  final bool showActions;
+
+  /// Whether the transcript speaks streamed text.
+  ///
+  /// True by default. The old preview passed `announce: false` to each
+  /// response to work around the nested-live-region problem; the scroller now
+  /// owns the conversation's one live region, so the correct answer is to
+  /// leave it on and let each response push sentences into it.
+  final bool announce;
 
   @override
   State<ChatPreview> createState() => _ChatPreviewState();
@@ -136,29 +174,57 @@ class _ChatPreviewState extends State<ChatPreview> {
   void _submit(String prompt, String? model) {
     if (_loading) return;
     final run = _nextId++;
+    // C14. The assistant row is created *now*, empty and streaming, so the
+    // turn has one identity from "preparing" through "streaming" to "done".
+    // The old flow rendered a separate pending row with its own differently
+    // labelled indicator, unmounted it, then mounted the real row — the reader
+    // saw shimmer, then an empty box, then text.
     setState(() {
-      _messages.add(
-        _Rendered(
-          id: 'sent-user-$run',
-          from: BeuiMessageFrom.user,
-          content: prompt,
-          animateIn: true,
-        ),
-      );
+      _messages
+        ..add(
+          _Rendered(
+            id: 'sent-user-$run',
+            from: BeuiMessageFrom.user,
+            content: prompt,
+            animateIn: true,
+          ),
+        )
+        ..add(
+          _Rendered(
+            id: 'sent-assistant-$run',
+            from: BeuiMessageFrom.assistant,
+            content: '',
+            animateIn: true,
+            streaming: true,
+          ),
+        );
       _pending = true;
     });
+    _beginReply('sent-assistant-$run');
+  }
 
+  void _beginReply(String id) {
+    _replyTimer?.cancel();
     _replyTimer = Timer(_replyDelay, () {
       if (!mounted) return;
-      final target = _Rendered(
-        id: 'sent-assistant-$run',
-        from: BeuiMessageFrom.assistant,
-        content: '',
-        animateIn: true,
-        streaming: true,
-      );
+      final existing = _messages.where((m) => m.id == id).firstOrNull;
+      final target =
+          existing ??
+          _Rendered(
+            id: id,
+            from: BeuiMessageFrom.assistant,
+            content: '',
+            animateIn: true,
+            streaming: true,
+          );
       setState(() {
-        _messages.add(target);
+        if (existing == null) {
+          _messages.add(target);
+        } else {
+          target.content = '';
+        }
+        target.streaming = true;
+        target.status = BeuiStreamingResponseStatus.complete;
         _pending = false;
         _streamTarget = target;
         _streamFull = widget.reply;
@@ -166,6 +232,9 @@ class _ChatPreviewState extends State<ChatPreview> {
       _startStream();
     });
   }
+
+  /// Where an `error` outcome gives up, as a fraction of the reply.
+  static const double _failAt = 0.55;
 
   void _startStream() {
     _streamClock = Stopwatch()..start();
@@ -184,28 +253,57 @@ class _ChatPreviewState extends State<ChatPreview> {
               0,
               _streamFull.length,
             );
+
+      // C20: the error route stops mid-answer, which is what a real failure
+      // looks like — a partial response plus a distinct failure affordance.
+      if (widget.outcome == ChatPreviewOutcome.error &&
+          cursor >= (_streamFull.length * _failAt).floor()) {
+        t.cancel();
+        setState(() {
+          target.content = _streamFull.substring(
+            0,
+            (_streamFull.length * _failAt).floor(),
+          );
+          target.streaming = false;
+          target.status = BeuiStreamingResponseStatus.error;
+          _streamTarget = null;
+        });
+        return;
+      }
+
       final next = _streamFull.substring(0, cursor);
       if (next != target.content) setState(() => target.content = next);
       if (cursor >= _streamFull.length) {
         t.cancel();
         setState(() {
           target.streaming = false;
+          target.status = BeuiStreamingResponseStatus.complete;
           _streamTarget = null;
         });
       }
     });
   }
 
+  /// C13: stopping leaves the turn in `stopped`, not a fake `complete`.
   void _stop() {
     _replyTimer?.cancel();
     _streamTimer?.cancel();
     setState(() {
       _pending = false;
       for (final m in _messages) {
+        if (!m.streaming) continue;
         m.streaming = false;
+        m.status = BeuiStreamingResponseStatus.stopped;
       }
       _streamTarget = null;
     });
+  }
+
+  /// Resumes a stopped turn, or retries a failed one, in place.
+  void _resume(_Rendered message) {
+    if (_loading) return;
+    setState(() => _pending = true);
+    _beginReply(message.id);
   }
 
   Widget _row(_Rendered message) {
@@ -243,12 +341,21 @@ class _ChatPreviewState extends State<ChatPreview> {
                     ? BeuiStreamingResponse(
                         status: message.streaming
                             ? BeuiStreamingResponseStatus.streaming
-                            : BeuiStreamingResponseStatus.complete,
-                        showActions: false,
-                        announce: false,
-                        child: message.content.isEmpty
-                            ? const BeuiMessageTyping()
-                            : Text(message.content),
+                            : message.status,
+                        showActions: widget.showActions,
+                        // The scroller owns the transcript's live region; this
+                        // feeds it the actual streamed text (C6).
+                        announceText: message.content,
+                        copyText: message.content,
+                        onRetry: () => _resume(message),
+                        onContinue: () => _resume(message),
+                        // C14. One indicator identity: the typing dots are the
+                        // response's *placeholder*, so they cross-fade into
+                        // the first token instead of being a separate widget
+                        // that unmounts and leaves an empty box behind.
+                        placeholder: const BeuiMessageTyping(),
+                        hasContent: message.content.isNotEmpty,
+                        child: Text(message.content),
                       )
                     : Text(message.content),
               ),
@@ -302,27 +409,10 @@ class _ChatPreviewState extends State<ChatPreview> {
                     horizontal: 12,
                     vertical: 16,
                   ),
+                  announce: widget.announce,
                   child: BeuiMessageGroup(
                     spacing: BeuiMessageSpacing.standard,
-                    children: [
-                      for (final m in _messages) _row(m),
-                      if (_pending)
-                        BeuiMessage(
-                          key: const ValueKey('pending-assistant'),
-                          from: BeuiMessageFrom.assistant,
-                          children: [
-                            if (widget.showAvatars)
-                              const BeuiMessageAvatar(
-                                child: Icon(LucideIcons.bot),
-                              ),
-                            const BeuiMessageContent(
-                              children: [
-                                BeuiMessageTyping(label: 'Preparing response'),
-                              ],
-                            ),
-                          ],
-                        ),
-                    ],
+                    children: [for (final m in _messages) _row(m)],
                   ),
                 ),
               ),

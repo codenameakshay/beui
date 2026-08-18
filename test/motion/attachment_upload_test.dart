@@ -602,4 +602,149 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
     });
   });
+
+  group('progress, cancel and seeking', () {
+    testWidgets('a real progress value drives the wash', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const BeuiAttachmentUpload(
+            defaultValue: [
+              BeuiAttachmentUploadItem(
+                id: 'big',
+                name: 'render.mov',
+                size: 200000000,
+                status: BeuiAttachmentStatus.uploading,
+                progress: 0.42,
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // The percentage is spoken, so the row is not just a moving colour.
+      expect(
+        find.bySemanticsLabel('Uploading render.mov, 42%'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('an in-flight upload can be cancelled, not just removed', (
+      tester,
+    ) async {
+      final cancelled = <String>[];
+      final removed = <String>[];
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAttachmentUpload(
+            defaultValue: const [
+              BeuiAttachmentUploadItem(
+                id: 'big',
+                name: 'render.mov',
+                size: 200000000,
+                status: BeuiAttachmentStatus.uploading,
+              ),
+            ],
+            onCancel: (item) => cancelled.add(item.id),
+            onRemove: (item) => removed.add(item.id),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // The slot used to be blank for the whole transfer.
+      expect(
+        find.bySemanticsLabel('Cancel upload of render.mov'),
+        findsOneWidget,
+      );
+      await tester.tap(find.bySemanticsLabel('Cancel upload of render.mov'));
+      await tester.pump();
+      // Cancelling is its own act — it must not read as a delete.
+      expect(cancelled, ['big']);
+      expect(removed, isEmpty);
+    });
+
+    testWidgets('without onCancel the uploading slot stays blank', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const BeuiAttachmentUpload(
+            defaultValue: [
+              BeuiAttachmentUploadItem(
+                id: 'big',
+                name: 'render.mov',
+                status: BeuiAttachmentStatus.uploading,
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(
+        find.bySemanticsLabel('Cancel upload of render.mov'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('the waveform is inert until onSeek is wired', (tester) async {
+      await tester.pumpWidget(
+        _wrap(const BeuiAttachmentUpload(defaultValue: _items)),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+      // Documented as a scrubber, but read-only without a handler.
+      expect(find.bySemanticsLabel('Seek launch-note.m4a'), findsNothing);
+    });
+
+    testWidgets('a wired waveform scrubs on tap and on arrow keys', (
+      tester,
+    ) async {
+      final seeks = <Duration>[];
+      await tester.pumpWidget(
+        _wrap(
+          BeuiAttachmentUpload(
+            defaultValue: _items,
+            onSeek: (item, position) => seeks.add(position),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      final scrubber = find.bySemanticsLabel('Seek launch-note.m4a');
+      expect(scrubber, findsOneWidget);
+
+      // Tap dead centre of a 48s clip → about half way.
+      await tester.tap(scrubber);
+      await tester.pump();
+      expect(seeks, hasLength(1));
+      expect(seeks.single.inSeconds, closeTo(24, 2));
+
+      // Drag scrubs continuously rather than only on release.
+      seeks.clear();
+      await tester.drag(scrubber, const Offset(30, 0));
+      await tester.pump();
+      expect(seeks, isNotEmpty);
+    });
+
+    testWidgets('the scrubber reports itself as a slider with a position', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(BeuiAttachmentUpload(defaultValue: _items, onSeek: (_, _) {})),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      final node = tester.getSemantics(
+        find.bySemanticsLabel('Seek launch-note.m4a'),
+      );
+      expect(node.label, 'Seek launch-note.m4a');
+      // 12s of 48s, spoken as a real timestamp rather than a raw fraction.
+      expect(node.value, '0:12');
+      // Arrow keys / screen-reader swipes step the playhead.
+      expect(node.increasedValue, isNotEmpty);
+      expect(node.decreasedValue, isNotEmpty);
+      handle.dispose();
+    });
+  });
 }

@@ -9,18 +9,35 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart' show SingleMotionBuilder, SpringMotion;
+import '_focus_ring.dart';
+import '_hit_target.dart';
 import 'button/base.dart';
 import 'button/stateful.dart';
+
+/// An optional one-tap rating alongside the written message.
+///
+/// See [BeuiFeedbackWidget.showSentiment], which is off by default.
+enum BeuiFeedbackSentiment {
+  /// The user rated the experience positively.
+  positive,
+
+  /// The user rated the experience negatively.
+  negative,
+}
 
 /// The payload handed to [BeuiFeedbackWidget.onSubmit] — the port of the source
 /// `FeedbackData` interface.
 @immutable
 class BeuiFeedbackData {
   /// Creates a feedback payload.
-  const BeuiFeedbackData({required this.message});
+  const BeuiFeedbackData({required this.message, this.sentiment});
 
   /// The message the user typed.
   final String message;
+
+  /// The chosen rating, when [BeuiFeedbackWidget.showSentiment] is on and the
+  /// user picked one. Null otherwise.
+  final BeuiFeedbackSentiment? sentiment;
 }
 
 /// Which bottom corner the widget anchors to (source `position`).
@@ -160,9 +177,15 @@ enum _Status { idle, open, sending, sent, error }
 /// shows a sending state until it resolves; a thrown error routes to the retry
 /// view (the typed message is preserved so a rejected submit can be retried).
 ///
-/// Dismisses on Escape or an outside tap while open (never mid-send). Anchor it
-/// inside a bounded [Stack]/box (see the example) — it aligns itself to the
-/// chosen [position] corner with a 16px inset and grows from that corner.
+/// Dismisses on Escape or an outside tap while open (never mid-send) — and the
+/// typed draft survives every one of those, so a stray tap outside no longer
+/// destroys a half-written report. The text is cleared only by a submit that
+/// actually succeeded.
+///
+/// Every control is keyboard-reachable (trigger, close, sentiment chips) and
+/// carries a 44px hit area over its painted size. Anchor it inside a bounded
+/// [Stack]/box (see the example) — it aligns itself to the chosen [position]
+/// corner with a 16px inset and grows from that corner.
 ///
 /// Reduced motion drops every transform (slide/scale/rotate/blur and the
 /// sprinkle burst) and keeps only the opacity/color cross-fades; the shell
@@ -176,8 +199,15 @@ class BeuiFeedbackWidget extends StatefulWidget {
     this.placeholder = 'Share an idea or report a bug',
     this.icon,
     this.style,
+    this.showSentiment = false,
+    this.sentimentLabel = 'How was your experience?',
+    this.positiveLabel = 'Good',
+    this.negativeLabel = 'Bad',
+    this.minLines = 3,
+    this.maxLines = 6,
+    this.emptyMessage = 'Write a little about what happened first.',
     super.key,
-  });
+  }) : assert(maxLines >= minLines);
 
   /// Called on submit. May be async; the button shows a sending state until it
   /// resolves. Throwing routes to the error/retry view.
@@ -198,6 +228,39 @@ class BeuiFeedbackWidget extends StatefulWidget {
   /// Optional visual overrides.
   final BeuiFeedbackWidgetStyle? style;
 
+  /// Shows a two-button sentiment row above the textarea.
+  ///
+  /// Off by default, for fidelity with the source, which has no rating
+  /// dimension. Turning it on is the single highest-leverage change available
+  /// here: one tap is a complete response, so people who would never write a
+  /// paragraph still tell you something, and the ones who do write get a frame
+  /// to write inside. The chosen sentiment arrives on [BeuiFeedbackData].
+  final bool showSentiment;
+
+  /// Heading above the sentiment row.
+  final String sentimentLabel;
+
+  /// Label for the positive choice.
+  final String positiveLabel;
+
+  /// Label for the negative choice.
+  final String negativeLabel;
+
+  /// Rows the textarea starts at.
+  final int minLines;
+
+  /// Rows the textarea grows to before it scrolls.
+  ///
+  /// The field used to be pinned at three rows, so anything longer than a
+  /// couple of sentences was written through a letterbox. It now grows.
+  final int maxLines;
+
+  /// Shown under the field when Submit is pressed with nothing written.
+  ///
+  /// Submit stays enabled and explains itself rather than sitting greyed out
+  /// with no reason given.
+  final String emptyMessage;
+
   @override
   State<BeuiFeedbackWidget> createState() => _BeuiFeedbackWidgetState();
 }
@@ -209,6 +272,8 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
   _Status _status = _Status.idle;
   Timer? _closeTimer;
   Timer? _focusTimer;
+  BeuiFeedbackSentiment? _sentiment;
+  bool _showEmptyError = false;
 
   bool get _open => _status != _Status.idle;
   bool get _busy => _status == _Status.sending;
@@ -233,12 +298,18 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
     final reduce = MediaQuery.disableAnimationsOf(context);
     setState(() => _status = _Status.open);
 
-    // Match the source: arm the field once the open morph has settled so the
-    // caret doesn't appear inside a still-scaling panel.
+    // The field used to be armed only after the full 400ms open morph, which
+    // left a dead zone long enough to swallow the first characters of anyone
+    // who started typing straight away — and a caret is not a transform, so
+    // there is nothing to protect it from. Focus lands well before the morph
+    // finishes and simply rides it.
     _focusTimer?.cancel();
-    _focusTimer = Timer(reduce ? Duration.zero : _morphOpenDuration, () {
-      if (mounted) _fieldFocus.requestFocus();
-    });
+    _focusTimer = Timer(
+      reduce ? Duration.zero : const Duration(milliseconds: 180),
+      () {
+        if (mounted) _fieldFocus.requestFocus();
+      },
+    );
   }
 
   void _close() {
@@ -248,22 +319,49 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
     _fieldFocus.unfocus();
     setState(() {
       _status = _Status.idle;
-      _text.clear();
+      _showEmptyError = false;
+      // The draft is NOT cleared here. A stray outside tap used to destroy
+      // whatever had been typed, with no confirmation and no undo — and the
+      // error path already proved drafts can survive a state change. Text now
+      // survives every close and is cleared only by a successful submit, so
+      // reopening resumes where the user left off.
     });
   }
 
+  /// Auto-dismisses the success view — unless a screen reader is running.
+  ///
+  /// 1.6s is comfortably shorter than it takes an assistive technology to
+  /// announce the confirmation, so the panel used to self-destruct mid-sentence
+  /// and the one moment the user most needs confirming was the one they never
+  /// heard. With a reader active the view holds until it is dismissed.
   void _scheduleSuccessClose() {
     _clearCloseTimer();
+    if (MediaQuery.accessibleNavigationOf(context)) return;
     _closeTimer = Timer(_successDuration, _close);
   }
 
   Future<void> _submit() async {
-    if (_busy || _text.text.trim().isEmpty) return;
-    setState(() => _status = _Status.sending);
+    if (_busy) return;
+    if (_text.text.trim().isEmpty) {
+      // Explain, rather than presenting a dead button and leaving the user to
+      // work out which of the two fields is the problem.
+      setState(() => _showEmptyError = true);
+      _fieldFocus.requestFocus();
+      return;
+    }
+    setState(() {
+      _showEmptyError = false;
+      _status = _Status.sending;
+    });
     try {
-      await widget.onSubmit?.call(BeuiFeedbackData(message: _text.text));
+      await widget.onSubmit?.call(
+        BeuiFeedbackData(message: _text.text, sentiment: _sentiment),
+      );
       if (!mounted) return;
       setState(() => _status = _Status.sent);
+      // The only place the draft is discarded: it actually went somewhere.
+      _text.clear();
+      _sentiment = null;
       _scheduleSuccessClose();
     } catch (_) {
       // Preserve the message so a rejected submission can be retried.
@@ -413,21 +511,19 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
   }
 
   Widget _trigger(BeuiColors colors) {
-    return Semantics(
-      button: true,
+    return _IconAction(
+      colors: colors,
       label: widget.title,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: _openPanel,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: Center(
-            child: Icon(
-              widget.icon ?? LucideIcons.message_square,
-              size: 20,
-              color: colors.foreground,
-            ),
-          ),
+      onPressed: _openPanel,
+      // The trigger fills the 48px capsule it lives in, so it needs no extra
+      // slop — only the tab stop and the activation keys it was missing.
+      size: null,
+      radius: 24,
+      child: Center(
+        child: Icon(
+          widget.icon ?? LucideIcons.message_square,
+          size: 20,
+          color: colors.foreground,
         ),
       ),
     );
@@ -506,15 +602,32 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
                   _CloseButton(colors: colors, onTap: _close),
                 ],
               ),
+              if (widget.showSentiment) ...[
+                const SizedBox(height: 10),
+                _SentimentRow(
+                  colors: colors,
+                  label: widget.sentimentLabel,
+                  positiveLabel: widget.positiveLabel,
+                  negativeLabel: widget.negativeLabel,
+                  value: _sentiment,
+                  enabled: !_busy,
+                  onChanged: (v) =>
+                      setState(() => _sentiment = _sentiment == v ? null : v),
+                ),
+              ],
               const SizedBox(height: 8),
               TextField(
                 controller: _text,
                 focusNode: _fieldFocus,
                 enabled: !_busy,
-                minLines: 3,
-                maxLines: 3,
+                minLines: widget.minLines,
+                maxLines: widget.maxLines,
                 cursorColor: colors.foreground,
-                onChanged: (_) => setState(() {}),
+                onChanged: (_) => setState(() {
+                  if (_showEmptyError && _text.text.trim().isNotEmpty) {
+                    _showEmptyError = false;
+                  }
+                }),
                 style: TextStyle(fontSize: 14, color: colors.foreground),
                 decoration: InputDecoration(
                   isCollapsed: true,
@@ -522,10 +635,24 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
                   hintText: widget.placeholder,
                   hintStyle: TextStyle(
                     fontSize: 14,
-                    color: colors.mutedForeground.withValues(alpha: 0.6),
+                    // Full-strength `mutedForeground` (5.9:1); the 0.6
+                    // multiplier put it at 2.55:1.
+                    color: colors.mutedForeground,
                   ),
                 ),
               ),
+              if (_showEmptyError)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Semantics(
+                    liveRegion: true,
+                    container: true,
+                    child: Text(
+                      widget.emptyMessage,
+                      style: TextStyle(fontSize: 12, color: colors.destructive),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -546,9 +673,9 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
                   label: 'Submit',
                   loadingText: 'Sending',
                   state: _busy ? BeuiButtonState.loading : BeuiButtonState.idle,
-                  onPressed: (_busy || _text.text.trim().isEmpty)
-                      ? null
-                      : _submit,
+                  // Enabled even when empty: a disabled button explains
+                  // nothing, and pressing it now says what is missing.
+                  onPressed: _busy ? null : _submit,
                 ),
               ),
             ],
@@ -670,6 +797,11 @@ class _ViewSlot extends StatelessWidget {
 }
 
 /// The small circular close (X) button in the form header.
+///
+/// Painted at 20px — under even WCAG 2.5.8's relaxed 24px floor, let alone the
+/// 44px one — and previously pointer-only. The paint is unchanged (this is a
+/// fidelity port) but the hit area is now 44px and it is reachable, focusable
+/// and activatable from a keyboard.
 class _CloseButton extends StatelessWidget {
   const _CloseButton({required this.colors, required this.onTap});
 
@@ -678,23 +810,264 @@ class _CloseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
+    return _IconAction(
+      colors: colors,
       label: 'Close',
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: Container(
-            width: 20,
-            height: 20,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: colors.foreground.withValues(alpha: 0.07),
-              shape: BoxShape.circle,
+      onPressed: onTap,
+      size: 20,
+      radius: 10,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.foreground.withValues(alpha: 0.07),
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Icon(LucideIcons.x, size: 12, color: colors.mutedForeground),
+        ),
+      ),
+    );
+  }
+}
+
+/// An icon control with the full interactive contract: button semantics,
+/// Enter/Space activation, a hover cursor, a non-shifting focus ring, and at
+/// least 44px of hit area over whatever it paints.
+class _IconAction extends StatefulWidget {
+  const _IconAction({
+    required this.colors,
+    required this.label,
+    required this.onPressed,
+    required this.size,
+    required this.radius,
+    required this.child,
+  });
+
+  final BeuiColors colors;
+  final String label;
+  final VoidCallback onPressed;
+
+  /// Painted size, or null to fill the parent.
+  final double? size;
+  final double radius;
+  final Widget child;
+
+  @override
+  State<_IconAction> createState() => _IconActionState();
+}
+
+class _IconActionState extends State<_IconAction> {
+  bool _focusVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget body = BeuiFocusRing(
+      focused: _focusVisible,
+      borderRadius: BorderRadius.circular(widget.radius),
+      child: widget.size == null
+          ? widget.child
+          : SizedBox(
+              width: widget.size,
+              height: widget.size,
+              child: widget.child,
             ),
-            child: Icon(LucideIcons.x, size: 12, color: colors.mutedForeground),
+    );
+
+    // The slop must be the OUTERMOST wrapper. Every widget between it and the
+    // pointer is a RenderProxyBox, and RenderProxyBox.hitTest rejects anything
+    // outside its own size before descending — so a Semantics or a gesture
+    // detector above it would swallow the very pointers the slop exists to
+    // catch, and the extra area would be dead.
+    Widget wrap(Widget child) =>
+        widget.size == null ? child : BeuiMinHitTarget(child: child);
+
+    return wrap(
+      Semantics(
+        button: true,
+        label: widget.label,
+        onTap: widget.onPressed,
+        child: FocusableActionDetector(
+          mouseCursor: SystemMouseCursors.click,
+          shortcuts: const <ShortcutActivator, Intent>{
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                widget.onPressed();
+                return null;
+              },
+            ),
+          },
+          onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.onPressed,
+            child: body,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The opt-in sentiment row: two selectable chips above the textarea.
+class _SentimentRow extends StatelessWidget {
+  const _SentimentRow({
+    required this.colors,
+    required this.label,
+    required this.positiveLabel,
+    required this.negativeLabel,
+    required this.value,
+    required this.enabled,
+    required this.onChanged,
+  });
+
+  final BeuiColors colors;
+  final String label;
+  final String positiveLabel;
+  final String negativeLabel;
+  final BeuiFeedbackSentiment? value;
+  final bool enabled;
+  final ValueChanged<BeuiFeedbackSentiment> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, color: colors.mutedForeground),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Expanded(
+              child: _SentimentChip(
+                colors: colors,
+                icon: LucideIcons.thumbs_up,
+                label: positiveLabel,
+                selected: value == BeuiFeedbackSentiment.positive,
+                enabled: enabled,
+                onPressed: () => onChanged(BeuiFeedbackSentiment.positive),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _SentimentChip(
+                colors: colors,
+                icon: LucideIcons.thumbs_down,
+                label: negativeLabel,
+                selected: value == BeuiFeedbackSentiment.negative,
+                enabled: enabled,
+                onPressed: () => onChanged(BeuiFeedbackSentiment.negative),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _SentimentChip extends StatefulWidget {
+  const _SentimentChip({
+    required this.colors,
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.enabled,
+    required this.onPressed,
+  });
+
+  final BeuiColors colors;
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final bool enabled;
+  final VoidCallback onPressed;
+
+  @override
+  State<_SentimentChip> createState() => _SentimentChipState();
+}
+
+class _SentimentChipState extends State<_SentimentChip> {
+  bool _hovered = false;
+  bool _focusVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    final on = widget.selected;
+    final fg = on ? colors.foreground : colors.mutedForeground;
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        // Reported as a toggle, so its state is audible as well as visible.
+        toggled: on,
+        enabled: widget.enabled,
+        label: widget.label,
+        onTap: widget.enabled ? widget.onPressed : null,
+        child: FocusableActionDetector(
+          enabled: widget.enabled,
+          mouseCursor: widget.enabled
+              ? SystemMouseCursors.click
+              : SystemMouseCursors.basic,
+          shortcuts: const <ShortcutActivator, Intent>{
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                widget.onPressed();
+                return null;
+              },
+            ),
+          },
+          onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+          onShowHoverHighlight: (v) => setState(() => _hovered = v),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.enabled ? widget.onPressed : null,
+            child: BeuiFocusRing(
+              focused: _focusVisible,
+              borderRadius: BorderRadius.circular(10),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 120),
+                curve: Curves.ease,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: on
+                      ? colors.foreground.withValues(alpha: 0.08)
+                      : (_hovered ? colors.muted : Colors.transparent),
+                  border: Border.all(
+                    color: on ? colors.foreground : colors.border,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(widget.icon, size: 14, color: fg),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        widget.label,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: on ? FontWeight.w600 : FontWeight.w400,
+                          color: fg,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -720,40 +1093,57 @@ class _SentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      decoration: BoxDecoration(
-        color: card,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 48,
-            height: 48,
-            child: _SuccessBadge(success: success, reduce: reduce),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Thanks!',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: colors.foreground,
+    return Semantics(
+      container: true,
+      // The confirmation was purely visual: a sighted user got a sprinkle
+      // burst and a check, a screen-reader user got 1.6s of silence and then
+      // the panel vanishing. Announce it.
+      liveRegion: true,
+      label: 'Thanks! Your feedback helps us build something better.',
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        decoration: BoxDecoration(
+          color: card,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 48,
+              height: 48,
+              child: _SuccessBadge(success: success, reduce: reduce),
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Your feedback helps us build something better.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12,
-              height: 1.5,
-              color: colors.mutedForeground,
+            const SizedBox(height: 12),
+            // Excluded because the live-region label above already carries this
+            // copy; left in, a reader would say it twice.
+            ExcludeSemantics(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Thanks!',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: colors.foreground,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Your feedback helps us build something better.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 1.5,
+                      color: colors.mutedForeground,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_transcript.dart';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -144,7 +145,7 @@ class BeuiMessage extends StatefulWidget {
   const BeuiMessage({
     required this.from,
     required this.children,
-    this.animateIn = false,
+    this.animateIn = true,
     this.semanticLabel,
     super.key,
   });
@@ -152,8 +153,16 @@ class BeuiMessage extends StatefulWidget {
   /// Who authored the row. Drives layout direction and ambient side.
   final BeuiMessageFrom from;
 
-  /// Plays the trailing-edge pop-up once when this row mounts
-  /// (source `animateIn`, default `false`).
+  /// Plays the trailing-edge pop-up once when this row mounts.
+  ///
+  /// Defaults to **true** (C12). The source defaults it off, which meant
+  /// nothing in the library animated out of the box.
+  ///
+  /// The entrance is mount-only and keyed off widget identity, not off this
+  /// flag: a row that stays mounted while its content streams pops exactly
+  /// once. Give rows stable keys (`ValueKey(message.id)`) and appended rows
+  /// animate while existing ones stay still. Reduced motion keeps the opacity
+  /// fade and drops the translate/scale.
   final bool animateIn;
 
   /// Row slots — typically [BeuiMessageAvatar] + [BeuiMessageContent], laid
@@ -177,6 +186,18 @@ class _BeuiMessageState extends State<BeuiMessage> {
   void initState() {
     super.initState();
     if (widget.animateIn) _scheduleEnter();
+  }
+
+  @override
+  void didUpdateWidget(covariant BeuiMessage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // C12. Switching the entrance off mid-flight settles the row rather than
+    // leaving it half-scaled. Switching it *on* after mount stays ignored —
+    // the entrance is mount-only by contract, and replaying it on a prop
+    // change would re-fire on every streamed token.
+    if (!widget.animateIn && oldWidget.animateIn && _progress < 1.0) {
+      setState(() => _progress = 1.0);
+    }
   }
 
   void _scheduleEnter() {
@@ -250,9 +271,11 @@ class _BeuiMessageState extends State<BeuiMessage> {
             offset: Offset(0, dy),
             child: Transform.scale(
               scale: scale,
+              // C17: the row grows out of its own corner — trailing for user
+              // rows, leading for assistant rows — in either text direction.
               alignment: widget.from == BeuiMessageFrom.user
-                  ? Alignment.bottomRight
-                  : Alignment.bottomLeft,
+                  ? AlignmentDirectional.bottomEnd
+                  : AlignmentDirectional.bottomStart,
               child: out,
             ),
           );
@@ -433,20 +456,22 @@ class BeuiMessageHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4), // px-1
       child: DefaultTextStyle.merge(
+        // C29. `height: 1` on 11px metadata leaves no room for a second line,
+        // and a `Row` cannot make one — a long author name plus a timestamp
+        // overflowed rather than wrapping. `Wrap` costs nothing in the common
+        // single-line case and a hair of leading buys legible wrapped text.
         style: agent.typography.metadata.copyWith(
           color: colors.mutedForeground,
+          height: 1.35,
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: from == BeuiMessageFrom.user
-              ? MainAxisAlignment.end
-              : MainAxisAlignment.start,
-          children: [
-            for (var i = 0; i < children.length; i++) ...[
-              if (i > 0) const SizedBox(width: 6), // gap-1.5
-              children[i],
-            ],
-          ],
+        child: Wrap(
+          spacing: 6, // gap-1.5
+          runSpacing: 2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: from == BeuiMessageFrom.user
+              ? WrapAlignment.end
+              : WrapAlignment.start,
+          children: children,
         ),
       ),
     );
@@ -471,20 +496,19 @@ class BeuiMessageFooter extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4), // px-1
         child: DefaultTextStyle.merge(
+          // C29, as in the header: wrap rather than overflow.
           style: agent.typography.metadata.copyWith(
             color: colors.mutedForeground,
+            height: 1.35,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: from == BeuiMessageFrom.user
-                ? MainAxisAlignment.end
-                : MainAxisAlignment.start,
-            children: [
-              for (var i = 0; i < children.length; i++) ...[
-                if (i > 0) const SizedBox(width: 4), // gap-1
-                children[i],
-              ],
-            ],
+          child: Wrap(
+            spacing: 4, // gap-1
+            runSpacing: 2,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: from == BeuiMessageFrom.user
+                ? WrapAlignment.end
+                : WrapAlignment.start,
+            children: children,
           ),
         ),
       ),
@@ -564,10 +588,23 @@ class BeuiMessageMarker extends StatelessWidget {
 /// `{ opacity: 0.45 }`) with no vertical movement.
 class BeuiMessageTyping extends StatefulWidget {
   /// Creates a typing indicator.
-  const BeuiMessageTyping({this.label = 'Responding', super.key});
+  const BeuiMessageTyping({
+    this.label = 'Responding',
+    this.announce,
+    super.key,
+  });
 
   /// Screen-reader label (source `label`, default `"Responding"`).
   final String label;
+
+  /// Whether this indicator is a live region.
+  ///
+  /// Null (the default) resolves to false when a [BeuiMessageScroller] is
+  /// above it and true otherwise — the same rule as
+  /// [BeuiStreamingResponse.announce]. Its label is a constant, so as a live
+  /// region inside a transcript it announced nothing useful while adding one
+  /// more region to the nest the audit found (C6).
+  final bool? announce;
 
   @override
   State<BeuiMessageTyping> createState() => _BeuiMessageTypingState();
@@ -576,12 +613,28 @@ class BeuiMessageTyping extends StatefulWidget {
 class _BeuiMessageTypingState extends State<BeuiMessageTyping>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  bool _reduce = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: _typingPeriod)
-      ..repeat();
+    _controller = AnimationController(vsync: this, duration: _typingPeriod);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // C21. The ticker used to `repeat()` unconditionally: under reduced motion
+    // the dots painted a static 0.45 opacity while the controller still drove
+    // a rebuild every frame, so the one setting meant to *save* motion and
+    // battery cost a permanent 60fps rebuild of every pending turn.
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    _reduce = reduce;
+    if (reduce) {
+      if (_controller.isAnimating) _controller.stop();
+    } else if (!_controller.isAnimating) {
+      _controller.repeat();
+    }
   }
 
   @override
@@ -592,14 +645,14 @@ class _BeuiMessageTypingState extends State<BeuiMessageTyping>
 
   @override
   Widget build(BuildContext context) {
-    final reduce = MediaQuery.disableAnimationsOf(context);
+    final reduce = _reduce;
     final color =
         DefaultTextStyle.of(context).style.color ??
         Theme.of(context).extension<BeuiColors>()!.mutedForeground;
 
     return Semantics(
       label: widget.label,
-      liveRegion: true,
+      liveRegion: widget.announce ?? !BeuiTranscriptScope.isPresent(context),
       child: SizedBox(
         height: 20, // h-5
         child: Row(

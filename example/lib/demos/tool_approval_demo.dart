@@ -58,9 +58,38 @@ class _ToolApprovalDemoState extends State<_ToolApprovalDemo> {
                   ],
                 ),
               ),
+              const SizedBox(height: 32),
+              _SectionLabel('Severity tiers', colors: colors),
+              const SizedBox(height: 12),
+              const _SeverityTiers(),
+              const SizedBox(height: 32),
+              _SectionLabel('Lapsed end-states', colors: colors),
+              const SizedBox(height: 12),
+              const _LapsedStates(),
+              const SizedBox(height: 32),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel(this.text, {required this.colors});
+
+  final String text;
+  final BeuiColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.4,
+        color: colors.mutedForeground,
       ),
     );
   }
@@ -112,6 +141,7 @@ class _ApprovalRun extends StatefulWidget {
 
 class _ApprovalRunState extends State<_ApprovalRun> {
   BeuiToolApprovalStatus _status = BeuiToolApprovalStatus.pending;
+  BeuiToolApprovalGrant? _grant;
   bool _detailsOpen = true;
   final List<Timer> _timers = [];
 
@@ -133,9 +163,12 @@ class _ApprovalRunState extends State<_ApprovalRun> {
     setState(() => _status = next);
   }
 
-  void _approve() {
+  void _approve(BeuiToolApprovalGrant grant) {
     _clearTimers();
-    setState(() => _status = BeuiToolApprovalStatus.approving);
+    setState(() {
+      _grant = grant;
+      _status = BeuiToolApprovalStatus.approving;
+    });
     _timers.addAll([
       Timer(const Duration(milliseconds: 600), () {
         if (mounted) {
@@ -165,6 +198,10 @@ class _ApprovalRunState extends State<_ApprovalRun> {
       description:
           'The agent wants to run the project test suite in the current workspace.',
       status: _status,
+      // Recording which grant was used is what lets the approved card say
+      // "Always allowed" instead of a bare "Approved", and what makes the
+      // Revoke affordance meaningful.
+      grant: _grant,
       open: _detailsOpen,
       onOpenChange: (v) => setState(() => _detailsOpen = v),
       parameters: const [
@@ -182,9 +219,130 @@ class _ApprovalRunState extends State<_ApprovalRun> {
           value: 'ui-components',
         ),
       ],
-      onApprove: _approve,
-      onAlwaysAllow: _approve,
+      onApprove: () => _approve(BeuiToolApprovalGrant.once),
+      onAlwaysAllow: () => _approve(BeuiToolApprovalGrant.always),
       onDeny: () => _finish(BeuiToolApprovalStatus.denied),
+      onRevoke: _grant == BeuiToolApprovalGrant.always
+          ? () => setState(() {
+              _grant = null;
+              _status = BeuiToolApprovalStatus.pending;
+            })
+          : null,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Severity tiers (A3)
+// ---------------------------------------------------------------------------
+
+/// The three risk tiers side by side.
+///
+/// The point of the route is the comparison: before the severity API existed,
+/// `rm -rf ~/project` and `ls` rendered byte-identically, so the card could
+/// not warn. Note what changes on the destructive tier — warning glyph,
+/// tinted emphasis border, `Deny` promoted to the solid lead action,
+/// `Allow once` demoted to outlined, and `Always allow` gone entirely.
+class _SeverityTiers extends StatelessWidget {
+  const _SeverityTiers();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        BeuiToolApproval(
+          tool: 'fs.readFile',
+          title: 'Read a project file?',
+          description: 'Reversible, scoped to the workspace.',
+          parameters: const [
+            BeuiToolApprovalParameter(
+              id: 'path',
+              label: 'Path',
+              value: 'src/components/button.tsx',
+            ),
+          ],
+          onApprove: () {},
+          onAlwaysAllow: () {},
+          onDeny: () {},
+        ),
+        const SizedBox(height: 16),
+        BeuiToolApproval(
+          tool: 'git.push',
+          title: 'Push to the shared branch?',
+          description: 'Affects other people, but can be reverted.',
+          severity: BeuiToolApprovalSeverity.elevated,
+          parameters: const [
+            BeuiToolApprovalParameter(
+              id: 'remote',
+              label: 'Remote',
+              value: 'origin main',
+            ),
+          ],
+          onApprove: () {},
+          onAlwaysAllow: () {},
+          onDeny: () {},
+        ),
+        const SizedBox(height: 16),
+        BeuiToolApproval(
+          tool: 'fs.remove',
+          title: 'Delete the project directory?',
+          description: 'This cannot be undone.',
+          severity: BeuiToolApprovalSeverity.destructive,
+          parameters: const [
+            BeuiToolApprovalParameter(
+              id: 'command',
+              label: 'Command',
+              value: BeuiToolApprovalCode(
+                code: 'rm -rf ~/project',
+                language: BeuiCodeLanguage.bash,
+              ),
+            ),
+          ],
+          onApprove: () {},
+          // Wired, and still suppressed — a standing grant for a destructive
+          // capability is not offered in passing.
+          onAlwaysAllow: () {},
+          onDeny: () {},
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Lapsed end-states (A21)
+// ---------------------------------------------------------------------------
+
+/// `expired` (never ran — the window closed) and `timedOut` (ran, but was cut
+/// off). Both are terminal and neither shows an action row.
+class _LapsedStates extends StatelessWidget {
+  const _LapsedStates();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        BeuiToolApproval(
+          tool: 'terminal.run',
+          title: 'Terminal access',
+          description: 'The request lapsed before anyone answered it.',
+          status: BeuiToolApprovalStatus.expired,
+          onApprove: () {},
+          onDeny: () {},
+        ),
+        const SizedBox(height: 16),
+        BeuiToolApproval(
+          tool: 'http.request',
+          title: 'Fetch project activity',
+          description: 'Approved, then cut off at the execution budget.',
+          status: BeuiToolApprovalStatus.timedOut,
+          grant: BeuiToolApprovalGrant.once,
+          onApprove: () {},
+          onDeny: () {},
+        ),
+      ],
     );
   }
 }
