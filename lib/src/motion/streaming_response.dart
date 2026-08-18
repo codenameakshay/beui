@@ -526,13 +526,22 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
             reduce: reduce,
             child: Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: _StatusNotice(
-                error: _error,
-                message: _error ? widget.errorMessage : widget.stoppedMessage,
-                actionLabel: _error ? widget.retryLabel : widget.continueLabel,
-                onAction: _error ? widget.onRetry : widget.onContinue,
-                colors: colors,
-                statusColors: agent.statusColorsFor(theme.brightness),
+              // The shared disclosure reveals through `Align(topCenter)`, which
+              // centres a child that does not stretch — and the notice is
+              // min-width by design. Pin it to the leading edge so it lines up
+              // with the answer above it.
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: _StatusNotice(
+                  error: _error,
+                  message: _error ? widget.errorMessage : widget.stoppedMessage,
+                  actionLabel: _error
+                      ? widget.retryLabel
+                      : widget.continueLabel,
+                  onAction: _error ? widget.onRetry : widget.onContinue,
+                  colors: colors,
+                  statusColors: agent.statusColorsFor(theme.brightness),
+                ),
               ),
             ),
           ),
