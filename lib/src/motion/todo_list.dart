@@ -1091,7 +1091,13 @@ class _StrikethroughTitleState extends State<_StrikethroughTitle> {
                       isMovement: true,
                     ),
               builder: (context, t, _) {
-                final tt = t.clamp(0.0, 1.0);
+                // `_target` is maintained correctly for both modes, but under
+                // reduce the motion is `NoMotion`, which holds the builder's
+                // `t` at its mount value forever. A task that completes while
+                // already on screen therefore never got its strike drawn.
+                final tt = widget.reduce
+                    ? _target.clamp(0.0, 1.0)
+                    : t.clamp(0.0, 1.0);
                 if (tt <= 0) return const SizedBox.shrink();
                 return Align(
                   alignment: Alignment.centerLeft,
@@ -1257,13 +1263,23 @@ class _TodoStatusIconState extends State<_TodoStatusIcon>
                 painter: _StatusPainter(
                   color: color,
                   fillOpacity: channel.left.clamp(0.0, 1.0),
-                  checkProgress: reduce && checkTarget == 1
-                      ? 1.0
+                  // Every reduce-gated channel above is `NoMotion`, which holds
+                  // its seeded value rather than snapping to the target, so
+                  // each one has to be read straight off the target instead.
+                  // `ringProgress` was the channel this compensation missed:
+                  // a pending -> inProgress transition under reduced motion
+                  // left the arc frozen at 0, i.e. no ring at all. Reading the
+                  // targets uniformly also fixes the reverse direction, which
+                  // the old `&& target == 1` form still froze.
+                  checkProgress: reduce
+                      ? checkTarget
                       : channel.top.clamp(0.0, 1.0),
-                  cancelProgress: reduce && cancelTarget == 1
-                      ? 1.0
+                  cancelProgress: reduce
+                      ? cancelTarget
                       : channel.right.clamp(0.0, 1.0),
-                  ringProgress: channel.bottom.clamp(0.0, 1.0),
+                  ringProgress: reduce
+                      ? ringTarget
+                      : channel.bottom.clamp(0.0, 1.0),
                   ringOpacity: ringOp.clamp(0.0, 1.0),
                   baseOpacity: inProgressBase ? 0.2 : 1.0,
                   dashed: pending,

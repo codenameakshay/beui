@@ -724,8 +724,18 @@ class _BeuiMessageBubbleCollapsibleState
     // 220ms/140ms disclosure curve as the rest of the library, and the fade
     // mask dissolves with it rather than switching off.
     final target = _open ? 1.0 : 0.0;
+    // Reduced motion drops *movement*, not the transition: the height snaps
+    // but a short opacity ramp survives, matching `_disclosure.dart`. Crucially
+    // this must be a motion that actually ARRIVES — `const NoMotion()` here
+    // holds its seeded value forever (see
+    // `test/motion/_no_motion_semantics_test.dart`), which froze the reveal at
+    // 0 and left "Show more" swapping its label while the body stayed clipped.
     final motion = reduce
-        ? const NoMotion()
+        ? motionFor(
+            context,
+            const CurvedMotion(Duration(milliseconds: 120), beuiEaseOut),
+            isMovement: false,
+          )
         : motionFor(
             context,
             _open
@@ -739,9 +749,15 @@ class _BeuiMessageBubbleCollapsibleState
       motion: motion,
       builder: (context, t, child) {
         final v = t.clamp(0.0, 1.0);
+        // The channel split, exactly as `_disclosure.dart` does it: the height
+        // is movement and snaps under reduced motion, the mask fade rides the
+        // 120ms curve. The `v > 0.01` term holds the height open while a
+        // fade-out runs — snap it to 0 on the first frame instead and the fade
+        // is invisible, because a zero-height box cannot be seen fading.
+        final h = reduce ? ((_open || v > 0.01) ? 1.0 : 0.0) : v;
         return _CollapseBox(
           collapsedHeight: collapsedH,
-          t: v,
+          t: h,
           child: ShaderMask(
             blendMode: BlendMode.dstIn,
             shaderCallback: (bounds) {
@@ -989,8 +1005,16 @@ class _CollapsibleTriggerState extends State<_CollapsibleTrigger> {
                               ? const NoMotion()
                               : widget.chevronMotion,
                           builder: (context, t, child) {
+                            // NoMotion holds its seeded value, so the frozen
+                            // `t` pinned the chevron at its mount angle. Read
+                            // the target directly under reduce — the same
+                            // snap branch every other chevron in the family
+                            // uses.
+                            final a = widget.reduce
+                                ? (widget.open ? 1.0 : 0.0)
+                                : t;
                             return Transform.rotate(
-                              angle: t * math.pi, // 0 → 180°
+                              angle: a * math.pi, // 0 → 180°
                               child: child,
                             );
                           },

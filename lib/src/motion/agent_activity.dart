@@ -1104,8 +1104,17 @@ class _StreamViewport extends StatelessWidget {
       motion: reduce
           ? const NoMotion()
           : motionFor(context, beuiSpringLayout, isMovement: true),
-      builder: (context, y, child) =>
-          Transform.translate(offset: Offset(0, y), child: child),
+      builder: (context, y, child) {
+        // `NoMotion` HOLDS its seeded value forever — it does not snap to the
+        // target (see `test/motion/_no_motion_semantics_test.dart`). While
+        // `working`, `canScroll` is false, so this translate is the *only*
+        // mechanism that brings appended rows into the viewport: leaving the
+        // frozen `y` in place parks it at 0 and every row past the first
+        // screenful stays permanently below the fold under reduced motion.
+        // Bypass the dead channel and read the target directly.
+        final v = reduce ? streamOffset : y;
+        return Transform.translate(offset: Offset(0, v), child: child);
+      },
       child: list,
     );
 

@@ -1007,6 +1007,86 @@ void main() {
       matchesGoldenFile('goldens/beui_agent_activity.png'),
     );
   });
+
+  // F1. While `working`, `canScroll` is false — the stream is an OverflowBox
+  // inside a ClipRect, and the `streamOffset` translate is the ONLY thing that
+  // brings newly appended rows up into view. That translate was driven by a
+  // `SingleMotionBuilder` handed `const NoMotion()` under reduced motion, and
+  // NoMotion holds its seeded value forever rather than snapping to the target
+  // (see `_no_motion_semantics_test.dart`). It therefore stayed at 0, and
+  // every row past the first screenful was clipped away permanently — the
+  // stream appeared to stop updating.
+  group('BeuiAgentActivity reduced-motion stream reveal', () {
+    testWidgets('keeps the newest row inside the viewport while working', (
+      tester,
+    ) async {
+      const rows = 18;
+      Widget stream(int count) => _app(
+        BeuiAgentActivity(
+          items: [
+            for (var i = 0; i < count; i++)
+              BeuiAgentActivityText(id: 'step-$i', content: 'Step $i'),
+          ],
+          maxHeight: 120,
+          defaultOpen: true,
+        ),
+        reduce: true,
+      );
+
+      // Three stages, and all three matter.
+      //
+      // Mounting straight into the final list hides the bug entirely, and so
+      // does a single append: the frame on which the stream FIRST overflows is
+      // also the frame `capped` flips true, which inserts the scroll fade mask
+      // above the stream and so remounts the motion builder underneath it. A
+      // fresh controller is seeded with `initialValue == value`, which renders
+      // the correct offset even under NoMotion.
+      //
+      // The defect is in every append AFTER that: the stream is already
+      // capped, nothing remounts, and the frozen translate simply stops
+      // tracking. That is the real usage — rows arrive one at a time for the
+      // whole run.
+      await tester.pumpWidget(stream(3));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+
+      // Stage 2: first overflow (this one remounts).
+      await tester.pumpWidget(stream(8));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(const Duration(milliseconds: 600));
+
+      // Stage 3: append to an already-capped stream — no remount, no excuse.
+      await tester.pumpWidget(stream(rows));
+      // `_measure` runs in a post-frame callback, so the new layout only
+      // exists from the following frame on.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(const Duration(milliseconds: 600));
+
+      // The clipped viewport: the OverflowBox the rows actually live inside
+      // (the widget has others, e.g. in the working header).
+      final overflow = find
+          .ancestor(of: find.text('Step 0'), matching: find.byType(OverflowBox))
+          .first;
+      final viewport = tester.getRect(overflow);
+
+      final last = tester.getRect(find.text('Step ${rows - 1}'));
+
+      expect(
+        last.bottom,
+        lessThanOrEqualTo(viewport.bottom + 1),
+        reason:
+            'the newest row is clipped below the fold — the stream translate '
+            'froze at 0 (viewport=$viewport last=$last)',
+      );
+      expect(
+        last.top,
+        greaterThanOrEqualTo(viewport.top - 1),
+        reason: 'the newest row must not be pushed above the viewport either',
+      );
+    });
+  });
 }
 
 String _frenchRanTools(int count) =>

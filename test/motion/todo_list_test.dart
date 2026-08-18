@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -777,6 +779,89 @@ void main() {
       find.byType(_TodoGolden),
       matchesGoldenFile('goldens/beui_todo_list.png'),
     );
+  });
+
+  // F4/F5. Both channels below are gated on `NoMotion` under reduced motion,
+  // and NoMotion holds its seeded value forever rather than snapping to the
+  // target (see `_no_motion_semantics_test.dart`). Mounting straight into the
+  // end state hides the bug — the controller's initial value IS the target —
+  // so both tests mount in the start state and then TRANSITION, which is the
+  // only thing that exercises the frozen channel.
+  group('BeuiTodoList reduced-motion status channels', () {
+    testWidgets('F4: pending -> inProgress draws the ring arc', (tester) async {
+      await tester.pumpWidget(
+        _host(items: _sample(a: BeuiTodoItemStatus.pending), reduce: true),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.pumpWidget(
+        _host(
+          items: _sample(a: BeuiTodoItemStatus.inProgress, aProgress: 50),
+          reduce: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // `dashed: pending` is false for an in-progress row, so its dashed
+      // circle is not drawn and the progress ring is the only `drawArc` in the
+      // subtree. 50% => a half-turn sweep.
+      expect(
+        find.byType(BeuiTodoList),
+        paints..arc(startAngle: 0.0, sweepAngle: math.pi),
+        reason:
+            'the in-progress ring must reach its target under reduced motion, '
+            'not stay frozen at 0 (which draws no arc at all)',
+      );
+    });
+
+    testWidgets('F5: completing a visible row strikes its title', (
+      tester,
+    ) async {
+      int strikes() => find
+          .descendant(
+            of: find.byType(BeuiTodoList),
+            matching: find.byType(FractionallySizedBox),
+          )
+          .evaluate()
+          .length;
+
+      await tester.pumpWidget(
+        _host(items: _sample(a: BeuiTodoItemStatus.pending), reduce: true),
+      );
+      await tester.pumpAndSettle();
+      final before = strikes();
+
+      await tester.pumpWidget(
+        _host(items: _sample(a: BeuiTodoItemStatus.completed), reduce: true),
+      );
+      await tester.pumpAndSettle();
+      // Well past the strike's draw-on delay in either mode.
+      await tester.pump(const Duration(milliseconds: 600));
+
+      expect(
+        strikes(),
+        greaterThan(before),
+        reason:
+            'the strikethrough renders nothing while its width factor is 0; '
+            'completing a row that was already on screen must draw it',
+      );
+
+      final drawn = tester
+          .widgetList<FractionallySizedBox>(
+            find.descendant(
+              of: find.byType(BeuiTodoList),
+              matching: find.byType(FractionallySizedBox),
+            ),
+          )
+          .map((w) => w.widthFactor)
+          .toList();
+      expect(
+        drawn,
+        contains(1.0),
+        reason: 'under reduced motion the strike snaps to full width',
+      );
+    });
   });
 }
 
