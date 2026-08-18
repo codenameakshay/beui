@@ -1,6 +1,17 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+/// Advances [count] frames of 20ms.
+///
+/// The dither mark spins for as long as the run is active, so `pumpAndSettle`
+/// never returns on any in-progress status.
+Future<void> pumpFrames(WidgetTester tester, [int count = 30]) async {
+  for (var i = 0; i < count; i++) {
+    await tester.pump(const Duration(milliseconds: 20));
+  }
+}
 
 Widget _host({
   Widget? child,
@@ -275,6 +286,400 @@ void main() {
         findsOneWidget,
       );
       handle.dispose();
+    });
+  });
+
+  // ---------------------------------------------------------------------
+  // UX remediation — R13, R18, R24, R25, R30
+  // ---------------------------------------------------------------------
+
+  Widget remediationHost({
+    BeuiImageGenerationStatus status = BeuiImageGenerationStatus.generating,
+    double? progress,
+    VoidCallback? onCancel,
+    VoidCallback? onRetry,
+    bool reserveErrorSlot = true,
+    String? prompt,
+    bool reduce = false,
+    // Fluid, so the widget shrink-wraps and `getSize` measures the component
+    // rather than the Align that `compact` uses to centre it.
+    BeuiImageGenerationSize size = BeuiImageGenerationSize.fluid,
+  }) {
+    Widget body = Center(
+      child: SizedBox(
+        width: 320,
+        child: BeuiImageGeneration(
+          status: status,
+          size: size,
+          progress: progress,
+          onCancel: onCancel,
+          onRetry: onRetry,
+          reserveErrorSlot: reserveErrorSlot,
+          prompt: prompt,
+          child: const ColoredBox(color: Color(0xFF335577)),
+        ),
+      ),
+    );
+    if (reduce) {
+      final inner = body;
+      body = Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: inner,
+        ),
+      );
+    }
+    return MaterialApp(
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
+      home: Scaffold(body: body),
+    );
+  }
+
+  group('BeuiImageGeneration progress (R13)', () {
+    /// Fraction of the frame the determinate fill covers.
+    double? fillFactor(WidgetTester tester) {
+      final boxes = tester.widgetList<FractionallySizedBox>(
+        find.byType(FractionallySizedBox),
+      );
+      return boxes.isEmpty ? null : boxes.first.widthFactor;
+    }
+
+    testWidgets('an indeterminate run shows no hairline', (tester) async {
+      await tester.pumpWidget(remediationHost());
+      await pumpFrames(tester);
+      expect(fillFactor(tester), isNull);
+    });
+
+    testWidgets('a determinate run shows one, sized to the fraction', (
+      tester,
+    ) async {
+      await tester.pumpWidget(remediationHost(progress: 0.4));
+      await pumpFrames(tester);
+      expect(fillFactor(tester), moreOrLessEquals(0.4, epsilon: 0.01));
+    });
+
+    testWidgets('out-of-range values are clamped rather than overflowing', (
+      tester,
+    ) async {
+      await tester.pumpWidget(remediationHost(progress: 4));
+      await pumpFrames(tester);
+      expect(fillFactor(tester), 1.0);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('the hairline goes away once the work is done', (tester) async {
+      await tester.pumpWidget(
+        remediationHost(
+          status: BeuiImageGenerationStatus.complete,
+          progress: 1,
+        ),
+      );
+      await pumpFrames(tester);
+      expect(fillFactor(tester), isNull);
+    });
+
+    testWidgets('progress is spoken, not only drawn', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        remediationHost(progress: 0.42, prompt: 'a quiet mountain'),
+      );
+      await pumpFrames(tester);
+      // Four words and a spinner across a 10-60s operation is the canonical
+      // "is it frozen?" surface — for a screen reader most of all.
+      expect(
+        find.bySemanticsLabel('Generating image, 42%: a quiet mountain'),
+        findsOneWidget,
+      );
+      expect(find.text('Generating image · 42%'), findsOneWidget);
+      handle.dispose();
+    });
+  });
+
+  group('BeuiImageGeneration cancel (R13)', () {
+    testWidgets('no stop control without a handler', (tester) async {
+      await tester.pumpWidget(remediationHost());
+      await pumpFrames(tester);
+      expect(find.byIcon(LucideIcons.square), findsNothing);
+    });
+
+    testWidgets('a stop control appears in-frame while active', (tester) async {
+      await tester.pumpWidget(remediationHost(onCancel: () {}));
+      await pumpFrames(tester);
+      expect(find.byIcon(LucideIcons.square), findsOneWidget);
+    });
+
+    testWidgets('and goes away once there is nothing to stop', (tester) async {
+      await tester.pumpWidget(
+        remediationHost(
+          status: BeuiImageGenerationStatus.complete,
+          onCancel: () {},
+        ),
+      );
+      await pumpFrames(tester);
+      expect(find.byIcon(LucideIcons.square), findsNothing);
+    });
+
+    testWidgets('it fires, is labelled, and is keyboard-reachable', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      var cancels = 0;
+      await tester.pumpWidget(remediationHost(onCancel: () => cancels++));
+      await pumpFrames(tester);
+
+      expect(find.bySemanticsLabel('Stop generating'), findsOneWidget);
+
+      await tester.tap(find.byIcon(LucideIcons.square));
+      await tester.pump();
+      expect(cancels, 1);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await pumpFrames(tester);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(cancels, 2);
+      handle.dispose();
+    });
+
+    testWidgets('the 24px control accepts a touch that misses it', (
+      tester,
+    ) async {
+      var cancels = 0;
+      await tester.pumpWidget(remediationHost(onCancel: () => cancels++));
+      await pumpFrames(tester);
+      final centre = tester.getCenter(find.byIcon(LucideIcons.square));
+      await tester.tapAt(centre + const Offset(0, 18));
+      await tester.pump();
+      expect(cancels, 1);
+    });
+  });
+
+  group('BeuiImageGeneration error costs no layout shift (R24)', () {
+    testWidgets('the retry slot is held open on every status', (tester) async {
+      await tester.pumpWidget(remediationHost(onRetry: () {}));
+      await pumpFrames(tester);
+      final generating = tester.getSize(find.byType(BeuiImageGeneration));
+
+      await tester.pumpWidget(
+        remediationHost(
+          status: BeuiImageGenerationStatus.error,
+          onRetry: () {},
+        ),
+      );
+      await pumpFrames(tester);
+      // The component reserves its media frame with AspectRatio; the error
+      // branch was the one place it forgot, and appended 52px.
+      expect(tester.getSize(find.byType(BeuiImageGeneration)), generating);
+    });
+
+    testWidgets('the reserved slot is inert until the failure arrives', (
+      tester,
+    ) async {
+      var retries = 0;
+      await tester.pumpWidget(remediationHost(onRetry: () => retries++));
+      await pumpFrames(tester);
+      await tester.tap(find.text('Try again'), warnIfMissed: false);
+      await tester.pump();
+      expect(retries, 0);
+    });
+
+    testWidgets('and live once it does', (tester) async {
+      var retries = 0;
+      await tester.pumpWidget(
+        remediationHost(
+          status: BeuiImageGenerationStatus.error,
+          onRetry: () => retries++,
+        ),
+      );
+      await pumpFrames(tester);
+      await tester.tap(find.text('Try again'));
+      await tester.pump();
+      expect(retries, 1);
+    });
+
+    testWidgets('reserveErrorSlot: false gives the 52px back', (tester) async {
+      await tester.pumpWidget(
+        remediationHost(onRetry: () {}, reserveErrorSlot: false),
+      );
+      await pumpFrames(tester);
+      final generating = tester.getSize(find.byType(BeuiImageGeneration));
+
+      await tester.pumpWidget(
+        remediationHost(
+          status: BeuiImageGenerationStatus.error,
+          onRetry: () {},
+          reserveErrorSlot: false,
+        ),
+      );
+      await pumpFrames(tester);
+      expect(
+        tester.getSize(find.byType(BeuiImageGeneration)).height,
+        greaterThan(generating.height),
+      );
+    });
+  });
+
+  group('BeuiImageGeneration failure legibility (R25)', () {
+    double contrast(Color a, Color b) {
+      final la = a.computeLuminance();
+      final lb = b.computeLuminance();
+      final hi = la > lb ? la : lb;
+      final lo = la > lb ? lb : la;
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    testWidgets('the failure line clears AA against the light surface', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        remediationHost(status: BeuiImageGenerationStatus.error),
+      );
+      await pumpFrames(tester);
+      final style = tester.widget<Text>(find.text('Generation failed')).style!;
+      final colors = BeuiColors.light();
+      // `destructive` is tuned as a fill and measured 3.94:1 as body text.
+      expect(contrast(style.color!, colors.background), greaterThan(4.5));
+    });
+
+    testWidgets('and it is still recognisably the destructive hue', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        remediationHost(status: BeuiImageGenerationStatus.error),
+      );
+      await pumpFrames(tester);
+      final style = tester.widget<Text>(find.text('Generation failed')).style!;
+      final colors = BeuiColors.light();
+      expect(
+        HSLColor.fromColor(style.color!).hue,
+        moreOrLessEquals(
+          HSLColor.fromColor(colors.destructive).hue,
+          epsilon: 2,
+        ),
+      );
+    });
+
+    testWidgets('dark mode is left alone — it already passed', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.dark().copyWith(extensions: [BeuiColors.dark()]),
+          ),
+          home: const Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 320,
+                child: BeuiImageGeneration(
+                  status: BeuiImageGenerationStatus.error,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await pumpFrames(tester);
+      final style = tester.widget<Text>(find.text('Generation failed')).style!;
+      expect(style.color, BeuiColors.dark().destructive);
+    });
+  });
+
+  group('BeuiImageGeneration reduced motion (R18)', () {
+    testWidgets('the reveal keeps its opacity channel', (tester) async {
+      await tester.pumpWidget(
+        remediationHost(
+          status: BeuiImageGenerationStatus.generating,
+          reduce: true,
+        ),
+      );
+      await pumpFrames(tester, 5);
+      await tester.pumpWidget(
+        remediationHost(
+          status: BeuiImageGenerationStatus.complete,
+          reduce: true,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 120));
+      final mid = tester
+          .widgetList<Opacity>(find.byType(Opacity))
+          .map((o) => o.opacity)
+          .where((o) => o > 0 && o < 1);
+      // Movement snaps; the fade survives. It used to hard-cut.
+      expect(mid, isNotEmpty);
+      await tester.pump(const Duration(milliseconds: 500));
+    });
+
+    testWidgets('but drops the movement channel', (tester) async {
+      await tester.pumpWidget(
+        remediationHost(
+          status: BeuiImageGenerationStatus.generating,
+          reduce: true,
+        ),
+      );
+      await pumpFrames(tester, 5);
+      await tester.pumpWidget(
+        remediationHost(
+          status: BeuiImageGenerationStatus.complete,
+          reduce: true,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 120));
+      final scales = tester
+          .widgetList<Transform>(
+            find.descendant(
+              of: find.byType(BeuiImageGeneration),
+              matching: find.byType(Transform),
+            ),
+          )
+          .map((t) => t.transform.storage[0]);
+      // The 1.015 → 1 scale snaps rather than easing.
+      expect(scales.every((s) => (s - 1).abs() < 0.001), isTrue);
+    });
+  });
+
+  group('BeuiImageGeneration dither field cost (R30)', () {
+    testWidgets('the painter repaints without rebuilding the widget', (
+      tester,
+    ) async {
+      await tester.pumpWidget(remediationHost());
+      await tester.pump();
+
+      CustomPaint field() => tester.widget<CustomPaint>(
+        find
+            .descendant(
+              of: find.byType(BeuiImageGeneration),
+              matching: find.byType(CustomPaint),
+            )
+            .first,
+      );
+
+      final first = field();
+      for (var i = 0; i < 10; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      // Identity, not equality: a setState per tick would build a new widget
+      // every frame — about 2,700 circles' worth of rebuild at 500px square.
+      expect(identical(field(), first), isTrue);
+    });
+
+    testWidgets('and it paints inside a RepaintBoundary', (tester) async {
+      await tester.pumpWidget(remediationHost());
+      await tester.pump();
+      expect(
+        find.ancestor(
+          of: find
+              .descendant(
+                of: find.byType(BeuiImageGeneration),
+                matching: find.byType(CustomPaint),
+              )
+              .first,
+          matching: find.byType(RepaintBoundary),
+        ),
+        findsWidgets,
+      );
     });
   });
 }

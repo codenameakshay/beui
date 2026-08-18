@@ -922,28 +922,31 @@ class _RailTick extends StatelessWidget {
       // Announce the intermediate touch state rather than leaving a screen
       // reader to wonder why the first activation did nothing visible to it.
       hint: previewing ? 'Previewing. Activate again to open' : null,
-      child: MouseRegion(
-        onEnter: (_) => onHover(true),
-        cursor: SystemMouseCursors.click,
-        child: FocusableActionDetector(
-          mouseCursor: SystemMouseCursors.click,
-          shortcuts: const <ShortcutActivator, Intent>{
-            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-          },
-          actions: <Type, Action<Intent>>{
-            ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) {
-                onActivate(null);
-                return null;
-              },
-            ),
-          },
-          onShowFocusHighlight: onFocus,
-          child: Padding(
-            padding: isHorizontal
-                ? const EdgeInsets.symmetric(horizontal: _tickGap / 2)
-                : const EdgeInsets.symmetric(vertical: _tickGap / 2),
+      // The dead zone is *outside* the hover region, not inside it: a Padding
+      // wrapped around the MouseRegion would still report a hover across the
+      // full slot and the cascade would keep re-firing.
+      child: Padding(
+        padding: isHorizontal
+            ? const EdgeInsets.symmetric(horizontal: _tickGap / 2)
+            : const EdgeInsets.symmetric(vertical: _tickGap / 2),
+        child: MouseRegion(
+          onEnter: (_) => onHover(true),
+          cursor: SystemMouseCursors.click,
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            shortcuts: const <ShortcutActivator, Intent>{
+              SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+              SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  onActivate(null);
+                  return null;
+                },
+              ),
+            },
+            onShowFocusHighlight: onFocus,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTapDown: (details) => lastKind = details.kind,

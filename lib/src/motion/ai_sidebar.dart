@@ -1428,11 +1428,26 @@ class _MarqueeLabelState extends State<_MarqueeLabel>
   String? _measuredText;
   TextStyle? _measuredStyle;
   double _intrinsicWidth = 0;
+  double _intrinsicHeight = 0;
+
+  /// Whether a pass is actually under way.
+  ///
+  /// Separate from `widget.active`: the delay has to gate what is *rendered*,
+  /// not just when the controller starts. Gating only the controller left the
+  /// duplicated marquee track on screen from the first hover frame, which is
+  /// the flicker the delay exists to prevent.
+  bool _passing = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this);
+    _controller = AnimationController(vsync: this)
+      ..addStatusListener((status) {
+        if (status != AnimationStatus.completed) return;
+        // One pass, then back to the static ellipsised label.
+        if (mounted) setState(() => _passing = false);
+        _controller.value = 0;
+      });
   }
 
   @override
@@ -1465,6 +1480,7 @@ class _MarqueeLabelState extends State<_MarqueeLabel>
     _controller
       ..stop()
       ..value = 0;
+    if (_passing && mounted) setState(() => _passing = false);
   }
 
   /// Schedules one pass, after [_marqueeDelay].
@@ -1480,6 +1496,7 @@ class _MarqueeLabelState extends State<_MarqueeLabel>
       _controller.duration = Duration(
         milliseconds: (math.max(2.4, distance / 34) * 1000).round(),
       );
+      setState(() => _passing = true);
       _controller.forward(from: 0);
     });
   }
@@ -1506,6 +1523,7 @@ class _MarqueeLabelState extends State<_MarqueeLabel>
       textDirection: Directionality.of(context),
     )..layout();
     _intrinsicWidth = painter.width;
+    _intrinsicHeight = painter.height;
     painter.dispose();
   }
 
@@ -1515,7 +1533,7 @@ class _MarqueeLabelState extends State<_MarqueeLabel>
       builder: (context, constraints) {
         _measure(constraints.maxWidth.isFinite ? constraints.maxWidth : 0.0);
         final distance = _distance;
-        final canRun = widget.active && distance > 0 && !_reduce;
+        final canRun = _passing && distance > 0 && !_reduce;
 
         // Static path: ellipsis clip — no overflow, matches collapsed
         // hover-off, and the resting state of a settled marquee.
@@ -1533,8 +1551,13 @@ class _MarqueeLabelState extends State<_MarqueeLabel>
         }
 
         // Marquee path: unconstrained track clipped to the viewport.
+        //
+        // The height is pinned to the measured line: the row's Column hands
+        // children an unbounded height, and an OverflowBox under an unbounded
+        // constraint tries to be infinitely tall.
         return SizedBox(
           width: double.infinity,
+          height: _intrinsicHeight,
           child: ClipRect(
             child: AnimatedBuilder(
               animation: _controller,

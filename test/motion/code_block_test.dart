@@ -526,4 +526,44 @@ void main() {
       expect(byText['packages/beui'], palette.string);
     });
   });
+
+  // A settled, complete block: the gutter at its new 0.75 strength, the
+  // highlighted rows carrying both a fill and a leading bar, and the chrome's
+  // un-multiplied language label.
+  testWidgets('settled golden (complete, line numbers, highlight)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
+        home: const Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 520,
+              child: BeuiCodeBlock(
+                code:
+                    'import { generateText } from "ai";\n'
+                    '\n'
+                    'export async function summarize(input: string) {\n'
+                    '  const { text } = await generateText({\n'
+                    '    model: "openai/gpt-5",\n'
+                    '  });\n'
+                    '  return text;\n'
+                    '}',
+                filename: 'summarize.ts',
+                highlightLines: [4, 5, 6],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(BeuiCodeBlock),
+      matchesGoldenFile('goldens/beui_code_block.png'),
+    );
+  });
 }

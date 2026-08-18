@@ -454,6 +454,44 @@ class _ImageFrame extends StatelessWidget {
   final String cancelLabel;
   final Widget? child;
 
+  /// One frame of the media: the four channels resolved to plain numbers.
+  ///
+  /// Split out so the reduced-motion path can supply snapped values for scale
+  /// and blur without duplicating the filter composition.
+  Widget _mediaLayer({
+    required double opacity,
+    required double saturate,
+    required double scale,
+    required double blurPx,
+  }) {
+    final sigma = beuiBlurSigma(blurPx);
+    // Force children to fill the frame
+    // (source `[&>*]:size-full object-cover`).
+    Widget media = SizedBox.expand(child: child ?? const SizedBox.shrink());
+    if (sigma > 0.05 || (saturate - 1).abs() > 0.01) {
+      ImageFilter filter = _saturationFilter(saturate);
+      if (sigma > 0.05) {
+        filter = ImageFilter.compose(
+          outer: filter,
+          inner: ImageFilter.blur(
+            sigmaX: sigma,
+            sigmaY: sigma,
+            tileMode: TileMode.decal,
+          ),
+        );
+      }
+      media = ImageFiltered(imageFilter: filter, child: media);
+    }
+    return Opacity(
+      opacity: opacity.clamp(0.0, 1.0),
+      child: Transform.scale(
+        scale: scale,
+        filterQuality: FilterQuality.medium,
+        child: media,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // The channel split the project rule asks for, not one switch for all four.
@@ -462,6 +500,10 @@ class _ImageFrame extends StatelessWidget {
     // so the whole reveal hard-swapped (audit R18 / T4).
     final colourMotion = motionFor(context, _mediaMotion, isMovement: false);
     final movementMotion = motionFor(context, _mediaMotion, isMovement: true);
+    // NoMotion *holds*; it does not jump. Routing scale and blur through it
+    // would freeze them at whatever value the previous status left behind, so
+    // the reduced-motion path snaps them to their target explicitly.
+    final snapMovement = movementMotion is NoMotion;
     final showCancel = active && onCancel != null;
 
     return Semantics(
@@ -487,54 +529,30 @@ class _ImageFrame extends StatelessWidget {
                   motion: colourMotion,
                   builder: (context, opacity, _) {
                     return SingleMotionBuilder(
-                      value: mediaState.scale,
-                      motion: movementMotion,
-                      builder: (context, scale, _) {
+                      value: mediaState.saturate,
+                      motion: colourMotion,
+                      builder: (context, saturate, _) {
+                        if (snapMovement) {
+                          return _mediaLayer(
+                            opacity: opacity,
+                            saturate: saturate,
+                            scale: mediaState.scale,
+                            blurPx: mediaState.blurPx,
+                          );
+                        }
                         return SingleMotionBuilder(
-                          value: mediaState.blurPx,
+                          value: mediaState.scale,
                           motion: movementMotion,
-                          builder: (context, blurPx, _) {
+                          builder: (context, scale, _) {
                             return SingleMotionBuilder(
-                              value: mediaState.saturate,
-                              motion: colourMotion,
-                              builder: (context, saturate, _) {
-                                final o = opacity.clamp(0.0, 1.0);
-                                final s = scale;
-                                final sigma = beuiBlurSigma(blurPx);
-                                // Force children to fill the frame
-                                // (source `[&>*]:size-full object-cover`).
-                                Widget media = SizedBox.expand(
-                                  child: child ?? const SizedBox.shrink(),
-                                );
-                                if (sigma > 0.05 ||
-                                    (saturate - 1).abs() > 0.01) {
-                                  ImageFilter filter = _saturationFilter(
-                                    saturate,
-                                  );
-                                  if (sigma > 0.05) {
-                                    filter = ImageFilter.compose(
-                                      outer: filter,
-                                      inner: ImageFilter.blur(
-                                        sigmaX: sigma,
-                                        sigmaY: sigma,
-                                        tileMode: TileMode.decal,
-                                      ),
-                                    );
-                                  }
-                                  media = ImageFiltered(
-                                    imageFilter: filter,
-                                    child: media,
-                                  );
-                                }
-                                return Opacity(
-                                  opacity: o,
-                                  child: Transform.scale(
-                                    scale: s,
-                                    filterQuality: FilterQuality.medium,
-                                    child: media,
-                                  ),
-                                );
-                              },
+                              value: mediaState.blurPx,
+                              motion: movementMotion,
+                              builder: (context, blurPx, _) => _mediaLayer(
+                                opacity: opacity,
+                                saturate: saturate,
+                                scale: scale,
+                                blurPx: blurPx,
+                              ),
                             );
                           },
                         );
@@ -624,6 +642,17 @@ class _ProgressHairline extends StatelessWidget {
   final double value;
   final BeuiColors colors;
 
+  static Widget _fill(double t, BeuiColors colors) => Align(
+    alignment: AlignmentDirectional.centerStart,
+    child: FractionallySizedBox(
+      widthFactor: t.clamp(0.0, 1.0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(color: colors.foreground),
+        child: const SizedBox(height: 2),
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return ExcludeSemantics(
@@ -633,21 +662,24 @@ class _ProgressHairline extends StatelessWidget {
           decoration: BoxDecoration(
             color: colors.foreground.withValues(alpha: 0.12),
           ),
-          child: SingleMotionBuilder(
-            value: value,
-            // The fill's width is movement: reduced motion snaps it to the
-            // new fraction rather than sliding, and still shows it.
-            motion: motionFor(context, _progressMotion, isMovement: true),
-            builder: (context, t, _) => Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: FractionallySizedBox(
-                widthFactor: t.clamp(0.0, 1.0),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(color: colors.foreground),
-                  child: const SizedBox(height: 2),
-                ),
-              ),
-            ),
+          child: Builder(
+            builder: (context) {
+              final motion = motionFor(
+                context,
+                _progressMotion,
+                isMovement: true,
+              );
+              // The fill's width is movement, so reduced motion drops the
+              // slide — but it has to *snap to the new fraction*, not hold the
+              // old one. NoMotion holds, so this branches rather than driving
+              // the builder with it and freezing the bar at zero.
+              if (motion is NoMotion) return _fill(value, colors);
+              return SingleMotionBuilder(
+                value: value,
+                motion: motion,
+                builder: (context, t, _) => _fill(t, colors),
+              );
+            },
           ),
         ),
       ),

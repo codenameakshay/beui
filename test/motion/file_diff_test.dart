@@ -1022,4 +1022,35 @@ void main() {
       expect(find.text('No changes in this file'), findsOneWidget);
     });
   });
+
+  // The settled diff: 0.14 row tints well apart from each other, a 2px leading
+  // colour bar on every changed row, gutters at 0.75, and the copy control up
+  // in the header where `collapseOnComplete` cannot take it away.
+  testWidgets('settled golden (complete, open, tinted rows)', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
+        home: const Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 520,
+              child: BeuiFileDiff(
+                file: 'src/runner.ts',
+                lines: _sampleLines,
+                status: BeuiFileDiffStatus.complete,
+                collapseOnComplete: false,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(BeuiFileDiff),
+      matchesGoldenFile('goldens/beui_file_diff.png'),
+    );
+  });
 }

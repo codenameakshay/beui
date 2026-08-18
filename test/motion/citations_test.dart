@@ -1,6 +1,8 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 List<BeuiCitationItem> _sample({int count = 3}) {
@@ -489,5 +491,431 @@ void main() {
       expect(find.text('Motion documentation'), findsOneWidget);
       expect(find.text('WAI accessibility patterns'), findsOneWidget);
     });
+  });
+
+  // ---------------------------------------------------------------------
+  // UX remediation — R3, R9, R10, R14, R16, R18, R26, R27
+  // ---------------------------------------------------------------------
+
+  /// A citations panel with an optional list-level activation handler.
+  Widget hostWithTap({
+    required List<BeuiCitationItem> citations,
+    ValueChanged<BeuiCitationItem>? onCitationTap,
+    String? idPrefix,
+    List<Widget> above = const [],
+  }) {
+    return MaterialApp(
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
+      home: Scaffold(
+        body: Center(
+          child: SizedBox(
+            width: 360,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ...above,
+                BeuiCitations(
+                  citations: citations,
+                  defaultOpen: true,
+                  idPrefix: idPrefix,
+                  onCitationTap: onCitationTap,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  group('BeuiCitations row interactivity (R3)', () {
+    testWidgets('a url alone does not make a row interactive', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(hostWithTap(citations: _sample(count: 1)));
+      await tester.pumpAndSettle();
+      // The package does not open URLs, so the row has nothing to do when
+      // activated — and must not advertise otherwise.
+      expect(
+        tester.getSemantics(find.bySemanticsLabel(RegExp('Citation 1'))),
+        isSemantics(isButton: false),
+      );
+      handle.dispose();
+    });
+
+    testWidgets('nor does it get the link glyph that promises one', (
+      tester,
+    ) async {
+      await tester.pumpWidget(hostWithTap(citations: _sample(count: 1)));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(LucideIcons.external_link), findsNothing);
+    });
+
+    testWidgets('onCitationTap makes the row live and fires with the item', (
+      tester,
+    ) async {
+      final tapped = <String>[];
+      await tester.pumpWidget(
+        hostWithTap(
+          citations: _sample(count: 2),
+          onCitationTap: (c) => tapped.add(c.id),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byIcon(LucideIcons.external_link), findsNWidgets(2));
+      await tester.tap(find.text('WAI accessibility patterns'));
+      await tester.pump();
+      expect(tapped, ['wai']);
+    });
+
+    testWidgets('a per-item onTap is enough on its own', (tester) async {
+      var calls = 0;
+      await tester.pumpWidget(
+        hostWithTap(
+          citations: [
+            BeuiCitationItem(
+              id: 'only',
+              title: const Text('Only one'),
+              url: 'https://example.com',
+              onTap: () => calls++,
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Only one'));
+      await tester.pump();
+      expect(calls, 1);
+    });
+  });
+
+  group('BeuiCitations row legibility (R9, R10)', () {
+    testWidgets('the domain is not alpha-multiplied into illegibility', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_host(citations: _sample(count: 1)));
+      await tester.pumpAndSettle();
+      final style = DefaultTextStyle.of(
+        tester.element(find.text('motion.dev')),
+      ).style;
+      // Full-strength mutedForeground: the domain is how a reader decides
+      // whether to trust the source, and at 0.6 alpha it measured 2.55:1.
+      expect(style.color!.a, 1.0);
+    });
+
+    testWidgets('the link glyph is legible at rest', (tester) async {
+      await tester.pumpWidget(
+        hostWithTap(citations: _sample(count: 1), onCitationTap: (_) {}),
+      );
+      await tester.pumpAndSettle();
+      final icon = tester.widget<Icon>(find.byIcon(LucideIcons.external_link));
+      // 0.7, not the 0.4 that measured 1.79:1.
+      expect(icon.color!.a, closeTo(0.7, 0.01));
+    });
+
+    testWidgets('hovering an interactive row fills it at the declared radius', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        hostWithTap(citations: _sample(count: 1), onCitationTap: (_) {}),
+      );
+      await tester.pumpAndSettle();
+
+      BoxDecoration rowDecoration() {
+        final containers = tester.widgetList<AnimatedContainer>(
+          find.ancestor(
+            of: find.text('Motion documentation'),
+            matching: find.byType(AnimatedContainer),
+          ),
+        );
+        return containers.first.decoration! as BoxDecoration;
+      }
+
+      expect(rowDecoration().color, Colors.transparent);
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      await gesture.moveTo(tester.getCenter(find.text('Motion documentation')));
+      await tester.pumpAndSettle();
+
+      final hovered = rowDecoration();
+      // A real affordance, not a foreground 0.8 → 1.0 title shift.
+      expect(hovered.color!.a, closeTo(0.5, 0.01));
+      expect(
+        hovered.borderRadius,
+        BorderRadius.circular(6),
+        reason: 'the 6px radius the row already declared',
+      );
+    });
+  });
+
+  group('BeuiCitation numbering (R16)', () {
+    testWidgets('the marker derives its number from the rendered order', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        hostWithTap(
+          citations: _sample(),
+          idPrefix: 'derive',
+          above: const [BeuiCitation(citationId: 'react', idPrefix: 'derive')],
+        ),
+      );
+      await tester.pumpAndSettle();
+      // `react` is row 3, so the marker reads 3 — nobody had to count.
+      expect(find.text('3'), findsWidgets);
+    });
+
+    testWidgets('it follows the list when the order changes', (tester) async {
+      await tester.pumpWidget(
+        hostWithTap(
+          citations: _sample(),
+          idPrefix: 'reorder',
+          above: const [BeuiCitation(citationId: 'react', idPrefix: 'reorder')],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Filter the first source out; every later row shifts up by one.
+      await tester.pumpWidget(
+        hostWithTap(
+          citations: _sample().sublist(1),
+          idPrefix: 'reorder',
+          above: const [BeuiCitation(citationId: 'react', idPrefix: 'reorder')],
+        ),
+      );
+      await tester.pumpAndSettle();
+      final marker = tester.widget<Text>(
+        find.descendant(
+          of: find.byType(BeuiCitation),
+          matching: find.byType(Text),
+        ),
+      );
+      // [3] pointing at row 2 is exactly the desync this replaces.
+      expect(marker.data, '2');
+    });
+
+    testWidgets('an explicit index that disagrees with the list asserts', (
+      tester,
+    ) async {
+      // Collected off FlutterError rather than through takeException: the
+      // marker asserts on every rebuild, and the binding coalesces repeats
+      // into one opaque "multiple exceptions" report.
+      final errors = <FlutterErrorDetails>[];
+      final previous = FlutterError.onError;
+      FlutterError.onError = errors.add;
+      addTearDown(() => FlutterError.onError = previous);
+
+      await tester.pumpWidget(
+        hostWithTap(
+          citations: _sample(),
+          idPrefix: 'clash',
+          above: const [
+            BeuiCitation(citationId: 'react', index: 1, idPrefix: 'clash'),
+          ],
+        ),
+      );
+      await tester.pump();
+      await tester.pump();
+      FlutterError.onError = previous;
+
+      expect(errors, isNotEmpty);
+      expect(errors.first.exception, isA<AssertionError>());
+      expect(
+        errors.first.exception.toString(),
+        contains('it is row 3 of the list under idPrefix "clash"'),
+      );
+    });
+
+    testWidgets('an explicit index still seeds the frames before the list '
+        'renders', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: const Scaffold(
+            body: Center(
+              child: BeuiCitation(
+                citationId: 'orphan',
+                index: 7,
+                idPrefix: 'nothing-registered-here',
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('7'), findsOneWidget);
+    });
+  });
+
+  group('BeuiCitation marker (R14, R27)', () {
+    Widget marker() => MaterialApp(
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
+      home: const Scaffold(
+        body: Center(
+          child: SizedBox(
+            width: 300,
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: 'Grounded in the docs'),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.baseline,
+                    baseline: TextBaseline.alphabetic,
+                    child: BeuiCitation(
+                      citationId: 'm',
+                      index: 1,
+                      idPrefix: 'inline',
+                    ),
+                  ),
+                  TextSpan(text: ' and elsewhere.'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    testWidgets('focusing it does not reflow the paragraph', (tester) async {
+      await tester.pumpWidget(marker());
+      await tester.pumpAndSettle();
+      final before = tester.getRect(find.byType(BeuiCitation));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+
+      // The ring is painted outside layout, so the badge — and the text either
+      // side of it — stay exactly where they were.
+      expect(tester.getRect(find.byType(BeuiCitation)), before);
+    });
+
+    testWidgets('the 16px badge accepts a touch that misses it', (
+      tester,
+    ) async {
+      var pressed = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: BeuiCitation(
+                citationId: 'm',
+                index: 1,
+                idPrefix: 'slop',
+                onPressed: () => pressed++,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final centre = tester.getCenter(find.byType(BeuiCitation));
+      // 16px out: well past the badge, inside the 44px slop.
+      await tester.tapAt(centre + const Offset(16, 0));
+      await tester.pump();
+      expect(pressed, 1);
+    });
+  });
+
+  group('BeuiCitations reduced motion (R18)', () {
+    testWidgets('rows fade in rather than appearing from nowhere', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(citations: _sample(count: 1), reduce: true),
+      );
+      await tester.pump();
+      final opacity = tester
+          .widgetList<Opacity>(
+            find.ancestor(
+              of: find.text('Motion documentation'),
+              matching: find.byType(Opacity),
+            ),
+          )
+          .map((o) => o.opacity)
+          .fold<double>(1, (a, b) => a * b);
+      // The opacity channel survives; only the 6px rise is dropped.
+      expect(opacity, lessThan(1.0));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('Motion documentation'), findsOneWidget);
+    });
+
+    testWidgets('and they do not move while doing it', (tester) async {
+      await tester.pumpWidget(
+        _host(citations: _sample(count: 1), reduce: true),
+      );
+      await tester.pump();
+      final start = tester.getRect(find.text('Motion documentation'));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(tester.getRect(find.text('Motion documentation')), start);
+    });
+  });
+
+  group('BeuiCitations empty state (R26)', () {
+    testWidgets('no sources is a state, not a blank panel', (tester) async {
+      await tester.pumpWidget(_host(citations: const []));
+      await tester.pumpAndSettle();
+      expect(find.text('No sources for this answer'), findsOneWidget);
+    });
+
+    testWidgets('the placeholder is overridable', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: const Scaffold(
+            body: Center(
+              child: BeuiCitations(
+                citations: [],
+                defaultOpen: true,
+                emptyPlaceholder: Text('Answered from memory'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Answered from memory'), findsOneWidget);
+    });
+  });
+
+  // An open panel with rows that have no activation path: static entries, with
+  // no link glyph promising a navigation the package will not perform, and the
+  // domain at full strength.
+  testWidgets('settled golden (open panel, static rows)', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 420,
+              child: BeuiCitations(
+                citations: _sample(),
+                defaultOpen: true,
+                idPrefix: 'golden',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(BeuiCitations),
+      matchesGoldenFile('goldens/beui_citations.png'),
+    );
   });
 }
