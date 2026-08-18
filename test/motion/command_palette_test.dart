@@ -2,6 +2,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:motor/motor.dart' show MotionBuilder;
 
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = Center(child: child);
@@ -172,6 +173,66 @@ void main() {
       );
       await _openWithShortcut(tester);
       expect(find.text('New file'), findsOneWidget);
+    });
+
+    // F7. The active-row highlight is a `MotionBuilder<Rect>` that was handed
+    // `const NoMotion()` under reduced motion. NoMotion holds the rect it was
+    // seeded with and never reaches the target (see
+    // `_no_motion_semantics_test.dart`), so the highlight parked on the first
+    // row: arrow-key navigation moved the selection with no visible indicator
+    // at all — the palette looked frozen to exactly the users who most need
+    // the keyboard path.
+    //
+    // Reduced motion is forced through the platform dispatcher rather than an
+    // in-tree MediaQuery because the panel renders into the ROOT overlay,
+    // above the test's widget wrapper, so a wrapper-level MediaQuery never
+    // reaches it. (That is why the fade-only test above could not have caught
+    // this.)
+    testWidgets('reduced motion: arrow keys move the selection highlight', (
+      tester,
+    ) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+
+      await tester.pumpWidget(_wrap(BeuiCommandPalette(items: _items([]))));
+      await _openWithShortcut(tester);
+
+      Rect highlight() => tester.getRect(
+        find
+            .descendant(
+              of: find.byType(MotionBuilder<Rect>),
+              matching: find.byType(DecoratedBox),
+            )
+            .first,
+      );
+
+      final first = highlight();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 400));
+      final second = highlight();
+
+      expect(
+        second.top,
+        greaterThan(first.top),
+        reason:
+            'the highlight must follow the active row under reduced motion; '
+            'it froze at the first row (first=$first second=$second)',
+      );
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(
+        highlight().top,
+        closeTo(first.top, 1),
+        reason: 'and back up again',
+      );
     });
   });
 }
