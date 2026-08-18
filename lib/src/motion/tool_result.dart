@@ -421,6 +421,11 @@ class _BeuiToolResultState extends State<BeuiToolResult>
   /// diff's follower, so scrolling away pins the viewport and raises the same
   /// "jump to latest" pill.
   late final BeuiLiveEdgeFollower _follow;
+
+  /// Keeps the scroll view's element (and therefore its [ScrollPosition])
+  /// alive across the overflow fade mounting and unmounting around it.
+  final GlobalKey _viewportKey = GlobalKey();
+
   late bool _internalOpen;
   bool _copied = false;
   bool _copyHovered = false;
@@ -911,6 +916,13 @@ class _BeuiToolResultState extends State<BeuiToolResult>
             return false;
           },
           child: SingleChildScrollView(
+            // F12: the ShaderMask below is mounted and unmounted as the
+            // viewport starts and stops overflowing, which *re-parents* this
+            // scroll view. Without a stable identity Flutter rebuilds the
+            // element, and with it a fresh ScrollPosition at offset 0 — which
+            // silently cancelled every follow animation the moment the fade
+            // appeared. A GlobalKey moves the element instead of recreating it.
+            key: _viewportKey,
             controller: _follow.controller,
             padding: _outputPadding,
             child: widget.child,

@@ -1385,8 +1385,15 @@ class _HunkSeparatorState extends State<_HunkSeparator> {
     // OUTERMOST because every box below it (Semantics, MouseRegion,
     // FocusableActionDetector) is sized to the paint and would reject an
     // out-of-bounds pointer before this widget ever saw it. Width already
-    // clears the floor, so only the vertical 12px of overhang is doing work,
-    // and it overhangs into inert diff rows.
+    // clears the floor, so only the vertical overhang is doing work.
+    //
+    // The overhang is asymmetric in practice, and knowingly so: diff rows paint
+    // their change tint through a hit-opaque box, and Flutter tests later
+    // siblings first, so the row *below* claims the downward slop while the row
+    // above yields the upward one. The reachable target is the 20px band plus
+    // 12px above it — past WCAG 2.5.8 AA's 24px, short of the AAA 44px. Closing
+    // the rest would mean growing the band's paint, which is a diff-rhythm and
+    // source-fidelity change this fix is not licensed to make.
     return BeuiMinHitTarget(
       child: Semantics(
         button: true,
