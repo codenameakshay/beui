@@ -18,6 +18,8 @@ export 'src/tokens/icons.dart';
 export 'src/theme/beui_colors.dart';
 export 'src/theme/beui_text_theme.dart';
 export 'src/theme/beui_agent_theme.dart';
+export 'src/theme/beui_agent_status_colors.dart';
+export 'src/theme/beui_agent_strings.dart';
 
 // Components (lib/src/motion/...). Exported as they are ported.
 export 'src/motion/action_swap.dart'

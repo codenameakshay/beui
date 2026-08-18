@@ -37,6 +37,8 @@ import 'dart:ui' show ImageFilter, lerpDouble;
 import 'package:flutter/material.dart';
 
 import '../tokens/icons.dart';
+import 'beui_agent_status_colors.dart';
+import 'beui_agent_strings.dart';
 import 'beui_colors.dart';
 
 /// Compact versus standard content density for agent surfaces.
@@ -828,6 +830,9 @@ class BeuiAgentTheme extends ThemeExtension<BeuiAgentTheme> {
     this.layout = const BeuiAgentLayout(),
     this.structure = const BeuiAgentStructure(),
     this.icons = const BeuiAgentIcons(),
+    this.statusLight = BeuiAgentStatusColors.light,
+    this.statusDark = BeuiAgentStatusColors.dark,
+    this.strings = const BeuiAgentStrings(),
   });
 
   /// Source-fidelity defaults. Identical to the unnamed constructor.
@@ -864,10 +869,39 @@ class BeuiAgentTheme extends ThemeExtension<BeuiAgentTheme> {
   /// Default glyphs.
   final BeuiAgentIcons icons;
 
+  /// Status colors for light mode. See [statusColorsFor].
+  final BeuiAgentStatusColors statusLight;
+
+  /// Status colors for dark mode. See [statusColorsFor].
+  final BeuiAgentStatusColors statusDark;
+
+  /// User-facing copy for the agent family — the localization surface.
+  final BeuiAgentStrings strings;
+
   /// The nearest [BeuiAgentTheme], or [standard] when none is installed.
   static BeuiAgentTheme of(BuildContext context) {
     return Theme.of(context).extension<BeuiAgentTheme>() ?? standard;
   }
+
+  /// The status set for [brightness].
+  ///
+  /// [BeuiAgentTheme] is one `const` extension shared by both modes (unlike
+  /// [BeuiColors], which is resolved per brightness), so both sets are carried
+  /// and picked here. Widgets should pass the brightness they already resolved:
+  ///
+  /// ```dart
+  /// final palette = agent
+  ///     .statusColorsFor(Theme.of(context).brightness)
+  ///     .palette(BeuiAgentStatus.pending);
+  /// ```
+  BeuiAgentStatusColors statusColorsFor(Brightness brightness) =>
+      brightness == Brightness.dark ? statusDark : statusLight;
+
+  /// Shorthand for `statusColorsFor(brightness).palette(status)`.
+  BeuiAgentStatusPalette statusPalette(
+    BeuiAgentStatus status,
+    Brightness brightness,
+  ) => statusColorsFor(brightness).palette(status);
 
   /// Bubble radius for a trailing (user) versus leading (assistant) surface.
   BorderRadius bubbleRadius({required bool user}) =>
@@ -921,6 +955,9 @@ class BeuiAgentTheme extends ThemeExtension<BeuiAgentTheme> {
     BeuiAgentLayout? layout,
     BeuiAgentStructure? structure,
     BeuiAgentIcons? icons,
+    BeuiAgentStatusColors? statusLight,
+    BeuiAgentStatusColors? statusDark,
+    BeuiAgentStrings? strings,
   }) {
     return BeuiAgentTheme(
       typography: typography ?? this.typography,
@@ -928,6 +965,9 @@ class BeuiAgentTheme extends ThemeExtension<BeuiAgentTheme> {
       layout: layout ?? this.layout,
       structure: structure ?? this.structure,
       icons: icons ?? this.icons,
+      statusLight: statusLight ?? this.statusLight,
+      statusDark: statusDark ?? this.statusDark,
+      strings: strings ?? this.strings,
     );
   }
 
@@ -943,6 +983,13 @@ class BeuiAgentTheme extends ThemeExtension<BeuiAgentTheme> {
       layout: BeuiAgentLayout.lerp(layout, other.layout, t),
       structure: BeuiAgentStructure.lerp(structure, other.structure, t),
       icons: BeuiAgentIcons.lerp(icons, other.icons, t),
+      statusLight: BeuiAgentStatusColors.lerp(
+        statusLight,
+        other.statusLight,
+        t,
+      ),
+      statusDark: BeuiAgentStatusColors.lerp(statusDark, other.statusDark, t),
+      strings: BeuiAgentStrings.lerp(strings, other.strings, t),
     );
   }
 
@@ -957,9 +1004,21 @@ class BeuiAgentTheme extends ThemeExtension<BeuiAgentTheme> {
         other.shapes == shapes &&
         other.layout == layout &&
         other.structure == structure &&
-        other.icons == icons;
+        other.icons == icons &&
+        other.statusLight == statusLight &&
+        other.statusDark == statusDark &&
+        other.strings == strings;
   }
 
   @override
-  int get hashCode => Object.hash(typography, shapes, layout, structure, icons);
+  int get hashCode => Object.hash(
+    typography,
+    shapes,
+    layout,
+    structure,
+    icons,
+    statusLight,
+    statusDark,
+    strings,
+  );
 }
