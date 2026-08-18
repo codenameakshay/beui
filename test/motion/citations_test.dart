@@ -254,6 +254,10 @@ void main() {
 
       await tester.tap(find.text('Sources'));
       await tester.pump();
+      // The shared disclosure keeps the opacity channel under reduced motion,
+      // so the panel is still mounted mid-cross-fade — movement is what gets
+      // dropped, not the transition. It unmounts once the fade lands.
+      await tester.pump(const Duration(milliseconds: 200));
       expect(find.text('Motion documentation'), findsNothing);
     });
 

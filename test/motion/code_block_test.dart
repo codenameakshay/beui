@@ -141,16 +141,44 @@ void main() {
       expect(find.byIcon(LucideIcons.copy), findsNothing);
     });
 
-    testWidgets('accepts Widget filename', (tester) async {
+    testWidgets('accepts a Widget filename through filenameWidget', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(
           const BeuiCodeBlock(
             code: 'x',
-            filename: Text('custom.tsx', key: Key('fn')),
+            filenameWidget: Text('custom.tsx', key: Key('fn')),
           ),
         ),
       );
       expect(find.byKey(const Key('fn')), findsOneWidget);
+    });
+
+    testWidgets('the deprecated untyped slot still renders both shapes', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const BeuiCodeBlock(
+            code: 'x',
+            // ignore: deprecated_member_use_from_same_package
+            filenameNode: Text('legacy.tsx', key: Key('legacy')),
+          ),
+        ),
+      );
+      expect(find.byKey(const Key('legacy')), findsOneWidget);
+
+      await tester.pumpWidget(
+        _wrap(
+          const BeuiCodeBlock(
+            code: 'x',
+            // ignore: deprecated_member_use_from_same_package
+            filenameNode: 'legacy-string.tsx',
+          ),
+        ),
+      );
+      expect(find.text('legacy-string.tsx'), findsOneWidget);
     });
 
     testWidgets('reduced motion still renders streaming chrome', (
@@ -177,14 +205,25 @@ void main() {
         ),
       );
       expect(find.text('two'), findsOneWidget);
-      // Highlighted row uses a ColoredBox fill.
-      expect(
-        find.descendant(
-          of: find.byType(BeuiCodeBlock),
-          matching: find.byType(ColoredBox),
-        ),
-        findsWidgets,
-      );
+      // A highlighted row carries two channels, not one: a ~0.10 fill (the old
+      // 0.07 wash measured 1.08:1) and a 2px leading bar at 0.6.
+      final decorated = tester
+          .widgetList<DecoratedBox>(
+            find.descendant(
+              of: find.byType(BeuiCodeBlock),
+              matching: find.byType(DecoratedBox),
+            ),
+          )
+          .map((d) => d.decoration)
+          .whereType<BoxDecoration>()
+          .where((d) => d.border != null && d.color != null)
+          .toList();
+      expect(decorated, isNotEmpty);
+      final highlight = decorated.first;
+      expect(highlight.color!.a, closeTo(0.10, 0.005));
+      final bar = (highlight.border! as BorderDirectional).start;
+      expect(bar.width, 2);
+      expect(bar.color.a, closeTo(0.6, 0.005));
     });
   });
 }

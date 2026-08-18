@@ -33,7 +33,8 @@ const _sampleLines = <BeuiFileDiffLine>[
 
 Widget _host({
   Key? key,
-  Object file = 'src/runner.ts',
+  String? file = 'src/runner.ts',
+  Widget? fileWidget,
   List<BeuiFileDiffLine> lines = _sampleLines,
   BeuiFileDiffStatus status = BeuiFileDiffStatus.streaming,
   bool? open,
@@ -41,6 +42,7 @@ Widget _host({
   ValueChanged<bool>? onOpenChange,
   bool collapseOnComplete = true,
   String? copyText,
+  bool copyable = true,
   Future<void> Function()? onCopy,
   bool reduce = false,
 }) {
@@ -49,7 +51,8 @@ Widget _host({
       width: 400,
       child: BeuiFileDiff(
         key: key,
-        file: file,
+        file: fileWidget == null ? file : null,
+        fileWidget: fileWidget,
         lines: lines,
         status: status,
         open: open,
@@ -57,6 +60,7 @@ Widget _host({
         onOpenChange: onOpenChange,
         collapseOnComplete: collapseOnComplete,
         copyText: copyText,
+        copyable: copyable,
         onCopy: onCopy,
         maxHeight: 150,
       ),
@@ -312,20 +316,59 @@ void main() {
       expect(calls, 1);
     });
 
-    testWidgets('hides copy button when neither copyText nor onCopy set', (
-      tester,
-    ) async {
+    testWidgets('copyable: false hides the copy control', (tester) async {
       await tester.pumpWidget(
-        _host(status: BeuiFileDiffStatus.complete, defaultOpen: true),
+        _host(
+          status: BeuiFileDiffStatus.complete,
+          defaultOpen: true,
+          copyable: false,
+        ),
       );
       await tester.pumpAndSettle();
       expect(find.byIcon(LucideIcons.copy), findsNothing);
     });
 
-    testWidgets('accepts Widget file label', (tester) async {
+    testWidgets(
+      'copyText defaults to the diff the widget already holds, as a unified '
+      'diff body',
+      (tester) async {
+        final log = <MethodCall>[];
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          (call) async {
+            log.add(call);
+            return null;
+          },
+        );
+
+        await tester.pumpWidget(
+          _host(status: BeuiFileDiffStatus.complete, defaultOpen: true),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byIcon(LucideIcons.copy));
+        await tester.pump();
+
+        final call = log.firstWhere((c) => c.method == 'Clipboard.setData');
+        final text = (call.arguments as Map)['text'] as String;
+        // ASCII prefixes, so the payload survives a paste into `git apply`.
+        expect(text, contains(' export async function runTask() {'));
+        expect(text, contains('-  return execute(task);'));
+        expect(text, contains('+  const result = await execute(task);'));
+        expect(text, isNot(contains('−')));
+
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        );
+      },
+    );
+
+    testWidgets('accepts a Widget file label through fileWidget', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _host(
-          file: const Text('custom.ts', key: Key('file-label')),
+          fileWidget: const Text('custom.ts', key: Key('file-label')),
           status: BeuiFileDiffStatus.complete,
         ),
       );
@@ -364,6 +407,10 @@ void main() {
 
       await tester.tap(find.text('src/runner.ts'));
       await tester.pump();
+      // The shared disclosure keeps the opacity channel under reduced motion —
+      // movement is what gets dropped — so the panel outlives the toggle by one
+      // short cross-fade before it unmounts.
+      await tester.pump(const Duration(milliseconds: 200));
       expect(find.textContaining('export async function'), findsNothing);
     });
 

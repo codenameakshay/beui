@@ -37,7 +37,7 @@ Widget _app({
   ValueChanged<BeuiPreviewRailItem>? onItemSelect,
   bool showPreview = true,
   BeuiPreviewRailPreviewSide previewSide = BeuiPreviewRailPreviewSide.after,
-  bool highlightActive = false,
+  bool highlightActive = true,
   BeuiPreviewRailStyle? style,
   bool reduce = false,
 }) {
@@ -121,7 +121,10 @@ void main() {
       String? changed;
       await tester.pumpWidget(_app(onActiveChange: (id) => changed = id));
       await tester.pumpAndSettle();
-      await tester.tap(find.bySemanticsLabel('Beta'));
+      await tester.tap(
+        find.bySemanticsLabel('Beta'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
       expect(changed, 'b');
     });
@@ -134,7 +137,10 @@ void main() {
         _app(activeId: 'a', onActiveChange: (id) => changed = id),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.bySemanticsLabel('Gamma'));
+      await tester.tap(
+        find.bySemanticsLabel('Gamma'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
       // Callback fires, but selection stays where the controller put it.
       expect(changed, 'c');
@@ -305,7 +311,10 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.bySemanticsLabel('Beta'));
+      await tester.tap(
+        find.bySemanticsLabel('Beta'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
       expect(calls, ['change:b', 'select:b:Beta']);
     });
@@ -321,9 +330,15 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.bySemanticsLabel('Gamma'));
+      await tester.tap(
+        find.bySemanticsLabel('Gamma'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
-      await tester.tap(find.bySemanticsLabel('Gamma'));
+      await tester.tap(
+        find.bySemanticsLabel('Gamma'),
+        kind: PointerDeviceKind.mouse,
+      );
       await tester.pump();
       expect(selected, ['c', 'c']);
     });
@@ -360,7 +375,9 @@ void main() {
     });
 
     testWidgets('false keeps the hover pyramid working', (tester) async {
-      await tester.pumpWidget(_app(showPreview: false));
+      await tester.pumpWidget(
+        _app(showPreview: false, highlightActive: false),
+      );
       await tester.pumpAndSettle();
       expect(_tickScale(tester, 'Beta'), moreOrLessEquals(0.25, epsilon: 0.02));
       await _hover(tester, _tick('Beta'));
@@ -403,7 +420,9 @@ void main() {
     testWidgets('false leaves every tick at rest with nothing hovered', (
       tester,
     ) async {
-      await tester.pumpWidget(_app(defaultActiveId: 'b'));
+      await tester.pumpWidget(
+        _app(defaultActiveId: 'b', highlightActive: false),
+      );
       await tester.pumpAndSettle();
       for (final label in ['Alpha', 'Beta', 'Gamma', 'Delta']) {
         expect(
@@ -417,9 +436,7 @@ void main() {
     testWidgets('true anchors the pyramid on the selection at rest', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        _app(defaultActiveId: 'b', highlightActive: true),
-      );
+      await tester.pumpWidget(_app(defaultActiveId: 'b'));
       await tester.pumpAndSettle();
       expect(_tickScale(tester, 'Beta'), moreOrLessEquals(1.0, epsilon: 0.02));
       expect(
@@ -437,17 +454,13 @@ void main() {
     });
 
     testWidgets('true still never summons the preview card', (tester) async {
-      await tester.pumpWidget(
-        _app(defaultActiveId: 'b', highlightActive: true),
-      );
+      await tester.pumpWidget(_app(defaultActiveId: 'b'));
       await tester.pumpAndSettle();
       expect(find.text('Second item.'), findsNothing);
     });
 
     testWidgets('hover wins over the resting highlight', (tester) async {
-      await tester.pumpWidget(
-        _app(defaultActiveId: 'b', highlightActive: true),
-      );
+      await tester.pumpWidget(_app(defaultActiveId: 'b'));
       await tester.pumpAndSettle();
       await _hover(tester, _tick('Delta'));
       await tester.pumpAndSettle();
@@ -513,7 +526,11 @@ void main() {
     });
   });
 
-  testWidgets('rest-state golden (vertical, nothing displayed)', (
+  // The resting truth changed with `highlightActive` defaulting to true: the
+  // selected tick ('b') now sits at full scale with its neighbours stepping
+  // down, instead of four identical grey dashes that told the reader nothing
+  // about where they were. Regenerated deliberately.
+  testWidgets('rest-state golden (vertical, selection highlighted)', (
     tester,
   ) async {
     await tester.pumpWidget(

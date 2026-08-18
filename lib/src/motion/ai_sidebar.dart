@@ -8,6 +8,8 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
+import '_hit_target.dart';
 import 'popover_morph.dart';
 
 // ---------------------------------------------------------------------------
@@ -371,6 +373,18 @@ const _indentPerDepth = 16.0;
 const _basePadLeft = 12.0;
 const _rowMinHeight = 36.0;
 
+/// Leading accent bar on the selected row, in logical pixels. Reserved
+/// (transparent) on every other row so selection costs no reflow.
+const _selectionBarWidth = 2.0;
+
+/// The one dimming factor a disabled row gets.
+///
+/// It used to compound two: `mutedForeground` pre-multiplied to 0.55 *and* an
+/// `Opacity(0.45)` over the whole row, landing the label at about 1.42:1 —
+/// unreadable, where "disabled" should mean "clearly not available", not
+/// "invisible". One mechanism, at a level that still reads.
+const _disabledAlpha = 0.7;
+
 // ---------------------------------------------------------------------------
 // BeuiAiSidebar
 // ---------------------------------------------------------------------------
@@ -403,6 +417,23 @@ const _rowMinHeight = 36.0;
 ///   same `SidebarResourceMove` API.
 /// - Row overflow menu uses [BeuiMorphPopover] (source `MorphPopover`); custom
 ///   menus via [menuBuilder].
+///
+/// ### Scrolling: the consumer owns the viewport
+///
+/// By default this renders a plain shrink-wrapping [Column] of every visible
+/// row and **provides no scroll container of its own** — a 200-node tree is
+/// 7,200 logical pixels tall and will overflow whatever box you put it in. That
+/// is deliberate: a sidebar is normally one section of a larger scrolling pane,
+/// and nesting scrollables is worse than not having one.
+///
+/// Either wrap it yourself:
+///
+/// ```dart
+/// Expanded(child: SingleChildScrollView(child: BeuiAiSidebar(...)))
+/// ```
+///
+/// or set [maxHeight] and let the widget cap and scroll itself, with a bottom
+/// fade so the clipped rows read as "more".
 class BeuiAiSidebar extends StatefulWidget {
   /// Creates an AI workspace resource sidebar.
   const BeuiAiSidebar({
@@ -418,6 +449,8 @@ class BeuiAiSidebar extends StatefulWidget {
     this.defaultExpandedIds = const [],
     this.iconBuilder,
     this.menuBuilder,
+    this.emptyPlaceholder,
+    this.maxHeight,
     this.semanticLabel = 'Resources',
     super.key,
   });
@@ -464,6 +497,19 @@ class BeuiAiSidebar extends StatefulWidget {
     BeuiSidebarResourceMenuControls controls,
   )?
   menuBuilder;
+
+  /// Shown when the tree has no rows at all. Defaults to a muted
+  /// "No resources yet".
+  ///
+  /// An empty tree used to render as a zero-height box, which is
+  /// indistinguishable from a layout bug.
+  final Widget? emptyPlaceholder;
+
+  /// Caps the tree's height and scrolls it, with a bottom fade.
+  ///
+  /// Null (the default) keeps the source behaviour: the tree shrink-wraps and
+  /// the consumer owns the viewport. See the class docs.
+  final double? maxHeight;
 
   /// Accessibility label for the tree (source `ariaLabel`).
   final String semanticLabel;
@@ -743,7 +789,10 @@ class _BeuiAiSidebarState extends State<BeuiAiSidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final theme = Theme.of(context);
+    final colors =
+        theme.extension<BeuiColors>() ??
+        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final flat = _flat;
 
     // Keep focus on a live row.
@@ -757,57 +806,123 @@ class _BeuiAiSidebarState extends State<BeuiAiSidebar> {
     final focusedId =
         _focusedId ?? _selectedId ?? (flat.isEmpty ? null : flat.first.item.id);
 
+    final tree = Column(
+      key: beuiAiSidebarKey,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (flat.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: _basePadLeft,
+              vertical: 12,
+            ),
+            child: DefaultTextStyle.merge(
+              style: TextStyle(
+                fontSize: 13,
+                height: 18 / 13,
+                letterSpacing: 0,
+                color: colors.mutedForeground,
+              ),
+              child: widget.emptyPlaceholder ?? const Text('No resources yet'),
+            ),
+          ),
+        for (final row in flat)
+          _ResourceRow(
+            key: beuiAiSidebarRowKey(row.item.id),
+            row: row,
+            colors: colors,
+            active: _selectedId == row.item.id,
+            expanded: _expanded.contains(row.item.id),
+            focused: focusedId == row.item.id,
+            menuOpen: _menuOpenId == row.item.id,
+            renaming: _renamingId == row.item.id,
+            focusNode: _focusFor(row.item.id),
+            iconBuilder: widget.iconBuilder,
+            menuBuilder: widget.menuBuilder,
+            onFocus: () => setState(() => _focusedId = row.item.id),
+            onSelect: () {
+              if (row.item.disabled) return;
+              if (row.item.canContain) {
+                _toggle(row.item.id);
+              } else {
+                _select(row.item.id);
+              }
+            },
+            onToggle: () {
+              if (!row.item.disabled && row.item.canContain) {
+                _toggle(row.item.id);
+              }
+            },
+            onKey: (e) => _onRowKey(e, row),
+            onRenameStart: () => setState(() => _renamingId = row.item.id),
+            onRenameCancel: () => setState(() => _renamingId = null),
+            onRenameCommit: (label) => unawaited(_commitRename(row, label)),
+            onMenuOpenChange: (open) {
+              setState(() => _menuOpenId = open ? row.item.id : null);
+              if (!open) _focusRow(row.item.id);
+            },
+          ),
+        // Live region for move / rename announcements (a11y).
+        ExcludeSemantics(
+          excluding: false,
+          child: Semantics(
+            liveRegion: true,
+            label: _announcement,
+            child: const SizedBox.shrink(),
+          ),
+        ),
+      ],
+    );
+
     return Semantics(
       container: true,
       label: widget.semanticLabel,
-      child: Column(
-        key: beuiAiSidebarKey,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final row in flat)
-            _ResourceRow(
-              key: beuiAiSidebarRowKey(row.item.id),
-              row: row,
-              colors: colors,
-              active: _selectedId == row.item.id,
-              expanded: _expanded.contains(row.item.id),
-              focused: focusedId == row.item.id,
-              menuOpen: _menuOpenId == row.item.id,
-              renaming: _renamingId == row.item.id,
-              focusNode: _focusFor(row.item.id),
-              iconBuilder: widget.iconBuilder,
-              menuBuilder: widget.menuBuilder,
-              onFocus: () => setState(() => _focusedId = row.item.id),
-              onSelect: () {
-                if (row.item.disabled) return;
-                if (row.item.canContain) {
-                  _toggle(row.item.id);
-                } else {
-                  _select(row.item.id);
-                }
-              },
-              onToggle: () {
-                if (!row.item.disabled && row.item.canContain) {
-                  _toggle(row.item.id);
-                }
-              },
-              onKey: (e) => _onRowKey(e, row),
-              onRenameStart: () => setState(() => _renamingId = row.item.id),
-              onRenameCancel: () => setState(() => _renamingId = null),
-              onRenameCommit: (label) => unawaited(_commitRename(row, label)),
-              onMenuOpenChange: (open) {
-                setState(() => _menuOpenId = open ? row.item.id : null);
-                if (!open) _focusRow(row.item.id);
-              },
+      child: widget.maxHeight == null
+          ? tree
+          : _CappedTree(
+              maxHeight: widget.maxHeight!,
+              surface: colors.background,
+              child: tree,
             ),
-          // Live region for move / rename announcements (a11y).
-          ExcludeSemantics(
-            excluding: false,
-            child: Semantics(
-              liveRegion: true,
-              label: _announcement,
-              child: const SizedBox.shrink(),
+    );
+  }
+}
+
+/// The opt-in viewport: caps the tree at a height and fades the clipped edge.
+class _CappedTree extends StatelessWidget {
+  const _CappedTree({
+    required this.maxHeight,
+    required this.surface,
+    required this.child,
+  });
+
+  final double maxHeight;
+  final Color surface;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      child: Stack(
+        children: [
+          SingleChildScrollView(child: child),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 24,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [surface, surface.withValues(alpha: 0)],
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -910,6 +1025,17 @@ class _ResourceRowState extends State<_ResourceRow> {
     super.dispose();
   }
 
+  /// True on a platform whose primary pointer cannot hover.
+  ///
+  /// Read from the ambient theme rather than `defaultTargetPlatform` so a test
+  /// (or a consumer targeting a tablet build) can drive it.
+  bool get _touchFirst {
+    final platform = Theme.of(context).platform;
+    return platform == TargetPlatform.iOS ||
+        platform == TargetPlatform.android ||
+        platform == TargetPlatform.fuchsia;
+  }
+
   Widget _defaultIcon() {
     final item = widget.row.item;
     final icons = BeuiAgentTheme.of(context).icons;
@@ -924,7 +1050,9 @@ class _ResourceRowState extends State<_ResourceRow> {
     return Icon(
       data,
       size: 16,
-      color: widget.active || _hovered || widget.menuOpen
+      color: item.disabled
+          ? widget.colors.mutedForeground.withValues(alpha: _disabledAlpha)
+          : widget.active || _hovered || widget.menuOpen
           ? widget.colors.foreground
           : widget.colors.mutedForeground,
     );
@@ -965,18 +1093,24 @@ class _ResourceRowState extends State<_ResourceRow> {
     final item = widget.row.item;
     final acceptsChildren = item.canContain;
     final colors = widget.colors;
+    final selected = !acceptsChildren && widget.active;
+
     final fg = item.disabled
-        ? colors.mutedForeground.withValues(alpha: 0.55)
-        : (!acceptsChildren && widget.active) || _hovered || widget.menuOpen
+        ? colors.mutedForeground.withValues(alpha: _disabledAlpha)
+        : selected || _hovered || widget.menuOpen
         ? colors.foreground
         : colors.mutedForeground;
 
-    final bg = item.disabled
+    // Two distinct steps, not one shared `muted`. Selection used to be painted
+    // in exactly the hover fill, so moving the pointer over the tree made the
+    // current row indistinguishable from whatever the pointer happened to be
+    // near — the selection literally disappeared under the cursor.
+    final Color? bg = item.disabled
         ? null
-        : widget.menuOpen || (!acceptsChildren && widget.active)
+        : selected
         ? colors.muted
-        : _hovered
-        ? colors.muted
+        : (_hovered || widget.menuOpen)
+        ? colors.foreground.withValues(alpha: 0.04)
         : null;
 
     final padLeft = _basePadLeft + widget.row.depth * _indentPerDepth;
@@ -1022,7 +1156,9 @@ class _ResourceRowState extends State<_ResourceRow> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
-                  borderSide: BorderSide(color: colors.ring, width: 1.5),
+                  // focusRing, not ring: `ring` is the 6-12% hairline token
+                  // for borders and composites to 1.3:1 (audit R6).
+                  borderSide: BorderSide(color: colors.focusRing, width: 1.5),
                 ),
               ),
               onSubmitted: (v) {
@@ -1047,6 +1183,13 @@ class _ResourceRowState extends State<_ResourceRow> {
       );
     }
 
+    // Revealed by hover on a pointer device; held at a low but visible opacity
+    // on touch, where "hover" never happens and the control was previously an
+    // invisible-yet-tappable box at the end of every single row.
+    final menuOpacity = (_hovered || widget.menuOpen)
+        ? 1.0
+        : (_touchFirst ? 0.45 : 0.0);
+
     final menuButton = !widget.renaming && !item.disabled
         ? BeuiMorphPopover(
             open: widget.menuOpen,
@@ -1070,22 +1213,31 @@ class _ResourceRowState extends State<_ResourceRow> {
                 child: menuBody,
               ),
             ),
+            // The semantics node sits *outside* the IgnorePointer, so the
+            // action stays available to assistive technology even in the frame
+            // where the glyph is invisible to a pointer.
             child: Semantics(
               button: true,
               label: 'Actions for ${item.label}',
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 120),
-                  opacity: _hovered || widget.menuOpen ? 1 : 0,
-                  child: SizedBox(
-                    width: 28,
-                    height: 28,
-                    child: Center(
-                      child: Icon(
-                        BeuiAgentTheme.of(context).icons.more,
-                        size: 16,
-                        color: colors.mutedForeground,
+              onTap: () => widget.onMenuOpenChange(true),
+              child: IgnorePointer(
+                ignoring: menuOpacity == 0,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 120),
+                    opacity: menuOpacity,
+                    child: BeuiMinHitTarget(
+                      child: SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: Center(
+                          child: Icon(
+                            BeuiAgentTheme.of(context).icons.more,
+                            size: 16,
+                            color: colors.mutedForeground,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -1103,13 +1255,28 @@ class _ResourceRowState extends State<_ResourceRow> {
       duration: const Duration(milliseconds: 120),
       curve: beuiEaseOut,
       constraints: const BoxConstraints(minHeight: _rowMinHeight),
-      padding: EdgeInsets.only(left: padLeft, right: 12),
+      padding: EdgeInsets.only(left: padLeft - _selectionBarWidth, right: 12),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
+          // The second selection channel: a fill that a hover state can imitate
+          // is not, on its own, a "you are here".
+          SizedBox(
+            width: _selectionBarWidth,
+            height: 16,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: selected && !item.disabled
+                    ? colors.primary
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(1),
+              ),
+            ),
+          ),
+          const SizedBox(width: _selectionBarWidth),
           SizedBox(width: 20, height: 20, child: Center(child: icon)),
           const SizedBox(width: 10),
           label,
@@ -1168,7 +1335,24 @@ class _ResourceRowState extends State<_ResourceRow> {
                   widget.focusNode.requestFocus();
                   widget.onRenameStart();
                 },
-          child: Opacity(opacity: item.disabled ? 0.45 : 1, child: rowBody),
+          // Touch's answer to right-click. Rename had no touch entry point at
+          // all: double-tap is the desktop gesture, and Shift+F10 is not a
+          // thing on a phone.
+          onLongPress: item.disabled || widget.renaming
+              ? null
+              : () {
+                  widget.focusNode.requestFocus();
+                  widget.onFocus();
+                  widget.onMenuOpenChange(true);
+                },
+          // The row's focus ring — `focused` was threaded all the way down here
+          // and then never rendered, so the whole keyboard tree model was
+          // invisible to the person using it (audit R4).
+          child: BeuiFocusRing(
+            focused: widget.focused && !widget.renaming,
+            borderRadius: BorderRadius.circular(12),
+            child: rowBody,
+          ),
         ),
       ),
     );
@@ -1218,146 +1402,174 @@ class _MarqueeLabel extends StatefulWidget {
   State<_MarqueeLabel> createState() => _MarqueeLabelState();
 }
 
+/// Delay before an overflowing label starts to travel.
+///
+/// The tree's rows are the highest-frequency hover target in the whole
+/// component; without a delay, brushing the pointer down the list set every
+/// long label in motion. 400ms is the same "did you mean it?" threshold a
+/// tooltip uses.
+const _marqueeDelay = Duration(milliseconds: 400);
+
+/// The gap between the label and its repeat, in logical pixels.
+const _marqueeGap = 24.0;
+
 class _MarqueeLabelState extends State<_MarqueeLabel>
     with SingleTickerProviderStateMixin {
-  final GlobalKey _viewportKey = GlobalKey();
-  final GlobalKey _labelKey = GlobalKey();
   late final AnimationController _controller;
-  double _distance = 0;
+  Timer? _startTimer;
   bool _reduce = false;
+
+  /// Memoised intrinsic width. Measuring used to happen in a post-frame
+  /// callback scheduled from *every* build, i.e. once per frame per row for the
+  /// whole life of the tree; the inputs only change when the text, the style,
+  /// or the available width does.
+  String? _measuredText;
+  TextStyle? _measuredStyle;
+  double _intrinsicWidth = 0;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        // Pause 2s then loop (source repeatDelay: 2).
-        Future<void>.delayed(const Duration(seconds: 2), () {
-          if (mounted && widget.active && _distance > 0 && !_reduce) {
-            _controller.forward(from: 0);
-          }
-        });
-      }
-    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _reduce = MediaQuery.disableAnimationsOf(context);
-    _sync();
   }
 
   @override
   void didUpdateWidget(_MarqueeLabel old) {
     super.didUpdateWidget(old);
-    if (old.text != widget.text || old.active != widget.active) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
-      _sync();
+    if (!old.active && widget.active) _arm();
+    if (old.active && !widget.active) _stop();
+    if (old.text != widget.text) {
+      _stop();
+      if (widget.active) _arm();
     }
   }
 
   @override
   void dispose() {
+    _startTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
-  void _measure() {
-    final viewport =
-        _viewportKey.currentContext?.findRenderObject() as RenderBox?;
-    final label = _labelKey.currentContext?.findRenderObject() as RenderBox?;
-    if (viewport == null ||
-        label == null ||
-        !viewport.hasSize ||
-        !label.hasSize) {
-      return;
-    }
-    final overflow = label.size.width > viewport.size.width;
-    final next = overflow ? label.size.width + 24 : 0.0;
-    if ((next - _distance).abs() > 0.5) {
-      setState(() => _distance = next);
-      _sync();
-    }
+  void _stop() {
+    _startTimer?.cancel();
+    _startTimer = null;
+    _controller
+      ..stop()
+      ..value = 0;
   }
 
-  void _sync() {
-    final running = widget.active && _distance > 0 && !_reduce;
-    if (!running) {
-      _controller.stop();
-      _controller.value = 0;
+  /// Schedules one pass, after [_marqueeDelay].
+  void _arm() {
+    _startTimer?.cancel();
+    _startTimer = Timer(_marqueeDelay, () {
+      if (!mounted || !widget.active || _reduce) return;
+      final distance = _distance;
+      if (distance <= 0) return;
+      // One pass, then stop. The source looped forever with a 2s pause; a label
+      // that never settles is a label you cannot finish reading, and the row is
+      // already fully announced to assistive technology.
+      _controller.duration = Duration(
+        milliseconds: (math.max(2.4, distance / 34) * 1000).round(),
+      );
+      _controller.forward(from: 0);
+    });
+  }
+
+  double _viewportWidth = 0;
+
+  double get _distance =>
+      _intrinsicWidth > _viewportWidth ? _intrinsicWidth + _marqueeGap : 0.0;
+
+  /// Measures the label directly rather than probing render objects, so the
+  /// answer is available during layout instead of a frame later.
+  void _measure(double viewportWidth) {
+    if (_measuredText == widget.text &&
+        _measuredStyle == widget.style &&
+        _viewportWidth == viewportWidth) {
       return;
     }
-    final seconds = math.max(2.4, _distance / 34);
-    _controller.duration = Duration(milliseconds: (seconds * 1000).round());
-    if (!_controller.isAnimating) {
-      _controller.forward(from: 0);
-    }
+    _measuredText = widget.text;
+    _measuredStyle = widget.style;
+    _viewportWidth = viewportWidth;
+    final painter = TextPainter(
+      text: TextSpan(text: widget.text, style: widget.style),
+      maxLines: 1,
+      textDirection: Directionality.of(context),
+    )..layout();
+    _intrinsicWidth = painter.width;
+    painter.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        _measure(constraints.maxWidth.isFinite ? constraints.maxWidth : 0.0);
+        final distance = _distance;
+        final canRun = widget.active && distance > 0 && !_reduce;
 
-    final running = widget.active && _distance > 0 && !_reduce;
+        // Static path: ellipsis clip — no overflow, matches collapsed
+        // hover-off, and the resting state of a settled marquee.
+        if (!canRun) {
+          return SizedBox(
+            width: double.infinity,
+            child: Text(
+              widget.text,
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+              style: widget.style,
+            ),
+          );
+        }
 
-    // Static path: ellipsis clip — no overflow, matches collapsed hover-off.
-    if (!running) {
-      return SizedBox(
-        key: _viewportKey,
-        width: double.infinity,
-        child: Text(
-          widget.text,
-          key: _labelKey,
-          maxLines: 1,
-          softWrap: false,
-          overflow: TextOverflow.ellipsis,
-          style: widget.style,
-        ),
-      );
-    }
-
-    // Marquee path: unconstrained track clipped to the viewport.
-    return SizedBox(
-      key: _viewportKey,
-      width: double.infinity,
-      child: ClipRect(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
-            final dx = -_distance * _controller.value;
-            return OverflowBox(
-              alignment: Alignment.centerLeft,
-              maxWidth: double.infinity,
-              child: Transform.translate(
-                offset: Offset(dx, 0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      widget.text,
-                      key: _labelKey,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.visible,
-                      style: widget.style,
+        // Marquee path: unconstrained track clipped to the viewport.
+        return SizedBox(
+          width: double.infinity,
+          child: ClipRect(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) {
+                final dx = -distance * _controller.value;
+                return OverflowBox(
+                  alignment: Alignment.centerLeft,
+                  maxWidth: double.infinity,
+                  child: Transform.translate(
+                    offset: Offset(dx, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          widget.text,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.visible,
+                          style: widget.style,
+                        ),
+                        const SizedBox(width: _marqueeGap),
+                        Text(
+                          widget.text,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.visible,
+                          style: widget.style,
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 24),
-                    Text(
-                      widget.text,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.visible,
-                      style: widget.style,
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }
