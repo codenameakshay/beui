@@ -9,6 +9,13 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_syntax.dart';
+
+// `BeuiCodeLanguage` moved to `_syntax.dart` — the language enum belongs with
+// the tokenizer, and keeping it here forced an import cycle once the shared
+// highlighter landed. Re-exported so the public API is unchanged: consumers
+// and the barrel still see it on this library.
+export '_syntax.dart' show BeuiCodeLanguage;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -21,38 +28,6 @@ enum BeuiCodeBlockStatus {
 
   /// Stream finished — shows the ready checkmark.
   complete,
-}
-
-/// Supported language labels / lightweight highlighters for [BeuiCodeBlock]
-/// (source `AgentCodeLanguage`).
-///
-/// Highlighting is a **reduced** port of the source's Shiki themes: a small
-/// regex tokeniser paints keywords, strings, comments, and numbers. Full
-/// Shiki fidelity is intentionally omitted so the package stays free of heavy
-/// highlighting dependencies.
-enum BeuiCodeLanguage {
-  /// Shell / bash scripts.
-  bash('bash'),
-
-  /// Unified diffs.
-  diff('diff'),
-
-  /// JSON payloads.
-  json('json'),
-
-  /// Plain text — no token colouring.
-  text('text'),
-
-  /// TypeScript / TSX (shared keyword set).
-  tsx('tsx'),
-
-  /// TypeScript.
-  typescript('typescript');
-
-  const BeuiCodeLanguage(this.label);
-
-  /// Display label shown in the chrome bar (source uppercase language slug).
-  final String label;
 }
 
 // ---------------------------------------------------------------------------
