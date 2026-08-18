@@ -99,6 +99,12 @@ class _AiSidebarDemoState extends State<_AiSidebarDemo> {
       label: 'Release notes',
       kind: BeuiSidebarResourceKind.file,
     ),
+    const BeuiSidebarResource(
+      id: 'archived',
+      label: 'Archived notes',
+      kind: BeuiSidebarResourceKind.file,
+      disabled: true,
+    ),
   ];
 
   static final _actions = <(String, IconData)>[
@@ -230,6 +236,11 @@ class _ProjectsPane extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4), // mb-1
+          // This is the documented pattern for a scrolling resource tree:
+          // the consumer supplies its own scrollable + bottom fade, since
+          // BeuiAiSidebar shrink-wraps by default. BeuiAiSidebar.maxHeight
+          // is the built-in alternative when a self-contained capped +
+          // faded viewport is enough.
           Expanded(
             child: Stack(
               children: [

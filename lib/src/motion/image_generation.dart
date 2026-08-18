@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter, lerpDouble;
 
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -9,6 +10,8 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
+import '_hit_target.dart';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -130,11 +133,23 @@ const _overlayOpacityMotion = CurvedMotion(
   beuiEaseOut,
 );
 
+/// Determinate progress fill — 300ms EASE_OUT.
+const _progressMotion = CurvedMotion(Duration(milliseconds: 300), beuiEaseOut);
+
 /// Dither-mark spin period (source `duration: 2.4`).
 const _ditherSpinPeriod = Duration(milliseconds: 2400);
 
 const _dotGap = 10.0;
 const _compactMaxWidth = 208.0; // max-w-52
+
+/// Height reserved under the status block for the error retry control.
+///
+/// 40px control + the 12px gap above it. Reserved on *every* status, not just
+/// `error`, so arriving at a failure does not shove the rest of the transcript
+/// down by 52px at the moment the reader is trying to read it. This component
+/// already solves the same problem for the media itself with `AspectRatio`;
+/// the error branch was the one place it forgot.
+const double _retrySlotHeight = 52;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -159,6 +174,40 @@ bool _isActive(BeuiImageGenerationStatus status) =>
     status == BeuiImageGenerationStatus.generating ||
     status == BeuiImageGenerationStatus.refining;
 
+double _contrastRatio(Color a, Color b) {
+  final la = a.computeLuminance();
+  final lb = b.computeLuminance();
+  final hi = math.max(la, lb);
+  final lo = math.min(la, lb);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/// Darkens (or lightens) [foreground] until it clears [target] against
+/// [background].
+///
+/// `BeuiColors.destructive` is tuned as a *fill* — as 12px text on the light
+/// surface it measures 3.94:1, under the 4.5:1 that body-sized copy needs, and
+/// "Generation failed" is the one line in this widget a reader must not miss.
+/// A dedicated `destructiveForeground`-for-text role in `BeuiColors` would be
+/// the real fix; until that exists this walks the token's own hue to a legible
+/// lightness rather than inventing a second red.
+Color _legibleOn(Color foreground, Color background, {double target = 4.5}) {
+  if (_contrastRatio(foreground, background) >= target) return foreground;
+  final darken = background.computeLuminance() > 0.5;
+  var current = foreground;
+  for (var step = 0; step < 16; step++) {
+    final hsl = HSLColor.fromColor(current);
+    final next = (darken ? hsl.lightness - 0.04 : hsl.lightness + 0.04).clamp(
+      0.0,
+      1.0,
+    );
+    if (next == hsl.lightness) break;
+    current = hsl.withLightness(next).toColor();
+    if (_contrastRatio(current, background) >= target) return current;
+  }
+  return current;
+}
+
 // ---------------------------------------------------------------------------
 // BeuiImageGeneration
 // ---------------------------------------------------------------------------
@@ -172,6 +221,13 @@ bool _isActive(BeuiImageGenerationStatus status) =>
 /// media; on complete/error the media settles (blur/saturate/opacity/scale)
 /// and the overlay exits. Pass completed media as [child] (e.g. [Image.network]
 /// or a custom preview widget).
+///
+/// ## Telling the reader how long
+///
+/// Image generation runs 10–60 seconds. Four words and a 2.4s spinner is the
+/// canonical "is it frozen?" surface, so pass [progress] to drive a determinate
+/// hairline under the frame, and [onCancel] to give the reader a way out. Both
+/// are optional and the widget is unchanged without them.
 class BeuiImageGeneration extends StatelessWidget {
   /// Creates a generated-image surface.
   const BeuiImageGeneration({
@@ -185,7 +241,11 @@ class BeuiImageGeneration extends StatelessWidget {
     this.interactive = true,
     this.statusText,
     this.showStatus = true,
+    this.progress,
+    this.onCancel,
+    this.cancelLabel = 'Stop generating',
     this.onRetry,
+    this.reserveErrorSlot = true,
     super.key,
   });
 
@@ -198,7 +258,7 @@ class BeuiImageGeneration extends StatelessWidget {
   final BeuiImageGenerationStatus status;
 
   /// Accessible description. Defaults to status text, optionally including
-  /// [prompt] (source `label`).
+  /// [prompt] and [progress] (source `label`).
   final String? label;
 
   /// User prompt shown under the status row (source `prompt`).
@@ -225,9 +285,33 @@ class BeuiImageGeneration extends StatelessWidget {
   /// Whether to show the status mark + label row (source `showStatus`).
   final bool showStatus;
 
+  /// Completion fraction in `0..1`, or null for an indeterminate run.
+  ///
+  /// Drives a 2px determinate hairline along the bottom of the frame while the
+  /// status is active, and is folded into the accessible label and the status
+  /// row's live region as a percentage, so the progress is available to a
+  /// screen reader and not only to the eye. Values outside `0..1` are clamped.
+  final double? progress;
+
+  /// Cancels the run. Shows a stop control inside the frame while active.
+  ///
+  /// A long generation the reader cannot stop is a surface that owns them
+  /// rather than the other way round. Null hides the control entirely.
+  final VoidCallback? onCancel;
+
+  /// Accessible name for the stop control. Defaults to `"Stop generating"`.
+  final String cancelLabel;
+
   /// Retry action shown on [BeuiImageGenerationStatus.error]
   /// (source `onRetry`).
   final VoidCallback? onRetry;
+
+  /// Whether the retry control's height is held open on every status, so that
+  /// arriving at [BeuiImageGenerationStatus.error] costs no layout shift.
+  ///
+  /// Only has an effect when [onRetry] is set. Defaults to true; pass false if
+  /// you would rather have the 52px back on the happy path.
+  final bool reserveErrorSlot;
 
   @override
   Widget build(BuildContext context) {
@@ -238,10 +322,19 @@ class BeuiImageGeneration extends StatelessWidget {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final mediaState = _kMediaState[status]!;
     final resolvedStatusText = statusText ?? _kStatusText[status]!;
+    final active = _isActive(status);
+    final clampedProgress = progress?.clamp(0.0, 1.0);
+    final percent = clampedProgress == null
+        ? null
+        : (clampedProgress * 100).round();
+
+    // "Generating image, 42%: a quiet mountain landscape at sunset".
+    final progressSuffix = (percent != null && active) ? ', $percent%' : '';
     final resolvedLabel =
         label ??
-        (prompt != null ? '$resolvedStatusText: $prompt' : resolvedStatusText);
-    final active = _isActive(status);
+        (prompt != null
+            ? '$resolvedStatusText$progressSuffix: $prompt'
+            : '$resolvedStatusText$progressSuffix');
 
     final frame = _ImageFrame(
       colors: colors,
@@ -253,8 +346,15 @@ class BeuiImageGeneration extends StatelessWidget {
       interactive: interactive,
       resolution: resolution,
       label: resolvedLabel,
+      progress: clampedProgress,
+      onCancel: onCancel,
+      cancelLabel: cancelLabel,
       child: child,
     );
+
+    final showRetryNow =
+        status == BeuiImageGenerationStatus.error && onRetry != null;
+    final reserveRetry = onRetry != null && reserveErrorSlot;
 
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -269,10 +369,35 @@ class BeuiImageGeneration extends StatelessWidget {
             status: status,
             showStatus: showStatus,
             statusText: resolvedStatusText,
+            percent: active ? percent : null,
             prompt: prompt,
           ),
         ],
-        if (status == BeuiImageGenerationStatus.error && onRetry != null) ...[
+        if (reserveRetry)
+          // The slot exists in every status; only its contents fade.
+          SizedBox(
+            height: _retrySlotHeight,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 150),
+              curve: beuiEaseOut,
+              opacity: showRetryNow ? 1 : 0,
+              child: IgnorePointer(
+                ignoring: !showRetryNow,
+                child: ExcludeSemantics(
+                  excluding: !showRetryNow,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12), // mt-3
+                    child: _RetryButton(
+                      colors: colors,
+                      reduce: reduce,
+                      onRetry: onRetry!,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        else if (showRetryNow) ...[
           const SizedBox(height: 12), // mt-3
           _RetryButton(colors: colors, reduce: reduce, onRetry: onRetry!),
         ],
@@ -309,6 +434,9 @@ class _ImageFrame extends StatelessWidget {
     required this.interactive,
     required this.resolution,
     required this.label,
+    required this.progress,
+    required this.onCancel,
+    required this.cancelLabel,
     required this.child,
   });
 
@@ -321,11 +449,62 @@ class _ImageFrame extends StatelessWidget {
   final bool interactive;
   final String? resolution;
   final String label;
+  final double? progress;
+  final VoidCallback? onCancel;
+  final String cancelLabel;
   final Widget? child;
+
+  /// One frame of the media: the four channels resolved to plain numbers.
+  ///
+  /// Split out so the reduced-motion path can supply snapped values for scale
+  /// and blur without duplicating the filter composition.
+  Widget _mediaLayer({
+    required double opacity,
+    required double saturate,
+    required double scale,
+    required double blurPx,
+  }) {
+    final sigma = beuiBlurSigma(blurPx);
+    // Force children to fill the frame
+    // (source `[&>*]:size-full object-cover`).
+    Widget media = SizedBox.expand(child: child ?? const SizedBox.shrink());
+    if (sigma > 0.05 || (saturate - 1).abs() > 0.01) {
+      ImageFilter filter = _saturationFilter(saturate);
+      if (sigma > 0.05) {
+        filter = ImageFilter.compose(
+          outer: filter,
+          inner: ImageFilter.blur(
+            sigmaX: sigma,
+            sigmaY: sigma,
+            tileMode: TileMode.decal,
+          ),
+        );
+      }
+      media = ImageFiltered(imageFilter: filter, child: media);
+    }
+    return Opacity(
+      opacity: opacity.clamp(0.0, 1.0),
+      child: Transform.scale(
+        scale: scale,
+        filterQuality: FilterQuality.medium,
+        child: media,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final motion = reduce ? const NoMotion() : _mediaMotion;
+    // The channel split the project rule asks for, not one switch for all four.
+    // Opacity and saturation are colour transitions and survive reduced motion;
+    // scale and blur are movement and snap. Previously every channel was cut,
+    // so the whole reveal hard-swapped (audit R18 / T4).
+    final colourMotion = motionFor(context, _mediaMotion, isMovement: false);
+    final movementMotion = motionFor(context, _mediaMotion, isMovement: true);
+    // NoMotion *holds*; it does not jump. Routing scale and blur through it
+    // would freeze them at whatever value the previous status left behind, so
+    // the reduced-motion path snaps them to their target explicitly.
+    final snapMovement = movementMotion is NoMotion;
+    final showCancel = active && onCancel != null;
 
     return Semantics(
       image: true,
@@ -347,57 +526,33 @@ class _ImageFrame extends StatelessWidget {
                 // Media layer — blur / saturate / opacity / scale.
                 SingleMotionBuilder(
                   value: mediaState.opacity,
-                  motion: motion,
+                  motion: colourMotion,
                   builder: (context, opacity, _) {
                     return SingleMotionBuilder(
-                      value: mediaState.scale,
-                      motion: motion,
-                      builder: (context, scale, _) {
+                      value: mediaState.saturate,
+                      motion: colourMotion,
+                      builder: (context, saturate, _) {
+                        if (snapMovement) {
+                          return _mediaLayer(
+                            opacity: opacity,
+                            saturate: saturate,
+                            scale: mediaState.scale,
+                            blurPx: mediaState.blurPx,
+                          );
+                        }
                         return SingleMotionBuilder(
-                          value: mediaState.blurPx,
-                          motion: motion,
-                          builder: (context, blurPx, _) {
+                          value: mediaState.scale,
+                          motion: movementMotion,
+                          builder: (context, scale, _) {
                             return SingleMotionBuilder(
-                              value: mediaState.saturate,
-                              motion: motion,
-                              builder: (context, saturate, _) {
-                                final o = opacity.clamp(0.0, 1.0);
-                                final s = scale;
-                                final sigma = beuiBlurSigma(blurPx);
-                                // Force children to fill the frame
-                                // (source `[&>*]:size-full object-cover`).
-                                Widget media = SizedBox.expand(
-                                  child: child ?? const SizedBox.shrink(),
-                                );
-                                if (sigma > 0.05 ||
-                                    (saturate - 1).abs() > 0.01) {
-                                  ImageFilter filter = _saturationFilter(
-                                    saturate,
-                                  );
-                                  if (sigma > 0.05) {
-                                    filter = ImageFilter.compose(
-                                      outer: filter,
-                                      inner: ImageFilter.blur(
-                                        sigmaX: sigma,
-                                        sigmaY: sigma,
-                                        tileMode: TileMode.decal,
-                                      ),
-                                    );
-                                  }
-                                  media = ImageFiltered(
-                                    imageFilter: filter,
-                                    child: media,
-                                  );
-                                }
-                                return Opacity(
-                                  opacity: o,
-                                  child: Transform.scale(
-                                    scale: s,
-                                    filterQuality: FilterQuality.medium,
-                                    child: media,
-                                  ),
-                                );
-                              },
+                              value: mediaState.blurPx,
+                              motion: movementMotion,
+                              builder: (context, blurPx, _) => _mediaLayer(
+                                opacity: opacity,
+                                saturate: saturate,
+                                scale: scale,
+                                blurPx: blurPx,
+                              ),
                             );
                           },
                         );
@@ -448,7 +603,178 @@ class _ImageFrame extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                // Stop control — in-frame, and only while there is something
+                // to stop.
+                if (showCancel)
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: _CancelButton(
+                      colors: colors,
+                      label: cancelLabel,
+                      onCancel: onCancel!,
+                    ),
+                  ),
+
+                // Determinate hairline. 2px, flush to the bottom edge, inside
+                // the frame's own clip so it costs no layout.
+                if (progress != null && active)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: _ProgressHairline(value: progress!, colors: colors),
+                  ),
               ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The 2px determinate fill under an active frame.
+class _ProgressHairline extends StatelessWidget {
+  const _ProgressHairline({required this.value, required this.colors});
+
+  final double value;
+  final BeuiColors colors;
+
+  static Widget _fill(double t, BeuiColors colors) => Align(
+    alignment: AlignmentDirectional.centerStart,
+    child: FractionallySizedBox(
+      widthFactor: t.clamp(0.0, 1.0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(color: colors.foreground),
+        child: const SizedBox(height: 2),
+      ),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: SizedBox(
+        height: 2,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colors.foreground.withValues(alpha: 0.12),
+          ),
+          child: Builder(
+            builder: (context) {
+              final motion = motionFor(
+                context,
+                _progressMotion,
+                isMovement: true,
+              );
+              // The fill's width is movement, so reduced motion drops the
+              // slide — but it has to *snap to the new fraction*, not hold the
+              // old one. NoMotion holds, so this branches rather than driving
+              // the builder with it and freezing the bar at zero.
+              if (motion is NoMotion) return _fill(value, colors);
+              return SingleMotionBuilder(
+                value: value,
+                motion: motion,
+                builder: (context, t, _) => _fill(t, colors),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// In-frame stop control, with the full interactive contract.
+class _CancelButton extends StatefulWidget {
+  const _CancelButton({
+    required this.colors,
+    required this.label,
+    required this.onCancel,
+  });
+
+  final BeuiColors colors;
+  final String label;
+  final VoidCallback onCancel;
+
+  @override
+  State<_CancelButton> createState() => _CancelButtonState();
+}
+
+class _CancelButtonState extends State<_CancelButton> {
+  bool _hovered = false;
+  bool _pressed = false;
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    final reduce = MediaQuery.disableAnimationsOf(context);
+
+    // Outermost: a proxy ancestor sized to the 24px paint would clip the slop.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        container: true,
+        button: true,
+        label: widget.label,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() {
+            _hovered = false;
+            _pressed = false;
+          }),
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowFocusHighlight: (v) {
+              if (mounted) setState(() => _focused = v);
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onCancel();
+                  return null;
+                },
+              ),
+            },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapUp: (_) => setState(() => _pressed = false),
+              onTapCancel: () => setState(() => _pressed = false),
+              onTap: widget.onCancel,
+              child: SingleMotionBuilder(
+                value: (_pressed && !reduce) ? 0.97 : 1.0,
+                motion: motionFor(context, beuiSpringPress, isMovement: true),
+                builder: (context, scale, child) =>
+                    Transform.scale(scale: scale, child: child),
+                child: BeuiFocusRing(
+                  focused: _focused,
+                  borderRadius: BorderRadius.circular(999),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    curve: beuiEaseOut,
+                    width: 24,
+                    height: 24,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: _hovered
+                          ? colors.foreground
+                          : colors.background.withValues(alpha: 0.75),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      LucideIcons.square,
+                      size: 10,
+                      color: _hovered
+                          ? colors.background
+                          : colors.mutedForeground,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -506,12 +832,17 @@ class _DitherPresenceState extends State<_DitherPresence> {
     final overlayTarget = widget.active
         ? (_kOverlayOpacity[widget.status] ?? 0.0)
         : 0.0;
-    final presenceMotion = widget.reduce
-        ? const NoMotion()
-        : _ditherPresenceMotion;
-    final overlayMotion = widget.reduce
-        ? const NoMotion()
-        : _overlayOpacityMotion;
+    // Both channels here are opacity, so both survive reduced motion.
+    final presenceMotion = motionFor(
+      context,
+      _ditherPresenceMotion,
+      isMovement: false,
+    );
+    final overlayMotion = motionFor(
+      context,
+      _overlayOpacityMotion,
+      isMovement: false,
+    );
 
     return SingleMotionBuilder(
       value: presenceTarget,
@@ -570,7 +901,16 @@ class _DitherFieldState extends State<_DitherField>
   late final Ticker _ticker;
   Duration _elapsed = Duration.zero;
 
-  Offset _pointer = Offset.zero;
+  /// The painter's repaint signal.
+  ///
+  /// The field used to `setState` on every tick, rebuilding the widget subtree
+  /// 60 times a second to move a few hundred circles — and at 500px square that
+  /// is ~2,700 circles, so a handful of concurrent generations janked. Driving
+  /// the painter from a [ValueNotifier] repaints the canvas without rebuilding
+  /// or re-laying-out anything, and the [RepaintBoundary] keeps those repaints
+  /// off the rest of the frame.
+  final ValueNotifier<Offset> _pointer = ValueNotifier<Offset>(Offset.zero);
+
   Offset _target = Offset.zero;
   bool _inside = false;
   Size _size = Size.zero;
@@ -600,6 +940,7 @@ class _DitherFieldState extends State<_DitherField>
   @override
   void dispose() {
     _ticker.dispose();
+    _pointer.dispose();
     super.dispose();
   }
 
@@ -607,7 +948,6 @@ class _DitherFieldState extends State<_DitherField>
     _elapsed = elapsed;
     if (!_sized) return;
     _stepPointer();
-    setState(() {});
   }
 
   void _stepPointer() {
@@ -620,9 +960,10 @@ class _DitherFieldState extends State<_DitherField>
       _target = Offset(w / 2 + ox, h / 2 + oy);
     }
     final follow = widget.reduce ? 1.0 : (_inside ? 0.16 : 0.045);
-    _pointer = Offset(
-      _pointer.dx + (_target.dx - _pointer.dx) * follow,
-      _pointer.dy + (_target.dy - _pointer.dy) * follow,
+    final current = _pointer.value;
+    _pointer.value = Offset(
+      current.dx + (_target.dx - current.dx) * follow,
+      current.dy + (_target.dy - current.dy) * follow,
     );
   }
 
@@ -630,16 +971,13 @@ class _DitherFieldState extends State<_DitherField>
     if (_size == size) return;
     _size = size;
     if (!_sized) {
-      _pointer = Offset(size.width / 2, size.height / 2);
-      _target = _pointer;
+      _pointer.value = Offset(size.width / 2, size.height / 2);
+      _target = _pointer.value;
       _sized = true;
       if (widget.reduce) {
         // One static draw after layout.
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            _stepPointer();
-            setState(() {});
-          }
+          if (mounted) _stepPointer();
         });
       }
     }
@@ -655,11 +993,13 @@ class _DitherFieldState extends State<_DitherField>
         builder: (context, constraints) {
           final size = Size(constraints.maxWidth, constraints.maxHeight);
           _ensureSize(size);
-          Widget field = CustomPaint(
-            size: size,
-            painter: _DitherPainter(
-              pointer: _pointer,
-              color: widget.colors.foreground,
+          Widget field = RepaintBoundary(
+            child: CustomPaint(
+              size: size,
+              painter: _DitherPainter(
+                pointer: _pointer,
+                color: widget.colors.foreground,
+              ),
             ),
           );
           if (pointerEnabled) {
@@ -682,9 +1022,12 @@ class _DitherFieldState extends State<_DitherField>
 }
 
 class _DitherPainter extends CustomPainter {
-  _DitherPainter({required this.pointer, required this.color});
+  _DitherPainter({required this.pointer, required this.color})
+    : super(repaint: pointer);
 
-  final Offset pointer;
+  /// Repaint signal *and* data source — read at paint time, never through a
+  /// rebuild.
+  final ValueListenable<Offset> pointer;
   final Color color;
 
   @override
@@ -693,6 +1036,7 @@ class _DitherPainter extends CustomPainter {
     final height = size.height;
     if (width <= 0 || height <= 0) return;
 
+    final origin = pointer.value;
     final radius = math.min(width, height) * 0.38;
     final columns = (width / _dotGap).ceil() + 1;
     final rows = (height / _dotGap).ceil() + 1;
@@ -705,8 +1049,8 @@ class _DitherPainter extends CustomPainter {
       for (var column = 0; column < columns; column++) {
         final anchorX = offsetX + column * _dotGap;
         final anchorY = offsetY + row * _dotGap;
-        final deltaX = anchorX - pointer.dx;
-        final deltaY = anchorY - pointer.dy;
+        final deltaX = anchorX - origin.dx;
+        final deltaY = anchorY - origin.dy;
         final distance = math.sqrt(deltaX * deltaX + deltaY * deltaY);
         final proximity = math.max(0.0, 1 - distance / radius);
         // smoothstep
@@ -740,6 +1084,7 @@ class _StatusBlock extends StatelessWidget {
     required this.status,
     required this.showStatus,
     required this.statusText,
+    required this.percent,
     required this.prompt,
   });
 
@@ -748,12 +1093,17 @@ class _StatusBlock extends StatelessWidget {
   final BeuiImageGenerationStatus status;
   final bool showStatus;
   final String statusText;
+  final int? percent;
   final String? prompt;
 
   @override
   Widget build(BuildContext context) {
     final isError = status == BeuiImageGenerationStatus.error;
-    final statusColor = isError ? colors.destructive : colors.foreground;
+    // The failure line has to be readable, not merely tinted.
+    final statusColor = isError
+        ? _legibleOn(colors.destructive, colors.background)
+        : colors.foreground;
+    final line = percent == null ? statusText : '$statusText · $percent%';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -762,18 +1112,25 @@ class _StatusBlock extends StatelessWidget {
         if (showStatus)
           Semantics(
             liveRegion: true,
-            child: Row(
-              children: [
-                _DitherMark(status: status, reduce: reduce, color: statusColor),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _StatusLabel(
-                    text: statusText,
+            label: line,
+            child: ExcludeSemantics(
+              child: Row(
+                children: [
+                  _DitherMark(
+                    status: status,
                     reduce: reduce,
                     color: statusColor,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _StatusLabel(
+                      text: line,
+                      reduce: reduce,
+                      color: statusColor,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         if (prompt != null) ...[
@@ -814,11 +1171,9 @@ class _StatusLabel extends StatelessWidget {
       color: color,
     );
 
-    if (reduce) {
-      return Text(text, style: style);
-    }
-
-    // Cross-fade + 4px vertical travel on status change (popLayout).
+    // Cross-fade + 4px vertical travel on status change (popLayout). Under
+    // reduced motion the fade is kept and only the travel is dropped — the
+    // label used to hard-swap.
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 150),
       switchInCurve: beuiEaseOut,
@@ -831,6 +1186,8 @@ class _StatusLabel extends StatelessWidget {
         );
       },
       transitionBuilder: (child, animation) {
+        final fade = FadeTransition(opacity: animation, child: child);
+        if (reduce) return fade;
         final isIncoming = (child.key as ValueKey<String>?)?.value == text;
         return FadeTransition(
           opacity: animation,
@@ -984,10 +1341,11 @@ class _RetryButton extends StatefulWidget {
 class _RetryButtonState extends State<_RetryButton> {
   bool _pressed = false;
   bool _hovered = false;
+  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
-    final scale = (!widget.reduce && _pressed) ? 0.96 : 1.0;
+    final scale = (!widget.reduce && _pressed) ? 0.97 : 1.0;
     final bg = _hovered ? widget.colors.muted : Colors.transparent;
 
     return Align(
@@ -1002,44 +1360,62 @@ class _RetryButtonState extends State<_RetryButton> {
             _hovered = false;
             _pressed = false;
           }),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown: (_) => setState(() => _pressed = true),
-            onTapUp: (_) => setState(() => _pressed = false),
-            onTapCancel: () => setState(() => _pressed = false),
-            onTap: widget.onRetry,
-            child: SingleMotionBuilder(
-              value: scale,
-              motion: motionFor(context, beuiSpringPress, isMovement: true),
-              builder: (context, s, child) =>
-                  Transform.scale(scale: s, child: child),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                curve: Curves.easeOut,
-                constraints: const BoxConstraints(minHeight: 40),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: bg,
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowFocusHighlight: (v) {
+              if (mounted) setState(() => _focused = v);
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onRetry();
+                  return null;
+                },
+              ),
+            },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapUp: (_) => setState(() => _pressed = false),
+              onTapCancel: () => setState(() => _pressed = false),
+              onTap: widget.onRetry,
+              child: SingleMotionBuilder(
+                value: scale,
+                motion: motionFor(context, beuiSpringPress, isMovement: true),
+                builder: (context, s, child) =>
+                    Transform.scale(scale: s, child: child),
+                child: BeuiFocusRing(
+                  focused: _focused,
                   borderRadius: BorderRadius.circular(999),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      LucideIcons.rotate_ccw,
-                      size: 16,
-                      color: widget.colors.foreground,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
+                    constraints: const BoxConstraints(minHeight: 40),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: bg,
+                      borderRadius: BorderRadius.circular(999),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Try again',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: widget.colors.foreground,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          LucideIcons.rotate_ccw,
+                          size: 16,
+                          color: widget.colors.foreground,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Try again',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: widget.colors.foreground,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

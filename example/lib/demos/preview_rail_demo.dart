@@ -92,34 +92,66 @@ const _items = <BeuiPreviewRailItem>[
 class _PreviewRailDemo extends StatelessWidget {
   const _PreviewRailDemo();
 
+  // `highlightActive` now defaults to true, anchoring the resting selection
+  // with a highlight tick even before the pointer arrives. On touch devices
+  // (no hover), the first tap on an inactive item previews it and a second
+  // tap commits the selection — mirroring the source's tap-to-preview,
+  // tap-again-to-select pattern.
+
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
     // Source preview: two rails in a `flex flex-col gap-8` (32) — a vertical
     // one at `h-[360px] max-w-2xl` (672) and a horizontal one at `h-[280px]`,
     // both `defaultActiveId: 'docs'`. The remaining variants
-    // (previewSide/showPreview/highlightActive) are covered by the widget
-    // tests rather than shown here, matching the source page.
+    // (previewSide/showPreview) are covered by the widget tests rather than
+    // shown here, matching the source page. A third, `highlightActive: false`
+    // rail is added below to model the decorative-free rest state.
+    final caption = TextStyle(
+      color: colors.mutedForeground,
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0,
+    );
+
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 672),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
-            SizedBox(
-              height: 360,
-              child: BeuiPreviewRail(items: _items, defaultActiveId: 'docs'),
-            ),
-            SizedBox(height: 32),
-            SizedBox(
-              height: 280,
-              child: BeuiPreviewRail(
-                items: _items,
-                orientation: BeuiPreviewRailOrientation.horizontal,
-                defaultActiveId: 'docs',
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Vertical', style: caption),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 360,
+                child: BeuiPreviewRail(items: _items, defaultActiveId: 'docs'),
               ),
-            ),
-          ],
+              const SizedBox(height: 32),
+              Text('Horizontal', style: caption),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 280,
+                child: BeuiPreviewRail(
+                  items: _items,
+                  orientation: BeuiPreviewRailOrientation.horizontal,
+                  defaultActiveId: 'docs',
+                ),
+              ),
+              const SizedBox(height: 32),
+              Text('highlightActive: false', style: caption),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 360,
+                child: BeuiPreviewRail(
+                  items: _items,
+                  defaultActiveId: 'docs',
+                  highlightActive: false,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
