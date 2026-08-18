@@ -44,7 +44,17 @@ const double beuiMinHitTarget = 44;
 /// ```
 ///
 /// Put this *outside* the gesture detector, not inside — it enlarges the box
-/// the detector receives pointers through.
+/// the detector receives pointers through. It must in fact be the OUTERMOST
+/// box of the whole control: any ancestor `RenderBox` sized to the visual
+/// (a `Semantics` container, `Tooltip`, `FocusableActionDetector`, or plain
+/// `SizedBox`) rejects out-of-bounds pointers before this widget is consulted,
+/// leaving the slop silently dead. It also cannot widen a target along an axis
+/// an ancestor has already constrained to the visual size.
+///
+/// The slop is a hit-test-only region: the semantics rect stays at the painted
+/// size, so `meetsGuideline(androidTapTargetGuideline)` (which measures
+/// semantics rects) cannot pass via this widget — verify slop targets with a
+/// direct out-of-bounds tap test instead.
 class BeuiMinHitTarget extends StatelessWidget {
   /// Wraps [child] with at least [minSize] of hit area in both axes.
   const BeuiMinHitTarget({
