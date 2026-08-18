@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Gallery route for the two `blocks/file-upload` patterns —
 /// [BeuiAttachmentUpload] (the mixed attachment workspace) and [BeuiFileUpload]
@@ -11,24 +12,22 @@ import 'package:flutter/material.dart';
 /// the package ships no picker plugin (spec §7).
 Widget fileUploadDemo(BuildContext context) => const _FileUploadDemo();
 
+/// Gallery route for [BeuiAttachmentUpload] on its own.
+///
+/// It used to be reachable only as the first half of the `file-upload` page,
+/// so the largest component in the library (2,300 lines, and the repo's
+/// keyboard/semantics reference implementation) had no catalog entry of its
+/// own and nothing linked to it.
+Widget attachmentUploadDemo(BuildContext context) =>
+    const _AttachmentUploadSection();
+
 class _FileUploadDemo extends StatelessWidget {
   const _FileUploadDemo();
 
-  // Both source previews render bare (their prose lives in the page chrome),
-  // so the route is just the two components stacked.
+  // The source preview renders bare — its prose lives in the page chrome.
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    child: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 48,
-        children: [
-          const _AttachmentUploadSection(),
-          const _UploadQueueSection(),
-        ],
-      ),
-    ),
-  );
+  Widget build(BuildContext context) =>
+      const SingleChildScrollView(child: Center(child: _UploadQueueSection()));
 }
 
 // ---------------------------------------------------------------------------
@@ -257,6 +256,18 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
     });
   }
 
+  void _seek(BeuiAttachmentUploadItem item, Duration position) {
+    setState(() {
+      _items = [
+        for (final entry in _items)
+          if (entry.id == item.id)
+            entry.copyWith(currentTime: position)
+          else
+            entry,
+      ];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
@@ -286,6 +297,11 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
         playingId: _playingId,
         onAudioToggle: _toggleAudio,
         onRetry: _retry,
+        // The waveform is only a scrubber if something handles the seek.
+        onSeek: _seek,
+        // Cancelling a transfer in flight is its own act, distinct from
+        // discarding a row that already settled.
+        onCancel: (item) => _notify('Cancelled ${item.name}'),
         onOpenLink: (item) => _notify('Would open ${item.href}'),
         onAttachmentsRejected: (rejected, reason) {
           final names = rejected.map((item) => item.name).join(', ');
@@ -508,29 +524,11 @@ class _UploadQueueSectionState extends State<_UploadQueueSection> {
                               ],
                             ),
                           ),
-                          Semantics(
-                            button: true,
+                          _DemoIconButton(
                             label: 'Reset upload queue',
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                onTap: _reset,
-                                child: Container(
-                                  width: 36,
-                                  height: 36, // h-9 w-9
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: colors.border),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    LucideIcons.rotate_ccw,
-                                    size: 14,
-                                    color: colors.mutedForeground,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            icon: LucideIcons.rotate_ccw,
+                            colors: colors,
+                            onPressed: _reset,
                           ),
                         ],
                       ),
@@ -541,13 +539,20 @@ class _UploadQueueSectionState extends State<_UploadQueueSection> {
                   value: _items,
                   variant: _variant,
                   maxFiles: 5,
-                  title: centered
-                      ? 'Drop files to upload'
-                      : 'Drop release files',
+                  // The default copy no longer promises drag-and-drop the port
+                  // does not implement; this route keeps its own wording and
+                  // leaves `dragAndDrop` off, which is the honest default.
+                  title: centered ? 'Add files to upload' : 'Add release files',
                   description: 'PDF, images, video or zipped assets',
+                  // 8MB, so the oversized candidate below is refused with a
+                  // visible reason rather than silently vanishing.
+                  maxFileSize: 8 * 1024 * 1024,
                   onValueChange: (next) => setState(() => _items = next),
                   onRetry: (item) => _start(item.id),
                   onRemove: (item) => _stop(item.id),
+                  // Cancelling an upload in flight is not the same act as
+                  // discarding a row that already finished.
+                  onCancel: (item) => _stop(item.id),
                 ),
               ],
             ),
@@ -559,7 +564,7 @@ class _UploadQueueSectionState extends State<_UploadQueueSection> {
 }
 
 /// One cell of the preview's Centered/Row segmented control.
-class _VariantChip extends StatelessWidget {
+class _VariantChip extends StatefulWidget {
   const _VariantChip({
     required this.label,
     required this.selected,
@@ -573,27 +578,130 @@ class _VariantChip extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) => MouseRegion(
-    cursor: SystemMouseCursors.click,
-    child: GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        height: 28, // h-7
-        padding: const EdgeInsets.symmetric(horizontal: 12), // px-3
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: selected ? colors.background : null,
-          borderRadius: BorderRadius.circular(999),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: selected ? colors.foreground : colors.mutedForeground,
+  State<_VariantChip> createState() => _VariantChipState();
+}
+
+class _VariantChipState extends State<_VariantChip> {
+  bool _focusVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    return Semantics(
+      button: true,
+      // A segmented control is a set of toggles; say so.
+      toggled: widget.selected,
+      label: widget.label,
+      onTap: widget.onPressed,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onPressed();
+              return null;
+            },
+          ),
+        },
+        onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onPressed,
+          child: Container(
+            height: 28, // h-7
+            padding: const EdgeInsets.symmetric(horizontal: 12), // px-3
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: widget.selected ? colors.background : null,
+              border: Border.all(
+                color: _focusVisible ? colors.focusRing : Colors.transparent,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              widget.label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: widget.selected
+                    ? colors.foreground
+                    : colors.mutedForeground,
+              ),
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
+}
+
+/// A demo icon button with the contract the gallery should be teaching:
+/// button semantics, keyboard activation, a hover cursor and a focus ring.
+class _DemoIconButton extends StatefulWidget {
+  const _DemoIconButton({
+    required this.label,
+    required this.icon,
+    required this.colors,
+    required this.onPressed,
+  });
+
+  final String label;
+  final IconData icon;
+  final BeuiColors colors;
+  final VoidCallback onPressed;
+
+  @override
+  State<_DemoIconButton> createState() => _DemoIconButtonState();
+}
+
+class _DemoIconButtonState extends State<_DemoIconButton> {
+  bool _focusVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    return Semantics(
+      button: true,
+      label: widget.label,
+      onTap: widget.onPressed,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onPressed();
+              return null;
+            },
+          ),
+        },
+        onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onPressed,
+          child: Container(
+            width: 36,
+            height: 36, // h-9 w-9
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: _focusVisible ? colors.focusRing : colors.border,
+                width: _focusVisible ? 2 : 1,
+              ),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(widget.icon, size: 14, color: colors.mutedForeground),
+          ),
+        ),
+      ),
+    );
+  }
 }
