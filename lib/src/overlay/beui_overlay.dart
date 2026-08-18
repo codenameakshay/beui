@@ -109,6 +109,13 @@ class _BeuiOverlayState extends State<BeuiOverlay>
     with TickerProviderStateMixin {
   final OverlayPortalController _portal = OverlayPortalController();
   final LayerLink _link = LayerLink();
+
+  /// The node wrapping the overlay content, so we can ask whether focus is
+  /// currently *inside* this overlay. See [_handleGlobalEscape].
+  final FocusNode _overlayFocus = FocusNode(
+    debugLabel: 'BeuiOverlay',
+    skipTraversal: true,
+  );
   late final AnimationController _controller;
   // The barrier fade runs on its own clock (it may be shorter than the
   // panel's, e.g. the drawer's 250ms backdrop under a 400ms panel envelope).
@@ -137,6 +144,7 @@ class _BeuiOverlayState extends State<BeuiOverlay>
       // defer it. forward/reverse are fine in any phase.
       _scheduleShow(jumpToEnd: true);
     }
+    _syncEscapeRegistration();
   }
 
   /// Hides the portal, deferring past the build phase when necessary —
@@ -187,16 +195,86 @@ class _BeuiOverlayState extends State<BeuiOverlay>
       _controller.reverse();
       _barrier.reverse();
     }
+    // Deregisters as soon as `open` flips false, so Esc never re-dismisses an
+    // overlay that is already playing its exit.
+    _syncEscapeRegistration();
   }
 
   @override
   void dispose() {
+    _escapeStack.remove(this);
+    if (_escapeStack.isEmpty && _escapeHandlerInstalled) {
+      _escapeHandlerInstalled = false;
+      HardwareKeyboard.instance.removeHandler(_handleGlobalEscape);
+    }
+    _overlayFocus.dispose();
     _controller.dispose();
     _barrier.dispose();
     super.dispose();
   }
 
   void _dismiss() => widget.onDismiss?.call();
+
+  // ---------------------------------------------------------------------
+  // Esc without a focus trap
+  //
+  // The Esc binding below lives in a `CallbackShortcuts`, which — like every
+  // shortcut in Flutter — only receives key events travelling *up the focus
+  // chain*. With `trapFocus: false` nothing inside the overlay ever takes
+  // focus, and the overlay content is mounted in the root `Overlay`, a
+  // different branch from wherever the primary focus actually sits. So the
+  // event never reaches the binding and **Esc is dead** on exactly the
+  // surfaces that need it most: the composer's `+` and model menus, the
+  // select popover, the tooltip, the table menu (the audit's I2).
+  //
+  // The fix is to also listen at the one place that does not require focus —
+  // `HardwareKeyboard` — while keeping the focus-tree path intact for
+  // focus-trapping overlays (a modal's descendants must still be able to
+  // handle Esc first). Two rules keep the two paths from fighting:
+  //
+  //  1. Only overlays that cannot use the focus path register here
+  //     (`trapFocus: false`), and only when there is something to dismiss.
+  //  2. If focus *has* landed inside this overlay anyway — the roving-focus
+  //     menus do exactly this — the focus path will fire, so the global
+  //     handler stands down rather than dismissing twice.
+  //
+  // The registry is a stack, so with several dismissible surfaces open only
+  // the topmost (most recently opened) closes — the behaviour a user expects
+  // from Esc, and the one a bare set of handlers would get wrong, since
+  // `HardwareKeyboard` invokes handlers in registration order.
+  static final List<_BeuiOverlayState> _escapeStack = <_BeuiOverlayState>[];
+  static bool _escapeHandlerInstalled = false;
+
+  static bool _handleGlobalEscape(KeyEvent event) {
+    if (event is! KeyDownEvent) return false;
+    if (event.logicalKey != LogicalKeyboardKey.escape) return false;
+    if (_escapeStack.isEmpty) return false;
+    final topmost = _escapeStack.last;
+    // Focus is inside: the CallbackShortcuts path owns this event.
+    if (topmost._overlayFocus.hasFocus) return false;
+    topmost._dismiss();
+    return true;
+  }
+
+  /// True when this overlay cannot rely on the focus tree for Esc.
+  bool get _needsGlobalEscape => !widget.trapFocus && widget.onDismiss != null;
+
+  void _syncEscapeRegistration() {
+    if (widget.open && _needsGlobalEscape) {
+      if (_escapeStack.contains(this)) return;
+      _escapeStack.add(this);
+      if (!_escapeHandlerInstalled) {
+        _escapeHandlerInstalled = true;
+        HardwareKeyboard.instance.addHandler(_handleGlobalEscape);
+      }
+    } else {
+      if (!_escapeStack.remove(this)) return;
+      if (_escapeStack.isEmpty && _escapeHandlerInstalled) {
+        _escapeHandlerInstalled = false;
+        HardwareKeyboard.instance.removeHandler(_handleGlobalEscape);
+      }
+    }
+  }
 
   Widget _buildOverlay(BuildContext context) {
     final barrierColor =
@@ -259,7 +337,11 @@ class _BeuiOverlayState extends State<BeuiOverlay>
 
     return CallbackShortcuts(
       bindings: {const SingleActivator(LogicalKeyboardKey.escape): _dismiss},
-      child: Focus(autofocus: widget.trapFocus, child: content),
+      child: Focus(
+        focusNode: _overlayFocus,
+        autofocus: widget.trapFocus,
+        child: content,
+      ),
     );
   }
 
