@@ -588,7 +588,11 @@ class BeuiMessageMarker extends StatelessWidget {
 /// `{ opacity: 0.45 }`) with no vertical movement.
 class BeuiMessageTyping extends StatefulWidget {
   /// Creates a typing indicator.
-  const BeuiMessageTyping({this.label = 'Responding', this.announce, super.key});
+  const BeuiMessageTyping({
+    this.label = 'Responding',
+    this.announce,
+    super.key,
+  });
 
   /// Screen-reader label (source `label`, default `"Responding"`).
   final String label;

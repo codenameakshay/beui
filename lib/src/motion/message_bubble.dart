@@ -821,10 +821,8 @@ class _CollapseBox extends SingleChildRenderObjectWidget {
 }
 
 class _RenderCollapseBox extends RenderProxyBox {
-  _RenderCollapseBox({
-    required double collapsedHeight,
-    required double t,
-  }) : this._(collapsedHeight, t);
+  _RenderCollapseBox({required double collapsedHeight, required double t})
+    : this._(collapsedHeight, t);
 
   _RenderCollapseBox._(this._collapsedHeight, this._t);
 

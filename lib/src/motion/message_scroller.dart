@@ -1022,7 +1022,10 @@ class _ScrollerFocusState extends State<_ScrollerFocus> {
 const _jumpExitMotion = CurvedMotion(Duration(milliseconds: 140), beuiEaseOut);
 
 /// Reduced-motion cross-fade for the pill: no travel, no scale, keep opacity.
-const _jumpReduceMotion = CurvedMotion(Duration(milliseconds: 120), beuiEaseOut);
+const _jumpReduceMotion = CurvedMotion(
+  Duration(milliseconds: 120),
+  beuiEaseOut,
+);
 
 /// "Jump to latest" affordance shown while the reader is away from the live
 /// edge (C4).
@@ -1105,11 +1108,7 @@ class _JumpToLatestState extends State<_JumpToLatest> {
                 child: SingleMotionBuilder(
                   // C31: 0.97 is this library's press scale.
                   value: (_pressed && !reduce) ? 0.97 : 1.0,
-                  motion: motionFor(
-                    context,
-                    beuiSpringPress,
-                    isMovement: true,
-                  ),
+                  motion: motionFor(context, beuiSpringPress, isMovement: true),
                   builder: (context, scale, child) =>
                       Transform.scale(scale: scale, child: child),
                   child: DecoratedBox(
@@ -1544,7 +1543,6 @@ class _MessageRailState extends State<_MessageRail> {
     return 0.25;
   }
 }
-
 
 class _MessageRailTick extends StatelessWidget {
   const _MessageRailTick({

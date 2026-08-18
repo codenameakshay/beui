@@ -454,10 +454,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
             duration: const Duration(milliseconds: 180),
             switchInCurve: beuiEaseOut,
             switchOutCurve: beuiEaseOut,
-            child: KeyedSubtree(
-              key: ValueKey<bool>(_hasContent),
-              child: body,
-            ),
+            child: KeyedSubtree(key: ValueKey<bool>(_hasContent), child: body),
           );
 
     return Semantics(
@@ -1141,4 +1138,3 @@ class _Chevron extends StatelessWidget {
     );
   }
 }
-
