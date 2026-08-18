@@ -1,3 +1,47 @@
+## Unreleased
+
+Foundation for the UX-audit remediation. Additive: no widget is migrated onto
+these yet, so default visuals and motion are unchanged.
+
+### Accessibility
+
+* New `BeuiColors.focusRing` role — a dedicated keyboard-focus color that
+  clears WCAG 2.2 SC 1.4.11 (3:1) on all 11 themes in both brightnesses.
+  `ring` is the source's 6-12% hairline token and composites to ~1.3:1; it is
+  unchanged and stays for borders. Amber and lime cannot clear 3:1 in light
+  mode at any alpha, so their focus hue is darkened to 60% oklch lightness.
+
+### Agent theming
+
+* New `BeuiAgentTheme.statusLight` / `statusDark` (`BeuiAgentStatusColors`,
+  `BeuiAgentStatusPalette`, `BeuiAgentStatus`) — per-status foreground, tint,
+  border, solid, and on-solid, resolved with `statusColorsFor(brightness)`.
+  Agent status color was previously ~50 hardcoded literals and could not be
+  rethemed. Tints, borders, and solids reproduce the current painted values;
+  light-mode foregrounds move to a 700 tier so 10-11px badge text clears AA
+  (the 600 tier measured 2.74-4.29:1). A `destructive` tier is added for
+  irreversible actions.
+* New `BeuiAgentTheme.strings` (`BeuiAgentStrings`) — the localization
+  surface for the ~40 English literals in the agent family. Count-bearing and
+  assembled copy are function fields, so word order and pluralization can move
+  per language. Defaults are the current strings verbatim.
+
+### Fixes
+
+* The package did not compile: `LucideIcons.history` was removed in
+  flutter_lucide 1.31.0. Replaced with `rotate_ccw_clock`.
+
+### Internal
+
+* One shared syntax highlighter replaces three diverged ~180-line copies.
+  `BeuiCodeLanguage` moves to it and is re-exported from `code_block.dart` —
+  the public API is unchanged.
+* Shared internal primitives for the migration: an agent disclosure whose
+  reduced-motion branch keeps an opacity fade instead of hard-cutting, a
+  minimum-hit-target helper that grows hit area without touching layout, and
+  a focus ring that paints outside layout so focusing no longer shifts
+  content.
+
 ## 1.1.0
 
 Semantic theming for the AI-agent family, plus compact-to-expanded approval
