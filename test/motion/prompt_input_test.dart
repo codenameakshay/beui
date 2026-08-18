@@ -152,18 +152,36 @@ void main() {
       expect(stopped, isTrue);
     });
 
-    testWidgets('loading without onStop disables the button', (tester) async {
+    testWidgets('loading without onStop shows a busy spinner, not a stop', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _app(const BeuiPromptInput(defaultValue: 'busy', loading: true)),
       );
-      await tester.pumpAndSettle();
+      // Not pumpAndSettle: the spinner repeats forever by design.
+      await tester.pump(const Duration(milliseconds: 400));
+      // A stop square that cannot stop anything is a lie — with no `onStop`
+      // the control presents as the busy indicator it actually is.
+      expect(find.bySemanticsLabel('Stop generating'), findsNothing);
+      expect(find.bySemanticsLabel('Generating'), findsOneWidget);
       await tester.tap(
-        find.bySemanticsLabel('Stop generating'),
+        find.bySemanticsLabel('Generating'),
         warnIfMissed: false,
       );
+      await tester.pump();
+      expect(find.bySemanticsLabel('Generating'), findsOneWidget);
+    });
+
+    testWidgets('reduced motion keeps the busy mark static', (tester) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiPromptInput(defaultValue: 'busy', loading: true),
+          reduce: true,
+        ),
+      );
+      // Settles, because reduced motion stops the rotation entirely.
       await tester.pumpAndSettle();
-      // No crash; stop not wired.
-      expect(find.bySemanticsLabel('Stop generating'), findsOneWidget);
+      expect(find.bySemanticsLabel('Generating'), findsOneWidget);
     });
   });
 

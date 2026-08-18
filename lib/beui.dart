@@ -283,7 +283,14 @@ export 'src/motion/message_scroller.dart'
         BeuiMessageScrollerRailItem,
         BeuiMessageScrollerState;
 export 'src/motion/prompt_input.dart'
-    show BeuiPromptAction, BeuiPromptInput, BeuiPromptModel;
+    show
+        BeuiPromptAction,
+        BeuiPromptAttachment,
+        BeuiPromptAttachmentStatus,
+        BeuiPromptBlockedReason,
+        BeuiPromptInput,
+        BeuiPromptModel,
+        BeuiPromptSubmission;
 export 'src/motion/todo_list.dart'
     show BeuiTodoItem, BeuiTodoItemStatus, BeuiTodoList;
 export 'src/motion/code_block.dart'
