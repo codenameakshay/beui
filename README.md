@@ -30,7 +30,20 @@ The port's defining goal is **motion fidelity**. Framer Motion springs are param
 - 🧩 **Native APIs** — controlled/uncontrolled `value` + `onChanged` pairs, framework-native `IconData`/`Widget` icon props, variants as Dart enums.
 - 🪟 **One overlay foundation** — every floating surface (tooltip, drawer, sheet, modal, command palette) builds on a shared `BeuiOverlay`.
 
-> **Status:** actively developed. All 72 beui.dev catalog entries are ported. 1.1.0 adds semantic theming for the AI-agent family (`BeuiAgentTheme`) and compact-to-expanded approval cards.
+> **Status:** actively developed. All 72 beui.dev catalog entries are ported. 1.2.0 remediates the chat/agent UX audit — honest failure states, keyboard and screen-reader contracts, AA contrast, composer attachments — and adds `BeuiColors.focusRing` plus localizable `BeuiAgentStrings`.
+
+## What's new in 1.2.0
+
+<table>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/chat-app.gif" alt="Chat App workspace" /><br/><sub><b>Chat App</b> — composed workspace with a responsive sidebar</sub></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/tool-approval.gif" alt="Tool approval severity tiers" /><br/><sub><b>Tool Approval</b> — details open by default, destructive severity tier</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/prompt-input.gif" alt="Prompt input model picker" /><br/><sub><b>Prompt Input</b> — attachment chips and a keyboarded model picker</sub></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/streaming-response.gif" alt="Streaming response failed state" /><br/><sub><b>Streaming Response</b> — failed and stopped are no longer silent</sub></td>
+  </tr>
+</table>
 
 ## Live gallery
 
@@ -41,11 +54,15 @@ The [`example/`](example) app is a beui.dev-style component explorer — sidebar
 <table>
   <tr>
     <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/05-blocks-dark.png" alt="Blocks index" /><br/><sub><b>Blocks</b> — composed, product-ready motion patterns</sub></td>
-    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/02-detail-dark.png" alt="Component detail page" /><br/><sub><b>Detail page</b> — live Preview / Usage / Code tabs</sub></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/07-agents-dark.png" alt="AI Agents index" /><br/><sub><b>AI Agents</b> — conversational and agent-reasoning surfaces</sub></td>
   </tr>
   <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/02-detail-dark.png" alt="Component detail page" /><br/><sub><b>Detail page</b> — live Preview / Usage / Code tabs</sub></td>
     <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/03-motion-guides.png" alt="Motion guides" /><br/><sub><b>Motion Guides</b> — when to move, which token, how to fall back</sub></td>
+  </tr>
+  <tr>
     <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/04-components-light.png" alt="Light theme" /><br/><sub><b>Light & dark</b> — every screen renders in both</sub></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/06-compact.png" alt="Compact gallery" /><br/><sub><b>Compact</b> — sidebar collapses below 1000px</sub></td>
   </tr>
 </table>
 
@@ -53,7 +70,7 @@ The [`example/`](example) app is a beui.dev-style component explorer — sidebar
 
 ```yaml
 dependencies:
-  beui: ^1.1.0
+  beui: ^1.2.0
 ```
 
 Or from Git:
@@ -158,7 +175,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Marquee | `BeuiMarquee` | Infinite horizontal/vertical scroll with pause-on-hover |
 | Tabs | `BeuiTabs` | Pill, segment or underline tabs with a spring layout indicator |
 | Switch | `BeuiSwitch` | Toggle with a spring-driven thumb and press feedback |
-| Input | `BeuiInput` | Text field with icons, error shake and a success check draw |
+| Input | `BeuiInput` | Text field with icons, left-aligned announced errors, error-shake replay and a success check draw |
 | Select ✨ | `BeuiSelect`, `BeuiMorphSelect` | Panel that bouncily unfolds from the trigger, plus a Morph variant |
 | Checkbox ✨ | `BeuiCheckbox` | Draw-on checkmark with spring press feedback and indeterminate |
 | Radio Group ✨ | `BeuiRadioGroup` | Single-select with a gliding indicator dot and spring feedback |
@@ -167,7 +184,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Shared Layout Background | `BeuiSharedLayoutBg` | A pill that glides between hovered items with a blur enter/exit |
 | Bounce Sidebar ✨ | `BeuiBounceSidebar` | Vertical rail whose active dot jumps between destinations on a curved path |
 | Animated Sidebar ✨ | `BeuiAnimatedSidebar` | App sidebar that folds to an icon rail, in sidebar, floating or inset chrome |
-| Preview Rail ✨ | `BeuiPreviewRail` | Navigation rail of ticks that reveal a floating destination preview |
+| Preview Rail ✨ | `BeuiPreviewRail` | Navigation rail of ticks that reveal a destination preview — hover on pointer, tap-to-preview on touch |
 | Dock | `BeuiDock` | macOS-style dock with separator-grouped actions and a gliding active pill |
 | Tooltip | `BeuiTooltip` | Hover or focus tooltip with a blur enter/exit and spring spawn |
 | Context Menu ✨ | `BeuiContextMenu` | Pointer-origin clip morph with checkbox/radio rows, keyboard nav and typeahead |
@@ -205,12 +222,13 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Overflow Actions | `BeuiOverflowActions` | Primary actions with an overflow that fans out from a ⋯ toggle |
 | Expandable Tabs | `BeuiExpandableTabs` | Icon tabs where the active tab expands to show its label |
 | Swipeable List | `BeuiSwipeableList` | List rows with spring-backed swipe-to-reveal actions |
-| File Upload | `BeuiFileUpload`, `BeuiAttachmentUpload` | Drop zone with per-file progress and status transitions, plus an attachment workspace for mixed files, links, images and audio |
+| File Upload | `BeuiFileUpload` | Drop zone with real progress, cancel-in-flight, size limits and inline rejection |
+| Attachment Upload | `BeuiAttachmentUpload` | Mixed attachment workspace — image previews, seekable audio, retry and cancel |
 | Prediction Market | `BeuiPredictionMarket` | Market card with a gliding outcome pill and animated odds |
 | Wallet Card ✨ | `BeuiWalletCard` | Wallet card with an account switcher and morphing search |
 | OTP Input | `BeuiOtpInput` | One-time-code field with per-cell focus and a success check |
 | Bloom Menu ✨ | `BeuiBloomMenu` | Radial action menu that blooms open from a floating trigger |
-| Feedback Widget ✨ | `BeuiFeedbackWidget` | Feedback popover that morphs to a success state on submit |
+| Feedback Widget ✨ | `BeuiFeedbackWidget` | Feedback popover that keeps drafts, validates inline and morphs to a success state |
 | 404 / Not Found | `BeuiNotFoundGlitch`, `…Magnetic`, `…Spotlight`, `…Stacked`, `…Terminal` | Five expressive 404 treatments |
 | Infinite Masonry ✨ | `BeuiInfiniteMasonry` | Masonry grid that lazily appends tiles as you scroll |
 | Notification Stack ✨ | `BeuiNotificationStack` | Collapsed notification stack that expands with layout-aware motion |
@@ -222,21 +240,22 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | --- | --- | --- |
 | Message Bubble | `BeuiMessageBubble` | Conversational surface with tones, alignment, grouping and expandable content |
 | Message | `BeuiMessage` | Primitives for rows, avatars, metadata, live markers and a mount-only pop-up |
-| Message Scroller | `BeuiMessageScroller` | Viewport that follows streamed output and releases when the reader scrolls away |
-| Prompt Input | `BeuiPromptInput` | Auto-growing composer with actions, model selection and animated send/stop |
+| Message Scroller | `BeuiMessageScroller` | Viewport that follows streamed output, releases when the reader scrolls away, and offers a jump-to-latest pill |
+| Prompt Input | `BeuiPromptInput` | Auto-growing composer with attachment chips, a keyboarded model picker and animated send/stop |
 | Todo List | `BeuiTodoList` | Collapsible task plan with morphing status marks and a completion count |
 | Code Block | `BeuiCodeBlock` | Highlighted code that stays stable while streaming, with copy feedback |
 | Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals, questions, and compact-to-expanded proposals |
-| File Diff | `BeuiFileDiff` | Change disclosure with progressive rows, live counts and completion collapse |
+| File Diff | `BeuiFileDiff` | Change disclosure with wrap or horizontal scroll, hunk-gap markers and live counts |
 | Tool Result | `BeuiToolResult` | Execution disclosure for terminal or request output that collapses when done |
-| Streaming Response | `BeuiStreamingResponse` | Response surface with completion actions and an expandable source summary |
-| Image Generation | `BeuiImageGeneration` | Queued → refining → complete image surface with no layout shift |
-| Tool Approval | `BeuiToolApproval` | Permission card: allow once, remember access, or deny |
+| Streaming Response | `BeuiStreamingResponse` | Response surface with completion actions, a visible failed state and a stopped/continue path |
+| Image Generation | `BeuiImageGeneration` | Queued → refining → complete image surface with determinate progress and cancel |
+| Tool Approval | `BeuiToolApproval` | Permission card: allow once, remember access, or deny — with a destructive severity tier |
 | Citations | `BeuiCitations` | Inline markers plus a collapsible, progressively rendered reference list |
-| Agent Activity | `BeuiAgentActivity` | One adaptive stream for reasoning, searches, tool calls and traces |
+| Agent Activity | `BeuiAgentActivity` | One adaptive stream for reasoning, searches, tool calls and traces — including failed and cancelled runs |
 | Agent Loading States | `BeuiThinkingShimmer`, `BeuiAgentProgress`, `BeuiReasoningText` | Shimmering status text, live progress and cycling reasoning phrases |
 | AI Sidebar | `BeuiAiSidebar` | Workspace sidebar for folders, projects, files and bookmarks with inline rename |
-| Chat App | `BeuiChatApp` | A complete conversation workspace composing the widgets above |
+| Chat App | `BeuiChatApp` | A complete conversation workspace composing the widgets above, with a responsive sidebar |
+| Agent Theme | — | Gallery route that installs a custom `BeuiAgentTheme` on the real widgets |
 
 Also exported as standalone primitives: `BeuiMagnetic` (cursor-follow pull) and the `BeuiOverlay` foundation.
 
@@ -247,8 +266,8 @@ Three layers, installed once on [ThemeData](https://api.flutter.dev/flutter/mate
 | Layer | Owns | Install |
 | --- | --- | --- |
 | `ThemeData.fontFamily` / `BeuiTextTheme` | Global sans/mono **family names** and Material letter-spacing normalisation. The package ships no font files. | `ThemeData(fontFamily: 'General Sans')` plus `BeuiTextTheme.trackingNormal(...)` |
-| `BeuiColors` | Palette: core tokens, brand themes, `BeuiGlass`. Not typography, radii, or spacing. | `extensions: [BeuiColors.of(theme, brightness)]` |
-| `BeuiAgentTheme` | AI-agent **semantics**: type roles, bubble/card radii, conversation spacing, density, borders, optional glass cards, default icons. | `extensions: [BeuiAgentTheme(...)]` — omit it and widgets use source-fidelity defaults identical to 1.0.0 |
+| `BeuiColors` | Palette: core tokens, brand themes, `BeuiGlass`, and `focusRing` (WCAG 2.2 3:1 non-text contrast). Not typography, radii, or spacing. | `extensions: [BeuiColors.of(theme, brightness)]` |
+| `BeuiAgentTheme` | AI-agent **semantics**: type roles, bubble/card radii, conversation spacing, density, borders, optional glass cards, default icons, status palettes, and localizable `BeuiAgentStrings`. | `extensions: [BeuiAgentTheme(...)]` — omit it and widgets use source-fidelity defaults identical to 1.0.0 |
 
 ```dart
 ThemeData(
@@ -296,6 +315,8 @@ Each `BeuiColorTheme` value carries picker metadata (`name`, `slug`, `swatch`) f
 Agent widgets that previously hard-coded `text-sm` / `rounded-2xl` / Lucide defaults now resolve those from `BeuiAgentTheme.of(context)`, which falls back to the same numbers and glyphs when the extension is missing. See the **Agent Theme** gallery route for a live custom palette, radii, density, icons, and an expandable approval card:
 
 ![Custom BeuiAgentTheme applied to real agent widgets](docs/screenshots/agent-theme.png)
+
+1.2.0 adds two theme roles the audit needed: `BeuiColors.focusRing` (a 3:1 focus halo that paints outside layout, separate from the `ring` hairline) and `BeuiAgentTheme.strings` / `statusLight` / `statusDark` so agent copy and status color can be rethemed or localized without forking a widget.
 
 ## Motion system
 

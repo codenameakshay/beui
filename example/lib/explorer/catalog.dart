@@ -175,7 +175,8 @@ const List<ExploreEntry> kComponents = [
     title: 'Input',
     slug: 'input',
     section: ExploreSection.components,
-    blurb: 'Text field with icons, error shake and a success check draw.',
+    blurb:
+        'Text field with icons, left-aligned announced errors and a success check.',
     builder: inputDemo,
   ),
   ExploreEntry(
@@ -248,7 +249,7 @@ const List<ExploreEntry> kComponents = [
     section: ExploreSection.components,
     isNew: true,
     blurb:
-        'Navigation rail of ticks that reveal a floating destination preview.',
+        'Navigation rail of ticks that preview a destination — hover or tap.',
     builder: previewRailDemo,
   ),
   ExploreEntry(
@@ -502,7 +503,8 @@ const List<ExploreEntry> kBlocks = [
     title: 'File Upload',
     slug: 'file-upload',
     section: ExploreSection.blocks,
-    blurb: 'Drop zone with per-file progress and status transitions.',
+    blurb:
+        'Drop zone with real progress, cancel-in-flight and size-limit notices.',
     builder: fileUploadDemo,
   ),
   ExploreEntry(
@@ -548,7 +550,8 @@ const List<ExploreEntry> kBlocks = [
     slug: 'feedback-widget',
     section: ExploreSection.blocks,
     isNew: true,
-    blurb: 'Feedback popover that morphs to a success state on submit.',
+    blurb:
+        'Feedback popover that keeps drafts, validates inline and morphs to success.',
     builder: feedbackWidgetDemo,
   ),
   ExploreEntry(
@@ -609,7 +612,8 @@ const List<ExploreEntry> kAgents = [
     slug: 'message-scroller',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'A conversation viewport that follows the live edge of new output.',
+    blurb:
+        'Conversation viewport that follows the live edge and jumps back with an unread count.',
     builder: messageScrollerDemo,
   ),
   ExploreEntry(
@@ -618,7 +622,7 @@ const List<ExploreEntry> kAgents = [
     section: ExploreSection.agents,
     isNew: true,
     blurb:
-        'Auto-growing composer with model selection and animated send states.',
+        'Auto-growing composer with attachment chips, a keyboarded model picker and send/stop.',
     builder: promptInputDemo,
   ),
   ExploreEntry(
@@ -651,7 +655,8 @@ const List<ExploreEntry> kAgents = [
     slug: 'file-diff',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Syntax-highlighted change disclosure with progressive rows.',
+    blurb:
+        'Change disclosure with wrap or scroll, hunk-gap markers and live counts.',
     builder: fileDiffDemo,
   ),
   ExploreEntry(
@@ -668,7 +673,7 @@ const List<ExploreEntry> kAgents = [
     section: ExploreSection.agents,
     isNew: true,
     blurb:
-        'Stable response surface with completion actions and source summary.',
+        'Response surface with a visible failed state and a stopped/continue path.',
     builder: streamingResponseDemo,
   ),
   ExploreEntry(
@@ -676,7 +681,8 @@ const List<ExploreEntry> kAgents = [
     slug: 'image-generation',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Generated-image surface that refines without layout shift.',
+    blurb:
+        'Generated-image surface with determinate progress, cancel and no layout shift.',
     builder: imageGenerationDemo,
   ),
   ExploreEntry(
@@ -684,7 +690,8 @@ const List<ExploreEntry> kAgents = [
     slug: 'tool-approval',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Permission card: allow once, remember access, or deny.',
+    blurb:
+        'Permission card: allow once, remember access, or deny — with a destructive tier.',
     builder: toolApprovalDemo,
   ),
   ExploreEntry(
@@ -700,7 +707,8 @@ const List<ExploreEntry> kAgents = [
     slug: 'agent-activity',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'A single stream for reasoning, searches, tool calls and traces.',
+    blurb:
+        'A single stream for reasoning, searches, tool calls — including failed and cancelled runs.',
     builder: agentActivityDemo,
   ),
   ExploreEntry(
@@ -724,7 +732,8 @@ const List<ExploreEntry> kAgents = [
     slug: 'chat-app',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Complete agent workspace composing all conversation surfaces.',
+    blurb:
+        'Complete agent workspace composing the conversation surfaces, with a responsive sidebar.',
     builder: chatAppDemo,
   ),
   ExploreEntry(
