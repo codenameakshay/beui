@@ -5,13 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_status_colors.dart';
+import '../theme/beui_agent_strings.dart';
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_disclosure.dart';
 import '_engine.dart';
+import '_hit_target.dart';
+import '_syntax.dart';
 import 'action_swap.dart';
-import 'code_block.dart' show BeuiCodeLanguage;
+import 'tool_approval.dart' show beuiAgentPressScale;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -49,35 +54,61 @@ enum BeuiToolResultKind {
 // Motion tokens
 // ---------------------------------------------------------------------------
 
-const _disclosureOpen = CurvedMotion(Duration(milliseconds: 220), beuiEaseOut);
-const _disclosureClose = CurvedMotion(Duration(milliseconds: 140), beuiEaseOut);
+/// Spinner period for the `running` glyph.
 const _spinPeriod = Duration(milliseconds: 900);
 
-// Status palette — Tailwind blue / emerald / rose matching the source classes.
-const _blue600 = Color(0xFF155DFC);
-const _blue400 = Color(0xFF51A2FF);
-const _emerald600 = Color(0xFF009966);
-const _emerald400 = Color(0xFF00D492);
-const _rose600 = Color(0xFFEC003F);
-const _rose400 = Color(0xFFFF637E);
+/// Hover-in for the action-button chip. Its exit is [_hoverOut] — deliberately
+/// shorter, per the repo rule that exits beat entrances (the audit's A19).
+const _hoverIn = Duration(milliseconds: 150);
+
+/// Hover-out for the action-button chip.
+const _hoverOut = Duration(milliseconds: 110);
+
+/// Live-edge follow while streaming. Not an exit — this is content arriving.
+const _followDuration = Duration(milliseconds: 220);
+
+/// How long the "Copied" confirmation is held.
+const _copiedHold = Duration(milliseconds: 1600);
+
+/// Width below which the seven-element header wraps onto two lines (A15).
+const double _twoLineBreakpoint = 400;
+
+/// The output line box, in logical pixels — `text-xs` (12px) on `leading-5`
+/// (20px). Used to translate a scroll extent into a line count (A22).
+const double _outputLineHeight = 20;
+
+/// Inner padding of the output viewport (source `p-3`).
+///
+/// There is no 12px role on [BeuiAgentLayout] — `cardPadding` is the 16px
+/// `p-4` card role, and this is a nested panel — so the source value stands.
+const EdgeInsets _outputPadding = EdgeInsets.all(12);
+
+/// Height of the bottom fade over a capped, overflowing viewport (A22).
+const double _fadeExtent = 24;
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-String _statusLabel(BeuiToolResultStatus status) => switch (status) {
-  BeuiToolResultStatus.running => 'Running',
-  BeuiToolResultStatus.success => 'Completed',
-  BeuiToolResultStatus.error => 'Failed',
-  BeuiToolResultStatus.cancelled => 'Cancelled',
+/// Maps a tool-result lifecycle onto the shared agent status tier, so one
+/// [BeuiAgentTheme] override retints every agent surface at once (A36).
+///
+/// `cancelled` maps to [BeuiAgentStatus.neutral] rather than
+/// [BeuiAgentStatus.denied]: a cancelled run is not a refusal, it simply did
+/// not finish — see [BeuiAgentStrings.statusCancelled].
+BeuiAgentStatus _agentStatus(BeuiToolResultStatus status) => switch (status) {
+  BeuiToolResultStatus.running => BeuiAgentStatus.running,
+  BeuiToolResultStatus.success => BeuiAgentStatus.success,
+  BeuiToolResultStatus.error => BeuiAgentStatus.failed,
+  BeuiToolResultStatus.cancelled => BeuiAgentStatus.neutral,
 };
 
-Color _statusColor(BeuiToolResultStatus status, bool isLight, BeuiColors c) =>
+String _statusLabel(BeuiToolResultStatus status, BeuiAgentStrings strings) =>
     switch (status) {
-      BeuiToolResultStatus.running => isLight ? _blue600 : _blue400,
-      BeuiToolResultStatus.success => isLight ? _emerald600 : _emerald400,
-      BeuiToolResultStatus.error => isLight ? _rose600 : _rose400,
-      BeuiToolResultStatus.cancelled => c.mutedForeground,
+      BeuiToolResultStatus.running => strings.statusRunning,
+      BeuiToolResultStatus.success => strings.statusCompleted,
+      BeuiToolResultStatus.error => strings.statusFailed,
+      BeuiToolResultStatus.cancelled => strings.statusCancelled,
     };
 
 IconData _kindIcon(BeuiToolResultKind kind, BeuiAgentIcons icons) =>
@@ -95,33 +126,22 @@ IconData _statusIcon(BeuiToolResultStatus status, BeuiAgentIcons icons) =>
       BeuiToolResultStatus.cancelled => LucideIcons.ban,
     };
 
-String _swapKey(Object? value, String fallback) {
-  if (value is String || value is num) return value.toString();
-  return fallback;
-}
-
-Widget _asWidget(Object value, {TextStyle? style, int? maxLines}) {
-  if (value is Widget) return value;
-  return Text(
-    value.toString(),
-    style: style,
-    maxLines: maxLines,
-    overflow: maxLines != null ? TextOverflow.ellipsis : null,
-    softWrap: maxLines == null,
-  );
-}
-
 // ---------------------------------------------------------------------------
 // BeuiToolResultOutput
 // ---------------------------------------------------------------------------
 
 /// Syntax-tinted terminal / request body text for use inside [BeuiToolResult]
-/// — the Flutter port of the source's `ToolResultOutput` (backed by
-/// `AgentCode`).
+/// — the Flutter port of beUI's `ToolResultOutput` (backed by `AgentCode`).
 ///
-/// Highlighting is a **reduced** port of the source's Shiki themes: a small
-/// regex tokeniser paints keywords, strings, comments, and numbers. Full
-/// Shiki fidelity is intentionally omitted (same approach as [BeuiCodeBlock]).
+/// Highlighting comes from the shared tokenizer in `_syntax.dart`
+/// ([beuiHighlightLine]) against [BeuiSyntaxPalette] — the Shiki
+/// `github-*-high-contrast` themes the source builds its highlighter with. It
+/// is a deliberately **reduced** port: a small scanner, not a lexer.
+///
+/// The body text is painted at full [BeuiColors.foreground]. It used to be
+/// alpha-multiplied to 0.8, which dimmed the one thing on the card the reader
+/// actually came for (the audit's A8 — never alpha-multiply
+/// information-bearing text).
 class BeuiToolResultOutput extends StatelessWidget {
   /// Creates a soft-wrapped mono output block.
   const BeuiToolResultOutput({
@@ -142,24 +162,24 @@ class BeuiToolResultOutput extends StatelessWidget {
     final colors =
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
-    final palette = _OutputPalette.of(colors, theme.brightness);
+    final agent = BeuiAgentTheme.of(context);
+    final palette = BeuiSyntaxPalette.of(theme.brightness);
     final lines = code.split('\n');
 
     return DefaultTextStyle(
-      style: TextStyle(
-        fontFamily: 'monospace',
-        fontSize: 12,
-        // Source `AgentCode`: `font-mono text-xs leading-5` — a 20px line box
-        // at 12px, not a relative leading.
-        height: 20 / 12,
-        color: colors.foreground.withValues(alpha: 0.8),
+      // Source `AgentCode`: `font-mono text-xs leading-5` — a 20px line box at
+      // 12px, not a relative leading. The family/size come from the theme's
+      // mono role so a consumer can restyle every code surface at once (A37).
+      style: agent.typography.mono.copyWith(
+        height: _outputLineHeight / (agent.typography.mono.fontSize ?? 12),
+        color: colors.foreground,
       ),
       child: SelectionArea(
         child: Text.rich(
           TextSpan(
             children: [
               for (var i = 0; i < lines.length; i++) ...[
-                ..._highlightLine(lines[i], language, palette).map(
+                ...beuiHighlightLine(lines[i], language, palette).map(
                   (t) => TextSpan(
                     text: t.text,
                     style: TextStyle(color: t.color),
@@ -176,333 +196,6 @@ class BeuiToolResultOutput extends StatelessWidget {
   }
 }
 
-@immutable
-class _OutputPalette {
-  const _OutputPalette({
-    required this.base,
-    required this.keyword,
-    required this.property,
-    required this.string,
-    required this.comment,
-    required this.number,
-    required this.entity,
-    required this.variable,
-    required this.punct,
-  });
-
-  // Shiki `github-light-high-contrast` / `github-dark-high-contrast` — the
-  // themes the source's AgentCode highlighter is created with
-  // (agent-code.tsx LIGHT_THEME / DARK_THEME).
-  factory _OutputPalette.of(BeuiColors colors, Brightness brightness) {
-    final isLight = brightness == Brightness.light;
-    return _OutputPalette(
-      base: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
-      keyword: isLight ? const Color(0xFFA0111F) : const Color(0xFFFF9492),
-      // Shiki scopes a JSON property name as `support.type.property-name.json`,
-      // which these themes paint green — NOT the red they use for keywords.
-      property: isLight ? const Color(0xFF024C1A) : const Color(0xFF72F088),
-      string: isLight ? const Color(0xFF032563) : const Color(0xFFADDCFF),
-      comment: isLight ? const Color(0xFF4B535D) : const Color(0xFFBDC4CC),
-      number: isLight ? const Color(0xFF023B95) : const Color(0xFF91CBFF),
-      entity: isLight ? const Color(0xFF622CBC) : const Color(0xFFDBB7FF),
-      // `variable` — the colour these themes give a shell command word.
-      variable: isLight ? const Color(0xFF702C00) : const Color(0xFFFFB757),
-      punct: isLight ? const Color(0xFF0E1116) : const Color(0xFFF0F3F6),
-    );
-  }
-
-  final Color base;
-  final Color keyword;
-  final Color property;
-  final Color string;
-  final Color comment;
-  final Color number;
-  final Color entity;
-  final Color variable;
-  final Color punct;
-}
-
-@immutable
-class _Tok {
-  const _Tok(this.text, this.color);
-  final String text;
-  final Color color;
-}
-
-const _tsKw = <String>{
-  'const',
-  'let',
-  'var',
-  'function',
-  'return',
-  'import',
-  'export',
-  'from',
-  'async',
-  'await',
-  'class',
-  'interface',
-  'type',
-  'true',
-  'false',
-  'null',
-  'undefined',
-  'if',
-  'else',
-  'for',
-  'while',
-  'new',
-  'typeof',
-  'void',
-};
-
-List<_Tok> _highlightLine(
-  String line,
-  BeuiCodeLanguage language,
-  _OutputPalette p,
-) {
-  if (line.isEmpty) return const [];
-  if (language == BeuiCodeLanguage.text || language == BeuiCodeLanguage.diff) {
-    return [_Tok(line, p.base)];
-  }
-  if (language == BeuiCodeLanguage.json) {
-    return _hlJson(line, p);
-  }
-  if (language == BeuiCodeLanguage.bash) {
-    return _hlBash(line, p);
-  }
-  final kw = switch (language) {
-    BeuiCodeLanguage.typescript || BeuiCodeLanguage.tsx => _tsKw,
-    _ => const <String>{},
-  };
-  return _hlGeneric(line, kw, p, language);
-}
-
-/// Shell lines, the way Shiki's bash grammar tokenises them under
-/// `github-*-high-contrast`.
-///
-/// The first word on a line is the command word and takes the `variable`
-/// colour (`#FFB757` dark); every later bare word is an unquoted argument and
-/// takes the `string` colour (`#ADDCFF`), except a bare number, which keeps the
-/// `number` colour. Verified token-by-token against beui.dev's tool-approval
-/// (`bun test tests/a11y.test.tsx`) and tool-result (`$ bun …`, `49 pass · 0
-/// fail`) previews — note that `49`, being first, is a command word while the
-/// later `0` is a number.
-List<_Tok> _hlBash(String line, _OutputPalette p) {
-  final out = <_Tok>[];
-  var i = 0;
-  var first = true;
-  while (i < line.length) {
-    final ch = line[i];
-    if (ch == ' ' || ch == '\t') {
-      final start = i;
-      while (i < line.length && (line[i] == ' ' || line[i] == '\t')) {
-        i++;
-      }
-      out.add(_Tok(line.substring(start, i), p.base));
-      continue;
-    }
-    if (ch == '#') {
-      out.add(_Tok(line.substring(i), p.comment));
-      break;
-    }
-    if (ch == "'" || ch == '"' || ch == '`') {
-      final end = _scanStr(line, i, quote: ch);
-      out.add(_Tok(line.substring(i, end), p.string));
-      i = end;
-      first = false;
-      continue;
-    }
-    final start = i;
-    while (i < line.length &&
-        line[i] != ' ' &&
-        line[i] != '\t' &&
-        line[i] != "'" &&
-        line[i] != '"' &&
-        line[i] != '`') {
-      i++;
-    }
-    final word = line.substring(start, i);
-    out.add(
-      _Tok(
-        word,
-        first
-            ? p.variable
-            : _isBareNumber(word)
-            ? p.number
-            : p.string,
-      ),
-    );
-    first = false;
-  }
-  return out;
-}
-
-/// True for a word made only of digits and `.` — Shiki's `constant.numeric`.
-bool _isBareNumber(String word) {
-  var sawDigit = false;
-  for (var i = 0; i < word.length; i++) {
-    final ch = word[i];
-    if (_isDigit(ch)) {
-      sawDigit = true;
-    } else if (ch != '.') {
-      return false;
-    }
-  }
-  return sawDigit;
-}
-
-List<_Tok> _hlJson(String line, _OutputPalette p) {
-  final out = <_Tok>[];
-  var i = 0;
-  while (i < line.length) {
-    final ch = line[i];
-    if (ch == '"') {
-      final end = _scanStr(line, i);
-      final after = line.substring(end).trimLeft();
-      out.add(
-        _Tok(
-          line.substring(i, end),
-          after.startsWith(':') ? p.property : p.string,
-        ),
-      );
-      i = end;
-      continue;
-    }
-    if (_isDigit(ch) ||
-        (ch == '-' && i + 1 < line.length && _isDigit(line[i + 1]))) {
-      final end = _scanNum(line, i);
-      out.add(_Tok(line.substring(i, end), p.number));
-      i = end;
-      continue;
-    }
-    if (_isIdentStart(ch)) {
-      final end = _scanIdent(line, i);
-      final w = line.substring(i, end);
-      out.add(
-        _Tok(
-          w,
-          (w == 'true' || w == 'false' || w == 'null') ? p.keyword : p.base,
-        ),
-      );
-      i = end;
-      continue;
-    }
-    out.add(_Tok(ch, p.punct));
-    i++;
-  }
-  return out;
-}
-
-List<_Tok> _hlGeneric(
-  String line,
-  Set<String> keywords,
-  _OutputPalette p,
-  BeuiCodeLanguage language,
-) {
-  final out = <_Tok>[];
-  var i = 0;
-  while (i < line.length) {
-    final ch = line[i];
-    if (ch == '/' && i + 1 < line.length && line[i + 1] == '/') {
-      out.add(_Tok(line.substring(i), p.comment));
-      break;
-    }
-    if (language == BeuiCodeLanguage.bash && ch == '#') {
-      out.add(_Tok(line.substring(i), p.comment));
-      break;
-    }
-    if (ch == "'" || ch == '"' || ch == '`') {
-      final end = _scanStr(line, i, quote: ch);
-      out.add(_Tok(line.substring(i, end), p.string));
-      i = end;
-      continue;
-    }
-    if (_isDigit(ch)) {
-      final end = _scanNum(line, i);
-      out.add(_Tok(line.substring(i, end), p.number));
-      i = end;
-      continue;
-    }
-    if (_isIdentStart(ch) || ch == r'$') {
-      final end = _scanIdent(line, i);
-      final w = line.substring(i, end);
-      out.add(
-        _Tok(
-          w,
-          keywords.contains(w)
-              ? p.keyword
-              : _callsAhead(line, end)
-              ? p.entity
-              : p.base,
-        ),
-      );
-      i = end;
-      continue;
-    }
-    out.add(_Tok(ch, ch.trim().isEmpty ? p.base : p.punct));
-    i++;
-  }
-  return out;
-}
-
-bool _isDigit(String ch) {
-  final c = ch.codeUnitAt(0);
-  return c >= 0x30 && c <= 0x39;
-}
-
-bool _isIdentStart(String ch) {
-  final c = ch.codeUnitAt(0);
-  return (c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A) || c == 0x5F;
-}
-
-bool _isIdentPart(String ch) {
-  final c = ch.codeUnitAt(0);
-  return _isIdentStart(ch) || _isDigit(ch) || c == 0x24;
-}
-
-/// True when the next non-space character after [end] opens a call — the
-/// source's Shiki themes paint those identifiers with the `entity` colour.
-bool _callsAhead(String line, int end) {
-  var j = end;
-  while (j < line.length && line[j] == ' ') {
-    j++;
-  }
-  return j < line.length && line[j] == '(';
-}
-
-int _scanIdent(String s, int start) {
-  var i = start + 1;
-  while (i < s.length && _isIdentPart(s[i])) {
-    i++;
-  }
-  return i;
-}
-
-int _scanNum(String s, int start) {
-  var i = start;
-  if (s[i] == '-') i++;
-  while (i < s.length &&
-      (_isDigit(s[i]) || s[i] == '.' || s[i] == 'e' || s[i] == 'E')) {
-    i++;
-  }
-  return i;
-}
-
-int _scanStr(String s, int start, {String? quote}) {
-  final q = quote ?? s[start];
-  var i = start + 1;
-  while (i < s.length) {
-    if (s[i] == r'\' && i + 1 < s.length) {
-      i += 2;
-      continue;
-    }
-    if (s[i] == q) return i + 1;
-    i++;
-  }
-  return s.length;
-}
-
 // ---------------------------------------------------------------------------
 // BeuiToolResult
 // ---------------------------------------------------------------------------
@@ -511,67 +204,152 @@ int _scanStr(String s, int start, {String? quote}) {
 /// that collapses into a compact completed state — the Flutter port of beUI's
 /// `tool-result`.
 ///
-/// **Layout.** A header row (kind icon · title · meta · tool · status · chevron)
-/// toggles an `AgentDisclosure`-style panel. The body is a capped, scrollable
-/// viewport (follows the live edge while [status] is
-/// [BeuiToolResultStatus.running]) with optional copy / retry chrome.
+/// **Layout.** A header row (kind icon · title · meta · slug · status · chevron)
+/// toggles a disclosure panel. The body is a capped, scrollable viewport that
+/// follows the live edge while [status] is [BeuiToolResultStatus.running].
+///
+/// Under [_twoLineBreakpoint] (400px) the header **wraps onto two lines** —
+/// title and status on the first, metadata and tool slug on the second. Seven
+/// elements in one row collapsed badly on a phone bubble (the audit's A15).
+///
+/// **Actions stay reachable.** Copy result / Run again render *outside* the
+/// collapsible panel by default, so a completed-and-collapsed result can still
+/// be copied or re-run. Set [keepActionsVisibleWhenCollapsed] to false for the
+/// old behaviour, where the actions live inside the panel and disappear with it.
 ///
 /// **Open state.** Controlled when [open] is non-null (drive via [onOpenChange]);
-/// otherwise internal state seeded by [defaultOpen]. Entering `running` expands;
-/// leaving `running` collapses when [collapseOnComplete] is true.
+/// otherwise internal state seeded by [defaultOpen].
+///
+/// **`defaultOpen` policy (the audit's A42).** The rule across the agent family
+/// is: *a surface that is still asking or still running opens; a historical
+/// record collapses.* A tool result is a live process while it runs, so
+/// entering `running` force-opens the panel; on completion it becomes a
+/// record, so leaving `running` collapses it when [collapseOnComplete] is true.
+/// [defaultOpen] therefore defaults to `true` — the common case is a result
+/// mounted while it is still streaming. Mounting a finished result into a
+/// scrollback should pass `defaultOpen: false`.
+///
+/// **Concurrent tool calls (the audit's A25).** There is no separate
+/// "tool group" component, and there should not be: several tools running at
+/// once is a [Column] of [BeuiToolResult]s inside one message, each with its
+/// own [status], [tool], and body. They collapse and expand independently, and
+/// each announces its own outcome.
+///
+/// ```dart
+/// BeuiMessageContent(
+///   children: [
+///     for (final call in message.toolCalls)
+///       BeuiToolResult(
+///         key: ValueKey(call.id),
+///         tool: call.tool,
+///         title: call.title,
+///         status: call.status,          // each has its own lifecycle
+///         collapseOnComplete: true,     // finished calls fold away
+///         copyText: call.output,
+///         child: BeuiToolResultOutput(code: call.output),
+///       ),
+///   ],
+/// )
+/// ```
+///
+/// Give each one a stable [Key] so a call finishing out of order does not
+/// hand its state to a sibling.
 ///
 /// **Motion.** Chevron rotates on [beuiSpringSwap]; status / title / meta / tool
-/// labels roll via [BeuiActionSwapText]; action buttons press-scale on
-/// [beuiSpringPress]; disclosure opens in 220ms / closes in 140ms [beuiEaseOut].
-/// Reduced motion drops movement (scale, translate, spin, chevron rotate) while
-/// keeping opacity / color swaps.
+/// labels roll via [BeuiActionSwapText]; action buttons press-scale to
+/// [beuiAgentPressScale] on [beuiSpringPress]; the disclosure opens in 220ms /
+/// closes in 140ms [beuiEaseOut] via [BeuiAgentDisclosureInternal]. Every exit
+/// is shorter than its entrance (A19). Reduced motion drops movement (scale,
+/// translate, spin, chevron rotate) while keeping opacity / colour.
 ///
 /// **API mapping** (source → Flutter):
-/// * `tool` / `title` / `meta` → [tool] / [title] / [meta] (`String` or [Widget])
+/// * `tool` / `title` / `meta` → [tool] / [title] / [meta] (or the `…Widget`
+///   siblings)
 /// * `status` / `kind` / `icon` → [status] / [kind] / [icon]
 /// * `open` / `defaultOpen` / `onOpenChange` → same
 /// * `collapseOnComplete` / `maxHeight` / `copyText` / `onCopy` / `onRetry` → same
 /// * `children` → [child]
 class BeuiToolResult extends StatefulWidget {
   /// Creates a tool-result disclosure.
+  ///
+  /// Exactly one of [tool] / [toolWidget] and one of [title] / [titleWidget]
+  /// must be supplied.
   const BeuiToolResult({
-    required this.tool,
-    required this.title,
     required this.child,
+    this.tool,
+    this.toolWidget,
+    this.title,
+    this.titleWidget,
+    this.meta,
+    this.metaWidget,
     this.status = BeuiToolResultStatus.running,
     this.kind = BeuiToolResultKind.custom,
-    this.meta,
     this.icon,
     this.open,
     this.defaultOpen = true,
     this.onOpenChange,
     this.collapseOnComplete = true,
+    this.keepActionsVisibleWhenCollapsed = true,
     this.maxHeight = 220,
+    this.hiddenLineCount,
     this.copyText,
     this.onCopy,
     this.onRetry,
+    this.copyLabel,
+    this.copiedLabel,
+    this.runAgainLabel,
     super.key,
-  });
-
-  /// Tool slug shown mono on the right of the title cluster (e.g.
-  /// `terminal.run`). Accepts a [String] or any [Widget].
-  final Object tool;
-
-  /// Primary header label. Accepts a [String] or any [Widget].
-  final Object title;
+  }) : assert(
+         tool == null || toolWidget == null,
+         'Pass either tool or toolWidget, not both.',
+       ),
+       assert(
+         tool != null || toolWidget != null,
+         'Pass one of tool or toolWidget.',
+       ),
+       assert(
+         title == null || titleWidget == null,
+         'Pass either title or titleWidget, not both.',
+       ),
+       assert(
+         title != null || titleWidget != null,
+         'Pass one of title or titleWidget.',
+       ),
+       assert(
+         meta == null || metaWidget == null,
+         'Pass either meta or metaWidget, not both.',
+       );
 
   /// Body content — typically [BeuiToolResultOutput] or custom widgets.
   final Widget child;
+
+  /// Tool slug shown mono beside the title (e.g. `terminal.run`).
+  ///
+  /// This is the string that says *what ran*, so it is painted at full
+  /// [BeuiColors.mutedForeground] rather than alpha-multiplied down to a
+  /// decoration (the audit's A8 / A14). For a non-text slug use [toolWidget].
+  final String? tool;
+
+  /// Widget form of [tool], for callers that need more than a string.
+  final Widget? toolWidget;
+
+  /// Primary header label.
+  final String? title;
+
+  /// Widget form of [title].
+  final Widget? titleWidget;
+
+  /// Compact trailing metadata next to the title (e.g. `"2.9s"`, `"429"`).
+  final String? meta;
+
+  /// Widget form of [meta].
+  final Widget? metaWidget;
 
   /// Execution lifecycle (source `status`, default `running`).
   final BeuiToolResultStatus status;
 
   /// Kind icon when [icon] is null (source `kind`, default `custom`).
   final BeuiToolResultKind kind;
-
-  /// Compact trailing metadata next to the title (e.g. `"2.9s"`, `"429"`).
-  /// Accepts a [String] or any [Widget].
-  final Object? meta;
 
   /// Optional leading icon override (source `icon`). Defaults to a kind glyph.
   final Widget? icon;
@@ -581,6 +359,7 @@ class BeuiToolResult extends StatefulWidget {
   final bool? open;
 
   /// Initial open state when uncontrolled (source `defaultOpen`, default true).
+  /// See the `defaultOpen` policy note on [BeuiToolResult].
   final bool defaultOpen;
 
   /// Fired whenever open toggles (source `onOpenChange`).
@@ -590,8 +369,25 @@ class BeuiToolResult extends StatefulWidget {
   /// `collapseOnComplete`, default true).
   final bool collapseOnComplete;
 
+  /// Keep Copy result / Run again mounted outside the collapsible panel, so
+  /// they survive [collapseOnComplete] (default true).
+  ///
+  /// The actions used to live *inside* the disclosure, which meant a run that
+  /// auto-collapsed on completion took its own copy button away at exactly the
+  /// moment the reader wanted it. Pass false to restore that layout.
+  final bool keepActionsVisibleWhenCollapsed;
+
   /// Max viewport height in logical pixels (source `maxHeight`, default 220).
   final double maxHeight;
+
+  /// Number of output lines hidden below the fold, for callers that already
+  /// know it (a paginated log, a truncated server response).
+  ///
+  /// Null (the default) derives the count from the output text — the [code] of
+  /// a [BeuiToolResultOutput] child, else [copyText] — against the measured
+  /// viewport. Either way the cue only appears while the content actually
+  /// overflows (the audit's A22).
+  final int? hiddenLineCount;
 
   /// Text written to the clipboard by the copy action (source `copyText`).
   final String? copyText;
@@ -602,6 +398,18 @@ class BeuiToolResult extends StatefulWidget {
 
   /// Optional retry handler — shows a "Run again" action (source `onRetry`).
   final VoidCallback? onRetry;
+
+  /// Per-instance override for the copy action label. Falls back to
+  /// [BeuiAgentStrings.copyResult].
+  final String? copyLabel;
+
+  /// Per-instance override for the copied confirmation. Falls back to
+  /// [BeuiAgentStrings.copied].
+  final String? copiedLabel;
+
+  /// Per-instance override for the retry action label. Falls back to
+  /// [BeuiAgentStrings.runAgain].
+  final String? runAgainLabel;
 
   @override
   State<BeuiToolResult> createState() => _BeuiToolResultState();
@@ -620,9 +428,24 @@ class _BeuiToolResultState extends State<BeuiToolResult>
   late BeuiToolResultStatus _previousStatus;
   late final AnimationController _spin;
 
+  /// Whether the capped viewport has content below the fold.
+  bool _overflowing = false;
+
+  /// Lines still hidden below the fold, or null when nothing is.
+  int? _hiddenLines;
+
   bool get _running => widget.status == BeuiToolResultStatus.running;
   bool get _currentOpen => widget.open ?? _internalOpen;
   bool get _canCopy => widget.copyText != null || widget.onCopy != null;
+  bool get _hasActions => _canCopy || widget.onRetry != null;
+
+  /// The output text, when the widget can see it — the source of the hidden
+  /// line count (A22).
+  String? get _outputText {
+    final child = widget.child;
+    if (child is BeuiToolResultOutput) return child.code;
+    return widget.copyText;
+  }
 
   @override
   void initState() {
@@ -640,7 +463,8 @@ class _BeuiToolResultState extends State<BeuiToolResult>
   void didUpdateWidget(covariant BeuiToolResult oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Status transitions drive open/collapse (source useEffect on status).
+    // Status transitions drive open/collapse (source useEffect on status), per
+    // the `defaultOpen` policy documented on the widget.
     if (widget.status != _previousStatus) {
       if (_previousStatus != BeuiToolResultStatus.running &&
           widget.status == BeuiToolResultStatus.running) {
@@ -700,13 +524,58 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       if (reduce) {
         _scroll.jumpTo(max);
       } else {
-        _scroll.animateTo(
-          max,
-          duration: const Duration(milliseconds: 220),
-          curve: beuiEaseOut,
-        );
+        _scroll.animateTo(max, duration: _followDuration, curve: beuiEaseOut);
       }
     });
+  }
+
+  /// Recomputes the overflow cue. Converges after one extra frame — it only
+  /// calls [setState] when a value actually changed, so scheduling it from
+  /// every build cannot loop.
+  void _syncOverflow() {
+    if (!mounted) return;
+    var overflowing = false;
+    int? hidden;
+
+    if (_scroll.hasClients) {
+      final pos = _scroll.position;
+      final remaining = pos.maxScrollExtent - pos.pixels;
+      // Below the fold by more than half a pixel — anything less is rounding.
+      overflowing = remaining > 0.5;
+      if (overflowing) hidden = _hiddenLinesFor(pos);
+    }
+
+    if (overflowing != _overflowing || hidden != _hiddenLines) {
+      setState(() {
+        _overflowing = overflowing;
+        _hiddenLines = hidden;
+      });
+    }
+  }
+
+  /// Lines below the fold, derived from the output text when it is available
+  /// and from the scroll extent otherwise.
+  ///
+  /// Soft-wrapped lines count once, so this is an approximation for very long
+  /// lines — a deliberate one: it matches what the reader would count.
+  int? _hiddenLinesFor(ScrollMetrics pos) {
+    final explicit = widget.hiddenLineCount;
+    if (explicit != null) return explicit > 0 ? explicit : null;
+
+    final lineHeight = _outputLineHeight;
+    final text = _outputText;
+    if (text != null) {
+      final total = text.split('\n').length;
+      final viewport =
+          pos.viewportDimension - _outputPadding.top - _outputPadding.bottom;
+      final shown = math.max(1, (viewport / lineHeight).floor());
+      final scrolledPast = (pos.pixels / lineHeight).floor();
+      final hidden = total - shown - scrolledPast;
+      return hidden > 0 ? hidden : null;
+    }
+
+    final hidden = ((pos.maxScrollExtent - pos.pixels) / lineHeight).ceil();
+    return hidden > 0 ? hidden : null;
   }
 
   Future<void> _handleCopy() async {
@@ -717,9 +586,13 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       await Clipboard.setData(ClipboardData(text: widget.copyText!));
     }
     if (!mounted) return;
+    // A30: the copy confirmation was visual only. Flipping `_copied` swaps the
+    // button's semantic label *and* turns it into a live region for the length
+    // of the confirmation, so the label change is announced. The revert is not
+    // announced, because `liveRegion` goes back to false with it.
     setState(() => _copied = true);
     _copyTimer?.cancel();
-    _copyTimer = Timer(const Duration(milliseconds: 1600), () {
+    _copyTimer = Timer(_copiedHold, () {
       if (mounted) setState(() => _copied = false);
     });
   }
@@ -731,265 +604,469 @@ class _BeuiToolResultState extends State<BeuiToolResult>
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final agent = BeuiAgentTheme.of(context);
+    final strings = agent.strings;
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final isLight = theme.brightness == Brightness.light;
-    final statusColor = _statusColor(widget.status, isLight, colors);
-    final statusLabel = _statusLabel(widget.status);
-    final titleKey = _swapKey(widget.title, widget.status.name);
-    final metaKey = _swapKey(widget.meta, '${widget.status.name}-meta');
-    final toolKey = _swapKey(widget.tool, '${widget.status.name}-tool');
 
-    return Semantics(
-      container: true,
-      liveRegion: _running,
-      child: DefaultTextStyle.merge(
-        style: agent.typography.assistantBody,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ----- header trigger -----
-            Material(
-              type: MaterialType.transparency,
-              child: InkWell(
-                onTap: _toggle,
-                borderRadius: agent.shapes.chip,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 36),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: Center(
-                            child:
-                                widget.icon ??
-                                Icon(
-                                  _kindIcon(widget.kind, agent.icons),
-                                  size: agent.layout.iconSize,
-                                  color: colors.mutedForeground,
-                                ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              Flexible(
-                                child: widget.title is String
-                                    ? BeuiActionSwapText(
-                                        value: titleKey,
-                                        text: widget.title as String,
-                                        variant: BeuiActionSwapVariant.roll,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: colors.foreground.withValues(
-                                            alpha: 0.9,
-                                          ),
-                                        ),
-                                      )
-                                    : DefaultTextStyle.merge(
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: colors.foreground.withValues(
-                                            alpha: 0.9,
-                                          ),
-                                        ),
-                                        child: _asWidget(widget.title),
-                                      ),
-                              ),
-                              if (widget.meta != null) ...[
-                                const SizedBox(width: 8),
-                                widget.meta is String
-                                    ? BeuiActionSwapText(
-                                        value: metaKey,
-                                        text: widget.meta as String,
-                                        variant: BeuiActionSwapVariant.roll,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: colors.mutedForeground
-                                              .withValues(alpha: 0.6),
-                                        ),
-                                      )
-                                    : DefaultTextStyle.merge(
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: colors.mutedForeground
-                                              .withValues(alpha: 0.6),
-                                        ),
-                                        child: _asWidget(widget.meta!),
-                                      ),
-                              ],
-                              const SizedBox(width: 8),
-                              Flexible(
-                                child: widget.tool is String
-                                    ? BeuiActionSwapText(
-                                        value: toolKey,
-                                        text: widget.tool as String,
-                                        variant: BeuiActionSwapVariant.roll,
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontFamily: 'monospace',
-                                          color: colors.mutedForeground
-                                              .withValues(alpha: 0.55),
-                                        ),
-                                      )
-                                    : DefaultTextStyle.merge(
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontFamily: 'monospace',
-                                          color: colors.mutedForeground
-                                              .withValues(alpha: 0.55),
-                                        ),
-                                        child: _asWidget(widget.tool),
-                                      ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        // Status chip
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _StatusGlyph(
-                              status: widget.status,
-                              color: statusColor,
-                              reduce: reduce,
-                              spin: _spin,
-                            ),
-                            const SizedBox(width: 4),
-                            BeuiActionSwapText(
-                              value: widget.status.name,
-                              text: statusLabel,
-                              variant: BeuiActionSwapVariant.roll,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w500,
-                                color: statusColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 8), // gap-2
-                        _Chevron(
-                          open: _currentOpen,
-                          reduce: reduce,
-                          color: colors.mutedForeground.withValues(alpha: 0.5),
-                        ),
-                      ],
-                    ),
+    // A36/A7: every status colour comes from the themeable role set. The
+    // light-mode foregrounds there are the 700 tier, which clears 4.5:1.
+    final statusPalette = agent
+        .statusColorsFor(theme.brightness)
+        .palette(_agentStatus(widget.status));
+    final statusColor = statusPalette.foreground;
+    final statusLabel = _statusLabel(widget.status, strings);
+
+    SchedulerBinding.instance.addPostFrameCallback((_) => _syncOverflow());
+
+    return DefaultTextStyle.merge(
+      style: agent.typography.assistantBody,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final narrow =
+              constraints.hasBoundedWidth &&
+              constraints.maxWidth < _twoLineBreakpoint;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHeader(
+                context,
+                colors: colors,
+                agent: agent,
+                reduce: reduce,
+                narrow: narrow,
+                statusColor: statusColor,
+                statusLabel: statusLabel,
+              ),
+              BeuiAgentDisclosureInternal(
+                open: _currentOpen,
+                reduce: reduce,
+                child: _buildPanel(
+                  context,
+                  colors: colors,
+                  agent: agent,
+                  strings: strings,
+                  reduce: reduce,
+                  narrow: narrow,
+                  statusLabel: statusLabel,
+                ),
+              ),
+              if (widget.keepActionsVisibleWhenCollapsed && _hasActions)
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: agent.layout.iconSize + agent.layout.rowGap,
+                    top: 2,
                   ),
+                  child: _buildActions(
+                    context,
+                    colors: colors,
+                    agent: agent,
+                    strings: strings,
+                    reduce: reduce,
+                    // Redundant with the always-visible header status once the
+                    // row lives outside the panel.
+                    statusLabel: null,
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // Header
+  // -------------------------------------------------------------------------
+
+  Widget _buildHeader(
+    BuildContext context, {
+    required BeuiColors colors,
+    required BeuiAgentTheme agent,
+    required bool reduce,
+    required bool narrow,
+    required Color statusColor,
+    required String statusLabel,
+  }) {
+    final gap = agent.layout.rowGap;
+
+    final leading = SizedBox(
+      width: agent.layout.iconSize,
+      height: agent.layout.iconSize,
+      child: Center(
+        child:
+            widget.icon ??
+            Icon(
+              _kindIcon(widget.kind, agent.icons),
+              size: agent.layout.iconSize,
+              color: colors.mutedForeground,
+            ),
+      ),
+    );
+
+    final title = _titleLabel(colors, agent);
+    final meta = _metaLabel(colors, agent);
+    final tool = _toolLabel(colors, agent);
+
+    final status = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _StatusGlyph(
+          status: widget.status,
+          color: statusColor,
+          reduce: reduce,
+          spin: _spin,
+        ),
+        const SizedBox(width: 4),
+        BeuiActionSwapText(
+          value: widget.status.name,
+          text: statusLabel,
+          variant: BeuiActionSwapVariant.roll,
+          style: agent.typography.metadata.copyWith(
+            fontWeight: FontWeight.w500,
+            color: statusColor,
+          ),
+        ),
+      ],
+    );
+
+    final chevron = _Chevron(
+      open: _currentOpen,
+      reduce: reduce,
+      color: colors.mutedForeground,
+    );
+
+    final Widget content;
+    if (narrow) {
+      // A15: seven elements do not fit under 400px. Title + status lead; the
+      // metadata and the slug drop to a second line, indented under the title.
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              leading,
+              SizedBox(width: gap),
+              Expanded(child: title),
+              SizedBox(width: gap),
+              status,
+              SizedBox(width: gap),
+              chevron,
+            ],
+          ),
+          if (meta != null || tool != null)
+            Padding(
+              padding: EdgeInsets.only(
+                left: agent.layout.iconSize + gap,
+                top: 2,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  ?meta,
+                  if (meta != null && tool != null) SizedBox(width: gap),
+                  if (tool != null) Flexible(child: tool),
+                ],
+              ),
+            ),
+        ],
+      );
+    } else {
+      content = Row(
+        children: [
+          leading,
+          SizedBox(width: gap),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Flexible(child: title),
+                if (meta != null) ...[SizedBox(width: gap), meta],
+                SizedBox(width: gap),
+                if (tool != null) Flexible(child: tool),
+              ],
+            ),
+          ),
+          SizedBox(width: gap),
+          status,
+          SizedBox(width: gap),
+          chevron,
+        ],
+      );
+    }
+
+    // A30 + A31 + keyboard: one merged node carrying the label, the button
+    // role, the expanded state, the tap action — and `liveRegion`, so a
+    // terminal outcome ("Failed", "Cancelled") is announced. The old code put
+    // `liveRegion` on the card and gated it on `running`, switching it off
+    // exactly when the outcome arrived.
+    return MergeSemantics(
+      child: Semantics(
+        liveRegion: true,
+        expanded: _currentOpen,
+        child: BeuiMinHitTarget(
+          minSize: kMinInteractiveDimension,
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              onTap: _toggle,
+              borderRadius: agent.shapes.chip,
+              child: ConstrainedBox(
+                // A31: the whole header is the toggle, and it is a real
+                // 48px-tall target rather than 36px plus hit slop, so the
+                // semantics rect passes the tap-target guidelines too.
+                constraints: const BoxConstraints(
+                  minHeight: kMinInteractiveDimension,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: content,
                 ),
               ),
             ),
-
-            // ----- disclosure body -----
-            _AgentDisclosure(
-              open: _currentOpen,
-              reduce: reduce,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 24, top: 6),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.muted.withValues(alpha: 0.8),
-                    borderRadius: agent.shapes.nested, // rounded-xl
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: widget.maxHeight,
-                        ),
-                        child: ScrollConfiguration(
-                          behavior: ScrollConfiguration.of(
-                            context,
-                          ).copyWith(scrollbars: false),
-                          child: SingleChildScrollView(
-                            controller: _scroll,
-                            padding: const EdgeInsets.all(12),
-                            child: widget.child,
-                          ),
-                        ),
-                      ),
-                      if (_canCopy || widget.onRetry != null)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
-                          child: Row(
-                            children: [
-                              if (_canCopy)
-                                _ActionButton(
-                                  label: _copied ? 'Copied' : 'Copy result',
-                                  pressed: _copyPressed,
-                                  hovered: _copyHovered,
-                                  reduce: reduce,
-                                  colors: colors,
-                                  onHover: (h) =>
-                                      setState(() => _copyHovered = h),
-                                  onPressed: (p) =>
-                                      setState(() => _copyPressed = p),
-                                  onTap: _handleCopy,
-                                  child: Icon(
-                                    _copied
-                                        ? agent.icons.copied
-                                        : agent.icons.copy,
-                                    size: 14,
-                                    color: _copyHovered
-                                        ? colors.foreground
-                                        : colors.mutedForeground,
-                                  ),
-                                ),
-                              if (widget.onRetry != null)
-                                _ActionButton(
-                                  label: 'Run again',
-                                  pressed: _retryPressed,
-                                  hovered: _retryHovered,
-                                  reduce: reduce,
-                                  colors: colors,
-                                  onHover: (h) =>
-                                      setState(() => _retryHovered = h),
-                                  onPressed: (p) =>
-                                      setState(() => _retryPressed = p),
-                                  onTap: widget.onRetry!,
-                                  child: Icon(
-                                    agent.icons.retry,
-                                    size: 14,
-                                    color: _retryHovered
-                                        ? colors.foreground
-                                        : colors.mutedForeground,
-                                  ),
-                                ),
-                              const Spacer(),
-                              BeuiActionSwapText(
-                                value: widget.status.name,
-                                text: statusLabel,
-                                variant: BeuiActionSwapVariant.roll,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: colors.mutedForeground.withValues(
-                                    alpha: 0.55,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _titleLabel(BeuiColors colors, BeuiAgentTheme agent) {
+    // 14 / w500 — the assistant body role plus medium weight. Full foreground:
+    // the title is the primary string on the header.
+    final style = agent.typography.assistantBody.copyWith(
+      fontWeight: FontWeight.w500,
+      color: colors.foreground,
+    );
+    final text = widget.title;
+    if (text != null) {
+      return BeuiActionSwapText(
+        value: text,
+        text: text,
+        variant: BeuiActionSwapVariant.roll,
+        style: style,
+      );
+    }
+    return DefaultTextStyle.merge(style: style, child: widget.titleWidget!);
+  }
+
+  Widget? _metaLabel(BeuiColors colors, BeuiAgentTheme agent) {
+    // A8: un-multiplied mutedForeground. It was `@0.6`.
+    final style = agent.typography.status.copyWith(
+      color: colors.mutedForeground,
+    );
+    final text = widget.meta;
+    if (text != null) {
+      return BeuiActionSwapText(
+        value: text,
+        text: text,
+        variant: BeuiActionSwapVariant.roll,
+        style: style,
+      );
+    }
+    final custom = widget.metaWidget;
+    if (custom == null) return null;
+    return DefaultTextStyle.merge(style: style, child: custom);
+  }
+
+  Widget? _toolLabel(BeuiColors colors, BeuiAgentTheme agent) {
+    // A8 / A14: the slug identifies *what ran*, so it gets the mono role at
+    // full mutedForeground rather than 11px at `@0.55` (2.29:1).
+    final style = agent.typography.mono.copyWith(color: colors.mutedForeground);
+    final text = widget.tool;
+    if (text != null) {
+      return BeuiActionSwapText(
+        value: text,
+        text: text,
+        variant: BeuiActionSwapVariant.roll,
+        style: style,
+      );
+    }
+    final custom = widget.toolWidget;
+    if (custom == null) return null;
+    return DefaultTextStyle.merge(style: style, child: custom);
+  }
+
+  // -------------------------------------------------------------------------
+  // Panel
+  // -------------------------------------------------------------------------
+
+  Widget _buildPanel(
+    BuildContext context, {
+    required BeuiColors colors,
+    required BeuiAgentTheme agent,
+    required BeuiAgentStrings strings,
+    required bool reduce,
+    required bool narrow,
+    required String statusLabel,
+  }) {
+    Widget viewport = ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: widget.maxHeight),
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (_) {
+            _syncOverflow();
+            return false;
+          },
+          child: SingleChildScrollView(
+            controller: _scroll,
+            padding: _outputPadding,
+            child: widget.child,
+          ),
+        ),
+      ),
+    );
+
+    // A22 (a): a bottom fade over content that continues below the fold. Ported
+    // from `agent_activity.dart`'s mask. Only mounted while the viewport
+    // actually overflows, so it costs a saveLayer only when it earns one —
+    // never over a fully visible, syntax-highlighted body (A18).
+    if (_overflowing) {
+      viewport = ShaderMask(
+        blendMode: BlendMode.dstIn,
+        shaderCallback: (rect) {
+          final h = rect.height <= 0 ? 1.0 : rect.height;
+          final stop = (1 - _fadeExtent / h).clamp(0.5, 1.0);
+          return LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: const [
+              Color(0xFF000000),
+              Color(0xFF000000),
+              Color(0x00000000),
+            ],
+            stops: [0.0, stop, 1.0],
+          ).createShader(rect);
+        },
+        child: viewport,
+      );
+    }
+
+    final hidden = _hiddenLines;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.muted.withValues(alpha: 0.8),
+        borderRadius: agent.shapes.nested,
+        // A38: `structure.borderWidth` was dead in this cluster. One hairline
+        // gives the nested panel the same edge treatment as its siblings.
+        border: Border.all(
+          color: colors.border,
+          width: agent.structure.borderWidth,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          viewport,
+          // A22 (b): say how much is hidden. A fade alone reads as a styling
+          // choice; a count reads as content.
+          if (_overflowing && hidden != null)
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                _outputPadding.left,
+                0,
+                _outputPadding.right,
+                6,
+              ),
+              child: Text(
+                strings.activityMoreResults(hidden),
+                style: agent.typography.metadata.copyWith(
+                  color: colors.mutedForeground,
+                ),
+              ),
+            ),
+          if (!widget.keepActionsVisibleWhenCollapsed && _hasActions)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 6),
+              child: _buildActions(
+                context,
+                colors: colors,
+                agent: agent,
+                strings: strings,
+                reduce: reduce,
+                statusLabel: narrow ? null : statusLabel,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // Actions
+  // -------------------------------------------------------------------------
+
+  Widget _buildActions(
+    BuildContext context, {
+    required BeuiColors colors,
+    required BeuiAgentTheme agent,
+    required BeuiAgentStrings strings,
+    required bool reduce,
+    required String? statusLabel,
+  }) {
+    final copiedLabel = widget.copiedLabel ?? strings.copied;
+    final copyLabel = widget.copyLabel ?? strings.copyResult;
+    final retryLabel = widget.runAgainLabel ?? strings.runAgain;
+
+    return Row(
+      children: [
+        if (_canCopy)
+          _ActionButton(
+            label: _copied ? copiedLabel : copyLabel,
+            // A30: announce the confirmation, not the idle label.
+            liveRegion: _copied,
+            pressed: _copyPressed,
+            hovered: _copyHovered,
+            reduce: reduce,
+            colors: colors,
+            agent: agent,
+            onHover: (h) => setState(() => _copyHovered = h),
+            onPressed: (p) => setState(() => _copyPressed = p),
+            onTap: _handleCopy,
+            child: Icon(
+              _copied ? agent.icons.copied : agent.icons.copy,
+              size: 14,
+              color: _copyHovered ? colors.foreground : colors.mutedForeground,
+            ),
+          ),
+        // A31: real spacing between the buttons, so the 48px slop of one does
+        // not overhang the other and steal its taps.
+        if (_canCopy && widget.onRetry != null)
+          SizedBox(width: agent.layout.actionSpacing),
+        if (widget.onRetry != null)
+          _ActionButton(
+            label: retryLabel,
+            pressed: _retryPressed,
+            hovered: _retryHovered,
+            reduce: reduce,
+            colors: colors,
+            agent: agent,
+            onHover: (h) => setState(() => _retryHovered = h),
+            onPressed: (p) => setState(() => _retryPressed = p),
+            onTap: widget.onRetry!,
+            child: Icon(
+              agent.icons.retry,
+              size: 14,
+              color: _retryHovered ? colors.foreground : colors.mutedForeground,
+            ),
+          ),
+        const Spacer(),
+        if (statusLabel != null)
+          Flexible(
+            child: BeuiActionSwapText(
+              value: widget.status.name,
+              text: statusLabel,
+              variant: BeuiActionSwapVariant.roll,
+              style: agent.typography.metadata.copyWith(
+                color: colors.mutedForeground,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -1056,13 +1133,21 @@ class _Chevron extends StatelessWidget {
   }
 }
 
+/// A 48px icon action with a 28px painted chip.
+///
+/// The visual is unchanged from the source; the *box* is a full tap target so
+/// the semantics rect clears the platform guidelines (A31). Hit slop alone
+/// would not — `BeuiMinHitTarget` widens hit testing, not the semantics node —
+/// so the target is real and the chip is centred inside it.
 class _ActionButton extends StatelessWidget {
   const _ActionButton({
     required this.label,
+    this.liveRegion = false,
     required this.pressed,
     required this.hovered,
     required this.reduce,
     required this.colors,
+    required this.agent,
     required this.onHover,
     required this.onPressed,
     required this.onTap,
@@ -1070,10 +1155,14 @@ class _ActionButton extends StatelessWidget {
   });
 
   final String label;
+
+  /// Announce [label] when it changes — used to voice "Copied".
+  final bool liveRegion;
   final bool pressed;
   final bool hovered;
   final bool reduce;
   final BeuiColors colors;
+  final BeuiAgentTheme agent;
   final ValueChanged<bool> onHover;
   final ValueChanged<bool> onPressed;
   final VoidCallback onTap;
@@ -1081,116 +1170,60 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pressTarget = (pressed && !reduce) ? 0.9 : 1.0;
+    final pressTarget = (pressed && !reduce) ? beuiAgentPressScale : 1.0;
+
+    final chip = SingleMotionBuilder(
+      value: pressTarget,
+      motion: motionFor(context, beuiSpringPress, isMovement: true),
+      builder: (context, scale, child) =>
+          Transform.scale(scale: scale, child: child),
+      child: AnimatedContainer(
+        // Exit shorter than entrance (A19).
+        duration: hovered ? _hoverIn : _hoverOut,
+        width: 28,
+        height: 28,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: hovered ? colors.muted : Colors.transparent,
+          borderRadius: agent.shapes.chip,
+        ),
+        child: child,
+      ),
+    );
+
     return Semantics(
       button: true,
       label: label,
-      child: Tooltip(
-        message: label,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          onEnter: (_) => onHover(true),
-          onExit: (_) {
-            onHover(false);
-            onPressed(false);
-          },
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown: (_) => onPressed(true),
-            onTapUp: (_) => onPressed(false),
-            onTapCancel: () => onPressed(false),
-            onTap: onTap,
-            child: SingleMotionBuilder(
-              value: pressTarget,
-              motion: motionFor(context, beuiSpringPress, isMovement: true),
-              builder: (context, scale, child) =>
-                  Transform.scale(scale: scale, child: child),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                width: 28,
-                height: 28,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: hovered ? colors.muted : Colors.transparent,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: child,
+      liveRegion: liveRegion,
+      onTap: onTap,
+      // One node carrying label + role + action, so a labelled-tap-target
+      // check sees the label on the node that actually handles the tap.
+      excludeSemantics: true,
+      child: BeuiMinHitTarget(
+        minSize: kMinInteractiveDimension,
+        child: Tooltip(
+          message: label,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            onEnter: (_) => onHover(true),
+            onExit: (_) {
+              onHover(false);
+              onPressed(false);
+            },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => onPressed(true),
+              onTapUp: (_) => onPressed(false),
+              onTapCancel: () => onPressed(false),
+              onTap: onTap,
+              child: SizedBox.square(
+                dimension: kMinInteractiveDimension,
+                child: Center(child: chip),
               ),
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-/// Shared transform-only reveal for collapsible agent content — the Flutter
-/// port of the source's `AgentDisclosure` (height + opacity + y: -4).
-class _AgentDisclosure extends StatelessWidget {
-  const _AgentDisclosure({
-    required this.open,
-    required this.reduce,
-    required this.child,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final target = open ? 1.0 : 0.0;
-    final motion = open ? _disclosureOpen : _disclosureClose;
-
-    if (reduce) {
-      return Offstage(
-        offstage: !open,
-        child: IgnorePointer(
-          ignoring: !open,
-          child: ExcludeSemantics(
-            excluding: !open,
-            child: ClipRect(
-              child: Align(
-                alignment: Alignment.topCenter,
-                heightFactor: open ? 1.0 : 0.0,
-                child: child,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return SingleMotionBuilder(
-      value: target,
-      motion: motionFor(context, motion, isMovement: true),
-      builder: (context, t, child) {
-        final tt = t.clamp(0.0, 1.0);
-        final closed = tt < 0.01;
-        return Offstage(
-          offstage: closed,
-          child: IgnorePointer(
-            ignoring: closed,
-            child: ExcludeSemantics(
-              excluding: closed,
-              child: ClipRect(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  heightFactor: tt,
-                  child: Opacity(
-                    opacity: tt,
-                    child: Transform.translate(
-                      offset: Offset(0, -4 * (1 - tt)),
-                      child: child,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-      child: child,
     );
   }
 }

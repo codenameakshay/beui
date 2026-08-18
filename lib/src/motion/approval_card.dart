@@ -341,7 +341,18 @@ class BeuiApprovalCard extends StatefulWidget {
   /// Ignored when [expandedChild] is null.
   final bool? expanded;
 
-  /// Uncontrolled seed when [expanded] is null.
+  /// Uncontrolled seed when [expanded] is null. Defaults to collapsed.
+  ///
+  /// **The cluster's disclosure policy (A42).** Across the transcript the rule
+  /// is: *a surface that is still asking or still running opens; a detail view
+  /// the user can request stays shut.* The audit found `defaultOpen` set
+  /// true/true/false/false across four sibling components with no stated
+  /// reason, so each one now says why.
+  ///
+  /// Here the answer is collapsed, because [expandedChild] is by definition
+  /// the *optional* depth behind a summary the user has already been given —
+  /// unlike [BeuiToolApproval]'s parameters, which are the evidence for the
+  /// decision being asked for and therefore open by default.
   final bool defaultExpanded;
 
   /// Called whenever compact/expanded changes.

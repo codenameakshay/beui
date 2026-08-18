@@ -411,6 +411,80 @@ void main() {
       expect(find.text('Hold it'), findsOneWidget);
     });
 
+    testWidgets('BeuiAgentActivity takes the failed status foreground', (
+      tester,
+    ) async {
+      // The audit measured this widget at 0/0/0 theme roles — it is the whole
+      // reason A37 exists.
+      await tester.pumpWidget(
+        _host(
+          const BeuiAgentActivity(
+            status: BeuiAgentActivityStatus.failed,
+            items: [
+              BeuiAgentActivityText(id: 'a', content: 'Compared the draft.'),
+            ],
+          ),
+          agent: themed,
+        ),
+      );
+      await tester.pump();
+
+      final painted = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((t) => t.style?.color)
+          .toSet();
+      expect(painted, contains(const Color(0xFF440044)));
+    });
+
+    testWidgets('BeuiTodoList takes the success status foreground', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          const BeuiTodoList(
+            items: [
+              BeuiTodoItem(
+                id: 'a',
+                title: Text('Ship it'),
+                status: BeuiTodoItemStatus.completed,
+              ),
+            ],
+          ),
+          agent: themed,
+        ),
+      );
+      // An all-complete list arms a short auto-collapse timer; pump past it so
+      // the test does not tear down with it pending.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+
+      final painted = tester
+          .widgetList<Text>(find.byType(Text, skipOffstage: false))
+          .map((t) => t.style?.color)
+          .toSet();
+      expect(painted, contains(const Color(0xFF330033)));
+    });
+
+    testWidgets('BeuiTodoList falls back when BeuiColors is absent', (
+      tester,
+    ) async {
+      // A40: this widget used to null-assert on the extension, so a consumer
+      // whose theme lacked it got a crash out of a published package.
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: BeuiTodoList(
+              items: [BeuiTodoItem(id: 'a', title: Text('Ship it'))],
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Ship it'), findsOneWidget);
+    });
+
     testWidgets('BeuiToolApproval honours the emphasis border width', (
       tester,
     ) async {

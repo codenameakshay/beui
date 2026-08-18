@@ -38,6 +38,11 @@ Widget _host({
   ValueChanged<bool>? onOpenChange,
   bool collapseOnComplete = true,
   bool reduce = false,
+  bool dark = false,
+  String? emptyLabel,
+  String? emptyDescription,
+  Widget? emptyState,
+  List<ThemeExtension<dynamic>>? extensions,
 }) {
   Widget child = Center(
     child: SizedBox(
@@ -49,6 +54,9 @@ Widget _host({
         defaultOpen: defaultOpen,
         onOpenChange: onOpenChange,
         collapseOnComplete: collapseOnComplete,
+        emptyLabel: emptyLabel,
+        emptyDescription: emptyDescription,
+        emptyState: emptyState,
       ),
     ),
   );
@@ -61,13 +69,23 @@ Widget _host({
       ),
     );
   }
+  final base = dark ? ThemeData.dark() : ThemeData.light();
   return MaterialApp(
     theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      base.copyWith(
+        extensions:
+            extensions ?? [dark ? BeuiColors.dark() : BeuiColors.light()],
+      ),
     ),
     home: Scaffold(body: child),
   );
 }
+
+List<BeuiTodoItem> _allDone() => _sample(
+  a: BeuiTodoItemStatus.completed,
+  b: BeuiTodoItemStatus.completed,
+  c: BeuiTodoItemStatus.completed,
+);
 
 void main() {
   group('BeuiTodoList', () {
@@ -222,17 +240,39 @@ void main() {
       expect(find.text('50%'), findsOneWidget);
     });
 
-    testWidgets('reduced motion still toggles and shows content', (
+    // A16. This used to assert the *bug*: the private disclosure hard-cut
+    // under reduced motion, so one pump after the tap the rows were simply
+    // gone. The shared disclosure keeps the opacity channel — reduced motion
+    // drops movement, not fades — so the panel now cross-fades out over
+    // ~120ms and only then unmounts.
+    testWidgets('reduced motion cross-fades the panel instead of cutting', (
       tester,
     ) async {
       await tester.pumpWidget(
         _host(items: _sample(), reduce: true, defaultOpen: true),
       );
-      await tester.pump(); // no settle — reduced snaps
+      await tester.pump();
       expect(find.text('Inspect the current data flow'), findsOneWidget);
 
       await tester.tap(find.text('To-dos'));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 60));
+
+      // Mid-fade: still mounted, still painting, at a partial opacity.
+      expect(find.text('Inspect the current data flow'), findsOneWidget);
+      final opacity = tester
+          .widgetList<Opacity>(
+            find.ancestor(
+              of: find.text('Inspect the current data flow'),
+              matching: find.byType(Opacity),
+            ),
+          )
+          .map((o) => o.opacity)
+          .fold<double>(1, (a, b) => a * b);
+      expect(opacity, greaterThan(0.0));
+      expect(opacity, lessThan(1.0));
+
+      await tester.pump(const Duration(milliseconds: 200));
       expect(find.text('Inspect the current data flow'), findsNothing);
     });
 
@@ -319,4 +359,411 @@ void main() {
       expect(strike, lessThan(row / 2));
     });
   });
+
+  // A40 — a published package must not crash on a consumer's theme.
+  group('BeuiTodoList theme resilience', () {
+    testWidgets('renders with no BeuiColors extension installed', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 360,
+                child: BeuiTodoList(items: _sample()),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('To-dos'), findsOneWidget);
+      expect(find.text('Inspect the current data flow'), findsOneWidget);
+    });
+
+    testWidgets('falls back at the ambient brightness, not a fixed palette', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.dark(),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 360,
+                child: BeuiTodoList(items: _allDone()),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.widget<Text>(find.text('/3')).style!.color,
+        BeuiAgentStatusColors.dark.success.foreground,
+      );
+    });
+  });
+
+  // A36 — status colors come from the role set, in both brightnesses.
+  group('BeuiTodoList status colors', () {
+    testWidgets('light mode completion count takes the success 700 tier', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_host(items: _allDone()));
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<Text>(find.text('/3')).style!.color,
+        BeuiAgentStatusColors.light.success.foreground,
+      );
+    });
+
+    testWidgets('dark mode completion count takes the success 400 tier', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_host(items: _allDone(), dark: true));
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<Text>(find.text('/3')).style!.color,
+        BeuiAgentStatusColors.dark.success.foreground,
+      );
+      expect(
+        BeuiAgentStatusColors.dark.success.foreground,
+        isNot(BeuiAgentStatusColors.light.success.foreground),
+      );
+    });
+
+    testWidgets('an incomplete list stays muted, not tinted', (tester) async {
+      await tester.pumpWidget(_host(items: _sample()));
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<Text>(find.text('/3')).style!.color,
+        BeuiColors.light().mutedForeground,
+      );
+    });
+
+    testWidgets('a retinted success tier moves the count', (tester) async {
+      const teal = Color(0xFF0F766E);
+      await tester.pumpWidget(
+        _host(
+          items: _allDone(),
+          extensions: [
+            BeuiColors.light(),
+            BeuiAgentTheme(
+              statusLight: BeuiAgentStatusColors.light.copyWith(
+                success: BeuiAgentStatusColors.light.success.copyWith(
+                  foreground: teal,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.widget<Text>(find.text('/3')).style!.color, teal);
+    });
+  });
+
+  // A27 — the copy is a theme surface, not English baked into the widget.
+  group('BeuiTodoList strings', () {
+    testWidgets('a themed BeuiAgentStrings re-spells title, count, and empty', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _host(
+          items: const [],
+          extensions: [
+            BeuiColors.light(),
+            const BeuiAgentTheme(
+              strings: BeuiAgentStrings(
+                todoListTitle: 'À faire',
+                todoEmpty: 'Aucune tâche',
+                todoListLabel: 'Liste de tâches',
+              ),
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('À faire'), findsOneWidget);
+      expect(find.text('Aucune tâche'), findsOneWidget);
+      expect(find.bySemanticsLabel('Liste de tâches'), findsOneWidget);
+      handle.dispose();
+    });
+
+    testWidgets('per-instance overrides beat the theme string', (tester) async {
+      await tester.pumpWidget(
+        _host(items: const [], emptyLabel: 'Nothing planned'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Nothing planned'), findsOneWidget);
+      expect(find.text('No tasks yet'), findsNothing);
+    });
+  });
+
+  // A28 — the empty state orients instead of shrugging.
+  group('BeuiTodoList empty state', () {
+    testWidgets('renders an orienting description under the headline', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          items: const [],
+          emptyDescription:
+              'The agent will list its plan here before it '
+              'starts work.',
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('No tasks yet'), findsOneWidget);
+      expect(
+        find.text('The agent will list its plan here before it starts work.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('emptyState replaces the whole panel', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          items: const [],
+          emptyLabel: 'ignored',
+          emptyState: const Text('Waiting for the plan'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Waiting for the plan'), findsOneWidget);
+      expect(find.text('ignored'), findsNothing);
+    });
+  });
+
+  group('BeuiTodoList accessibility', () {
+    testWidgets('the header is a labelled, expandable button', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_host(items: _sample(), defaultOpen: true));
+      await tester.pumpAndSettle();
+
+      // The header node merges the title and the n/N counter in after its own
+      // sentence, so match on the sentence rather than the whole label.
+      final sentence = const BeuiAgentStrings().todoHeaderLabel(0, 3, true);
+      expect(
+        tester.getSemantics(find.bySemanticsLabel(RegExp(sentence))),
+        isSemantics(
+          isButton: true,
+          hasExpandedState: true,
+          isExpanded: true,
+          hasTapAction: true,
+        ),
+      );
+
+      // And the card keeps its own name instead of having it swallowed into
+      // that button label.
+      expect(find.bySemanticsLabel('Agent task list'), findsOneWidget);
+      handle.dispose();
+    });
+
+    testWidgets('rows announce their status before their title', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _host(items: _sample(a: BeuiTodoItemStatus.completed)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel(RegExp('Completed: ')), findsWidgets);
+      handle.dispose();
+    });
+
+    testWidgets('meets the iOS tap-target and labelled-target guidelines', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_host(items: _sample()));
+      await tester.pumpAndSettle();
+
+      // The header is 44px in *layout*, so unlike the activity summary it can
+      // be measured by the semantics-rect guidelines. 44 is the library's
+      // floor (Apple HIG / WCAG 2.5.8 AAA / kMinInteractiveDimension);
+      // androidTapTargetGuideline asks for Material's 48 and is not the
+      // standard this port targets.
+      await expectLater(tester, meetsGuideline(iOSTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+  });
+
+  group('BeuiTodoList keyboard', () {
+    Future<List<bool>> activate(
+      WidgetTester tester,
+      LogicalKeyboardKey key,
+    ) async {
+      final calls = <bool>[];
+      await tester.pumpWidget(
+        _host(items: _sample(), defaultOpen: true, onOpenChange: calls.add),
+      );
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(key);
+      await tester.pumpAndSettle();
+      return calls;
+    }
+
+    testWidgets('Tab then Enter collapses', (tester) async {
+      expect(await activate(tester, LogicalKeyboardKey.enter), [false]);
+    });
+
+    testWidgets('Tab then Space collapses', (tester) async {
+      expect(await activate(tester, LogicalKeyboardKey.space), [false]);
+    });
+  });
+
+  // A38 — `useGlassSurfaces` was dead across this whole cluster.
+  group('BeuiTodoList structure tokens', () {
+    testWidgets('off by default: no backdrop blur, no muted fill', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_host(items: _sample()));
+      await tester.pumpAndSettle();
+      expect(find.byType(BackdropFilter), findsNothing);
+    });
+
+    testWidgets('useGlassSurfaces gives the card a real glass surface', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          items: _sample(),
+          extensions: [
+            BeuiColors.light(),
+            const BeuiAgentTheme(
+              structure: BeuiAgentStructure(useGlassSurfaces: true),
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(BackdropFilter), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('the focus ring is drawn at the emphasis width', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_host(items: _sample()));
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+
+      // Painted outside layout, so the header keeps its exact 44px box —
+      // focusing must not resize or shift anything.
+      expect(tester.getSize(find.byType(BeuiTodoList)).width, 360);
+      final ring = tester
+          .widgetList<DecoratedBox>(find.byType(DecoratedBox))
+          .map((b) => b.decoration)
+          .whereType<BoxDecoration>()
+          .where((d) => d.border?.top.color == BeuiColors.light().focusRing);
+      expect(ring, hasLength(1));
+      expect(
+        ring.single.border!.top.width,
+        const BeuiAgentStructure().emphasisBorderWidth,
+      );
+    });
+  });
+
+  // A18 — each row used to build a five-deep animation tree.
+  testWidgets('a row builds a shallow animation tree', (tester) async {
+    await tester.pumpWidget(
+      _host(items: _sample(a: BeuiTodoItemStatus.inProgress, aProgress: 40)),
+    );
+    await tester.pumpAndSettle();
+
+    final builders = tester
+        .elementList(
+          find.byWidgetPredicate(
+            (w) => w.runtimeType.toString().contains('MotionBuilder'),
+          ),
+        )
+        .length;
+
+    // Three rows × 3 (the status mark is 2 — a `Rect` carrying four
+    // per-dimension motions, plus the ring's own opacity — and the strike is
+    // 1), plus the header's rolling counter. The mark alone used to be 5 per
+    // row, so the rows contributed 18 where they now contribute 9.
+    expect(builders, lessThanOrEqualTo(13));
+  });
+
+  testWidgets('golden — in-flight plan with all four row states', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(420, 300));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
+        home: const Scaffold(
+          body: Center(child: RepaintBoundary(child: _TodoGolden())),
+        ),
+      ),
+    );
+    // Two fixed advances, never pumpAndSettle: the in-progress ring is an
+    // indefinite ticker. The first pump lets the row entrances start (they are
+    // armed in a post-frame callback, so a ticker started there takes the
+    // following frame as its zero); the second settles them.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 600));
+    await expectLater(
+      find.byType(_TodoGolden),
+      matchesGoldenFile('goldens/beui_todo_list.png'),
+    );
+  });
+}
+
+/// The golden subject: one list showing every row state at once.
+class _TodoGolden extends StatelessWidget {
+  const _TodoGolden();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      width: 380,
+      child: BeuiTodoList(
+        title: Text('Implementation plan'),
+        collapseOnComplete: false,
+        items: [
+          BeuiTodoItem(
+            id: 'a',
+            title: Text('Inspect the data flow'),
+            status: BeuiTodoItemStatus.completed,
+          ),
+          BeuiTodoItem(
+            id: 'b',
+            title: Text('Update the schema'),
+            status: BeuiTodoItemStatus.inProgress,
+            progress: 40,
+            detail: Text('40%'),
+          ),
+          BeuiTodoItem(
+            id: 'c',
+            title: Text('Add edge-case coverage'),
+            status: BeuiTodoItemStatus.pending,
+          ),
+          BeuiTodoItem(
+            id: 'd',
+            title: Text('Backfill the old rows'),
+            status: BeuiTodoItemStatus.cancelled,
+          ),
+        ],
+      ),
+    );
+  }
 }
