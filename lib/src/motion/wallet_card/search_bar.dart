@@ -283,7 +283,9 @@ class _RecentRowState extends State<_RecentRow> {
           child: Row(
             children: [
               Icon(
-                LucideIcons.history,
+                // `LucideIcons.history` was removed upstream in flutter_lucide
+                // 1.31.0; `rotateCcwClock` is its replacement glyph.
+                LucideIcons.rotate_ccw_clock,
                 size: 16,
                 color: hoverActive ? colors.foreground : colors.mutedForeground,
               ),
