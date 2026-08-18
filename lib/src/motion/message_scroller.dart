@@ -1071,31 +1071,35 @@ class _JumpToLatestState extends State<_JumpToLatest> {
         ? '${widget.label}, $unread new ${unread == 1 ? 'message' : 'messages'}'
         : widget.label;
 
-    final pill = Semantics(
-      button: true,
-      label: label,
-      child: Tooltip(
-        message: widget.label,
-        // C22: the Semantics label above already names this control; a
-        // Tooltip that also contributes semantics makes a reader say it twice.
-        excludeFromSemantics: true,
-        child: FocusableActionDetector(
-          mouseCursor: SystemMouseCursors.click,
-          onShowHoverHighlight: (v) => setState(() => _hovered = v),
-          onShowFocusHighlight: (v) => setState(() => _focused = v),
-          shortcuts: const <ShortcutActivator, Intent>{
-            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-          },
-          actions: <Type, Action<Intent>>{
-            ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) {
-                widget.onTap();
-                return null;
-              },
-            ),
-          },
-          child: BeuiMinHitTarget(
+    // C8/T9: the slop wrapper is outermost, and that placement is
+    // load-bearing — an ancestor RenderBox rejects a pointer outside
+    // its own box before any child's hitTest runs, so a nested
+    // BeuiMinHitTarget is dead weight.
+    final pill = BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        label: label,
+        child: Tooltip(
+          message: widget.label,
+          // C22: the Semantics label above already names this control; a
+          // Tooltip that also contributes semantics makes a reader say it twice.
+          excludeFromSemantics: true,
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowHoverHighlight: (v) => setState(() => _hovered = v),
+            onShowFocusHighlight: (v) => setState(() => _focused = v),
+            shortcuts: const <ShortcutActivator, Intent>{
+              SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+              SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onTap();
+                  return null;
+                },
+              ),
+            },
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTapDown: (_) => setState(() => _pressed = true),

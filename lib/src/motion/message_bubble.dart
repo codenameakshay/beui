@@ -923,26 +923,29 @@ class _CollapsibleTriggerState extends State<_CollapsibleTrigger> {
     // C26. The trigger reported `button` (via InkWell) but never `expanded`,
     // so a screen-reader user could not tell whether the body was open — the
     // one fact this control exists to change.
-    return Semantics(
-      button: true,
-      expanded: widget.open,
-      child: FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        onShowHoverHighlight: (v) => setState(() => _hovered = v),
-        onShowFocusHighlight: (v) => setState(() => _focused = v),
-        shortcuts: const <ShortcutActivator, Intent>{
-          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-        },
-        actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) {
-              widget.onPressed();
-              return null;
-            },
-          ),
-        },
-        child: BeuiMinHitTarget(
+    // C8/T9: outermost, so the 44px slop is actually reachable — an ancestor
+    // RenderBox rejects a pointer outside its own box before any child's
+    // hitTest runs.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        expanded: widget.open,
+        child: FocusableActionDetector(
+          mouseCursor: SystemMouseCursors.click,
+          onShowHoverHighlight: (v) => setState(() => _hovered = v),
+          onShowFocusHighlight: (v) => setState(() => _focused = v),
+          shortcuts: const <ShortcutActivator, Intent>{
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                widget.onPressed();
+                return null;
+              },
+            ),
+          },
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapDown: (_) => setState(() => _pressed = true),
