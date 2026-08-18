@@ -322,7 +322,9 @@ export 'src/motion/tool_approval.dart'
     show
         BeuiToolApproval,
         BeuiToolApprovalCode,
+        BeuiToolApprovalGrant,
         BeuiToolApprovalParameter,
+        BeuiToolApprovalSeverity,
         BeuiToolApprovalStatus;
 export 'src/motion/citations.dart'
     show

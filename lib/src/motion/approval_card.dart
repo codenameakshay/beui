@@ -1,18 +1,25 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_status_colors.dart';
+import '../theme/beui_agent_strings.dart';
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_disclosure.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
+import '_hit_target.dart';
 import 'action_swap.dart';
 import 'button/base.dart';
 import 'checkbox.dart';
 import 'input.dart';
 import 'radio.dart';
+import 'tool_approval.dart' show beuiAgentPressScale;
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -148,86 +155,36 @@ typedef BeuiApprovalCardAnswers = Map<String, BeuiApprovalCardAnswer>;
 // Status helpers / palette
 // ---------------------------------------------------------------------------
 
-String _statusLabel(BeuiApprovalCardStatus status) {
+String _statusLabel(BeuiApprovalCardStatus status, BeuiAgentStrings strings) {
   return switch (status) {
-    BeuiApprovalCardStatus.submitting => 'Submitting',
-    BeuiApprovalCardStatus.approved => 'Approved',
-    BeuiApprovalCardStatus.rejected => 'Rejected',
-    BeuiApprovalCardStatus.changesRequested => 'Changes requested',
-    BeuiApprovalCardStatus.answered => 'Response submitted',
-    BeuiApprovalCardStatus.pending => 'Input required',
+    BeuiApprovalCardStatus.submitting => strings.statusSubmitting,
+    BeuiApprovalCardStatus.approved => strings.statusApproved,
+    BeuiApprovalCardStatus.rejected => strings.statusRejected,
+    BeuiApprovalCardStatus.changesRequested => strings.statusChangesRequested,
+    BeuiApprovalCardStatus.answered => strings.statusResponseSubmitted,
+    BeuiApprovalCardStatus.pending => strings.statusInputRequired,
   };
 }
 
-// Tailwind status accents (light / dark), matching the source classes.
-const _emerald600 = Color(0xFF009966);
-const _emerald400 = Color(0xFF00D492);
-const _rose600 = Color(0xFFEC003F);
-const _rose400 = Color(0xFFFF637E);
-const _amber600 = Color(0xFFE17100);
-const _amber400 = Color(0xFFFFB900);
-const _amber500 = Color(0xFFFE9A00);
-const _blue600 = Color(0xFF155DFC);
-const _blue400 = Color(0xFF51A2FF);
-const _blue500 = Color(0xFF2B7FFF);
-const _rose500 = Color(0xFFFF2056);
-
-Color _statusIconColor(BeuiApprovalCardStatus status, bool dark) {
-  return switch (status) {
-    BeuiApprovalCardStatus.approved ||
-    BeuiApprovalCardStatus.answered => dark ? _emerald400 : _emerald600,
-    BeuiApprovalCardStatus.rejected => dark ? _rose400 : _rose600,
-    BeuiApprovalCardStatus.changesRequested => dark ? _amber400 : _amber600,
-    BeuiApprovalCardStatus.pending || BeuiApprovalCardStatus.submitting =>
-      Colors.transparent, // resolved from theme muted/busy separately
-  };
-}
-
-({Color fg, Color bg, Color border}) _statusBadgePalette(
-  BeuiApprovalCardStatus status,
-  bool dark,
-) {
-  if (status == BeuiApprovalCardStatus.pending ||
-      status == BeuiApprovalCardStatus.changesRequested) {
-    final fg = dark ? _amber400 : _amber600;
-    return (
-      fg: fg,
-      bg: _amber500.withValues(alpha: 0.10),
-      border: _amber500.withValues(alpha: 0.30),
-    );
-  }
-  if (status == BeuiApprovalCardStatus.submitting) {
-    final fg = dark ? _blue400 : _blue600;
-    return (
-      fg: fg,
-      bg: _blue500.withValues(alpha: 0.10),
-      border: _blue500.withValues(alpha: 0.30),
-    );
-  }
-  if (status == BeuiApprovalCardStatus.approved ||
-      status == BeuiApprovalCardStatus.answered) {
-    final fg = dark ? _emerald400 : _emerald600;
-    return (
-      fg: fg,
-      bg: const Color(0xFF00BC7D).withValues(alpha: 0.10),
-      border: const Color(0xFF00BC7D).withValues(alpha: 0.30),
-    );
-  }
-  // rejected
-  final fg = dark ? _rose400 : _rose600;
-  return (
-    fg: fg,
-    bg: _rose500.withValues(alpha: 0.10),
-    border: _rose500.withValues(alpha: 0.30),
-  );
-}
+/// Maps a card status onto the themeable status role (A36).
+///
+/// `rejected` lands on [BeuiAgentStatus.denied] rather than `failed`: nothing
+/// broke, a person said no. The two roles ship the same default palette, but
+/// keeping them distinct means a consumer can tint "a human refused this"
+/// differently from "this blew up" without forking the widget.
+BeuiAgentStatus _statusRole(BeuiApprovalCardStatus status) => switch (status) {
+  BeuiApprovalCardStatus.pending => BeuiAgentStatus.pending,
+  BeuiApprovalCardStatus.changesRequested => BeuiAgentStatus.pending,
+  BeuiApprovalCardStatus.submitting => BeuiAgentStatus.running,
+  BeuiApprovalCardStatus.approved => BeuiAgentStatus.success,
+  BeuiApprovalCardStatus.answered => BeuiAgentStatus.success,
+  BeuiApprovalCardStatus.rejected => BeuiAgentStatus.denied,
+};
 
 // ---------------------------------------------------------------------------
 // Motion tokens
 // ---------------------------------------------------------------------------
 
-const _disclosureOpen = CurvedMotion(Duration(milliseconds: 220), beuiEaseOut);
-const _disclosureClose = CurvedMotion(Duration(milliseconds: 140), beuiEaseOut);
 const _stepDuration = Duration(milliseconds: 200);
 const _autoAdvanceDelay = Duration(milliseconds: 240);
 const _spinPeriod = Duration(milliseconds: 900);
@@ -285,8 +242,10 @@ class BeuiApprovalCard extends StatefulWidget {
     this.onReject,
     this.onRequestChanges,
     this.onDismiss,
-    this.approveLabel = 'Approve',
-    this.submitLabel = 'Submit response',
+    this.approveLabel,
+    this.submitLabel,
+    this.rejectLabel,
+    this.requestChangesLabel,
     this.result,
     this.expanded,
     this.defaultExpanded = false,
@@ -294,8 +253,14 @@ class BeuiApprovalCard extends StatefulWidget {
     this.headerAction,
     this.compactChild,
     this.expandedChild,
+    this.showExpandToggle = true,
     super.key,
-  });
+  }) : assert(
+         expandedChild == null || compactChild != null || child != null,
+         'BeuiApprovalCard was given an expandedChild with nothing to collapse '
+         'to: pass compactChild (or child) as the summary. Without one the '
+         'card renders an expand affordance over a legitimately blank body.',
+       );
 
   /// Header title when not in a question step (or when the step has no title).
   final String title;
@@ -346,10 +311,27 @@ class BeuiApprovalCard extends StatefulWidget {
   final VoidCallback? onDismiss;
 
   /// Label on the primary Approve button.
-  final String approveLabel;
+  ///
+  /// Null falls through to [BeuiAgentStrings.approve]. Precedence throughout
+  /// this widget is: per-instance label → theme string → built-in default.
+  final String? approveLabel;
 
   /// Label on the final Submit button of a question flow.
-  final String submitLabel;
+  /// Null falls through to [BeuiAgentStrings.submitResponse].
+  final String? submitLabel;
+
+  /// Label on the Reject action. Null falls through to
+  /// [BeuiAgentStrings.reject].
+  ///
+  /// **Reject, not Deny.** This card renders a *review verdict* — the user has
+  /// read submitted work and turned it down. `BeuiToolApproval` renders a
+  /// *permission refusal* and says "Deny". The audit (A26) found the two words
+  /// used interchangeably across siblings; they are kept distinct on purpose.
+  final String? rejectLabel;
+
+  /// Label on the Request-changes action. Null falls through to
+  /// [BeuiAgentStrings.requestChanges].
+  final String? requestChangesLabel;
 
   /// Collapsed result copy shown when the card is no longer interactive.
   /// Falls back to the status label when null.
@@ -366,8 +348,25 @@ class BeuiApprovalCard extends StatefulWidget {
   final ValueChanged<bool>? onExpandedChanged;
 
   /// Optional trailing header control (for example an edit glyph). Rendered
-  /// before the dismiss button; it does not toggle expansion.
+  /// before the dismiss button; it never toggles expansion, even when the rest
+  /// of the header row does — see [showExpandToggle].
   final Widget? headerAction;
+
+  /// Whether the header participates in expand/collapse.
+  ///
+  /// **The invariant (A11).** The header row is a trigger *if and only if*
+  /// `expandedChild != null && showExpandToggle`. When either is false the
+  /// header is completely inert: no button semantics, no tap target, no
+  /// keyboard stop, and [headerAction] behaves exactly as it does today. A
+  /// card built with only [child] and a [headerAction] must never grow a
+  /// second, invisible control underneath that action — so this is pinned by
+  /// a test, not just by documentation.
+  ///
+  /// When it *is* a trigger, the whole row is the target (every sibling
+  /// component already works this way; only the 20×20 chevron used to),
+  /// [headerAction] and the dismiss button stay independently tappable, and
+  /// the chevron remains as the visual affordance.
+  final bool showExpandToggle;
 
   /// Compact summary shown when collapsed. Defaults to [child]. Ignored when
   /// [expandedChild] is null.
@@ -404,6 +403,10 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
 
   bool get _expanded => widget.expanded ?? _internalExpanded;
   bool get _expandable => widget.expandedChild != null;
+
+  /// The A11 invariant, in one place: the header is a trigger only when there
+  /// is something to expand *and* the caller left the toggle on.
+  bool get _headerIsTrigger => _expandable && widget.showExpandToggle;
 
   bool get _questionMode => widget.questions.isNotEmpty;
   bool get _pending => widget.status == BeuiApprovalCardStatus.pending;
@@ -522,7 +525,6 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final dark = theme.brightness == Brightness.dark;
 
     // Keep spin in sync with reduced-motion (MediaQuery only available here).
     if (_busy && !reduce) {
@@ -533,13 +535,16 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
         ..value = 0;
     }
 
+    final strings = agent.strings;
+    final statusColors = agent.statusColorsFor(theme.brightness);
+
     final question = _question;
     final displayTitle = question?.title ?? widget.title;
     final titleKey = question?.id ?? widget.status.name;
-    final statusLabel = _statusLabel(widget.status);
+    final statusLabel = _statusLabel(widget.status, strings);
     final answer = _currentAnswer;
 
-    final iconColor = _resolveIconColor(colors, dark);
+    final iconColor = _resolveIconColor(colors, statusColors);
     final statusIcon = _buildStatusIcon(iconColor, reduce, agent);
 
     Widget simpleBodyChild = widget.child ?? const SizedBox.shrink();
@@ -554,7 +559,11 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
 
     return Semantics(
       container: true,
-      liveRegion: _busy,
+      // A30: the old gate was `_busy`, which switched the live region off at
+      // exactly the moment the outcome arrived — "Rejected" and "Changes
+      // requested" were never announced. Hold it through the terminal
+      // transition instead; the label below carries the outcome.
+      liveRegion: !_pending,
       expanded: _expandable ? _expanded : null,
       child: agent.decorateCard(
         colors: colors,
@@ -580,66 +589,87 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
                       questionCount: widget.questions.length,
                       status: widget.status,
                       statusLabel: statusLabel,
-                      dark: dark,
+                      statusColors: statusColors,
+                      strings: strings,
                       onDismiss: widget.onDismiss,
                       headerAction: widget.headerAction,
-                      expandable: _expandable,
                       expanded: _expanded,
-                      onToggleExpanded: _expandable
+                      // A11: null here means "inert header" — the only switch
+                      // that turns the row into a control.
+                      onToggleExpanded: _headerIsTrigger
                           ? () => _setExpanded(!_expanded)
                           : null,
                     ),
-                    _AgentDisclosure(
+                    BeuiAgentDisclosureInternal(
                       open: _interactive,
                       reduce: reduce,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (_questionMode && question != null)
-                            _QuestionBody(
-                              question: question,
-                              answer: answer,
-                              busy: _busy,
-                              reduce: reduce,
-                              colors: colors,
-                              onChange: _updateCurrentAnswer,
-                              onSingleSelect: _queueAutoAdvance,
-                            )
-                          else
-                            _SimpleBody(
-                              description: widget.description,
-                              colors: colors,
-                              child: simpleBodyChild,
-                            ),
-                          SizedBox(height: agent.layout.sectionSpacing),
-                          if (_questionMode)
-                            _QuestionNav(
-                              currentStep: _currentStep,
-                              questionCount: widget.questions.length,
-                              questionIds: widget.questions
-                                  .map((q) => q.id)
-                                  .toList(),
-                              busy: _busy,
-                              answered: answer.isAnswered,
-                              reduce: reduce,
-                              colors: colors,
-                              submitLabel: widget.submitLabel,
-                              onPrev: () => _setStep(_currentStep - 1),
-                              onContinue: _continueQuestion,
-                              spin: _spin,
-                            )
-                          else
-                            _SimpleActions(
-                              busy: _busy,
-                              colors: colors,
-                              dark: dark,
-                              approveLabel: widget.approveLabel,
-                              onApprove: widget.onApprove,
-                              onRequestChanges: widget.onRequestChanges,
-                              onReject: widget.onReject,
-                            ),
-                        ],
+                      // A4 — the double-fire fix. The disclosure gates hit
+                      // testing on its *animated* value, so for the ~140ms the
+                      // body spends collapsing after a decision it was still
+                      // tappable: a fast double-tap on Approve fired
+                      // `onApprove` twice, the second time after the card had
+                      // already left `pending`. This gate is driven by the
+                      // state itself, so the row goes inert on the very frame
+                      // the decision lands.
+                      child: IgnorePointer(
+                        ignoring: !_interactive,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (_questionMode && question != null)
+                              _QuestionBody(
+                                question: question,
+                                answer: answer,
+                                busy: _busy,
+                                reduce: reduce,
+                                colors: colors,
+                                onChange: _updateCurrentAnswer,
+                                onSingleSelect: _queueAutoAdvance,
+                              )
+                            else
+                              _SimpleBody(
+                                description: widget.description,
+                                colors: colors,
+                                child: simpleBodyChild,
+                              ),
+                            SizedBox(height: agent.layout.sectionSpacing),
+                            if (_questionMode)
+                              _QuestionNav(
+                                currentStep: _currentStep,
+                                questionCount: widget.questions.length,
+                                questionIds: widget.questions
+                                    .map((q) => q.id)
+                                    .toList(),
+                                busy: _busy,
+                                answered: answer.isAnswered,
+                                reduce: reduce,
+                                colors: colors,
+                                submitLabel:
+                                    widget.submitLabel ??
+                                    strings.submitResponse,
+                                onPrev: () => _setStep(_currentStep - 1),
+                                onContinue: _continueQuestion,
+                                spin: _spin,
+                              )
+                            else
+                              _SimpleActions(
+                                busy: _busy,
+                                colors: colors,
+                                statusColors: statusColors,
+                                approveLabel:
+                                    widget.approveLabel ?? strings.approve,
+                                requestChangesLabel:
+                                    widget.requestChangesLabel ??
+                                    strings.requestChanges,
+                                rejectLabel:
+                                    widget.rejectLabel ?? strings.reject,
+                                onApprove: widget.onApprove,
+                                onRequestChanges: widget.onRequestChanges,
+                                onReject: widget.onReject,
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                     if (!_interactive)
@@ -662,12 +692,9 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
     );
   }
 
-  Color _resolveIconColor(BeuiColors colors, bool dark) {
-    if (_busy) return colors.mutedForeground;
+  Color _resolveIconColor(BeuiColors colors, BeuiAgentStatusColors status) {
     if (_interactive) return colors.mutedForeground;
-    final accent = _statusIconColor(widget.status, dark);
-    if (accent.a == 0) return colors.mutedForeground;
-    return accent;
+    return status.palette(_statusRole(widget.status)).foreground;
   }
 
   Widget _buildStatusIcon(Color color, bool reduce, BeuiAgentTheme agent) {
@@ -706,10 +733,10 @@ class _HeaderRow extends StatelessWidget {
     required this.questionCount,
     required this.status,
     required this.statusLabel,
-    required this.dark,
+    required this.statusColors,
+    required this.strings,
     required this.onDismiss,
     this.headerAction,
-    this.expandable = false,
     this.expanded = false,
     this.onToggleExpanded,
   });
@@ -723,17 +750,26 @@ class _HeaderRow extends StatelessWidget {
   final int questionCount;
   final BeuiApprovalCardStatus status;
   final String statusLabel;
-  final bool dark;
+  final BeuiAgentStatusColors statusColors;
+  final BeuiAgentStrings strings;
   final VoidCallback? onDismiss;
   final Widget? headerAction;
-  final bool expandable;
   final bool expanded;
+
+  /// Non-null exactly when the header is a trigger — see
+  /// [BeuiApprovalCard.showExpandToggle] for the invariant.
   final VoidCallback? onToggleExpanded;
 
   @override
   Widget build(BuildContext context) {
     final agent = BeuiAgentTheme.of(context);
-    return Row(
+    final isTrigger = onToggleExpanded != null;
+
+    // The trigger spans title + status + chevron. `headerAction` and the
+    // dismiss button sit *outside* it: they are their own controls with their
+    // own semantics, and nesting them inside a button would both break their
+    // labels and make the header announce as a control containing controls.
+    final Widget triggerArea = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
@@ -752,27 +788,46 @@ class _HeaderRow extends StatelessWidget {
         SizedBox(width: agent.layout.rowGap + 4),
         if (questionMode && interactive)
           Text(
-            '${currentStep + 1}/$questionCount',
+            strings.stepCounter(currentStep + 1, questionCount),
             style: agent.typography.status.copyWith(
               fontFeatures: const [FontFeature.tabularFigures()],
-              color: colors.mutedForeground.withValues(alpha: 0.65),
+              // A8: the step counter tells you where you are in the flow —
+              // information, not chrome. It no longer gets alpha-multiplied
+              // down to 3:1.
+              color: colors.mutedForeground,
             ),
           )
         else
           _StatusBadge(
             label: statusLabel,
-            palette: _statusBadgePalette(status, dark),
+            palette: statusColors.palette(_statusRole(status)),
           ),
-        if (expandable && onToggleExpanded != null) ...[
+        if (isTrigger) ...[
           SizedBox(width: agent.layout.actionSpacing),
-          _ExpandToggle(
-            expanded: expanded,
-            onToggle: onToggleExpanded!,
-            colors: colors,
-          ),
+          _ExpandChevron(expanded: expanded, colors: colors),
         ],
+      ],
+    );
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: isTrigger
+              ? _HeaderTrigger(
+                  expanded: expanded,
+                  onToggle: onToggleExpanded!,
+                  label: expanded ? strings.hideDetails : strings.showDetails,
+                  colors: colors,
+                  child: triggerArea,
+                )
+              // A11's other half: with no expandedChild (or the toggle turned
+              // off) the header is plain content — no Semantics(button), no
+              // Focus stop, no hit target.
+              : triggerArea,
+        ),
         if (headerAction != null) ...[
-          SizedBox(width: agent.layout.actionSpacing),
+          SizedBox(width: agent.layout.actionSpacing + 4),
           headerAction!,
         ],
         if (onDismiss != null) ...[
@@ -784,11 +839,77 @@ class _HeaderRow extends StatelessWidget {
   }
 }
 
+/// Makes the header row a real control: button semantics, Enter/Space, a
+/// visible non-shifting focus ring, and a 44px hit target over the same
+/// visual (A11 + A31).
+class _HeaderTrigger extends StatefulWidget {
+  const _HeaderTrigger({
+    required this.expanded,
+    required this.onToggle,
+    required this.label,
+    required this.colors,
+    required this.child,
+  });
+
+  final bool expanded;
+  final VoidCallback onToggle;
+  final String label;
+  final BeuiColors colors;
+  final Widget child;
+
+  @override
+  State<_HeaderTrigger> createState() => _HeaderTriggerState();
+}
+
+class _HeaderTriggerState extends State<_HeaderTrigger> {
+  bool _focusVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final agent = BeuiAgentTheme.of(context);
+    return Semantics(
+      button: true,
+      label: widget.label,
+      expanded: widget.expanded,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onToggle();
+              return null;
+            },
+          ),
+        },
+        child: BeuiFocusRing(
+          focused: _focusVisible,
+          borderRadius: agent.shapes.chip,
+          child: BeuiMinHitTarget(
+            child: GestureDetector(
+              // Kept from the old 20×20 chevron control so existing call sites
+              // and tests that target the toggle keep working.
+              key: const ValueKey<String>('beui-approval-expand'),
+              behavior: HitTestBehavior.opaque,
+              onTap: widget.onToggle,
+              child: ExcludeSemantics(child: widget.child),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _StatusBadge extends StatelessWidget {
   const _StatusBadge({required this.label, required this.palette});
 
   final String label;
-  final ({Color fg, Color bg, Color border}) palette;
+  final BeuiAgentStatusPalette palette;
 
   @override
   Widget build(BuildContext context) {
@@ -797,7 +918,7 @@ class _StatusBadge extends StatelessWidget {
       duration: const Duration(milliseconds: 150),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: palette.bg,
+        color: palette.background,
         borderRadius: agent.shapes.pill,
         border: Border.all(
           color: palette.border,
@@ -808,7 +929,7 @@ class _StatusBadge extends StatelessWidget {
         label,
         style: agent.typography.metadata.copyWith(
           fontWeight: FontWeight.w500,
-          color: palette.fg,
+          color: palette.foreground,
         ),
       ),
     );
@@ -1254,8 +1375,10 @@ class _SimpleActions extends StatelessWidget {
   const _SimpleActions({
     required this.busy,
     required this.colors,
-    required this.dark,
+    required this.statusColors,
     required this.approveLabel,
+    required this.requestChangesLabel,
+    required this.rejectLabel,
     required this.onApprove,
     required this.onRequestChanges,
     required this.onReject,
@@ -1263,36 +1386,49 @@ class _SimpleActions extends StatelessWidget {
 
   final bool busy;
   final BeuiColors colors;
-  final bool dark;
+  final BeuiAgentStatusColors statusColors;
   final String approveLabel;
+  final String requestChangesLabel;
+  final String rejectLabel;
   final VoidCallback? onApprove;
   final VoidCallback? onRequestChanges;
   final VoidCallback? onReject;
 
   @override
   Widget build(BuildContext context) {
+    final agent = BeuiAgentTheme.of(context);
     return Wrap(
-      spacing: 8, // gap-2
-      runSpacing: 8,
+      // A31: the 44px hit targets overhang their visuals, so the gap has to
+      // clear the overhang or a tap near the edge of Approve lands on Request
+      // changes.
+      spacing: agent.layout.actionSpacing + 4,
+      runSpacing: agent.layout.actionSpacing,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        BeuiButton(
-          size: BeuiButtonSize.sm,
-          onPressed: busy ? null : onApprove,
-          child: Text(approveLabel),
+        BeuiMinHitTarget(
+          child: BeuiButton(
+            size: BeuiButtonSize.sm,
+            pressScale: beuiAgentPressScale,
+            onPressed: busy ? null : onApprove,
+            child: Text(approveLabel),
+          ),
         ),
         if (onRequestChanges != null)
-          BeuiButton(
-            variant: BeuiButtonVariant.secondary,
-            size: BeuiButtonSize.sm,
-            onPressed: busy ? null : onRequestChanges,
-            child: const Text('Request changes'),
+          BeuiMinHitTarget(
+            child: BeuiButton(
+              variant: BeuiButtonVariant.secondary,
+              size: BeuiButtonSize.sm,
+              pressScale: beuiAgentPressScale,
+              onPressed: busy ? null : onRequestChanges,
+              child: Text(requestChangesLabel),
+            ),
           ),
         if (onReject != null)
           _RejectButton(
             busy: busy,
             colors: colors,
-            dark: dark,
+            statusColors: statusColors,
+            label: rejectLabel,
             onReject: onReject!,
           ),
       ],
@@ -1306,13 +1442,15 @@ class _RejectButton extends StatefulWidget {
   const _RejectButton({
     required this.busy,
     required this.colors,
-    required this.dark,
+    required this.statusColors,
+    required this.label,
     required this.onReject,
   });
 
   final bool busy;
   final BeuiColors colors;
-  final bool dark;
+  final BeuiAgentStatusColors statusColors;
+  final String label;
   final VoidCallback onReject;
 
   @override
@@ -1324,16 +1462,19 @@ class _RejectButtonState extends State<_RejectButton> {
 
   @override
   Widget build(BuildContext context) {
-    final rose = widget.dark ? _rose400 : _rose600;
+    final rose = widget.statusColors.denied.foreground;
     final color = _hovered ? rose : widget.colors.mutedForeground;
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: BeuiButton(
-        variant: BeuiButtonVariant.ghost,
-        size: BeuiButtonSize.sm,
-        onPressed: widget.busy ? null : widget.onReject,
-        child: Text('Reject', style: TextStyle(color: color)),
+      child: BeuiMinHitTarget(
+        child: BeuiButton(
+          variant: BeuiButtonVariant.ghost,
+          size: BeuiButtonSize.sm,
+          pressScale: beuiAgentPressScale,
+          onPressed: widget.busy ? null : widget.onReject,
+          child: Text(widget.label, style: TextStyle(color: color)),
+        ),
       ),
     );
   }
@@ -1467,62 +1608,34 @@ class _SpinIcon extends StatelessWidget {
 // Compact-to-expanded body
 // ---------------------------------------------------------------------------
 
-class _ExpandToggle extends StatelessWidget {
-  const _ExpandToggle({
-    required this.expanded,
-    required this.onToggle,
-    required this.colors,
-  });
+/// The chevron affordance. Purely visual now — the header row around it owns
+/// the interaction (see [_HeaderTrigger]), so this must contribute no
+/// semantics of its own or the row would announce twice.
+class _ExpandChevron extends StatelessWidget {
+  const _ExpandChevron({required this.expanded, required this.colors});
 
   final bool expanded;
-  final VoidCallback onToggle;
   final BeuiColors colors;
 
   @override
   Widget build(BuildContext context) {
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final label = expanded ? 'Hide details' : 'Show details';
-    return Semantics(
-      button: true,
-      label: label,
-      expanded: expanded,
-      child: FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        shortcuts: const <ShortcutActivator, Intent>{
-          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+    return SizedBox(
+      width: 20,
+      height: 20,
+      child: SingleMotionBuilder(
+        value: expanded ? 1.0 : 0.0,
+        motion: reduce
+            ? const NoMotion()
+            : motionFor(context, beuiSpringSwap, isMovement: true),
+        builder: (context, t, child) {
+          return Transform.rotate(angle: t * math.pi, child: child);
         },
-        actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) {
-              onToggle();
-              return null;
-            },
-          ),
-        },
-        child: GestureDetector(
-          key: const ValueKey<String>('beui-approval-expand'),
-          behavior: HitTestBehavior.opaque,
-          onTap: onToggle,
-          child: SizedBox(
-            width: 20,
-            height: 20,
-            child: SingleMotionBuilder(
-              value: expanded ? 1.0 : 0.0,
-              motion: reduce
-                  ? const NoMotion()
-                  : motionFor(context, beuiSpringSwap, isMovement: true),
-              builder: (context, t, child) {
-                return Transform.rotate(angle: t * 3.1415926535, child: child);
-              },
-              child: Icon(
-                agent.icons.expand,
-                size: agent.layout.iconSize,
-                color: colors.mutedForeground,
-              ),
-            ),
-          ),
+        child: Icon(
+          agent.icons.expand,
+          size: agent.layout.iconSize,
+          color: colors.mutedForeground,
         ),
       ),
     );
@@ -1546,10 +1659,35 @@ class _ExpandableBody extends StatefulWidget {
   State<_ExpandableBody> createState() => _ExpandableBodyState();
 }
 
+/// Cross-fades a compact summary into a detailed body, springing the height.
+///
+/// **A12 — each child is built exactly once.** The previous implementation
+/// rendered `compact` and `expandedChild` twice each: once inside two
+/// `Offstage` subtrees purely to measure them, and again inside the animation
+/// builder. For inert content that was merely wasteful; for anything stateful
+/// it was a correctness bug. A `BeuiInput` in `expandedChild` became *two*
+/// `EditableText`s with two `FocusNode`s and two independent buffers, so the
+/// text the user could see was not necessarily the text the card would submit
+/// — and the agent-theme demo does exactly this.
+///
+/// The fix is to measure the live subtree instead of a copy. Both children are
+/// mounted once, in the animated stack; each is wrapped in a [_MeasureSize] so
+/// it reports its own natural height. Two details make that work:
+///
+/// * While a height is being imposed, each child sits in an [OverflowBox] with
+///   an unbounded max height, so it lays out at its *natural* size and the
+///   measurement is not the clamped height we just imposed.
+/// * At the rest poses the inactive child is `Offstage`, which still lays the
+///   child out (so it keeps reporting its height) while contributing
+///   `constraints.smallest` to the parent — which is what lets the unmeasured
+///   first frame size itself to the active child rather than to the larger of
+///   the two.
 class _ExpandableBodyState extends State<_ExpandableBody> {
   double _compactH = 0;
   double _expandedH = 0;
 
+  // `_MeasureSize` already reports from a post-frame callback, so setState
+  // here is safe (and is what the previous implementation did).
   void _onCompactSize(Size size) {
     if ((_compactH - size.height).abs() < 0.5) return;
     setState(() => _compactH = size.height);
@@ -1560,93 +1698,124 @@ class _ExpandableBodyState extends State<_ExpandableBody> {
     setState(() => _expandedH = size.height);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (widget.reduce) {
-      return widget.expanded ? widget.expandedChild : widget.compact;
+  /// One frame of the cross-fade.
+  ///
+  /// [height] null means "size to the active child" — used before either child
+  /// has reported a height, and under reduced motion where there is no height
+  /// animation to drive.
+  Widget _frame({
+    required double tt,
+    required double? height,
+    required Widget compact,
+    required Widget expanded,
+  }) {
+    // Opacity 0 is still onstage; Offstage at the rest poses so finders,
+    // focus, and screen readers only ever see the active body.
+    final compactHidden = tt >= 0.999;
+    final expandedHidden = tt <= 0.001;
+
+    Widget slot({
+      required Widget child,
+      required double opacity,
+      required bool hidden,
+      required bool inert,
+    }) {
+      Widget content = ExcludeSemantics(
+        excluding: inert,
+        child: IgnorePointer(
+          ignoring: inert,
+          child: Opacity(opacity: opacity.clamp(0.0, 1.0), child: child),
+        ),
+      );
+      if (height != null) {
+        content = OverflowBox(
+          alignment: Alignment.topCenter,
+          minHeight: 0,
+          maxHeight: double.infinity,
+          child: content,
+        );
+      }
+      return Offstage(offstage: hidden, child: content);
     }
 
+    final stack = Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        slot(
+          child: compact,
+          opacity: 1 - tt,
+          hidden: compactHidden,
+          inert: compactHidden || tt > 0.5,
+        ),
+        slot(
+          child: expanded,
+          opacity: tt,
+          hidden: expandedHidden,
+          inert: expandedHidden || tt < 0.5,
+        ),
+      ],
+    );
+
+    if (height == null) return stack;
+    return SizedBox(
+      height: height,
+      width: double.infinity,
+      child: ClipRect(child: stack),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Built once per build, used once — this is the whole of the A12 fix.
+    final compact = _MeasureSize(
+      onChange: _onCompactSize,
+      child: widget.compact,
+    );
+    final expanded = _MeasureSize(
+      onChange: _onExpandedSize,
+      child: widget.expandedChild,
+    );
+
     final target = widget.expanded ? 1.0 : 0.0;
+
+    if (widget.reduce) {
+      // Movement is dropped, but both children stay mounted so the swap does
+      // not destroy focus, scroll offsets, or a half-typed answer.
+      return _frame(
+        tt: target,
+        height: null,
+        compact: compact,
+        expanded: expanded,
+      );
+    }
+
     final measured = _compactH > 0 || _expandedH > 0;
+    if (!measured) {
+      return _frame(
+        tt: target,
+        height: null,
+        compact: compact,
+        expanded: expanded,
+      );
+    }
+
     final fromH = _compactH > 0
         ? _compactH
         : (_expandedH > 0 ? _expandedH : 0.0);
     final toH = _expandedH > 0 ? _expandedH : (_compactH > 0 ? _compactH : 0.0);
 
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        Offstage(
-          offstage: true,
-          child: ExcludeSemantics(
-            child: _MeasureSize(
-              onChange: _onCompactSize,
-              child: widget.compact,
-            ),
-          ),
-        ),
-        Offstage(
-          offstage: true,
-          child: ExcludeSemantics(
-            child: _MeasureSize(
-              onChange: _onExpandedSize,
-              child: widget.expandedChild,
-            ),
-          ),
-        ),
-        if (!measured)
-          widget.expanded ? widget.expandedChild : widget.compact
-        else
-          SingleMotionBuilder(
-            value: target,
-            motion: motionFor(context, _expandSpring, isMovement: true),
-            builder: (context, t, child) {
-              final tt = t.clamp(0.0, 1.0);
-              final height = fromH + (toH - fromH) * tt;
-              // Opacity 0 is still onstage; Offstage at the rest poses so
-              // finders, focus, and screen readers only see the active body.
-              final compactHidden = tt >= 0.999;
-              final expandedHidden = tt <= 0.001;
-              return SizedBox(
-                height: height,
-                width: double.infinity,
-                child: ClipRect(
-                  child: Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Offstage(
-                        offstage: compactHidden,
-                        child: IgnorePointer(
-                          ignoring: compactHidden || tt > 0.5,
-                          child: ExcludeSemantics(
-                            excluding: compactHidden || tt > 0.5,
-                            child: Opacity(
-                              opacity: (1 - tt).clamp(0.0, 1.0),
-                              child: widget.compact,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Offstage(
-                        offstage: expandedHidden,
-                        child: IgnorePointer(
-                          ignoring: expandedHidden || tt < 0.5,
-                          child: ExcludeSemantics(
-                            excluding: expandedHidden || tt < 0.5,
-                            child: Opacity(
-                              opacity: tt,
-                              child: widget.expandedChild,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-      ],
+    return SingleMotionBuilder(
+      value: target,
+      motion: motionFor(context, _expandSpring, isMovement: true),
+      builder: (context, t, _) {
+        final tt = t.clamp(0.0, 1.0);
+        return _frame(
+          tt: tt,
+          height: fromH + (toH - fromH) * tt,
+          compact: compact,
+          expanded: expanded,
+        );
+      },
     );
   }
 }
@@ -1665,81 +1834,6 @@ class _MeasureSize extends StatelessWidget {
       if (box != null && box.hasSize) onChange(box.size);
     });
     return child;
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Agent disclosure (height + opacity + y clip reveal)
-// ---------------------------------------------------------------------------
-
-/// Shared transform-only reveal for collapsible agent content — the Flutter
-/// port of the source's `AgentDisclosure`.
-class _AgentDisclosure extends StatelessWidget {
-  const _AgentDisclosure({
-    required this.open,
-    required this.reduce,
-    required this.child,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final target = open ? 1.0 : 0.0;
-    final motion = open ? _disclosureOpen : _disclosureClose;
-
-    if (reduce) {
-      return Offstage(
-        offstage: !open,
-        child: IgnorePointer(
-          ignoring: !open,
-          child: ExcludeSemantics(
-            excluding: !open,
-            child: ClipRect(
-              child: Align(
-                alignment: Alignment.topCenter,
-                heightFactor: open ? 1.0 : 0.0,
-                child: child,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return SingleMotionBuilder(
-      value: target,
-      motion: motionFor(context, motion, isMovement: true),
-      builder: (context, t, child) {
-        final tt = t.clamp(0.0, 1.0);
-        final closed = tt < 0.01;
-        return Offstage(
-          offstage: closed,
-          child: IgnorePointer(
-            ignoring: closed,
-            child: ExcludeSemantics(
-              excluding: closed,
-              child: ClipRect(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  heightFactor: tt,
-                  child: Opacity(
-                    opacity: tt,
-                    child: Transform.translate(
-                      offset: Offset(0, -4 * (1 - tt)),
-                      child: child,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-      child: child,
-    );
   }
 }
 

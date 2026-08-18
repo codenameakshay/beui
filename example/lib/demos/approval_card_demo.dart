@@ -79,7 +79,86 @@ class _ApprovalCardDemo extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         const _ReviewPreview(),
+        const SizedBox(height: 40),
+        Text(
+          'Header trigger',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: colors.mutedForeground,
+          ),
+        ),
+        const SizedBox(height: 12),
+        const _HeaderTriggerPreview(),
       ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Header trigger invariant (A11)
+// ---------------------------------------------------------------------------
+
+/// Two cards that look almost alike and behave deliberately differently.
+///
+/// The first has an `expandedChild`, so the *whole header row* toggles it —
+/// not just a 20×20 chevron. The second has only a `child` and a
+/// `headerAction`, so its header is completely inert: no button semantics, no
+/// keyboard stop, and no hidden second control lurking under the action.
+class _HeaderTriggerPreview extends StatelessWidget {
+  const _HeaderTriggerPreview();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final agent = BeuiAgentTheme.of(context);
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 512),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            BeuiApprovalCard(
+              title: 'Expandable — tap anywhere on this header',
+              description: 'The row is the control.',
+              compactChild: Text(
+                'Summary only.',
+                style: agent.typography.description.copyWith(
+                  color: colors.mutedForeground,
+                ),
+              ),
+              expandedChild: Text(
+                'The full body, revealed by the header trigger.',
+                style: agent.typography.description.copyWith(
+                  color: colors.mutedForeground,
+                ),
+              ),
+              onApprove: () {},
+              onReject: () {},
+            ),
+            const SizedBox(height: 16),
+            BeuiApprovalCard(
+              title: 'Inert header — only the action is a control',
+              description: 'No expandedChild, so the row stays plain content.',
+              headerAction: IconButton(
+                tooltip: 'Edit',
+                visualDensity: VisualDensity.compact,
+                onPressed: () {},
+                icon: Icon(agent.icons.edit, size: 16),
+              ),
+              onApprove: () {},
+              onReject: () {},
+              child: Text(
+                'Tapping this header does nothing at all.',
+                style: agent.typography.description.copyWith(
+                  color: colors.mutedForeground,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
