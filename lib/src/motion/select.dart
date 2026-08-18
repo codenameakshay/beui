@@ -21,6 +21,7 @@ class BeuiSelectOption {
   const BeuiSelectOption({
     required this.value,
     required this.label,
+    this.icon,
     this.enabled = true,
   });
 
@@ -29,6 +30,15 @@ class BeuiSelectOption {
 
   /// The visible label (also shown in the trigger once selected).
   final String label;
+
+  /// Optional leading glyph, rendered at 16px before [label] in both the list
+  /// and the trigger. Framework-native, so any widget works — an [Icon], an
+  /// avatar, a vendor mark.
+  ///
+  /// Options without an icon reserve no space, so a list where only some
+  /// options carry one stays left-aligned on the label rather than indenting
+  /// everything.
+  final Widget? icon;
 
   /// Whether the option can be chosen. Disabled options are dimmed and skipped
   /// by keyboard navigation.
@@ -207,6 +217,12 @@ class _BeuiSelectState extends State<BeuiSelect>
   int _selectedIndex() => widget.options.indexWhere((o) => o.value == _value);
   int _firstEnabled() => widget.options.indexWhere((o) => o.enabled);
 
+  /// The selected option's leading glyph, or null when nothing is selected.
+  Widget? get _selectedIcon {
+    final i = _selectedIndex();
+    return i >= 0 ? widget.options[i].icon : null;
+  }
+
   void _measure() {
     final t = _triggerKey.currentContext?.findRenderObject() as RenderBox?;
     if (t != null && t.hasSize && t.size != _triggerSize) {
@@ -370,6 +386,7 @@ class _BeuiSelectState extends State<BeuiSelect>
     final label = selected
         ? widget.options[_selectedIndex()].label
         : widget.placeholder;
+    final icon = _selectedIcon;
 
     return Focus(
       canRequestFocus: widget.enabled,
@@ -420,6 +437,10 @@ class _BeuiSelectState extends State<BeuiSelect>
                   ),
                   child: Row(
                     children: [
+                      if (icon != null) ...[
+                        _OptionIcon(icon: icon, color: colors.mutedForeground),
+                        const SizedBox(width: 8),
+                      ],
                       Expanded(
                         child: Text(
                           label,
@@ -729,6 +750,12 @@ class _BeuiMorphSelectState extends State<BeuiMorphSelect> {
   int _selectedIndex() => widget.options.indexWhere((o) => o.value == _value);
   int _firstEnabled() => widget.options.indexWhere((o) => o.enabled);
 
+  /// The selected option's leading glyph, or null when nothing is selected.
+  Widget? get _selectedIcon {
+    final i = _selectedIndex();
+    return i >= 0 ? widget.options[i].icon : null;
+  }
+
   void _measure() {
     final t = _triggerKey.currentContext?.findRenderObject() as RenderBox?;
     if (t != null && t.hasSize && t.size != _triggerSize) {
@@ -865,6 +892,7 @@ class _BeuiMorphSelectState extends State<BeuiMorphSelect> {
             key: _triggerKey,
             child: _MorphRow(
               label: label,
+              icon: _selectedIcon,
               selected: selected,
               colors: colors,
               open: false,
@@ -982,6 +1010,7 @@ class _BeuiMorphSelectState extends State<BeuiMorphSelect> {
       children: [
         _MorphRow(
           label: label,
+          icon: _selectedIcon,
           selected: selected,
           colors: colors,
           open: measuring ? true : _open,
@@ -1024,12 +1053,14 @@ class _MorphRow extends StatefulWidget {
     required this.colors,
     required this.open,
     required this.bordered,
+    this.icon,
     this.onTap,
     this.onKeyEvent,
     this.openProgress = 1,
   });
 
   final String label;
+  final Widget? icon;
   final bool selected;
   final BeuiColors colors;
   final bool open;
@@ -1087,6 +1118,10 @@ class _MorphRowState extends State<_MorphRow> {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       child: Row(
         children: [
+          if (widget.icon != null) ...[
+            _OptionIcon(icon: widget.icon!, color: colors.mutedForeground),
+            const SizedBox(width: 8),
+          ],
           Expanded(
             child: Text(
               widget.label,
@@ -1129,6 +1164,29 @@ class _MorphRowState extends State<_MorphRow> {
     }
     return row;
   }
+}
+
+/// A [BeuiSelectOption.icon] sized and tinted to match the row it sits in.
+///
+/// `IconTheme` rather than a hard cast, so the slot accepts any widget while
+/// an [Icon] still picks up the row's colour and the source's 16px sizing.
+class _OptionIcon extends StatelessWidget {
+  const _OptionIcon({required this.icon, required this.color});
+
+  final Widget icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 16,
+    height: 16,
+    child: Center(
+      child: IconTheme.merge(
+        data: IconThemeData(size: 16, color: color),
+        child: icon,
+      ),
+    ),
+  );
 }
 
 /// The chevron glyph that rotates 180° between closed and open on
@@ -1245,6 +1303,15 @@ class _OptionColumn extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child: Row(
               children: [
+                if (opt.icon != null) ...[
+                  _OptionIcon(
+                    icon: opt.icon!,
+                    color: highlight
+                        ? colors.foreground
+                        : colors.mutedForeground,
+                  ),
+                  const SizedBox(width: 8),
+                ],
                 Expanded(
                   child: Text(
                     opt.label,

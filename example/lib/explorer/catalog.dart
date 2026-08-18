@@ -506,6 +506,14 @@ const List<ExploreEntry> kBlocks = [
     builder: fileUploadDemo,
   ),
   ExploreEntry(
+    title: 'Attachment Upload',
+    slug: 'attachment-upload',
+    section: ExploreSection.blocks,
+    blurb:
+        'Mixed attachment workspace — image previews, seekable audio, retry.',
+    builder: attachmentUploadDemo,
+  ),
+  ExploreEntry(
     title: 'Prediction Market',
     slug: 'prediction-market',
     section: ExploreSection.blocks,

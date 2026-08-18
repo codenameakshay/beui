@@ -8,6 +8,8 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
+import '_hit_target.dart';
 import 'button/base.dart';
 import 'select.dart';
 
@@ -71,6 +73,104 @@ class BeuiPromptAction {
   final bool enabled;
 }
 
+/// Delivery state of one composer attachment.
+enum BeuiPromptAttachmentStatus {
+  /// Uploaded and ready to send.
+  ready,
+
+  /// In flight. The chip shows a determinate bar when
+  /// [BeuiPromptAttachment.progress] is set, an indeterminate sweep otherwise.
+  uploading,
+
+  /// Upload failed. The chip offers retry when
+  /// [BeuiPromptInput.onAttachmentRetry] is wired.
+  failed,
+}
+
+/// One attachment riding along with the prompt, shown as a chip above the
+/// field.
+///
+/// The package ships no file picker (spec §7): the consumer picks files with
+/// whatever plugin fits their platform, uploads them, and reflects progress by
+/// passing new instances through [BeuiPromptInput.attachments].
+@immutable
+class BeuiPromptAttachment {
+  /// Creates an attachment chip.
+  const BeuiPromptAttachment({
+    required this.id,
+    required this.name,
+    this.thumbnail,
+    this.icon,
+    this.status = BeuiPromptAttachmentStatus.ready,
+    this.progress,
+    this.error,
+  }) : assert(
+         progress == null || (progress >= 0 && progress <= 1),
+         'progress is a 0-1 fraction.',
+       );
+
+  /// Stable identity. Drives the chip's enter/exit animation, so it must not
+  /// change as the attachment moves between statuses.
+  final String id;
+
+  /// File name shown on the chip.
+  final String name;
+
+  /// Optional image preview, rendered as the chip's 20px leading square.
+  /// Takes precedence over [icon].
+  final ImageProvider? thumbnail;
+
+  /// Optional leading glyph for non-image attachments. Falls back to a generic
+  /// file mark.
+  final Widget? icon;
+
+  /// Delivery state.
+  final BeuiPromptAttachmentStatus status;
+
+  /// Upload progress as a 0-1 fraction, when known.
+  final double? progress;
+
+  /// Failure note, surfaced on the chip and read by screen readers.
+  final String? error;
+}
+
+/// Everything a submit carries: the trimmed prompt, the selected model, and
+/// any attachments.
+///
+/// Delivered through [BeuiPromptInput.onSubmitFull]. The older
+/// [BeuiPromptInput.onSubmit] still fires with just text + model, so existing
+/// call sites keep working.
+@immutable
+class BeuiPromptSubmission {
+  /// Creates a submission record.
+  const BeuiPromptSubmission({
+    required this.text,
+    this.model,
+    this.attachments = const [],
+  });
+
+  /// The trimmed prompt. May be empty when [attachments] is not.
+  final String text;
+
+  /// The model selected at submit time, if the picker is in use.
+  final String? model;
+
+  /// The attachments as they stood at submit time.
+  final List<BeuiPromptAttachment> attachments;
+}
+
+/// Why a submit attempt did not go through.
+///
+/// Reported via [BeuiPromptInput.onSubmitBlocked] so a host can add its own
+/// handling (queue the message, flash a hint) instead of the press vanishing.
+enum BeuiPromptBlockedReason {
+  /// Enter pressed while the agent is still generating.
+  loading,
+
+  /// Enter pressed with no text and no attachments.
+  empty,
+}
+
 // ---------------------------------------------------------------------------
 // Constants — layout mirrors the source's Tailwind tokens
 // ---------------------------------------------------------------------------
@@ -83,13 +183,6 @@ const double _fontSize = 14;
 
 /// Source footer `min-h-8` / icon buttons `size-8`.
 const double _footerMinH = 32;
-
-/// Select trigger chevron rotate — source `CHEVRON_TRANSITION =
-/// { duration: 0.4, bounce: 0.3 }`. ω = 2π/0.4 ≈ 15.71, ζ = 0.7 →
-/// stiffness ≈ 247, damping ≈ 22 (matches `select.dart`'s private token).
-const _promptChevronSpring = SpringMotion(
-  SpringDescription(mass: 1, stiffness: 247, damping: 22),
-);
 
 // ---------------------------------------------------------------------------
 // BeuiPromptInput
@@ -110,11 +203,21 @@ const _promptChevronSpring = SpringMotion(
 /// shows the current model (optional icon + label). Selection is controlled
 /// (`model` + [onModelChange]) or uncontrolled ([defaultModel]).
 ///
+/// **Attachments**: pass [attachments] to render a chip rail above the field,
+/// with per-chip remove, upload progress and a retry on failure. Submissions
+/// carry them through [onSubmitFull].
+///
 /// **Send / stop**: the trailing primary icon button shows ↑ when idle and a
-/// filled square while [loading]. The swap springs on [beuiSpringSwap]
-/// (opacity + y + scale). Idle submit requires a non-empty trim and is disabled
-/// while [enabled] is false or [loading]; stop is enabled only when [onStop]
-/// is provided.
+/// filled square while [loading] — or a spinner while loading with no [onStop],
+/// since a stop control that cannot stop anything is a lie. The swap springs on
+/// [beuiSpringSwap] (opacity + y + scale) and now plays a real exit as well as
+/// an entrance. Idle submit requires text or an attachment.
+///
+/// **Keyboard**: Enter submits, Shift+Enter inserts a newline, and Enter that
+/// cannot submit (mid-stream, or on an empty composer) inserts a newline and
+/// reports through [onSubmitBlocked] rather than vanishing. The `+` menu is
+/// fully navigable — Enter/Space/Down to open, Up/Down to move, Home/End for
+/// the ends, Esc to close with focus returning to the trigger.
 ///
 /// **Controlled + uncontrolled** for both text (`value` / [defaultValue] /
 /// [onValueChange]) and model. Uncontrolled submit clears the field after
@@ -135,6 +238,11 @@ class BeuiPromptInput extends StatefulWidget {
     this.actions = const [],
     this.onAction,
     this.onSubmit,
+    this.onSubmitFull,
+    this.onSubmitBlocked,
+    this.attachments = const [],
+    this.onAttachmentRemoved,
+    this.onAttachmentRetry,
     this.loading = false,
     this.onStop,
     this.minRows = 2,
@@ -185,7 +293,36 @@ class BeuiPromptInput extends StatefulWidget {
   final ValueChanged<String>? onAction;
 
   /// Called with the trimmed prompt and optional current model on submit.
+  ///
+  /// Kept for source parity and backward compatibility; it carries no
+  /// attachments. Use [onSubmitFull] when the composer accepts attachments —
+  /// both fire, in that order.
   final void Function(String value, String? model)? onSubmit;
+
+  /// Called on submit with the full record: text, model and [attachments].
+  final ValueChanged<BeuiPromptSubmission>? onSubmitFull;
+
+  /// Called when a submit attempt was refused, with the reason.
+  ///
+  /// Enter during generation or on an empty composer used to vanish silently —
+  /// no send, no newline, no feedback. It now inserts a newline (so the user
+  /// can keep drafting), flashes the stop button while streaming, and reports
+  /// here.
+  final ValueChanged<BeuiPromptBlockedReason>? onSubmitBlocked;
+
+  /// Attachments riding along with the prompt, shown as a chip rail above the
+  /// field. Empty (the default) renders no rail at all.
+  ///
+  /// The list is owned by the consumer: handle [onAttachmentRemoved] and
+  /// [onAttachmentRetry] and pass a new list back down.
+  final List<BeuiPromptAttachment> attachments;
+
+  /// Called with the attachment whose × was activated.
+  final ValueChanged<BeuiPromptAttachment>? onAttachmentRemoved;
+
+  /// Called with a failed attachment whose retry was activated. When null,
+  /// failed chips show no retry affordance.
+  final ValueChanged<BeuiPromptAttachment>? onAttachmentRetry;
 
   /// When true the send button becomes a stop control.
   final bool loading;
@@ -241,8 +378,21 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
 
   String? _internalModel;
   bool _actionsOpen = false;
-  bool _modelOpen = false;
   bool _focused = false;
+
+  /// Bumped each time Enter is swallowed mid-stream, to flash the stop button.
+  int _stopPulse = 0;
+
+  // Auto-grow measurement cache — see [_composerHeight].
+  String? _measuredText;
+  double? _measuredWidth;
+  double? _measuredFontSize;
+  double? _measuredLineHeight;
+  int _measuredRows = 0;
+
+  // First-line leading cache — see [_firstLineLeading].
+  double? _leadingForFontSize;
+  double _cachedLeading = 0;
 
   String get _text => widget.value ?? _controller.text;
 
@@ -253,17 +403,12 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
     return widget.defaultModel ?? widget.models.first.value;
   }
 
-  BeuiPromptModel? get _currentModel {
-    final v = _modelValue;
-    if (v == null) return null;
-    for (final m in widget.models) {
-      if (m.value == v) return m;
-    }
-    return null;
-  }
+  /// An attachment-only message is a real message — an image with no caption
+  /// is the commonest one — so the send button lights up for either.
+  bool get _hasPayload =>
+      _text.trim().isNotEmpty || widget.attachments.isNotEmpty;
 
-  bool get _canSubmit =>
-      _text.trim().isNotEmpty && widget.enabled && !widget.loading;
+  bool get _canSubmit => _hasPayload && widget.enabled && !widget.loading;
 
   @override
   void initState() {
@@ -363,8 +508,15 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
 
   void _submit() {
     final prompt = _text.trim();
-    if (prompt.isEmpty || !widget.enabled || widget.loading) return;
+    if (!_canSubmit) return;
     widget.onSubmit?.call(prompt, _modelValue);
+    widget.onSubmitFull?.call(
+      BeuiPromptSubmission(
+        text: prompt,
+        model: _modelValue,
+        attachments: List.unmodifiable(widget.attachments),
+      ),
+    );
     // Uncontrolled: clear after submit (source behaviour).
     if (widget.value == null) {
       _controller.clear();
@@ -386,6 +538,24 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
     // Skip while an IME composition is active when possible.
     final composing = _controller.value.composing;
     if (composing.isValid && !composing.isCollapsed) {
+      return KeyEventResult.ignored;
+    }
+    if (!widget.enabled) return KeyEventResult.ignored;
+
+    // Enter used to be consumed unconditionally while `_submit` quietly
+    // early-returned, so pressing it mid-stream or on an empty composer did
+    // nothing at all: no send, no newline, no sign anything had happened.
+    // Returning `ignored` hands the key back to the field, so the keystroke at
+    // least becomes the newline the user can keep drafting with.
+    if (widget.loading) {
+      // Plus a visible answer to "why didn't that send?": draw the eye to the
+      // control that can actually act right now.
+      setState(() => _stopPulse++);
+      widget.onSubmitBlocked?.call(BeuiPromptBlockedReason.loading);
+      return KeyEventResult.ignored;
+    }
+    if (!_hasPayload) {
+      widget.onSubmitBlocked?.call(BeuiPromptBlockedReason.empty);
       return KeyEventResult.ignored;
     }
     _submit();
@@ -445,26 +615,52 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
 
   /// The source's `resizeTextarea`: measure the wrapped text in a mirror of the
   /// field's content box, then clamp the row count to [minRows]…[maxRows].
+  ///
+  /// This runs in `build`, so it used to lay out the *entire* prompt on every
+  /// keystroke — paste a long document into the composer and the field janks on
+  /// every character after it, permanently. Two fixes, both invisible:
+  ///
+  ///  * The result is memoised on everything it depends on (text, available
+  ///    width, resolved font size and line height), so a rebuild that changes
+  ///    none of them — a focus change, a hover, an animation tick — reuses it.
+  ///  * The painter is capped at [maxRows] lines. Past that the row count is
+  ///    clamped anyway, so laying out the remaining thousands of lines only to
+  ///    throw the number away is pure waste; `maxLines` makes it stop.
   double _composerHeight(BuildContext context, double maxWidth) {
     final agent = BeuiAgentTheme.of(context);
     final lineHeight = _resolvedLineHeight(agent);
+    final fontSize = _resolvedFontSize(agent);
     // The field's content box is inset by the source's `px-2`.
     final textWidth = maxWidth.isFinite ? maxWidth - 16 : double.infinity;
-    var rows = widget.minRows;
-    if (textWidth.isFinite && textWidth > 0) {
-      final painter = TextPainter(
-        // The source appends a zero-width space so a trailing newline counts.
-        text: TextSpan(
-          text: '${_controller.text}​',
-          style: _hiddenComposerStyle(agent),
-        ),
-        strutStyle: _composerStrut(agent),
-        textDirection: Directionality.of(context),
-      )..layout(maxWidth: textWidth);
-      rows = painter.computeLineMetrics().length;
-      painter.dispose();
+    final text = _controller.text;
+
+    final cacheHit =
+        _measuredText == text &&
+        _measuredWidth == textWidth &&
+        _measuredFontSize == fontSize &&
+        _measuredLineHeight == lineHeight;
+
+    if (!cacheHit) {
+      var rows = widget.minRows;
+      if (textWidth.isFinite && textWidth > 0) {
+        final painter = TextPainter(
+          // The source appends a zero-width space so a trailing newline counts.
+          text: TextSpan(text: '$text​', style: _hiddenComposerStyle(agent)),
+          strutStyle: _composerStrut(agent),
+          textDirection: Directionality.of(context),
+          maxLines: widget.maxRows,
+        )..layout(maxWidth: textWidth);
+        rows = painter.computeLineMetrics().length;
+        painter.dispose();
+      }
+      _measuredText = text;
+      _measuredWidth = textWidth;
+      _measuredFontSize = fontSize;
+      _measuredLineHeight = lineHeight;
+      _measuredRows = rows;
     }
-    return rows.clamp(widget.minRows, widget.maxRows) * lineHeight;
+
+    return _measuredRows.clamp(widget.minRows, widget.maxRows) * lineHeight;
   }
 
   /// Half of `leading-6`'s extra leading, in logical pixels.
@@ -474,22 +670,28 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
   /// first line's ascent at the font's natural value, so the composer renders
   /// ~4px high against the site. Derived from the resolved font's own metrics
   /// (never a hardcoded offset) and folded into the field's top padding.
+  /// Cached on the font size: this depends only on the resolved font metrics,
+  /// so laying a painter out for it on every build was a second per-keystroke
+  /// measurement doing no work.
   double _firstLineLeading(BuildContext context) {
+    final agent = BeuiAgentTheme.of(context);
+    final fontSize = _resolvedFontSize(agent);
+    if (_leadingForFontSize == fontSize) return _cachedLeading;
+
     final painter = TextPainter(
       // Height unset → the painter reports the font's natural line height.
       text: TextSpan(
         text: 'x',
-        style: TextStyle(
-          fontSize: _resolvedFontSize(BeuiAgentTheme.of(context)),
-        ),
+        style: TextStyle(fontSize: fontSize),
       ),
       textDirection: Directionality.of(context),
     )..layout();
     final natural = painter.preferredLineHeight;
     painter.dispose();
-    final leading =
-        (_resolvedLineHeight(BeuiAgentTheme.of(context)) - natural) / 2;
-    return leading > 0 ? leading : 0;
+    final leading = (_resolvedLineHeight(agent) - natural) / 2;
+    _leadingForFontSize = fontSize;
+    _cachedLeading = leading > 0 ? leading : 0;
+    return _cachedLeading;
   }
 
   @override
@@ -529,9 +731,17 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Semantics(
+            if (widget.attachments.isNotEmpty)
+              _AttachmentRail(
+                colors: colors,
+                attachments: widget.attachments,
+                enabled: widget.enabled,
+                reduce: reduce,
+                onRemove: widget.onAttachmentRemoved,
+                onRetry: widget.onAttachmentRetry,
+              ),
+            _ComposerSemantics(
               label: widget.semanticLabel,
-              textField: true,
               child: DefaultTextHeightBehavior(
                 // CSS puts half of `leading-6`'s extra leading above the first
                 // line; Flutter's paragraph default leaves the first ascent at
@@ -574,7 +784,11 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
                         ),
                         hintText: widget.placeholder,
                         hintStyle: _composerStyle(colors, agent).copyWith(
-                          color: colors.mutedForeground.withValues(alpha: 0.55),
+                          // Full-strength `mutedForeground` (5.9:1). The 0.55
+                          // multiplier that used to sit here dropped it to
+                          // 2.32:1 — the worst contrast in the library, on the
+                          // composer's only label.
+                          color: colors.mutedForeground,
                         ),
                       ),
                       onChanged: (v) {
@@ -594,6 +808,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
               enabled: widget.enabled,
               loading: widget.loading,
               canSubmit: _canSubmit,
+              stopPulse: _stopPulse,
               actions: widget.actions,
               actionsOpen: _actionsOpen,
               onActionsOpenChange: (v) => setState(() => _actionsOpen = v),
@@ -603,14 +818,8 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
               },
               leadingAction: widget.leadingAction,
               models: widget.models,
-              currentModel: _currentModel,
               modelValue: _modelValue,
-              modelOpen: _modelOpen,
-              onModelOpenChange: (v) => setState(() => _modelOpen = v),
-              onModelChange: (v) {
-                _setModel(v);
-                setState(() => _modelOpen = false);
-              },
+              onModelChange: _setModel,
               onSubmit: _submit,
               onStop: widget.onStop,
             ),
@@ -633,16 +842,14 @@ class _Footer extends StatelessWidget {
     required this.enabled,
     required this.loading,
     required this.canSubmit,
+    required this.stopPulse,
     required this.actions,
     required this.actionsOpen,
     required this.onActionsOpenChange,
     required this.onAction,
     required this.leadingAction,
     required this.models,
-    required this.currentModel,
     required this.modelValue,
-    required this.modelOpen,
-    required this.onModelOpenChange,
     required this.onModelChange,
     required this.onSubmit,
     required this.onStop,
@@ -654,16 +861,14 @@ class _Footer extends StatelessWidget {
   final bool enabled;
   final bool loading;
   final bool canSubmit;
+  final int stopPulse;
   final List<BeuiPromptAction> actions;
   final bool actionsOpen;
   final ValueChanged<bool> onActionsOpenChange;
   final ValueChanged<String> onAction;
   final Widget? leadingAction;
   final List<BeuiPromptModel> models;
-  final BeuiPromptModel? currentModel;
   final String? modelValue;
-  final bool modelOpen;
-  final ValueChanged<bool> onModelOpenChange;
   final ValueChanged<String> onModelChange;
   final VoidCallback onSubmit;
   final VoidCallback? onStop;
@@ -681,7 +886,11 @@ class _Footer extends StatelessWidget {
               colors: colors,
               reduce: reduce,
               swapMotion: swapMotion,
-              enabled: enabled && !loading,
+              // Attaching a file while the agent is still answering is table
+              // stakes, and so is lining up the next model. Neither has
+              // anything to do with the stream, so neither goes dead for it.
+              enabled: enabled,
+              composerEnabled: enabled,
               open: actionsOpen,
               onOpenChange: onActionsOpenChange,
               actions: actions,
@@ -693,13 +902,9 @@ class _Footer extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: _ModelPicker(
-                  colors: colors,
-                  enabled: enabled && !loading,
+                  enabled: enabled,
                   models: models,
-                  current: currentModel,
                   value: modelValue,
-                  open: modelOpen,
-                  onOpenChange: onModelOpenChange,
                   onChanged: onModelChange,
                 ),
               ),
@@ -712,6 +917,7 @@ class _Footer extends StatelessWidget {
             swapMotion: swapMotion,
             loading: loading,
             canSubmit: canSubmit,
+            pulse: stopPulse,
             onSubmit: onSubmit,
             onStop: onStop,
           ),
@@ -730,12 +936,13 @@ class _Footer extends StatelessWidget {
 // spring panel entrance that matches SPRING_PANEL scale+opacity feel.
 // ---------------------------------------------------------------------------
 
-class _ActionsButton extends StatelessWidget {
+class _ActionsButton extends StatefulWidget {
   const _ActionsButton({
     required this.colors,
     required this.reduce,
     required this.swapMotion,
     required this.enabled,
+    required this.composerEnabled,
     required this.open,
     required this.onOpenChange,
     required this.actions,
@@ -746,25 +953,63 @@ class _ActionsButton extends StatelessWidget {
   final bool reduce;
   final Motion swapMotion;
   final bool enabled;
+
+  /// Whether the composer as a whole is enabled. The shell already dims itself
+  /// to 0.6 when it is not, so this control must not dim *again* — the two
+  /// multiplied to 0.30, well past unreadable.
+  final bool composerEnabled;
   final bool open;
   final ValueChanged<bool> onOpenChange;
   final List<BeuiPromptAction> actions;
   final ValueChanged<String> onAction;
 
   @override
+  State<_ActionsButton> createState() => _ActionsButtonState();
+}
+
+class _ActionsButtonState extends State<_ActionsButton> {
+  final GlobalKey _triggerKey = GlobalKey();
+  final FocusNode _triggerFocus = FocusNode(debugLabel: 'BeuiPromptActions');
+  bool _focusVisible = false;
+
+  @override
+  void dispose() {
+    _triggerFocus.dispose();
+    super.dispose();
+  }
+
+  void _toggle() => widget.onOpenChange(!widget.open);
+
+  /// Closes and puts focus back where it came from.
+  ///
+  /// Without this a keyboard user who opens the menu and dismisses it is left
+  /// with focus on nothing at all — the standard menu contract, and the thing
+  /// that makes the keyboard path usable rather than merely present.
+  void _closeAndReturnFocus() {
+    widget.onOpenChange(false);
+    _triggerFocus.requestFocus();
+  }
+
+  /// The trigger's rect in global coordinates, for the menu's flip/clamp.
+  Rect? get _triggerRect {
+    final box = _triggerKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return null;
+    return box.localToGlobal(Offset.zero) & box.size;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final colors = widget.colors;
+    final enabled = widget.enabled;
     final plus = SingleMotionBuilder(
-      value: open ? 45.0 : 0.0,
-      motion: reduce ? const NoMotion() : swapMotion,
+      value: widget.open ? 45.0 : 0.0,
+      motion: widget.reduce ? const NoMotion() : widget.swapMotion,
       builder: (context, deg, child) {
         // Reduced motion snaps (bypass NoMotion freeze-at-source).
-        final angle = (swapMotion is NoMotion || reduce)
-            ? (open ? 45.0 : 0.0)
+        final angle = (widget.swapMotion is NoMotion || widget.reduce)
+            ? (widget.open ? 45.0 : 0.0)
             : deg;
-        return Transform.rotate(
-          angle: angle * 3.141592653589793 / 180,
-          child: child,
-        );
+        return Transform.rotate(angle: angle * math.pi / 180, child: child);
       },
       child: Icon(
         BeuiAgentTheme.of(context).icons.add,
@@ -774,36 +1019,82 @@ class _ActionsButton extends StatelessWidget {
     );
 
     return BeuiOverlay(
-      open: open,
+      open: widget.open,
       barrier: true,
       barrierColor: const Color(0x00000000),
       barrierDismissible: true,
+      // The menu takes focus itself (see [_ActionsMenu]); the overlay's own
+      // trap would fight the roving focus inside it. Esc still works — the
+      // overlay listens for it without needing the trap.
       trapFocus: false,
-      onDismiss: () => onOpenChange(false),
-      enterDuration: Duration(milliseconds: reduce ? 120 : 280),
-      exitDuration: Duration(milliseconds: reduce ? 100 : 160),
+      onDismiss: _closeAndReturnFocus,
+      enterDuration: Duration(milliseconds: widget.reduce ? 120 : 280),
+      exitDuration: Duration(milliseconds: widget.reduce ? 100 : 160),
       overlayBuilder: (context, animation, link) => _AnchoredMenu(
-        link: link,
+        anchor: _triggerRect,
         animation: animation,
-        reduce: reduce,
+        reduce: widget.reduce,
         colors: colors,
         width: 224,
         child: _ActionsMenu(
           colors: colors,
-          actions: actions,
-          onAction: onAction,
+          actions: widget.actions,
+          onAction: widget.onAction,
+          onDismiss: _closeAndReturnFocus,
         ),
       ),
-      child: Semantics(
-        button: true,
-        enabled: enabled,
-        label: 'Add to prompt',
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: enabled ? () => onOpenChange(!open) : null,
-          child: Opacity(
-            opacity: enabled ? 1 : 0.5,
-            child: SizedBox(width: 32, height: 32, child: Center(child: plus)),
+      // The slop is the outermost wrapper on purpose: RenderProxyBox.hitTest
+      // rejects positions outside its own size before descending, so a
+      // Semantics above it would swallow the very pointers it exists to catch.
+      child: BeuiMinHitTarget(
+        child: Semantics(
+          button: true,
+          enabled: enabled,
+          expanded: widget.open,
+          label: 'Add to prompt',
+          onTap: enabled ? _toggle : null,
+          child: FocusableActionDetector(
+            focusNode: _triggerFocus,
+            enabled: enabled,
+            mouseCursor: enabled
+                ? SystemMouseCursors.click
+                : SystemMouseCursors.basic,
+            shortcuts: const <ShortcutActivator, Intent>{
+              SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+              SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+              // Down opens the menu straight onto its first row, the way a
+              // native menu button behaves.
+              SingleActivator(LogicalKeyboardKey.arrowDown): ActivateIntent(),
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  _toggle();
+                  return null;
+                },
+              ),
+            },
+            onShowFocusHighlight: (value) =>
+                setState(() => _focusVisible = value),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: enabled ? _toggle : null,
+              child: Opacity(
+                opacity: (widget.composerEnabled && !enabled) ? 0.5 : 1,
+                child: BeuiFocusRing(
+                  focused: _focusVisible,
+                  borderRadius: BorderRadius.circular(10),
+                  child: KeyedSubtree(
+                    key: _triggerKey,
+                    child: SizedBox(
+                      width: 32,
+                      height: 32,
+                      child: Center(child: plus),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -811,10 +1102,17 @@ class _ActionsButton extends StatelessWidget {
   }
 }
 
-/// Floating menu anchored above the trigger (side=top, align=start, offset 8).
+/// Floating menu anchored to the trigger — above it by preference (source
+/// `side=top, align=start, offset 8`), flipped below and clamped horizontally
+/// when there is no room.
+///
+/// The previous implementation pinned a fixed-width panel to the trigger at a
+/// fixed offset with no awareness of the viewport at all, so a composer near
+/// the top of the window rendered its menu off-screen and one near an edge
+/// rendered it past that edge. [_MenuLayoutDelegate] measures instead.
 class _AnchoredMenu extends StatelessWidget {
   const _AnchoredMenu({
-    required this.link,
+    required this.anchor,
     required this.animation,
     required this.reduce,
     required this.colors,
@@ -822,7 +1120,9 @@ class _AnchoredMenu extends StatelessWidget {
     required this.child,
   });
 
-  final LayerLink link;
+  /// The trigger's global rect, or null if it could not be measured (in which
+  /// case the menu falls back to the top-left safe area).
+  final Rect? anchor;
   final Animation<double> animation;
   final bool reduce;
   final BeuiColors colors;
@@ -831,90 +1131,307 @@ class _AnchoredMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CompositedTransformFollower(
-      link: link,
-      showWhenUnlinked: false,
-      targetAnchor: Alignment.topLeft,
-      followerAnchor: Alignment.bottomLeft,
-      offset: const Offset(0, -8),
-      child: AnimatedBuilder(
-        animation: animation,
-        builder: (context, _) {
-          final t = animation.value.clamp(0.0, 1.0);
-          final opacity = t;
-          final scale = reduce ? 1.0 : 0.96 + 0.04 * t;
-          return Opacity(
-            opacity: opacity,
-            child: Transform.scale(
-              scale: scale,
-              alignment: Alignment.bottomLeft,
-              child: Material(
-                color: Colors.transparent,
-                elevation: 0,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.background,
-                    border: Border.all(color: colors.border),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x24000000),
-                        blurRadius: 18,
-                        offset: Offset(0, 10),
-                      ),
-                    ],
+    final media = MediaQuery.of(context);
+    final rect =
+        anchor ??
+        Rect.fromLTWH(media.padding.left + 8, media.padding.top, 0, 0);
+
+    return Positioned.fill(
+      child: CustomSingleChildLayout(
+        delegate: _MenuLayoutDelegate(
+          anchor: rect,
+          // Keep clear of notches, rounded corners and the soft keyboard.
+          safeArea: media.padding + media.viewInsets,
+        ),
+        child: AnimatedBuilder(
+          animation: animation,
+          builder: (context, _) {
+            final t = animation.value.clamp(0.0, 1.0);
+            final scale = reduce ? 1.0 : 0.96 + 0.04 * t;
+            return Opacity(
+              opacity: t,
+              child: Transform.scale(
+                scale: scale,
+                alignment: Alignment.bottomLeft,
+                child: Material(
+                  color: Colors.transparent,
+                  elevation: 0,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colors.background,
+                      border: Border.all(color: colors.border),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x24000000),
+                          blurRadius: 18,
+                          offset: Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: SizedBox(width: width, child: child),
                   ),
-                  child: SizedBox(width: width, child: child),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class _ActionsMenu extends StatelessWidget {
+/// Places a menu panel against an anchor, flipping and clamping to stay on
+/// screen.
+///
+/// Preference order matches the source: above the trigger, start-aligned, 8px
+/// clear. If the panel is taller than the space above it flips below; if it
+/// fits neither it takes the roomier side and is capped to it, so a very long
+/// menu is bounded rather than overflowing. Horizontal position is clamped into
+/// the safe area regardless.
+class _MenuLayoutDelegate extends SingleChildLayoutDelegate {
+  const _MenuLayoutDelegate({required this.anchor, required this.safeArea});
+
+  final Rect anchor;
+  final EdgeInsets safeArea;
+
+  /// Source `sideOffset` — the gap between trigger and panel.
+  static const double _gap = 8;
+
+  /// Breathing room kept against the viewport edge.
+  static const double _margin = 8;
+
+  double _spaceAbove() => anchor.top - safeArea.top - _gap - _margin;
+  double _spaceBelow(Size size) =>
+      size.height - safeArea.bottom - anchor.bottom - _gap - _margin;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+    final size = constraints.biggest;
+    // Never demand more height than the roomier side can give.
+    final maxHeight = math.max(math.max(_spaceAbove(), _spaceBelow(size)), 0.0);
+    return BoxConstraints(
+      maxWidth: math.max(size.width - safeArea.horizontal - _margin * 2, 0.0),
+      maxHeight: maxHeight,
+    );
+  }
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) {
+    final above = _spaceAbove();
+    final below = _spaceBelow(size);
+    // Above unless it does not fit and below is roomier — the source's
+    // preferred side wins every tie.
+    final placeAbove = childSize.height <= above || above >= below;
+
+    final dy = placeAbove
+        ? anchor.top - _gap - childSize.height
+        : anchor.bottom + _gap;
+
+    final minX = safeArea.left + _margin;
+    final maxX = math.max(
+      size.width - safeArea.right - _margin - childSize.width,
+      minX,
+    );
+    final minY = safeArea.top + _margin;
+    final maxY = math.max(
+      size.height - safeArea.bottom - _margin - childSize.height,
+      minY,
+    );
+    return Offset(anchor.left.clamp(minX, maxX), dy.clamp(minY, maxY));
+  }
+
+  @override
+  bool shouldRelayout(_MenuLayoutDelegate old) =>
+      old.anchor != anchor || old.safeArea != safeArea;
+}
+
+/// The `+` popover's rows, with the roving-focus model a menu is expected to
+/// have: the first choosable row takes focus on open, Up/Down move between rows
+/// (wrapping, skipping disabled ones), Home/End jump to the ends, Enter/Space
+/// choose, and Esc closes with focus returning to the trigger.
+class _ActionsMenu extends StatefulWidget {
   const _ActionsMenu({
     required this.colors,
     required this.actions,
     required this.onAction,
+    required this.onDismiss,
   });
 
   final BeuiColors colors;
   final List<BeuiPromptAction> actions;
   final ValueChanged<String> onAction;
+  final VoidCallback onDismiss;
+
+  @override
+  State<_ActionsMenu> createState() => _ActionsMenuState();
+}
+
+class _ActionsMenuState extends State<_ActionsMenu> {
+  late List<FocusNode> _nodes;
+  int _active = -1;
+
+  @override
+  void initState() {
+    super.initState();
+    _buildNodes();
+    // Focus the first choosable row once the overlay is on screen, so the menu
+    // is immediately drivable from the keyboard that opened it.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final first = widget.actions.indexWhere((a) => a.enabled);
+      if (first >= 0) _focus(first);
+    });
+  }
+
+  void _buildNodes() {
+    _nodes = [
+      for (var i = 0; i < widget.actions.length; i++)
+        FocusNode(debugLabel: 'BeuiPromptAction $i'),
+    ];
+  }
+
+  @override
+  void didUpdateWidget(_ActionsMenu old) {
+    super.didUpdateWidget(old);
+    if (widget.actions.length != old.actions.length) {
+      for (final n in _nodes) {
+        n.dispose();
+      }
+      _buildNodes();
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final n in _nodes) {
+      n.dispose();
+    }
+    super.dispose();
+  }
+
+  void _focus(int i) {
+    if (i < 0 || i >= _nodes.length) return;
+    setState(() => _active = i);
+    _nodes[i].requestFocus();
+  }
+
+  /// Steps [delta] rows, skipping disabled entries and wrapping at the ends.
+  void _move(int delta) {
+    final n = widget.actions.length;
+    if (n == 0) return;
+    var i = _active < 0 ? (delta > 0 ? -1 : 0) : _active;
+    for (var step = 0; step < n; step++) {
+      i = (i + delta) % n;
+      if (i < 0) i += n;
+      if (widget.actions[i].enabled) {
+        _focus(i);
+        return;
+      }
+    }
+  }
+
+  void _edge({required bool last}) {
+    final i = last
+        ? widget.actions.lastIndexWhere((a) => a.enabled)
+        : widget.actions.indexWhere((a) => a.enabled);
+    if (i >= 0) _focus(i);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(6), // p-1.5
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (final action in actions)
-            _ActionRow(
-              colors: colors,
-              action: action,
-              onTap: action.enabled ? () => onAction(action.value) : null,
+    return Shortcuts(
+      shortcuts: const <ShortcutActivator, Intent>{
+        SingleActivator(LogicalKeyboardKey.arrowDown): DirectionalFocusIntent(
+          TraversalDirection.down,
+        ),
+        SingleActivator(LogicalKeyboardKey.arrowUp): DirectionalFocusIntent(
+          TraversalDirection.up,
+        ),
+        SingleActivator(LogicalKeyboardKey.home): _MenuEdgeIntent(last: false),
+        SingleActivator(LogicalKeyboardKey.end): _MenuEdgeIntent(last: true),
+      },
+      child: Actions(
+        actions: <Type, Action<Intent>>{
+          // Handled here rather than by default traversal so the ring wraps and
+          // disabled rows are skipped — a menu, not a tab order.
+          DirectionalFocusIntent: CallbackAction<DirectionalFocusIntent>(
+            onInvoke: (intent) {
+              switch (intent.direction) {
+                case TraversalDirection.down:
+                  _move(1);
+                case TraversalDirection.up:
+                  _move(-1);
+                case TraversalDirection.left:
+                case TraversalDirection.right:
+                  break;
+              }
+              return null;
+            },
+          ),
+          _MenuEdgeIntent: CallbackAction<_MenuEdgeIntent>(
+            onInvoke: (intent) {
+              _edge(last: intent.last);
+              return null;
+            },
+          ),
+          DismissIntent: CallbackAction<DismissIntent>(
+            onInvoke: (_) {
+              widget.onDismiss();
+              return null;
+            },
+          ),
+        },
+        child: Semantics(
+          container: true,
+          explicitChildNodes: true,
+          label: 'Prompt actions',
+          child: Padding(
+            padding: const EdgeInsets.all(6), // p-1.5
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var i = 0; i < widget.actions.length; i++)
+                  _ActionRow(
+                    colors: widget.colors,
+                    action: widget.actions[i],
+                    focusNode: _nodes[i],
+                    onFocused: () => setState(() => _active = i),
+                    onTap: widget.actions[i].enabled
+                        ? () => widget.onAction(widget.actions[i].value)
+                        : null,
+                  ),
+              ],
             ),
-        ],
+          ),
+        ),
       ),
     );
   }
+}
+
+/// Home/End inside a menu.
+class _MenuEdgeIntent extends Intent {
+  const _MenuEdgeIntent({required this.last});
+
+  /// True for End (last row), false for Home (first row).
+  final bool last;
 }
 
 class _ActionRow extends StatefulWidget {
   const _ActionRow({
     required this.colors,
     required this.action,
+    required this.focusNode,
+    required this.onFocused,
     required this.onTap,
   });
 
   final BeuiColors colors;
   final BeuiPromptAction action;
+  final FocusNode focusNode;
+  final VoidCallback onFocused;
   final VoidCallback? onTap;
 
   @override
@@ -923,76 +1440,107 @@ class _ActionRow extends StatefulWidget {
 
 class _ActionRowState extends State<_ActionRow> {
   bool _hovered = false;
+  bool _focusVisible = false;
 
   @override
   Widget build(BuildContext context) {
     final enabled = widget.onTap != null;
-    return MouseRegion(
-      onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
-      onExit: enabled ? (_) => setState(() => _hovered = false) : null,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          curve: Curves.ease,
-          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-          decoration: BoxDecoration(
-            color: _hovered && enabled ? widget.colors.muted : null,
-            borderRadius: BorderRadius.circular(8),
+    // Keyboard focus and pointer hover land on the same highlight, so the row
+    // under the caret reads identically however you got there.
+    final highlight = enabled && (_hovered || _focusVisible);
+    return Semantics(
+      button: true,
+      enabled: enabled,
+      label: widget.action.label,
+      hint: widget.action.description,
+      onTap: widget.onTap,
+      child: FocusableActionDetector(
+        focusNode: widget.focusNode,
+        enabled: enabled,
+        mouseCursor: enabled
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.basic,
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onTap?.call();
+              return null;
+            },
           ),
-          child: Opacity(
-            opacity: enabled ? 1 : 0.5,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.action.icon != null) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: Center(
-                        child: IconTheme(
-                          data: IconThemeData(
-                            size: 16,
-                            color: widget.colors.mutedForeground,
+        },
+        onFocusChange: (value) {
+          if (value) widget.onFocused();
+        },
+        onShowFocusHighlight: (value) => setState(() => _focusVisible = value),
+        onShowHoverHighlight: (value) => setState(() => _hovered = value),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            curve: Curves.ease,
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+            decoration: BoxDecoration(
+              color: highlight ? widget.colors.muted : null,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Opacity(
+              opacity: enabled ? 1 : 0.5,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.action.icon != null) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Center(
+                          child: IconTheme(
+                            data: IconThemeData(
+                              size: 16,
+                              color: widget.colors.mutedForeground,
+                            ),
+                            child: widget.action.icon!,
                           ),
-                          child: widget.action.icon!,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                ],
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.action.label,
-                        style: TextStyle(
-                          fontSize: 14,
-                          letterSpacing: 0, // tracking-normal
-                          color: widget.colors.foreground,
-                        ),
-                      ),
-                      if (widget.action.description != null) ...[
-                        const SizedBox(height: 2),
+                    const SizedBox(width: 10),
+                  ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          widget.action.description!,
+                          widget.action.label,
                           style: TextStyle(
-                            fontSize: 12,
-                            height: 16 / 12,
+                            fontSize: 14,
                             letterSpacing: 0, // tracking-normal
-                            color: widget.colors.mutedForeground,
+                            color: widget.colors.foreground,
                           ),
                         ),
+                        if (widget.action.description != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            widget.action.description!,
+                            style: TextStyle(
+                              fontSize: 12,
+                              height: 16 / 12,
+                              letterSpacing: 0, // tracking-normal
+                              color: widget.colors.mutedForeground,
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -1002,261 +1550,47 @@ class _ActionRowState extends State<_ActionRow> {
 }
 
 // ---------------------------------------------------------------------------
-// Model picker — compact trigger + overlay list (icons + labels)
+// Model picker
+//
+// One implementation, always. This used to fork: models without icons got the
+// gooey [BeuiSelect] — keyboard-navigable, bordered, 14px — and the moment any
+// one model carried an icon the whole picker silently swapped to a bespoke
+// overlay that was 12px, borderless, and reachable only with a pointer. Adding
+// a glyph to a list entry is not a reason to take the keyboard away from it, so
+// [BeuiSelectOption] grew an `icon` slot and the fork is gone.
 // ---------------------------------------------------------------------------
 
 class _ModelPicker extends StatelessWidget {
   const _ModelPicker({
-    required this.colors,
     required this.enabled,
     required this.models,
-    required this.current,
     required this.value,
-    required this.open,
-    required this.onOpenChange,
     required this.onChanged,
   });
 
-  final BeuiColors colors;
   final bool enabled;
   final List<BeuiPromptModel> models;
-  final BeuiPromptModel? current;
-  final String? value;
-  final bool open;
-  final ValueChanged<bool> onOpenChange;
-  final ValueChanged<String> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    // Icon-less models reuse the gooey [BeuiSelect]. Icon models need a custom
-    // overlay so glyphs render (BeuiSelectOption is label-only).
-    final hasIcons = models.any((m) => m.icon != null);
-    if (!hasIcons) {
-      return ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 208),
-        child: BeuiSelect(
-          options: [
-            for (final m in models)
-              BeuiSelectOption(
-                value: m.value,
-                label: m.label,
-                enabled: m.enabled,
-              ),
-          ],
-          value: value,
-          onChanged: onChanged,
-          enabled: enabled,
-          placeholder: 'Choose model',
-        ),
-      );
-    }
-
-    final reduce = MediaQuery.disableAnimationsOf(context);
-    final label = current?.label ?? 'Choose model';
-    final trigger = MouseRegion(
-      cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 120),
-        height: 32,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: open ? colors.muted : Colors.transparent,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (current?.icon != null) ...[
-              SizedBox(
-                width: 16,
-                height: 16,
-                child: IconTheme(
-                  data: IconThemeData(size: 14, color: colors.mutedForeground),
-                  child: current!.icon!,
-                ),
-              ),
-              const SizedBox(width: 6),
-            ],
-            Flexible(
-              child: Text(
-                label,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 12,
-                  letterSpacing: 0, // tracking-normal
-                  color: colors.mutedForeground,
-                ),
-              ),
-            ),
-            // Source `SelectTrigger` always appends a `h-4 w-4` ChevronDown in
-            // `text-muted-foreground`, `gap-2` after the value, rotating 180°
-            // on open.
-            const SizedBox(width: 8),
-            SingleMotionBuilder(
-              value: open ? 1.0 : 0.0,
-              motion: motionFor(
-                context,
-                _promptChevronSpring,
-                isMovement: true,
-              ),
-              builder: (context, p, child) =>
-                  Transform.rotate(angle: p * math.pi, child: child),
-              child: Icon(
-                BeuiAgentTheme.of(context).icons.expand,
-                size: 16,
-                color: colors.mutedForeground,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    return BeuiOverlay(
-      open: open,
-      barrier: true,
-      barrierColor: const Color(0x00000000),
-      barrierDismissible: true,
-      trapFocus: false,
-      onDismiss: () => onOpenChange(false),
-      enterDuration: Duration(milliseconds: reduce ? 120 : 280),
-      exitDuration: Duration(milliseconds: reduce ? 100 : 160),
-      overlayBuilder: (context, animation, link) => _AnchoredMenu(
-        link: link,
-        animation: animation,
-        reduce: reduce,
-        colors: colors,
-        width: 208,
-        child: _ModelMenu(
-          colors: colors,
-          models: models,
-          value: value,
-          onChanged: onChanged,
-        ),
-      ),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: enabled ? () => onOpenChange(!open) : null,
-        child: Opacity(opacity: enabled ? 1 : 0.5, child: trigger),
-      ),
-    );
-  }
-}
-
-class _ModelMenu extends StatelessWidget {
-  const _ModelMenu({
-    required this.colors,
-    required this.models,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final BeuiColors colors;
-  final List<BeuiPromptModel> models;
   final String? value;
   final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 208),
+      child: BeuiSelect(
+        options: [
           for (final m in models)
-            _ModelRow(
-              colors: colors,
-              model: m,
-              selected: m.value == value,
-              onTap: m.enabled ? () => onChanged(m.value) : null,
+            BeuiSelectOption(
+              value: m.value,
+              label: m.label,
+              icon: m.icon,
+              enabled: m.enabled,
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _ModelRow extends StatefulWidget {
-  const _ModelRow({
-    required this.colors,
-    required this.model,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final BeuiColors colors;
-  final BeuiPromptModel model;
-  final bool selected;
-  final VoidCallback? onTap;
-
-  @override
-  State<_ModelRow> createState() => _ModelRowState();
-}
-
-class _ModelRowState extends State<_ModelRow> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final enabled = widget.onTap != null;
-    final highlight = widget.selected || (_hovered && enabled);
-    return MouseRegion(
-      onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
-      onExit: enabled ? (_) => setState(() => _hovered = false) : null,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          decoration: BoxDecoration(
-            color: highlight ? widget.colors.muted : null,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Opacity(
-            opacity: enabled ? 1 : 0.5,
-            child: Row(
-              children: [
-                if (widget.model.icon != null) ...[
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Center(
-                      child: IconTheme(
-                        data: IconThemeData(
-                          size: 16,
-                          color: widget.colors.mutedForeground,
-                        ),
-                        child: widget.model.icon!,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-                Expanded(
-                  child: Text(
-                    widget.model.label,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      letterSpacing: 0, // tracking-normal
-                      color: widget.selected
-                          ? widget.colors.foreground
-                          : widget.colors.mutedForeground,
-                    ),
-                  ),
-                ),
-                if (widget.selected)
-                  Icon(
-                    BeuiAgentTheme.of(context).icons.approved,
-                    size: 14,
-                    color: widget.colors.foreground,
-                  ),
-              ],
-            ),
-          ),
-        ),
+        value: value,
+        onChanged: onChanged,
+        enabled: enabled,
+        placeholder: 'Choose model',
       ),
     );
   }
@@ -1273,6 +1607,7 @@ class _SendStopButton extends StatelessWidget {
     required this.swapMotion,
     required this.loading,
     required this.canSubmit,
+    required this.pulse,
     required this.onSubmit,
     required this.onStop,
   });
@@ -1282,70 +1617,273 @@ class _SendStopButton extends StatelessWidget {
   final Motion swapMotion;
   final bool loading;
   final bool canSubmit;
+
+  /// Increments each time Enter was pressed mid-stream. See [_StopPulse].
+  final int pulse;
   final VoidCallback onSubmit;
   final VoidCallback? onStop;
 
   @override
   Widget build(BuildContext context) {
-    final enabled = loading ? onStop != null : canSubmit;
-    return Semantics(
-      button: true,
-      enabled: enabled,
-      label: loading ? 'Stop generating' : 'Send prompt',
-      child: BeuiButton(
-        variant: BeuiButtonVariant.primary,
-        size: BeuiButtonSize.icon,
-        onPressed: !enabled
-            ? null
-            : loading
-            ? onStop
-            : onSubmit,
-        child: _SwapIcon(
-          loading: loading,
+    // A stop square you cannot press is a lie: it looks like the one control
+    // that could interrupt the stream, and does nothing. Without an `onStop`
+    // it becomes a plain busy indicator, which is what it actually is.
+    final stoppable = onStop != null;
+    final enabled = loading ? stoppable : canSubmit;
+
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        label: loading
+            ? (stoppable ? 'Stop generating' : 'Generating')
+            : 'Send prompt',
+        child: _StopPulse(
+          pulse: pulse,
+          active: loading,
           reduce: reduce,
-          swapMotion: swapMotion,
-          color: colors.primaryForeground,
+          child: BeuiButton(
+            variant: BeuiButtonVariant.primary,
+            size: BeuiButtonSize.icon,
+            onPressed: !enabled
+                ? null
+                : loading
+                ? onStop
+                : onSubmit,
+            child: _SwapIcon(
+              loading: loading,
+              stoppable: stoppable,
+              reduce: reduce,
+              swapMotion: swapMotion,
+              color: colors.primaryForeground,
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-/// AnimatePresence-style send ↔ stop icon swap on [beuiSpringSwap].
+/// A one-shot flash when [pulse] changes — the visible answer to "I pressed
+/// Enter and nothing happened".
 ///
-/// Source: opacity 0→1, y 3→0, scale 0.8→1 enter; exit y −3 / scale 0.8.
+/// Enter cannot send mid-stream, so it draws the eye to the control that *can*
+/// act instead. Under reduced motion the scale is dropped and only the dip in
+/// opacity remains: movement out, opacity kept, per the project's per-channel
+/// rule.
+class _StopPulse extends StatefulWidget {
+  const _StopPulse({
+    required this.pulse,
+    required this.active,
+    required this.reduce,
+    required this.child,
+  });
+
+  final int pulse;
+  final bool active;
+  final bool reduce;
+  final Widget child;
+
+  @override
+  State<_StopPulse> createState() => _StopPulseState();
+}
+
+class _StopPulseState extends State<_StopPulse>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _flash;
+
+  @override
+  void initState() {
+    super.initState();
+    // Constructed here, never lazily: a `late final` initialiser that only the
+    // guarded paths touch ends up running inside dispose(), building a Ticker
+    // on an element that is already unmounting.
+    _flash = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 180),
+    );
+  }
+
+  @override
+  void didUpdateWidget(_StopPulse old) {
+    super.didUpdateWidget(old);
+    if (widget.pulse != old.pulse && widget.active) _flash.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _flash.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _flash,
+      builder: (context, child) {
+        if (_flash.value == 0) return child!;
+        // One symmetric out-and-back across the flash.
+        final t = math.sin(_flash.value * math.pi);
+        Widget body = Opacity(opacity: 1 - 0.35 * t, child: child);
+        if (!widget.reduce) {
+          body = Transform.scale(scale: 1 + 0.12 * t, child: body);
+        }
+        return body;
+      },
+      child: widget.child,
+    );
+  }
+}
+
+/// AnimatePresence-style send <-> stop icon swap on [beuiSpringSwap].
+///
+/// Source: opacity 0->1, y 3->0, scale 0.8->1 enter; exit y -3 / scale 0.8.
 /// Reduced motion: opacity only (snap position/scale).
 class _SwapIcon extends StatelessWidget {
   const _SwapIcon({
     required this.loading,
+    required this.stoppable,
     required this.reduce,
     required this.swapMotion,
     required this.color,
   });
 
   final bool loading;
+  final bool stoppable;
   final bool reduce;
   final Motion swapMotion;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
-    // Keyed AnimatedSwitcher-like: drive progress 0→1 on each flip via a
-    // SingleMotionBuilder that restarts when [loading] changes. With
-    // NoMotion under reduce we snap to the settled state.
-    final key = loading ? 'stop' : 'send';
-    final icon = loading
-        ? SizedBox.square(
-            dimension: 12,
-            child: CustomPaint(painter: _StopSquarePainter(color: color)),
-          )
-        : Icon(BeuiAgentTheme.of(context).icons.send, size: 16, color: color);
+    final String key;
+    final Widget icon;
+    if (loading && stoppable) {
+      key = 'stop';
+      icon = SizedBox.square(
+        dimension: 12,
+        child: CustomPaint(painter: _StopSquarePainter(color: color)),
+      );
+    } else if (loading) {
+      // Nothing to stop — say "busy", not "press me".
+      key = 'busy';
+      icon = _BusySpinner(color: color, reduce: reduce);
+    } else {
+      key = 'send';
+      icon = Icon(
+        BeuiAgentTheme.of(context).icons.send,
+        size: 16,
+        color: color,
+      );
+    }
 
     if (reduce || swapMotion is NoMotion) {
       return KeyedSubtree(key: ValueKey(key), child: icon);
     }
 
-    return _SpringSwapIcon(key: ValueKey(key), motion: swapMotion, child: icon);
+    // The source's swap has a documented *exit* (y -3, scale 0.8, fade) that
+    // never ran: the outgoing icon was replaced outright and only the incoming
+    // one animated, so the swap read as a hard cut into a spring.
+    // AnimatedSwitcher keeps the outgoing child alive long enough to play it,
+    // and the exit is the faster half of the pair — the house rule.
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 260),
+      reverseDuration: const Duration(milliseconds: 140),
+      switchInCurve: beuiEaseOut,
+      switchOutCurve: beuiEaseOut,
+      layoutBuilder: (current, previous) =>
+          Stack(alignment: Alignment.center, children: [...previous, ?current]),
+      transitionBuilder: (child, animation) =>
+          _SwapTransition(animation: animation, child: child),
+      child: KeyedSubtree(key: ValueKey(key), child: icon),
+    );
+  }
+}
+
+/// Source enter `opacity 0->1, y 3->0, scale 0.8->1`; the exit mirrors it
+/// upward (`y -> -3`), so the outgoing glyph leaves the way the incoming one
+/// arrives.
+class _SwapTransition extends StatelessWidget {
+  const _SwapTransition({required this.animation, required this.child});
+
+  final Animation<double> animation;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, inner) {
+        final exiting = animation.status == AnimationStatus.reverse;
+        final t = animation.value.clamp(0.0, 1.0);
+        return Opacity(
+          opacity: t,
+          child: Transform.translate(
+            offset: Offset(0, (exiting ? -3 : 3) * (1 - t)),
+            child: Transform.scale(scale: 0.8 + 0.2 * t, child: inner),
+          ),
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+/// The busy mark shown while loading with no `onStop` — a rotating spinner,
+/// static under reduced motion.
+class _BusySpinner extends StatefulWidget {
+  const _BusySpinner({required this.color, required this.reduce});
+
+  final Color color;
+  final bool reduce;
+
+  @override
+  State<_BusySpinner> createState() => _BusySpinnerState();
+}
+
+class _BusySpinnerState extends State<_BusySpinner>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _spin;
+
+  @override
+  void initState() {
+    super.initState();
+    _spin = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+    if (!widget.reduce) _spin.repeat();
+  }
+
+  @override
+  void didUpdateWidget(_BusySpinner old) {
+    super.didUpdateWidget(old);
+    if (widget.reduce && _spin.isAnimating) {
+      _spin
+        ..stop()
+        ..value = 0;
+    } else if (!widget.reduce && !_spin.isAnimating) {
+      _spin.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _spin.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final glyph = Icon(
+      BeuiAgentTheme.of(context).icons.spinner,
+      size: 16,
+      color: widget.color,
+    );
+    if (widget.reduce) return glyph;
+    return RepaintBoundary(
+      child: RotationTransition(turns: _spin, child: glyph),
+    );
   }
 }
 
@@ -1385,37 +1923,406 @@ class _StopSquarePainter extends CustomPainter {
       oldDelegate.color != color;
 }
 
-class _SpringSwapIcon extends StatefulWidget {
-  const _SpringSwapIcon({required this.motion, required this.child, super.key});
+// ---------------------------------------------------------------------------
+// Composer semantics
+// ---------------------------------------------------------------------------
 
-  final Motion motion;
+/// Names the composer without nesting a second edit box inside the first.
+///
+/// The wrapper here used to declare `textField: true` over a [TextField] that
+/// already declares it, so the tree carried two edit-box nodes and a screen
+/// reader announced the composer twice. Merging instead gives one node that
+/// carries both the name and the field's own value, actions and state — the
+/// association a `<label for>` provides on the web.
+class _ComposerSemantics extends StatelessWidget {
+  const _ComposerSemantics({required this.label, required this.child});
+
+  final String label;
   final Widget child;
 
   @override
-  State<_SpringSwapIcon> createState() => _SpringSwapIconState();
+  Widget build(BuildContext context) => MergeSemantics(
+    child: Semantics(label: label, child: child),
+  );
 }
 
-class _SpringSwapIconState extends State<_SpringSwapIcon> {
-  // 0 = enter start, 1 = settled. Mounted each key change so enter always runs.
+// ---------------------------------------------------------------------------
+// Attachment rail
+// ---------------------------------------------------------------------------
+
+/// Chip height — sized so a 20px thumbnail clears its 4px inset on both sides.
+const double _chipHeight = 28;
+
+/// The horizontal chip rail above the field.
+///
+/// The composer had no attachment surface at all: no model, no chips, no
+/// per-attachment remove, and `onSubmit` could not carry a file even if the
+/// host had one. Attaching was an `onAction('image')` intent that went nowhere.
+///
+/// The rail scrolls horizontally rather than wrapping, so a composer with eight
+/// attachments stays the height the user sized it to.
+class _AttachmentRail extends StatelessWidget {
+  const _AttachmentRail({
+    required this.colors,
+    required this.attachments,
+    required this.enabled,
+    required this.reduce,
+    required this.onRemove,
+    required this.onRetry,
+  });
+
+  final BeuiColors colors;
+  final List<BeuiPromptAttachment> attachments;
+  final bool enabled;
+  final bool reduce;
+  final ValueChanged<BeuiPromptAttachment>? onRemove;
+  final ValueChanged<BeuiPromptAttachment>? onRetry;
+
   @override
   Widget build(BuildContext context) {
-    return SingleMotionBuilder(
-      value: 1.0,
-      from: 0.0,
-      motion: widget.motion,
-      builder: (context, t, child) {
-        final opacity = t.clamp(0.0, 1.0);
-        final y = (1 - t) * 3;
-        final scale = 0.8 + 0.2 * t;
-        return Opacity(
-          opacity: opacity,
-          child: Transform.translate(
-            offset: Offset(0, y),
-            child: Transform.scale(scale: scale, child: child),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: SizedBox(
+        height: _chipHeight,
+        child: Semantics(
+          container: true,
+          explicitChildNodes: true,
+          label: 'Attachments',
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.zero,
+            itemCount: attachments.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 6),
+            itemBuilder: (context, i) {
+              final a = attachments[i];
+              return _AttachmentChip(
+                key: ValueKey(a.id),
+                colors: colors,
+                attachment: a,
+                enabled: enabled,
+                reduce: reduce,
+                onRemove: onRemove == null ? null : () => onRemove!(a),
+                onRetry:
+                    onRetry == null ||
+                        a.status != BeuiPromptAttachmentStatus.failed
+                    ? null
+                    : () => onRetry!(a),
+              );
+            },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One attachment chip: leading thumbnail or glyph, truncated name, and a
+/// remove ×, with an upload wash while in flight and a retry when failed.
+class _AttachmentChip extends StatelessWidget {
+  const _AttachmentChip({
+    required this.colors,
+    required this.attachment,
+    required this.enabled,
+    required this.reduce,
+    required this.onRemove,
+    required this.onRetry,
+    super.key,
+  });
+
+  final BeuiColors colors;
+  final BeuiPromptAttachment attachment;
+  final bool enabled;
+  final bool reduce;
+  final VoidCallback? onRemove;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final a = attachment;
+    final icons = BeuiAgentTheme.of(context).icons;
+    final failed = a.status == BeuiPromptAttachmentStatus.failed;
+    final uploading = a.status == BeuiPromptAttachmentStatus.uploading;
+
+    final Widget leading;
+    if (a.thumbnail != null) {
+      leading = ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Image(
+          image: a.thumbnail!,
+          width: 20,
+          height: 20,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      leading = SizedBox(
+        width: 20,
+        height: 20,
+        child: Center(
+          child: IconTheme.merge(
+            data: IconThemeData(
+              size: 14,
+              color: failed ? colors.destructive : colors.mutedForeground,
+            ),
+            child: a.icon ?? Icon(failed ? icons.warning : icons.file),
+          ),
+        ),
+      );
+    }
+
+    Widget body = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(width: 4),
+        leading,
+        const SizedBox(width: 6),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 132),
+          child: Text(
+            a.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
+            style: TextStyle(
+              fontSize: 12,
+              letterSpacing: 0,
+              color: failed ? colors.destructive : colors.foreground,
+            ),
+          ),
+        ),
+        const SizedBox(width: 2),
+        if (failed && onRetry != null)
+          _ChipAction(
+            colors: colors,
+            icon: icons.retry,
+            label: 'Retry ${a.name}',
+            tint: colors.destructive,
+            onPressed: enabled ? onRetry : null,
+          ),
+        if (onRemove != null)
+          _ChipAction(
+            colors: colors,
+            icon: icons.close,
+            label: 'Remove ${a.name}',
+            onPressed: enabled ? onRemove : null,
+          ),
+        const SizedBox(width: 2),
+      ],
+    );
+
+    // The upload wash rides *behind* the content so the name stays readable
+    // throughout, rather than the chip swapping out for a progress bar.
+    if (uploading) {
+      body = Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: _UploadWash(
+                  progress: a.progress,
+                  reduce: reduce,
+                  color: colors.foreground.withValues(alpha: 0.08),
+                ),
+              ),
+            ),
+          ),
+          body,
+        ],
+      );
+    }
+
+    return Semantics(
+      container: true,
+      // Without this the chip node merges its descendants and swallows the
+      // remove/retry buttons, leaving the rail navigable but not operable.
+      explicitChildNodes: true,
+      label: a.name,
+      // Status and any failure reason travel with the chip, so the rail is
+      // navigable without sight of the wash or the tint.
+      value: switch (a.status) {
+        BeuiPromptAttachmentStatus.ready => 'Attached',
+        BeuiPromptAttachmentStatus.uploading =>
+          a.progress == null
+              ? 'Uploading'
+              : 'Uploading, ${(a.progress! * 100).round()}%',
+        BeuiPromptAttachmentStatus.failed => a.error ?? 'Upload failed',
+      },
+      liveRegion: failed,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: failed
+              ? colors.destructive.withValues(alpha: 0.1)
+              : colors.muted,
+          border: Border.all(
+            color: failed
+                ? colors.destructive.withValues(alpha: 0.4)
+                : colors.border,
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: SizedBox(height: _chipHeight, child: body),
+      ),
+    );
+  }
+}
+
+/// The in-flight wash: a determinate fill when [progress] is known, an
+/// indeterminate sweep when it is not.
+///
+/// Under reduced motion the sweep is dropped (a determinate fill still updates,
+/// because that is information rather than decoration).
+class _UploadWash extends StatefulWidget {
+  const _UploadWash({
+    required this.progress,
+    required this.reduce,
+    required this.color,
+  });
+
+  final double? progress;
+  final bool reduce;
+  final Color color;
+
+  @override
+  State<_UploadWash> createState() => _UploadWashState();
+}
+
+class _UploadWashState extends State<_UploadWash>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _sweep;
+
+  @override
+  void initState() {
+    super.initState();
+    _sweep = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    if (widget.progress == null && !widget.reduce) _sweep.repeat();
+  }
+
+  @override
+  void dispose() {
+    _sweep.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final progress = widget.progress;
+    if (progress != null) {
+      return SingleMotionBuilder(
+        value: progress.clamp(0.0, 1.0),
+        motion: const CurvedMotion(Duration(milliseconds: 280), beuiEaseOut),
+        active: !widget.reduce,
+        builder: (context, t, _) => FractionallySizedBox(
+          widthFactor: t.clamp(0.0, 1.0),
+          heightFactor: 1,
+          child: ColoredBox(color: widget.color),
+        ),
+      );
+    }
+    if (widget.reduce) {
+      return FractionallySizedBox(
+        widthFactor: 1,
+        heightFactor: 1,
+        child: ColoredBox(color: widget.color),
+      );
+    }
+    return AnimatedBuilder(
+      animation: _sweep,
+      builder: (context, _) {
+        // 0 → 1 → 0, so the fill breathes rather than snapping back.
+        final t = 1 - (1 - 2 * _sweep.value).abs();
+        return FractionallySizedBox(
+          widthFactor: 0.15 + 0.85 * t,
+          heightFactor: 1,
+          child: ColoredBox(color: widget.color),
         );
       },
-      child: widget.child,
+    );
+  }
+}
+
+/// A chip's trailing control (remove, retry) with the full contract: button
+/// semantics, keyboard activation, a focus ring and 44px of hit slop over a
+/// 20px glyph.
+class _ChipAction extends StatefulWidget {
+  const _ChipAction({
+    required this.colors,
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    this.tint,
+  });
+
+  final BeuiColors colors;
+  final IconData icon;
+  final String label;
+  final VoidCallback? onPressed;
+  final Color? tint;
+
+  @override
+  State<_ChipAction> createState() => _ChipActionState();
+}
+
+class _ChipActionState extends State<_ChipAction> {
+  bool _hovered = false;
+  bool _focusVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = widget.onPressed != null;
+    final base = widget.tint ?? widget.colors.mutedForeground;
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        label: widget.label,
+        onTap: widget.onPressed,
+        child: FocusableActionDetector(
+          enabled: enabled,
+          mouseCursor: enabled
+              ? SystemMouseCursors.click
+              : SystemMouseCursors.basic,
+          shortcuts: const <ShortcutActivator, Intent>{
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                widget.onPressed?.call();
+                return null;
+              },
+            ),
+          },
+          onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+          onShowHoverHighlight: (v) => setState(() => _hovered = v),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.onPressed,
+            child: BeuiFocusRing(
+              focused: _focusVisible,
+              borderRadius: BorderRadius.circular(6),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: Center(
+                  child: Icon(
+                    widget.icon,
+                    size: 12,
+                    color: _hovered && enabled
+                        ? (widget.tint ?? widget.colors.foreground)
+                        : base,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
