@@ -1,6 +1,7 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
@@ -97,6 +98,17 @@ class BeuiInput extends StatefulWidget {
     this.focusNode,
     this.controller,
     this.style,
+    this.semanticLabel,
+    this.errorNonce = 0,
+    this.autofillHints,
+    this.textInputAction,
+    this.textCapitalization = TextCapitalization.none,
+    this.maxLength,
+    this.inputFormatters,
+    this.onEditingComplete,
+    this.readOnly = false,
+    this.enableSuggestions = true,
+    this.autofocus = false,
     super.key,
   }) : assert(
          value == null || controller == null,
@@ -155,6 +167,55 @@ class BeuiInput extends StatefulWidget {
   /// Optional visual overrides.
   final BeuiInputStyle? style;
 
+  /// Accessible name for the field. Defaults to [label].
+  ///
+  /// A visible [label] is associated with the field automatically (they share
+  /// one semantics node), so this is only needed when the field has no visible
+  /// label — a search box whose only cue is its placeholder, say. A placeholder
+  /// is not a label: it disappears the moment the user types.
+  final String? semanticLabel;
+
+  /// Bump this to replay the shake for an error that has not changed.
+  ///
+  /// The shake fires on the *rising edge* of [error], mirroring the source's
+  /// `useEffect([hasError])`. Submitting the same invalid value twice therefore
+  /// produced no feedback at all — the second rejection looked like the form
+  /// had ignored the press. Increment [errorNonce] on each failed submit (or
+  /// pass a submit counter) and the field shakes again.
+  final int errorNonce;
+
+  /// Platform autofill hints, e.g. `[AutofillHints.email]`.
+  final List<String>? autofillHints;
+
+  /// The keyboard's action button (next / done / search).
+  final TextInputAction? textInputAction;
+
+  /// Auto-capitalisation behaviour for the soft keyboard.
+  final TextCapitalization textCapitalization;
+
+  /// Maximum input length.
+  ///
+  /// The character counter Material would add below the field is suppressed —
+  /// the pill has no room for it and the source has no counter. Show remaining
+  /// characters yourself if you need them.
+  final int? maxLength;
+
+  /// Input formatters (masking, digit-only, …).
+  final List<TextInputFormatter>? inputFormatters;
+
+  /// Called when the user finishes editing (keyboard action, focus loss).
+  final VoidCallback? onEditingComplete;
+
+  /// Renders the current value without allowing edits, while staying focusable
+  /// and selectable — unlike `enabled: false`, which also dims the field.
+  final bool readOnly;
+
+  /// Whether to enable the platform's suggestion/autocorrect bar.
+  final bool enableSuggestions;
+
+  /// Focus the field on mount.
+  final bool autofocus;
+
   @override
   State<BeuiInput> createState() => _BeuiInputState();
 }
@@ -204,9 +265,14 @@ class _BeuiInputState extends State<BeuiInput>
       );
     }
     // Fire the shake on the rising edge of an error, mirroring the source's
-    // `useEffect([hasError])`.
+    // `useEffect([hasError])` — or whenever the caller bumps `errorNonce`, so a
+    // repeated rejection of the same value still registers as a rejection.
     final wasError = old.error != null && old.error != false;
-    if (_hasError && !wasError && !MediaQuery.disableAnimationsOf(context)) {
+    final rising = _hasError && !wasError;
+    final replay =
+        _hasError &&
+        (widget.errorNonce != old.errorNonce || widget.error != old.error);
+    if ((rising || replay) && !MediaQuery.disableAnimationsOf(context)) {
       _shake.forward(from: 0);
     }
     if (widget.focusNode != old.focusNode) {
@@ -304,7 +370,19 @@ class _BeuiInputState extends State<BeuiInput>
                 onChanged: widget.onChanged,
                 onSubmitted: widget.onSubmitted,
                 textColor: colors.foreground,
-                placeholderColor: colors.mutedForeground.withValues(alpha: 0.6),
+                // Full-strength `mutedForeground` (5.9:1). The 0.6 multiplier
+                // that used to sit here dropped it to 2.55:1 — under the 4.5:1
+                // AA floor, on text that is often the field's only label.
+                placeholderColor: colors.mutedForeground,
+                autofillHints: widget.autofillHints,
+                textInputAction: widget.textInputAction,
+                textCapitalization: widget.textCapitalization,
+                maxLength: widget.maxLength,
+                inputFormatters: widget.inputFormatters,
+                onEditingComplete: widget.onEditingComplete,
+                readOnly: widget.readOnly,
+                enableSuggestions: widget.enableSuggestions,
+                autofocus: widget.autofocus,
               ),
             ),
           ),
@@ -382,19 +460,44 @@ class _BeuiInputState extends State<BeuiInput>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (widget.label != null)
-          Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 6),
-            child: Text(
-              widget.label!,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: colors.foreground,
-              ),
+        // The visible label and the field are one semantics node, so a screen
+        // reader announces "Email, edit box, hello" instead of a stray "Email"
+        // followed by an anonymous text field — the association a `<label for>`
+        // gives you for free on the web and Flutter gives you not at all.
+        // `semanticLabel` names the field when there is no visible label.
+        MergeSemantics(
+          child: Semantics(
+            label: widget.semanticLabel ?? widget.label,
+            // Read after the value on focus, so a user who tabs back into a
+            // rejected field hears why it was rejected. The live region below
+            // covers the moment the error *arrives*; this covers every visit
+            // afterwards.
+            hint: _errorMessage,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (widget.label != null)
+                  // Excluded because the name is supplied above; left in the
+                  // tree it would be read twice.
+                  ExcludeSemantics(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 4, bottom: 6),
+                      child: Text(
+                        widget.label!,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: colors.foreground,
+                        ),
+                      ),
+                    ),
+                  ),
+                field,
+              ],
             ),
           ),
-        field,
+        ),
         // Error message reveal / removal — slide-down + unblur, opacity-only
         // under reduced motion.
         _ErrorMessage(
@@ -436,6 +539,15 @@ class _EditableTextLine extends StatelessWidget {
     required this.onSubmitted,
     required this.textColor,
     required this.placeholderColor,
+    required this.autofillHints,
+    required this.textInputAction,
+    required this.textCapitalization,
+    required this.maxLength,
+    required this.inputFormatters,
+    required this.onEditingComplete,
+    required this.readOnly,
+    required this.enableSuggestions,
+    required this.autofocus,
   });
 
   final TextEditingController controller;
@@ -448,6 +560,15 @@ class _EditableTextLine extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final Color textColor;
   final Color placeholderColor;
+  final List<String>? autofillHints;
+  final TextInputAction? textInputAction;
+  final TextCapitalization textCapitalization;
+  final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
+  final VoidCallback? onEditingComplete;
+  final bool readOnly;
+  final bool enableSuggestions;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -462,6 +583,15 @@ class _EditableTextLine extends StatelessWidget {
       onSubmitted: onSubmitted,
       cursorColor: textColor,
       style: textStyle,
+      autofillHints: autofillHints,
+      textInputAction: textInputAction,
+      textCapitalization: textCapitalization,
+      maxLength: maxLength,
+      inputFormatters: inputFormatters,
+      onEditingComplete: onEditingComplete,
+      readOnly: readOnly,
+      enableSuggestions: enableSuggestions,
+      autofocus: autofocus,
       decoration: InputDecoration(
         isDense: true,
         isCollapsed: true,
@@ -470,6 +600,11 @@ class _EditableTextLine extends StatelessWidget {
         focusedBorder: InputBorder.none,
         hintText: placeholder,
         hintStyle: textStyle.copyWith(color: placeholderColor),
+        // Material would append a character counter under the field when
+        // `maxLength` is set. The pill is a fixed-height single line with no
+        // room for one, and the source has no counter — suppress it and leave
+        // the remaining-character affordance to the caller.
+        counterText: '',
       ),
     );
   }
@@ -582,6 +717,16 @@ class _ErrorMessage extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         switchInCurve: beuiEaseOut,
         switchOutCurve: beuiEaseOut,
+        // AnimatedSwitcher's default layout builder centres its children. The
+        // empty branch below is `width: double.infinity`, so the stack is
+        // always full-width and the message rendered dead centre under the
+        // field — visible in the committed golden — while the `left: 4` inset
+        // that was meant to align it with the label did nothing at all.
+        // Directional so it still starts at the correct edge under RTL.
+        layoutBuilder: (currentChild, previousChildren) => Stack(
+          alignment: AlignmentDirectional.topStart,
+          children: [...previousChildren, ?currentChild],
+        ),
         transitionBuilder: (child, animation) {
           if (reduce) return FadeTransition(opacity: animation, child: child);
           // y: -4 → 0, blur(4px) → 0 (σ2 → 0).
@@ -614,12 +759,19 @@ class _ErrorMessage extends StatelessWidget {
         },
         child: message == null
             ? const SizedBox(width: double.infinity)
-            : Padding(
+            : Semantics(
                 key: ValueKey(message),
-                padding: const EdgeInsets.only(left: 4, top: 6),
-                child: Text(
-                  message!,
-                  style: TextStyle(fontSize: 12, color: color),
+                // Announced the moment validation fails, without stealing
+                // focus — the error is otherwise invisible to a screen-reader
+                // user until they happen to tab back into the field.
+                liveRegion: true,
+                container: true,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 4, top: 6),
+                  child: Text(
+                    message!,
+                    style: TextStyle(fontSize: 12, color: color),
+                  ),
                 ),
               ),
       ),
