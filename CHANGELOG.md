@@ -111,6 +111,12 @@ defaults" below.
 
 * The package did not compile: `LucideIcons.history` was removed in
   flutter_lucide 1.31.0. Replaced with `rotate_ccw_clock`.
+* `BeuiPullToRefresh`: the indicator did not track the finger during the pull
+  (frozen at rest until release) — for all users, not only reduced motion.
+* Reduced-motion "arrival" fixes: the agent-activity feed, collapsible
+  bubbles, todo progress arcs and strikethroughs, disclosure chevrons, and
+  the command-palette/context-menu selection highlight now reach their target
+  state under `disableAnimations` instead of freezing mid-transition.
 
 ### Internal
 
