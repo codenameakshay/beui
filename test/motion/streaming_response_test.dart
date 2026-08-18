@@ -45,6 +45,8 @@ Widget _host({
   bool announce = true,
   bool showActions = true,
   bool reduce = false,
+  String? retryLabel,
+  BeuiAgentTheme? agent,
 }) {
   Widget body = Center(
     child: SizedBox(
@@ -64,6 +66,7 @@ Widget _host({
         onFeedbackChange: onFeedbackChange,
         announce: announce,
         showActions: showActions,
+        retryLabel: retryLabel,
         child: child,
       ),
     ),
@@ -79,7 +82,7 @@ Widget _host({
   }
   return MaterialApp(
     theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ThemeData.light().copyWith(extensions: [BeuiColors.light(), ?agent]),
     ),
     home: Scaffold(body: body),
   );
@@ -431,6 +434,43 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byIcon(LucideIcons.copy), findsOneWidget);
       expect(find.text('done'), findsOneWidget);
+    });
+
+    // A regression pair for the resolution order every agent widget shares:
+    // explicit widget param → BeuiAgentTheme strings → const default.
+    group('strings resolution order', () {
+      testWidgets('a themed BeuiAgentStrings re-spells the retry label', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          _host(
+            status: BeuiStreamingResponseStatus.error,
+            onRetry: () {},
+            agent: const BeuiAgentTheme(
+              strings: BeuiAgentStrings(retry: 'Essayer à nouveau'),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Essayer à nouveau'), findsOneWidget);
+        expect(find.text('Retry'), findsNothing);
+      });
+
+      testWidgets('explicit retryLabel beats the theme string', (tester) async {
+        await tester.pumpWidget(
+          _host(
+            status: BeuiStreamingResponseStatus.error,
+            onRetry: () {},
+            retryLabel: 'Widget wins',
+            agent: const BeuiAgentTheme(
+              strings: BeuiAgentStrings(retry: 'Theme loses'),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Widget wins'), findsOneWidget);
+        expect(find.text('Theme loses'), findsNothing);
+      });
     });
   });
 }

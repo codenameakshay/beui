@@ -226,11 +226,7 @@ class BeuiTodoList extends StatefulWidget {
   final String? emptyLabel;
 
   /// Supporting line under [emptyLabel], explaining what will fill this panel
-  /// and when. Omitted entirely when null.
-  ///
-  /// There is no [BeuiAgentStrings] role for this sentence yet, so it is
-  /// per-instance only — pass it (localized by the caller) wherever the empty
-  /// state is reachable.
+  /// and when. Defaults to [BeuiAgentStrings.todoEmptyDescription].
   final String? emptyDescription;
 
   /// Accessible name for the whole card. Defaults to
@@ -366,7 +362,9 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
                   ? _EmptyState(
                       custom: widget.emptyState,
                       label: widget.emptyLabel ?? strings.todoEmpty,
-                      description: widget.emptyDescription,
+                      description:
+                          widget.emptyDescription ??
+                          strings.todoEmptyDescription,
                       colors: colors,
                       agent: agent,
                     )
@@ -427,9 +425,10 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
 
 /// The empty panel: a headline plus an optional orienting line.
 ///
-/// A28. The headline still routes through [BeuiAgentStrings.todoEmpty] so it
-/// stays localizable; the second line is where the orientation lives, because
-/// the strings contract has no role for it yet.
+/// A28. The headline routes through [BeuiAgentStrings.todoEmpty] and the
+/// orienting line through [BeuiAgentStrings.todoEmptyDescription], so both
+/// stay localizable by default; [BeuiTodoList.emptyDescription] overrides the
+/// latter per instance.
 class _EmptyState extends StatelessWidget {
   const _EmptyState({
     required this.custom,

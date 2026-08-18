@@ -449,19 +449,20 @@ class BeuiToolApproval extends StatefulWidget {
   /// Overrides [BeuiAgentStrings.viewDetails] for this card.
   final String? viewDetailsLabel;
 
-  /// Label for the revoke control. Defaults to "Revoke".
-  ///
-  /// Not yet a [BeuiAgentStrings] role — see the package notes; until it is,
-  /// this per-instance override is the localization path.
+  /// Label for the revoke control. Overrides [BeuiAgentStrings.revoke] for
+  /// this card.
   final String? revokeLabel;
 
-  /// Badge copy for an always-allowed grant. Defaults to "Always allowed".
+  /// Badge copy for an always-allowed grant. Overrides
+  /// [BeuiAgentStrings.statusAlwaysAllowed] for this card.
   final String? alwaysAllowedLabel;
 
-  /// Badge copy for [BeuiToolApprovalStatus.expired]. Defaults to "Expired".
+  /// Badge copy for [BeuiToolApprovalStatus.expired]. Overrides
+  /// [BeuiAgentStrings.statusExpired] for this card.
   final String? expiredLabel;
 
-  /// Badge copy for [BeuiToolApprovalStatus.timedOut]. Defaults to "Timed out".
+  /// Badge copy for [BeuiToolApprovalStatus.timedOut]. Overrides
+  /// [BeuiAgentStrings.statusTimedOut] for this card.
   final String? timedOutLabel;
 
   @override
@@ -555,7 +556,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
         // A43: say *which* grant was used, so a standing permission is never
         // silently indistinguishable from a one-off.
         if (widget.grant == BeuiToolApprovalGrant.always) {
-          return widget.alwaysAllowedLabel ?? 'Always allowed';
+          return widget.alwaysAllowedLabel ?? strings.statusAlwaysAllowed;
         }
         return widget.status == BeuiToolApprovalStatus.approved
             ? strings.statusApproved
@@ -567,9 +568,9 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
       case BeuiToolApprovalStatus.error:
         return strings.statusFailed;
       case BeuiToolApprovalStatus.expired:
-        return widget.expiredLabel ?? 'Expired';
+        return widget.expiredLabel ?? strings.statusExpired;
       case BeuiToolApprovalStatus.timedOut:
-        return widget.timedOutLabel ?? 'Timed out';
+        return widget.timedOutLabel ?? strings.statusTimedOut;
       case BeuiToolApprovalStatus.pending:
         return strings.statusApprovalRequired;
     }
@@ -788,8 +789,10 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                   _RevokeRow(
                     colors: colors,
                     agent: agent,
-                    grantLabel: widget.alwaysAllowedLabel ?? 'Always allowed',
-                    revokeLabel: widget.revokeLabel ?? 'Revoke',
+                    grantLabel:
+                        widget.alwaysAllowedLabel ??
+                        strings.statusAlwaysAllowed,
+                    revokeLabel: widget.revokeLabel ?? strings.revoke,
                     onRevoke: widget.onRevoke!,
                   ),
 

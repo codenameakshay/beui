@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_strings.dart';
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
@@ -264,7 +265,7 @@ class BeuiMessageScroller extends StatefulWidget {
     this.padding,
     this.scrollPhysics,
     this.showJumpToLatest = true,
-    this.jumpToLatestLabel = 'Jump to latest',
+    this.jumpToLatestLabel,
     this.onUnreadCountChange,
     super.key,
   }) : itemCount = null,
@@ -303,7 +304,7 @@ class BeuiMessageScroller extends StatefulWidget {
     this.padding,
     this.scrollPhysics,
     this.showJumpToLatest = true,
-    this.jumpToLatestLabel = 'Jump to latest',
+    this.jumpToLatestLabel,
     this.onUnreadCountChange,
     super.key,
   }) : child = null,
@@ -388,8 +389,9 @@ class BeuiMessageScroller extends StatefulWidget {
   /// [onFollowChange] / [onUnreadCountChange] + [BeuiMessageScrollerState.scrollToEnd].
   final bool showJumpToLatest;
 
-  /// Accessible label and tooltip for the jump-to-latest pill.
-  final String jumpToLatestLabel;
+  /// Accessible label and tooltip for the jump-to-latest pill. Overrides
+  /// [BeuiAgentStrings.jumpToLatest] for this scroller.
+  final String? jumpToLatestLabel;
 
   /// Reports the number of messages that have arrived since the reader left
   /// the live edge. Fires with 0 when the reader returns.
@@ -907,7 +909,9 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
             child: Align(
               child: _JumpToLatest(
                 visible: widget.followOutput && !isFollowing,
-                label: widget.jumpToLatestLabel,
+                label:
+                    widget.jumpToLatestLabel ??
+                    BeuiAgentTheme.of(context).strings.jumpToLatest,
                 unread: _unread,
                 colors: colors,
                 onTap: () {

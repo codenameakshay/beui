@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_agent_status_colors.dart';
+import '../theme/beui_agent_strings.dart';
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
@@ -131,10 +132,10 @@ class BeuiStreamingResponse extends StatefulWidget {
     this.onAnnounce,
     this.showActions = true,
     this.onContinue,
-    this.errorMessage = 'Response failed',
-    this.stoppedMessage = 'Response stopped',
-    this.retryLabel = 'Retry',
-    this.continueLabel = 'Continue',
+    this.errorMessage,
+    this.stoppedMessage,
+    this.retryLabel,
+    this.continueLabel,
     this.placeholder,
     this.hasContent,
     super.key,
@@ -238,16 +239,20 @@ class BeuiStreamingResponse extends StatefulWidget {
   final VoidCallback? onContinue;
 
   /// Short message shown beside the destructive icon in the error notice.
-  final String errorMessage;
+  /// Overrides [BeuiAgentStrings.responseFailed] for this response.
+  final String? errorMessage;
 
   /// Short message shown beside the neutral icon in the stopped notice.
-  final String stoppedMessage;
+  /// Overrides [BeuiAgentStrings.responseStopped] for this response.
+  final String? stoppedMessage;
 
-  /// Label for the inline retry control in the error notice.
-  final String retryLabel;
+  /// Label for the inline retry control in the error notice. Overrides
+  /// [BeuiAgentStrings.retry] for this response.
+  final String? retryLabel;
 
-  /// Label for the inline continue control in the stopped notice.
-  final String continueLabel;
+  /// Label for the inline continue control in the stopped notice. Overrides
+  /// [BeuiAgentStrings.continueAction] for this response.
+  final String? continueLabel;
 
   /// Shown in place of [child] before the first token arrives (C14).
   ///
@@ -441,6 +446,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final agent = BeuiAgentTheme.of(context);
+    final strings = agent.strings;
     final reduce = MediaQuery.disableAnimationsOf(context);
     final contentColor = colors.foreground.withValues(alpha: 0.9);
 
@@ -534,10 +540,12 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                 alignment: AlignmentDirectional.centerStart,
                 child: _StatusNotice(
                   error: _error,
-                  message: _error ? widget.errorMessage : widget.stoppedMessage,
+                  message: _error
+                      ? (widget.errorMessage ?? strings.responseFailed)
+                      : (widget.stoppedMessage ?? strings.responseStopped),
                   actionLabel: _error
-                      ? widget.retryLabel
-                      : widget.continueLabel,
+                      ? (widget.retryLabel ?? strings.retry)
+                      : (widget.continueLabel ?? strings.continueAction),
                   onAction: _error ? widget.onRetry : widget.onContinue,
                   colors: colors,
                   statusColors: agent.statusColorsFor(theme.brightness),
@@ -582,7 +590,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                       children: [
                         if (_canCopy)
                           _ResponseAction(
-                            label: _copied ? 'Copied' : 'Copy response',
+                            label: _copied ? strings.copied : strings.copy,
                             // C23. "Copied" used to swap a label on a node that
                             // was not live, so the confirmation was visual-only.
                             announce: _copied,
@@ -623,7 +631,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                           ),
                         if (_complete) ...[
                           _ResponseAction(
-                            label: 'Helpful',
+                            label: strings.helpful,
                             pressed: _upPressed,
                             hovered: _upHovered,
                             active:
@@ -648,7 +656,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                             ),
                           ),
                           _ResponseAction(
-                            label: 'Not helpful',
+                            label: strings.notHelpful,
                             pressed: _downPressed,
                             hovered: _downHovered,
                             active:
@@ -1083,7 +1091,7 @@ class _SourcesToggleState extends State<_SourcesToggle> {
     final colors = widget.colors;
     final agent = BeuiAgentTheme.of(context);
     final fg = widget.hovered ? colors.foreground : colors.mutedForeground;
-    final label = widget.count == 1 ? '1 source' : '${widget.count} sources';
+    final label = agent.strings.showSources(widget.count);
 
     // C8/T9: outermost, so the slop is reachable — see _ResponseAction.
     return BeuiMinHitTarget(

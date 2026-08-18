@@ -506,6 +506,58 @@ void main() {
       expect(find.text('Nothing planned'), findsOneWidget);
       expect(find.text('No tasks yet'), findsNothing);
     });
+
+    testWidgets('a themed BeuiAgentStrings re-spells the empty description', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          items: const [],
+          extensions: [
+            BeuiColors.light(),
+            const BeuiAgentTheme(
+              strings: BeuiAgentStrings(
+                todoEmptyDescription: 'Le plan apparaîtra ici.',
+              ),
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Le plan apparaîtra ici.'), findsOneWidget);
+    });
+
+    testWidgets(
+      'explicit emptyDescription beats the theme string, which beats nothing',
+      (tester) async {
+        // Explicit widget param wins over the theme string.
+        await tester.pumpWidget(
+          _host(
+            items: const [],
+            emptyDescription: 'Widget wins',
+            extensions: [
+              BeuiColors.light(),
+              const BeuiAgentTheme(
+                strings: BeuiAgentStrings(todoEmptyDescription: 'Theme loses'),
+              ),
+            ],
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Widget wins'), findsOneWidget);
+        expect(find.text('Theme loses'), findsNothing);
+
+        // With nothing supplied at all, the theme string (default English
+        // copy here, since no theme is installed) still renders — the empty
+        // state is never bare.
+        await tester.pumpWidget(_host(items: const []));
+        await tester.pumpAndSettle();
+        expect(
+          find.text('Tasks will appear here as the agent plans its work.'),
+          findsOneWidget,
+        );
+      },
+    );
   });
 
   // A28 — the empty state orients instead of shrugging.

@@ -580,11 +580,17 @@ void main() {
           theme: ThemeData.light().copyWith(
             extensions: [
               BeuiColors.light(),
-              const BeuiAgentTheme(
+              BeuiAgentTheme(
                 strings: BeuiAgentStrings(
                   statusFailed: 'Échec',
                   activityRanTools: _frenchRanTools,
                   activityMoreResults: _frenchMore,
+                  // The failure summary's "Failed · <detail>" composition is
+                  // its own themeable role (BeuiAgentStrings.
+                  // activityFailedSummary) rather than being assembled from
+                  // statusFailed at call time — so a full re-spelling
+                  // supplies both.
+                  activityFailedSummary: (detail) => 'Échec · $detail',
                 ),
               ),
             ],

@@ -66,6 +66,7 @@ class BeuiAgentStrings {
     this.alwaysAllow = 'Always allow',
     this.deny = 'Deny',
     this.viewDetails = 'View details',
+    this.revoke = 'Revoke',
     // Shared status words.
     this.statusApprovalRequired = 'Approval required',
     this.statusApproving = 'Approving',
@@ -80,6 +81,9 @@ class BeuiAgentStrings {
     this.statusChangesRequested = 'Changes requested',
     this.statusResponseSubmitted = 'Response submitted',
     this.statusInputRequired = 'Input required',
+    this.statusExpired = 'Expired',
+    this.statusTimedOut = 'Timed out',
+    this.statusAlwaysAllowed = 'Always allowed',
     // Approval card.
     this.approvalCardTitle = 'Approval required',
     this.approve = 'Approve',
@@ -102,6 +106,8 @@ class BeuiAgentStrings {
     this.todoListLabel = 'Agent task list',
     this.todoListTitle = 'To-dos',
     this.todoEmpty = 'No tasks yet',
+    this.todoEmptyDescription =
+        'Tasks will appear here as the agent plans its work.',
     this.todoStatusPending = 'Pending',
     this.todoStatusInProgress = 'In progress',
     this.todoStatusCompleted = 'Completed',
@@ -121,12 +127,25 @@ class BeuiAgentStrings {
     this.activityRanTools = _activityRanTools,
     this.activityToolCallsAndMessages = _activityToolCallsAndMessages,
     this.activityCompletedSteps = _activityCompletedSteps,
+    this.activityFailedSummary = _activityFailedSummary,
+    this.activityCancelledSummary = _activityCancelledSummary,
     this.activityMoreResults = _activityMoreResults,
     this.durationSeconds = _durationSeconds,
     this.durationMinutes = _durationMinutes,
     this.durationMinutesSeconds = _durationMinutesSeconds,
     this.diffAdditions = _diffAdditions,
     this.diffDeletions = _diffDeletions,
+    // Streaming response.
+    this.copy = 'Copy response',
+    this.retry = 'Retry',
+    this.continueAction = 'Continue',
+    this.helpful = 'Helpful',
+    this.notHelpful = 'Not helpful',
+    this.showSources = _showSources,
+    this.responseFailed = 'Response failed',
+    this.responseStopped = 'Response stopped',
+    // Message scroller.
+    this.jumpToLatest = 'Jump to latest',
   });
 
   // ── Tool approval ─────────────────────────────────────────────────────────
@@ -146,6 +165,10 @@ class BeuiAgentStrings {
 
   /// Expands the collapsed parameter panel.
   final String viewDetails;
+
+  /// Withdraws a standing [BeuiToolApprovalGrant.always] grant. Shown on the
+  /// "Always allowed · Revoke" row once a tool has a standing permission.
+  final String revoke;
 
   // ── Shared status words ───────────────────────────────────────────────────
 
@@ -189,6 +212,20 @@ class BeuiAgentStrings {
 
   /// `BeuiApprovalCard` badge while a question awaits an answer.
   final String statusInputRequired;
+
+  /// `BeuiToolApproval` badge for [BeuiToolApprovalStatus.expired] — the
+  /// request lapsed with nothing having run.
+  final String statusExpired;
+
+  /// `BeuiToolApproval` badge for [BeuiToolApprovalStatus.timedOut] — the
+  /// request was granted but execution exceeded its budget.
+  final String statusTimedOut;
+
+  /// `BeuiToolApproval` badge for an approved/complete card whose
+  /// [BeuiToolApprovalGrant] is [BeuiToolApprovalGrant.always] — says *which*
+  /// grant was used, so a standing permission is never silently
+  /// indistinguishable from a one-off (the audit's A43).
+  final String statusAlwaysAllowed;
 
   // ── Approval card ─────────────────────────────────────────────────────────
 
@@ -251,8 +288,13 @@ class BeuiAgentStrings {
   /// Default visible title.
   final String todoListTitle;
 
-  /// Empty state.
+  /// Empty state headline.
   final String todoEmpty;
+
+  /// Supporting line under [todoEmpty] explaining what will fill the panel and
+  /// when. `BeuiTodoList.emptyDescription` (a per-instance override) wins over
+  /// this when supplied; this wins over rendering no supporting line at all.
+  final String todoEmptyDescription;
 
   /// Semantics word for an unstarted row.
   final String todoStatusPending;
@@ -313,6 +355,17 @@ class BeuiAgentStrings {
   /// Collapsed summary for a stepped run.
   final String Function(int count) activityCompletedSteps;
 
+  /// Whole summary line for [BeuiAgentActivityStatus.failed], given the
+  /// already-composed detail text ("Ran 3 tools"). Default composes
+  /// `"Failed · <detail>"`. `BeuiAgentActivity.failedSummary` (a per-instance
+  /// override) wins over this.
+  final String Function(String detail) activityFailedSummary;
+
+  /// Whole summary line for [BeuiAgentActivityStatus.cancelled]. Default
+  /// composes `"Cancelled · <detail>"`. `BeuiAgentActivity.cancelledSummary`
+  /// (a per-instance override) wins over this.
+  final String Function(String detail) activityCancelledSummary;
+
   /// Overflow row under truncated search results ("+3 more").
   final String Function(int count) activityMoreResults;
 
@@ -330,6 +383,45 @@ class BeuiAgentStrings {
 
   /// Removed-line counter on a tool row ("−7" — U+2212, not a hyphen).
   final String Function(int count) diffDeletions;
+
+  // ── Streaming response ────────────────────────────────────────────────────
+
+  /// Copies the response text. Doubles as tooltip and semantics label.
+  /// Distinct from [copyResult] ("Copy result"), which is `BeuiToolResult`'s
+  /// own copy action.
+  final String copy;
+
+  /// Re-runs a failed or unsatisfactory response. Distinct from [runAgain]
+  /// ("Run again"), which is `BeuiToolResult`'s own retry action.
+  final String retry;
+
+  /// Resumes a [BeuiStreamingResponseStatus.stopped] response. Named
+  /// `continueAction` because `continue` is a reserved word.
+  final String continueAction;
+
+  /// Thumbs-up feedback control.
+  final String helpful;
+
+  /// Thumbs-down feedback control.
+  final String notHelpful;
+
+  /// The sources-disclosure toggle label, given the citation count
+  /// ("1 source" / "3 sources").
+  final String Function(int count) showSources;
+
+  /// Message beside the destructive icon when [BeuiStreamingResponse.status]
+  /// is [BeuiStreamingResponseStatus.error].
+  final String responseFailed;
+
+  /// Message beside the neutral icon when [BeuiStreamingResponse.status] is
+  /// [BeuiStreamingResponseStatus.stopped].
+  final String responseStopped;
+
+  // ── Message scroller ──────────────────────────────────────────────────────
+
+  /// Label and tooltip for `BeuiMessageScroller`'s "jump to latest" pill,
+  /// shown once the reader has scrolled away from the live edge.
+  final String jumpToLatest;
 
   // ── Defaults ──────────────────────────────────────────────────────────────
   //
@@ -362,6 +454,11 @@ class BeuiAgentStrings {
   static String _activityCompletedSteps(int count) =>
       'Completed $count ${count == 1 ? 'step' : 'steps'}';
 
+  static String _activityFailedSummary(String detail) => 'Failed · $detail';
+
+  static String _activityCancelledSummary(String detail) =>
+      'Cancelled · $detail';
+
   static String _activityMoreResults(int count) => '+$count more';
 
   static String _durationSeconds(int seconds) => '${seconds}s';
@@ -376,6 +473,9 @@ class BeuiAgentStrings {
   // U+2212 MINUS SIGN, matching the tabular figures beside it.
   static String _diffDeletions(int count) => '−$count';
 
+  static String _showSources(int count) =>
+      count == 1 ? '1 source' : '$count sources';
+
   /// Returns a copy with the given strings replaced.
   BeuiAgentStrings copyWith({
     String? toolApprovalTitle,
@@ -383,6 +483,7 @@ class BeuiAgentStrings {
     String? alwaysAllow,
     String? deny,
     String? viewDetails,
+    String? revoke,
     String? statusApprovalRequired,
     String? statusApproving,
     String? statusApproved,
@@ -396,6 +497,9 @@ class BeuiAgentStrings {
     String? statusChangesRequested,
     String? statusResponseSubmitted,
     String? statusInputRequired,
+    String? statusExpired,
+    String? statusTimedOut,
+    String? statusAlwaysAllowed,
     String? approvalCardTitle,
     String? approve,
     String? requestChanges,
@@ -415,6 +519,7 @@ class BeuiAgentStrings {
     String? todoListLabel,
     String? todoListTitle,
     String? todoEmpty,
+    String? todoEmptyDescription,
     String? todoStatusPending,
     String? todoStatusInProgress,
     String? todoStatusCompleted,
@@ -432,12 +537,23 @@ class BeuiAgentStrings {
     String Function(int count)? activityRanTools,
     String Function(int tools, int messages)? activityToolCallsAndMessages,
     String Function(int count)? activityCompletedSteps,
+    String Function(String detail)? activityFailedSummary,
+    String Function(String detail)? activityCancelledSummary,
     String Function(int count)? activityMoreResults,
     String Function(int seconds)? durationSeconds,
     String Function(int minutes)? durationMinutes,
     String Function(int minutes, int seconds)? durationMinutesSeconds,
     String Function(int count)? diffAdditions,
     String Function(int count)? diffDeletions,
+    String? copy,
+    String? retry,
+    String? continueAction,
+    String? helpful,
+    String? notHelpful,
+    String Function(int count)? showSources,
+    String? responseFailed,
+    String? responseStopped,
+    String? jumpToLatest,
   }) {
     return BeuiAgentStrings(
       toolApprovalTitle: toolApprovalTitle ?? this.toolApprovalTitle,
@@ -445,6 +561,7 @@ class BeuiAgentStrings {
       alwaysAllow: alwaysAllow ?? this.alwaysAllow,
       deny: deny ?? this.deny,
       viewDetails: viewDetails ?? this.viewDetails,
+      revoke: revoke ?? this.revoke,
       statusApprovalRequired:
           statusApprovalRequired ?? this.statusApprovalRequired,
       statusApproving: statusApproving ?? this.statusApproving,
@@ -461,6 +578,9 @@ class BeuiAgentStrings {
       statusResponseSubmitted:
           statusResponseSubmitted ?? this.statusResponseSubmitted,
       statusInputRequired: statusInputRequired ?? this.statusInputRequired,
+      statusExpired: statusExpired ?? this.statusExpired,
+      statusTimedOut: statusTimedOut ?? this.statusTimedOut,
+      statusAlwaysAllowed: statusAlwaysAllowed ?? this.statusAlwaysAllowed,
       approvalCardTitle: approvalCardTitle ?? this.approvalCardTitle,
       approve: approve ?? this.approve,
       requestChanges: requestChanges ?? this.requestChanges,
@@ -481,6 +601,7 @@ class BeuiAgentStrings {
       todoListLabel: todoListLabel ?? this.todoListLabel,
       todoListTitle: todoListTitle ?? this.todoListTitle,
       todoEmpty: todoEmpty ?? this.todoEmpty,
+      todoEmptyDescription: todoEmptyDescription ?? this.todoEmptyDescription,
       todoStatusPending: todoStatusPending ?? this.todoStatusPending,
       todoStatusInProgress: todoStatusInProgress ?? this.todoStatusInProgress,
       todoStatusCompleted: todoStatusCompleted ?? this.todoStatusCompleted,
@@ -501,6 +622,10 @@ class BeuiAgentStrings {
           activityToolCallsAndMessages ?? this.activityToolCallsAndMessages,
       activityCompletedSteps:
           activityCompletedSteps ?? this.activityCompletedSteps,
+      activityFailedSummary:
+          activityFailedSummary ?? this.activityFailedSummary,
+      activityCancelledSummary:
+          activityCancelledSummary ?? this.activityCancelledSummary,
       activityMoreResults: activityMoreResults ?? this.activityMoreResults,
       durationSeconds: durationSeconds ?? this.durationSeconds,
       durationMinutes: durationMinutes ?? this.durationMinutes,
@@ -508,6 +633,15 @@ class BeuiAgentStrings {
           durationMinutesSeconds ?? this.durationMinutesSeconds,
       diffAdditions: diffAdditions ?? this.diffAdditions,
       diffDeletions: diffDeletions ?? this.diffDeletions,
+      copy: copy ?? this.copy,
+      retry: retry ?? this.retry,
+      continueAction: continueAction ?? this.continueAction,
+      helpful: helpful ?? this.helpful,
+      notHelpful: notHelpful ?? this.notHelpful,
+      showSources: showSources ?? this.showSources,
+      responseFailed: responseFailed ?? this.responseFailed,
+      responseStopped: responseStopped ?? this.responseStopped,
+      jumpToLatest: jumpToLatest ?? this.jumpToLatest,
     );
   }
 
@@ -528,6 +662,7 @@ class BeuiAgentStrings {
         other.alwaysAllow == alwaysAllow &&
         other.deny == deny &&
         other.viewDetails == viewDetails &&
+        other.revoke == revoke &&
         other.statusApprovalRequired == statusApprovalRequired &&
         other.statusApproving == statusApproving &&
         other.statusApproved == statusApproved &&
@@ -541,6 +676,9 @@ class BeuiAgentStrings {
         other.statusChangesRequested == statusChangesRequested &&
         other.statusResponseSubmitted == statusResponseSubmitted &&
         other.statusInputRequired == statusInputRequired &&
+        other.statusExpired == statusExpired &&
+        other.statusTimedOut == statusTimedOut &&
+        other.statusAlwaysAllowed == statusAlwaysAllowed &&
         other.approvalCardTitle == approvalCardTitle &&
         other.approve == approve &&
         other.requestChanges == requestChanges &&
@@ -560,6 +698,7 @@ class BeuiAgentStrings {
         other.todoListLabel == todoListLabel &&
         other.todoListTitle == todoListTitle &&
         other.todoEmpty == todoEmpty &&
+        other.todoEmptyDescription == todoEmptyDescription &&
         other.todoStatusPending == todoStatusPending &&
         other.todoStatusInProgress == todoStatusInProgress &&
         other.todoStatusCompleted == todoStatusCompleted &&
@@ -577,12 +716,23 @@ class BeuiAgentStrings {
         other.activityRanTools == activityRanTools &&
         other.activityToolCallsAndMessages == activityToolCallsAndMessages &&
         other.activityCompletedSteps == activityCompletedSteps &&
+        other.activityFailedSummary == activityFailedSummary &&
+        other.activityCancelledSummary == activityCancelledSummary &&
         other.activityMoreResults == activityMoreResults &&
         other.durationSeconds == durationSeconds &&
         other.durationMinutes == durationMinutes &&
         other.durationMinutesSeconds == durationMinutesSeconds &&
         other.diffAdditions == diffAdditions &&
-        other.diffDeletions == diffDeletions;
+        other.diffDeletions == diffDeletions &&
+        other.copy == copy &&
+        other.retry == retry &&
+        other.continueAction == continueAction &&
+        other.helpful == helpful &&
+        other.notHelpful == notHelpful &&
+        other.showSources == showSources &&
+        other.responseFailed == responseFailed &&
+        other.responseStopped == responseStopped &&
+        other.jumpToLatest == jumpToLatest;
   }
 
   @override
@@ -592,6 +742,7 @@ class BeuiAgentStrings {
     alwaysAllow,
     deny,
     viewDetails,
+    revoke,
     statusApprovalRequired,
     statusApproving,
     statusApproved,
@@ -605,6 +756,9 @@ class BeuiAgentStrings {
     statusChangesRequested,
     statusResponseSubmitted,
     statusInputRequired,
+    statusExpired,
+    statusTimedOut,
+    statusAlwaysAllowed,
     approvalCardTitle,
     approve,
     requestChanges,
@@ -624,6 +778,7 @@ class BeuiAgentStrings {
     todoListLabel,
     todoListTitle,
     todoEmpty,
+    todoEmptyDescription,
     todoStatusPending,
     todoStatusInProgress,
     todoStatusCompleted,
@@ -641,11 +796,22 @@ class BeuiAgentStrings {
     activityRanTools,
     activityToolCallsAndMessages,
     activityCompletedSteps,
+    activityFailedSummary,
+    activityCancelledSummary,
     activityMoreResults,
     durationSeconds,
     durationMinutes,
     durationMinutesSeconds,
     diffAdditions,
     diffDeletions,
+    copy,
+    retry,
+    continueAction,
+    helpful,
+    notHelpful,
+    showSources,
+    responseFailed,
+    responseStopped,
+    jumpToLatest,
   ]);
 }

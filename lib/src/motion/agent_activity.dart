@@ -408,9 +408,9 @@ String _summaryTextFor({
     case BeuiAgentActivityStatus.complete:
       return detail;
     case BeuiAgentActivityStatus.failed:
-      return failedOverride ?? '${strings.statusFailed} · $detail';
+      return failedOverride ?? strings.activityFailedSummary(detail);
     case BeuiAgentActivityStatus.cancelled:
-      return cancelledOverride ?? '${strings.statusCancelled} · $detail';
+      return cancelledOverride ?? strings.activityCancelledSummary(detail);
   }
 }
 
@@ -527,14 +527,15 @@ class BeuiAgentActivity extends StatefulWidget {
   /// Replaces the whole summary line when [status] is
   /// [BeuiAgentActivityStatus.failed].
   ///
-  /// The default composes `"${BeuiAgentStrings.statusFailed} · <detail>"` —
-  /// e.g. `"Failed · Ran 3 tools"`. Set this to spell the failure out
-  /// ("Failed · rate limited after 3 tools").
+  /// Overrides [BeuiAgentStrings.activityFailedSummary], which composes
+  /// `"Failed · <detail>"` by default — e.g. `"Failed · Ran 3 tools"`. Set
+  /// this to spell the failure out ("Failed · rate limited after 3 tools").
   final String? failedSummary;
 
   /// Replaces the whole summary line when [status] is
-  /// [BeuiAgentActivityStatus.cancelled]. Defaults to
-  /// `"${BeuiAgentStrings.statusCancelled} · <detail>"`.
+  /// [BeuiAgentActivityStatus.cancelled]. Overrides
+  /// [BeuiAgentStrings.activityCancelledSummary], which composes
+  /// `"Cancelled · <detail>"` by default.
   final String? cancelledSummary;
 
   /// Maximum visible activity height before the stream begins gliding

@@ -111,6 +111,28 @@ void main() {
       expect(result, '−7');
       expect(result, isNot('-7'));
     });
+
+    test('activityFailedSummary', () {
+      expect(
+        strings.activityFailedSummary('Ran 3 tools'),
+        'Failed · Ran 3 tools',
+      );
+    });
+
+    test('activityCancelledSummary', () {
+      expect(
+        strings.activityCancelledSummary('Ran 3 tools'),
+        'Cancelled · Ran 3 tools',
+      );
+    });
+
+    test('showSources singular', () {
+      expect(strings.showSources(1), '1 source');
+    });
+
+    test('showSources plural', () {
+      expect(strings.showSources(3), '3 sources');
+    });
   });
 
   group('plain string defaults match the widgets current copy', () {
@@ -122,6 +144,10 @@ void main() {
       expect(strings.deny, 'Deny');
       expect(strings.viewDetails, 'View details');
       expect(strings.toolApprovalTitle, 'Allow this tool to run?');
+      expect(strings.revoke, 'Revoke');
+      expect(strings.statusExpired, 'Expired');
+      expect(strings.statusTimedOut, 'Timed out');
+      expect(strings.statusAlwaysAllowed, 'Always allowed');
     });
 
     test('approval card', () {
@@ -141,6 +167,24 @@ void main() {
       expect(strings.todoListTitle, 'To-dos');
       expect(strings.todoEmpty, 'No tasks yet');
       expect(strings.todoListLabel, 'Agent task list');
+      expect(
+        strings.todoEmptyDescription,
+        'Tasks will appear here as the agent plans its work.',
+      );
+    });
+
+    test('streaming response', () {
+      expect(strings.copy, 'Copy response');
+      expect(strings.retry, 'Retry');
+      expect(strings.continueAction, 'Continue');
+      expect(strings.helpful, 'Helpful');
+      expect(strings.notHelpful, 'Not helpful');
+      expect(strings.responseFailed, 'Response failed');
+      expect(strings.responseStopped, 'Response stopped');
+    });
+
+    test('message scroller', () {
+      expect(strings.jumpToLatest, 'Jump to latest');
     });
 
     test('shared status words', () {
