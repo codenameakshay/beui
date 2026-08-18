@@ -4,10 +4,16 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_status_colors.dart';
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
+import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_disclosure.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
+import '_hit_target.dart';
+import '_transcript.dart';
 import 'citations.dart';
 
 // ---------------------------------------------------------------------------
@@ -23,8 +29,22 @@ enum BeuiStreamingResponseStatus {
   /// Stream finished successfully — feedback + actions may appear.
   complete,
 
-  /// Stream finished with an error — retry/copy may still appear.
+  /// Stream finished with an error.
+  ///
+  /// Renders a destructive-tinted notice under the partial answer and, when
+  /// [BeuiStreamingResponse.onRetry] is supplied, a labelled retry control.
+  /// Before the UX pass this state was pixel-identical to [complete] and
+  /// announced as plain `'Response'` — a failed answer looked finished (C1).
   error,
+
+  /// The reader (or the host) stopped the stream before it finished.
+  ///
+  /// Distinct from [complete] because the answer is *truncated*, and distinct
+  /// from [error] because nothing went wrong. Renders a neutral notice and,
+  /// when [BeuiStreamingResponse.onContinue] is supplied, a control to resume.
+  /// Both demos previously flipped to [complete] on stop, presenting a
+  /// half-written answer as a finished one (C13).
+  stopped,
 }
 
 /// Thumb-vote state for a completed response
@@ -55,25 +75,18 @@ const _actionsEnterMotion = CurvedMotion(
   beuiEaseOut,
 );
 
-/// Actions bar exit — opacity only, same 220ms in source (exit drops y).
+/// Actions bar exit — 140ms, deliberately faster than the 220ms entrance per
+/// the repo motion rules. The source leaves the exit on Framer's default,
+/// which lands at the same 220ms; matching the rest of the library here costs
+/// no fidelity anyone can see and stops the row lingering.
 const _actionsExitMotion = CurvedMotion(
-  Duration(milliseconds: 220),
+  Duration(milliseconds: 140),
   beuiEaseOut,
 );
 
 /// Reduced-motion actions fade — 120ms (source `duration: 0.12`).
 const _actionsReduceMotion = CurvedMotion(
   Duration(milliseconds: 120),
-  beuiEaseOut,
-);
-
-/// Disclosure open 220ms / close 140ms EASE_OUT (source `AgentDisclosure`).
-const _disclosureOpenMotion = CurvedMotion(
-  Duration(milliseconds: 220),
-  beuiEaseOut,
-);
-const _disclosureCloseMotion = CurvedMotion(
-  Duration(milliseconds: 140),
   beuiEaseOut,
 );
 
@@ -113,8 +126,17 @@ class BeuiStreamingResponse extends StatefulWidget {
     this.feedback,
     this.defaultFeedback = BeuiStreamingResponseFeedback.none,
     this.onFeedbackChange,
-    this.announce = true,
+    this.announce,
+    this.announceText,
+    this.onAnnounce,
     this.showActions = true,
+    this.onContinue,
+    this.errorMessage = 'Response failed',
+    this.stoppedMessage = 'Response stopped',
+    this.retryLabel = 'Retry',
+    this.continueLabel = 'Continue',
+    this.placeholder,
+    this.hasContent,
     super.key,
   });
 
@@ -166,13 +188,81 @@ class BeuiStreamingResponse extends StatefulWidget {
   /// toggled off) on every feedback press.
   final ValueChanged<BeuiStreamingResponseFeedback>? onFeedbackChange;
 
-  /// When true, the content region is a polite live region so assistive tech
-  /// announces streamed text. Set false when a surrounding conversation log
-  /// already announces (source `announce`).
-  final bool announce;
+  /// Whether the streamed text is announced to assistive tech (source
+  /// `announce`).
+  ///
+  /// Null (the default) means yes. **Where** it is announced resolves
+  /// automatically: when a [BeuiMessageScroller] is above this widget, the
+  /// transcript owns the conversation's single live region and this response
+  /// pushes whole sentences into it; with no scroller, the response opens a
+  /// live node of its own so a standalone answer still announces.
+  ///
+  /// Either way there is exactly one live region per conversation. This
+  /// replaces a `true` default that, combined with the scroller's own nested
+  /// regions, produced three to five regions per transcript, none of which
+  /// ever announced the streamed text because every label was a constant (C6).
+  ///
+  /// Pass `false` for silence — for a decorative preview, or when the host app
+  /// announces on its own (see [onAnnounce]).
+  ///
+  /// Announcements need the text: supply [announceText] (or [copyText]).
+  /// Without either, nothing is announced regardless of this flag.
+  final bool? announce;
+
+  /// Plain text of the response so far, used for announcements.
+  ///
+  /// [child] is a widget tree, so the component cannot read the answer out of
+  /// it. Feed the same string you are rendering. Falls back to [copyText] when
+  /// null — for the common case where the full text is already supplied for
+  /// the copy action, announcements come for free.
+  ///
+  /// The text is split at sentence boundaries and throttled (see
+  /// [BeuiStreamAnnouncer]), so a 16ms token cadence produces about one
+  /// announcement per sentence rather than sixty per second.
+  final String? announceText;
+
+  /// Called with each announcement chunk, at sentence boundaries.
+  ///
+  /// The escape hatch for hosts that own their own live region or want to log
+  /// what a screen reader would say. Fires regardless of how [announce]
+  /// resolves, so it also works as a pure observation hook.
+  final ValueChanged<String>? onAnnounce;
 
   /// Hides the built-in completion actions without changing response status.
   final bool showActions;
+
+  /// Resumes a [BeuiStreamingResponseStatus.stopped] response.
+  ///
+  /// Shows a labelled control in the stopped notice when non-null. Leave null
+  /// when stopping is final and only [onRetry] makes sense.
+  final VoidCallback? onContinue;
+
+  /// Short message shown beside the destructive icon in the error notice.
+  final String errorMessage;
+
+  /// Short message shown beside the neutral icon in the stopped notice.
+  final String stoppedMessage;
+
+  /// Label for the inline retry control in the error notice.
+  final String retryLabel;
+
+  /// Label for the inline continue control in the stopped notice.
+  final String continueLabel;
+
+  /// Shown in place of [child] before the first token arrives (C14).
+  ///
+  /// Gives a turn **one** indicator identity: pass the same thinking indicator
+  /// here that you would render while pending, and it cross-fades into the
+  /// first token instead of the reader seeing shimmer → empty box → text.
+  /// Ignored once [hasContent] resolves true.
+  final Widget? placeholder;
+
+  /// Whether the response has produced any content yet.
+  ///
+  /// Null (the default) derives it from [announceText] / [copyText] being
+  /// non-empty. Set it explicitly when neither is supplied but a [placeholder]
+  /// is.
+  final bool? hasContent;
 
   @override
   State<BeuiStreamingResponse> createState() => _BeuiStreamingResponseState();
@@ -200,6 +290,8 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
 
   bool get _streaming => widget.status == BeuiStreamingResponseStatus.streaming;
   bool get _complete => widget.status == BeuiStreamingResponseStatus.complete;
+  bool get _error => widget.status == BeuiStreamingResponseStatus.error;
+  bool get _stopped => widget.status == BeuiStreamingResponseStatus.stopped;
   bool get _canCopy => widget.copyText != null || widget.onCopy != null;
   bool get _hasSources => widget.sources.isNotEmpty;
   bool get _sourcesControlled => widget.sourcesOpen != null;
@@ -208,10 +300,47 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
   BeuiStreamingResponseFeedback get _currentFeedback =>
       widget.feedback ?? _internalFeedback;
 
+  /// The plain text backing announcements, if any.
+  String get _announceSource => widget.announceText ?? widget.copyText ?? '';
+
+  /// Whether the response has produced content (C14).
+  bool get _hasContent => widget.hasContent ?? _announceSource.isNotEmpty;
+
   bool get _shouldShowActions =>
       widget.showActions &&
       !_streaming &&
-      (_canCopy || widget.onRetry != null || _complete || _hasSources);
+      (_canCopy ||
+          widget.onRetry != null ||
+          _complete ||
+          _error ||
+          _stopped ||
+          _hasSources);
+
+  /// Whether a notice (error / stopped) is shown under the content.
+  bool get _hasNotice => _error || _stopped;
+
+  // -- announcements (C6) ---------------------------------------------------
+
+  BeuiStreamAnnouncer? _announcer;
+
+  /// The transcript's announcement sink, when one is above us. Non-null means
+  /// we push into the conversation's shared region instead of opening our own.
+  ValueChanged<String>? _sink;
+
+  /// Whether to announce at all. Separate from [_sink] on purpose: a transcript
+  /// changes *where* the words go, not *whether* they are spoken. Conflating
+  /// the two is what made the first cut of this fix silently drop every
+  /// announcement inside a scroller.
+  bool _announceEnabled = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final scope = BeuiTranscriptScope.maybeOf(context);
+    _sink = scope?.announce;
+    _announceEnabled = widget.announce ?? true;
+    _syncAnnouncer();
+  }
 
   @override
   void didUpdateWidget(BeuiStreamingResponse old) {
@@ -220,11 +349,53 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
         widget.sourceIdPrefix != _resolvedSourcePrefix) {
       _resolvedSourcePrefix = widget.sourceIdPrefix!;
     }
+    if (widget.announce != old.announce) {
+      _announceEnabled = widget.announce ?? true;
+    }
+    _syncAnnouncer();
+
+    // A terminal status flushes the trailing fragment: an answer that ends
+    // without punctuation, or the tail of a stopped stream, still has to be
+    // read out.
+    if (widget.status != old.status && !_streaming) {
+      _announcer?.flush();
+    }
   }
+
+  /// Creates or tears down the announcer and feeds it the current text.
+  void _syncAnnouncer() {
+    final wanted = _announceEnabled || widget.onAnnounce != null;
+    if (!wanted) {
+      _announcer?.dispose();
+      _announcer = null;
+      return;
+    }
+    _announcer ??= BeuiStreamAnnouncer(onChunk: _emitAnnouncement);
+    final text = _announceSource;
+    if (text.isNotEmpty) _announcer!.update(text);
+  }
+
+  void _emitAnnouncement(String chunk) {
+    // The observation hook fires either way, so a host can log or re-route
+    // what a reader would hear even with `announce: false`.
+    widget.onAnnounce?.call(chunk);
+    if (!_announceEnabled) return;
+    final sink = _sink;
+    if (sink != null) {
+      // A transcript owns the conversation's region — push into it rather
+      // than opening a second one.
+      sink(chunk);
+      return;
+    }
+    if (mounted) setState(() => _selfAnnouncement = chunk);
+  }
+
+  String _selfAnnouncement = '';
 
   @override
   void dispose() {
     _copyTimer?.cancel();
+    _announcer?.dispose();
     super.dispose();
   }
 
@@ -265,19 +436,44 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final theme = Theme.of(context);
+    final colors =
+        theme.extension<BeuiColors>() ??
+        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final contentColor = colors.foreground.withValues(alpha: 0.9);
 
     // Source: aria-busy while streaming; aria-live polite when announce.
-    // Flutter has no Semantics.busy — surface streaming in the label.
-    final busyLabel = _streaming ? 'Response, busy' : 'Response';
+    // Flutter has no Semantics.busy — surface the state in the label. C1/C13:
+    // failure and truncation are now *named*, not left indistinguishable from
+    // a finished answer.
+    final statusLabel = switch (widget.status) {
+      BeuiStreamingResponseStatus.streaming => 'Response, busy',
+      BeuiStreamingResponseStatus.complete => 'Response',
+      BeuiStreamingResponseStatus.error => 'Response, failed',
+      BeuiStreamingResponseStatus.stopped => 'Response, stopped',
+    };
+
+    // C14. One indicator identity: the placeholder cross-fades into the first
+    // token instead of the reader seeing shimmer → empty box → text. Opacity
+    // only, so reduced motion keeps the transition.
+    final placeholder = widget.placeholder;
+    final Widget body = (placeholder != null && !_hasContent)
+        ? placeholder
+        : widget.child;
+    final content = placeholder == null
+        ? body
+        : AnimatedSwitcher(
+            duration: const Duration(milliseconds: 180),
+            switchInCurve: beuiEaseOut,
+            switchOutCurve: beuiEaseOut,
+            child: KeyedSubtree(key: ValueKey<bool>(_hasContent), child: body),
+          );
 
     return Semantics(
       container: true,
-      label: busyLabel,
-      liveRegion: widget.announce,
+      label: statusLabel,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
@@ -296,131 +492,213 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                 size: agent.layout.iconSize,
                 color: contentColor,
               ),
-              child: widget.child,
+              child: content,
+            ),
+          ),
+
+          // C6. Our own live node, used only when no transcript owns one.
+          //
+          // A separate node rather than a `liveRegion` on the content, so the
+          // sentence chunk is announced *once* instead of the reader hearing
+          // the label and then the same words again from the Text below it.
+          // 1×1 rather than 0×0: Flutter drops semantics nodes with an empty
+          // rect during tree compilation, so a zero-size live region is never
+          // delivered to the platform at all.
+          if (_selfAnnouncement.isNotEmpty && _sink == null)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: SizedBox(
+                width: 1,
+                height: 1,
+                child: IgnorePointer(
+                  child: Semantics(
+                    liveRegion: true,
+                    label: _selfAnnouncement,
+                    child: const SizedBox.expand(),
+                  ),
+                ),
+              ),
+            ),
+
+          // ----- failure / stopped notice (C1, C13) -----
+          BeuiAgentDisclosureInternal(
+            open: _hasNotice,
+            reduce: reduce,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              // The shared disclosure reveals through `Align(topCenter)`, which
+              // centres a child that does not stretch — and the notice is
+              // min-width by design. Pin it to the leading edge so it lines up
+              // with the answer above it.
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: _StatusNotice(
+                  error: _error,
+                  message: _error ? widget.errorMessage : widget.stoppedMessage,
+                  actionLabel: _error
+                      ? widget.retryLabel
+                      : widget.continueLabel,
+                  onAction: _error ? widget.onRetry : widget.onContinue,
+                  colors: colors,
+                  statusColors: agent.statusColorsFor(theme.brightness),
+                ),
+              ),
             ),
           ),
 
           // ----- completion actions -----
-          _ActionsReveal(
-            visible: _shouldShowActions,
+          // C10. The reveal now animates `heightFactor` as well as opacity and
+          // translate, so a completing response no longer shoves ~40px of
+          // transcript in one frame while a scroller is following the live
+          // edge. This is the shared disclosure the audit asked the seven
+          // copies to collapse into.
+          BeuiAgentDisclosureInternal(
+            open: _shouldShowActions,
             reduce: reduce,
+            openMotion: _actionsEnterMotion,
+            closeMotion: _actionsExitMotion,
+            reducedMotion: _actionsReduceMotion,
             child: Padding(
-              padding: const EdgeInsets.only(top: 12), // mt-3
+              // mt-3, less the 8px the taller row below now contributes.
+              padding: const EdgeInsets.only(top: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    spacing: 2, // gap-0.5
-                    children: [
-                      if (_canCopy)
-                        _ResponseAction(
-                          label: _copied ? 'Copied' : 'Copy response',
-                          pressed: _copyPressed,
-                          hovered: _copyHovered,
-                          active: false,
-                          reduce: reduce,
-                          colors: colors,
-                          onHover: (h) => setState(() => _copyHovered = h),
-                          onPressed: (p) => setState(() => _copyPressed = p),
-                          onTap: _handleCopy,
-                          child: Icon(
-                            _copied ? agent.icons.copied : agent.icons.copy,
-                            size: 14, // size-3.5
-                            color: _copyHovered
-                                ? colors.foreground
-                                : colors.mutedForeground,
-                          ),
-                        ),
-                      if (widget.onRetry != null)
-                        _ResponseAction(
-                          label: 'Retry response',
-                          pressed: _retryPressed,
-                          hovered: _retryHovered,
-                          active: false,
-                          reduce: reduce,
-                          colors: colors,
-                          onHover: (h) => setState(() => _retryHovered = h),
-                          onPressed: (p) => setState(() => _retryPressed = p),
-                          onTap: widget.onRetry!,
-                          child: Icon(
-                            agent.icons.retry,
-                            size: 14,
-                            color: _retryHovered
-                                ? colors.foreground
-                                : colors.mutedForeground,
-                          ),
-                        ),
-                      if (_complete) ...[
-                        _ResponseAction(
-                          label: 'Helpful',
-                          pressed: _upPressed,
-                          hovered: _upHovered,
-                          active:
-                              _currentFeedback ==
-                              BeuiStreamingResponseFeedback.up,
-                          toggleable: true,
-                          reduce: reduce,
-                          colors: colors,
-                          onHover: (h) => setState(() => _upHovered = h),
-                          onPressed: (p) => setState(() => _upPressed = p),
-                          onTap: () =>
-                              _setFeedback(BeuiStreamingResponseFeedback.up),
-                          child: Icon(
-                            agent.icons.thumbsUp,
-                            size: 14,
-                            color:
-                                _upHovered ||
-                                    _currentFeedback ==
-                                        BeuiStreamingResponseFeedback.up
-                                ? colors.foreground
-                                : colors.mutedForeground,
-                          ),
-                        ),
-                        _ResponseAction(
-                          label: 'Not helpful',
-                          pressed: _downPressed,
-                          hovered: _downHovered,
-                          active:
-                              _currentFeedback ==
-                              BeuiStreamingResponseFeedback.down,
-                          toggleable: true,
-                          reduce: reduce,
-                          colors: colors,
-                          onHover: (h) => setState(() => _downHovered = h),
-                          onPressed: (p) => setState(() => _downPressed = p),
-                          onTap: () =>
-                              _setFeedback(BeuiStreamingResponseFeedback.down),
-                          child: Icon(
-                            agent.icons.thumbsDown,
-                            size: 14,
-                            color:
-                                _downHovered ||
-                                    _currentFeedback ==
-                                        BeuiStreamingResponseFeedback.down
-                                ? colors.foreground
-                                : colors.mutedForeground,
-                          ),
-                        ),
-                      ],
-                      if (_hasSources)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4), // ml-1
-                          child: _SourcesToggle(
-                            open: _currentSourcesOpen,
-                            count: widget.sources.length,
-                            sources: widget.sources,
-                            hovered: _sourcesHovered,
+                  // C8/T9. The row is a full hit target tall rather than 28.
+                  // Slop alone cannot fix the vertical axis: a `RenderBox`
+                  // only offers a pointer to its children when the pointer is
+                  // inside *its own* box, so an overhang above a 28px row is
+                  // never reached. The painted 28px chips are unchanged and
+                  // centred — only the row's box grew.
+                  //
+                  // Spacing goes 2 → 6 for the horizontal axis: 44px of slop
+                  // on controls 2px apart means neighbours overlap and paint
+                  // order decides which one a finger hits.
+                  SizedBox(
+                    height: beuiMinHitTarget,
+                    child: Row(
+                      spacing: 6,
+                      children: [
+                        if (_canCopy)
+                          _ResponseAction(
+                            label: _copied ? 'Copied' : 'Copy response',
+                            // C23. "Copied" used to swap a label on a node that
+                            // was not live, so the confirmation was visual-only.
+                            announce: _copied,
+                            pressed: _copyPressed,
+                            hovered: _copyHovered,
+                            active: false,
                             reduce: reduce,
                             colors: colors,
-                            onHover: (h) => setState(() => _sourcesHovered = h),
-                            onTap: () => _setSourcesOpen(!_currentSourcesOpen),
+                            onHover: (h) => setState(() => _copyHovered = h),
+                            onPressed: (p) => setState(() => _copyPressed = p),
+                            onTap: _handleCopy,
+                            child: Icon(
+                              _copied ? agent.icons.copied : agent.icons.copy,
+                              size: 14, // size-3.5
+                              color: _copyHovered
+                                  ? colors.foreground
+                                  : colors.mutedForeground,
+                            ),
                           ),
-                        ),
-                    ],
+                        if (widget.onRetry != null)
+                          _ResponseAction(
+                            label: 'Retry response',
+                            pressed: _retryPressed,
+                            hovered: _retryHovered,
+                            active: false,
+                            reduce: reduce,
+                            colors: colors,
+                            onHover: (h) => setState(() => _retryHovered = h),
+                            onPressed: (p) => setState(() => _retryPressed = p),
+                            onTap: widget.onRetry!,
+                            child: Icon(
+                              agent.icons.retry,
+                              size: 14,
+                              color: _retryHovered
+                                  ? colors.foreground
+                                  : colors.mutedForeground,
+                            ),
+                          ),
+                        if (_complete) ...[
+                          _ResponseAction(
+                            label: 'Helpful',
+                            pressed: _upPressed,
+                            hovered: _upHovered,
+                            active:
+                                _currentFeedback ==
+                                BeuiStreamingResponseFeedback.up,
+                            toggleable: true,
+                            reduce: reduce,
+                            colors: colors,
+                            onHover: (h) => setState(() => _upHovered = h),
+                            onPressed: (p) => setState(() => _upPressed = p),
+                            onTap: () =>
+                                _setFeedback(BeuiStreamingResponseFeedback.up),
+                            child: Icon(
+                              agent.icons.thumbsUp,
+                              size: 14,
+                              color:
+                                  _upHovered ||
+                                      _currentFeedback ==
+                                          BeuiStreamingResponseFeedback.up
+                                  ? colors.foreground
+                                  : colors.mutedForeground,
+                            ),
+                          ),
+                          _ResponseAction(
+                            label: 'Not helpful',
+                            pressed: _downPressed,
+                            hovered: _downHovered,
+                            active:
+                                _currentFeedback ==
+                                BeuiStreamingResponseFeedback.down,
+                            toggleable: true,
+                            reduce: reduce,
+                            colors: colors,
+                            onHover: (h) => setState(() => _downHovered = h),
+                            onPressed: (p) => setState(() => _downPressed = p),
+                            onTap: () => _setFeedback(
+                              BeuiStreamingResponseFeedback.down,
+                            ),
+                            child: Icon(
+                              agent.icons.thumbsDown,
+                              size: 14,
+                              color:
+                                  _downHovered ||
+                                      _currentFeedback ==
+                                          BeuiStreamingResponseFeedback.down
+                                  ? colors.foreground
+                                  : colors.mutedForeground,
+                            ),
+                          ),
+                        ],
+                        if (_hasSources)
+                          Padding(
+                            // C17: ml-1 is a *logical* start margin.
+                            padding: const EdgeInsetsDirectional.only(start: 4),
+                            child: _SourcesToggle(
+                              open: _currentSourcesOpen,
+                              count: widget.sources.length,
+                              sources: widget.sources,
+                              hovered: _sourcesHovered,
+                              reduce: reduce,
+                              colors: colors,
+                              onHover: (h) =>
+                                  setState(() => _sourcesHovered = h),
+                              onTap: () =>
+                                  _setSourcesOpen(!_currentSourcesOpen),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                   if (_hasSources)
-                    _AgentDisclosure(
+                    // T8/C10: the seventh copy of `_AgentDisclosure` is gone —
+                    // this is the shared primitive, which also fixes the
+                    // reduced-motion hard cut the local copy had.
+                    BeuiAgentDisclosureInternal(
                       open: _currentSourcesOpen,
                       reduce: reduce,
                       child: Padding(
@@ -453,76 +731,188 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
 }
 
 // ---------------------------------------------------------------------------
-// Actions reveal (AnimatePresence of the actions block)
+// Failure / stopped notice (C1, C13)
 // ---------------------------------------------------------------------------
 
-/// Fades/slides the completion actions in and out.
+/// The affordance that tells a reader an answer did not finish.
 ///
-/// Source:
-/// * enter: `{ opacity: 0, y: 4 }` → `{ opacity: 1, y: 0 }`, 220ms EASE_OUT
-///   (opacity-only under reduced motion, 120ms)
-/// * exit: `{ opacity: 0 }`
-class _ActionsReveal extends StatelessWidget {
-  const _ActionsReveal({
-    required this.visible,
-    required this.reduce,
-    required this.child,
+/// Before the UX pass, `error` differed from `complete` by two absent thumb
+/// icons and nothing else, and `stopped` did not exist at all — a failed or
+/// truncated answer was indistinguishable from a finished one, in pixels and
+/// in semantics (C1, C13).
+///
+/// Redundant encoding, as the rest of the library does it: a glyph (shape), a
+/// tint (colour), and a message (text). Colour comes from the themeable status
+/// palette, never a hex literal, so a consumer's `BeuiAgentTheme` reaches it.
+class _StatusNotice extends StatelessWidget {
+  const _StatusNotice({
+    required this.error,
+    required this.message,
+    required this.actionLabel,
+    required this.onAction,
+    required this.colors,
+    required this.statusColors,
   });
 
-  final bool visible;
-  final bool reduce;
-  final Widget child;
+  /// True for the destructive tier; false for the neutral "stopped" tier.
+  final bool error;
+  final String message;
+  final String actionLabel;
+  final VoidCallback? onAction;
+  final BeuiColors colors;
+  final BeuiAgentStatusColors statusColors;
 
   @override
   Widget build(BuildContext context) {
-    final target = visible ? 1.0 : 0.0;
-    final Motion motion;
-    if (reduce) {
-      motion = _actionsReduceMotion;
-    } else {
-      motion = visible ? _actionsEnterMotion : _actionsExitMotion;
-    }
+    final agent = BeuiAgentTheme.of(context);
+    final palette = error ? statusColors.failed : statusColors.neutral;
 
-    // Reduced motion: keep opacity, drop the y movement.
-    if (reduce) {
-      return SingleMotionBuilder(
-        value: target,
-        motion: motionFor(context, motion, isMovement: false),
-        builder: (context, t, child) {
-          final tt = t.clamp(0.0, 1.0);
-          if (!visible && tt <= 0.001) return const SizedBox.shrink();
-          return IgnorePointer(
-            ignoring: !visible,
-            child: ExcludeSemantics(
-              excluding: !visible && tt < 0.5,
-              child: Opacity(opacity: tt, child: child),
+    return Semantics(
+      container: true,
+      label: message,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: palette.background,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: palette.border,
+            width: agent.structure.borderWidth,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(10, 8, 8, 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                error ? LucideIcons.triangle_alert : LucideIcons.circle_stop,
+                size: 14,
+                color: palette.foreground,
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  message,
+                  style: agent.typography.status.copyWith(
+                    color: palette.foreground,
+                    letterSpacing: 0,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              if (onAction != null) ...[
+                const SizedBox(width: 10),
+                _NoticeAction(
+                  label: actionLabel,
+                  color: palette.foreground,
+                  colors: colors,
+                  onTap: onAction!,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The labelled retry / continue control inside a [_StatusNotice].
+///
+/// A labelled control rather than the icon-only one in the action row: at the
+/// moment a response fails, "what do I do now" should not require hovering a
+/// 14px glyph to find out.
+class _NoticeAction extends StatefulWidget {
+  const _NoticeAction({
+    required this.label,
+    required this.color,
+    required this.colors,
+    required this.onTap,
+  });
+
+  final String label;
+  final Color color;
+  final BeuiColors colors;
+  final VoidCallback onTap;
+
+  @override
+  State<_NoticeAction> createState() => _NoticeActionState();
+}
+
+class _NoticeActionState extends State<_NoticeAction> {
+  bool _hovered = false;
+  bool _pressed = false;
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final agent = BeuiAgentTheme.of(context);
+    final reduce = MediaQuery.disableAnimationsOf(context);
+
+    // C8/T9: outermost, so the slop is reachable — see _ResponseAction.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        label: widget.label,
+        child: FocusableActionDetector(
+          mouseCursor: SystemMouseCursors.click,
+          onShowHoverHighlight: (v) => setState(() => _hovered = v),
+          onShowFocusHighlight: (v) => setState(() => _focused = v),
+          shortcuts: const <ShortcutActivator, Intent>{
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                widget.onTap();
+                return null;
+              },
             ),
-          );
-        },
-        child: child,
-      );
-    }
-
-    return SingleMotionBuilder(
-      value: target,
-      motion: motionFor(context, motion, isMovement: true),
-      builder: (context, t, child) {
-        final tt = t.clamp(0.0, 1.0);
-        if (!visible && tt <= 0.001) return const SizedBox.shrink();
-        // Enter y: 4 → 0; exit keeps y at 0 (source exit is opacity-only).
-        final y = visible ? 4.0 * (1 - tt) : 0.0;
-        return IgnorePointer(
-          ignoring: !visible,
-          child: ExcludeSemantics(
-            excluding: !visible && tt < 0.5,
-            child: Opacity(
-              opacity: tt,
-              child: Transform.translate(offset: Offset(0, y), child: child),
+          },
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: (_) => setState(() => _pressed = true),
+            onTapUp: (_) => setState(() => _pressed = false),
+            onTapCancel: () => setState(() => _pressed = false),
+            onTap: widget.onTap,
+            child: BeuiFocusRing(
+              focused: _focused,
+              borderRadius: BorderRadius.circular(6),
+              child: SingleMotionBuilder(
+                // C31: one press scale for the library.
+                value: (_pressed && !reduce) ? 0.97 : 1.0,
+                motion: motionFor(context, beuiSpringPress, isMovement: true),
+                builder: (context, scale, child) =>
+                    Transform.scale(scale: scale, child: child),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: _hovered
+                        ? widget.color.withValues(alpha: 0.12)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    child: Text(
+                      widget.label,
+                      style: agent.typography.action.copyWith(
+                        color: widget.color,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        );
-      },
-      child: child,
+        ),
+      ),
     );
   }
 }
@@ -531,7 +921,7 @@ class _ActionsReveal extends StatelessWidget {
 // Response action button (source ResponseAction)
 // ---------------------------------------------------------------------------
 
-class _ResponseAction extends StatelessWidget {
+class _ResponseAction extends StatefulWidget {
   const _ResponseAction({
     required this.label,
     required this.pressed,
@@ -544,6 +934,7 @@ class _ResponseAction extends StatelessWidget {
     required this.onTap,
     required this.child,
     this.toggleable = false,
+    this.announce = false,
   });
 
   final String label;
@@ -558,46 +949,94 @@ class _ResponseAction extends StatelessWidget {
   final VoidCallback onTap;
   final Widget child;
 
+  /// Makes this control a live region for as long as it is true (C23).
+  ///
+  /// Used for "Copied": the confirmation was previously a label swap on an
+  /// ordinary node, so a screen reader never heard that the copy succeeded.
+  final bool announce;
+
+  @override
+  State<_ResponseAction> createState() => _ResponseActionState();
+}
+
+class _ResponseActionState extends State<_ResponseAction> {
+  bool _focused = false;
+
   @override
   Widget build(BuildContext context) {
-    // whileTap scale 0.9 + SPRING_PRESS; reduce-gated target (not NoMotion).
-    final pressTarget = (pressed && !reduce) ? 0.9 : 1.0;
-    final bg = active || hovered ? colors.muted : Colors.transparent;
+    // C31. The source's whileTap is 0.9; on one screen the library ranged
+    // 0.9–0.99. 0.97 is this port's single press scale.
+    final pressTarget = (widget.pressed && !widget.reduce) ? 0.97 : 1.0;
+    final bg = widget.active || widget.hovered
+        ? widget.colors.muted
+        : Colors.transparent;
 
-    return Semantics(
-      button: true,
-      label: label,
-      toggled: toggleable ? active : null,
-      child: Tooltip(
-        message: label,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          onEnter: (_) => onHover(true),
-          onExit: (_) {
-            onHover(false);
-            onPressed(false);
-          },
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown: (_) => onPressed(true),
-            onTapUp: (_) => onPressed(false),
-            onTapCancel: () => onPressed(false),
-            onTap: onTap,
-            child: SingleMotionBuilder(
-              value: pressTarget,
-              motion: motionFor(context, beuiSpringPress, isMovement: true),
-              builder: (context, scale, child) =>
-                  Transform.scale(scale: scale, child: child),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                width: 28, // size-7
-                height: 28,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: bg,
-                  borderRadius: BorderRadius.circular(6), // rounded-md
+    // C8/T9. The slop wrapper is the *outermost* widget of the control, and
+    // that placement is load-bearing: `RenderBox.hitTest` rejects a pointer
+    // outside its own box before consulting any child, so every proxy between
+    // the parent and the slop — Semantics, Tooltip, FocusableActionDetector,
+    // all of which size to the painted 28px — would swallow the overhang
+    // first. Nested, the primitive is dead weight.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        label: widget.label,
+        liveRegion: widget.announce,
+        toggled: widget.toggleable ? widget.active : null,
+        child: Tooltip(
+          message: widget.label,
+          // C22. The Semantics label above is the accessible name; a Tooltip
+          // that also contributes semantics makes a reader say it twice.
+          excludeFromSemantics: true,
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowFocusHighlight: (v) => setState(() => _focused = v),
+            onShowHoverHighlight: widget.onHover,
+            shortcuts: const <ShortcutActivator, Intent>{
+              SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+              SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onTap();
+                  return null;
+                },
+              ),
+            },
+            child: MouseRegion(
+              onExit: (_) => widget.onPressed(false),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: (_) => widget.onPressed(true),
+                onTapUp: (_) => widget.onPressed(false),
+                onTapCancel: () => widget.onPressed(false),
+                onTap: widget.onTap,
+                child: BeuiFocusRing(
+                  focused: _focused,
+                  borderRadius: BorderRadius.circular(6),
+                  child: SingleMotionBuilder(
+                    value: pressTarget,
+                    motion: motionFor(
+                      context,
+                      beuiSpringPress,
+                      isMovement: true,
+                    ),
+                    builder: (context, scale, child) =>
+                        Transform.scale(scale: scale, child: child),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      width: 28, // size-7
+                      height: 28,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: bg,
+                        borderRadius: BorderRadius.circular(6), // rounded-md
+                      ),
+                      child: widget.child,
+                    ),
+                  ),
                 ),
-                child: child,
               ),
             ),
           ),
@@ -611,7 +1050,7 @@ class _ResponseAction extends StatelessWidget {
 // Sources toggle (stack + count + chevron)
 // ---------------------------------------------------------------------------
 
-class _SourcesToggle extends StatelessWidget {
+class _SourcesToggle extends StatefulWidget {
   const _SourcesToggle({
     required this.open,
     required this.count,
@@ -633,49 +1072,87 @@ class _SourcesToggle extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    final fg = hovered ? colors.foreground : colors.mutedForeground;
-    final label = count == 1 ? '1 source' : '$count sources';
+  State<_SourcesToggle> createState() => _SourcesToggleState();
+}
 
-    return Semantics(
-      button: true,
-      expanded: open,
-      label: label,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => onHover(true),
-        onExit: (_) => onHover(false),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 28), // min-h-7
-            child: Padding(
-              // ml-1 px-1.5 → left 4+6, right 6
-              padding: const EdgeInsets.only(left: 10, right: 6),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BeuiCitationStack(citations: sources),
-                  const SizedBox(width: 8), // gap-2
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 12, // text-xs
-                      letterSpacing: 0, // tracking-normal
-                      color: fg,
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                    ),
+class _SourcesToggleState extends State<_SourcesToggle> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    final agent = BeuiAgentTheme.of(context);
+    final fg = widget.hovered ? colors.foreground : colors.mutedForeground;
+    final label = widget.count == 1 ? '1 source' : '${widget.count} sources';
+
+    // C8/T9: outermost, so the slop is reachable — see _ResponseAction.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        expanded: widget.open,
+        label: label,
+        child: FocusableActionDetector(
+          mouseCursor: SystemMouseCursors.click,
+          onShowHoverHighlight: widget.onHover,
+          onShowFocusHighlight: (v) => setState(() => _focused = v),
+          shortcuts: const <ShortcutActivator, Intent>{
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                widget.onTap();
+                return null;
+              },
+            ),
+          },
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.onTap,
+            child: BeuiFocusRing(
+              focused: _focused,
+              borderRadius: agent.shapes.pill,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                curve: beuiEaseOut,
+                constraints: const BoxConstraints(minHeight: 28), // min-h-7
+                decoration: BoxDecoration(
+                  // C24. At rest this control had no chrome and a chevron at
+                  // 50% alpha, so it read as static metadata rather than
+                  // something you could open. It now carries a resting
+                  // surface, like every other toggle in the library.
+                  color: widget.hovered ? colors.secondary : colors.muted,
+                  borderRadius: agent.shapes.pill,
+                ),
+                child: Padding(
+                  // C17: ml-1 px-1.5 are logical insets.
+                  padding: const EdgeInsetsDirectional.only(start: 10, end: 6),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      BeuiCitationStack(citations: widget.sources),
+                      const SizedBox(width: 8), // gap-2
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 12, // text-xs
+                          letterSpacing: 0, // tracking-normal
+                          color: fg,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      _Chevron(
+                        open: widget.open,
+                        reduce: widget.reduce,
+                        // C24/T3: full-strength token, not a 50% multiply of
+                        // an already-muted foreground.
+                        color: colors.mutedForeground,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  _Chevron(
-                    open: open,
-                    reduce: reduce,
-                    color: colors.mutedForeground.withValues(
-                      alpha: hovered ? 1.0 : 0.5,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -713,81 +1190,6 @@ class _Chevron extends StatelessWidget {
       builder: (context, deg, child) =>
           Transform.rotate(angle: deg * math.pi / 180.0, child: child),
       child: icon,
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Agent disclosure (shared pattern — height + opacity + y: -4)
-// ---------------------------------------------------------------------------
-
-/// Transform-only reveal for collapsible agent content — the Flutter port of
-/// the source's `AgentDisclosure`.
-class _AgentDisclosure extends StatelessWidget {
-  const _AgentDisclosure({
-    required this.open,
-    required this.reduce,
-    required this.child,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final target = open ? 1.0 : 0.0;
-    final motion = open ? _disclosureOpenMotion : _disclosureCloseMotion;
-
-    if (reduce) {
-      return Offstage(
-        offstage: !open,
-        child: IgnorePointer(
-          ignoring: !open,
-          child: ExcludeSemantics(
-            excluding: !open,
-            child: ClipRect(
-              child: Align(
-                alignment: Alignment.topCenter,
-                heightFactor: open ? 1.0 : 0.0,
-                child: child,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return SingleMotionBuilder(
-      value: target,
-      motion: motionFor(context, motion, isMovement: true),
-      builder: (context, t, child) {
-        final tt = t.clamp(0.0, 1.0);
-        final closed = tt < 0.01;
-        return Offstage(
-          offstage: closed,
-          child: IgnorePointer(
-            ignoring: closed,
-            child: ExcludeSemantics(
-              excluding: closed,
-              child: ClipRect(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  heightFactor: tt,
-                  child: Opacity(
-                    opacity: tt,
-                    child: Transform.translate(
-                      offset: Offset(0, -4 * (1 - tt)),
-                      child: child,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-      child: child,
     );
   }
 }
