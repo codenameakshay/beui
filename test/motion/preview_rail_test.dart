@@ -375,9 +375,7 @@ void main() {
     });
 
     testWidgets('false keeps the hover pyramid working', (tester) async {
-      await tester.pumpWidget(
-        _app(showPreview: false, highlightActive: false),
-      );
+      await tester.pumpWidget(_app(showPreview: false, highlightActive: false));
       await tester.pumpAndSettle();
       expect(_tickScale(tester, 'Beta'), moreOrLessEquals(0.25, epsilon: 0.02));
       await _hover(tester, _tick('Beta'));

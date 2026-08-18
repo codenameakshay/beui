@@ -361,34 +361,37 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                     ),
                     if (_showCopy) ...[
                       const SizedBox(width: 10), // gap-2.5
-                      Semantics(
-                        button: true,
-                        // Live only while the confirmation is up, so the swap
-                        // to "Copied" is actually announced instead of just
-                        // relabelling a silent node (audit R28 / T7).
-                        liveRegion: _copied,
-                        label: _copied ? 'Copied' : 'Copy code',
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          onEnter: (_) => setState(() => _copyHovered = true),
-                          onExit: (_) => setState(() {
-                            _copyHovered = false;
-                            _copyPressed = false;
-                          }),
-                          child: FocusableActionDetector(
-                            mouseCursor: SystemMouseCursors.click,
-                            onShowFocusHighlight: (v) {
-                              if (mounted) setState(() => _copyFocused = v);
-                            },
-                            actions: <Type, Action<Intent>>{
-                              ActivateIntent: CallbackAction<ActivateIntent>(
-                                onInvoke: (_) {
-                                  unawaited(_handleCopy());
-                                  return null;
-                                },
-                              ),
-                            },
-                            child: BeuiMinHitTarget(
+                      // Outermost, so the 44px slop is not clipped by a
+                      // proxy ancestor sized to the 28px paint.
+                      BeuiMinHitTarget(
+                        child: Semantics(
+                          container: true,
+                          button: true,
+                          // Live only while the confirmation is up, so the
+                          // swap to "Copied" is announced instead of just
+                          // relabelling a silent node (audit R28 / T7).
+                          liveRegion: _copied,
+                          label: _copied ? 'Copied' : 'Copy code',
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            onEnter: (_) => setState(() => _copyHovered = true),
+                            onExit: (_) => setState(() {
+                              _copyHovered = false;
+                              _copyPressed = false;
+                            }),
+                            child: FocusableActionDetector(
+                              mouseCursor: SystemMouseCursors.click,
+                              onShowFocusHighlight: (v) {
+                                if (mounted) setState(() => _copyFocused = v);
+                              },
+                              actions: <Type, Action<Intent>>{
+                                ActivateIntent: CallbackAction<ActivateIntent>(
+                                  onInvoke: (_) {
+                                    unawaited(_handleCopy());
+                                    return null;
+                                  },
+                                ),
+                              },
                               child: GestureDetector(
                                 behavior: HitTestBehavior.opaque,
                                 onTapDown: (_) =>

@@ -234,17 +234,18 @@ class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
-    final pill = Semantics(
-      button: true,
-      label: widget.label,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _hovered = true),
-        onExit: (_) => setState(() {
-          _hovered = false;
-          _pressed = false;
-        }),
-        child: BeuiMinHitTarget(
+    final pill = BeuiMinHitTarget(
+      child: Semantics(
+        container: true,
+        button: true,
+        label: widget.label,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() {
+            _hovered = false;
+            _pressed = false;
+          }),
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapDown: (_) => setState(() => _pressed = true),

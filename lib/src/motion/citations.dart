@@ -343,26 +343,30 @@ class _BeuiCitationState extends State<BeuiCitation> {
     );
     final display = registered ?? widget.index;
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      cursor: SystemMouseCursors.click,
-      child: FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        onShowFocusHighlight: (v) => setState(() => _focused = v),
-        actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) {
-              _activate();
-              return null;
-            },
-          ),
-        },
-        child: BeuiMinHitTarget(
+    // Outermost. Inside a WidgetSpan the paragraph hands each inline child the
+    // pointer position unfiltered, so the slop is reachable — but only if
+    // nothing sized to the 16px badge sits above it.
+    return BeuiMinHitTarget(
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        cursor: SystemMouseCursors.click,
+        child: FocusableActionDetector(
+          mouseCursor: SystemMouseCursors.click,
+          onShowFocusHighlight: (v) => setState(() => _focused = v),
+          actions: <Type, Action<Intent>>{
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                _activate();
+                return null;
+              },
+            ),
+          },
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: _activate,
             child: Semantics(
+              container: true,
               button: true,
               label: display == null
                   ? 'View citation'

@@ -681,30 +681,32 @@ class _CancelButtonState extends State<_CancelButton> {
     final colors = widget.colors;
     final reduce = MediaQuery.disableAnimationsOf(context);
 
-    return Semantics(
-      button: true,
-      label: widget.label,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _hovered = true),
-        onExit: (_) => setState(() {
-          _hovered = false;
-          _pressed = false;
-        }),
-        child: FocusableActionDetector(
-          mouseCursor: SystemMouseCursors.click,
-          onShowFocusHighlight: (v) {
-            if (mounted) setState(() => _focused = v);
-          },
-          actions: <Type, Action<Intent>>{
-            ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) {
-                widget.onCancel();
-                return null;
-              },
-            ),
-          },
-          child: BeuiMinHitTarget(
+    // Outermost: a proxy ancestor sized to the 24px paint would clip the slop.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        container: true,
+        button: true,
+        label: widget.label,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() {
+            _hovered = false;
+            _pressed = false;
+          }),
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowFocusHighlight: (v) {
+              if (mounted) setState(() => _focused = v);
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onCancel();
+                  return null;
+                },
+              ),
+            },
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTapDown: (_) => setState(() => _pressed = true),

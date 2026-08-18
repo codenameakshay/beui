@@ -520,7 +520,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
       );
     }
     final path = widget.file ?? legacy?.toString() ?? '';
-    return BeuiMiddleTruncatedText(text: path, style: style);
+    return _MiddleTruncatedText(text: path, style: style);
   }
 
   @override
@@ -719,19 +719,17 @@ class _EmptyDiff extends StatelessWidget {
 
 /// Text that drops characters from the *middle* rather than the end.
 ///
+/// Package-private for now: it is a genuinely reusable primitive, but the
+/// public surface stays as small as the audit's findings require.
+///
 /// For a path, the tail is the part that identifies the file, so an
 /// end-ellipsis destroys exactly the information the label exists to carry
 /// (`src/components/button.tsx` → `src/compon…`). This keeps the basename whole
 /// and eats into the directories instead
 /// (`src/components/button.tsx` → `src/…/button.tsx`).
-class BeuiMiddleTruncatedText extends StatelessWidget {
+class _MiddleTruncatedText extends StatelessWidget {
   /// Creates a middle-truncating label.
-  const BeuiMiddleTruncatedText({
-    required this.text,
-    required this.style,
-    this.ellipsis = '…',
-    super.key,
-  });
+  const _MiddleTruncatedText({required this.text, required this.style});
 
   /// The full string. Also the semantics label, so assistive technology hears
   /// the whole path however it is painted.
@@ -741,7 +739,7 @@ class BeuiMiddleTruncatedText extends StatelessWidget {
   final TextStyle style;
 
   /// Replacement for the elided middle.
-  final String ellipsis;
+  static const String ellipsis = '…';
 
   /// The index the tail starts at: the last path separator, so the basename
   /// survives. Falls back to the last third of a separator-less string.
@@ -1054,31 +1052,35 @@ class _HeaderActionState extends State<_HeaderAction> {
     final colors = widget.colors;
     final reduce = MediaQuery.disableAnimationsOf(context);
 
-    return Semantics(
-      button: true,
-      liveRegion: widget.liveRegion,
-      label: widget.label,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _hovered = true),
-        onExit: (_) => setState(() {
-          _hovered = false;
-          _pressed = false;
-        }),
-        child: FocusableActionDetector(
-          mouseCursor: SystemMouseCursors.click,
-          onShowFocusHighlight: (v) {
-            if (mounted) setState(() => _focused = v);
-          },
-          actions: <Type, Action<Intent>>{
-            ActivateIntent: CallbackAction<ActivateIntent>(
-              onInvoke: (_) {
-                widget.onTap();
-                return null;
-              },
-            ),
-          },
-          child: BeuiMinHitTarget(
+    // BeuiMinHitTarget sits outermost: every proxy between it and the pointer
+    // is sized to the 28px paint, and a RenderBox refuses a hit outside its own
+    // size, so slop nested any deeper is unreachable.
+    return BeuiMinHitTarget(
+      child: Semantics(
+        container: true,
+        button: true,
+        liveRegion: widget.liveRegion,
+        label: widget.label,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() {
+            _hovered = false;
+            _pressed = false;
+          }),
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowFocusHighlight: (v) {
+              if (mounted) setState(() => _focused = v);
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onTap();
+                  return null;
+                },
+              ),
+            },
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTapDown: (_) => setState(() => _pressed = true),

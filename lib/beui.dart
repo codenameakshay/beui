@@ -299,9 +299,11 @@ export 'src/motion/approval_card.dart'
 export 'src/motion/file_diff.dart'
     show
         BeuiFileDiff,
+        BeuiFileDiffHunkGap,
         BeuiFileDiffLine,
         BeuiFileDiffLineType,
-        BeuiFileDiffStatus;
+        BeuiFileDiffStatus,
+        BeuiFileDiffWrap;
 export 'src/motion/tool_result.dart'
     show
         BeuiToolResult,

@@ -124,7 +124,6 @@ class _CitationsDemoState extends State<_CitationsDemo> {
                               baseline: TextBaseline.alphabetic,
                               child: BeuiCitation(
                                 citationId: 'motion',
-                                index: 1,
                                 idPrefix: 'preview-source',
                               ),
                             ),
@@ -137,7 +136,6 @@ class _CitationsDemoState extends State<_CitationsDemo> {
                               baseline: TextBaseline.alphabetic,
                               child: BeuiCitation(
                                 citationId: 'wai',
-                                index: 2,
                                 idPrefix: 'preview-source',
                               ),
                             ),
@@ -150,6 +148,15 @@ class _CitationsDemoState extends State<_CitationsDemo> {
                         idPrefix: 'preview-source',
                         citations: shown,
                         defaultOpen: true,
+                        // A real app wires this to url_launcher; the package
+                        // never opens URLs itself.
+                        onCitationTap: (citation) {
+                          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                            SnackBar(
+                              content: Text('Would open ${citation.url}'),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

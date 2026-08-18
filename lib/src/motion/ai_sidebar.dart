@@ -1213,21 +1213,23 @@ class _ResourceRowState extends State<_ResourceRow> {
                 child: menuBody,
               ),
             ),
-            // The semantics node sits *outside* the IgnorePointer, so the
-            // action stays available to assistive technology even in the frame
-            // where the glyph is invisible to a pointer.
-            child: Semantics(
-              button: true,
-              label: 'Actions for ${item.label}',
-              onTap: () => widget.onMenuOpenChange(true),
-              child: IgnorePointer(
-                ignoring: menuOpacity == 0,
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 120),
-                    opacity: menuOpacity,
-                    child: BeuiMinHitTarget(
+            // Outermost, so the 44px slop clears the 28px paint. The semantics
+            // node sits inside it but outside the IgnorePointer, so the action
+            // stays available to assistive technology even in the frame where
+            // the glyph is invisible to a pointer.
+            child: BeuiMinHitTarget(
+              child: Semantics(
+                container: true,
+                button: true,
+                label: 'Actions for ${item.label}',
+                onTap: () => widget.onMenuOpenChange(true),
+                child: IgnorePointer(
+                  ignoring: menuOpacity == 0,
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 120),
+                      opacity: menuOpacity,
                       child: SizedBox(
                         width: 28,
                         height: 28,
