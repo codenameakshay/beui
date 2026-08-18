@@ -1,4 +1,4 @@
-## Unreleased
+## 1.2.0
 
 UX-audit remediation across the chat/agent family — 154 audited findings
 resolved (docs/UX_AUDIT_AGENT_CHAT_FLOWS.md holds the audit). Almost all API

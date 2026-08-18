@@ -7,8 +7,48 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import 'catalog.dart';
 import 'shell.dart';
 import 'theme_scope.dart';
+
+/// Parse the gallery's launch URL into an [ExplorerRoute].
+///
+/// Supported query parameters (used by the live GitHub Pages gallery and by
+/// screenshot captures):
+///   `page=guides` — Motion Guides
+///   `slug=<catalog-slug>` — a detail page (e.g. `chat-app`)
+///   `section=components|blocks|agents` — a section index
+ExplorerRoute explorerRouteFromUri(Uri uri) {
+  final page = uri.queryParameters['page'];
+  if (page == 'guides') return const GuidesRoute();
+
+  final slug = uri.queryParameters['slug'];
+  if (slug != null && slug.isNotEmpty) {
+    for (final entry in kAllEntries) {
+      if (entry.slug == slug) return DetailRoute(entry);
+    }
+  }
+
+  return IndexRoute(switch (uri.queryParameters['section']) {
+    'blocks' => ExploreSection.blocks,
+    'agents' => ExploreSection.agents,
+    _ => ExploreSection.components,
+  });
+}
+
+Brightness explorerBrightnessFromUri(Uri uri) =>
+    uri.queryParameters['theme'] == 'light'
+    ? Brightness.light
+    : Brightness.dark;
+
+BeuiColorTheme explorerColorThemeFromUri(Uri uri) {
+  final name = uri.queryParameters['color'];
+  if (name == null || name.isEmpty) return BeuiColorTheme.defaultMono;
+  return BeuiColorTheme.values.firstWhere(
+    (t) => t.name == name || t.slug == name,
+    orElse: () => BeuiColorTheme.defaultMono,
+  );
+}
 
 /// Entry widget — install with `runApp(const BeuiExplorerApp())`.
 class BeuiExplorerApp extends StatefulWidget {
@@ -19,8 +59,9 @@ class BeuiExplorerApp extends StatefulWidget {
 }
 
 class _BeuiExplorerAppState extends State<BeuiExplorerApp> {
-  Brightness _brightness = Brightness.dark;
-  BeuiColorTheme _colorTheme = BeuiColorTheme.defaultMono;
+  late Brightness _brightness = explorerBrightnessFromUri(Uri.base);
+  late BeuiColorTheme _colorTheme = explorerColorThemeFromUri(Uri.base);
+  late final ExplorerRoute _initialRoute = explorerRouteFromUri(Uri.base);
 
   ThemeData _themeData(Brightness brightness) {
     final colors = BeuiColors.of(_colorTheme, brightness);
@@ -73,7 +114,7 @@ class _BeuiExplorerAppState extends State<BeuiExplorerApp> {
         themeMode: _brightness == Brightness.dark
             ? ThemeMode.dark
             : ThemeMode.light,
-        home: const ExplorerShell(),
+        home: ExplorerShell(initialRoute: _initialRoute),
       ),
     );
   }

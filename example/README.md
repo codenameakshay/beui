@@ -7,6 +7,13 @@ app doubles as the living showcase and the render target for golden tests.
 
 **Live demo:** <https://codenameakshay.github.io/beui/>
 
+Deep links (also used to recapture README screenshots):
+
+* `?section=components|blocks|agents`
+* `?slug=chat-app` (any catalog slug)
+* `?page=guides`
+* `?theme=light|dark` and `?color=violet` (or any `BeuiColorTheme` slug)
+
 ## Run it
 
 ```bash

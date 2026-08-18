@@ -78,14 +78,21 @@ class ExplorerController extends InheritedWidget {
 
 /// The root shell widget.
 class ExplorerShell extends StatefulWidget {
-  const ExplorerShell({super.key});
+  const ExplorerShell({super.key, this.initialRoute});
+
+  /// Destination shown on the first frame. Defaults to the Components index.
+  ///
+  /// The live gallery reads this from the URL query string so deep links and
+  /// screenshot captures can open a section, a detail page, or Motion Guides.
+  final ExplorerRoute? initialRoute;
 
   @override
   State<ExplorerShell> createState() => _ExplorerShellState();
 }
 
 class _ExplorerShellState extends State<ExplorerShell> {
-  ExplorerRoute _route = const IndexRoute(ExploreSection.components);
+  late ExplorerRoute _route =
+      widget.initialRoute ?? const IndexRoute(ExploreSection.components);
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _contentScroll = ScrollController();
 
