@@ -243,7 +243,7 @@ class BeuiImageGeneration extends StatelessWidget {
     this.showStatus = true,
     this.progress,
     this.onCancel,
-    this.cancelLabel = 'Stop generating',
+    this.cancelLabel,
     this.onRetry,
     this.reserveErrorSlot = true,
     super.key,
@@ -299,8 +299,9 @@ class BeuiImageGeneration extends StatelessWidget {
   /// rather than the other way round. Null hides the control entirely.
   final VoidCallback? onCancel;
 
-  /// Accessible name for the stop control. Defaults to `"Stop generating"`.
-  final String cancelLabel;
+  /// Accessible name for the stop control. Defaults to
+  /// [BeuiAgentStrings.stopGenerating].
+  final String? cancelLabel;
 
   /// Retry action shown on [BeuiImageGenerationStatus.error]
   /// (source `onRetry`).
@@ -348,7 +349,9 @@ class BeuiImageGeneration extends StatelessWidget {
       label: resolvedLabel,
       progress: clampedProgress,
       onCancel: onCancel,
-      cancelLabel: cancelLabel,
+      // F20: the last hardcoded literal on this surface.
+      cancelLabel:
+          cancelLabel ?? BeuiAgentTheme.of(context).strings.stopGenerating,
       child: child,
     );
 

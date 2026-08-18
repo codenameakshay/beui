@@ -852,6 +852,62 @@ void main() {
       expect(seen!.after.id, 'b');
     });
 
+    // F14: the band paints 20px tall against a 44px floor, so it carries
+    // vertical hit slop. The slop only works if BeuiMinHitTarget is the
+    // outermost box of the control — this is the direct out-of-bounds tap the
+    // helper's doc asks for, since the semantics rect stays at the paint.
+    testWidgets('the expand band takes a tap above its painted 20px', (
+      tester,
+    ) async {
+      var taps = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 400,
+                child: BeuiFileDiff(
+                  file: 'src/runner.ts',
+                  lines: gapped,
+                  status: BeuiFileDiffStatus.complete,
+                  collapseOnComplete: false,
+                  onExpandContext: (_) => taps++,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final band = find.ancestor(
+        of: find.text('Expand 29 hidden lines'),
+        matching: find.byType(GestureDetector),
+      );
+      final rect = tester.getRect(band.first);
+      expect(rect.height, lessThan(24), reason: 'the paint stays 20px');
+
+      // 10px above the painted top edge — inside the 44px slop, outside the
+      // band. Before the fix this landed on an inert diff row.
+      await tester.tapAt(Offset(rect.center.dx, rect.top - 10));
+      await tester.pump();
+      expect(taps, 1);
+
+      // Downwards the slop loses: diff rows paint a tint through a hit-opaque
+      // box, and Flutter tests the later sibling first, so the row below
+      // claims the pointer. The reachable target is therefore the band plus
+      // its upward slop — comfortably past WCAG 2.5.8 AA's 24px, short of the
+      // 44px AAA floor. Pinned here so the asymmetry is a known fact rather
+      // than a surprise.
+      await tester.tapAt(Offset(rect.center.dx, rect.bottom + 4));
+      await tester.pump();
+      expect(taps, 1);
+      expect(rect.height + 12, greaterThanOrEqualTo(24));
+    });
+
     testWidgets(
       'change navigation appears only when changes outrun the viewport',
       (tester) async {

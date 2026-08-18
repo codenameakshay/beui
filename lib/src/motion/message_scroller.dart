@@ -256,11 +256,11 @@ class BeuiMessageScroller extends StatefulWidget {
     this.followThreshold = 56,
     this.smooth = true,
     this.onFollowChange,
-    this.label = 'Conversation',
+    this.label,
     this.busy = false,
     this.announce = true,
     this.navigation,
-    this.navigationLabel = 'Message navigation',
+    this.navigationLabel,
     this.railItems,
     this.padding,
     this.scrollPhysics,
@@ -295,11 +295,11 @@ class BeuiMessageScroller extends StatefulWidget {
     this.followThreshold = 56,
     this.smooth = true,
     this.onFollowChange,
-    this.label = 'Conversation',
+    this.label,
     this.busy = false,
     this.announce = true,
     this.navigation,
-    this.navigationLabel = 'Message navigation',
+    this.navigationLabel,
     this.railItems,
     this.padding,
     this.scrollPhysics,
@@ -343,7 +343,8 @@ class BeuiMessageScroller extends StatefulWidget {
   final ValueChanged<bool>? onFollowChange;
 
   /// Accessible label for the scrollable transcript (source `label`).
-  final String label;
+  /// Defaults to [BeuiAgentStrings.conversation].
+  final String? label;
 
   /// Marks the transcript as waiting for more streamed content
   /// (source `busy` → `aria-busy`).
@@ -363,8 +364,9 @@ class BeuiMessageScroller extends StatefulWidget {
   final BeuiMessageScrollerNavigation? navigation;
 
   /// Accessible label for the optional navigation rail
-  /// (source `navigationLabel`).
-  final String navigationLabel;
+  /// (source `navigationLabel`). Defaults to
+  /// [BeuiAgentStrings.messageNavigation].
+  final String? navigationLabel;
 
   /// Explicit rail entries. When null and [navigation] is rail, entries are
   /// built from registered [BeuiMessageScrollerAnchor]s.
@@ -865,9 +867,15 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
     // keyboard escape hatch (ArrowUp / PageUp / Home releasing follow) sat
     // behind a bare `Focus` with no indicator, so a keyboard reader had to Tab
     // into something invisible before it worked.
+    // F20: every user-facing default in this widget resolves through the theme
+    // role, so a non-English app relabels the transcript once instead of at
+    // every call site.
+    final strings = BeuiAgentTheme.of(context).strings;
+    final transcriptLabel = widget.label ?? strings.conversation;
+
     final viewport = _ScrollerFocus(
       onKey: _onKey,
-      label: widget.label,
+      label: transcriptLabel,
       child: NotificationListener<ScrollNotification>(
         onNotification: _onScrollNotification,
         child: _buildScrollable(context, showRail: showRail),
@@ -892,7 +900,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
     // safe precisely because it is no longer a live region.
     Widget body = BeuiTranscriptLiveRegion(
       key: _liveRegionKey,
-      label: widget.busy ? '${widget.label}, busy' : widget.label,
+      label: widget.busy ? '$transcriptLabel, busy' : transcriptLabel,
       enabled: widget.announce,
       child: scoped,
     );
@@ -909,9 +917,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
             child: Align(
               child: _JumpToLatest(
                 visible: widget.followOutput && !isFollowing,
-                label:
-                    widget.jumpToLatestLabel ??
-                    BeuiAgentTheme.of(context).strings.jumpToLatest,
+                label: widget.jumpToLatestLabel ?? strings.jumpToLatest,
                 unread: _unread,
                 colors: colors,
                 onTap: () {
@@ -954,7 +960,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
                 end: 4,
                 width: 28,
                 child: _MessageRail(
-                  label: widget.navigationLabel,
+                  label: widget.navigationLabel ?? strings.messageNavigation,
                   items: railItems,
                   maxPreviewWidth: hostWidth,
                   activeId: _activeRailId.isEmpty

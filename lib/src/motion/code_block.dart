@@ -371,7 +371,9 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                           // swap to "Copied" is announced instead of just
                           // relabelling a silent node (audit R28 / T7).
                           liveRegion: _copied,
-                          label: _copied ? 'Copied' : 'Copy code',
+                          label: _copied
+                              ? agent.strings.copied
+                              : agent.strings.copyCode,
                           child: MouseRegion(
                             cursor: SystemMouseCursors.click,
                             onEnter: (_) => setState(() => _copyHovered = true),

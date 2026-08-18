@@ -454,11 +454,14 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
     // Flutter has no Semantics.busy — surface the state in the label. C1/C13:
     // failure and truncation are now *named*, not left indistinguishable from
     // a finished answer.
+    // F22: whole strings, not a stem plus a comma-joined modifier — a language
+    // that inflects the noun for state cannot be served by concatenation, so
+    // each state names itself.
     final statusLabel = switch (widget.status) {
-      BeuiStreamingResponseStatus.streaming => 'Response, busy',
-      BeuiStreamingResponseStatus.complete => 'Response',
-      BeuiStreamingResponseStatus.error => 'Response, failed',
-      BeuiStreamingResponseStatus.stopped => 'Response, stopped',
+      BeuiStreamingResponseStatus.streaming => strings.responseBusySemantics,
+      BeuiStreamingResponseStatus.complete => strings.responseSemantics,
+      BeuiStreamingResponseStatus.error => strings.responseFailedSemantics,
+      BeuiStreamingResponseStatus.stopped => strings.responseStoppedSemantics,
     };
 
     // C14. One indicator identity: the placeholder cross-fades into the first

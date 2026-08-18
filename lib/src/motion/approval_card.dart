@@ -226,7 +226,7 @@ const _expandSpring = beuiSpringLayout;
 class BeuiApprovalCard extends StatefulWidget {
   /// Creates an approval card.
   const BeuiApprovalCard({
-    this.title = 'Approval required',
+    this.title,
     this.description,
     this.child,
     this.questions = const [],
@@ -263,7 +263,8 @@ class BeuiApprovalCard extends StatefulWidget {
        );
 
   /// Header title when not in a question step (or when the step has no title).
-  final String title;
+  /// Defaults to [BeuiAgentStrings.approvalCardTitle].
+  final String? title;
 
   /// Supporting copy for the simple-approval path.
   final String? description;
@@ -550,7 +551,10 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
     final statusColors = agent.statusColorsFor(theme.brightness);
 
     final question = _question;
-    final displayTitle = question?.title ?? widget.title;
+    // F19: `approvalCardTitle` shipped in the strings role and nothing read it,
+    // because the widget default beat it to the fallback slot.
+    final displayTitle =
+        question?.title ?? widget.title ?? strings.approvalCardTitle;
     final titleKey = question?.id ?? widget.status.name;
     final statusLabel = _statusLabel(widget.status, strings);
     final answer = _currentAnswer;
@@ -978,7 +982,7 @@ class _DismissButtonState extends State<_DismissButton> {
         : widget.colors.mutedForeground;
     return Semantics(
       button: true,
-      label: 'Dismiss',
+      label: BeuiAgentTheme.of(context).strings.dismiss,
       child: FocusableActionDetector(
         mouseCursor: SystemMouseCursors.click,
         onShowHoverHighlight: (v) => setState(() => _hovered = v),
@@ -1261,7 +1265,10 @@ class _QuestionOptions extends StatelessWidget {
                   value: custom,
                   enabled: !disabled,
                   placeholder:
-                      question.customPlaceholder ?? 'Add another response…',
+                      question.customPlaceholder ??
+                      BeuiAgentTheme.of(
+                        context,
+                      ).strings.customAnswerPlaceholder,
                   onChanged: (value) {
                     onChange(
                       BeuiApprovalCardAnswer(
@@ -1340,10 +1347,11 @@ class _QuestionNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLast = currentStep == questionCount - 1;
+    final strings = BeuiAgentTheme.of(context).strings;
     return Row(
       children: [
         Tooltip(
-          message: 'Previous question',
+          message: strings.previousQuestion,
           child: BeuiButton(
             variant: BeuiButtonVariant.ghost,
             size: BeuiButtonSize.icon,
@@ -1363,7 +1371,10 @@ class _QuestionNav extends StatelessWidget {
         ),
         const Spacer(),
         Tooltip(
-          message: isLast ? 'Submit response' : 'Next question',
+          // On the last step the tooltip echoes the button's own (already
+          // theme-resolved) label rather than a second literal that could
+          // drift away from it.
+          message: isLast ? submitLabel : strings.nextQuestion,
           child: BeuiButton(
             size: isLast ? BeuiButtonSize.sm : BeuiButtonSize.icon,
             borderRadius: BeuiAgentTheme.of(
@@ -1643,16 +1654,24 @@ class _ExpandChevron extends StatelessWidget {
   Widget build(BuildContext context) {
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
+    final target = expanded ? 1.0 : 0.0;
     return SizedBox(
       width: 20,
       height: 20,
       child: SingleMotionBuilder(
-        value: expanded ? 1.0 : 0.0,
+        value: target,
         motion: reduce
             ? const NoMotion()
             : motionFor(context, beuiSpringSwap, isMovement: true),
         builder: (context, t, child) {
-          return Transform.rotate(angle: t * math.pi, child: child);
+          // F6: NoMotion *holds* whatever value it was first given, so reading
+          // `t` under reduced motion freezes the chevron at its mount angle and
+          // it never turns again. Snap to the target instead — the state still
+          // reads, only the travel is dropped.
+          return Transform.rotate(
+            angle: (reduce ? target : t) * math.pi,
+            child: child,
+          );
         },
         child: Icon(
           agent.icons.expand,

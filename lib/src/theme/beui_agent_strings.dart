@@ -102,6 +102,12 @@ class BeuiAgentStrings {
     this.copyResult = 'Copy result',
     this.copied = 'Copied',
     this.runAgain = 'Run again',
+    // Code block and file diff.
+    this.copyCode = 'Copy code',
+    this.copyDiff = 'Copy diff',
+    this.hiddenLines = _hiddenLines,
+    this.hiddenLinesCollapsed = _hiddenLinesCollapsed,
+    this.expandHiddenLines = _expandHiddenLines,
     // Todo list.
     this.todoListLabel = 'Agent task list',
     this.todoListTitle = 'To-dos',
@@ -144,8 +150,19 @@ class BeuiAgentStrings {
     this.showSources = _showSources,
     this.responseFailed = 'Response failed',
     this.responseStopped = 'Response stopped',
+    this.responseSemantics = 'Response',
+    this.responseBusySemantics = 'Response, busy',
+    this.responseFailedSemantics = 'Response, failed',
+    this.responseStoppedSemantics = 'Response, stopped',
     // Message scroller.
     this.jumpToLatest = 'Jump to latest',
+    this.conversation = 'Conversation',
+    this.messageNavigation = 'Message navigation',
+    // Image generation.
+    this.stopGenerating = 'Stop generating',
+    // Prompt input.
+    this.promptPlaceholder = 'Ask the agent to do something…',
+    this.promptSemanticLabel = 'Prompt',
   });
 
   // ── Tool approval ─────────────────────────────────────────────────────────
@@ -279,6 +296,32 @@ class BeuiAgentStrings {
 
   /// Re-runs the tool.
   final String runAgain;
+
+  // ── Code block and file diff ──────────────────────────────────────────────
+
+  /// Copies a `BeuiCodeBlock`'s source. Doubles as tooltip and semantics label.
+  /// Distinct from [copyResult] and [copy], which name different payloads.
+  final String copyCode;
+
+  /// Copies a `BeuiFileDiff`'s patch. Confirmed state reuses [copied].
+  final String copyDiff;
+
+  /// The capped-viewport overflow cue — "3 more lines" under a code block, a
+  /// diff, or a tool result whose body continues past the fold.
+  ///
+  /// The count is a *lower* bound when rows wrap, which is why the default says
+  /// "more" rather than "remaining".
+  final String Function(int count) hiddenLines;
+
+  /// A diff hunk the consumer elided, with no way to expand it — read-only
+  /// context ("12 hidden lines"). Distinct from [hiddenLines] because this
+  /// counts lines that were never sent, not lines below the fold.
+  final String Function(int count) hiddenLinesCollapsed;
+
+  /// The same hunk when [BeuiFileDiff.onExpandContext] makes it a button
+  /// ("Expand 12 hidden lines"). A separate field rather than a prefix on
+  /// [hiddenLinesCollapsed] because the verb does not always lead.
+  final String Function(int count) expandHiddenLines;
 
   // ── Todo list ─────────────────────────────────────────────────────────────
 
@@ -417,11 +460,53 @@ class BeuiAgentStrings {
   /// [BeuiStreamingResponseStatus.stopped].
   final String responseStopped;
 
+  /// Screen-reader name for a settled `BeuiStreamingResponse`.
+  ///
+  /// The four `*Semantics` labels are whole strings, not a stem plus a
+  /// modifier, because "Response, busy" is one clause and languages that
+  /// inflect the noun for state cannot be served by concatenation. They are
+  /// never painted — Flutter has no `Semantics.busy`, so the state rides in the
+  /// label.
+  final String responseSemantics;
+
+  /// Screen-reader name while tokens are still arriving (`aria-busy`).
+  final String responseBusySemantics;
+
+  /// Screen-reader name once the response errored. Distinct from
+  /// [responseFailed], which is the *visible* message beside the error icon.
+  final String responseFailedSemantics;
+
+  /// Screen-reader name once the response was truncated. Distinct from
+  /// [responseStopped], which is the visible message.
+  final String responseStoppedSemantics;
+
   // ── Message scroller ──────────────────────────────────────────────────────
 
-  /// Label and tooltip for `BeuiMessageScroller`'s "jump to latest" pill,
-  /// shown once the reader has scrolled away from the live edge.
+  /// Label and tooltip for the "jump to latest" pill, shown once the reader has
+  /// scrolled away from a streaming live edge. Shared by
+  /// `BeuiMessageScroller`, `BeuiCodeBlock`, `BeuiFileDiff` and
+  /// `BeuiToolResult`.
   final String jumpToLatest;
+
+  /// Semantics container label on `BeuiMessageScroller`'s transcript.
+  final String conversation;
+
+  /// Semantics label on the scroller's navigation slot.
+  final String messageNavigation;
+
+  // ── Image generation ──────────────────────────────────────────────────────
+
+  /// Cancels an in-flight `BeuiImageGeneration` render.
+  final String stopGenerating;
+
+  // ── Prompt input ──────────────────────────────────────────────────────────
+
+  /// Placeholder in `BeuiPromptInput`'s empty field.
+  final String promptPlaceholder;
+
+  /// Semantics label on the same field, which the placeholder does not supply
+  /// once the reader has typed.
+  final String promptSemanticLabel;
 
   // ── Defaults ──────────────────────────────────────────────────────────────
   //
@@ -476,6 +561,15 @@ class BeuiAgentStrings {
   static String _showSources(int count) =>
       count == 1 ? '1 source' : '$count sources';
 
+  static String _hiddenLines(int count) =>
+      '$count more ${count == 1 ? 'line' : 'lines'}';
+
+  static String _hiddenLinesCollapsed(int count) =>
+      '$count hidden ${count == 1 ? 'line' : 'lines'}';
+
+  static String _expandHiddenLines(int count) =>
+      'Expand $count hidden ${count == 1 ? 'line' : 'lines'}';
+
   /// Returns a copy with the given strings replaced.
   BeuiAgentStrings copyWith({
     String? toolApprovalTitle,
@@ -516,6 +610,11 @@ class BeuiAgentStrings {
     String? copyResult,
     String? copied,
     String? runAgain,
+    String? copyCode,
+    String? copyDiff,
+    String Function(int count)? hiddenLines,
+    String Function(int count)? hiddenLinesCollapsed,
+    String Function(int count)? expandHiddenLines,
     String? todoListLabel,
     String? todoListTitle,
     String? todoEmpty,
@@ -553,7 +652,16 @@ class BeuiAgentStrings {
     String Function(int count)? showSources,
     String? responseFailed,
     String? responseStopped,
+    String? responseSemantics,
+    String? responseBusySemantics,
+    String? responseFailedSemantics,
+    String? responseStoppedSemantics,
     String? jumpToLatest,
+    String? conversation,
+    String? messageNavigation,
+    String? stopGenerating,
+    String? promptPlaceholder,
+    String? promptSemanticLabel,
   }) {
     return BeuiAgentStrings(
       toolApprovalTitle: toolApprovalTitle ?? this.toolApprovalTitle,
@@ -598,6 +706,11 @@ class BeuiAgentStrings {
       copyResult: copyResult ?? this.copyResult,
       copied: copied ?? this.copied,
       runAgain: runAgain ?? this.runAgain,
+      copyCode: copyCode ?? this.copyCode,
+      copyDiff: copyDiff ?? this.copyDiff,
+      hiddenLines: hiddenLines ?? this.hiddenLines,
+      hiddenLinesCollapsed: hiddenLinesCollapsed ?? this.hiddenLinesCollapsed,
+      expandHiddenLines: expandHiddenLines ?? this.expandHiddenLines,
       todoListLabel: todoListLabel ?? this.todoListLabel,
       todoListTitle: todoListTitle ?? this.todoListTitle,
       todoEmpty: todoEmpty ?? this.todoEmpty,
@@ -641,7 +754,19 @@ class BeuiAgentStrings {
       showSources: showSources ?? this.showSources,
       responseFailed: responseFailed ?? this.responseFailed,
       responseStopped: responseStopped ?? this.responseStopped,
+      responseSemantics: responseSemantics ?? this.responseSemantics,
+      responseBusySemantics:
+          responseBusySemantics ?? this.responseBusySemantics,
+      responseFailedSemantics:
+          responseFailedSemantics ?? this.responseFailedSemantics,
+      responseStoppedSemantics:
+          responseStoppedSemantics ?? this.responseStoppedSemantics,
       jumpToLatest: jumpToLatest ?? this.jumpToLatest,
+      conversation: conversation ?? this.conversation,
+      messageNavigation: messageNavigation ?? this.messageNavigation,
+      stopGenerating: stopGenerating ?? this.stopGenerating,
+      promptPlaceholder: promptPlaceholder ?? this.promptPlaceholder,
+      promptSemanticLabel: promptSemanticLabel ?? this.promptSemanticLabel,
     );
   }
 
@@ -695,6 +820,11 @@ class BeuiAgentStrings {
         other.copyResult == copyResult &&
         other.copied == copied &&
         other.runAgain == runAgain &&
+        other.copyCode == copyCode &&
+        other.copyDiff == copyDiff &&
+        other.hiddenLines == hiddenLines &&
+        other.hiddenLinesCollapsed == hiddenLinesCollapsed &&
+        other.expandHiddenLines == expandHiddenLines &&
         other.todoListLabel == todoListLabel &&
         other.todoListTitle == todoListTitle &&
         other.todoEmpty == todoEmpty &&
@@ -732,7 +862,16 @@ class BeuiAgentStrings {
         other.showSources == showSources &&
         other.responseFailed == responseFailed &&
         other.responseStopped == responseStopped &&
-        other.jumpToLatest == jumpToLatest;
+        other.responseSemantics == responseSemantics &&
+        other.responseBusySemantics == responseBusySemantics &&
+        other.responseFailedSemantics == responseFailedSemantics &&
+        other.responseStoppedSemantics == responseStoppedSemantics &&
+        other.jumpToLatest == jumpToLatest &&
+        other.conversation == conversation &&
+        other.messageNavigation == messageNavigation &&
+        other.stopGenerating == stopGenerating &&
+        other.promptPlaceholder == promptPlaceholder &&
+        other.promptSemanticLabel == promptSemanticLabel;
   }
 
   @override
@@ -775,6 +914,11 @@ class BeuiAgentStrings {
     copyResult,
     copied,
     runAgain,
+    copyCode,
+    copyDiff,
+    hiddenLines,
+    hiddenLinesCollapsed,
+    expandHiddenLines,
     todoListLabel,
     todoListTitle,
     todoEmpty,
@@ -812,6 +956,15 @@ class BeuiAgentStrings {
     showSources,
     responseFailed,
     responseStopped,
+    responseSemantics,
+    responseBusySemantics,
+    responseFailedSemantics,
+    responseStoppedSemantics,
     jumpToLatest,
+    conversation,
+    messageNavigation,
+    stopGenerating,
+    promptPlaceholder,
+    promptSemanticLabel,
   ]);
 }

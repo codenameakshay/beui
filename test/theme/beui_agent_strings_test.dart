@@ -133,6 +133,30 @@ void main() {
     test('showSources plural', () {
       expect(strings.showSources(3), '3 sources');
     });
+
+    test('hiddenLines singular', () {
+      expect(strings.hiddenLines(1), '1 more line');
+    });
+
+    test('hiddenLines plural', () {
+      expect(strings.hiddenLines(3), '3 more lines');
+    });
+
+    test('hiddenLinesCollapsed singular', () {
+      expect(strings.hiddenLinesCollapsed(1), '1 hidden line');
+    });
+
+    test('hiddenLinesCollapsed plural', () {
+      expect(strings.hiddenLinesCollapsed(3), '3 hidden lines');
+    });
+
+    test('expandHiddenLines singular', () {
+      expect(strings.expandHiddenLines(1), 'Expand 1 hidden line');
+    });
+
+    test('expandHiddenLines plural', () {
+      expect(strings.expandHiddenLines(3), 'Expand 3 hidden lines');
+    });
   });
 
   group('plain string defaults match the widgets current copy', () {
@@ -163,6 +187,11 @@ void main() {
       expect(strings.runAgain, 'Run again');
     });
 
+    test('code block and file diff', () {
+      expect(strings.copyCode, 'Copy code');
+      expect(strings.copyDiff, 'Copy diff');
+    });
+
     test('todo list', () {
       expect(strings.todoListTitle, 'To-dos');
       expect(strings.todoEmpty, 'No tasks yet');
@@ -183,8 +212,22 @@ void main() {
       expect(strings.responseStopped, 'Response stopped');
     });
 
+    test('response semantics', () {
+      expect(strings.responseSemantics, 'Response');
+      expect(strings.responseBusySemantics, 'Response, busy');
+      expect(strings.responseFailedSemantics, 'Response, failed');
+      expect(strings.responseStoppedSemantics, 'Response, stopped');
+    });
+
     test('message scroller', () {
       expect(strings.jumpToLatest, 'Jump to latest');
+    });
+
+    test('message scroller / image generation / prompt input', () {
+      expect(strings.conversation, 'Conversation');
+      expect(strings.messageNavigation, 'Message navigation');
+      expect(strings.stopGenerating, 'Stop generating');
+      expect(strings.promptSemanticLabel, 'Prompt');
     });
 
     test('shared status words', () {
@@ -200,6 +243,11 @@ void main() {
 
     test('activity thinking uses U+2026 ellipsis', () {
       expect(strings.activityThinking, 'Thinking…');
+    });
+
+    test('prompt placeholder uses U+2026 ellipsis, not three dots', () {
+      expect(strings.promptPlaceholder, 'Ask the agent to do something…');
+      expect(strings.promptPlaceholder, isNot(contains('...')));
     });
   });
 
@@ -230,6 +278,19 @@ void main() {
       final modified = base.copyWith(activityRanTools: (n) => 'X$n');
       expect(modified.activityRanTools(3), 'X3');
       expect(base.activityRanTools(3), 'Ran 3 tools');
+    });
+
+    test('overrides copyCode and hiddenLines, preserves copyDiff and '
+        'hiddenLinesCollapsed', () {
+      const base = BeuiAgentStrings();
+      final modified = base.copyWith(
+        copyCode: 'Copier le code',
+        hiddenLines: (n) => 'X$n',
+      );
+      expect(modified.copyCode, 'Copier le code');
+      expect(modified.hiddenLines(3), 'X3');
+      expect(modified.copyDiff, base.copyDiff);
+      expect(modified.hiddenLinesCollapsed(3), base.hiddenLinesCollapsed(3));
     });
   });
 

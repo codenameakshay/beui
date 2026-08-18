@@ -249,8 +249,8 @@ class BeuiPromptInput extends StatefulWidget {
     this.maxRows = 8,
     this.leadingAction,
     this.enabled = true,
-    this.placeholder = 'Ask the agent to do something…',
-    this.semanticLabel = 'Prompt',
+    this.placeholder,
+    this.semanticLabel,
     this.focusNode,
     this.controller,
     this.autofocus = false,
@@ -342,11 +342,13 @@ class BeuiPromptInput extends StatefulWidget {
   /// Whether the composer accepts input.
   final bool enabled;
 
-  /// Placeholder when empty.
-  final String placeholder;
+  /// Placeholder when empty. Defaults to
+  /// [BeuiAgentStrings.promptPlaceholder].
+  final String? placeholder;
 
-  /// Accessibility label for the text field (source `aria-label`).
-  final String semanticLabel;
+  /// Accessibility label for the text field (source `aria-label`). Defaults to
+  /// [BeuiAgentStrings.promptSemanticLabel].
+  final String? semanticLabel;
 
   /// Optional external focus node.
   final FocusNode? focusNode;
@@ -741,7 +743,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
                 onRetry: widget.onAttachmentRetry,
               ),
             _ComposerSemantics(
-              label: widget.semanticLabel,
+              label: widget.semanticLabel ?? agent.strings.promptSemanticLabel,
               child: DefaultTextHeightBehavior(
                 // CSS puts half of `leading-6`'s extra leading above the first
                 // line; Flutter's paragraph default leaves the first ascent at
@@ -782,7 +784,9 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
                           8,
                           0,
                         ),
-                        hintText: widget.placeholder,
+                        hintText:
+                            widget.placeholder ??
+                            agent.strings.promptPlaceholder,
                         hintStyle: _composerStyle(colors, agent).copyWith(
                           // Full-strength `mutedForeground` (5.9:1). The 0.55
                           // multiplier that used to sit here dropped it to

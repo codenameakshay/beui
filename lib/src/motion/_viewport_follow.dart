@@ -23,11 +23,14 @@ library;
 import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
 import '_hit_target.dart';
 
 /// How far from the live edge the reader may drift before following stops, in
@@ -192,9 +195,17 @@ class BeuiLiveEdgeFollower {
 /// The "jump to latest" pill shown while the reader is pinned away from a
 /// streaming live edge.
 ///
-/// One affordance, one shape, in both [BeuiCodeBlock] and [BeuiFileDiff] — the
-/// audit's `R7` asks for the language to be consistent across the two, and
-/// `C4` asks for the same thing one cluster over.
+/// One affordance, one contract, in [BeuiCodeBlock], [BeuiFileDiff] and
+/// [BeuiToolResult] — the audit's `R7` asks for the language to be consistent
+/// across the code viewports, and `C4` asks for the same thing one cluster
+/// over in the transcript.
+///
+/// `BeuiMessageScroller` keeps its own richer pill (it carries an unread
+/// badge), but the *contract* is the same one and F9/F10 pulled this one up to
+/// meet it: keyboard activation, a visible focus ring, a tooltip, semantics
+/// that go quiet on exit, and theme-driven shape and type. What deliberately
+/// differs is size — a code viewport is a fraction of a transcript's height, so
+/// this pill stays compact and corner-anchored.
 ///
 /// Entrance 180ms / exit 120ms (exit faster, per the repo motion rules); the
 /// 4px rise is the movement channel and drops under reduced motion while the
@@ -205,7 +216,7 @@ class BeuiJumpToLatest extends StatefulWidget {
   const BeuiJumpToLatest({
     required this.visible,
     required this.onTap,
-    this.label = 'Jump to latest',
+    this.label,
     super.key,
   });
 
@@ -215,8 +226,10 @@ class BeuiJumpToLatest extends StatefulWidget {
   /// Activation handler — normally `follower.follow(force: true)`.
   final VoidCallback onTap;
 
-  /// Accessible name and visible text. Defaults to `"Jump to latest"`.
-  final String label;
+  /// Accessible name and visible text. Defaults to
+  /// [BeuiAgentStrings.jumpToLatest] — the same field the transcript's pill
+  /// reads, so one override relabels every one of them.
+  final String? label;
 
   @override
   State<BeuiJumpToLatest> createState() => _BeuiJumpToLatestState();
@@ -225,6 +238,7 @@ class BeuiJumpToLatest extends StatefulWidget {
 class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
   bool _hovered = false;
   bool _pressed = false;
+  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
@@ -232,70 +246,102 @@ class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
     final colors =
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
+    final label = widget.label ?? agent.strings.jumpToLatest;
 
+    // The slop wrapper is outermost, and that placement is load-bearing: an
+    // ancestor RenderBox rejects a pointer outside its own box before any
+    // child's hitTest runs, so a nested BeuiMinHitTarget is dead weight.
     final pill = BeuiMinHitTarget(
       child: Semantics(
         container: true,
         button: true,
-        label: widget.label,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          onEnter: (_) => setState(() => _hovered = true),
-          onExit: (_) => setState(() {
-            _hovered = false;
-            _pressed = false;
-          }),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTapDown: (_) => setState(() => _pressed = true),
-            onTapUp: (_) => setState(() => _pressed = false),
-            onTapCancel: () => setState(() => _pressed = false),
-            onTap: widget.onTap,
-            child: SingleMotionBuilder(
-              value: (_pressed && !reduce) ? 0.97 : 1.0,
-              motion: motionFor(context, beuiSpringPress, isMovement: true),
-              builder: (context, scale, child) =>
-                  Transform.scale(scale: scale, child: child),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                curve: beuiEaseOut,
-                height: 24,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  color: _hovered ? colors.foreground : colors.card,
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(
-                    color: colors.foreground.withValues(alpha: 0.12),
-                  ),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x14000000),
-                      blurRadius: 6,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      LucideIcons.arrow_down,
-                      size: 12,
-                      color: _hovered ? colors.background : colors.foreground,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      widget.label,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0,
-                        height: 1,
-                        color: _hovered ? colors.background : colors.foreground,
+        label: label,
+        child: Tooltip(
+          message: label,
+          // The Semantics label above already names this control; a Tooltip
+          // that also contributes semantics makes a reader say it twice.
+          excludeFromSemantics: true,
+          child: FocusableActionDetector(
+            mouseCursor: SystemMouseCursors.click,
+            onShowHoverHighlight: (v) => setState(() {
+              _hovered = v;
+              if (!v) _pressed = false;
+            }),
+            onShowFocusHighlight: (v) => setState(() => _focused = v),
+            shortcuts: const <ShortcutActivator, Intent>{
+              SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+              SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+            },
+            actions: <Type, Action<Intent>>{
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  widget.onTap();
+                  return null;
+                },
+              ),
+            },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapUp: (_) => setState(() => _pressed = false),
+              onTapCancel: () => setState(() => _pressed = false),
+              onTap: widget.onTap,
+              child: BeuiFocusRing(
+                focused: _focused,
+                borderRadius: agent.shapes.pill,
+                child: SingleMotionBuilder(
+                  value: (_pressed && !reduce) ? 0.97 : 1.0,
+                  motion: motionFor(context, beuiSpringPress, isMovement: true),
+                  builder: (context, scale, child) =>
+                      Transform.scale(scale: scale, child: child),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    curve: beuiEaseOut,
+                    height: 24,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: _hovered ? colors.foreground : colors.card,
+                      borderRadius: agent.shapes.pill,
+                      border: Border.all(
+                        color: colors.foreground.withValues(alpha: 0.12),
+                        width: agent.structure.borderWidth,
                       ),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x14000000),
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                     ),
-                  ],
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          LucideIcons.arrow_down,
+                          size: 12,
+                          color: _hovered
+                              ? colors.background
+                              : colors.foreground,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          label,
+                          // Compact by design, but the *type* is the theme's
+                          // action style rather than a hardcoded 11px, so a
+                          // consumer's type scale reaches this pill too.
+                          style: agent.typography.action.copyWith(
+                            height: 1,
+                            color: _hovered
+                                ? colors.background
+                                : colors.foreground,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -324,7 +370,12 @@ class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
         if (!reduce) {
           out = Transform.translate(offset: Offset(0, 4 * (1 - v)), child: out);
         }
-        return IgnorePointer(ignoring: v < 0.5, child: out);
+        // Semantics goes quiet the moment the pill starts leaving, so a screen
+        // reader never offers a control that is on its way out.
+        return IgnorePointer(
+          ignoring: !widget.visible,
+          child: ExcludeSemantics(excluding: !widget.visible, child: out),
+        );
       },
       child: pill,
     );
@@ -346,6 +397,15 @@ class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
 /// Stack it over the bottom of the viewport (`Positioned(left/right/bottom: 0)`)
 /// so it costs no layout and the capped height stays exactly what the consumer
 /// asked for.
+///
+/// ## The count rides *inside* the fade
+///
+/// F13: this used to paint the gradient and then an **opaque** strip beneath
+/// it, which sat over a still-legible last row and hid it outright — the cue
+/// destroyed a line to announce that lines were missing. The count now sits in
+/// the bottom of the gradient itself, where the wash has already resolved to
+/// [surface], so the overlay occludes nothing the reader could otherwise have
+/// read and the footprint stays a flat [fadeHeight].
 class BeuiHiddenContentFooter extends StatelessWidget {
   /// Creates a hidden-content cue driven by [extentBelow]
   /// (`BeuiLiveEdgeFollower.extentBelow`).
@@ -353,8 +413,8 @@ class BeuiHiddenContentFooter extends StatelessWidget {
     required this.extentBelow,
     required this.rowExtent,
     required this.surface,
-    this.noun = 'line',
-    this.fadeHeight = 28,
+    this.label,
+    this.fadeHeight = 32,
     super.key,
   });
 
@@ -369,11 +429,13 @@ class BeuiHiddenContentFooter extends StatelessWidget {
   /// The viewport's own background, which the fade resolves to.
   final Color surface;
 
-  /// Singular noun for the count, pluralised with a bare `s`. Defaults to
-  /// `"line"`.
-  final String noun;
+  /// Builds the count copy. Defaults to [BeuiAgentStrings.hiddenLines], which
+  /// is also what `BeuiToolResult`'s own overflow cue reads — one override
+  /// relocalizes every capped viewport in the library.
+  final String Function(int count)? label;
 
-  /// Height of the gradient wash in logical pixels.
+  /// Height of the gradient wash in logical pixels. The count is laid into the
+  /// bottom of this band, so it also bounds the whole cue.
   final double fadeHeight;
 
   @override
@@ -382,6 +444,7 @@ class BeuiHiddenContentFooter extends StatelessWidget {
     final colors =
         theme.extension<BeuiColors>() ??
         BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final resolve = label ?? BeuiAgentTheme.of(context).strings.hiddenLines;
 
     return ExcludeSemantics(
       child: IgnorePointer(
@@ -390,13 +453,12 @@ class BeuiHiddenContentFooter extends StatelessWidget {
           builder: (context, below, _) {
             if (below <= 0.5) return const SizedBox.shrink();
             final hidden = rowExtent > 0 ? (below / rowExtent).ceil() : 0;
-            final plural = hidden == 1 ? noun : '${noun}s';
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: fadeHeight,
-                  child: DecoratedBox(
+            return SizedBox(
+              height: fadeHeight,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.bottomCenter,
@@ -405,14 +467,14 @@ class BeuiHiddenContentFooter extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-                if (hidden > 0)
-                  DecoratedBox(
-                    decoration: BoxDecoration(color: surface),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 4, top: 1),
+                  if (hidden > 0)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 4,
                       child: Text(
-                        '$hidden more $plural',
+                        resolve(hidden),
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
@@ -425,8 +487,8 @@ class BeuiHiddenContentFooter extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             );
           },
         ),
