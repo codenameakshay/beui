@@ -927,6 +927,125 @@ void main() {
       expect(base.style.color!.a, 1.0);
     });
   });
+
+  // F12: the last streaming viewport in the library with no pin concept. It
+  // now shares BeuiLiveEdgeFollower with the code block and the file diff.
+  group('BeuiToolResult live edge (F12)', () {
+    String longOutput(int n) =>
+        [for (var i = 0; i < n; i++) 'line $i'].join('\n');
+
+    Future<void> frames(WidgetTester tester, int count) async {
+      for (var i = 0; i < count; i++) {
+        await tester.pump(const Duration(milliseconds: 20));
+      }
+    }
+
+    ScrollController controllerOf(WidgetTester tester) => tester
+        .widget<SingleChildScrollView>(
+          find
+              .descendant(
+                of: find.byType(BeuiToolResult),
+                matching: find.byWidgetPredicate(
+                  (w) => w is SingleChildScrollView && w.controller != null,
+                ),
+              )
+              .first,
+        )
+        .controller!;
+
+    testWidgets('an unpinned viewport follows arriving output', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          child: BeuiToolResultOutput(code: longOutput(20)),
+          maxHeight: 120,
+        ),
+      );
+      await frames(tester, 20);
+
+      await tester.pumpWidget(
+        _host(
+          child: BeuiToolResultOutput(code: longOutput(60)),
+          maxHeight: 120,
+        ),
+      );
+      await frames(tester, 30);
+      final controller = controllerOf(tester);
+      expect(
+        controller.offset,
+        closeTo(controller.position.maxScrollExtent, 1),
+      );
+    });
+
+    testWidgets(
+      'scrolling away mid-stream keeps the reader put and offers a way back',
+      (tester) async {
+        await tester.pumpWidget(
+          _host(
+            child: BeuiToolResultOutput(code: longOutput(60)),
+            maxHeight: 120,
+          ),
+        );
+        await frames(tester, 30);
+        expect(find.text('Jump to latest'), findsNothing);
+
+        final controller = controllerOf(tester);
+        controller.jumpTo(controller.position.maxScrollExtent - 200);
+        await frames(tester, 20);
+        expect(find.text('Jump to latest'), findsOneWidget);
+        final pinnedAt = controller.offset;
+
+        // The tool keeps writing; the viewport must not yank.
+        await tester.pumpWidget(
+          _host(
+            child: BeuiToolResultOutput(code: longOutput(90)),
+            maxHeight: 120,
+          ),
+        );
+        await frames(tester, 20);
+        expect(controller.offset, closeTo(pinnedAt, 1));
+
+        await tester.tap(find.text('Jump to latest'));
+        await frames(tester, 30);
+        expect(
+          controller.offset,
+          closeTo(controller.position.maxScrollExtent, 1),
+        );
+        expect(find.text('Jump to latest'), findsNothing);
+      },
+    );
+
+    testWidgets('a settled result never offers the pill', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          child: BeuiToolResultOutput(code: longOutput(60)),
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+          maxHeight: 120,
+        ),
+      );
+      await tester.pumpAndSettle();
+      final controller = controllerOf(tester);
+      controller.jumpTo(0);
+      await frames(tester, 20);
+      // Nothing is arriving, so there is no live edge to return to.
+      expect(find.text('Jump to latest'), findsNothing);
+    });
+
+    testWidgets('the overflow cue speaks the shared hidden-lines copy (F13)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          child: BeuiToolResultOutput(code: longOutput(60)),
+          status: BeuiToolResultStatus.success,
+          collapseOnComplete: false,
+          maxHeight: 120,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('more lines'), findsOneWidget);
+    });
+  });
 }
 
 void _noop() {}
