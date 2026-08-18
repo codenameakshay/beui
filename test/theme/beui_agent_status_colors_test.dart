@@ -49,14 +49,15 @@ final _darkSurfaces = <String, Color>{
 };
 
 // Tiers covered by the AA gate (neutral is excluded — tested separately).
-const _gatedTiers = <String, BeuiAgentStatusPalette Function(BeuiAgentStatusColors)>{
-  'pending': _pending,
-  'running': _running,
-  'success': _success,
-  'failed': _failed,
-  'denied': _denied,
-  'destructive': _destructive,
-};
+const _gatedTiers =
+    <String, BeuiAgentStatusPalette Function(BeuiAgentStatusColors)>{
+      'pending': _pending,
+      'running': _running,
+      'success': _success,
+      'failed': _failed,
+      'denied': _denied,
+      'destructive': _destructive,
+    };
 
 BeuiAgentStatusPalette _pending(BeuiAgentStatusColors c) => c.pending;
 BeuiAgentStatusPalette _running(BeuiAgentStatusColors c) => c.running;
@@ -206,19 +207,13 @@ void main() {
     test('light', () {
       const colors = BeuiAgentStatusColors.light;
       expect(colors.destructive.foreground, isNot(colors.failed.foreground));
-      expect(
-        colors.destructive.border.a,
-        greaterThan(colors.failed.border.a),
-      );
+      expect(colors.destructive.border.a, greaterThan(colors.failed.border.a));
     });
 
     test('dark', () {
       const colors = BeuiAgentStatusColors.dark;
       expect(colors.destructive.foreground, isNot(colors.failed.foreground));
-      expect(
-        colors.destructive.border.a,
-        greaterThan(colors.failed.border.a),
-      );
+      expect(colors.destructive.border.a, greaterThan(colors.failed.border.a));
     });
   });
 
@@ -287,14 +282,17 @@ void main() {
       );
     });
 
-    test('statusPalette is shorthand for statusColorsFor(...).palette(...)', () {
-      expect(
-        BeuiAgentTheme.standard.statusPalette(
-          BeuiAgentStatus.pending,
-          Brightness.dark,
-        ),
-        BeuiAgentStatusColors.dark.pending,
-      );
-    });
+    test(
+      'statusPalette is shorthand for statusColorsFor(...).palette(...)',
+      () {
+        expect(
+          BeuiAgentTheme.standard.statusPalette(
+            BeuiAgentStatus.pending,
+            Brightness.dark,
+          ),
+          BeuiAgentStatusColors.dark.pending,
+        );
+      },
+    );
   });
 }

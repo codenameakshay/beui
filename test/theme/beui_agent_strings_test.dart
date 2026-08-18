@@ -183,9 +183,7 @@ void main() {
 
     test('overriding a function field works', () {
       const base = BeuiAgentStrings();
-      final modified = base.copyWith(
-        activityRanTools: (n) => 'X$n',
-      );
+      final modified = base.copyWith(activityRanTools: (n) => 'X$n');
       expect(modified.activityRanTools(3), 'X3');
       expect(base.activityRanTools(3), 'Ran 3 tools');
     });
