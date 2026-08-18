@@ -87,6 +87,7 @@ export 'src/motion/feedback_widget.dart'
     show
         BeuiFeedbackData,
         BeuiFeedbackPosition,
+        BeuiFeedbackSentiment,
         BeuiFeedbackWidget,
         BeuiFeedbackWidgetStyle;
 export 'src/motion/file_upload.dart'

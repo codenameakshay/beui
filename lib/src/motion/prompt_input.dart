@@ -1043,13 +1043,16 @@ class _ActionsButtonState extends State<_ActionsButton> {
           onDismiss: _closeAndReturnFocus,
         ),
       ),
-      child: Semantics(
-        button: true,
-        enabled: enabled,
-        expanded: widget.open,
-        label: 'Add to prompt',
-        onTap: enabled ? _toggle : null,
-        child: BeuiMinHitTarget(
+      // The slop is the outermost wrapper on purpose: RenderProxyBox.hitTest
+      // rejects positions outside its own size before descending, so a
+      // Semantics above it would swallow the very pointers it exists to catch.
+      child: BeuiMinHitTarget(
+        child: Semantics(
+          button: true,
+          enabled: enabled,
+          expanded: widget.open,
+          label: 'Add to prompt',
+          onTap: enabled ? _toggle : null,
           child: FocusableActionDetector(
             focusNode: _triggerFocus,
             enabled: enabled,
@@ -1628,13 +1631,13 @@ class _SendStopButton extends StatelessWidget {
     final stoppable = onStop != null;
     final enabled = loading ? stoppable : canSubmit;
 
-    return Semantics(
-      button: true,
-      enabled: enabled,
-      label: loading
-          ? (stoppable ? 'Stop generating' : 'Generating')
-          : 'Send prompt',
-      child: BeuiMinHitTarget(
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        label: loading
+            ? (stoppable ? 'Stop generating' : 'Generating')
+            : 'Send prompt',
         child: _StopPulse(
           pulse: pulse,
           active: loading,
@@ -2269,12 +2272,12 @@ class _ChipActionState extends State<_ChipAction> {
   Widget build(BuildContext context) {
     final enabled = widget.onPressed != null;
     final base = widget.tint ?? widget.colors.mutedForeground;
-    return Semantics(
-      button: true,
-      enabled: enabled,
-      label: widget.label,
-      onTap: widget.onPressed,
-      child: BeuiMinHitTarget(
+    return BeuiMinHitTarget(
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        label: widget.label,
+        onTap: widget.onPressed,
         child: FocusableActionDetector(
           enabled: enabled,
           mouseCursor: enabled

@@ -10,6 +10,8 @@ import 'package:flutter_test/flutter_test.dart';
 Widget _app({
   FutureOr<void> Function(BeuiFeedbackData)? onSubmit,
   bool reduce = false,
+  bool showSentiment = false,
+  bool accessibleNavigation = false,
 }) {
   // A device-frame surface tall enough for the open form to render fully (the
   // component anchors itself to a corner and grows upward out of it).
@@ -19,11 +21,25 @@ Widget _app({
       height: 460,
       child: Stack(
         children: [
-          Positioned.fill(child: BeuiFeedbackWidget(onSubmit: onSubmit)),
+          Positioned.fill(
+            child: BeuiFeedbackWidget(
+              onSubmit: onSubmit,
+              showSentiment: showSentiment,
+            ),
+          ),
         ],
       ),
     ),
   );
+  if (accessibleNavigation) {
+    final inner = child;
+    child = Builder(
+      builder: (context) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(accessibleNavigation: true),
+        child: inner,
+      ),
+    );
+  }
   if (reduce) {
     final inner = child;
     child = Builder(
@@ -79,7 +95,7 @@ void main() {
       expect(find.text('Thanks!'), findsOneWidget);
     });
 
-    testWidgets('empty message does not submit', (tester) async {
+    testWidgets('empty message does not submit, and says why', (tester) async {
       var called = false;
       await tester.pumpWidget(_app(onSubmit: (_) => called = true));
 
@@ -90,6 +106,168 @@ void main() {
 
       expect(called, isFalse);
       expect(find.text('Thanks!'), findsNothing);
+      // Submit stays live and explains itself rather than sitting greyed out.
+      expect(
+        find.text('Write a little about what happened first.'),
+        findsOneWidget,
+      );
+
+      // Typing clears the complaint.
+      await tester.enterText(find.byType(TextField), 'ok');
+      await tester.pump();
+      expect(
+        find.text('Write a little about what happened first.'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('closing preserves the draft; a successful submit clears it', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(onSubmit: (_) {}));
+
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.enterText(find.byType(TextField), 'half-written report');
+      await tester.pump();
+
+      // A stray tap outside used to destroy this with no confirmation.
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byType(TextField), findsNothing);
+
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('half-written report'), findsOneWidget);
+
+      // Only a submit that actually landed discards it.
+      await tester.tap(find.byType(BeuiStatefulButton));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+      expect(find.text('Thanks!'), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 2000));
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('half-written report'), findsNothing);
+    });
+
+    testWidgets('Escape closes without destroying the draft', (tester) async {
+      await tester.pumpWidget(_app(onSubmit: (_) {}));
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.enterText(find.byType(TextField), 'keep me');
+      await tester.pump();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byType(TextField), findsNothing);
+
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('keep me'), findsOneWidget);
+    });
+
+    testWidgets('the success view holds while a screen reader is active', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(onSubmit: (_) {}, accessibleNavigation: true),
+      );
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.enterText(find.byType(TextField), 'Nice');
+      await tester.pump();
+      await tester.tap(find.byType(BeuiStatefulButton));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+      expect(find.text('Thanks!'), findsOneWidget);
+
+      // Well past the 1.6s auto-dismiss: the confirmation must not vanish
+      // before it has finished being announced.
+      await tester.pump(const Duration(seconds: 3));
+      expect(find.text('Thanks!'), findsOneWidget);
+    });
+
+    testWidgets('sentiment is off by default', (tester) async {
+      await tester.pumpWidget(_app(onSubmit: (_) {}));
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      // Off by default, for fidelity with the source, which has no rating.
+      expect(find.text('Good'), findsNothing);
+      expect(find.text('How was your experience?'), findsNothing);
+    });
+
+    testWidgets('opted-in sentiment rides along with the message', (
+      tester,
+    ) async {
+      BeuiFeedbackData? received;
+      await tester.pumpWidget(
+        _app(onSubmit: (d) => received = d, showSentiment: true),
+      );
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Good'), findsOneWidget);
+
+      await tester.tap(find.text('Good'));
+      await tester.pump();
+      await tester.enterText(find.byType(TextField), 'Smooth');
+      await tester.pump();
+      await tester.tap(find.byType(BeuiStatefulButton));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+
+      expect(received?.sentiment, BeuiFeedbackSentiment.positive);
+      expect(received?.message, 'Smooth');
+    });
+
+    testWidgets('close and trigger are keyboard-activatable', (tester) async {
+      await tester.pumpWidget(_app(onSubmit: (_) {}));
+      final semantics = tester.ensureSemantics();
+
+      // Both carry button semantics with a name and a tap action — the
+      // contract the bare GestureDetectors they replaced never had.
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Help us improve')),
+        matchesSemantics(
+          isButton: true,
+          hasTapAction: true,
+          label: 'Help us improve',
+        ),
+      );
+
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.bySemanticsLabel('Close'), findsOneWidget);
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Close')),
+        matchesSemantics(isButton: true, hasTapAction: true, label: 'Close'),
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('the close button accepts taps outside its 20px paint', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(onSubmit: (_) {}));
+      await tester.tap(_trigger());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byType(TextField), findsOneWidget);
+
+      // The paint stays 20px — this is a fidelity port, so the pixels do not
+      // move — and only the hit slop grows to 44. `meetsGuideline` cannot see
+      // that: it measures the semantics rect, which `BeuiMinHitTarget`
+      // deliberately leaves at the painted size. So test the behaviour, which
+      // is what actually matters to a thumb.
+      final paint = tester.getRect(find.bySemanticsLabel('Close'));
+      expect(paint.size, const Size(20, 20));
+
+      // 15px left of centre: outside the 20px box, inside the 44px slop, and
+      // still within the header row — the slop overhangs siblings but cannot
+      // escape an ancestor's bounds, which is why the row it sits in is where
+      // the extra reach is won.
+      await tester.tapAt(paint.center - const Offset(15, 0));
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byType(TextField), findsNothing);
     });
 
     testWidgets('a thrown submit routes to the retry view', (tester) async {
