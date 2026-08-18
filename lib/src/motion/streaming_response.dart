@@ -188,20 +188,25 @@ class BeuiStreamingResponse extends StatefulWidget {
   /// toggled off) on every feedback press.
   final ValueChanged<BeuiStreamingResponseFeedback>? onFeedbackChange;
 
-  /// Whether this response announces its own streamed text (source
+  /// Whether the streamed text is announced to assistive tech (source
   /// `announce`).
   ///
-  /// **Null (the default) resolves automatically**: false when a
-  /// [BeuiMessageScroller] is above this widget — the transcript owns the
-  /// conversation's one live region and this response pushes sentences into it
-  /// — and true when there is no scroller, so a standalone response still
-  /// announces. Pass an explicit `true`/`false` to override.
+  /// Null (the default) means yes. **Where** it is announced resolves
+  /// automatically: when a [BeuiMessageScroller] is above this widget, the
+  /// transcript owns the conversation's single live region and this response
+  /// pushes whole sentences into it; with no scroller, the response opens a
+  /// live node of its own so a standalone answer still announces.
   ///
-  /// This replaces a `true` default that, combined with the scroller's own
-  /// nested regions, produced three to five live regions per transcript, none
-  /// of which ever announced the streamed text (C6).
+  /// Either way there is exactly one live region per conversation. This
+  /// replaces a `true` default that, combined with the scroller's own nested
+  /// regions, produced three to five regions per transcript, none of which
+  /// ever announced the streamed text because every label was a constant (C6).
+  ///
+  /// Pass `false` for silence — for a decorative preview, or when the host app
+  /// announces on its own (see [onAnnounce]).
   ///
   /// Announcements need the text: supply [announceText] (or [copyText]).
+  /// Without either, nothing is announced regardless of this flag.
   final bool? announce;
 
   /// Plain text of the response so far, used for announcements.
@@ -317,17 +322,23 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
   // -- announcements (C6) ---------------------------------------------------
 
   BeuiStreamAnnouncer? _announcer;
+
+  /// The transcript's announcement sink, when one is above us. Non-null means
+  /// we push into the conversation's shared region instead of opening our own.
   ValueChanged<String>? _sink;
-  bool _resolvedAnnounce = false;
+
+  /// Whether to announce at all. Separate from [_sink] on purpose: a transcript
+  /// changes *where* the words go, not *whether* they are spoken. Conflating
+  /// the two is what made the first cut of this fix silently drop every
+  /// announcement inside a scroller.
+  bool _announceEnabled = true;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // A transcript above us owns the conversation's single live region; push
-    // into it and stay silent ourselves. Standalone responses keep their own.
     final scope = BeuiTranscriptScope.maybeOf(context);
     _sink = scope?.announce;
-    _resolvedAnnounce = widget.announce ?? (scope == null);
+    _announceEnabled = widget.announce ?? true;
     _syncAnnouncer();
   }
 
@@ -339,7 +350,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
       _resolvedSourcePrefix = widget.sourceIdPrefix!;
     }
     if (widget.announce != old.announce) {
-      _resolvedAnnounce = widget.announce ?? (_sink == null);
+      _announceEnabled = widget.announce ?? true;
     }
     _syncAnnouncer();
 
@@ -353,7 +364,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
 
   /// Creates or tears down the announcer and feeds it the current text.
   void _syncAnnouncer() {
-    final wanted = _resolvedAnnounce || widget.onAnnounce != null;
+    final wanted = _announceEnabled || widget.onAnnounce != null;
     if (!wanted) {
       _announcer?.dispose();
       _announcer = null;
@@ -365,14 +376,17 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
   }
 
   void _emitAnnouncement(String chunk) {
+    // The observation hook fires either way, so a host can log or re-route
+    // what a reader would hear even with `announce: false`.
     widget.onAnnounce?.call(chunk);
-    if (!_resolvedAnnounce) return;
+    if (!_announceEnabled) return;
     final sink = _sink;
     if (sink != null) {
+      // A transcript owns the conversation's region — push into it rather
+      // than opening a second one.
       sink(chunk);
       return;
     }
-    // No transcript above us — announce through our own live node.
     if (mounted) setState(() => _selfAnnouncement = chunk);
   }
 
@@ -483,12 +497,26 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
           ),
 
           // C6. Our own live node, used only when no transcript owns one.
-          // Zero pixels, no hit testing; only its label moves.
+          //
+          // A separate node rather than a `liveRegion` on the content, so the
+          // sentence chunk is announced *once* instead of the reader hearing
+          // the label and then the same words again from the Text below it.
+          // 1×1 rather than 0×0: Flutter drops semantics nodes with an empty
+          // rect during tree compilation, so a zero-size live region is never
+          // delivered to the platform at all.
           if (_selfAnnouncement.isNotEmpty && _sink == null)
-            SizedBox(
-              height: 0,
-              child: IgnorePointer(
-                child: Semantics(liveRegion: true, label: _selfAnnouncement),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: SizedBox(
+                width: 1,
+                height: 1,
+                child: IgnorePointer(
+                  child: Semantics(
+                    liveRegion: true,
+                    label: _selfAnnouncement,
+                    child: const SizedBox.expand(),
+                  ),
+                ),
               ),
             ),
 

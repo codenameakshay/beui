@@ -246,15 +246,26 @@ class BeuiTranscriptLiveRegionState extends State<BeuiTranscriptLiveRegion> {
           fit: StackFit.passthrough,
           children: [
             widget.child,
-            // One node, zero pixels, no hit testing. Only its label moves.
+            // One node, one transparent pixel, no hit testing. Only its label
+            // moves.
+            //
+            // 1×1 rather than 0×0 deliberately: Flutter drops semantics nodes
+            // with an empty rect during tree compilation, so a zero-size live
+            // region is silently never delivered to the platform. One pixel in
+            // the corner of a transcript is not perceptible and is the
+            // difference between announcing and not.
             if (_announcement.isNotEmpty)
               Positioned(
                 left: 0,
                 top: 0,
-                width: 0,
-                height: 0,
+                width: 1,
+                height: 1,
                 child: IgnorePointer(
-                  child: Semantics(liveRegion: true, label: _announcement),
+                  child: Semantics(
+                    liveRegion: true,
+                    label: _announcement,
+                    child: const SizedBox.expand(),
+                  ),
                 ),
               ),
           ],
