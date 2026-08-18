@@ -1,5 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap(Widget child, {bool reduce = false}) {
@@ -52,10 +53,10 @@ void main() {
       var browsed = 0;
       await tester.pumpWidget(_wrap(BeuiFileUpload(onBrowse: () => browsed++)));
       await tester.pumpAndSettle();
-      expect(find.text('Drop files here'), findsOneWidget);
-      expect(find.text('Add files to the upload queue'), findsOneWidget);
-      expect(find.text('Browse'), findsOneWidget);
-      await tester.tap(find.text('Drop files here'));
+      expect(find.text('Add files'), findsOneWidget);
+      expect(find.text('Choose files to upload'), findsOneWidget);
+      expect(find.text('Browse files'), findsOneWidget);
+      await tester.tap(find.text('Add files'));
       expect(browsed, 1);
     });
 
@@ -148,7 +149,7 @@ void main() {
         _wrap(const BeuiFileUpload(variant: BeuiFileUploadVariant.centered)),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Drop files here'), findsOneWidget);
+      expect(find.text('Add files'), findsOneWidget);
       expect(find.byIcon(LucideIcons.cloud_upload), findsOneWidget);
     });
 
@@ -183,6 +184,186 @@ void main() {
       await tester.pump(const Duration(milliseconds: 16));
       await tester.pump(const Duration(milliseconds: 400));
       expect(fillWidth(), moreOrLessEquals(0.8, epsilon: 0.01));
+    });
+  });
+
+  group('keyboard & semantics', () {
+    testWidgets('dropzone is focusable and Enter activates onBrowse', (
+      tester,
+    ) async {
+      var browsed = 0;
+      await tester.pumpWidget(_wrap(BeuiFileUpload(onBrowse: () => browsed++)));
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(browsed, 1);
+    });
+
+    testWidgets('Space also activates the dropzone', (tester) async {
+      var browsed = 0;
+      await tester.pumpWidget(_wrap(BeuiFileUpload(onBrowse: () => browsed++)));
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pump();
+      expect(browsed, 1);
+    });
+
+    testWidgets('disabled dropzone does not activate on Enter', (tester) async {
+      var browsed = 0;
+      await tester.pumpWidget(
+        _wrap(BeuiFileUpload(disabled: true, onBrowse: () => browsed++)),
+      );
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(browsed, 0);
+    });
+
+    testWidgets('remove button is keyboard-activatable', (tester) async {
+      final removed = <String>[];
+      // No onBrowse: the dropzone is disabled and drops out of tab order,
+      // so the first Tab lands directly on the row's remove control.
+      await tester.pumpWidget(
+        _wrap(
+          BeuiFileUpload(
+            defaultValue: const [
+              BeuiFileUploadItem(
+                id: 'solo',
+                name: 'solo.txt',
+                size: 100,
+                status: BeuiFileUploadStatus.success,
+              ),
+            ],
+            onRemove: (item) => removed.add(item.id),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(removed, ['solo']);
+    });
+
+    testWidgets('progress semantics value ends with %', (tester) async {
+      await tester.pumpWidget(_wrap(const BeuiFileUpload(value: _items)));
+      await tester.pump(const Duration(milliseconds: 400));
+      final semantics = tester.widget<Semantics>(
+        find.bySemanticsLabel('design-spec.pdf upload progress'),
+      );
+      expect(semantics.properties.value, endsWith('%'));
+    });
+
+    testWidgets('error row meta renders the error text in destructive color', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const BeuiFileUpload(value: _items)));
+      await tester.pump(const Duration(milliseconds: 400));
+      final richText = tester
+          .widgetList<Text>(find.byType(Text))
+          .firstWhere(
+            (t) => t.textSpan?.toPlainText().contains('Network lost') ?? false,
+          );
+      final span = richText.textSpan! as TextSpan;
+      final errorSpan =
+          span.children!.firstWhere(
+                (s) => (s as TextSpan).text?.contains('Network lost') ?? false,
+              )
+              as TextSpan;
+      expect(errorSpan.style?.color, BeuiColors.light().destructive);
+      expect(errorSpan.style?.fontWeight, FontWeight.w500);
+    });
+
+    testWidgets('maxFileSize rejects an oversized item', (tester) async {
+      final rejected = <BeuiFileUploadItem>[];
+      const big = BeuiFileUploadItem(
+        id: 'big',
+        name: 'huge.mov',
+        size: 60 * 1024 * 1024,
+      );
+      await tester.pumpWidget(
+        _wrap(
+          BeuiFileUpload(
+            value: const [big],
+            maxFileSize: 50 * 1024 * 1024,
+            onRejected: rejected.addAll,
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump();
+      expect(find.text('huge.mov'), findsNothing);
+      expect(rejected.map((e) => e.id), ['big']);
+      expect(
+        find.textContaining('is larger than the 50 MB limit'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('onCancel is used instead of onRemove while uploading', (
+      tester,
+    ) async {
+      final cancelled = <String>[];
+      final removed = <String>[];
+      await tester.pumpWidget(
+        _wrap(
+          BeuiFileUpload(
+            defaultValue: _items,
+            onCancel: (item) => cancelled.add(item.id),
+            onRemove: (item) => removed.add(item.id),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.tap(
+        find.bySemanticsLabel('Cancel upload of design-spec.pdf'),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(cancelled, ['a']);
+      expect(removed, isEmpty);
+    });
+
+    testWidgets('dark mode uses colors.success, not a hardcoded hex', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.dark().copyWith(extensions: [BeuiColors.dark()]),
+          ),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: const BeuiFileUpload(value: _items),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+      final expectedSuccess = BeuiColors.dark().success;
+
+      final icon = tester.widget<Icon>(find.byIcon(LucideIcons.circle_check));
+      expect(icon.color, expectedSuccess);
+
+      final fill = tester.widget<FractionallySizedBox>(
+        find.descendant(
+          of: find.bySemanticsLabel('logo.png upload progress'),
+          matching: find.byType(FractionallySizedBox),
+        ),
+      );
+      final decoratedBox = fill.child! as DecoratedBox;
+      expect((decoratedBox.decoration as BoxDecoration).color, expectedSuccess);
     });
   });
 }
