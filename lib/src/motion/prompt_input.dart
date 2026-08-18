@@ -2135,6 +2135,9 @@ class _AttachmentChip extends StatelessWidget {
 
     return Semantics(
       container: true,
+      // Without this the chip node merges its descendants and swallows the
+      // remove/retry buttons, leaving the rail navigable but not operable.
+      explicitChildNodes: true,
       label: a.name,
       // Status and any failure reason travel with the chip, so the rail is
       // navigable without sight of the wash or the tint.
