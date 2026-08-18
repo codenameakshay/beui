@@ -15,6 +15,7 @@ import '_disclosure.dart';
 import '_engine.dart';
 import '_hit_target.dart';
 import '_syntax.dart';
+import '_viewport_follow.dart';
 import 'action_swap.dart';
 import 'tool_approval.dart' show beuiAgentPressScale;
 
@@ -63,9 +64,6 @@ const _hoverIn = Duration(milliseconds: 150);
 
 /// Hover-out for the action-button chip.
 const _hoverOut = Duration(milliseconds: 110);
-
-/// Live-edge follow while streaming. Not an exit — this is content arriving.
-const _followDuration = Duration(milliseconds: 220);
 
 /// How long the "Copied" confirmation is held.
 const _copiedHold = Duration(milliseconds: 1600);
@@ -417,7 +415,12 @@ class BeuiToolResult extends StatefulWidget {
 
 class _BeuiToolResultState extends State<BeuiToolResult>
     with SingleTickerProviderStateMixin {
-  final ScrollController _scroll = ScrollController();
+  /// F12: this viewport used to yank itself to the bottom on every streamed
+  /// chunk with no notion of a reader who had scrolled up — the last unpinned
+  /// streaming surface in the library. It now shares the code block's and the
+  /// diff's follower, so scrolling away pins the viewport and raises the same
+  /// "jump to latest" pill.
+  late final BeuiLiveEdgeFollower _follow;
   late bool _internalOpen;
   bool _copied = false;
   bool _copyHovered = false;
@@ -452,6 +455,11 @@ class _BeuiToolResultState extends State<BeuiToolResult>
     super.initState();
     _internalOpen = widget.defaultOpen;
     _previousStatus = widget.status;
+    _follow = BeuiLiveEdgeFollower(
+      onPinnedChanged: () {
+        if (mounted) setState(() {});
+      },
+    )..attach();
     _spin = AnimationController(vsync: this, duration: _spinPeriod);
     if (_running) {
       _spin.repeat();
@@ -499,7 +507,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
   @override
   void dispose() {
     _copyTimer?.cancel();
-    _scroll.dispose();
+    _follow.dispose();
     _spin.dispose();
     super.dispose();
   }
@@ -513,20 +521,12 @@ class _BeuiToolResultState extends State<BeuiToolResult>
 
   void _toggle() => _setOpen(!_currentOpen);
 
+  /// Follows the live edge, unless the reader has pinned the viewport by
+  /// scrolling away. Only a *running* tool with an open panel follows at all —
+  /// a settled result has no live edge to chase.
   void _scheduleFollow() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_scroll.hasClients || !_currentOpen || !_running) {
-        return;
-      }
-      final max = _scroll.position.maxScrollExtent;
-      if (max <= 0) return;
-      final reduce = MediaQuery.disableAnimationsOf(context);
-      if (reduce) {
-        _scroll.jumpTo(max);
-      } else {
-        _scroll.animateTo(max, duration: _followDuration, curve: beuiEaseOut);
-      }
-    });
+    if (!_currentOpen || !_running) return;
+    _follow.follow(context);
   }
 
   /// Recomputes the overflow cue. Converges after one extra frame — it only
@@ -537,8 +537,8 @@ class _BeuiToolResultState extends State<BeuiToolResult>
     var overflowing = false;
     int? hidden;
 
-    if (_scroll.hasClients) {
-      final pos = _scroll.position;
+    if (_follow.controller.hasClients) {
+      final pos = _follow.controller.position;
       final remaining = pos.maxScrollExtent - pos.pixels;
       // Below the fold by more than half a pixel — anything less is rounding.
       overflowing = remaining > 0.5;
@@ -911,7 +911,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
             return false;
           },
           child: SingleChildScrollView(
-            controller: _scroll,
+            controller: _follow.controller,
             padding: _outputPadding,
             child: widget.child,
           ),
@@ -944,6 +944,22 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       );
     }
 
+    // F12: the way back to the live edge, stacked *outside* the ShaderMask so
+    // the pill is not itself faded out by the overflow wash.
+    viewport = Stack(
+      children: [
+        viewport,
+        Positioned(
+          right: 10,
+          bottom: 8,
+          child: BeuiJumpToLatest(
+            visible: _running && _currentOpen && _follow.pinned,
+            onTap: () => _follow.follow(context, force: true),
+          ),
+        ),
+      ],
+    );
+
     final hidden = _hiddenLines;
 
     return DecoratedBox(
@@ -973,7 +989,9 @@ class _BeuiToolResultState extends State<BeuiToolResult>
                 6,
               ),
               child: Text(
-                strings.activityMoreResults(hidden),
+                // F13: the same copy the code block and the diff use for the
+                // same fact, through the same field.
+                strings.hiddenLines(hidden),
                 style: agent.typography.metadata.copyWith(
                   color: colors.mutedForeground,
                 ),
