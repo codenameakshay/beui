@@ -183,6 +183,13 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
   String? _activeReplyId;
   final List<_AddedMessage> _messages = [];
 
+  /// F17: "Attach file" was an action the composer offered and then swallowed.
+  /// The demo now owns real attachment state so the chip row, its upload
+  /// progress, removal and retry are all reachable from the gallery.
+  List<BeuiPromptAttachment> _attachments = const [];
+  final List<Timer> _uploadTimers = [];
+  int _attachmentSeq = 0;
+
   BeuiToolApprovalStatus _toolStatus = BeuiToolApprovalStatus.pending;
   BeuiApprovalCardStatus _approvalStatus = BeuiApprovalCardStatus.pending;
 
@@ -193,8 +200,16 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
     _clearToolTimers();
     _clearChatTimers();
     _clearApprovalTimers();
+    _clearUploadTimers();
     _streamTimer?.cancel();
     super.dispose();
+  }
+
+  void _clearUploadTimers() {
+    for (final t in _uploadTimers) {
+      t.cancel();
+    }
+    _uploadTimers.clear();
   }
 
   void _clearToolTimers() {
@@ -341,6 +356,19 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
           content: value,
         ),
       );
+      // F15: the assistant turn is created *now*, empty and streaming, rather
+      // than after the think delay. Its typing indicator is the streaming
+      // response's own `placeholder`, so it cross-fades into the first token
+      // instead of a separate shimmer row unmounting and a blank bubble
+      // taking its place — the pattern agents_chat_preview already uses.
+      _messages.add(
+        _AddedMessage(
+          id: assistantId,
+          from: BeuiMessageFrom.assistant,
+          content: '',
+          streaming: true,
+        ),
+      );
       _pending = true;
     });
 
@@ -348,20 +376,84 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
       Timer(Duration(milliseconds: reduce ? 0 : 420), () {
         if (!mounted) return;
         setState(() {
-          _messages.add(
-            _AddedMessage(
-              id: assistantId,
-              from: BeuiMessageFrom.assistant,
-              content: '',
-              streaming: true,
-            ),
-          );
           _pending = false;
           _activeReplyId = assistantId;
         });
         _startStream(assistantId);
       }),
     );
+  }
+
+  /// Demo file names, cycled so repeated taps produce distinct chips. The
+  /// `.csv` is the one that always fails, so the retry path is reachable in
+  /// the gallery rather than theoretical.
+  static const _attachmentNames = <String>[
+    'checkout-flow.png',
+    'pricing-notes.md',
+    'legacy-export.csv',
+  ];
+
+  void _handlePromptAction(String action) {
+    if (action != 'attach') return;
+    final name = _attachmentNames[_attachmentSeq % _attachmentNames.length];
+    final id = 'file-${_attachmentSeq++}';
+    setState(() {
+      _attachments = [
+        ..._attachments,
+        BeuiPromptAttachment(
+          id: id,
+          name: name,
+          status: BeuiPromptAttachmentStatus.uploading,
+          progress: 0,
+        ),
+      ];
+    });
+    _runUpload(id, shouldFail: name.endsWith('.csv'));
+  }
+
+  /// Walks one chip from 0 to done over ~900ms, then settles it on `ready`, or
+  /// on `failed` with a note when [shouldFail]. A retry always succeeds, so
+  /// the failure is a state the reader can get into *and* out of.
+  void _runUpload(String id, {bool shouldFail = false}) {
+    final startedAt = DateTime.now();
+    late Timer timer;
+    timer = Timer.periodic(const Duration(milliseconds: 60), (t) {
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
+      final progress =
+          (DateTime.now().difference(startedAt).inMilliseconds / 900).clamp(
+            0.0,
+            1.0,
+          );
+      final done = progress >= 1;
+      if (done) t.cancel();
+      setState(() {
+        _attachments = [
+          for (final a in _attachments)
+            if (a.id != id)
+              a
+            else if (!done)
+              BeuiPromptAttachment(
+                id: a.id,
+                name: a.name,
+                status: BeuiPromptAttachmentStatus.uploading,
+                progress: progress,
+              )
+            else if (shouldFail)
+              BeuiPromptAttachment(
+                id: a.id,
+                name: a.name,
+                status: BeuiPromptAttachmentStatus.failed,
+                error: 'Upload failed — the file is larger than 10 MB.',
+              )
+            else
+              BeuiPromptAttachment(id: a.id, name: a.name),
+        ];
+      });
+    });
+    _uploadTimers.add(timer);
   }
 
   void _stop() {
@@ -993,10 +1085,18 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                                     stoppedMessage:
                                         'Response stopped before it finished.',
                                     continueLabel: 'Continue generating',
+                                    // F16: the scroller owns the transcript's
+                                    // live region; without this it had nothing
+                                    // to announce and a screen-reader user
+                                    // heard the whole reply as silence.
+                                    announceText: message.content,
+                                    // F15: one indicator identity — the dots
+                                    // are this response's placeholder and
+                                    // cross-fade into the first token.
+                                    placeholder: const BeuiMessageTyping(),
+                                    hasContent: message.content.isNotEmpty,
                                     child: Text(
-                                      message.content.isEmpty
-                                          ? ' '
-                                          : message.content,
+                                      message.content,
                                       style: TextStyle(
                                         fontSize: 14,
                                         height: 1.45,
@@ -1017,20 +1117,6 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                         ),
                         if (message.from == BeuiMessageFrom.user)
                           const BeuiMessageFooter(children: [Text('Sent')]),
-                      ],
-                    ),
-                  ],
-                ),
-
-              // Pending thinking
-              if (_pending)
-                const BeuiMessage(
-                  from: BeuiMessageFrom.assistant,
-                  children: [
-                    BeuiMessageAvatar(child: Icon(LucideIcons.bot)),
-                    BeuiMessageContent(
-                      children: [
-                        BeuiThinkingShimmer(text: 'Reviewing your direction'),
                       ],
                     ),
                   ],
@@ -1058,6 +1144,31 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
             models: _models,
             defaultModel: 'balanced',
             actions: _actions,
+            onAction: _handlePromptAction,
+            attachments: _attachments,
+            onAttachmentRemoved: (a) => setState(() {
+              _attachments = [
+                for (final x in _attachments)
+                  if (x.id != a.id) x,
+              ];
+            }),
+            onAttachmentRetry: (a) {
+              setState(() {
+                _attachments = [
+                  for (final x in _attachments)
+                    if (x.id != a.id)
+                      x
+                    else
+                      BeuiPromptAttachment(
+                        id: x.id,
+                        name: x.name,
+                        status: BeuiPromptAttachmentStatus.uploading,
+                        progress: 0,
+                      ),
+                ];
+              });
+              _runUpload(a.id);
+            },
           ),
         ),
       ),
