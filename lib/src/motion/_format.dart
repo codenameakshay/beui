@@ -11,3 +11,13 @@ String beuiGroupThousands(String digits) {
   }
   return buf.toString();
 }
+
+/// Shortens a long address to `0x1234…cdef` (6 leading + 4 trailing chars),
+/// matching the wallet-card source's `truncateAddress`. Addresses of 12
+/// characters or fewer are returned unchanged.
+String beuiTruncateAddress(String address) {
+  if (address.length > 12) {
+    return '${address.substring(0, 6)}…${address.substring(address.length - 4)}';
+  }
+  return address;
+}

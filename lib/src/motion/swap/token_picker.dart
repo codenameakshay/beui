@@ -52,7 +52,7 @@ class BeuiTokenPicker extends StatefulWidget {
 }
 
 class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
-  bool _mounted = false;
+  bool _sheetVisible = false;
   Timer? _unmountTimer;
   final TextEditingController _query = TextEditingController();
   String _chainFilter = 'all';
@@ -60,7 +60,7 @@ class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
   @override
   void initState() {
     super.initState();
-    _mounted = widget.open;
+    _sheetVisible = widget.open;
   }
 
   @override
@@ -69,11 +69,11 @@ class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
     if (widget.open && !oldWidget.open) {
       _unmountTimer?.cancel();
       _query.clear(); // source resets the query on open
-      setState(() => _mounted = true);
+      setState(() => _sheetVisible = true);
     } else if (!widget.open && oldWidget.open) {
       _unmountTimer?.cancel();
       _unmountTimer = Timer(const Duration(milliseconds: 300), () {
-        if (mounted) setState(() => _mounted = false);
+        if (mounted) setState(() => _sheetVisible = false);
       });
     }
   }
@@ -91,18 +91,14 @@ class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
       if (_chainFilter != 'all' && t.chainId != _chainFilter) return false;
       if (needle.isEmpty) return true;
       final chain = widget.chains.where((c) => c.id == t.chainId).firstOrNull;
-      return [
-        t.symbol,
-        t.name,
-        chain?.name,
-        t.address,
-      ].any((h) => h?.toLowerCase().contains(needle) ?? false);
+      bool hit(String? h) => h?.toLowerCase().contains(needle) ?? false;
+      return hit(t.symbol) || hit(t.name) || hit(chain?.name) || hit(t.address);
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_mounted) return const SizedBox.shrink();
+    if (!_sheetVisible) return const SizedBox.shrink();
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final open = widget.open;
@@ -184,11 +180,11 @@ class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
     final filtered = _filtered;
     final popular = widget.tokens.where((t) => t.popular).take(6).toList();
     final showPopular = _query.text.isEmpty && _chainFilter == 'all';
-    final sectionLabel = _query.text.isNotEmpty
-        ? 'Results'
-        : _chainFilter == 'all'
-        ? 'Trending'
-        : 'Tokens';
+    final sectionLabel = switch ((_query.text.isNotEmpty, _chainFilter)) {
+      (true, _) => 'Results',
+      (false, 'all') => 'Trending',
+      (false, _) => 'Tokens',
+    };
 
     BeuiChain? chainOf(BeuiToken t) =>
         widget.chains.where((c) => c.id == t.chainId).firstOrNull;
@@ -392,7 +388,10 @@ class _ChainChip extends StatelessWidget {
     required this.onTap,
     this.chain,
     this.label,
-  });
+  }) : assert(
+         (chain == null) != (label == null),
+         'exactly one of chain or label must be set',
+       );
 
   final bool active;
   final BeuiChain? chain;

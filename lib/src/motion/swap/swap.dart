@@ -9,6 +9,8 @@ import '../../theme/beui_colors.dart';
 import '../../tokens/icons.dart';
 import '../../tokens/motion.dart';
 import '../_engine.dart';
+import '../_format.dart';
+import '../_spinner.dart';
 import 'data.dart';
 import 'models.dart';
 import 'token_picker.dart';
@@ -21,7 +23,7 @@ const _flipSpring = SpringMotion(
   SpringDescription(mass: 0.6, stiffness: 380, damping: 26),
 );
 
-String sanitizeAmount(String v) {
+String _sanitizeAmount(String v) {
   final cleaned = v.replaceAll(RegExp(r'[^0-9.]'), '');
   final parts = cleaned.split('.');
   if (parts.length <= 1) return cleaned;
@@ -34,7 +36,7 @@ String sanitizeAmount(String v) {
 /// thousands separators, so the result stays parseable by [double.tryParse].
 /// Used by the MAX affordance the same way source `field.tsx` uses
 /// `String(token.balance)`.
-String rawAmount(double n) {
+String _rawAmount(double n) {
   if (!n.isFinite) return '0';
   if (n == n.roundToDouble()) return n.toInt().toString();
   return n.toString();
@@ -48,28 +50,16 @@ String formatAmount(double n, [int max = 6]) {
   if (n >= 1000) {
     final fixed = trim(n.toStringAsFixed(2));
     final parts = fixed.split('.');
-    final digits = parts.first;
-    final grouped = StringBuffer();
-    for (var i = 0; i < digits.length; i++) {
-      if (i > 0 && (digits.length - i) % 3 == 0) grouped.write(',');
-      grouped.write(digits[i]);
-    }
-    return parts.length > 1 ? '$grouped.${parts[1]}' : grouped.toString();
+    final grouped = beuiGroupThousands(parts.first);
+    return parts.length > 1 ? '$grouped.${parts[1]}' : grouped;
   }
   return trim(n.toStringAsFixed(max));
 }
 
-bool isValidAddress(String v) {
+bool _isValidAddress(String v) {
   if (RegExp(r'^0x[0-9a-fA-F]{40}$').hasMatch(v)) return true;
   if (RegExp(r'\.(eth|sol|bnb)$').hasMatch(v) && v.length > 5) return true;
   return false;
-}
-
-String truncateAddress(String v) {
-  if (v.startsWith('0x') && v.length == 42) {
-    return '${v.substring(0, 6)}...${v.substring(v.length - 4)}';
-  }
-  return v;
 }
 
 /// A cross-chain swap widget: chain/token selectors, live quoting shimmer,
@@ -85,6 +75,9 @@ class BeuiMultiChainSwap extends StatefulWidget {
     this.tokens = beuiDefaultSwapTokens,
     this.defaultFromId = 'eth-eth',
     this.defaultToId = 'sol-sol',
+    this.networkFee = '\$0.42',
+    this.slippage = '0.50%',
+    this.eta = '≈ 24s',
     super.key,
   });
 
@@ -99,6 +92,16 @@ class BeuiMultiChainSwap extends StatefulWidget {
 
   /// Initial receive-side token id.
   final String defaultToId;
+
+  /// Demo network-fee figure shown in the quote row. Demo-grade like the rest
+  /// of this widget: a display string, not a live estimate.
+  final String networkFee;
+
+  /// Demo slippage figure shown in the quote row.
+  final String slippage;
+
+  /// Demo ETA figure shown in the quote row.
+  final String eta;
 
   @override
   State<BeuiMultiChainSwap> createState() => _BeuiMultiChainSwapState();
@@ -298,6 +301,9 @@ class _BeuiMultiChainSwapState extends State<BeuiMultiChainSwap> {
                 rate: rate,
                 quoting: _quoting,
                 colors: colors,
+                networkFee: widget.networkFee,
+                slippage: widget.slippage,
+                eta: widget.eta,
               ),
               const SizedBox(height: 10), // gap-1.5 + mt-1
               _DestinationRow(
@@ -433,7 +439,7 @@ class _Field extends StatelessWidget {
                       TextField(
                         controller: amountController,
                         onChanged: (v) {
-                          final sanitized = sanitizeAmount(v);
+                          final sanitized = _sanitizeAmount(v);
                           if (sanitized != v) {
                             amountController!.value = TextEditingValue(
                               text: sanitized,
@@ -476,7 +482,7 @@ class _Field extends StatelessWidget {
                               ),
                             ),
                             if (quoting)
-                              SwapSpinner(
+                              BeuiSpinner(
                                 size: 16,
                                 color: colors.mutedForeground,
                               ),
@@ -529,9 +535,11 @@ class _Field extends StatelessWidget {
                         // ungrouped number so it re-parses. formatAmount()
                         // thousands-groups (e.g. "4,521") which breaks
                         // double.tryParse → the amount would read 0; run the
-                        // raw value through the same sanitizeAmount path the
+                        // raw value through the same _sanitizeAmount path the
                         // manual input uses.
-                        final text = sanitizeAmount(rawAmount(token.balance!));
+                        final text = _sanitizeAmount(
+                          _rawAmount(token.balance!),
+                        );
                         amountController?.text = text;
                         onAmountChanged?.call(text);
                       },
@@ -733,6 +741,9 @@ class _QuoteRow extends StatelessWidget {
     required this.rate,
     required this.quoting,
     required this.colors,
+    required this.networkFee,
+    required this.slippage,
+    required this.eta,
   });
 
   final BeuiToken from;
@@ -740,6 +751,9 @@ class _QuoteRow extends StatelessWidget {
   final double rate;
   final bool quoting;
   final BeuiColors colors;
+  final String networkFee;
+  final String slippage;
+  final String eta;
 
   @override
   Widget build(BuildContext context) {
@@ -777,15 +791,15 @@ class _QuoteRow extends StatelessWidget {
           row(
             'Rate',
             quoting
-                ? SwapSpinner(size: 12, color: colors.mutedForeground)
+                ? BeuiSpinner(size: 12, color: colors.mutedForeground)
                 : Text(
                     '1 ${from.symbol} ≈ ${formatAmount(rate)} ${to.symbol}',
                     style: value,
                   ),
           ),
-          row('Network fee', Text('\$0.42', style: value)),
-          row('Slippage', Text('0.50%', style: value)),
-          row('ETA', Text('≈ 24s', style: value)),
+          row('Network fee', Text(networkFee, style: value)),
+          row('Slippage', Text(slippage, style: value)),
+          row('ETA', Text(eta, style: value)),
         ],
       ),
     );
@@ -813,7 +827,7 @@ class _DestinationRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final address = controller.text;
     final hasAddress = address.isNotEmpty;
-    final valid = isValidAddress(address);
+    final valid = _isValidAddress(address);
 
     return Container(
       clipBehavior: Clip.antiAlias,
@@ -850,7 +864,7 @@ class _DestinationRow extends StatelessWidget {
                       Expanded(
                         child: Text(
                           show && hasAddress && valid
-                              ? 'To: ${truncateAddress(address)}'
+                              ? 'To: ${beuiTruncateAddress(address)}'
                               : 'Send to different address',
                           style: TextStyle(
                             fontSize: 12,
@@ -998,14 +1012,14 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final noAmount = amount <= 0;
     final overBalance = from.balance != null && amount > from.balance!;
-    final validDest = destAddress.isNotEmpty && isValidAddress(destAddress);
-    final label = noAmount
-        ? 'Enter an amount'
-        : overBalance
-        ? 'Insufficient ${from.symbol}'
-        : validDest
-        ? 'Swap + Send to ${truncateAddress(destAddress)}'
-        : 'Swap ${from.symbol} → ${to.symbol}';
+    final validDest = destAddress.isNotEmpty && _isValidAddress(destAddress);
+    final label = switch ((noAmount, overBalance, validDest)) {
+      (true, _, _) => 'Enter an amount',
+      (false, true, _) => 'Insufficient ${from.symbol}',
+      (false, false, true) =>
+        'Swap + Send to ${beuiTruncateAddress(destAddress)}',
+      (false, false, false) => 'Swap ${from.symbol} → ${to.symbol}',
+    };
     final disabled = noAmount || overBalance;
 
     return Semantics(
@@ -1131,82 +1145,4 @@ class SwapTokenDot extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Small spinning loader (Lucide `loader-2` analog): a rotating arc.
-class SwapSpinner extends StatefulWidget {
-  /// Creates a spinner.
-  const SwapSpinner({required this.size, required this.color, super.key});
-
-  /// Diameter.
-  final double size;
-
-  /// Stroke color.
-  final Color color;
-
-  @override
-  State<SwapSpinner> createState() => _SwapSpinnerState();
-}
-
-class _SwapSpinnerState extends State<SwapSpinner>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: RotationTransition(
-        turns: _controller,
-        child: CustomPaint(
-          size: Size.square(widget.size),
-          painter: _ArcPainter(color: widget.color, stroke: widget.size * 0.12),
-        ),
-      ),
-    );
-  }
-}
-
-class _ArcPainter extends CustomPainter {
-  _ArcPainter({required this.color, required this.stroke});
-
-  final Color color;
-  final double stroke;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke
-      ..strokeCap = StrokeCap.round;
-    canvas.drawArc(
-      Rect.fromCircle(
-        center: size.center(Offset.zero),
-        radius: (size.shortestSide - stroke) / 2,
-      ),
-      -math.pi / 2,
-      math.pi * 1.5,
-      false,
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_ArcPainter old) =>
-      old.color != color || old.stroke != stroke;
 }

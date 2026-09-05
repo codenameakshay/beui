@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../theme/beui_colors.dart';
 import '../../tokens/icons.dart';
+import '../_format.dart';
 import '_constants.dart';
 import '_morph.dart';
 import '_types.dart';
-import '_utils.dart';
 import 'account_avatar.dart';
 import 'copy_button.dart';
 
@@ -248,7 +248,7 @@ class _AccountRowState extends State<_AccountRow> {
                               ),
                             ),
                             Text(
-                              truncateAddress(widget.account.address),
+                              beuiTruncateAddress(widget.account.address),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(

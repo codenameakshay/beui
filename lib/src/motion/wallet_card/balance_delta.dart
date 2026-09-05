@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../theme/beui_colors.dart';
 import '../../tokens/icons.dart';
 import '../../tokens/motion.dart';
+import '../_format.dart';
 
 /// A transient change indicator for the balance: a tinted pill with a trend
 /// arrow that pops in whenever the balance moves and persists until it moves
@@ -55,13 +56,8 @@ class _WalletBalanceDeltaState extends State<WalletBalanceDelta> {
   String _formatMoney(double v) {
     final whole = v.truncate();
     final cents = ((v - whole).abs() * 100).round().toString().padLeft(2, '0');
-    final digits = whole.abs().toString();
-    final buf = StringBuffer();
-    for (var i = 0; i < digits.length; i++) {
-      if (i > 0 && (digits.length - i) % 3 == 0) buf.write(',');
-      buf.write(digits[i]);
-    }
-    return '$buf.$cents';
+    final grouped = beuiGroupThousands(whole.abs().toString());
+    return '$grouped.$cents';
   }
 
   @override

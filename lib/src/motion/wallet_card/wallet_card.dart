@@ -4,6 +4,7 @@ import '../../theme/beui_colors.dart';
 import '../../tokens/icons.dart';
 import '../../tokens/motion.dart';
 import '../_engine.dart' show SingleMotionBuilder;
+import '../_format.dart';
 import '../action_swap.dart';
 import '_morph.dart';
 import '_types.dart';
@@ -142,13 +143,8 @@ class _BeuiWalletCardState extends State<BeuiWalletCard> {
       2,
       '0',
     );
-    final digits = whole.toString();
-    final buf = StringBuffer();
-    for (var i = 0; i < digits.length; i++) {
-      if (i > 0 && (digits.length - i) % 3 == 0) buf.write(',');
-      buf.write(digits[i]);
-    }
-    return '${widget.balancePrefix}$buf.$cents';
+    final grouped = beuiGroupThousands(whole.toString());
+    return '${widget.balancePrefix}$grouped.$cents';
   }
 
   @override
