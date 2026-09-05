@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
@@ -116,6 +117,10 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
   /// lookup.
   late final AnimationController _clock;
 
+  /// Unhides the in-tree trigger once the shrink morph has landed; cancelled
+  /// on dispose and whenever the menu reopens before it fires.
+  Timer? _unhideTimer;
+
   @override
   void initState() {
     super.initState();
@@ -126,6 +131,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
   }
 
   void _setOpen(bool value) {
+    _unhideTimer?.cancel();
     setState(() {
       _open = value;
       if (value) _overlayVisible = true;
@@ -134,8 +140,10 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
       _clock.forward(from: 0);
     } else {
       _clock.stop();
-      // Unhide the in-tree trigger once the shrink morph has landed.
-      Future<void>.delayed(const Duration(milliseconds: 480), () {
+      // 420ms exit (see `exitDuration` below) plus ~60ms settle before the
+      // in-tree trigger — hidden while the overlay's own copy morphs — comes
+      // back.
+      _unhideTimer = Timer(const Duration(milliseconds: 480), () {
         if (mounted && !_open) setState(() => _overlayVisible = false);
       });
     }
@@ -143,6 +151,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
 
   @override
   void dispose() {
+    _unhideTimer?.cancel();
     _clock.dispose();
     super.dispose();
   }
