@@ -3,6 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+/// Past the glitch variant's 700ms scramble, so every variant is settled by
+/// the time assertions run.
+const _pastGlitchScramble = Duration(milliseconds: 1000);
+
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = SingleChildScrollView(child: Center(child: child));
   if (reduce) {
@@ -35,7 +39,7 @@ void main() {
       ];
       for (final variant in variants) {
         await tester.pumpWidget(_wrap(variant));
-        await tester.pump(const Duration(milliseconds: 1000));
+        await tester.pump(_pastGlitchScramble);
         expect(find.text('Page not found'), findsOneWidget);
         expect(
           find.text(

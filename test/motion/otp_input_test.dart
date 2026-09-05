@@ -40,15 +40,30 @@ Future<void> _focus(WidgetTester tester) async {
 
 void main() {
   group('BeuiOtpInput', () {
-    testWidgets('renders the slot grid, label and hint', (tester) async {
+    testWidgets('renders one slot per digit, plus the label and hint', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(
-          const BeuiOtpInput(label: 'Verify', hint: 'Enter the 6-digit code'),
+          const BeuiOtpInput(
+            length: 6,
+            label: 'Verify',
+            hint: 'Enter the 6-digit code',
+          ),
         ),
       );
       await tester.pumpAndSettle();
       expect(find.text('Verify'), findsOneWidget);
       expect(find.text('Enter the 6-digit code'), findsOneWidget);
+      // AnimatedContainer is only used to draw the slot cells, so its count
+      // is the slot count.
+      expect(
+        find.descendant(
+          of: find.byType(BeuiOtpInput),
+          matching: find.byType(AnimatedContainer),
+        ),
+        findsNWidgets(6),
+      );
     });
 
     testWidgets('typing fills slots forward and reports onChanged', (
