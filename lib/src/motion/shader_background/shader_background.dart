@@ -216,8 +216,11 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
       data = await rootBundle.load('assets/beui_shader_noise.png');
     }
     final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
-    final frame = await codec.getNextFrame();
-    return frame.image;
+    try {
+      return (await codec.getNextFrame()).image;
+    } finally {
+      codec.dispose();
+    }
   }
 
   Future<void> _load() async {
@@ -225,7 +228,10 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
     if (spec.needsNoise) _ensureNoise();
     var program = _programCache[spec.asset];
     program ??= _programCache[spec.asset] = await _loadProgram(spec.asset);
-    if (!mounted) return;
+    // A variant change while this await was pending started a newer load;
+    // installing this program would paint the old variant over it.
+    if (!mounted || !identical(spec, _spec)) return;
+    _shader?.dispose();
     // Not _syncTicker() here: on a warm program cache _load runs synchronously
     // inside initState, and _syncTicker reads MediaQuery (an inherited-widget
     // dependency, illegal before initState completes). The post-frame callback
@@ -250,6 +256,7 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
   void didUpdateWidget(BeuiShaderBackground old) {
     super.didUpdateWidget(old);
     if (old.variant != widget.variant) {
+      _shader?.dispose();
       _shader = null;
       _load();
     } else {

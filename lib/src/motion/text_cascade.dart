@@ -52,7 +52,7 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
   String? _previous;
 
   int _durationMs(String t) =>
-      _enterMs + _staggerMs * (t.length - 1).clamp(0, 80);
+      _enterMs + _staggerMs * (t.characters.length - 1).clamp(0, 80);
 
   @override
   void initState() {
@@ -162,8 +162,8 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      for (var i = 0; i < previous.length; i++)
-                        _exitLetter(previous[i], i, t, totalMs, roll, style),
+                      for (final (i, glyph) in previous.characters.indexed)
+                        _exitLetter(glyph, i, t, totalMs, roll, style),
                     ],
                   ),
                 ),
@@ -175,8 +175,8 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      for (var i = 0; i < _current.length; i++)
-                        _enterLetter(_current[i], i, t * totalMs, roll, style),
+                      for (final (i, glyph) in _current.characters.indexed)
+                        _enterLetter(glyph, i, t * totalMs, roll, style),
                     ],
                   ),
                 ),
