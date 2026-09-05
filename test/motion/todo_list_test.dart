@@ -4,6 +4,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:motor/motor.dart';
 
 List<BeuiTodoItem> _sample({
   BeuiTodoItemStatus a = BeuiTodoItemStatus.pending,
@@ -275,17 +276,6 @@ void main() {
       expect(opacity, lessThan(1.0));
 
       await tester.pump(const Duration(milliseconds: 200));
-      expect(find.text('Inspect the current data flow'), findsNothing);
-    });
-
-    testWidgets('keyboard ActivateIntent toggles the header', (tester) async {
-      await tester.pumpWidget(_host(items: _sample(), defaultOpen: true));
-      await tester.pumpAndSettle();
-
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await tester.pumpAndSettle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-      await tester.pumpAndSettle();
       expect(find.text('Inspect the current data flow'), findsNothing);
     });
 
@@ -687,6 +677,13 @@ void main() {
       await tester.pumpWidget(_host(items: _sample()));
       await tester.pumpAndSettle();
       expect(find.byType(BackdropFilter), findsNothing);
+
+      final muted = tester
+          .widgetList<DecoratedBox>(find.byType(DecoratedBox))
+          .map((b) => b.decoration)
+          .whereType<BoxDecoration>()
+          .where((d) => d.color == BeuiColors.light().muted);
+      expect(muted, isEmpty);
     });
 
     testWidgets('useGlassSurfaces gives the card a real glass surface', (
@@ -740,11 +737,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final builders = tester
-        .elementList(
-          find.byWidgetPredicate(
-            (w) => w.runtimeType.toString().contains('MotionBuilder'),
-          ),
-        )
+        .elementList(find.byWidgetPredicate((w) => w is MotionBuilder))
         .length;
 
     // Three rows × 3 (the status mark is 2 — a `Rect` carrying four

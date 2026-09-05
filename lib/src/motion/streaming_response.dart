@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -283,15 +282,8 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
 
   Timer? _copyTimer;
 
-  // Per-action press / hover chrome.
-  bool _copyPressed = false;
-  bool _copyHovered = false;
-  bool _retryPressed = false;
-  bool _retryHovered = false;
-  bool _upPressed = false;
-  bool _upHovered = false;
-  bool _downPressed = false;
-  bool _downHovered = false;
+  // _ResponseAction (copy/retry/up/down) owns its own press/hover chrome;
+  // only the sources toggle's hover still lives here.
   bool _sourcesHovered = false;
 
   bool get _streaming => widget.status == BeuiStreamingResponseStatus.streaming;
@@ -596,91 +588,47 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                             // "Copied" used to swap a label on a node that
                             // was not live, so the confirmation was visual-only.
                             announce: _copied,
-                            pressed: _copyPressed,
-                            hovered: _copyHovered,
+                            icon: _copied
+                                ? agent.icons.copied
+                                : agent.icons.copy,
                             active: false,
                             reduce: reduce,
                             colors: colors,
-                            onHover: (h) => setState(() => _copyHovered = h),
-                            onPressed: (p) => setState(() => _copyPressed = p),
                             onTap: _handleCopy,
-                            child: Icon(
-                              _copied ? agent.icons.copied : agent.icons.copy,
-                              size: 14, // size-3.5
-                              color: _copyHovered
-                                  ? colors.foreground
-                                  : colors.mutedForeground,
-                            ),
                           ),
                         if (widget.onRetry != null)
                           _ResponseAction(
-                            label: 'Retry response',
-                            pressed: _retryPressed,
-                            hovered: _retryHovered,
+                            label: strings.retry,
+                            icon: agent.icons.retry,
                             active: false,
                             reduce: reduce,
                             colors: colors,
-                            onHover: (h) => setState(() => _retryHovered = h),
-                            onPressed: (p) => setState(() => _retryPressed = p),
                             onTap: widget.onRetry!,
-                            child: Icon(
-                              agent.icons.retry,
-                              size: 14,
-                              color: _retryHovered
-                                  ? colors.foreground
-                                  : colors.mutedForeground,
-                            ),
                           ),
                         if (_complete) ...[
                           _ResponseAction(
                             label: strings.helpful,
-                            pressed: _upPressed,
-                            hovered: _upHovered,
+                            icon: agent.icons.thumbsUp,
                             active:
                                 _currentFeedback ==
                                 BeuiStreamingResponseFeedback.up,
                             toggleable: true,
                             reduce: reduce,
                             colors: colors,
-                            onHover: (h) => setState(() => _upHovered = h),
-                            onPressed: (p) => setState(() => _upPressed = p),
                             onTap: () =>
                                 _setFeedback(BeuiStreamingResponseFeedback.up),
-                            child: Icon(
-                              agent.icons.thumbsUp,
-                              size: 14,
-                              color:
-                                  _upHovered ||
-                                      _currentFeedback ==
-                                          BeuiStreamingResponseFeedback.up
-                                  ? colors.foreground
-                                  : colors.mutedForeground,
-                            ),
                           ),
                           _ResponseAction(
                             label: strings.notHelpful,
-                            pressed: _downPressed,
-                            hovered: _downHovered,
+                            icon: agent.icons.thumbsDown,
                             active:
                                 _currentFeedback ==
                                 BeuiStreamingResponseFeedback.down,
                             toggleable: true,
                             reduce: reduce,
                             colors: colors,
-                            onHover: (h) => setState(() => _downHovered = h),
-                            onPressed: (p) => setState(() => _downPressed = p),
                             onTap: () => _setFeedback(
                               BeuiStreamingResponseFeedback.down,
-                            ),
-                            child: Icon(
-                              agent.icons.thumbsDown,
-                              size: 14,
-                              color:
-                                  _downHovered ||
-                                      _currentFeedback ==
-                                          BeuiStreamingResponseFeedback.down
-                                  ? colors.foreground
-                                  : colors.mutedForeground,
                             ),
                           ),
                         ],
@@ -934,30 +882,22 @@ class _NoticeActionState extends State<_NoticeAction> {
 class _ResponseAction extends StatefulWidget {
   const _ResponseAction({
     required this.label,
-    required this.pressed,
-    required this.hovered,
+    required this.icon,
     required this.active,
     required this.reduce,
     required this.colors,
-    required this.onHover,
-    required this.onPressed,
     required this.onTap,
-    required this.child,
     this.toggleable = false,
     this.announce = false,
   });
 
   final String label;
-  final bool pressed;
-  final bool hovered;
+  final IconData icon;
   final bool active;
   final bool toggleable;
   final bool reduce;
   final BeuiColors colors;
-  final ValueChanged<bool> onHover;
-  final ValueChanged<bool> onPressed;
   final VoidCallback onTap;
-  final Widget child;
 
   /// Makes this control a live region for as long as it is true.
   ///
@@ -970,16 +910,20 @@ class _ResponseAction extends StatefulWidget {
 }
 
 class _ResponseActionState extends State<_ResponseAction> {
+  bool _hovered = false;
+  bool _pressed = false;
   bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
     // The source's whileTap is 0.9; on one screen the library ranged
     // 0.9–0.99. 0.97 is this port's single press scale.
-    final pressTarget = (widget.pressed && !widget.reduce) ? 0.97 : 1.0;
-    final bg = widget.active || widget.hovered
-        ? widget.colors.muted
-        : Colors.transparent;
+    final pressTarget = (_pressed && !widget.reduce) ? 0.97 : 1.0;
+    final lit = widget.active || _hovered;
+    final bg = lit ? widget.colors.muted : Colors.transparent;
+    final iconColor = lit
+        ? widget.colors.foreground
+        : widget.colors.mutedForeground;
 
     // The slop wrapper is the *outermost* widget of the control, and
     // that placement is load-bearing: `RenderBox.hitTest` rejects a pointer
@@ -1001,7 +945,7 @@ class _ResponseActionState extends State<_ResponseAction> {
           child: FocusableActionDetector(
             mouseCursor: SystemMouseCursors.click,
             onShowFocusHighlight: (v) => setState(() => _focused = v),
-            onShowHoverHighlight: widget.onHover,
+            onShowHoverHighlight: (v) => setState(() => _hovered = v),
             shortcuts: const <ShortcutActivator, Intent>{
               SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
               SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
@@ -1015,12 +959,12 @@ class _ResponseActionState extends State<_ResponseAction> {
               ),
             },
             child: MouseRegion(
-              onExit: (_) => widget.onPressed(false),
+              onExit: (_) => setState(() => _pressed = false),
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTapDown: (_) => widget.onPressed(true),
-                onTapUp: (_) => widget.onPressed(false),
-                onTapCancel: () => widget.onPressed(false),
+                onTapDown: (_) => setState(() => _pressed = true),
+                onTapUp: (_) => setState(() => _pressed = false),
+                onTapCancel: () => setState(() => _pressed = false),
                 onTap: widget.onTap,
                 child: BeuiFocusRing(
                   focused: _focused,
@@ -1043,7 +987,7 @@ class _ResponseActionState extends State<_ResponseAction> {
                         color: bg,
                         borderRadius: BorderRadius.circular(6), // rounded-md
                       ),
-                      child: widget.child,
+                      child: Icon(widget.icon, size: 14, color: iconColor),
                     ),
                   ),
                 ),
@@ -1172,4 +1116,3 @@ class _SourcesToggleState extends State<_SourcesToggle> {
     );
   }
 }
-

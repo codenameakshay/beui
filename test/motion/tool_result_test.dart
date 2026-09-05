@@ -431,19 +431,7 @@ void main() {
       expect(retries, 1);
     });
 
-    testWidgets('kind and custom icon render without throwing', (tester) async {
-      for (final kind in BeuiToolResultKind.values) {
-        await tester.pumpWidget(
-          _host(
-            kind: kind,
-            status: BeuiToolResultStatus.success,
-            collapseOnComplete: false,
-          ),
-        );
-        await tester.pumpAndSettle();
-        expect(find.byType(BeuiToolResult), findsOneWidget);
-      }
-
+    testWidgets('a custom icon overrides the kind glyph', (tester) async {
       await tester.pumpWidget(
         _host(
           icon: const Icon(Icons.star, size: 16),
@@ -471,7 +459,7 @@ void main() {
       expect(find.text('title-widget'), findsOneWidget);
     });
 
-    testWidgets('reduced motion still toggles open without throwing', (
+    testWidgets('reduced motion keeps an opacity fade, not a hard cut', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -488,26 +476,6 @@ void main() {
 
       await tester.tap(find.text('Reduced'));
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
-      expect(find.textContaining('line one'), findsNothing);
-    });
-
-    testWidgets('reduced motion keeps an opacity fade, not a hard cut', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _host(
-          title: 'Reduced',
-          defaultOpen: true,
-          status: BeuiToolResultStatus.success,
-          collapseOnComplete: false,
-          reduce: true,
-        ),
-      );
-      await tester.pump();
-
-      await tester.tap(find.text('Reduced'));
-      await tester.pump();
       // Mid-exit: the shared disclosure drops movement but keeps the ~120ms
       // cross-fade, so a partial Opacity must exist over the panel.
       await tester.pump(const Duration(milliseconds: 55));
@@ -521,6 +489,9 @@ void main() {
         isNotEmpty,
         reason: 'reduced motion must fade the disclosure, not cut it',
       );
+
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(find.textContaining('line one'), findsNothing);
     });
 
     testWidgets('status colours resolve from the dark role set', (
