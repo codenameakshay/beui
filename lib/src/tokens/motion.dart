@@ -6,7 +6,9 @@
 /// zero fidelity loss. Do **not** approximate these springs with
 /// `Curves.elasticOut`/`bounceOut`; use the values verbatim.
 ///
-/// This is the ONLY place `motor` types appear directly. Components consume the
+/// The spring/easing tokens are defined here; `lib/src/motion/_engine.dart` is
+/// the sole re-export of `motor`'s builder/controller types, so together the
+/// two files are where `motor` appears directly. Components consume the
 /// `beui*` constants and the [motionFor] resolver defined here — never scatter
 /// `SpringMotion(...)`/`CurvedMotion(...)` literals across widgets. If `motor`
 /// is ever dropped, you rewrite these ~8 constants, not every component.

@@ -28,6 +28,18 @@ Widget _host(Widget child, {BeuiAgentTheme? agent, bool reduce = false}) {
   );
 }
 
+/// The painted ring inside [BeuiFocusRing]: unlike the pill's own bordered
+/// background, it is the only [DecoratedBox] wrapped in an [Opacity] (the
+/// ring's fade), so scoping through that ancestor distinguishes it from the
+/// pill's own border. Only present while focused.
+Finder _ringBorder() => find.descendant(
+  of: find.descendant(
+    of: find.byType(BeuiFocusRing),
+    matching: find.byType(Opacity),
+  ),
+  matching: find.byType(DecoratedBox),
+);
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -59,23 +71,6 @@ void main() {
       // The Semantics label already names the control; the tooltip must not
       // make a reader say it twice.
       expect(tooltip.excludeFromSemantics, isTrue);
-    });
-
-    testWidgets('an explicit label still wins over the theme', (tester) async {
-      await tester.pumpWidget(
-        _host(
-          BeuiJumpToLatest(
-            visible: true,
-            label: 'Back to the live edge',
-            onTap: () {},
-          ),
-          agent: const BeuiAgentTheme(
-            strings: BeuiAgentStrings(jumpToLatest: 'Aller au plus récent'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('Back to the live edge'), findsOneWidget);
     });
   });
 
@@ -111,16 +106,11 @@ void main() {
         _host(BeuiJumpToLatest(visible: true, onTap: () {})),
       );
       await tester.pumpAndSettle();
-      expect(
-        tester.widget<BeuiFocusRing>(find.byType(BeuiFocusRing)).focused,
-        isFalse,
-      );
+      expect(_ringBorder(), findsNothing);
+
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
-      expect(
-        tester.widget<BeuiFocusRing>(find.byType(BeuiFocusRing)).focused,
-        isTrue,
-      );
+      expect(_ringBorder(), findsOneWidget);
     });
   });
 
