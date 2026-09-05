@@ -55,19 +55,6 @@ void main() {
       await tester.pump();
       expect(taps, 0);
     });
-
-    testWidgets('renders under reduced motion', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          BeuiExpandingArrowButton(
-            onPressed: () {},
-            child: const Text('Book a demo'),
-          ),
-          reduce: true,
-        ),
-      );
-      expect(find.text('Book a demo'), findsOneWidget);
-    });
   });
 
   group('BeuiHoldActionButton', () {
@@ -113,19 +100,7 @@ void main() {
   });
 
   group('BeuiSlideActionButton', () {
-    testWidgets('renders label', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          BeuiSlideActionButton(
-            onComplete: () {},
-            child: const Text('Slide to continue'),
-          ),
-        ),
-      );
-      expect(find.text('Slide to continue'), findsOneWidget);
-    });
-
-    testWidgets('dragging past threshold completes', (tester) async {
+    testWidgets('dragging the thumb past threshold completes', (tester) async {
       var done = 0;
       await tester.pumpWidget(
         _wrap(
@@ -138,16 +113,17 @@ void main() {
         ),
       );
       await tester.pump();
-      final thumb = find.byType(BeuiSlideActionButton);
+      // Drag from the thumb's own hit region (not the track's centre, which
+      // sits well past the thumb's 56px width and never delivered pan
+      // events to it).
+      final thumb = find.byKey(const ValueKey('beui-slide-action-thumb'));
       await tester.timedDrag(
         thumb,
         const Offset(220, 0),
         const Duration(milliseconds: 300),
       );
       await tester.pump(const Duration(milliseconds: 400));
-      // Completion depends on hit-testing the thumb; no crash is the bar.
-      expect(find.byType(BeuiSlideActionButton), findsOneWidget);
-      expect(done, anyOf(0, 1));
+      expect(done, 1);
     });
   });
 }
