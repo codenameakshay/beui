@@ -511,7 +511,6 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
 
   void _register(_AnchorEntry entry) {
     final existing = _anchors[entry.id];
-    if (existing == null) _bumpUnread();
     if (existing != null) {
       existing.label = entry.label;
       existing.description = entry.description;
@@ -521,6 +520,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
         _anchors[entry.id] = entry;
       }
     } else {
+      _bumpUnread();
       _anchors[entry.id] = entry;
       _anchorOrder.add(entry.id);
     }
@@ -582,15 +582,10 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
     final reduce = MediaQuery.disableAnimationsOf(context);
     var useSmooth = (smooth ?? widget.smooth) && !reduce;
 
-    // The pre-fix code restarted a 320ms `animateTo` on every growth. At a
-    // 16ms token cadence that is ~20 restarts before one completes, so the
-    // viewport permanently trailed the live edge and `_programmaticClear` was
-    // re-armed every tick — the guard never cleared for the whole stream and
-    // the reader's own scrolls were swallowed.
-    //
     // The discriminator is cadence, not distance: if the previous glide has
-    // not finished, this growth is part of a stream, so jump. A discrete
-    // append (a whole message arriving, seconds apart) still glides.
+    // not finished, this growth is part of a stream, so jump — restarting a
+    // 320ms `animateTo` on every token would never let one complete. A
+    // discrete append (a whole message arriving, seconds apart) still glides.
     if (useSmooth && _animatingFollow) useSmooth = false;
 
     final max = _controller.position.maxScrollExtent;
@@ -689,11 +684,6 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
       );
     }
     return out;
-  }
-
-  bool _isOverflowing() {
-    if (!_controller.hasClients) return false;
-    return _controller.position.maxScrollExtent > 1;
   }
 
   void _updateActiveRailItem() {
@@ -856,9 +846,11 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
     final railItems = _resolvedRailItems();
+    final isOverflowing =
+        _controller.hasClients && _controller.position.maxScrollExtent > 1;
     final showRail =
         widget.navigation == BeuiMessageScrollerNavigation.rail &&
-        _isOverflowing() &&
+        isOverflowing &&
         railItems.length > 1;
 
     // The transcript is a real, *visible* tab stop. Before this the
@@ -1354,7 +1346,12 @@ class _MessageRailState extends State<_MessageRail> {
   String? _hoveredId;
   String? _focusedId;
   final ScrollController _railScroll = ScrollController();
-  double _railOffset = 0;
+
+  /// The rail's scroll offset, which only the preview card's position needs.
+  /// A `ValueNotifier` so scrolling the rail doesn't rebuild the whole rail
+  /// (ticks, hover/focus state, and all) on every scroll tick — only the
+  /// `ValueListenableBuilder` around the preview card does.
+  final ValueNotifier<double> _railOffset = ValueNotifier(0);
 
   String? get _displayedId => _hoveredId ?? _focusedId;
 
@@ -1369,14 +1366,14 @@ class _MessageRailState extends State<_MessageRail> {
     _railScroll
       ..removeListener(_onRailScroll)
       ..dispose();
+    _railOffset.dispose();
     super.dispose();
   }
 
   void _onRailScroll() {
-    if (!mounted) return;
     // The preview card is positioned against tick geometry, so it has to track
     // the rail's own scroll or it detaches from the tick it describes.
-    setState(() => _railOffset = _railScroll.offset);
+    _railOffset.value = _railScroll.offset;
   }
 
   @override
@@ -1447,10 +1444,10 @@ class _MessageRailState extends State<_MessageRail> {
           );
 
           // `content-center`: the n×track block is centred in the rail box
-          // while it fits; once it scrolls it starts at the top.
-          final blockTop = scrollable
-              ? -_railOffset
-              : math.max(0.0, (available - blockHeight) / 2);
+          // while it fits; once it scrolls it starts at the top. The
+          // scrolled case is read inside the preview's ValueListenableBuilder
+          // below, off the live `_railOffset` rather than this static value.
+          final restBlockTop = math.max(0.0, (available - blockHeight) / 2);
 
           Widget stack;
           if (scrollable) {
@@ -1511,29 +1508,37 @@ class _MessageRailState extends State<_MessageRail> {
                 // Preview card sits before the ticks (source
                 // previewSide="before", previewContainer left-3 right-8).
                 if (preview != null)
-                  PositionedDirectional(
-                    end: 32,
-                    // The card is 256px wide and used to be pinned there
-                    // regardless of how much room existed — below about 290px
-                    // of component width it painted outside its own bounds and
-                    // over the neighbouring UI. It now takes whatever the
-                    // transcript can spare, down to a readable floor.
-                    width: math.min(
-                      _railPreviewWidth,
-                      math.max(
-                        120.0,
-                        widget.maxPreviewWidth - 32 - _railPreviewMargin,
-                      ),
-                    ),
-                    top:
-                        (blockTop +
-                                (displayedIndex + 0.5) * track -
-                                _railPreviewHeight / 2)
-                            .clamp(
-                              0.0,
-                              math.max(0.0, available - _railPreviewHeight),
-                            ),
+                  ValueListenableBuilder<double>(
+                    valueListenable: _railOffset,
                     child: preview,
+                    builder: (context, railOffset, child) {
+                      final blockTop = scrollable ? -railOffset : restBlockTop;
+                      return PositionedDirectional(
+                        end: 32,
+                        // The card is 256px wide and used to be pinned there
+                        // regardless of how much room existed — below about
+                        // 290px of component width it painted outside its own
+                        // bounds and over the neighbouring UI. It now takes
+                        // whatever the transcript can spare, down to a
+                        // readable floor.
+                        width: math.min(
+                          _railPreviewWidth,
+                          math.max(
+                            120.0,
+                            widget.maxPreviewWidth - 32 - _railPreviewMargin,
+                          ),
+                        ),
+                        top:
+                            (blockTop +
+                                    (displayedIndex + 0.5) * track -
+                                    _railPreviewHeight / 2)
+                                .clamp(
+                                  0.0,
+                                  math.max(0.0, available - _railPreviewHeight),
+                                ),
+                        child: child!,
+                      );
+                    },
                   ),
                 Positioned.fill(child: stack),
               ],
@@ -1736,7 +1741,7 @@ class _MessageRailPreview extends StatelessWidget {
           if (reduce) {
             return Opacity(opacity: t, child: child);
           }
-          final blur = 3.0 * (1 - t);
+          final blur = beuiBlurSigma(6) * (1 - t);
           Widget out = Opacity(
             opacity: t,
             child: Transform.translate(

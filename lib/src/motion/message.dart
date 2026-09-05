@@ -180,7 +180,6 @@ class _BeuiMessageState extends State<BeuiMessage> {
   /// 0 = entrance start, 1 = settled. Seeded to 0 when [BeuiMessage.animateIn]
   /// is true so the first frame paints the enter pose, then we flip to 1.
   late double _progress = widget.animateIn ? 0.0 : 1.0;
-  bool _scheduled = false;
 
   @override
   void initState() {
@@ -201,8 +200,6 @@ class _BeuiMessageState extends State<BeuiMessage> {
   }
 
   void _scheduleEnter() {
-    if (_scheduled) return;
-    _scheduled = true;
     // Post-frame so the first paint lands on the enter pose, then the spring
     // drives to settled — same "mount-only" contract as the source.
     SchedulerBinding.instance.addPostFrameCallback((_) {

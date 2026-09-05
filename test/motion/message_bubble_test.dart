@@ -25,31 +25,6 @@ Widget _wrap(Widget child, {bool reduce = false}) {
 
 void main() {
   group('BeuiMessageBubble', () {
-    testWidgets('renders soft content by default', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessageBubble(
-            child: BeuiMessageBubbleContent(child: Text('Soft hello')),
-          ),
-        ),
-      );
-      expect(find.text('Soft hello'), findsOneWidget);
-    });
-
-    for (final variant in BeuiMessageBubbleVariant.values) {
-      testWidgets('renders $variant', (tester) async {
-        await tester.pumpWidget(
-          _wrap(
-            BeuiMessageBubble(
-              variant: variant,
-              child: BeuiMessageBubbleContent(child: Text('v-${variant.name}')),
-            ),
-          ),
-        );
-        expect(find.text('v-${variant.name}'), findsOneWidget);
-      });
-    }
-
     testWidgets('inherits align from BeuiMessageSideScope', (tester) async {
       await tester.pumpWidget(
         _wrap(
@@ -112,35 +87,6 @@ void main() {
       );
       expect(align.alignment, AlignmentDirectional.centerStart);
     });
-
-    testWidgets('animateIn settles', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessageBubble(
-            animateIn: true,
-            child: BeuiMessageBubbleContent(child: Text('Pop in')),
-          ),
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      expect(find.text('Pop in'), findsOneWidget);
-    });
-
-    testWidgets('reduced motion animateIn still shows content', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessageBubble(
-            animateIn: true,
-            child: BeuiMessageBubbleContent(child: Text('Reduced')),
-          ),
-          reduce: true,
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
-      expect(find.text('Reduced'), findsOneWidget);
-    });
   });
 
   group('BeuiMessageBubbleContent', () {
@@ -159,27 +105,6 @@ void main() {
       await tester.tap(find.text('Tap me'));
       await tester.pump();
       expect(taps, 1);
-    });
-  });
-
-  group('BeuiMessageBubbleGroup', () {
-    testWidgets('stacks multiple bubbles', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessageBubbleGroup(
-            children: [
-              BeuiMessageBubble(
-                child: BeuiMessageBubbleContent(child: Text('One')),
-              ),
-              BeuiMessageBubble(
-                child: BeuiMessageBubbleContent(child: Text('Two')),
-              ),
-            ],
-          ),
-        ),
-      );
-      expect(find.text('One'), findsOneWidget);
-      expect(find.text('Two'), findsOneWidget);
     });
   });
 

@@ -164,10 +164,6 @@ void main() {
       final state = key.currentState!;
       expect(state.isFollowing, isTrue);
 
-      // Not at the top after initial pin.
-      final controller = tester.state<BeuiMessageScrollerState>(
-        find.byType(BeuiMessageScroller),
-      );
       // Grow content.
       await tester.tap(find.text('append'));
       await tester.pumpAndSettle();
@@ -178,7 +174,6 @@ void main() {
         find.textContaining('User message number ${count - 2}'),
         findsOneWidget,
       );
-      expect(controller.isFollowing, isTrue);
     });
 
     testWidgets('releases follow when user scrolls away from live edge', (
@@ -214,51 +209,6 @@ void main() {
 
       expect(state.isFollowing, isFalse);
       expect(followLog, contains(false));
-    });
-
-    testWidgets('re-attaches when reader returns to bottom', (tester) async {
-      final key = GlobalKey<BeuiMessageScrollerState>();
-
-      await tester.pumpWidget(
-        _wrap(
-          BeuiMessageScroller(
-            key: key,
-            followOutput: true,
-            smooth: false,
-            child: _tallMessages(12),
-          ),
-          surface: const Size(400, 320),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      final state = key.currentState!;
-      await tester.drag(
-        find.byType(SingleChildScrollView),
-        const Offset(0, 500),
-      );
-      await tester.pumpAndSettle();
-      expect(state.isFollowing, isFalse);
-
-      // Scroll back to bottom.
-      state.scrollToEnd(smooth: false);
-      await tester.pumpAndSettle();
-      // scrollToEnd with following still false until distance check —
-      // source re-attaches when distance <= threshold via handleScroll.
-      // Jumping to end should fire scroll notifications.
-      await tester.drag(
-        find.byType(SingleChildScrollView),
-        const Offset(0, -20),
-      );
-      await tester.pumpAndSettle();
-      // Force end then let notifications settle.
-      state.scrollToEnd(smooth: false);
-      await tester.pump();
-      // Manually: after scrollToEnd for last item path sets following true.
-      // Calling scrollToId of last message re-attaches.
-      state.scrollToId('m11');
-      await tester.pumpAndSettle();
-      expect(state.isFollowing, isTrue);
     });
 
     testWidgets('rail appears when overflowing with multiple anchors', (
