@@ -173,9 +173,12 @@ class BeuiSidebarResourceMenuControls {
 // ---------------------------------------------------------------------------
 
 /// Whether [kind] can contain children.
+@Deprecated(
+  'Duplicates BeuiSidebarResource.canContain; construct a resource of this '
+  'kind and read .canContain instead. Removed in 2.0.',
+)
 bool beuiSidebarCanContain(BeuiSidebarResourceKind kind) =>
-    kind == BeuiSidebarResourceKind.folder ||
-    kind == BeuiSidebarResourceKind.project;
+    BeuiSidebarResource(id: '', label: '', kind: kind).canContain;
 
 /// Flatten [items] respecting [expanded] folder ids.
 List<_FlatResource> _flatten(
@@ -435,6 +438,7 @@ class BeuiAiSidebar extends StatefulWidget {
     this.onMove,
     this.onMoveError,
     this.onRename,
+    this.onRenameError,
     this.activeId,
     this.defaultActiveId,
     this.onActiveChange,
@@ -465,6 +469,12 @@ class BeuiAiSidebar extends StatefulWidget {
   /// Called after an optimistic rename. Throw / reject to roll back.
   final FutureOr<void> Function(BeuiSidebarResource item, String label)?
   onRename;
+
+  /// Called when [onRename] fails (after the tree is restored). When null,
+  /// the error is reported via [FlutterError.reportError] instead of being
+  /// silently dropped.
+  final void Function(Object error, BeuiSidebarResource item, String label)?
+  onRenameError;
 
   /// Controlled selection id (leaves).
   final String? activeId;
@@ -630,11 +640,22 @@ class _BeuiAiSidebarState extends State<BeuiAiSidebar> {
     _updateItems(beuiSidebarRename(before, row.item.id, trimmed));
     try {
       await widget.onRename?.call(row.item, trimmed);
-    } catch (_) {
+    } catch (error) {
       _updateItems(before);
       setState(() {
         _announcement = 'Rename failed. ${row.item.label} was restored.';
       });
+      if (widget.onRenameError != null) {
+        widget.onRenameError!(error, row.item, trimmed);
+      } else {
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: error,
+            library: 'beui',
+            context: ErrorDescription('while committing a sidebar rename'),
+          ),
+        );
+      }
     }
   }
 
@@ -853,13 +874,10 @@ class _BeuiAiSidebarState extends State<BeuiAiSidebar> {
             },
           ),
         // Live region for move / rename announcements (a11y).
-        ExcludeSemantics(
-          excluding: false,
-          child: Semantics(
-            liveRegion: true,
-            label: _announcement,
-            child: const SizedBox.shrink(),
-          ),
+        Semantics(
+          liveRegion: true,
+          label: _announcement,
+          child: const SizedBox.shrink(),
         ),
       ],
     );
@@ -1157,7 +1175,6 @@ class _ResourceRowState extends State<_ResourceRow> {
               onTapOutside: (_) {
                 if (!_skipRenameBlur) widget.onRenameCommit(_renameCtrl.text);
               },
-              onEditingComplete: () {},
             ),
           ),
         ),
