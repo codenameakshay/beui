@@ -28,12 +28,11 @@ import 'types.dart';
 ///
 /// Internal to the scheduler — not part of the public surface.
 class CopyMenu extends StatefulWidget {
-  /// Creates a copy menu for the day labelled [fromLabel] (excluded from the
-  /// target list).
-  const CopyMenu({required this.fromLabel, required this.onApply, super.key});
+  /// Creates a copy menu for [from] (excluded from the target list).
+  const CopyMenu({required this.from, required this.onApply, super.key});
 
-  /// Label of the source day (its row's day, excluded from the picker).
-  final String fromLabel;
+  /// The source day — its row's day, excluded from the picker.
+  final BeuiDayKey from;
 
   /// Applies this day's hours to [targets].
   final ValueChanged<List<BeuiDayKey>> onApply;
@@ -49,7 +48,7 @@ class _CopyMenuState extends State<CopyMenu> {
   Timer? _copiedTimer;
 
   List<BeuiDayKey> get _others =>
-      BeuiDayKey.values.where((d) => d.label != widget.fromLabel).toList();
+      BeuiDayKey.values.where((d) => d != widget.from).toList();
 
   @override
   void dispose() {
@@ -98,7 +97,7 @@ class _CopyMenuState extends State<CopyMenu> {
       child: BeuiTooltip(
         content: const Text('Copy times'),
         child: SchedulerIconButton(
-          label: 'Copy ${widget.fromLabel} hours to other days',
+          label: 'Copy ${widget.from.label} hours to other days',
           expanded: _open,
           onPressed: () => _setOpen(!_open),
           icon: AnimatedSwitcher(

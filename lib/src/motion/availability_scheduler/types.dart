@@ -174,21 +174,20 @@ List<BeuiTimeOption> buildOptions(int step) {
 /// `defaultWeek`). Off days keep a hidden 9–5 range so toggling them on restores
 /// those hours.
 BeuiWeekAvailability beuiDefaultWeek() {
-  BeuiDayAvailability workday(BeuiDayKey day) => BeuiDayAvailability(
-    enabled: true,
-    ranges: [BeuiTimeRange(id: '${day.name}-0', start: '09:00', end: '17:00')],
-  );
-  BeuiDayAvailability off(BeuiDayKey day) => BeuiDayAvailability(
-    enabled: false,
-    ranges: [BeuiTimeRange(id: '${day.name}-0', start: '09:00', end: '17:00')],
-  );
+  BeuiDayAvailability day(BeuiDayKey day, {required bool enabled}) =>
+      BeuiDayAvailability(
+        enabled: enabled,
+        ranges: [
+          BeuiTimeRange(id: '${day.name}-0', start: '09:00', end: '17:00'),
+        ],
+      );
   return <BeuiDayKey, BeuiDayAvailability>{
-    BeuiDayKey.mon: workday(BeuiDayKey.mon),
-    BeuiDayKey.tue: workday(BeuiDayKey.tue),
-    BeuiDayKey.wed: workday(BeuiDayKey.wed),
-    BeuiDayKey.thu: workday(BeuiDayKey.thu),
-    BeuiDayKey.fri: workday(BeuiDayKey.fri),
-    BeuiDayKey.sat: off(BeuiDayKey.sat),
-    BeuiDayKey.sun: off(BeuiDayKey.sun),
+    BeuiDayKey.mon: day(BeuiDayKey.mon, enabled: true),
+    BeuiDayKey.tue: day(BeuiDayKey.tue, enabled: true),
+    BeuiDayKey.wed: day(BeuiDayKey.wed, enabled: true),
+    BeuiDayKey.thu: day(BeuiDayKey.thu, enabled: true),
+    BeuiDayKey.fri: day(BeuiDayKey.fri, enabled: true),
+    BeuiDayKey.sat: day(BeuiDayKey.sat, enabled: false),
+    BeuiDayKey.sun: day(BeuiDayKey.sun, enabled: false),
   };
 }

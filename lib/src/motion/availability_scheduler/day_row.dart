@@ -204,7 +204,7 @@ class _DayRowState extends State<DayRow> {
           ),
         ),
         const SizedBox(width: 4),
-        CopyMenu(fromLabel: widget.day.label, onApply: widget.onCopy),
+        CopyMenu(from: widget.day, onApply: widget.onCopy),
       ],
     );
 
