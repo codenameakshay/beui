@@ -40,7 +40,6 @@ class _AgentThemeDemoState extends State<_AgentThemeDemo> {
         nested: BorderRadius.all(Radius.circular(10)),
       ),
       layout: BeuiAgentLayout(
-        density: BeuiAgentDensity.compact,
         conversationGutter: EdgeInsets.fromLTRB(16, 12, 16, 12),
         turnSpacing: 12,
         groupedMessageSpacing: 4,

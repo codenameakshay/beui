@@ -134,6 +134,16 @@ class GuidesPage extends StatelessWidget {
                   'stiffness 200 · damping 15 · mass 0.3',
                   'Loose cursor-follow physics for magnetic pull and tilt.',
                 ),
+                (
+                  'beuiSpringScroll',
+                  'stiffness 120 · damping 30 · mass 0.6',
+                  'Scroll-linked follow for progress indicators and parallax.',
+                ),
+                (
+                  'beuiSpringSnap',
+                  'stiffness 700 · damping 60 · mass 1',
+                  'Near-instant settle that stands in for a movement spring under reduced motion.',
+                ),
               ],
             ),
             const SizedBox(height: 56),
