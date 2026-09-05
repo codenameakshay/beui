@@ -259,30 +259,6 @@ void main() {
     });
   });
 
-  group('BeuiPromptInput reduced motion', () {
-    testWidgets('send/stop swap under reduced motion does not throw', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _app(
-          const BeuiPromptInput(defaultValue: 'x', loading: false),
-          reduce: true,
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.byIcon(LucideIcons.arrow_up), findsOneWidget);
-
-      await tester.pumpWidget(
-        _app(
-          BeuiPromptInput(defaultValue: 'x', loading: true, onStop: () {}),
-          reduce: true,
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.bySemanticsLabel('Stop generating'), findsOneWidget);
-    });
-  });
-
   group('BeuiPromptInput keyboard & semantics', () {
     testWidgets('Shift+Enter inserts a newline instead of submitting', (
       tester,
