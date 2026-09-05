@@ -240,8 +240,10 @@ void main() {
       await tester.pump();
 
       // Sample the child across the whole 220ms reveal: it must never move.
-      for (final elapsed in [40, 90, 150, 220]) {
-        await tester.pump(const Duration(milliseconds: 40));
+      var elapsed = 0;
+      for (final step in [40, 50, 60, 70]) {
+        elapsed += step;
+        await tester.pump(Duration(milliseconds: step));
         expect(
           tester.getSize(find.byKey(tallKey)).height,
           closeTo(100, 0.5),

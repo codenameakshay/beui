@@ -65,9 +65,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    // Counting up from 100, so it is between the old and new value.
+    // Counting up from 100: strictly between, so a snap to either end fails.
     final mid = int.parse(_shown(tester).replaceAll(',', ''));
-    expect(mid, inInclusiveRange(100, 200));
+    expect(mid, inExclusiveRange(100, 200));
 
     await tester.pumpAndSettle();
     expect(_shown(tester), '200');
