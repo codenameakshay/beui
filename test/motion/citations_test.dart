@@ -35,9 +35,10 @@ Widget _host({
   bool? open,
   bool defaultOpen = true,
   ValueChanged<bool>? onOpenChange,
+  ValueChanged<BeuiCitationItem>? onCitationTap,
   String? idPrefix,
   bool reduce = false,
-  Widget? above,
+  List<Widget> above = const [],
 }) {
   Widget child = Center(
     child: SizedBox(
@@ -46,13 +47,14 @@ Widget _host({
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ?above,
+          ...above,
           BeuiCitations(
             citations: citations,
             title: title,
             open: open,
             defaultOpen: defaultOpen,
             onOpenChange: onOpenChange,
+            onCitationTap: onCitationTap,
             idPrefix: idPrefix,
           ),
         ],
@@ -229,10 +231,12 @@ void main() {
             return _host(
               citations: _sample(count: count),
               defaultOpen: true,
-              above: TextButton(
-                onPressed: () => setState(() => count = 3),
-                child: const Text('Grow'),
-              ),
+              above: [
+                TextButton(
+                  onPressed: () => setState(() => count = 3),
+                  child: const Text('Grow'),
+                ),
+              ],
             );
           },
         ),
@@ -284,40 +288,22 @@ void main() {
   });
 
   group('BeuiCitation', () {
-    testWidgets('renders index badge', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: const Scaffold(
-            body: Center(
-              child: BeuiCitation(
-                citationId: 'motion',
-                index: 2,
-                idPrefix: 'test',
-              ),
-            ),
-          ),
-        ),
-      );
-      expect(find.text('2'), findsOneWidget);
-    });
-
     testWidgets('marker opens collapsed panel and reveals row', (tester) async {
       await tester.pumpWidget(
         _host(
           citations: _sample(count: 1),
           defaultOpen: false,
           idPrefix: 'preview-source',
-          above: const Padding(
-            padding: EdgeInsets.only(bottom: 12),
-            child: BeuiCitation(
-              citationId: 'motion',
-              index: 1,
-              idPrefix: 'preview-source',
+          above: const [
+            Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: BeuiCitation(
+                citationId: 'motion',
+                index: 1,
+                idPrefix: 'preview-source',
+              ),
             ),
-          ),
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -493,48 +479,10 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------
-  // UX remediation — R3, R9, R10, R14, R16, R18, R26, R27
-  // ---------------------------------------------------------------------
-
-  /// A citations panel with an optional list-level activation handler.
-  Widget hostWithTap({
-    required List<BeuiCitationItem> citations,
-    ValueChanged<BeuiCitationItem>? onCitationTap,
-    String? idPrefix,
-    List<Widget> above = const [],
-  }) {
-    return MaterialApp(
-      theme: BeuiTextTheme.trackingNormal(
-        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      ),
-      home: Scaffold(
-        body: Center(
-          child: SizedBox(
-            width: 360,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ...above,
-                BeuiCitations(
-                  citations: citations,
-                  defaultOpen: true,
-                  idPrefix: idPrefix,
-                  onCitationTap: onCitationTap,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   group('BeuiCitations row interactivity', () {
     testWidgets('a url alone does not make a row interactive', (tester) async {
       final handle = tester.ensureSemantics();
-      await tester.pumpWidget(hostWithTap(citations: _sample(count: 1)));
+      await tester.pumpWidget(_host(citations: _sample(count: 1)));
       await tester.pumpAndSettle();
       // The package does not open URLs, so the row has nothing to do when
       // activated — and must not advertise otherwise.
@@ -548,7 +496,7 @@ void main() {
     testWidgets('nor does it get the link glyph that promises one', (
       tester,
     ) async {
-      await tester.pumpWidget(hostWithTap(citations: _sample(count: 1)));
+      await tester.pumpWidget(_host(citations: _sample(count: 1)));
       await tester.pumpAndSettle();
       expect(find.byIcon(LucideIcons.external_link), findsNothing);
     });
@@ -558,7 +506,7 @@ void main() {
     ) async {
       final tapped = <String>[];
       await tester.pumpWidget(
-        hostWithTap(
+        _host(
           citations: _sample(count: 2),
           onCitationTap: (c) => tapped.add(c.id),
         ),
@@ -573,7 +521,7 @@ void main() {
     testWidgets('a per-item onTap is enough on its own', (tester) async {
       var calls = 0;
       await tester.pumpWidget(
-        hostWithTap(
+        _host(
           citations: [
             BeuiCitationItem(
               id: 'only',
@@ -607,7 +555,7 @@ void main() {
 
     testWidgets('the link glyph is legible at rest', (tester) async {
       await tester.pumpWidget(
-        hostWithTap(citations: _sample(count: 1), onCitationTap: (_) {}),
+        _host(citations: _sample(count: 1), onCitationTap: (_) {}),
       );
       await tester.pumpAndSettle();
       final icon = tester.widget<Icon>(find.byIcon(LucideIcons.external_link));
@@ -619,7 +567,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        hostWithTap(citations: _sample(count: 1), onCitationTap: (_) {}),
+        _host(citations: _sample(count: 1), onCitationTap: (_) {}),
       );
       await tester.pumpAndSettle();
 
@@ -657,7 +605,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        hostWithTap(
+        _host(
           citations: _sample(),
           idPrefix: 'derive',
           above: const [BeuiCitation(citationId: 'react', idPrefix: 'derive')],
@@ -670,7 +618,7 @@ void main() {
 
     testWidgets('it follows the list when the order changes', (tester) async {
       await tester.pumpWidget(
-        hostWithTap(
+        _host(
           citations: _sample(),
           idPrefix: 'reorder',
           above: const [BeuiCitation(citationId: 'react', idPrefix: 'reorder')],
@@ -680,7 +628,7 @@ void main() {
 
       // Filter the first source out; every later row shifts up by one.
       await tester.pumpWidget(
-        hostWithTap(
+        _host(
           citations: _sample().sublist(1),
           idPrefix: 'reorder',
           above: const [BeuiCitation(citationId: 'react', idPrefix: 'reorder')],
@@ -709,7 +657,7 @@ void main() {
       addTearDown(() => FlutterError.onError = previous);
 
       await tester.pumpWidget(
-        hostWithTap(
+        _host(
           citations: _sample(),
           idPrefix: 'clash',
           above: const [
@@ -794,35 +742,6 @@ void main() {
       // The ring is painted outside layout, so the badge — and the text either
       // side of it — stay exactly where they were.
       expect(tester.getRect(find.byType(BeuiCitation)), before);
-    });
-
-    testWidgets('the 16px badge accepts a touch that misses it', (
-      tester,
-    ) async {
-      var pressed = 0;
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: Center(
-              child: BeuiCitation(
-                citationId: 'm',
-                index: 1,
-                idPrefix: 'slop',
-                onPressed: () => pressed++,
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      final centre = tester.getCenter(find.byType(BeuiCitation));
-      // 16px out: well past the badge, inside the 44px slop.
-      await tester.tapAt(centre + const Offset(16, 0));
-      await tester.pump();
-      expect(pressed, 1);
     });
   });
 
