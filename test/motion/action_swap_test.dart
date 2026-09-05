@@ -104,11 +104,14 @@ void main() {
     testWidgets('iconOnly hides the label and exposes a semantic label', (
       tester,
     ) async {
+      final handle = tester.ensureSemantics();
       await tester.pumpWidget(
         _wrap(const BeuiActionSwapButton(items: _items, iconOnly: true)),
       );
       await tester.pumpAndSettle();
       expect(find.text('Copy link'), findsNothing);
+      expect(find.bySemanticsLabel('Copy link'), findsOneWidget);
+      handle.dispose();
     });
   });
 

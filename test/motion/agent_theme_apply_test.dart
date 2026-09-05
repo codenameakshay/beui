@@ -7,18 +7,8 @@ Widget _host(
   BeuiColors? colors,
   BeuiAgentTheme? agent,
   String? fontFamily,
-  bool reduce = false,
 }) {
-  Widget body = Center(child: SizedBox(width: 400, child: child));
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
+  final body = Center(child: SizedBox(width: 400, child: child));
   final palette = colors ?? BeuiColors.light();
   return MaterialApp(
     theme: BeuiTextTheme.trackingNormal(
