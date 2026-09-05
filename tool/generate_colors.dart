@@ -172,9 +172,8 @@ final _darkGlass = <String, Col>{
 // ring (== a hue-tinted primary at alpha 0.5 light / 0.55 dark) — plus the
 // port-added `focusRing` (see _focusRing below).
 class Brand {
-  Brand(this.name, this.slug, this.swatch, this.light, this.dark);
+  Brand(this.name, this.swatch, this.light, this.dark);
   final String name;
-  final String slug;
   final Col swatch;
   final Map<String, Col> light;
   final Map<String, Col> dark;
@@ -209,7 +208,6 @@ Col focusRingLight(double lPct, double c, double h) =>
 final _brands = <Brand>[
   Brand(
     'Violet',
-    'violet',
     oklch(55, 0.2, 290),
     _brand(
       oklch(55, 0.2, 290),
@@ -226,7 +224,6 @@ final _brands = <Brand>[
   ),
   Brand(
     'Blue',
-    'blue',
     oklch(55, 0.18, 255),
     _brand(
       oklch(55, 0.18, 255),
@@ -243,7 +240,6 @@ final _brands = <Brand>[
   ),
   Brand(
     'Green',
-    'green',
     oklch(56, 0.14, 150),
     _brand(
       oklch(56, 0.14, 150),
@@ -260,7 +256,6 @@ final _brands = <Brand>[
   ),
   Brand(
     'Amber',
-    'amber',
     oklch(74, 0.15, 70),
     _brand(
       oklch(74, 0.15, 70),
@@ -277,7 +272,6 @@ final _brands = <Brand>[
   ),
   Brand(
     'Blood Orange',
-    'blood-orange',
     oklch(60, 0.19, 40),
     _brand(
       oklch(60, 0.19, 40),
@@ -294,7 +288,6 @@ final _brands = <Brand>[
   ),
   Brand(
     'Rose',
-    'rose',
     oklch(58, 0.2, 12),
     _brand(
       oklch(58, 0.2, 12),
@@ -311,7 +304,6 @@ final _brands = <Brand>[
   ),
   Brand(
     'Red',
-    'red',
     oklch(55, 0.22, 25),
     _brand(
       oklch(55, 0.22, 25),
@@ -328,7 +320,6 @@ final _brands = <Brand>[
   ),
   Brand(
     'Teal',
-    'teal',
     oklch(55, 0.12, 185),
     _brand(
       oklch(55, 0.12, 185),
@@ -345,7 +336,6 @@ final _brands = <Brand>[
   ),
   Brand(
     'Indigo',
-    'indigo',
     oklch(50, 0.2, 275),
     _brand(
       oklch(50, 0.2, 275),
@@ -362,7 +352,6 @@ final _brands = <Brand>[
   ),
   Brand(
     'Lime',
-    'lime',
     oklch(72, 0.18, 130),
     _brand(
       oklch(72, 0.18, 130),
