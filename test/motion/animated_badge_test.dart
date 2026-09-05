@@ -4,24 +4,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: child);
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+import '../support.dart';
 
 /// The color of the leading [Icon] glyph inside a badge.
 Color? _iconColor(WidgetTester tester) {
@@ -52,7 +35,7 @@ void main() {
   group('BeuiAnimatedBadge', () {
     testWidgets('renders the status default icon and label', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           const BeuiAnimatedBadge(
             status: BeuiAnimatedBadgeStatus.success,
             label: 'Synced',
@@ -69,7 +52,7 @@ void main() {
 
     testWidgets('status change swaps the icon and the color', (tester) async {
       Widget app(BeuiAnimatedBadgeStatus s) =>
-          _wrap(BeuiAnimatedBadge(status: s, label: 'X'));
+          beuiTestApp(BeuiAnimatedBadge(status: s, label: 'X'));
 
       await tester.pumpWidget(app(BeuiAnimatedBadgeStatus.neutral));
       await tester.pumpAndSettle();
@@ -93,7 +76,7 @@ void main() {
 
     testWidgets('an override icon replaces the status default', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           const BeuiAnimatedBadge(
             status: BeuiAnimatedBadgeStatus.info,
             icon: LucideIcons.star,
@@ -113,7 +96,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           const BeuiAnimatedBadge(
             status: BeuiAnimatedBadgeStatus.loading,
             label: 'Working',
@@ -135,7 +118,7 @@ void main() {
 
     testWidgets('pulse defaults off for non-loading statuses', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           const BeuiAnimatedBadge(
             status: BeuiAnimatedBadgeStatus.success,
             label: 'Done',
@@ -154,7 +137,7 @@ void main() {
 
     testWidgets('pulse can be forced on for any status', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           const BeuiAnimatedBadge(
             status: BeuiAnimatedBadgeStatus.success,
             label: 'Done',
@@ -185,7 +168,7 @@ void main() {
       tester,
     ) async {
       Widget app(BeuiAnimatedBadgeStatus s) =>
-          _wrap(BeuiAnimatedBadge(status: s, label: 'X'));
+          beuiTestApp(BeuiAnimatedBadge(status: s, label: 'X'));
       await tester.pumpWidget(app(BeuiAnimatedBadgeStatus.neutral));
       await tester.pumpAndSettle();
       await tester.pumpWidget(app(BeuiAnimatedBadgeStatus.success));
@@ -205,7 +188,7 @@ void main() {
       tester,
     ) async {
       Widget app(BeuiAnimatedBadgeStatus s) =>
-          _wrap(BeuiAnimatedBadge(status: s, label: 'X'), reduce: true);
+          beuiTestApp(BeuiAnimatedBadge(status: s, label: 'X'), reduce: true);
       await tester.pumpWidget(app(BeuiAnimatedBadgeStatus.neutral));
       await tester.pumpAndSettle();
 
@@ -235,7 +218,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           const BeuiAnimatedBadge(
             status: BeuiAnimatedBadgeStatus.loading,
             label: 'Working',
@@ -257,7 +240,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           const BeuiAnimatedBadge(
             status: BeuiAnimatedBadgeStatus.info,
             label: 'Live',
@@ -294,7 +277,7 @@ void main() {
     ) async {
       // Constant non-loading status (no spinner/pulse); only the label changes,
       // so the roll under test is isolated.
-      Widget app(String l) => _wrap(
+      Widget app(String l) => beuiTestApp(
         BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
       );
       await tester.pumpWidget(app('Alpha'));
@@ -318,7 +301,7 @@ void main() {
     testWidgets('the exiting layer fades to 0.5, not 0 (source endpoint)', (
       tester,
     ) async {
-      Widget app(String l) => _wrap(
+      Widget app(String l) => beuiTestApp(
         BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
       );
       await tester.pumpWidget(app('Alpha'));
@@ -356,7 +339,7 @@ void main() {
     testWidgets('the container width springs to fit a new label', (
       tester,
     ) async {
-      Widget app(String l) => _wrap(
+      Widget app(String l) => beuiTestApp(
         BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
       );
       await tester.pumpWidget(app('Hi'));
@@ -378,7 +361,7 @@ void main() {
     });
 
     testWidgets('reduced motion snaps the width', (tester) async {
-      Widget app(String l) => _wrap(
+      Widget app(String l) => beuiTestApp(
         BeuiAnimatedBadge(status: BeuiAnimatedBadgeStatus.neutral, label: l),
         reduce: true,
       );

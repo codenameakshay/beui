@@ -4,26 +4,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: child);
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
-
-/// Max blur sigma currently applied by any ImageFiltered in the tree.
 const _items = [
   BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: Icons.link),
   BeuiActionSwapItem(id: 'copied', label: 'Copied', icon: Icons.check),
@@ -36,7 +16,7 @@ void main() {
     ) async {
       String? changedTo;
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiActionSwapButton(
             items: _items,
             onChanged: (id, _) => changedTo = id,
@@ -85,7 +65,7 @@ void main() {
     testWidgets('controlled value ignores internal state', (tester) async {
       var changes = 0;
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiActionSwapButton(
             items: _items,
             value: 'copy',
@@ -106,7 +86,7 @@ void main() {
     ) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
-        _wrap(const BeuiActionSwapButton(items: _items, iconOnly: true)),
+        beuiTestApp(const BeuiActionSwapButton(items: _items, iconOnly: true)),
       );
       await tester.pumpAndSettle();
       expect(find.text('Copy link'), findsNothing);
@@ -120,7 +100,7 @@ void main() {
       tester,
     ) async {
       Widget app(String v, String t) =>
-          _wrap(BeuiActionSwapText(value: v, text: t));
+          beuiTestApp(BeuiActionSwapText(value: v, text: t));
       // Measure the AnimatedSize box, which hugs the content width.
       final box = find.descendant(
         of: find.byType(BeuiActionSwapText),
@@ -147,7 +127,7 @@ void main() {
     testWidgets('blur variant applies a visible blur mid-transition', (
       tester,
     ) async {
-      Widget app(String v, String t) => _wrap(
+      Widget app(String v, String t) => beuiTestApp(
         BeuiActionSwapText(
           value: v,
           text: t,
@@ -172,7 +152,7 @@ void main() {
       BeuiActionSwapVariant variant,
     ) async {
       Widget app(String v, String t) =>
-          _wrap(BeuiActionSwapText(value: v, text: t, variant: variant));
+          beuiTestApp(BeuiActionSwapText(value: v, text: t, variant: variant));
       await tester.pumpWidget(app('a', 'One'));
       await tester.pumpAndSettle();
       await tester.pumpWidget(app('b', 'Two'));
@@ -214,7 +194,7 @@ void main() {
     testWidgets('old text rolls UP and out; new text enters from BELOW', (
       tester,
     ) async {
-      Widget app(String v, String t) => _wrap(
+      Widget app(String v, String t) => beuiTestApp(
         BeuiActionSwapText(
           value: v,
           text: t,
@@ -241,7 +221,7 @@ void main() {
       WidgetTester tester,
       BeuiActionSwapVariant variant,
     ) async {
-      Widget app(String v, String t) => _wrap(
+      Widget app(String v, String t) => beuiTestApp(
         BeuiActionSwapText(value: v, text: t, variant: variant),
         reduce: true,
       );
