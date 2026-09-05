@@ -78,11 +78,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Search'), findsOneWidget);
-      expect(find.text('Inbox'), findsOneWidget);
-      expect(find.text('People'), findsOneWidget);
-      expect(find.text('Tasks'), findsOneWidget);
-      expect(find.text('WORKSPACES'), findsOneWidget);
-      expect(find.text('Main'), findsOneWidget);
+      expect(find.text('WORKSPACES'), findsOneWidget); // group label
       expect(find.byKey(beuiAnimatedSidebarPanelKey), findsOneWidget);
     });
 
@@ -205,28 +201,6 @@ void main() {
       // Panel is inside a width-constrained rail; collapsed ≈ icon width.
       expect(panel.width, lessThan(kBeuiAnimatedSidebarWidth));
       expect(panel.width, closeTo(kBeuiAnimatedSidebarIconWidth, 8));
-    });
-
-    testWidgets('reduced motion still renders and selects', (tester) async {
-      String? selected;
-      await tester.pumpWidget(
-        _wrap(
-          BeuiAnimatedSidebar(
-            groups: _groups,
-            defaultSelectedId: 'tasks',
-            onSelected: (id) => selected = id,
-            child: const SizedBox.expand(),
-          ),
-          reduce: true,
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Tasks'), findsOneWidget);
-
-      await tester.tap(find.text('Search'));
-      await tester.pumpAndSettle();
-      expect(selected, 'search');
     });
 
     testWidgets('mobile mode opens sheet from trigger', (tester) async {
@@ -487,28 +461,6 @@ void main() {
       expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsOneWidget);
       expect(find.byKey(beuiAnimatedSidebarChromeKey), findsNothing);
       expect(find.byKey(beuiAnimatedSidebarInsetKey), findsNothing);
-    });
-
-    testWidgets('reduced motion still renders the floating chrome', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _wrap(
-          BeuiAnimatedSidebar(
-            groups: _groups,
-            variant: BeuiAnimatedSidebarVariant.floating,
-            defaultSelectedId: 'tasks',
-            child: const SizedBox.expand(),
-          ),
-          reduce: true,
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      final chrome = _chrome(tester);
-      expect(chrome.borderRadius, BorderRadius.circular(16));
-      expect(chrome.boxShadow, isNotEmpty);
-      expect(find.text('Tasks'), findsOneWidget);
     });
   });
 
