@@ -1,9 +1,9 @@
-// Lets CI skip golden comparison without touching the 21 golden tests.
+// Lets CI skip golden comparison without touching the 34 golden tests.
 //
 // Flutter goldens are platform-specific: text rasterisation and shader
 // compilation differ between macOS (where these goldens were authored, and
 // where they are regenerated with `flutter test --update-goldens`) and the
-// Linux runners CI uses. All 21 pass locally on macOS and 19 fail on Linux
+// Linux runners CI uses. All 34 pass locally on macOS; most fail on Linux
 // purely from that difference — nothing about the widgets is wrong.
 //
 // So CI sets BEUI_SKIP_GOLDENS=1 and every other assertion still runs. Goldens
