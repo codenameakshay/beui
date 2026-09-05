@@ -5,6 +5,7 @@
 // Navigator, so the sidebar and top bar stay put exactly like the site.
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'catalog.dart';
 import 'guides_page.dart';
@@ -37,13 +38,6 @@ class DetailRoute extends ExplorerRoute {
 /// The Motion Guides long-form page.
 class GuidesRoute extends ExplorerRoute {
   const GuidesRoute();
-}
-
-/// A simple prose doc page (e.g. AI Agents).
-class DocRoute extends ExplorerRoute {
-  const DocRoute(this.title, this.body);
-  final String title;
-  final String body;
 }
 
 /// Inherited navigation handle available to the whole subtree.
@@ -184,11 +178,6 @@ class _Content extends StatelessWidget {
         entry: entry,
       ),
       GuidesRoute() => const GuidesPage(key: ValueKey('guides')),
-      DocRoute(:final title, :final body) => DocPage(
-        key: ValueKey('doc-$title'),
-        title: title,
-        body: body,
-      ),
     };
     return Scrollbar(
       controller: scroll,
@@ -526,32 +515,39 @@ class _ThemePicker extends StatelessWidget {
   }
 }
 
+/// The package's repository, matching the root `pubspec.yaml`'s `repository:`.
+const _repoUrl = 'https://github.com/codenameakshay/beui';
+
 class _GithubButton extends StatelessWidget {
   const _GithubButton({required this.colors});
   final BeuiColors colors;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 38,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Icon(LucideIcons.star, size: 15, color: colors.foreground),
-          const SizedBox(width: 8),
-          Text(
-            'GitHub',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: colors.foreground,
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () => launchUrl(Uri.parse(_repoUrl)),
+      child: Container(
+        height: 38,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          border: Border.all(color: colors.border),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Icon(LucideIcons.star, size: 15, color: colors.foreground),
+            const SizedBox(width: 8),
+            Text(
+              'GitHub',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: colors.foreground,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

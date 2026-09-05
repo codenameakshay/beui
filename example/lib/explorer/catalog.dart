@@ -2,9 +2,7 @@
 //
 // Mirrors the section/order of beui.dev's component explorer: Components
 // ("motion"), AI Agents, and Blocks — each in the same order as the site's
-// sidebar, wired to the Flutter demo builders. Entries that are not yet ported
-// still have a builder (a stub demo that shows "not yet ported") so the gallery
-// route resolves; the real widget lives under lib/src/motion/ as a scaffold.
+// sidebar, wired to the Flutter demo builders.
 import 'package:flutter/widgets.dart';
 
 import '../demos/action_rails_demo.dart';
@@ -98,8 +96,9 @@ class ExploreEntry {
     required this.slug,
     required this.section,
     required this.blurb,
+    required this.builder,
     this.isNew = false,
-    this.builder,
+    this.sourceFile,
   });
 
   /// Display title, e.g. "Switch".
@@ -117,11 +116,12 @@ class ExploreEntry {
   /// Whether to show the teal "NEW" badge, matching the source.
   final bool isNew;
 
-  /// Builds the live demo. Null means the component isn't ported yet.
-  final WidgetBuilder? builder;
+  /// Builds the live demo.
+  final WidgetBuilder builder;
 
-  /// Whether a runnable demo exists.
-  bool get ported => builder != null;
+  /// Overrides the demo file path shown on the Code tab, for entries whose
+  /// demo lives in a shared file rather than `<slug>_demo.dart`.
+  final String? sourceFile;
 }
 
 /// Composes the gooey Popover and its Morph variant onto one page, mirroring the
@@ -477,6 +477,7 @@ const List<ExploreEntry> kBlocks = [
     section: ExploreSection.blocks,
     blurb: 'Icon rail whose segments expand to reveal a label on hover.',
     builder: expandableActionBarDemo,
+    sourceFile: 'example/lib/demos/action_rails_demo.dart',
   ),
   ExploreEntry(
     title: 'Overflow Actions',
@@ -484,6 +485,7 @@ const List<ExploreEntry> kBlocks = [
     section: ExploreSection.blocks,
     blurb: 'Primary actions with an overflow that fans out from a ⋯ toggle.',
     builder: overflowActionsDemo,
+    sourceFile: 'example/lib/demos/action_rails_demo.dart',
   ),
   ExploreEntry(
     title: 'Expandable Tabs',
@@ -514,6 +516,7 @@ const List<ExploreEntry> kBlocks = [
     blurb:
         'Mixed attachment workspace — image previews, seekable audio, retry.',
     builder: attachmentUploadDemo,
+    sourceFile: 'example/lib/demos/file_upload_demo.dart',
   ),
   ExploreEntry(
     title: 'Prediction Market',

@@ -178,16 +178,15 @@ class _ExplorerCardState extends State<ExplorerCard> {
 
 /// The bordered surface that frames a live demo on a detail page.
 class PreviewSurface extends StatelessWidget {
-  const PreviewSurface({super.key, required this.child, this.minHeight = 360});
+  const PreviewSurface({super.key, required this.child});
   final Widget child;
-  final double minHeight;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     return Container(
       width: double.infinity,
-      constraints: BoxConstraints(minHeight: minHeight),
+      constraints: const BoxConstraints(minHeight: 360),
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         color: colors.card.withValues(alpha: 0.4),
