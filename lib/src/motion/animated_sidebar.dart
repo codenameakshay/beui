@@ -485,7 +485,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
 
   bool get _expanded {
     if (widget.collapsible == BeuiAnimatedSidebarCollapsible.none) return true;
-    return _controlledExpanded ? widget.expanded! : _internalExpanded;
+    return widget.expanded ?? _internalExpanded;
   }
 
   /// Mirrors `openMobile ?? internalOpenMobile` in the source provider.

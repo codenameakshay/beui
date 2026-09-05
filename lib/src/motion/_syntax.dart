@@ -287,7 +287,7 @@ List<BeuiSyntaxToken> beuiHighlightLine(
       return _highlightBash(line, palette);
     case BeuiCodeLanguage.typescript:
     case BeuiCodeLanguage.tsx:
-      return _highlightGeneric(line, beuiTsKeywords, palette);
+      return _highlightGeneric(line, palette);
   }
 }
 
@@ -425,9 +425,9 @@ bool _isBareNumber(String word) {
 
 List<BeuiSyntaxToken> _highlightGeneric(
   String line,
-  Set<String> keywords,
   BeuiSyntaxPalette palette,
 ) {
+  const keywords = beuiTsKeywords;
   final out = <BeuiSyntaxToken>[];
   var i = 0;
   while (i < line.length) {

@@ -557,7 +557,6 @@ class BeuiAgentActivity extends StatefulWidget {
 
 class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
   late bool _internalOpen = widget.defaultOpen;
-  BeuiAgentActivityStatus _previousStatus = BeuiAgentActivityStatus.working;
   final GlobalKey _contentKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
   double _contentHeight = 0;
@@ -570,7 +569,6 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
   @override
   void initState() {
     super.initState();
-    _previousStatus = widget.status;
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
   }
 
@@ -580,11 +578,10 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
     // working → terminal: seed open from collapseOnComplete (source useEffect).
     // A failure ignores collapseOnComplete and forces the panel open — see
     // [BeuiAgentActivity.collapseOnComplete].
-    if (_previousStatus == BeuiAgentActivityStatus.working &&
+    if (old.status == BeuiAgentActivityStatus.working &&
         widget.status.isTerminal) {
       _setOpen(widget.status.isFailure || !widget.collapseOnComplete);
     }
-    _previousStatus = widget.status;
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
   }
 
