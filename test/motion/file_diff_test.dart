@@ -2,7 +2,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../support.dart';
+import '_follow_contract.dart';
 
 const _sampleLines = <BeuiFileDiffLine>[
   BeuiFileDiffLine(
@@ -90,8 +90,6 @@ Widget _host({
 }
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
   group('BeuiFileDiff', () {
     testWidgets('renders file path, change counts, and line content', (
       tester,
@@ -615,12 +613,11 @@ void main() {
     testWidgets('line numbers are legible, not a 1.78:1 hairline', (
       tester,
     ) async {
-      await tester.pumpWidget(
+      await expectLegibleGutterNumber(
+        tester,
         _host(status: BeuiFileDiffStatus.complete, defaultOpen: true),
+        lineNumberText: '18',
       );
-      await tester.pumpAndSettle();
-      final gutter = tester.widget<Text>(find.text('18').first);
-      expect(gutter.style!.color!.a, closeTo(0.75, 0.01));
     });
   });
 
@@ -735,27 +732,15 @@ void main() {
     testWidgets('the copied confirmation is announced, not just relabelled', (
       tester,
     ) async {
-      final handle = tester.ensureSemantics();
-      await tester.pumpWidget(
+      await expectCopyConfirmationAnnounced(
+        tester,
         _host(
           status: BeuiFileDiffStatus.complete,
           defaultOpen: true,
           onCopy: () async {},
         ),
+        copyLabel: 'Copy diff',
       );
-      await tester.pumpAndSettle();
-      expect(
-        tester.getSemantics(find.bySemanticsLabel('Copy diff')),
-        isSemantics(isLiveRegion: false),
-      );
-
-      await tester.tap(find.byIcon(LucideIcons.copy));
-      await tester.pump();
-      expect(
-        tester.getSemantics(find.bySemanticsLabel('Copied')),
-        isSemantics(isLiveRegion: true, isButton: true),
-      );
-      handle.dispose();
     });
   });
 
@@ -955,102 +940,19 @@ void main() {
         ),
     ];
 
-    testWidgets('a capped viewport says how much it is hiding', (tester) async {
-      await tester.pumpWidget(
-        _host(
-          lines: longDiff(40),
-          status: BeuiFileDiffStatus.complete,
+    testWidgets('the follow contract', (tester) async {
+      await runFollowContract(
+        tester,
+        rootType: BeuiFileDiff,
+        build: ({required lineCount, required streaming}) => _host(
+          lines: longDiff(lineCount),
+          status: streaming
+              ? BeuiFileDiffStatus.streaming
+              : BeuiFileDiffStatus.complete,
           defaultOpen: true,
         ),
       );
-      await tester.pumpAndSettle();
-      expect(find.textContaining('more lines'), findsOneWidget);
     });
-
-    testWidgets('a diff that fits says nothing', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: const Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 700,
-                child: BeuiFileDiff(
-                  file: 'src/runner.ts',
-                  lines: _sampleLines,
-                  status: BeuiFileDiffStatus.complete,
-                  collapseOnComplete: false,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.textContaining('more lines'), findsNothing);
-    });
-
-    testWidgets(
-      'scrolling away from the live edge stops the follow and offers a way '
-      'back',
-      (tester) async {
-        await tester.pumpWidget(
-          _host(
-            lines: longDiff(40),
-            status: BeuiFileDiffStatus.streaming,
-            defaultOpen: true,
-          ),
-        );
-        // The streaming spinner repeats forever, so settle is never an
-        // option here — drive the follow's 220ms frame by frame instead.
-        await pumpFrames(tester, 20);
-        expect(find.text('Jump to latest'), findsNothing);
-
-        final controller = tester
-            .widget<SingleChildScrollView>(
-              find
-                  .descendant(
-                    of: find.byType(BeuiFileDiff),
-                    matching: find.byWidgetPredicate(
-                      (w) =>
-                          w is SingleChildScrollView &&
-                          w.scrollDirection == Axis.vertical &&
-                          w.controller != null,
-                    ),
-                  )
-                  .first,
-            )
-            .controller!;
-
-        // The reader scrolls back to re-read something.
-        controller.jumpTo(controller.position.maxScrollExtent - 120);
-        await pumpFrames(tester, 20);
-        expect(find.text('Jump to latest'), findsOneWidget);
-        final pinnedAt = controller.offset;
-
-        // More content arrives; the viewport stays where the reader put it.
-        await tester.pumpWidget(
-          _host(
-            lines: longDiff(60),
-            status: BeuiFileDiffStatus.streaming,
-            defaultOpen: true,
-          ),
-        );
-        await pumpFrames(tester, 20);
-        expect(controller.offset, closeTo(pinnedAt, 1));
-
-        // And the pill takes them back.
-        await tester.tap(find.text('Jump to latest'));
-        await pumpFrames(tester, 30);
-        expect(
-          controller.offset,
-          closeTo(controller.position.maxScrollExtent, 1),
-        );
-        expect(find.text('Jump to latest'), findsNothing);
-      },
-    );
   });
 
   group('BeuiFileDiff API shape', () {

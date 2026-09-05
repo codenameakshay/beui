@@ -2,17 +2,18 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_chevron.dart';
 import '_disclosure.dart';
 import '_engine.dart';
 import '_focus_ring.dart';
 import '_hit_target.dart';
+import '_status_icon.dart';
 import '_syntax.dart';
 import '_viewport_follow.dart';
 
@@ -120,8 +121,6 @@ class BeuiFileDiffHunkGap {
 // Motion tokens
 // ---------------------------------------------------------------------------
 
-const _chevronMotion = beuiSpringSwap;
-const _pressMotion = beuiSpringPress;
 const _spinPeriod = Duration(milliseconds: 900);
 const _copyFeedback = Duration(milliseconds: 1600);
 
@@ -365,11 +364,11 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
     final next = widget.status;
     if (prev != BeuiFileDiffStatus.streaming &&
         next == BeuiFileDiffStatus.streaming) {
-      _setOpen(true);
+      _openFromWidgetUpdate(true);
     } else if (prev == BeuiFileDiffStatus.streaming &&
         next == BeuiFileDiffStatus.complete &&
         widget.collapseOnComplete) {
-      _setOpen(false);
+      _openFromWidgetUpdate(false);
     }
 
     if (_streaming != (oldWidget.status == BeuiFileDiffStatus.streaming)) {
@@ -398,16 +397,22 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
     super.dispose();
   }
 
+  /// Auto open/collapse on a status transition, called from
+  /// [didUpdateWidget]. That runs as part of the in-flight rebuild the parent
+  /// already triggered, so mutating the field directly (no `setState`) is
+  /// picked up by the imminent build; wrapping it in `setState` here would
+  /// assert.
+  void _openFromWidgetUpdate(bool next) {
+    if (next == _currentOpen) return;
+    if (!_isControlled) _internalOpen = next;
+    widget.onOpenChange?.call(next);
+  }
+
+  /// User-driven open/collapse (tap, keyboard). Always outside a build, so it
+  /// always needs `setState` to schedule one.
   void _setOpen(bool next) {
     if (next == _currentOpen) return;
-    if (!_isControlled) {
-      // Mutate directly so a didUpdateWidget-driven collapse is visible in the
-      // imminent build; also mark dirty when we're not already rebuilding.
-      _internalOpen = next;
-      if (SchedulerBinding.instance.schedulerPhase == SchedulerPhase.idle) {
-        setState(() {});
-      }
-    }
+    if (!_isControlled) setState(() => _internalOpen = next);
     widget.onOpenChange?.call(next);
   }
 
@@ -956,16 +961,22 @@ class _HeaderState extends State<_Header> {
                     width: 16,
                     height: 16,
                     child: Center(
-                      child: _StatusIcon(
+                      child: BeuiStreamingStatusIcon(
+                        icon: widget.streaming
+                            ? LucideIcons.loader_circle
+                            : LucideIcons.check,
                         streaming: widget.streaming,
                         reduce: widget.reduce,
                         color: colors.mutedForeground.withValues(alpha: 0.6),
                         spin: widget.spin,
+                        semanticLabel: widget.streaming
+                            ? 'Applying changes'
+                            : 'Changes applied',
                       ),
                     ),
                   ),
                   const SizedBox(width: 8), // gap-2
-                  _Chevron(
+                  BeuiDisclosureChevron(
                     open: widget.open,
                     reduce: widget.reduce,
                     color: chevronColor,
@@ -1089,7 +1100,7 @@ class _HeaderActionState extends State<_HeaderAction> {
               onTap: widget.onTap,
               child: SingleMotionBuilder(
                 value: (_pressed && !reduce) ? 0.97 : 1.0,
-                motion: motionFor(context, _pressMotion, isMovement: true),
+                motion: motionFor(context, beuiSpringPress, isMovement: true),
                 builder: (context, scale, child) =>
                     Transform.scale(scale: scale, child: child),
                 child: BeuiFocusRing(
@@ -1120,63 +1131,6 @@ class _HeaderActionState extends State<_HeaderAction> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _StatusIcon extends StatelessWidget {
-  const _StatusIcon({
-    required this.streaming,
-    required this.reduce,
-    required this.color,
-    required this.spin,
-  });
-
-  final bool streaming;
-  final bool reduce;
-  final Color color;
-  final AnimationController spin;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      streaming ? LucideIcons.loader_circle : LucideIcons.check,
-      size: 14,
-      color: color,
-      semanticLabel: streaming ? 'Applying changes' : 'Changes applied',
-    );
-    if (!streaming || reduce) return icon;
-    return RotationTransition(turns: spin, child: icon);
-  }
-}
-
-class _Chevron extends StatelessWidget {
-  const _Chevron({
-    required this.open,
-    required this.reduce,
-    required this.color,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      BeuiAgentTheme.of(context).icons.expand,
-      size: 14,
-      color: color,
-    );
-    if (reduce) {
-      return Transform.rotate(angle: open ? math.pi : 0, child: icon);
-    }
-    return SingleMotionBuilder(
-      value: open ? 180.0 : 0.0,
-      motion: motionFor(context, _chevronMotion, isMovement: true),
-      builder: (context, deg, child) =>
-          Transform.rotate(angle: deg * math.pi / 180.0, child: child),
-      child: icon,
     );
   }
 }
@@ -1493,6 +1447,11 @@ class _DiffLineRow extends StatelessWidget {
       overflow: wrap ? TextOverflow.visible : TextOverflow.clip,
     );
 
+    final paddedCode = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      child: code,
+    );
+
     final row = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: wrap ? MainAxisSize.max : MainAxisSize.min,
@@ -1531,18 +1490,7 @@ class _DiffLineRow extends StatelessWidget {
             style: baseStyle.copyWith(color: markerColor),
           ),
         ),
-        if (wrap)
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: code,
-            ),
-          )
-        else
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: code,
-          ),
+        if (wrap) Expanded(child: paddedCode) else paddedCode,
       ],
     );
 

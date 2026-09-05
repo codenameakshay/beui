@@ -10,6 +10,7 @@ import '../tokens/motion.dart';
 import '_engine.dart';
 import '_focus_ring.dart';
 import '_hit_target.dart';
+import '_status_icon.dart';
 import '_syntax.dart';
 import '_viewport_follow.dart';
 
@@ -252,7 +253,6 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
     final highlight = widget.highlightLines.toSet();
 
     final lines = widget.code.split('\n');
-    // Preserve trailing empty line behaviour of split — matches source.
 
     // Keep the hidden-content cue honest as the content grows.
     _follow.syncMetrics();
@@ -341,7 +341,11 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                       ),
                     ),
                     const Spacer(),
-                    _StatusIcon(
+                    BeuiStreamingStatusIcon(
+                      icon: _streaming
+                          ? LucideIcons.loader_circle
+                          : LucideIcons.check,
+                      size: 12,
                       streaming: _streaming,
                       reduce: reduce,
                       color: statusColor,
@@ -529,7 +533,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                             bottom: 0,
                             child: BeuiHiddenContentFooter(
                               extentBelow: _follow.extentBelow,
-                              rowExtent: _CodeLines.lineHeight,
+                              rowExtent: _CodeLines._lineHeight,
                               surface: surface,
                             ),
                           ),
@@ -582,31 +586,6 @@ class _EmptyCode extends StatelessWidget {
   }
 }
 
-class _StatusIcon extends StatelessWidget {
-  const _StatusIcon({
-    required this.streaming,
-    required this.reduce,
-    required this.color,
-    required this.spin,
-  });
-
-  final bool streaming;
-  final bool reduce;
-  final Color color;
-  final AnimationController spin;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      streaming ? LucideIcons.loader_circle : LucideIcons.check,
-      size: 12,
-      color: color,
-    );
-    if (!streaming || reduce) return icon;
-    return RotationTransition(turns: spin, child: icon);
-  }
-}
-
 // ---------------------------------------------------------------------------
 // Line list
 // ---------------------------------------------------------------------------
@@ -632,13 +611,13 @@ class _CodeLines extends StatelessWidget {
 
   static const _gutterWidth = 44.0; // ~2.75rem
 
-  /// One rendered row, `leading-5`. Public to the library so the hidden-content
-  /// footer can turn scroll extent into a line count.
-  static const lineHeight = 20.0;
+  /// One rendered row, `leading-5`. Read by the hidden-content footer to turn
+  /// scroll extent into a line count.
+  static const _lineHeight = 20.0;
   static const _fontSize = 12.0; // text-xs
 
   /// Blue-500 focus wash (source `highlightLines`).
-  static const highlightHue = Color(0xFF2B7FFF);
+  static const _highlightHue = Color(0xFF2B7FFF);
 
   @override
   Widget build(BuildContext context) {
@@ -654,7 +633,7 @@ class _CodeLines extends StatelessWidget {
       fontSize: _fontSize,
       // Tailwind `tracking-normal`; see the filename style for why.
       letterSpacing: 0,
-      height: lineHeight / _fontSize,
+      height: _lineHeight / _fontSize,
       color: palette.base,
     );
 
@@ -674,8 +653,8 @@ class _CodeLines extends StatelessWidget {
             baseStyle: baseStyle,
             // 0.10 fill (was 0.07 → a 1.08:1 wash) plus a 2px leading bar at
             // 0.6, so the highlight survives as more than a rounding error.
-            highlightFill: highlightHue.withValues(alpha: 0.10),
-            highlightBar: highlightHue.withValues(alpha: 0.6),
+            highlightFill: _highlightHue.withValues(alpha: 0.10),
+            highlightBar: _highlightHue.withValues(alpha: 0.6),
           ),
       ],
     );
@@ -725,6 +704,11 @@ class _CodeLineRow extends StatelessWidget {
       overflow: wrap ? TextOverflow.visible : TextOverflow.clip,
     );
 
+    final paddedCode = Padding(
+      padding: EdgeInsets.only(left: showLineNumbers ? 4 : 16, right: 16),
+      child: code,
+    );
+
     final row = IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -748,24 +732,7 @@ class _CodeLineRow extends StatelessWidget {
                 ),
               ),
             ),
-          if (wrap)
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: showLineNumbers ? 4 : 16,
-                  right: 16,
-                ),
-                child: code,
-              ),
-            )
-          else
-            Padding(
-              padding: EdgeInsets.only(
-                left: showLineNumbers ? 4 : 16,
-                right: 16,
-              ),
-              child: code,
-            ),
+          if (wrap) Expanded(child: paddedCode) else paddedCode,
         ],
       ),
     );

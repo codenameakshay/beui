@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '_follow_contract.dart';
+
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = Center(child: SizedBox(width: 400, child: child));
   if (reduce) {
@@ -26,8 +28,6 @@ Widget _wrap(Widget child, {bool reduce = false}) {
 }
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
   group('BeuiCodeBlock', () {
     testWidgets('renders code, filename, and language label', (tester) async {
       await tester.pumpWidget(
@@ -106,7 +106,6 @@ void main() {
       );
       expect(find.byIcon(LucideIcons.check), findsWidgets);
       // Status Ready check + copy feedback check.
-      expect(find.byTooltip('Copied'), findsNothing); // we use Semantics label
 
       // Wait out the 1600ms feedback window.
       await tester.pump(const Duration(milliseconds: 1700));
@@ -184,24 +183,9 @@ void main() {
       expect(find.text('legacy-string.tsx'), findsOneWidget);
     });
 
-    testWidgets('reduced motion still renders streaming chrome', (
+    testWidgets('highlight lines paint the fill and leading bar', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiCodeBlock(
-            code: 'stream\nmore',
-            status: BeuiCodeBlockStatus.streaming,
-            maxHeight: 80,
-          ),
-          reduce: true,
-        ),
-      );
-      expect(find.text('Writing'), findsOneWidget);
-      expect(find.text('stream'), findsOneWidget);
-    });
-
-    testWidgets('highlight lines paint without error', (tester) async {
       await tester.pumpWidget(
         _wrap(
           const BeuiCodeBlock(code: 'one\ntwo\nthree', highlightLines: [2]),
@@ -238,11 +222,11 @@ void main() {
     testWidgets('line numbers are legible, not a 1.63:1 hairline', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(const BeuiCodeBlock(code: 'a\nb\nc')));
-      await tester.pumpAndSettle();
-      final gutter = tester.widget<Text>(find.text('2'));
-      // 0.75, not 0.35. This is the cross-reference channel for "line 19".
-      expect(gutter.style!.color!.a, closeTo(0.75, 0.01));
+      await expectLegibleGutterNumber(
+        tester,
+        _wrap(const BeuiCodeBlock(code: 'a\nb\nc')),
+        lineNumberText: '2',
+      );
     });
 
     testWidgets('the language label is not alpha-multiplied either', (
@@ -292,46 +276,11 @@ void main() {
 
   group('BeuiCodeBlock copy control', () {
     testWidgets('the copied confirmation is announced', (tester) async {
-      final handle = tester.ensureSemantics();
-      await tester.pumpWidget(
+      await expectCopyConfirmationAnnounced(
+        tester,
         _wrap(BeuiCodeBlock(code: 'x', onCopy: () async {})),
+        copyLabel: 'Copy code',
       );
-      await tester.pumpAndSettle();
-      expect(
-        tester.getSemantics(find.bySemanticsLabel('Copy code')),
-        isSemantics(isLiveRegion: false, isButton: true),
-      );
-
-      await tester.tap(find.byIcon(LucideIcons.copy));
-      await tester.pump();
-      expect(
-        tester.getSemantics(find.bySemanticsLabel('Copied')),
-        isSemantics(isLiveRegion: true, isButton: true),
-      );
-      handle.dispose();
-    });
-
-    testWidgets('the 28px control accepts a touch that misses it', (
-      tester,
-    ) async {
-      var calls = 0;
-      await tester.pumpWidget(
-        _wrap(
-          BeuiCodeBlock(
-            code: 'x',
-            onCopy: () async {
-              calls++;
-            },
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      final centre = tester.getCenter(find.byIcon(LucideIcons.copy));
-      // 16px left of centre: outside the painted 28px circle, inside the 44px
-      // slop. The visual is untouched; only the hit area grew.
-      await tester.tapAt(centre + const Offset(-16, 0));
-      await tester.pump();
-      expect(calls, 1);
     });
 
     testWidgets('press scales to 0.97, the library token', (tester) async {
@@ -389,87 +338,22 @@ void main() {
     String longCode(int n) =>
         [for (var i = 0; i < n; i++) 'const line$i = $i;'].join('\n');
 
-    testWidgets('a capped viewport says how much it is hiding', (tester) async {
-      await tester.pumpWidget(
-        _wrap(BeuiCodeBlock(code: longCode(60), maxHeight: 120)),
-      );
-      await tester.pumpAndSettle();
-      expect(find.textContaining('more lines'), findsOneWidget);
-    });
-
-    testWidgets('a block that fits says nothing', (tester) async {
-      await tester.pumpWidget(
-        _wrap(const BeuiCodeBlock(code: 'a\nb', maxHeight: 280)),
-      );
-      await tester.pumpAndSettle();
-      expect(find.textContaining('more lines'), findsNothing);
-    });
-
-    testWidgets(
-      'scrolling away from the live edge stops the follow and offers a way '
-      'back',
-      (tester) async {
-        Future<void> frames(int count) async {
-          for (var i = 0; i < count; i++) {
-            await tester.pump(const Duration(milliseconds: 20));
-          }
-        }
-
-        await tester.pumpWidget(
-          _wrap(
-            BeuiCodeBlock(
-              code: longCode(60),
-              maxHeight: 120,
-              status: BeuiCodeBlockStatus.streaming,
-            ),
+    testWidgets('the follow contract', (tester) async {
+      await runFollowContract(
+        tester,
+        rootType: BeuiCodeBlock,
+        growLineCount: 90,
+        build: ({required lineCount, required streaming}) => _wrap(
+          BeuiCodeBlock(
+            code: longCode(lineCount),
+            maxHeight: 120,
+            status: streaming
+                ? BeuiCodeBlockStatus.streaming
+                : BeuiCodeBlockStatus.complete,
           ),
-        );
-        await frames(20);
-        expect(find.text('Jump to latest'), findsNothing);
-
-        final controller = tester
-            .widget<SingleChildScrollView>(
-              find
-                  .descendant(
-                    of: find.byType(BeuiCodeBlock),
-                    matching: find.byWidgetPredicate(
-                      (w) =>
-                          w is SingleChildScrollView &&
-                          w.scrollDirection == Axis.vertical &&
-                          w.controller != null,
-                    ),
-                  )
-                  .first,
-            )
-            .controller!;
-
-        controller.jumpTo(controller.position.maxScrollExtent - 200);
-        await frames(20);
-        expect(find.text('Jump to latest'), findsOneWidget);
-        final pinnedAt = controller.offset;
-
-        // The stream keeps writing; the reader keeps their place.
-        await tester.pumpWidget(
-          _wrap(
-            BeuiCodeBlock(
-              code: longCode(90),
-              maxHeight: 120,
-              status: BeuiCodeBlockStatus.streaming,
-            ),
-          ),
-        );
-        await frames(20);
-        expect(controller.offset, closeTo(pinnedAt, 1));
-
-        await tester.tap(find.text('Jump to latest'));
-        await frames(30);
-        expect(
-          controller.offset,
-          closeTo(controller.position.maxScrollExtent, 1),
-        );
-        expect(find.text('Jump to latest'), findsNothing);
-      },
-    );
+        ),
+      );
+    });
   });
 
   group('BeuiCodeBlock shared highlighter', () {
