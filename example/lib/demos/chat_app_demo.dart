@@ -158,9 +158,9 @@ class _AddedMessage {
   String content;
   bool streaming;
 
-  /// Whether generation was stopped before this reply finished:
-  /// renders as [BeuiStreamingResponseStatus.stopped] with a real Continue
-  /// affordance instead of silently presenting a truncated answer as done.
+  /// Whether generation was stopped before this reply finished: renders as
+  /// [BeuiStreamingResponseStatus.stopped] with a real Continue affordance
+  /// instead of silently presenting a truncated answer as done.
   bool stopped = false;
 }
 
@@ -183,8 +183,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
   String? _activeReplyId;
   final List<_AddedMessage> _messages = [];
 
-  /// "Attach file" was an action the composer offered and then swallowed.
-  /// The demo now owns real attachment state so the chip row, its upload
+  /// Real attachment state for "Attach file", so the chip row, its upload
   /// progress, removal and retry are all reachable from the gallery.
   List<BeuiPromptAttachment> _attachments = const [];
   final List<Timer> _uploadTimers = [];
@@ -356,8 +355,8 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
           content: value,
         ),
       );
-      // The assistant turn is created *now*, empty and streaming, rather
-      // than after the think delay. Its typing indicator is the streaming
+      // The assistant turn is created now, empty and streaming, rather than
+      // after the think delay. Its typing indicator is the streaming
       // response's own `placeholder`, so it cross-fades into the first token
       // instead of a separate shimmer row unmounting and a blank bubble
       // taking its place — the pattern agents_chat_preview already uses.
@@ -499,7 +498,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
     _approvalStatus = BeuiApprovalCardStatus.pending;
   }
 
-  /// Handles the three sidebar nav buttons — each selects a distinct,
+  /// Handles the three sidebar nav buttons (C33) — each selects a distinct,
   /// visibly different state the demo already holds rather than a no-op.
   void _selectNav(_SidebarNav nav) {
     setState(() {
@@ -730,403 +729,401 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
           child: BeuiMessageGroup(
             spacing: BeuiMessageSpacing.standard,
             children: [
-              // User prompt
-              BeuiMessage(
-                from: BeuiMessageFrom.user,
-                children: [
-                  const BeuiMessageAvatar(child: Icon(LucideIcons.user)),
-                  BeuiMessageContent(
-                    children: [
-                      const BeuiMessageHeader(
-                        children: [Text('You'), Text('10:24')],
-                      ),
-                      BeuiMessageBubble(
-                        variant: BeuiMessageBubbleVariant.solid,
-                        child: BeuiMessageBubbleContent(
-                          child: const Text(
-                            'Audit the checkout flow, fix the validation gap, '
-                            'and prepare a release-ready patch.',
-                            style: TextStyle(fontSize: 14, height: 1.45),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              // Activity + plan
-              BeuiMessage(
-                from: BeuiMessageFrom.assistant,
-                children: [
-                  const BeuiMessageAvatar(child: Icon(LucideIcons.bot)),
-                  BeuiMessageContent(
-                    children: [
-                      const BeuiMessageHeader(
-                        children: [Text('beUI Agent'), Text('10:24')],
-                      ),
-                      BeuiAgentActivity(
-                        status: BeuiAgentActivityStatus.complete,
-                        duration: 6,
-                        defaultOpen: true,
-                        collapseOnComplete: false,
-                        items: const [
-                          BeuiAgentActivityText(
-                            id: 'reason',
-                            content:
-                                'Tracing the checkout submission path and validation boundary.',
-                          ),
-                          BeuiAgentActivityTool(
-                            id: 'read',
-                            action: 'read',
-                            target: 'checkout/submit.ts',
-                          ),
-                          BeuiAgentActivitySearch(
-                            id: 'search',
-                            query: 'order validation failures',
-                            results: [
-                              BeuiAgentSearchResult(
-                                id: 'result-1',
-                                title: 'Validation contract',
-                                domain: 'docs.beui.dev',
-                                url: '/docs/validation',
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      BeuiTodoList(
-                        items: _plan,
-                        title: const Text('Release plan'),
-                        collapseOnComplete: false,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              // Tool approval
-              BeuiMessage(
-                from: BeuiMessageFrom.assistant,
-                children: [
-                  const BeuiMessageAvatar(placeholder: true),
-                  BeuiMessageContent(
-                    children: [
-                      BeuiToolApproval(
-                        tool: 'terminal.run',
-                        title: 'Run focused checkout checks?',
-                        description:
-                            'The agent needs permission to run the validation '
-                            'and accessibility suites.',
-                        status: _toolStatus,
-                        defaultOpen: true,
-                        parameters: const [
-                          BeuiToolApprovalParameter(
-                            id: 'command',
-                            label: 'Command',
-                            value: BeuiToolApprovalCode(
-                              code: 'bun test checkout --coverage',
-                              language: BeuiCodeLanguage.bash,
-                            ),
-                          ),
-                          BeuiToolApprovalParameter(
-                            id: 'scope',
-                            label: 'Scope',
-                            value: 'Current workspace',
-                          ),
-                        ],
-                        onApprove: _approveTool,
-                        onAlwaysAllow: _approveTool,
-                        onDeny: () {
-                          _clearToolTimers();
-                          setState(
-                            () => _toolStatus = BeuiToolApprovalStatus.denied,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              // Tool result + diff + code (when running/complete)
+              _userPrompt(),
+              _activityAndPlan(),
+              _toolApprovalTurn(),
               if (_toolStatus == BeuiToolApprovalStatus.running ||
-                  _toolStatus == BeuiToolApprovalStatus.complete)
-                BeuiMessage(
-                  from: BeuiMessageFrom.assistant,
-                  children: [
-                    const BeuiMessageAvatar(placeholder: true),
-                    BeuiMessageContent(
-                      children: [
-                        BeuiToolResult(
-                          tool: 'terminal.run',
-                          title: _toolStatus == BeuiToolApprovalStatus.running
-                              ? 'Running checkout checks'
-                              : 'Checkout checks passed',
-                          status: _toolStatus == BeuiToolApprovalStatus.running
-                              ? BeuiToolResultStatus.running
-                              : BeuiToolResultStatus.success,
-                          kind: BeuiToolResultKind.terminal,
-                          meta: _toolStatus == BeuiToolApprovalStatus.running
-                              ? 'Live'
-                              : '2.8s',
-                          defaultOpen: true,
-                          collapseOnComplete: false,
-                          child: BeuiToolResultOutput(
-                            code: _toolStatus == BeuiToolApprovalStatus.running
-                                ? '✓ validation contract\n… checkout keyboard flow'
-                                : '✓ validation contract\n'
-                                      '✓ checkout keyboard flow\n'
-                                      '✓ order submission recovery',
-                          ),
-                        ),
-                        if (_toolStatus == BeuiToolApprovalStatus.complete) ...[
-                          const BeuiFileDiff(
-                            file: 'checkout/submit.ts',
-                            lines: _diffLines,
-                            status: BeuiFileDiffStatus.complete,
-                            defaultOpen: true,
-                            collapseOnComplete: false,
-                          ),
-                          const BeuiCodeBlock(
-                            filename: 'validation.ts',
-                            language: BeuiCodeLanguage.typescript,
-                            status: BeuiCodeBlockStatus.complete,
-                            code:
-                                'export function validateOrder(order: Order) {\n'
-                                '  return schema.safeParse(order);\n'
-                                '}',
-                            showLineNumbers: true,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ],
-                )
-              else if (_toolStatus == BeuiToolApprovalStatus.denied ||
+                  _toolStatus == BeuiToolApprovalStatus.complete ||
+                  _toolStatus == BeuiToolApprovalStatus.denied ||
                   _toolStatus == BeuiToolApprovalStatus.error)
-                BeuiMessage(
-                  from: BeuiMessageFrom.assistant,
-                  children: [
-                    const BeuiMessageAvatar(placeholder: true),
-                    BeuiMessageContent(
-                      children: [
-                        BeuiToolResult(
-                          tool: 'terminal.run',
-                          title: 'Checkout checks were not run',
-                          status: _toolStatus == BeuiToolApprovalStatus.denied
-                              ? BeuiToolResultStatus.cancelled
-                              : BeuiToolResultStatus.error,
-                          kind: BeuiToolResultKind.terminal,
-                          defaultOpen: true,
-                          collapseOnComplete: false,
-                          child: BeuiToolResultOutput(
-                            code: _toolStatus == BeuiToolApprovalStatus.denied
-                                ? 'Permission was not granted. No command was run.'
-                                : 'The command could not be completed.',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-              // Image + streaming summary + sources
-              if (_toolStatus == BeuiToolApprovalStatus.complete)
-                BeuiMessage(
-                  from: BeuiMessageFrom.assistant,
-                  children: [
-                    const BeuiMessageAvatar(placeholder: true),
-                    BeuiMessageContent(
-                      children: [
-                        BeuiImageGeneration(
-                          status: BeuiImageGenerationStatus.complete,
-                          prompt: 'a clear checkout confirmation screen',
-                          resolution: '1280 × 840',
-                          size: BeuiImageGenerationSize.compact,
-                          child: const _GeneratedPreview(),
-                        ),
-                        BeuiMessageBubble(
-                          variant: BeuiMessageBubbleVariant.ghost,
-                          child: BeuiMessageBubbleContent(
-                            maxWidthFactor: 1,
-                            child: BeuiStreamingResponse(
-                              status: BeuiStreamingResponseStatus.complete,
-                              copyText:
-                                  'The checkout patch is ready for review.',
-                              sources: const [
-                                BeuiCitationItem(
-                                  id: 'message',
-                                  title: Text('Message composition'),
-                                  domain: Text('beui.dev'),
-                                  url: '/components/agents/message',
-                                ),
-                                BeuiCitationItem(
-                                  id: 'diff',
-                                  title: Text('File Diff'),
-                                  domain: Text('beui.dev'),
-                                  url: '/components/agents/file-diff',
-                                ),
-                                BeuiCitationItem(
-                                  id: 'approval',
-                                  title: Text('Tool Approval'),
-                                  domain: Text('beui.dev'),
-                                  url: '/components/agents/tool-approval',
-                                ),
-                              ],
-                              child: DefaultTextStyle.merge(
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  height: 1.5,
-                                  color: Theme.of(
-                                    context,
-                                  ).extension<BeuiColors>()!.foreground,
-                                ),
-                                child: const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'The checkout patch is ready for review.',
-                                    ),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      '• Validation now runs before submission.',
-                                    ),
-                                    Text(
-                                      '• Failure output stays inside the current flow.',
-                                    ),
-                                    Text(
-                                      '• Focused checks pass without changing the layout.',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-              // Release approval
-              if (_toolStatus == BeuiToolApprovalStatus.complete)
-                BeuiMessage(
-                  from: BeuiMessageFrom.assistant,
-                  children: [
-                    const BeuiMessageAvatar(placeholder: true),
-                    BeuiMessageContent(
-                      children: [
-                        BeuiApprovalCard(
-                          questions: _approvalQuestions,
-                          status: _approvalStatus,
-                          onSubmit: (_) {
-                            setState(
-                              () => _approvalStatus =
-                                  BeuiApprovalCardStatus.submitting,
-                            );
-                            _clearApprovalTimers();
-                            _approvalTimers.add(
-                              Timer(const Duration(milliseconds: 650), () {
-                                if (mounted) {
-                                  setState(
-                                    () => _approvalStatus =
-                                        BeuiApprovalCardStatus.answered,
-                                  );
-                                }
-                              }),
-                            );
-                          },
-                          result: const Text(
-                            'Release direction sent to the agent.',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-              // Live chat turns
-              for (final message in _messages)
-                BeuiMessage(
-                  key: ValueKey(message.id),
-                  from: message.from,
-                  children: [
-                    BeuiMessageAvatar(
-                      child: Icon(
-                        message.from == BeuiMessageFrom.assistant
-                            ? LucideIcons.bot
-                            : LucideIcons.user,
-                      ),
-                    ),
-                    BeuiMessageContent(
-                      children: [
-                        if (message.from == BeuiMessageFrom.assistant)
-                          const BeuiMessageHeader(
-                            children: [Text('beUI Agent'), Text('Now')],
-                          ),
-                        BeuiMessageBubble(
-                          variant: message.from == BeuiMessageFrom.user
-                              ? BeuiMessageBubbleVariant.solid
-                              : BeuiMessageBubbleVariant.soft,
-                          child: BeuiMessageBubbleContent(
-                            child: message.from == BeuiMessageFrom.assistant
-                                ? BeuiStreamingResponse(
-                                    status: message.streaming
-                                        ? BeuiStreamingResponseStatus.streaming
-                                        : message.stopped
-                                        ? BeuiStreamingResponseStatus.stopped
-                                        : BeuiStreamingResponseStatus.complete,
-                                    showActions: !message.streaming,
-                                    copyText: message.content,
-                                    onContinue: message.stopped
-                                        ? () => _continueStream(message.id)
-                                        : null,
-                                    stoppedMessage:
-                                        'Response stopped before it finished.',
-                                    continueLabel: 'Continue generating',
-                                    // The scroller owns the transcript's
-                                    // live region; without this it had nothing
-                                    // to announce and a screen-reader user
-                                    // heard the whole reply as silence.
-                                    announceText: message.content,
-                                    // One indicator identity — the dots
-                                    // are this response's placeholder and
-                                    // cross-fade into the first token.
-                                    placeholder: const BeuiMessageTyping(),
-                                    hasContent: message.content.isNotEmpty,
-                                    child: Text(
-                                      message.content,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        height: 1.45,
-                                        color: Theme.of(
-                                          context,
-                                        ).extension<BeuiColors>()!.foreground,
-                                      ),
-                                    ),
-                                  )
-                                : Text(
-                                    message.content,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      height: 1.45,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                        if (message.from == BeuiMessageFrom.user)
-                          const BeuiMessageFooter(children: [Text('Sent')]),
-                      ],
-                    ),
-                  ],
-                ),
+                _toolResultTurn(),
+              if (_toolStatus == BeuiToolApprovalStatus.complete) ...[
+                _mediaTurn(),
+                _releaseApproval(),
+              ],
+              ..._liveTurns(),
             ],
           ),
         ),
       ),
     );
   }
+
+  /// The user's opening request.
+  Widget _userPrompt() => BeuiMessage(
+    from: BeuiMessageFrom.user,
+    children: [
+      const BeuiMessageAvatar(child: Icon(LucideIcons.user)),
+      BeuiMessageContent(
+        children: [
+          const BeuiMessageHeader(children: [Text('You'), Text('10:24')]),
+          BeuiMessageBubble(
+            variant: BeuiMessageBubbleVariant.solid,
+            child: BeuiMessageBubbleContent(
+              child: const Text(
+                'Audit the checkout flow, fix the validation gap, '
+                'and prepare a release-ready patch.',
+                style: TextStyle(fontSize: 14, height: 1.45),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+
+  /// The agent's reasoning/search/tool trace plus its release plan.
+  Widget _activityAndPlan() => BeuiMessage(
+    from: BeuiMessageFrom.assistant,
+    children: [
+      const BeuiMessageAvatar(child: Icon(LucideIcons.bot)),
+      BeuiMessageContent(
+        children: [
+          const BeuiMessageHeader(
+            children: [Text('beUI Agent'), Text('10:24')],
+          ),
+          BeuiAgentActivity(
+            status: BeuiAgentActivityStatus.complete,
+            duration: 6,
+            defaultOpen: true,
+            collapseOnComplete: false,
+            items: const [
+              BeuiAgentActivityText(
+                id: 'reason',
+                content:
+                    'Tracing the checkout submission path and validation boundary.',
+              ),
+              BeuiAgentActivityTool(
+                id: 'read',
+                action: 'read',
+                target: 'checkout/submit.ts',
+              ),
+              BeuiAgentActivitySearch(
+                id: 'search',
+                query: 'order validation failures',
+                results: [
+                  BeuiAgentSearchResult(
+                    id: 'result-1',
+                    title: 'Validation contract',
+                    domain: 'docs.beui.dev',
+                    url: '/docs/validation',
+                  ),
+                ],
+              ),
+            ],
+          ),
+          BeuiTodoList(
+            items: _plan,
+            title: const Text('Release plan'),
+            collapseOnComplete: false,
+          ),
+        ],
+      ),
+    ],
+  );
+
+  /// The permission request for the checkout test suite.
+  Widget _toolApprovalTurn() => BeuiMessage(
+    from: BeuiMessageFrom.assistant,
+    children: [
+      const BeuiMessageAvatar(placeholder: true),
+      BeuiMessageContent(
+        children: [
+          BeuiToolApproval(
+            tool: 'terminal.run',
+            title: 'Run focused checkout checks?',
+            description:
+                'The agent needs permission to run the validation '
+                'and accessibility suites.',
+            status: _toolStatus,
+            defaultOpen: true,
+            parameters: const [
+              BeuiToolApprovalParameter(
+                id: 'command',
+                label: 'Command',
+                value: BeuiToolApprovalCode(
+                  code: 'bun test checkout --coverage',
+                  language: BeuiCodeLanguage.bash,
+                ),
+              ),
+              BeuiToolApprovalParameter(
+                id: 'scope',
+                label: 'Scope',
+                value: 'Current workspace',
+              ),
+            ],
+            onApprove: _approveTool,
+            onAlwaysAllow: _approveTool,
+            onDeny: () {
+              _clearToolTimers();
+              setState(() => _toolStatus = BeuiToolApprovalStatus.denied);
+            },
+          ),
+        ],
+      ),
+    ],
+  );
+
+  /// The checkout-checks run: live/passed output plus the resulting diff and
+  /// code once complete, or the reason nothing ran when denied/errored.
+  Widget _toolResultTurn() {
+    final running = _toolStatus == BeuiToolApprovalStatus.running;
+    final complete = _toolStatus == BeuiToolApprovalStatus.complete;
+    if (running || complete) {
+      return BeuiMessage(
+        from: BeuiMessageFrom.assistant,
+        children: [
+          const BeuiMessageAvatar(placeholder: true),
+          BeuiMessageContent(
+            children: [
+              BeuiToolResult(
+                tool: 'terminal.run',
+                title: running
+                    ? 'Running checkout checks'
+                    : 'Checkout checks passed',
+                status: running
+                    ? BeuiToolResultStatus.running
+                    : BeuiToolResultStatus.success,
+                kind: BeuiToolResultKind.terminal,
+                meta: running ? 'Live' : '2.8s',
+                defaultOpen: true,
+                collapseOnComplete: false,
+                child: BeuiToolResultOutput(
+                  code: running
+                      ? '✓ validation contract\n… checkout keyboard flow'
+                      : '✓ validation contract\n'
+                            '✓ checkout keyboard flow\n'
+                            '✓ order submission recovery',
+                ),
+              ),
+              if (complete) ...[
+                const BeuiFileDiff(
+                  file: 'checkout/submit.ts',
+                  lines: _diffLines,
+                  status: BeuiFileDiffStatus.complete,
+                  defaultOpen: true,
+                  collapseOnComplete: false,
+                ),
+                const BeuiCodeBlock(
+                  filename: 'validation.ts',
+                  language: BeuiCodeLanguage.typescript,
+                  status: BeuiCodeBlockStatus.complete,
+                  code:
+                      'export function validateOrder(order: Order) {\n'
+                      '  return schema.safeParse(order);\n'
+                      '}',
+                  showLineNumbers: true,
+                ),
+              ],
+            ],
+          ),
+        ],
+      );
+    }
+    return BeuiMessage(
+      from: BeuiMessageFrom.assistant,
+      children: [
+        const BeuiMessageAvatar(placeholder: true),
+        BeuiMessageContent(
+          children: [
+            BeuiToolResult(
+              tool: 'terminal.run',
+              title: 'Checkout checks were not run',
+              status: _toolStatus == BeuiToolApprovalStatus.denied
+                  ? BeuiToolResultStatus.cancelled
+                  : BeuiToolResultStatus.error,
+              kind: BeuiToolResultKind.terminal,
+              defaultOpen: true,
+              collapseOnComplete: false,
+              child: BeuiToolResultOutput(
+                code: _toolStatus == BeuiToolApprovalStatus.denied
+                    ? 'Permission was not granted. No command was run.'
+                    : 'The command could not be completed.',
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// The generated confirmation-screen image plus the streaming summary and
+  /// its sources.
+  Widget _mediaTurn() => BeuiMessage(
+    from: BeuiMessageFrom.assistant,
+    children: [
+      const BeuiMessageAvatar(placeholder: true),
+      BeuiMessageContent(
+        children: [
+          BeuiImageGeneration(
+            status: BeuiImageGenerationStatus.complete,
+            prompt: 'a clear checkout confirmation screen',
+            resolution: '1280 × 840',
+            size: BeuiImageGenerationSize.compact,
+            child: const _GeneratedPreview(),
+          ),
+          BeuiMessageBubble(
+            variant: BeuiMessageBubbleVariant.ghost,
+            child: BeuiMessageBubbleContent(
+              maxWidthFactor: 1,
+              child: BeuiStreamingResponse(
+                status: BeuiStreamingResponseStatus.complete,
+                copyText: 'The checkout patch is ready for review.',
+                sources: const [
+                  BeuiCitationItem(
+                    id: 'message',
+                    title: Text('Message composition'),
+                    domain: Text('beui.dev'),
+                    url: '/components/agents/message',
+                  ),
+                  BeuiCitationItem(
+                    id: 'diff',
+                    title: Text('File Diff'),
+                    domain: Text('beui.dev'),
+                    url: '/components/agents/file-diff',
+                  ),
+                  BeuiCitationItem(
+                    id: 'approval',
+                    title: Text('Tool Approval'),
+                    domain: Text('beui.dev'),
+                    url: '/components/agents/tool-approval',
+                  ),
+                ],
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: Theme.of(
+                      context,
+                    ).extension<BeuiColors>()!.foreground,
+                  ),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('The checkout patch is ready for review.'),
+                      SizedBox(height: 8),
+                      Text('• Validation now runs before submission.'),
+                      Text('• Failure output stays inside the current flow.'),
+                      Text(
+                        '• Focused checks pass without changing the layout.',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+
+  /// The final release-direction approval card.
+  Widget _releaseApproval() => BeuiMessage(
+    from: BeuiMessageFrom.assistant,
+    children: [
+      const BeuiMessageAvatar(placeholder: true),
+      BeuiMessageContent(
+        children: [
+          BeuiApprovalCard(
+            questions: _approvalQuestions,
+            status: _approvalStatus,
+            onSubmit: (_) {
+              setState(
+                () => _approvalStatus = BeuiApprovalCardStatus.submitting,
+              );
+              _clearApprovalTimers();
+              _approvalTimers.add(
+                Timer(const Duration(milliseconds: 650), () {
+                  if (mounted) {
+                    setState(
+                      () => _approvalStatus = BeuiApprovalCardStatus.answered,
+                    );
+                  }
+                }),
+              );
+            },
+            result: const Text('Release direction sent to the agent.'),
+          ),
+        ],
+      ),
+    ],
+  );
+
+  /// The user-driven turns typed into the composer below.
+  List<Widget> _liveTurns() => [
+    for (final message in _messages)
+      BeuiMessage(
+        key: ValueKey(message.id),
+        from: message.from,
+        children: [
+          BeuiMessageAvatar(
+            child: Icon(
+              message.from == BeuiMessageFrom.assistant
+                  ? LucideIcons.bot
+                  : LucideIcons.user,
+            ),
+          ),
+          BeuiMessageContent(
+            children: [
+              if (message.from == BeuiMessageFrom.assistant)
+                const BeuiMessageHeader(
+                  children: [Text('beUI Agent'), Text('Now')],
+                ),
+              BeuiMessageBubble(
+                variant: message.from == BeuiMessageFrom.user
+                    ? BeuiMessageBubbleVariant.solid
+                    : BeuiMessageBubbleVariant.soft,
+                child: BeuiMessageBubbleContent(
+                  child: message.from == BeuiMessageFrom.assistant
+                      ? BeuiStreamingResponse(
+                          status: message.streaming
+                              ? BeuiStreamingResponseStatus.streaming
+                              : message.stopped
+                              ? BeuiStreamingResponseStatus.stopped
+                              : BeuiStreamingResponseStatus.complete,
+                          showActions: !message.streaming,
+                          copyText: message.content,
+                          onContinue: message.stopped
+                              ? () => _continueStream(message.id)
+                              : null,
+                          stoppedMessage:
+                              'Response stopped before it finished.',
+                          continueLabel: 'Continue generating',
+                          // The scroller owns the transcript's live region;
+                          // without this it has nothing to announce and a
+                          // screen-reader user hears the whole reply as
+                          // silence.
+                          announceText: message.content,
+                          // One indicator identity — the dots are this
+                          // response's placeholder and cross-fade into the
+                          // first token.
+                          placeholder: const BeuiMessageTyping(),
+                          hasContent: message.content.isNotEmpty,
+                          child: Text(
+                            message.content,
+                            style: TextStyle(
+                              fontSize: 14,
+                              height: 1.45,
+                              color: Theme.of(
+                                context,
+                              ).extension<BeuiColors>()!.foreground,
+                            ),
+                          ),
+                        )
+                      : Text(
+                          message.content,
+                          style: const TextStyle(fontSize: 14, height: 1.45),
+                        ),
+                ),
+              ),
+              if (message.from == BeuiMessageFrom.user)
+                const BeuiMessageFooter(children: [Text('Sent')]),
+            ],
+          ),
+        ],
+      ),
+  ];
 
   Widget _buildPrompt() {
     return Padding(
