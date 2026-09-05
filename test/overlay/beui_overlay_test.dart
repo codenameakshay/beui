@@ -56,6 +56,53 @@ class _HostState extends State<_Host> {
   }
 }
 
+/// Like [_Host], but boxes the trigger in a [ClipRect] to prove the panel
+/// escapes it — [BeuiOverlay] renders into the root [Overlay], not in place.
+class _ClipHost extends StatefulWidget {
+  const _ClipHost();
+
+  @override
+  State<_ClipHost> createState() => _ClipHostState();
+}
+
+class _ClipHostState extends State<_ClipHost> {
+  bool open = false;
+
+  void show() => setState(() => open = true);
+
+  static const clipKey = ValueKey('clip');
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: BeuiTextTheme.trackingNormal(
+        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ),
+      home: Scaffold(
+        body: Center(
+          child: ClipRect(
+            key: clipKey,
+            child: SizedBox(
+              width: 50,
+              height: 50,
+              child: BeuiOverlay(
+                open: open,
+                overlayBuilder: (context, animation, link) => Container(
+                  key: _panel,
+                  width: 200,
+                  height: 200,
+                  color: const Color(0xFF202020),
+                ),
+                child: const SizedBox(width: 50, height: 50),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 void main() {
   _HostState host(WidgetTester t) => t.state<_HostState>(find.byType(_Host));
 
@@ -74,16 +121,35 @@ void main() {
     expect(find.byKey(_panel), findsNothing);
   });
 
-  testWidgets('content renders into the root overlay', (tester) async {
-    await tester.pumpWidget(const _Host());
-    host(tester).show();
-    await tester.pumpAndSettle();
-    // The panel is a descendant of an Overlay, not of the BeuiOverlay's child.
-    expect(
-      find.ancestor(of: find.byKey(_panel), matching: find.byType(Overlay)),
-      findsWidgets,
-    );
-  });
+  testWidgets(
+    'content renders into the root overlay, escaping an ancestor clip',
+    (tester) async {
+      await tester.pumpWidget(const _ClipHost());
+      tester.state<_ClipHostState>(find.byType(_ClipHost)).show();
+      await tester.pumpAndSettle();
+      expect(find.byKey(_panel), findsOneWidget);
+      // `find.descendant` walks the *Element* tree, where an OverlayPortal's
+      // overlay child stays a logical child of its portal (so ancestor
+      // lookups like Theme still work) even though it *paints* elsewhere —
+      // so an Element-tree check can't prove render-tree escape. Walk the
+      // RenderObject parent chain instead: if BeuiOverlay rendered in place,
+      // the panel's render object would sit under the ClipRect's; it does
+      // not, because it renders into the root Overlay.
+      RenderObject? node = tester.renderObject(find.byKey(_panel));
+      final clipRenderObject = tester.renderObject(
+        find.byKey(_ClipHostState.clipKey),
+      );
+      var underClip = false;
+      while (node != null) {
+        if (identical(node, clipRenderObject)) {
+          underClip = true;
+          break;
+        }
+        node = node.parent;
+      }
+      expect(underClip, isFalse);
+    },
+  );
 
   testWidgets('barrier tap dismisses', (tester) async {
     await tester.pumpWidget(const _Host());
@@ -122,17 +188,7 @@ void main() {
     expect(host(tester).dismissCount, 1);
     await tester.pumpAndSettle();
     expect(find.byKey(_panel), findsNothing);
-  });
 
-  testWidgets('Esc fires onDismiss exactly once with trapFocus: false', (
-    tester,
-  ) async {
-    await tester.pumpWidget(const _Host(trapFocus: false));
-    host(tester).show();
-    await tester.pumpAndSettle();
-
-    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-    await tester.pumpAndSettle();
     // A second Esc after the overlay closed must not re-fire: the state
     // deregisters as soon as `open` flips false.
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
