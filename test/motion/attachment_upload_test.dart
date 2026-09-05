@@ -1,7 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// A 1×1 transparent PNG — enough to give an image row a real [ImageProvider]
@@ -724,6 +723,23 @@ void main() {
       await tester.drag(scrubber, const Offset(30, 0));
       await tester.pump();
       expect(seeks, isNotEmpty);
+
+      // Arrow keys step the playhead too, for anyone not using a pointer.
+      final gestureCtx = tester.element(
+        find.descendant(of: scrubber, matching: find.byType(GestureDetector)),
+      );
+      Focus.of(gestureCtx).requestFocus();
+      await tester.pump();
+
+      seeks.clear();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pump();
+      expect(seeks, hasLength(1));
+
+      seeks.clear();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await tester.pump();
+      expect(seeks, hasLength(1));
     });
 
     testWidgets('the scrubber reports itself as a slider with a position', (
