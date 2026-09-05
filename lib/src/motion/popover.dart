@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter, lerpDouble;
 
@@ -151,8 +152,14 @@ class _BeuiPopoverState extends State<BeuiPopover> {
     _internalOpen = widget.defaultOpen;
   }
 
+  /// Cancellable, so re-hovering inside the delay (or disposing mid-delay)
+  /// doesn't leave a stale close still pending. See the note in
+  /// `message_bubble.dart`'s `_ContentRevealState._delay`.
+  Timer? _closeTimer;
+
   @override
   void dispose() {
+    _closeTimer?.cancel();
     _focusNode.dispose();
     super.dispose();
   }
@@ -179,6 +186,12 @@ class _BeuiPopoverState extends State<BeuiPopover> {
   }
 
   void _setOpen(bool next) {
+    // Re-hovering (or refocusing) inside the close delay cancels it — a
+    // pointer that dips out and back in should never see the panel close.
+    if (next) {
+      _closeTimer?.cancel();
+      _closeTimer = null;
+    }
     final was = _open;
     if (widget.open == null) {
       setState(() => _internalOpen = next);
@@ -334,7 +347,8 @@ class _BeuiPopoverState extends State<BeuiPopover> {
   }
 
   void _scheduleClose() {
-    Future<void>.delayed(const Duration(milliseconds: _hoverCloseDelayMs), () {
+    _closeTimer?.cancel();
+    _closeTimer = Timer(const Duration(milliseconds: _hoverCloseDelayMs), () {
       if (mounted && widget.trigger == BeuiPopoverTrigger.hover) {
         _setOpen(false);
       }
