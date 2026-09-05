@@ -5,6 +5,7 @@
 // Navigator, so the sidebar and top bar stay put exactly like the site.
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'catalog.dart';
@@ -114,46 +115,54 @@ class _ExplorerShellState extends State<ExplorerShell> {
     return ExplorerController(
       route: _route,
       go: _go,
-      child: Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: colors.background,
-        drawer: showSidebar
-            ? null
-            : Drawer(
-                backgroundColor: colors.background,
-                width: ExplorerMetrics.sidebar,
-                child: SafeArea(child: ExplorerSidebar(route: _route)),
+      child: CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.keyK, meta: true): () =>
+              showExplorerSearch(context),
+          const SingleActivator(LogicalKeyboardKey.keyK, control: true): () =>
+              showExplorerSearch(context),
+        },
+        child: Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: colors.background,
+          drawer: showSidebar
+              ? null
+              : Drawer(
+                  backgroundColor: colors.background,
+                  width: ExplorerMetrics.sidebar,
+                  child: SafeArea(child: ExplorerSidebar(route: _route)),
+                ),
+          body: Column(
+            children: [
+              ExplorerTopBar(
+                route: _route,
+                showMenuButton: !showSidebar,
+                onMenu: () => _scaffoldKey.currentState?.openDrawer(),
               ),
-        body: Column(
-          children: [
-            ExplorerTopBar(
-              route: _route,
-              showMenuButton: !showSidebar,
-              onMenu: () => _scaffoldKey.currentState?.openDrawer(),
-            ),
-            Divider(height: 1, thickness: 1, color: colors.border),
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (showSidebar) ...[
-                    SizedBox(
-                      width: ExplorerMetrics.sidebar,
-                      child: ExplorerSidebar(route: _route),
-                    ),
-                    VerticalDivider(
-                      width: 1,
-                      thickness: 1,
-                      color: colors.border,
+              Divider(height: 1, thickness: 1, color: colors.border),
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (showSidebar) ...[
+                      SizedBox(
+                        width: ExplorerMetrics.sidebar,
+                        child: ExplorerSidebar(route: _route),
+                      ),
+                      VerticalDivider(
+                        width: 1,
+                        thickness: 1,
+                        color: colors.border,
+                      ),
+                    ],
+                    Expanded(
+                      child: _Content(route: _route, scroll: _contentScroll),
                     ),
                   ],
-                  Expanded(
-                    child: _Content(route: _route, scroll: _contentScroll),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

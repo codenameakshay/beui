@@ -125,11 +125,14 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
       74,
       Paint()..color = const Color(0x33FFFFFF),
     );
-    final image = await recorder.endRecording().toImage(
+    final picture = recorder.endRecording();
+    final image = await picture.toImage(
       size.width.round(),
       size.height.round(),
     );
+    picture.dispose();
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    image.dispose();
     if (bytes == null || !mounted) return;
     final provider = MemoryImage(bytes.buffer.asUint8List());
     setState(() {
@@ -184,6 +187,7 @@ class _AttachmentUploadSectionState extends State<_AttachmentUploadSection> {
         name: template.name,
         kind: template.kind,
         size: template.size,
+        href: template.href,
         preview: template.preview,
         currentTime: template.currentTime,
         duration: template.duration,

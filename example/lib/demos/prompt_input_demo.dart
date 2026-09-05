@@ -92,9 +92,22 @@ class _PromptInputDemoState extends State<_PromptInputDemo> {
   @override
   void initState() {
     super.initState();
-    // Creep the in-flight chip along so the determinate wash is visible.
-    _uploadTimer = Timer.periodic(const Duration(milliseconds: 700), (_) {
+    _startUploadTicker();
+  }
+
+  /// Creeps in-flight chips along so the determinate wash is visible, and
+  /// stops itself once nothing is uploading.
+  void _startUploadTicker() {
+    _uploadTimer?.cancel();
+    _uploadTimer = Timer.periodic(const Duration(milliseconds: 700), (timer) {
       if (!mounted) return;
+      final uploading = _attachments.any(
+        (a) => a.status == BeuiPromptAttachmentStatus.uploading,
+      );
+      if (!uploading) {
+        timer.cancel();
+        return;
+      }
       setState(() {
         _attachments = [
           for (final a in _attachments)
@@ -197,6 +210,7 @@ class _PromptInputDemoState extends State<_PromptInputDemo> {
                   ];
                   _notice = 'Retrying ${a.name}.';
                   _sent = null;
+                  _startUploadTicker();
                 }),
                 onSubmitFull: _submit,
                 onSubmitBlocked: (reason) => setState(() {
