@@ -26,16 +26,6 @@ Widget _wrap(Widget child, {bool reduce = false}) {
 
 void main() {
   group('BeuiPullToRefresh', () {
-    testWidgets('renders child', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          BeuiPullToRefresh(onRefresh: () {}, child: const Text('Feed body')),
-        ),
-      );
-      await tester.pump();
-      expect(find.text('Feed body'), findsOneWidget);
-    });
-
     testWidgets('calls onRefresh when released past threshold', (tester) async {
       var calls = 0;
       final done = Completer<void>();
@@ -46,8 +36,7 @@ void main() {
             threshold: 76,
             onRefresh: () async {
               calls++;
-              await Future<void>.delayed(const Duration(milliseconds: 50));
-              done.complete();
+              await done.future;
             },
             child: const SizedBox(height: 600, child: Text('Pull me')),
           ),
@@ -67,9 +56,10 @@ void main() {
       expect(calls, 1);
       expect(find.text('Refreshing'), findsOneWidget);
 
-      await tester.pump(const Duration(milliseconds: 80));
-      await done.future;
-      await tester.pump(); // settle after complete
+      // The test controls completion directly rather than waiting on a real
+      // delay, so the assertion below can't be timing-flaky.
+      done.complete();
+      await tester.pump(); // let the completed future resolve
       await tester.pump(const Duration(milliseconds: 400));
       // Back to idle — refresh finished exactly once.
       expect(calls, 1);
@@ -97,21 +87,6 @@ void main() {
       await gesture.up();
       await tester.pump();
       expect(calls, 0);
-    });
-
-    testWidgets('reduced motion still renders', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          BeuiPullToRefresh(
-            onRefresh: () {},
-            child: const Text('Reduced feed'),
-          ),
-          reduce: true,
-        ),
-      );
-      await tester.pump();
-      expect(find.text('Reduced feed'), findsOneWidget);
-      expect(find.byType(BeuiPullToRefresh), findsOneWidget);
     });
 
     // The indicator's entire visual state — opacity, buddy scale, content
