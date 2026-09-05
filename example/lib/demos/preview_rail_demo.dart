@@ -89,14 +89,13 @@ const _items = <BeuiPreviewRailItem>[
   ),
 ];
 
+/// `highlightActive` defaults to true, anchoring the resting selection with a
+/// highlight tick even before the pointer arrives. On touch devices (no
+/// hover), the first tap on an inactive item previews it and a second tap
+/// commits the selection — mirroring the source's tap-to-preview,
+/// tap-again-to-select pattern.
 class _PreviewRailDemo extends StatelessWidget {
   const _PreviewRailDemo();
-
-  // `highlightActive` now defaults to true, anchoring the resting selection
-  // with a highlight tick even before the pointer arrives. On touch devices
-  // (no hover), the first tap on an inactive item previews it and a second
-  // tap commits the selection — mirroring the source's tap-to-preview,
-  // tap-again-to-select pattern.
 
   @override
   Widget build(BuildContext context) {
