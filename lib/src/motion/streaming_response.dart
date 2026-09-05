@@ -10,6 +10,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_chevron.dart';
 import '_disclosure.dart';
 import '_engine.dart';
 import '_focus_ring.dart';
@@ -1152,9 +1153,10 @@ class _SourcesToggleState extends State<_SourcesToggle> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      _Chevron(
+                      BeuiDisclosureChevron(
                         open: widget.open,
                         reduce: widget.reduce,
+                        size: 12,
                         // Full-strength token, not a 50% multiply of
                         // an already-muted foreground.
                         color: colors.mutedForeground,
@@ -1171,34 +1173,3 @@ class _SourcesToggleState extends State<_SourcesToggle> {
   }
 }
 
-class _Chevron extends StatelessWidget {
-  const _Chevron({
-    required this.open,
-    required this.reduce,
-    required this.color,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      BeuiAgentTheme.of(context).icons.expand,
-      size: 12,
-      color: color,
-    );
-    if (reduce) {
-      // Source: transition duration 0 under reduce → snap.
-      return Transform.rotate(angle: open ? math.pi : 0, child: icon);
-    }
-    return SingleMotionBuilder(
-      value: open ? 180.0 : 0.0,
-      motion: motionFor(context, beuiSpringSwap, isMovement: true),
-      builder: (context, deg, child) =>
-          Transform.rotate(angle: deg * math.pi / 180.0, child: child),
-      child: icon,
-    );
-  }
-}

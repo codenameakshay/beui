@@ -11,6 +11,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_chevron.dart';
 import '_disclosure.dart';
 import '_engine.dart';
 import '_hit_target.dart';
@@ -136,10 +137,9 @@ IconData _statusIcon(BeuiToolResultStatus status, BeuiAgentIcons icons) =>
 /// `github-*-high-contrast` themes the source builds its highlighter with. It
 /// is a deliberately **reduced** port: a small scanner, not a lexer.
 ///
-/// The body text is painted at full [BeuiColors.foreground]. It used to be
-/// alpha-multiplied to 0.8, which dimmed the one thing on the card the reader
-/// actually came for (the audit's A8 — never alpha-multiply
-/// information-bearing text).
+/// The body text is painted at full [BeuiColors.foreground] — never
+/// alpha-multiplied, since it is the one thing on the card the reader
+/// actually came for.
 class BeuiToolResultOutput extends StatelessWidget {
   /// Creates a soft-wrapped mono output block.
   const BeuiToolResultOutput({
@@ -366,11 +366,9 @@ class BeuiToolResult extends StatefulWidget {
   final bool collapseOnComplete;
 
   /// Keep Copy result / Run again mounted outside the collapsible panel, so
-  /// they survive [collapseOnComplete] (default true).
-  ///
-  /// The actions used to live *inside* the disclosure, which meant a run that
-  /// auto-collapsed on completion took its own copy button away at exactly the
-  /// moment the reader wanted it. Pass false to restore that layout.
+  /// they survive [collapseOnComplete] (default true) instead of vanishing
+  /// with the panel at the exact moment the reader wants them. Pass false to
+  /// nest the actions inside the panel instead.
   final bool keepActionsVisibleWhenCollapsed;
 
   /// Max viewport height in logical pixels (source `maxHeight`, default 220).
@@ -413,11 +411,10 @@ class BeuiToolResult extends StatefulWidget {
 
 class _BeuiToolResultState extends State<BeuiToolResult>
     with SingleTickerProviderStateMixin {
-  /// This viewport used to yank itself to the bottom on every streamed
-  /// chunk with no notion of a reader who had scrolled up — the last unpinned
-  /// streaming surface in the library. It now shares the code block's and the
-  /// diff's follower, so scrolling away pins the viewport and raises the same
-  /// "jump to latest" pill.
+  /// Shares the code block's and the diff's follower: scrolling away from the
+  /// bottom pins the viewport and raises the same "jump to latest" pill,
+  /// rather than yanking a reader who has scrolled up back down on every
+  /// streamed chunk.
   late final BeuiLiveEdgeFollower _follow;
 
   /// Keeps the scroll view's element (and therefore its [ScrollPosition])
@@ -730,7 +727,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       ],
     );
 
-    final chevron = _Chevron(
+    final chevron = BeuiDisclosureChevron(
       open: _currentOpen,
       reduce: reduce,
       color: colors.mutedForeground,
@@ -798,11 +795,10 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       );
     }
 
-    // A30 + A31 + keyboard: one merged node carrying the label, the button
-    // role, the expanded state, the tap action — and `liveRegion`, so a
-    // terminal outcome ("Failed", "Cancelled") is announced. The old code put
-    // `liveRegion` on the card and gated it on `running`, switching it off
-    // exactly when the outcome arrived.
+    // One merged node carrying the label, the button role, the expanded
+    // state, the tap action, and `liveRegion`, so a terminal outcome
+    // ("Failed", "Cancelled") is announced unconditionally rather than only
+    // while `running`.
     return MergeSemantics(
       child: Semantics(
         liveRegion: true,
@@ -833,6 +829,21 @@ class _BeuiToolResultState extends State<BeuiToolResult>
     );
   }
 
+  /// A swap-animated label: [text] wins over [custom] when both are given
+  /// (matching each caller's own field-pair contract), styled with [style].
+  Widget? _swapLabel(String? text, Widget? custom, TextStyle style) {
+    if (text != null) {
+      return BeuiActionSwapText(
+        value: text,
+        text: text,
+        variant: BeuiActionSwapVariant.roll,
+        style: style,
+      );
+    }
+    if (custom == null) return null;
+    return DefaultTextStyle.merge(style: style, child: custom);
+  }
+
   Widget _titleLabel(BeuiColors colors, BeuiAgentTheme agent) {
     // 14 / w500 — the assistant body role plus medium weight. Full foreground:
     // the title is the primary string on the header.
@@ -840,16 +851,8 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       fontWeight: FontWeight.w500,
       color: colors.foreground,
     );
-    final text = widget.title;
-    if (text != null) {
-      return BeuiActionSwapText(
-        value: text,
-        text: text,
-        variant: BeuiActionSwapVariant.roll,
-        style: style,
-      );
-    }
-    return DefaultTextStyle.merge(style: style, child: widget.titleWidget!);
+    // A widget always provides one of title / titleWidget.
+    return _swapLabel(widget.title, widget.titleWidget, style)!;
   }
 
   Widget? _metaLabel(BeuiColors colors, BeuiAgentTheme agent) {
@@ -857,36 +860,14 @@ class _BeuiToolResultState extends State<BeuiToolResult>
     final style = agent.typography.status.copyWith(
       color: colors.mutedForeground,
     );
-    final text = widget.meta;
-    if (text != null) {
-      return BeuiActionSwapText(
-        value: text,
-        text: text,
-        variant: BeuiActionSwapVariant.roll,
-        style: style,
-      );
-    }
-    final custom = widget.metaWidget;
-    if (custom == null) return null;
-    return DefaultTextStyle.merge(style: style, child: custom);
+    return _swapLabel(widget.meta, widget.metaWidget, style);
   }
 
   Widget? _toolLabel(BeuiColors colors, BeuiAgentTheme agent) {
     // The slug identifies *what ran*, so it gets the mono role at
     // full mutedForeground rather than 11px at `@0.55` (2.29:1).
     final style = agent.typography.mono.copyWith(color: colors.mutedForeground);
-    final text = widget.tool;
-    if (text != null) {
-      return BeuiActionSwapText(
-        value: text,
-        text: text,
-        variant: BeuiActionSwapVariant.roll,
-        style: style,
-      );
-    }
-    final custom = widget.toolWidget;
-    if (custom == null) return null;
-    return DefaultTextStyle.merge(style: style, child: custom);
+    return _swapLabel(widget.tool, widget.toolWidget, style);
   }
 
   // -------------------------------------------------------------------------
@@ -1125,37 +1106,6 @@ class _StatusGlyph extends StatelessWidget {
       return RotationTransition(turns: spin, child: icon);
     }
     return icon;
-  }
-}
-
-class _Chevron extends StatelessWidget {
-  const _Chevron({
-    required this.open,
-    required this.reduce,
-    required this.color,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      BeuiAgentTheme.of(context).icons.expand,
-      size: 14,
-      color: color,
-    );
-    if (reduce) {
-      return Transform.rotate(angle: open ? math.pi : 0, child: icon);
-    }
-    return SingleMotionBuilder(
-      value: open ? 180.0 : 0.0,
-      motion: motionFor(context, beuiSpringSwap, isMovement: true),
-      builder: (context, deg, child) =>
-          Transform.rotate(angle: deg * math.pi / 180.0, child: child),
-      child: icon,
-    );
   }
 }
 
