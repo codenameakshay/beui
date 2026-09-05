@@ -972,7 +972,7 @@ class _CollapsibleTriggerState extends State<_CollapsibleTrigger> {
               focused: _focused,
               borderRadius: agent.shapes.pill,
               child: SingleMotionBuilder(
-                value: (_pressed && !widget.reduce) ? 0.97 : 1.0, // C31
+                value: (_pressed && !widget.reduce) ? 0.97 : 1.0,
                 motion: motionFor(context, beuiSpringPress, isMovement: true),
                 builder: (context, scale, child) =>
                     Transform.scale(scale: scale, child: child),

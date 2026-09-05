@@ -908,7 +908,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       ),
     );
 
-    // A22 (a): a bottom fade over content that continues below the fold. Ported
+    // A bottom fade over content that continues below the fold. Ported
     // from `agent_activity.dart`'s mask. Only mounted while the viewport
     // actually overflows, so it costs a saveLayer only when it earns one —
     // never over a fully visible, syntax-highlighted body.
@@ -967,7 +967,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
         mainAxisSize: MainAxisSize.min,
         children: [
           viewport,
-          // A22 (b): say how much is hidden. A fade alone reads as a styling
+          // Say how much is hidden. A fade alone reads as a styling
           // choice; a count reads as content.
           if (_overflowing && hidden != null)
             Padding(

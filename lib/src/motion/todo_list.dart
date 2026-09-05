@@ -89,7 +89,7 @@ const _strikeRetractMotion = CurvedMotion(
 
 const _strikeDelay = Duration(milliseconds: 60);
 
-/// Header mark cross-fade in / out. A19 again: 280ms in, 180ms out.
+/// Header mark cross-fade in / out: 280ms in, 180ms out.
 const _headerMarkIn = Duration(milliseconds: 280);
 const _headerMarkOut = Duration(milliseconds: 180);
 
@@ -515,7 +515,7 @@ class _HeaderState extends State<_Header> {
   Widget build(BuildContext context) {
     final colors = widget.colors;
     final agent = widget.agent;
-    // Decorative chrome — the alpha stays (A8 covers information, not glyphs).
+    // Decorative chrome — the alpha stays (the alpha rule covers information, not glyphs).
     final chevronColor = (_hovered || _focused)
         ? colors.mutedForeground
         : colors.mutedForeground.withValues(alpha: 0.5);

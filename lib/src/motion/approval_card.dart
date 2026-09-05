@@ -413,7 +413,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
   bool get _expanded => widget.expanded ?? _internalExpanded;
   bool get _expandable => widget.expandedChild != null;
 
-  /// The A11 invariant, in one place: the header is a trigger only when there
+  /// The header-trigger invariant, in one place: the header is a trigger only when there
   /// is something to expand *and* the caller left the toggle on.
   bool get _headerIsTrigger => _expandable && widget.showExpandToggle;
 
@@ -604,7 +604,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
                     BeuiAgentDisclosureInternal(
                       open: _interactive,
                       reduce: reduce,
-                      // A4 — the double-fire fix. The disclosure gates hit
+                      // The double-fire fix. The disclosure gates hit
                       // testing on its *animated* value, so for the ~140ms the
                       // body spends collapsing after a decision it was still
                       // tappable: a fast double-tap on Approve fired
@@ -822,7 +822,7 @@ class _HeaderRow extends StatelessWidget {
                   colors: colors,
                   child: triggerArea,
                 )
-              // A11's other half: with no expandedChild (or the toggle turned
+              // The invariant's other half: with no expandedChild (or the toggle turned
               // off) the header is plain content — no Semantics(button), no
               // Focus stop, no hit target.
               : triggerArea,
@@ -842,7 +842,7 @@ class _HeaderRow extends StatelessWidget {
 
 /// Makes the header row a real control: button semantics, Enter/Space, a
 /// visible non-shifting focus ring, and a 44px hit target over the same
-/// visual (A11 + A31).
+/// visual.
 class _HeaderTrigger extends StatefulWidget {
   const _HeaderTrigger({
     required this.expanded,
@@ -1679,7 +1679,7 @@ class _ExpandableBody extends StatefulWidget {
 
 /// Cross-fades a compact summary into a detailed body, springing the height.
 ///
-/// **A12 — each child is built exactly once.** The previous implementation
+/// **Each child is built exactly once.** The previous implementation
 /// rendered `compact` and `expandedChild` twice each: once inside two
 /// `Offstage` subtrees purely to measure them, and again inside the animation
 /// builder. For inert content that was merely wasteful; for anything stateful
@@ -1784,7 +1784,7 @@ class _ExpandableBodyState extends State<_ExpandableBody> {
 
   @override
   Widget build(BuildContext context) {
-    // Built once per build, used once — this is the whole of the A12 fix.
+    // Built once per build, used once — this is the whole fix.
     final compact = _MeasureSize(
       onChange: _onCompactSize,
       child: widget.compact,

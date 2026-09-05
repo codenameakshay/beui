@@ -57,7 +57,7 @@ enum BeuiToolApprovalStatus {
 /// How consequential the requested capability is — the risk tier that drives
 /// [BeuiToolApproval]'s glyph, border, badge, and action emphasis.
 ///
-/// The audit's A3: `rm -rf ~/project` and `ls` rendered byte-identically, so
+/// `rm -rf ~/project` and `ls` rendered byte-identically, so
 /// the card could not warn. Severity is *declared by the caller*, never
 /// inferred from the tool slug — guessing risk from a string is exactly the
 /// kind of silent heuristic a permission prompt must not have.
@@ -79,7 +79,7 @@ enum BeuiToolApprovalSeverity {
 
 /// Which grant a [BeuiToolApproval] was approved under.
 ///
-/// The audit's A43: after the fact, "approved once" and "always allowed" were
+/// After the fact, "approved once" and "always allowed" were
 /// indistinguishable, so a user could not tell whether they had handed over a
 /// standing permission. Pass it back on the approved/complete states and the
 /// badge says which — and, with [BeuiToolApproval.onRevoke], offers a way out.
@@ -98,7 +98,7 @@ class BeuiToolApprovalParameter {
   /// Creates a parameter row.
   ///
   /// [label] and [value] each accept a [String] or a [Widget]; anything else
-  /// is a debug assertion failure (the audit's A41 — `value: 42` used to
+  /// is a debug assertion failure (`value: 42` used to
   /// compile and render `"42"` through `toString()`). Prefer the typed
   /// [BeuiToolApprovalParameter.text] and [BeuiToolApprovalParameter.widget]
   /// constructors in new code.
@@ -158,7 +158,7 @@ const _actionsOutReduced = CurvedMotion(
 );
 const _spinPeriod = Duration(milliseconds: 900);
 
-/// Press scale for every control in the agent cluster (the audit's A17 — this
+/// Press scale for every control in the agent cluster (this
 /// file used 0.97, `tool_result` used 0.9, `message_bubble` 0.99).
 const double beuiAgentPressScale = 0.97;
 
@@ -826,7 +826,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
 
   /// The action row.
   ///
-  /// **A6 — visual weight follows safety.** The old row put the maximum-
+  /// **Visual weight follows safety.** The old row put the maximum-
   /// emphasis solid on `Allow once`, outlined the *most consequential* grant
   /// (`Always allow`), and left `Deny` as a ghost, last and faintest: the
   /// safest exit was the hardest thing on the card to see. Now `Deny` always
@@ -867,7 +867,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
               size: BeuiButtonSize.sm,
               pressScale: beuiAgentPressScale,
               borderRadius: radius,
-              // A4 belt-and-braces: a null handler is a disabled button, which
+              // Belt-and-braces: a null handler is a disabled button, which
               // BeuiButton renders dimmed and refuses to activate.
               onPressed: onPressed,
               child: Text(
@@ -1140,7 +1140,7 @@ class _DetailsPanelState extends State<_DetailsPanel> {
     if (!maxHeight.isFinite) return rows;
 
     // Cap the panel and scroll it, with a visible thumb — the sibling
-    // surfaces that hide their scrollbars are exactly the T6 complaint, so
+    // surfaces that hide their scrollbars are exactly the complaint, so
     // this one shows its.
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: maxHeight),
@@ -1279,7 +1279,7 @@ class _ActionsPresence extends StatelessWidget {
         ? (reduce ? _actionsInReduced : _actionsIn)
         : (reduce ? _actionsOutReduced : _actionsOut);
 
-    // A4 — the double-fire fix, and the reason it is spelled `!visible ||
+    // The double-fire fix, and the reason it is spelled `!visible ||
     // hidden` rather than `hidden` alone.
     //
     // The gate used to be driven purely by the animation value, so for the

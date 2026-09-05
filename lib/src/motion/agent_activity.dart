@@ -970,7 +970,7 @@ class _SummaryTriggerState extends State<_SummaryTrigger> {
 ///
 /// One bundle instead of three parallel parameters on every row: the palette
 /// ([BeuiColors]), the semantic agent contract ([BeuiAgentTheme] — type,
-/// shape, layout, strings, icons), and the status tiers. A37: before this,
+/// shape, layout, strings, icons), and the status tiers. Before this,
 /// `agent_activity` read *zero* theme roles; every size, radius, gap, and
 /// status color was a literal.
 @immutable
@@ -1101,7 +1101,7 @@ class _StreamViewport extends StatelessWidget {
 
     // Fade masks (source maskImage). Working: top only. Complete capped: both.
     // This is the reference scroll affordance for the whole agent family (the
-    // audit's R12/A22 point at it) — behaviour preserved verbatim.
+    // the audit points at it) — behaviour preserved verbatim.
     if (capped && expanded) {
       final h = height <= 0 ? 1.0 : height;
       final topStop = (12 / h).clamp(0.0, 0.5);
@@ -1349,7 +1349,7 @@ class _StepMarkState extends State<_StepMark>
   Widget build(BuildContext context) {
     final colors = widget.rowTheme.colors;
     // Decorative chrome: the mark repeats what the label already says, so the
-    // alpha stays (A8 is about information-bearing text).
+    // alpha stays (the alpha rule is about information-bearing text).
     final muted = colors.mutedForeground.withValues(alpha: 0.7);
     final iconSize = widget.rowTheme.layout.iconSize;
     return switch (widget.status) {

@@ -442,7 +442,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
     final contentColor = colors.foreground.withValues(alpha: 0.9);
 
     // Source: aria-busy while streaming; aria-live polite when announce.
-    // Flutter has no Semantics.busy — surface the state in the label. C1/C13:
+    // Flutter has no Semantics.busy — surface the state in the label.
     // failure and truncation are now *named*, not left indistinguishable from
     // a finished answer.
     // Whole strings, not a stem plus a comma-joined modifier — a language

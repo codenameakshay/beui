@@ -730,8 +730,8 @@ class _CascadePhraseState extends State<_CascadePhrase>
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        for (var i = 0; i < text.length; i++)
-          _letter(text[i], i, t, totalMs, roll, exiting: exiting),
+        for (final (i, glyph) in text.characters.indexed)
+          _letter(glyph, i, t, totalMs, roll, exiting: exiting),
       ],
     );
   }

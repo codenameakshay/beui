@@ -389,6 +389,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
   double? _measuredWidth;
   double? _measuredFontSize;
   double? _measuredLineHeight;
+  int? _measuredMaxRows;
   int _measuredRows = 0;
 
   // First-line leading cache — see [_firstLineLeading].
@@ -641,7 +642,8 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
         _measuredText == text &&
         _measuredWidth == textWidth &&
         _measuredFontSize == fontSize &&
-        _measuredLineHeight == lineHeight;
+        _measuredLineHeight == lineHeight &&
+        _measuredMaxRows == widget.maxRows;
 
     if (!cacheHit) {
       var rows = widget.minRows;
@@ -660,6 +662,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
       _measuredWidth = textWidth;
       _measuredFontSize = fontSize;
       _measuredLineHeight = lineHeight;
+      _measuredMaxRows = widget.maxRows;
       _measuredRows = rows;
     }
 
