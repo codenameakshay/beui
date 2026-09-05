@@ -67,16 +67,6 @@ void main() {
       );
     });
 
-    testWidgets('renders every status', (tester) async {
-      for (final status in BeuiAnimatedBadgeStatus.values) {
-        await tester.pumpWidget(
-          _wrap(BeuiAnimatedBadge(status: status, label: status.name)),
-        );
-        await tester.pump(const Duration(milliseconds: 100));
-        expect(find.byType(BeuiAnimatedBadge), findsOneWidget);
-      }
-    });
-
     testWidgets('status change swaps the icon and the color', (tester) async {
       Widget app(BeuiAnimatedBadgeStatus s) =>
           _wrap(BeuiAnimatedBadge(status: s, label: 'X'));

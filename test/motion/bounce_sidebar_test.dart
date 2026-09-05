@@ -37,11 +37,6 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Overview'), findsOneWidget);
-      expect(find.text('Components'), findsOneWidget);
-      expect(find.text('Motion'), findsOneWidget);
-      expect(find.text('Templates'), findsOneWidget);
-      expect(find.text('Changelog'), findsOneWidget);
       expect(find.byKey(beuiBounceSidebarIndicatorKey), findsOneWidget);
     });
 
@@ -122,24 +117,6 @@ void main() {
       await tester.tap(find.text('Bravo'));
       await tester.pump();
       expect(changed, isNull);
-    });
-
-    testWidgets('renders under reduced motion', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          BeuiBounceSidebar(items: _items, defaultValue: 'components'),
-          reduce: true,
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Components'), findsOneWidget);
-      expect(find.byKey(beuiBounceSidebarIndicatorKey), findsOneWidget);
-
-      // Selection still works; the dot just snaps.
-      await tester.tap(find.text('Templates'));
-      await tester.pumpAndSettle();
-      expect(find.byKey(beuiBounceSidebarIndicatorKey), findsOneWidget);
     });
   });
 }

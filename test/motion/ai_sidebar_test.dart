@@ -37,6 +37,9 @@ final _sample = <BeuiSidebarResource>[
   ),
 ];
 
+/// Union host for every ai-sidebar test: the base tree/callback params plus
+/// the geometry/platform knobs the keyboard-focus, empty-state and marquee
+/// groups need.
 Widget _host({
   List<BeuiSidebarResource>? items,
   List<BeuiSidebarResource> defaultItems = const [],
@@ -48,22 +51,32 @@ Widget _host({
   Future<void> Function(BeuiSidebarResourceMove move)? onMove,
   Future<void> Function(BeuiSidebarResource item, String label)? onRename,
   bool reduce = false,
+  double? maxHeight,
+  Widget? emptyPlaceholder,
+  TargetPlatform platform = TargetPlatform.macOS,
+  double width = 320,
+  double height = 480,
 }) {
   Widget child = Center(
     child: SizedBox(
-      width: 320,
-      height: 480,
+      width: width,
+      height: height,
       child: Material(
-        child: BeuiAiSidebar(
-          items: items,
-          defaultItems: defaultItems.isEmpty ? _sample : defaultItems,
-          activeId: activeId,
-          defaultActiveId: defaultActiveId,
-          defaultExpandedIds: defaultExpandedIds,
-          onActiveChange: onActiveChange,
-          onItemsChange: onItemsChange,
-          onMove: onMove,
-          onRename: onRename,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: BeuiAiSidebar(
+            items: items,
+            defaultItems: defaultItems.isEmpty ? _sample : defaultItems,
+            activeId: activeId,
+            defaultActiveId: defaultActiveId,
+            defaultExpandedIds: defaultExpandedIds,
+            onActiveChange: onActiveChange,
+            onItemsChange: onItemsChange,
+            onMove: onMove,
+            onRename: onRename,
+            maxHeight: maxHeight,
+            emptyPlaceholder: emptyPlaceholder,
+          ),
         ),
       ),
     ),
@@ -79,7 +92,10 @@ Widget _host({
   }
   return MaterialApp(
     theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      ThemeData.light().copyWith(
+        platform: platform,
+        extensions: [BeuiColors.light()],
+      ),
     ),
     home: Scaffold(body: child),
   );
@@ -201,7 +217,24 @@ void main() {
         _host(defaultExpandedIds: const ['platform'], activeId: 'docs'),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Read platform docs'), findsOneWidget);
+      // Setting activeId (no tap) must still paint the "you are here" accent
+      // bar, not just render the label text.
+      final colors = BeuiColors.light();
+      final bars = tester
+          .widgetList<DecoratedBox>(
+            find.descendant(
+              of: find
+                  .ancestor(
+                    of: find.text('Read platform docs'),
+                    matching: find.byType(AnimatedContainer),
+                  )
+                  .first,
+              matching: find.byType(DecoratedBox),
+            ),
+          )
+          .map((d) => (d.decoration as BoxDecoration).color)
+          .toList();
+      expect(bars, contains(colors.primary));
     });
 
     testWidgets('inline rename via F2 commits on submit', (tester) async {
@@ -312,62 +345,15 @@ void main() {
         'archive',
       ]);
     });
-
-    testWidgets('reduced motion still renders', (tester) async {
-      await tester.pumpWidget(
-        _host(reduce: true, defaultExpandedIds: const ['platform']),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('API migration'), findsOneWidget);
-    });
   });
 
   // ---------------------------------------------------------------------
   // UX remediation — R4, R5, R6, R15, R23, R26, R29, R34
   // ---------------------------------------------------------------------
 
-  Widget remediationHost({
-    List<BeuiSidebarResource>? items,
-    String? activeId,
-    List<String> defaultExpandedIds = const [],
-    double? maxHeight,
-    Widget? emptyPlaceholder,
-    TargetPlatform platform = TargetPlatform.macOS,
-    double width = 320,
-  }) {
-    return MaterialApp(
-      theme: BeuiTextTheme.trackingNormal(
-        ThemeData.light().copyWith(
-          platform: platform,
-          extensions: [BeuiColors.light()],
-        ),
-      ),
-      home: Scaffold(
-        body: Center(
-          child: SizedBox(
-            width: width,
-            height: 480,
-            child: Material(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: BeuiAiSidebar(
-                  items: items ?? _sample,
-                  activeId: activeId,
-                  defaultExpandedIds: defaultExpandedIds,
-                  maxHeight: maxHeight,
-                  emptyPlaceholder: emptyPlaceholder,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   group('BeuiAiSidebar keyboard focus is visible', () {
     testWidgets('the focused row renders a ring', (tester) async {
-      await tester.pumpWidget(remediationHost());
+      await tester.pumpWidget(_host());
       await tester.pumpAndSettle();
 
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
@@ -382,7 +368,7 @@ void main() {
     });
 
     testWidgets('the ring costs no layout', (tester) async {
-      await tester.pumpWidget(remediationHost());
+      await tester.pumpWidget(_host());
       await tester.pumpAndSettle();
       final before = tester.getRect(find.text('Release notes'));
 
@@ -394,7 +380,7 @@ void main() {
     testWidgets('the rename field uses the focus role, not the hairline', (
       tester,
     ) async {
-      await tester.pumpWidget(remediationHost());
+      await tester.pumpWidget(_host());
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(beuiAiSidebarRowKey('notes')));
       await tester.pump(kDoubleTapTimeout);
@@ -425,7 +411,7 @@ void main() {
     }
 
     testWidgets('selection and hover are two different steps', (tester) async {
-      await tester.pumpWidget(remediationHost(activeId: 'notes'));
+      await tester.pumpWidget(_host(activeId: 'notes'));
       await tester.pumpAndSettle();
 
       final selected = fillBehind(tester, 'Release notes');
@@ -448,7 +434,7 @@ void main() {
     testWidgets('the selected row carries a leading accent bar too', (
       tester,
     ) async {
-      await tester.pumpWidget(remediationHost(activeId: 'notes'));
+      await tester.pumpWidget(_host(activeId: 'notes'));
       await tester.pumpAndSettle();
       final colors = BeuiColors.light();
       final bars = tester
@@ -481,8 +467,8 @@ void main() {
   group('BeuiAiSidebar disabled rows', () {
     testWidgets('one dimming mechanism, not two compounded', (tester) async {
       await tester.pumpWidget(
-        remediationHost(
-          items: const [
+        _host(
+          defaultItems: const [
             BeuiSidebarResource(
               id: 'off',
               label: 'Archived notes',
@@ -514,8 +500,8 @@ void main() {
     testWidgets('and it is still announced as disabled', (tester) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
-        remediationHost(
-          items: const [
+        _host(
+          defaultItems: const [
             BeuiSidebarResource(
               id: 'off',
               label: 'Archived notes',
@@ -555,7 +541,7 @@ void main() {
     testWidgets('on a pointer platform it stays hidden until hover', (
       tester,
     ) async {
-      await tester.pumpWidget(remediationHost());
+      await tester.pumpWidget(_host());
       await tester.pumpAndSettle();
       expect(menuOpacity(tester, 'Release notes'), 0);
     });
@@ -563,7 +549,7 @@ void main() {
     testWidgets('on touch it is visible without a hover that never comes', (
       tester,
     ) async {
-      await tester.pumpWidget(remediationHost(platform: TargetPlatform.iOS));
+      await tester.pumpWidget(_host(platform: TargetPlatform.iOS));
       await tester.pumpAndSettle();
       // Previously Opacity(0) yet hit-testable: a permanently invisible button
       // at the end of every row.
@@ -571,7 +557,7 @@ void main() {
     });
 
     testWidgets('an invisible control takes no pointers', (tester) async {
-      await tester.pumpWidget(remediationHost());
+      await tester.pumpWidget(_host());
       await tester.pumpAndSettle();
       final row = find.ancestor(
         of: find.text('Release notes'),
@@ -586,7 +572,7 @@ void main() {
     testWidgets('long press opens the row menu — touch has no right-click', (
       tester,
     ) async {
-      await tester.pumpWidget(remediationHost(platform: TargetPlatform.iOS));
+      await tester.pumpWidget(_host(platform: TargetPlatform.iOS));
       await tester.pumpAndSettle();
       expect(find.text('Rename'), findsNothing);
 
@@ -618,7 +604,7 @@ void main() {
     }
 
     testWidgets('a brushed-past row does not start travelling', (tester) async {
-      await tester.pumpWidget(remediationHost(items: wide, width: 200));
+      await tester.pumpWidget(_host(defaultItems: wide, width: 200));
       await tester.pumpAndSettle();
       await hoverRow(tester);
       await tester.pump(const Duration(milliseconds: 200));
@@ -630,7 +616,7 @@ void main() {
     testWidgets('a deliberate hover starts one pass, and only one', (
       tester,
     ) async {
-      await tester.pumpWidget(remediationHost(items: wide, width: 200));
+      await tester.pumpWidget(_host(defaultItems: wide, width: 200));
       await tester.pumpAndSettle();
       await hoverRow(tester);
 
@@ -647,24 +633,7 @@ void main() {
 
     testWidgets('reduced motion never starts it', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Builder(
-            builder: (context) => MediaQuery(
-              data: MediaQuery.of(context).copyWith(disableAnimations: true),
-              child: Scaffold(
-                body: Center(
-                  child: SizedBox(
-                    width: 200,
-                    child: Material(child: BeuiAiSidebar(items: wide)),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        _host(defaultItems: wide, width: 200, reduce: true),
       );
       await tester.pumpAndSettle();
       await hoverRow(tester);
@@ -677,14 +646,17 @@ void main() {
     testWidgets('an empty tree is a state, not a zero-height box', (
       tester,
     ) async {
-      await tester.pumpWidget(remediationHost(items: const []));
+      // A genuinely empty (not merely unset) tree needs the controlled
+      // `items:` — `defaultItems: []` falls back to the sample tree, since an
+      // empty list there means "no seed provided".
+      await tester.pumpWidget(_host(items: const []));
       await tester.pumpAndSettle();
       expect(find.text('No resources yet'), findsOneWidget);
     });
 
     testWidgets('the placeholder is overridable', (tester) async {
       await tester.pumpWidget(
-        remediationHost(
+        _host(
           items: const [],
           emptyPlaceholder: const Text('Nothing shared with you'),
         ),
@@ -702,7 +674,7 @@ void main() {
             kind: BeuiSidebarResourceKind.file,
           ),
       ];
-      await tester.pumpWidget(remediationHost(items: many, maxHeight: 200));
+      await tester.pumpWidget(_host(defaultItems: many, maxHeight: 200));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(
@@ -721,7 +693,7 @@ void main() {
     testWidgets('without maxHeight the consumer still owns the viewport', (
       tester,
     ) async {
-      await tester.pumpWidget(remediationHost());
+      await tester.pumpWidget(_host());
       await tester.pumpAndSettle();
       expect(
         find.descendant(

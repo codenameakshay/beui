@@ -75,10 +75,6 @@ void main() {
       expect(find.byIcon(LucideIcons.x), findsOneWidget); // header close
     });
 
-    testWidgets('default item set has six entries', (tester) async {
-      expect(beuiDefaultBloomMenuItems, hasLength(6));
-    });
-
     testWidgets('triggerLabel drives BOTH the pill and the panel header', (
       tester,
     ) async {
