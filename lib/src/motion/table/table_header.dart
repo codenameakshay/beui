@@ -116,7 +116,7 @@ class _TableHeader<T> extends StatelessWidget {
 }
 
 /// A single header cell.
-class _HeaderCell<T> extends StatefulWidget {
+class _HeaderCell<T> extends StatelessWidget {
   const _HeaderCell({
     required this.state,
     required this.column,
@@ -139,13 +139,8 @@ class _HeaderCell<T> extends StatefulWidget {
   final bool hasColumnMenu;
 
   @override
-  State<_HeaderCell<T>> createState() => _HeaderCellState<T>();
-}
-
-class _HeaderCellState<T> extends State<_HeaderCell<T>> {
-  @override
   Widget build(BuildContext context) {
-    final w = widget;
+    final w = this;
     final colors = w.colors;
     final column = w.column;
     final state = w.state;
@@ -242,7 +237,7 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
                 child: MouseRegion(
                   onEnter: (_) => state._activateColumn(column.key),
                   onExit: (_) => state._deactivateColumn(column.key),
-                  child: _ColumnHandle<T>(
+                  child: _TableHandle<T>.column(
                     state: state,
                     column: column,
                     index: w.index,
@@ -264,7 +259,7 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
   }
 
   Widget _label(BuildContext context, {required bool active}) {
-    final w = widget;
+    final w = this;
     final column = w.column;
     final state = w.state;
     final colors = w.colors;
@@ -322,7 +317,7 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
     }
 
     if (state.widget.onColumnRename != null) {
-      return _HeaderRenameField(
+      return _InlineTextField.header(
         key: ValueKey('rename_${column.key}'),
         value: column.header,
         colors: colors,
@@ -355,134 +350,3 @@ MainAxisAlignment _rowAlign(BeuiTableAlign align) => switch (align) {
   BeuiTableAlign.center => MainAxisAlignment.center,
   BeuiTableAlign.left => MainAxisAlignment.start,
 };
-
-/// Inline header rename input (source: non-sortable header becomes an input
-/// when `onColumnRename` is set).
-class _HeaderRenameField extends StatefulWidget {
-  const _HeaderRenameField({
-    required this.value,
-    required this.colors,
-    required this.align,
-    required this.onChanged,
-    super.key,
-  });
-
-  final String value;
-  final BeuiColors colors;
-  final BeuiTableAlign align;
-  final ValueChanged<String> onChanged;
-
-  @override
-  State<_HeaderRenameField> createState() => _HeaderRenameFieldState();
-}
-
-class _HeaderRenameFieldState extends State<_HeaderRenameField> {
-  late final TextEditingController _controller = TextEditingController(
-    text: widget.value,
-  );
-  final FocusNode _focusNode = FocusNode();
-  bool _focused = false;
-
-  @override
-  void didUpdateWidget(_HeaderRenameField old) {
-    super.didUpdateWidget(old);
-    if (widget.value != _controller.text && !_focused) {
-      _controller.text = widget.value;
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = widget.colors;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Focus(
-        onFocusChange: (f) => setState(() => _focused = f),
-        child: TextField(
-          controller: _controller,
-          focusNode: _focusNode,
-          onChanged: widget.onChanged,
-          textAlign: _textAlign(widget.align),
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: _focused ? colors.foreground : colors.mutedForeground,
-          ),
-          decoration: InputDecoration(
-            isDense: true,
-            filled: _focused,
-            fillColor: colors.muted,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 6,
-              vertical: 6,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6),
-              borderSide: BorderSide.none,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The hover-revealed column menu handle (source `ColumnHandle`) — a short pill
-/// on the header's top border that opens the insert / delete menu.
-class _ColumnHandle<T> extends StatelessWidget {
-  const _ColumnHandle({
-    required this.state,
-    required this.column,
-    required this.index,
-    required this.colors,
-  });
-
-  final _BeuiTableState<T> state;
-  final BeuiTableColumn<T> column;
-  final int index;
-  final BeuiColors colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return _TableMenu(
-      colors: colors,
-      width: 24,
-      height: 8,
-      icon: LucideIcons.ellipsis,
-      items: [
-        if (state.widget.onInsertColumn != null) ...[
-          _TableMenuEntry(
-            label: 'Insert before',
-            icon: LucideIcons.arrow_left_to_line,
-            onSelect: () => state.widget.onInsertColumn!(
-              index,
-              BeuiTableInsertPosition.before,
-            ),
-          ),
-          _TableMenuEntry(
-            label: 'Insert after',
-            icon: LucideIcons.arrow_right_to_line,
-            onSelect: () => state.widget.onInsertColumn!(
-              index,
-              BeuiTableInsertPosition.after,
-            ),
-          ),
-        ],
-        if (state.widget.onDeleteColumn != null)
-          _TableMenuEntry(
-            label: 'Delete column',
-            icon: LucideIcons.trash,
-            destructive: true,
-            onSelect: () => state.widget.onDeleteColumn!(column.key, index),
-          ),
-      ],
-    );
-  }
-}

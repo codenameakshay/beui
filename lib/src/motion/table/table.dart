@@ -595,7 +595,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     });
   }
 
-  void _activateRow(String id, int index) {
+  void _activateRow(String id) {
     _rowDeactivateTimer?.cancel();
     _rowDeactivateTimer = null;
     if (_activeRowId != id) setState(() => _activeRowId = id);
@@ -880,7 +880,7 @@ class _DataRowState<T> extends State<_DataRow<T>> {
       onEnter: w.hasRowMenu
           ? (_) {
               setState(() => _hovered = true);
-              w.state._activateRow(w.entry.id, w.index);
+              w.state._activateRow(w.entry.id);
             }
           : (_) => setState(() => _hovered = true),
       onExit: w.hasRowMenu
@@ -925,9 +925,9 @@ class _DataRowState<T> extends State<_DataRow<T>> {
             bottom: 0,
             child: Center(
               child: MouseRegion(
-                onEnter: (_) => w.state._activateRow(w.entry.id, w.index),
+                onEnter: (_) => w.state._activateRow(w.entry.id),
                 onExit: (_) => w.state._deactivateRow(w.entry.id),
-                child: _RowHandle<T>(
+                child: _TableHandle<T>.row(
                   state: w.state,
                   rowId: w.entry.id,
                   index: w.index,
@@ -949,7 +949,7 @@ class _DataRowState<T> extends State<_DataRow<T>> {
       );
     }
     if (column.editable) {
-      return _EditableCell(
+      return _InlineTextField.cell(
         value: column.value?.call(w.entry.row) ?? '',
         colors: w.colors,
         align: column.align,
