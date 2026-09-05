@@ -4,25 +4,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: child);
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+import '../support.dart';
 
 Future<void> _type(WidgetTester tester, String digits) async {
   for (final ch in digits.split('')) {
@@ -44,7 +26,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           const BeuiOtpInput(
             length: 6,
             label: 'Verify',
@@ -71,7 +53,7 @@ void main() {
     ) async {
       final changes = <String>[];
       await tester.pumpWidget(
-        _wrap(BeuiOtpInput(length: 4, onChanged: changes.add)),
+        beuiTestApp(BeuiOtpInput(length: 4, onChanged: changes.add)),
       );
       await _focus(tester);
       await _type(tester, '12');
@@ -84,7 +66,7 @@ void main() {
     testWidgets('onComplete fires once when every slot fills', (tester) async {
       final completions = <String>[];
       await tester.pumpWidget(
-        _wrap(BeuiOtpInput(length: 4, onComplete: completions.add)),
+        beuiTestApp(BeuiOtpInput(length: 4, onComplete: completions.add)),
       );
       await _focus(tester);
       await _type(tester, '1234');
@@ -103,7 +85,7 @@ void main() {
     ) async {
       final changes = <String>[];
       await tester.pumpWidget(
-        _wrap(BeuiOtpInput(length: 4, onChanged: changes.add)),
+        beuiTestApp(BeuiOtpInput(length: 4, onChanged: changes.add)),
       );
       await _focus(tester);
       await _type(tester, '12');
@@ -120,7 +102,7 @@ void main() {
     ) async {
       final changes = <String>[];
       await tester.pumpWidget(
-        _wrap(BeuiOtpInput(length: 6, onChanged: changes.add)),
+        beuiTestApp(BeuiOtpInput(length: 6, onChanged: changes.add)),
       );
       await _focus(tester);
       await tester.enterText(find.byType(EditableText), '4  2-1 9 07');
@@ -139,7 +121,7 @@ void main() {
         // slot 0 each time.
         final changes = <String>[];
         await tester.pumpWidget(
-          _wrap(BeuiOtpInput(length: 6, onChanged: changes.add)),
+          beuiTestApp(BeuiOtpInput(length: 6, onChanged: changes.add)),
         );
         await _focus(tester);
         final field = find.byType(EditableText);
@@ -162,7 +144,7 @@ void main() {
     ) async {
       final changes = <String>[];
       await tester.pumpWidget(
-        _wrap(BeuiOtpInput(length: 6, onChanged: changes.add)),
+        beuiTestApp(BeuiOtpInput(length: 6, onChanged: changes.add)),
       );
       await _focus(tester);
       final field = find.byType(EditableText);
@@ -183,7 +165,9 @@ void main() {
     });
 
     testWidgets('mask renders dots instead of digits', (tester) async {
-      await tester.pumpWidget(_wrap(const BeuiOtpInput(length: 4, mask: true)));
+      await tester.pumpWidget(
+        beuiTestApp(const BeuiOtpInput(length: 4, mask: true)),
+      );
       await _focus(tester);
       await _type(tester, '12');
       await tester.pump(const Duration(milliseconds: 300));
@@ -192,10 +176,10 @@ void main() {
     });
 
     testWidgets('controlled value updates the slots', (tester) async {
-      await tester.pumpWidget(_wrap(const BeuiOtpInput(value: '12')));
+      await tester.pumpWidget(beuiTestApp(const BeuiOtpInput(value: '12')));
       await tester.pumpAndSettle();
       expect(find.text('1'), findsOneWidget);
-      await tester.pumpWidget(_wrap(const BeuiOtpInput(value: '87')));
+      await tester.pumpWidget(beuiTestApp(const BeuiOtpInput(value: '87')));
       await tester.pumpAndSettle();
       expect(find.text('8'), findsOneWidget);
       expect(find.text('1'), findsNothing);
@@ -204,7 +188,7 @@ void main() {
     testWidgets('error status shakes the row and shows the message', (
       tester,
     ) async {
-      Widget app(BeuiOtpStatus status) => _wrap(
+      Widget app(BeuiOtpStatus status) => beuiTestApp(
         BeuiOtpInput(
           length: 4,
           status: status,
@@ -253,7 +237,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           const BeuiOtpInput(
             length: 4,
             value: '1234',
@@ -275,7 +259,7 @@ void main() {
 
     testWidgets('reduced motion: no shake and no roll blur', (tester) async {
       Widget app(BeuiOtpStatus status) =>
-          _wrap(BeuiOtpInput(length: 4, status: status), reduce: true);
+          beuiTestApp(BeuiOtpInput(length: 4, status: status), reduce: true);
       await tester.pumpWidget(app(BeuiOtpStatus.idle));
       await _focus(tester);
       await _type(tester, '1');
@@ -302,7 +286,9 @@ void main() {
     testWidgets('disabled ignores input', (tester) async {
       final changes = <String>[];
       await tester.pumpWidget(
-        _wrap(BeuiOtpInput(length: 4, disabled: true, onChanged: changes.add)),
+        beuiTestApp(
+          BeuiOtpInput(length: 4, disabled: true, onChanged: changes.add),
+        ),
       );
       await _focus(tester);
       await _type(tester, '12');

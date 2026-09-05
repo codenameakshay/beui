@@ -3,25 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: child);
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
-
 BeuiOverflowActions _rail({
   List<String>? actions,
   bool? expanded,
@@ -47,7 +28,7 @@ void main() {
     testWidgets('collapsed shows primaries and the ⋯ toggle only', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(_rail()));
+      await tester.pumpWidget(beuiTestApp(_rail()));
       await tester.pumpAndSettle();
       expect(find.text('Reply'), findsOneWidget);
       expect(find.byIcon(LucideIcons.ellipsis), findsOneWidget);
@@ -63,7 +44,7 @@ void main() {
     });
 
     testWidgets('X collapses the rail again', (tester) async {
-      await tester.pumpWidget(_wrap(_rail()));
+      await tester.pumpWidget(beuiTestApp(_rail()));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(LucideIcons.ellipsis));
       await tester.pumpAndSettle();
@@ -80,7 +61,7 @@ void main() {
     ) async {
       final actions = <String>[];
       await tester.pumpWidget(
-        _wrap(_rail(actions: actions, collapseOnAction: true)),
+        beuiTestApp(_rail(actions: actions, collapseOnAction: true)),
       );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Reply'));
@@ -99,7 +80,7 @@ void main() {
     ) async {
       final changes = <bool>[];
       await tester.pumpWidget(
-        _wrap(_rail(expanded: false, onExpandedChange: changes.add)),
+        beuiTestApp(_rail(expanded: false, onExpandedChange: changes.add)),
       );
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(LucideIcons.ellipsis));
@@ -110,7 +91,7 @@ void main() {
     });
 
     testWidgets('reduced motion expands without blur', (tester) async {
-      await tester.pumpWidget(_wrap(_rail(), reduce: true));
+      await tester.pumpWidget(beuiTestApp(_rail(), reduce: true));
       await tester.pump(const Duration(milliseconds: 50));
       await tester.tap(find.byIcon(LucideIcons.ellipsis));
       for (var i = 0; i < 5; i++) {
