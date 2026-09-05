@@ -43,7 +43,7 @@ class _RowHandle<T> extends StatelessWidget {
         if (state.widget.onDeleteRow != null)
           _TableMenuEntry(
             label: 'Delete row',
-            icon: LucideIcons.trash_2,
+            icon: LucideIcons.trash,
             destructive: true,
             onSelect: () => state.widget.onDeleteRow!(rowId, index),
           ),

@@ -478,7 +478,7 @@ class _ColumnHandle<T> extends StatelessWidget {
         if (state.widget.onDeleteColumn != null)
           _TableMenuEntry(
             label: 'Delete column',
-            icon: LucideIcons.trash_2,
+            icon: LucideIcons.trash,
             destructive: true,
             onSelect: () => state.widget.onDeleteColumn!(column.key, index),
           ),

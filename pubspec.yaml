@@ -23,13 +23,13 @@ dependencies:
   # after re-running fidelity goldens.
   motor: ">=1.1.0 <1.2.0"
   # Default Lucide icon set, mirroring the source's lucide-react glyphs
-  # (docs/PORTING_SPEC.md §3). flutter_lucide is chosen over the stale
-  # lucide_icons (2y old, Lucide ~0.257) — it tracks Lucide 1.11+, ships all
-  # six platforms, MIT. Re-exported via lib/src/tokens/icons.dart so it is a
-  # consumer-facing transitive dependency (see README). Capped below the next
-  # major (icon additions in minors are wanted and low-risk; a major could
-  # rename glyphs) — looser than motor's pin because icons aren't motion-core.
-  flutter_lucide: ">=1.11.0 <2.0.0"
+  # (docs/PORTING_SPEC.md §3). Re-exported via lib/src/tokens/icons.dart so it
+  # is a consumer-facing transitive dependency (see README). The lower bound is
+  # load-bearing: glyphs get added AND renamed in minors (rotate_ccw_clock
+  # arrived in 1.31, trash_2 became trash in 1.41), so bump it to whatever
+  # version the newest glyph we reference needs, and re-run `flutter analyze`
+  # after any bump.
+  flutter_lucide: ">=1.41.0 <2.0.0"
   # Zone-scoped `clock.now()` for the one component that reads a wall clock
   # (BeuiAgentProgress's elapsed timer). Identical to DateTime.now() in
   # production, but flutter_test's fake async overrides it — so a widget whose

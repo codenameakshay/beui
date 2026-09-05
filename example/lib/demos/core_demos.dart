@@ -317,7 +317,7 @@ class _OptionsView extends StatelessWidget {
         _modalRow(LucideIcons.scroll_text, 'View Recovery Phrase', onRecovery),
         const SizedBox(height: 8),
         _modalRow(
-          LucideIcons.trash_2,
+          LucideIcons.trash,
           'Remove Wallet',
           onClose,
           destructive: true,
@@ -698,7 +698,7 @@ Widget tooltipDemo(BuildContext context) {
             (BeuiTooltipSide.top, 'Like this post', LucideIcons.heart),
             (BeuiTooltipSide.bottom, 'Share', LucideIcons.share),
             (BeuiTooltipSide.left, 'Open settings', LucideIcons.settings),
-            (BeuiTooltipSide.right, 'Move to trash', LucideIcons.trash_2),
+            (BeuiTooltipSide.right, 'Move to trash', LucideIcons.trash),
           ])
             BeuiTooltip(
               side: side,
@@ -856,7 +856,7 @@ class _ButtonDemoState extends State<_ButtonDemo> {
               size: BeuiButtonSize.icon,
               variant: BeuiButtonVariant.outline,
               onPressed: () {},
-              child: const Icon(LucideIcons.trash_2),
+              child: const Icon(LucideIcons.trash),
             ),
           ],
         ),

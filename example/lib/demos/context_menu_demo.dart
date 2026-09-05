@@ -64,7 +64,7 @@ class _ContextMenuDemoState extends State<_ContextMenuDemo> {
           const BeuiContextMenuItem.separator(),
           BeuiContextMenuItem(
             label: 'Move to trash',
-            icon: LucideIcons.trash_2,
+            icon: LucideIcons.trash,
             shortcut: '⌘⌫',
             tone: BeuiContextMenuTone.destructive,
             onSelect: () => _setMessage('Moved to trash'),

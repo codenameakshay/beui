@@ -31,7 +31,7 @@ const _rightActions = [
   BeuiSwipeAction(
     id: 'trash',
     label: 'Trash',
-    icon: LucideIcons.trash_2,
+    icon: LucideIcons.trash,
     tone: BeuiSwipeActionTone.danger,
   ),
 ];
