@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,14 +24,22 @@ class WalletCopyButton extends StatefulWidget {
 class _WalletCopyButtonState extends State<WalletCopyButton> {
   bool _copied = false;
   bool _hovered = false;
+  Timer? _revertTimer;
 
   Future<void> _copy() async {
     await Clipboard.setData(ClipboardData(text: widget.value));
     if (!mounted) return;
     setState(() => _copied = true);
-    Future<void>.delayed(const Duration(milliseconds: 1400), () {
+    _revertTimer?.cancel();
+    _revertTimer = Timer(const Duration(milliseconds: 1400), () {
       if (mounted) setState(() => _copied = false);
     });
+  }
+
+  @override
+  void dispose() {
+    _revertTimer?.cancel();
+    super.dispose();
   }
 
   @override

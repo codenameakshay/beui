@@ -115,7 +115,6 @@ class BeuiWalletCard extends StatefulWidget {
 
 class _BeuiWalletCardState extends State<BeuiWalletCard> {
   final GlobalKey _headerKey = GlobalKey();
-  final LayerLink _headerLink = LayerLink();
 
   late String? _internalAccountId =
       widget.defaultAccountId ??
@@ -166,40 +165,38 @@ class _BeuiWalletCardState extends State<BeuiWalletCard> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header row: account switcher + search + bell. Shared morph anchor.
+          // Header row: account switcher + search + bell. Shared morph anchor
+          // (each panel follows its own trigger; this scope only exposes the
+          // header's width for measurement — see WalletHeaderScope).
           WalletHeaderScope(
-            headerLink: _headerLink,
             headerKey: _headerKey,
-            child: CompositedTransformTarget(
-              link: _headerLink,
-              child: SizedBox(
-                key: _headerKey,
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: WalletAccountSwitcher(
-                          accounts: widget.accounts,
-                          activeAccount: _active,
-                          onSelect: _handleAccountChange,
-                        ),
+            child: SizedBox(
+              key: _headerKey,
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: WalletAccountSwitcher(
+                        accounts: widget.accounts,
+                        activeAccount: _active,
+                        onSelect: _handleAccountChange,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    WalletSearchBar(
-                      placeholder: widget.searchPlaceholder,
-                      recent: widget.searchRecent,
-                      onChanged: widget.onSearchChange,
-                      onSubmitted: widget.onSearchSubmit,
-                    ),
-                    const SizedBox(width: 4),
-                    _BellButton(
-                      hasNotifications: widget.hasNotifications,
-                      onTap: widget.onNotifications,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 8),
+                  WalletSearchBar(
+                    placeholder: widget.searchPlaceholder,
+                    recent: widget.searchRecent,
+                    onChanged: widget.onSearchChange,
+                    onSubmitted: widget.onSearchSubmit,
+                  ),
+                  const SizedBox(width: 4),
+                  _BellButton(
+                    hasNotifications: widget.hasNotifications,
+                    onTap: widget.onNotifications,
+                  ),
+                ],
               ),
             ),
           ),
