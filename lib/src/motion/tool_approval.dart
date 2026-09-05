@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 import '../theme/beui_agent_status_colors.dart';
@@ -8,6 +6,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_chevron.dart';
 import '_disclosure.dart';
 import '_engine.dart';
 import '_hit_target.dart';
@@ -117,25 +116,19 @@ class BeuiToolApprovalParameter {
        );
 
   /// Creates a plain text parameter row — the statically-typed path.
-  ///
-  /// The initializers deliberately narrow [Object] to [String]; an
-  /// initializing formal cannot express that, hence the ignores.
-  // ignore_for_file: prefer_initializing_formals
   const BeuiToolApprovalParameter.text({
     required this.id,
-    required String label,
-    required String value,
-  }) : label = label,
-       value = value;
+    required String this.label,
+    required String this.value,
+  });
 
   /// Creates a parameter row whose value is a widget (typically a
   /// [BeuiToolApprovalCode]) — the statically-typed path.
   const BeuiToolApprovalParameter.widget({
     required this.id,
-    required String label,
-    required Widget value,
-  }) : label = label,
-       value = value;
+    required String this.label,
+    required Widget this.value,
+  });
 
   /// Stable identity for the row (source `id`).
   final String id;
@@ -478,10 +471,6 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
       widget.status == BeuiToolApprovalStatus.approving ||
       widget.status == BeuiToolApprovalStatus.running;
   bool get _pending => widget.status == BeuiToolApprovalStatus.pending;
-  bool get _error => widget.status == BeuiToolApprovalStatus.error;
-  bool get _lapsed =>
-      widget.status == BeuiToolApprovalStatus.expired ||
-      widget.status == BeuiToolApprovalStatus.timedOut;
   bool get _currentOpen => widget.open ?? _internalOpen;
 
   /// A card with something to show, shows it.
@@ -645,13 +634,10 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                       _LeadingGlyph(
                         status: widget.status,
                         severity: widget.severity,
-                        busy: _busy,
-                        error: _error,
                         reduce: reduce,
                         spin: _spin,
                         colors: colors,
                         palette: badge,
-                        lapsed: _lapsed,
                       ),
                       SizedBox(width: agent.layout.rowGap + 4),
                       Expanded(
@@ -938,24 +924,26 @@ class _LeadingGlyph extends StatelessWidget {
   const _LeadingGlyph({
     required this.status,
     required this.severity,
-    required this.busy,
-    required this.error,
     required this.reduce,
     required this.spin,
     required this.colors,
     required this.palette,
-    required this.lapsed,
   });
 
   final BeuiToolApprovalStatus status;
   final BeuiToolApprovalSeverity severity;
-  final bool busy;
-  final bool error;
   final bool reduce;
   final AnimationController spin;
   final BeuiColors colors;
   final BeuiAgentStatusPalette palette;
-  final bool lapsed;
+
+  bool get busy =>
+      status == BeuiToolApprovalStatus.approving ||
+      status == BeuiToolApprovalStatus.running;
+  bool get error => status == BeuiToolApprovalStatus.error;
+  bool get lapsed =>
+      status == BeuiToolApprovalStatus.expired ||
+      status == BeuiToolApprovalStatus.timedOut;
 
   IconData _icon(BeuiAgentIcons icons) {
     if (busy) return icons.spinner;
@@ -1068,20 +1056,11 @@ class _DetailsToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chevron = Icon(
-      LucideIcons.chevron_down,
-      size: 14,
+    final rotated = BeuiDisclosureChevron(
+      open: open,
       color: colors.foreground,
+      reduce: reduce,
     );
-    final rotated = reduce
-        ? Transform.rotate(angle: open ? math.pi : 0, child: chevron)
-        : SingleMotionBuilder(
-            value: open ? 180.0 : 0.0,
-            motion: motionFor(context, beuiSpringSwap, isMovement: true),
-            builder: (context, deg, child) =>
-                Transform.rotate(angle: deg * math.pi / 180.0, child: child),
-            child: chevron,
-          );
 
     return Align(
       alignment: AlignmentDirectional.centerStart,
@@ -1150,15 +1129,10 @@ class _DetailsPanelState extends State<_DetailsPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
+        spacing: 8,
         children: [
-          for (var i = 0; i < parameters.length; i++) ...[
-            if (i > 0) const SizedBox(height: 8),
-            _ParameterRow(
-              parameter: parameters[i],
-              colors: colors,
-              agent: agent,
-            ),
-          ],
+          for (final parameter in parameters)
+            _ParameterRow(parameter: parameter, colors: colors, agent: agent),
         ],
       ),
     );
