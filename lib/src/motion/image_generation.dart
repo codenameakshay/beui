@@ -145,10 +145,8 @@ const _compactMaxWidth = 208.0; // max-w-52
 /// Height reserved under the status block for the error retry control.
 ///
 /// 40px control + the 12px gap above it. Reserved on *every* status, not just
-/// `error`, so arriving at a failure does not shove the rest of the transcript
-/// down by 52px at the moment the reader is trying to read it. This component
-/// already solves the same problem for the media itself with `AspectRatio`;
-/// the error branch was the one place it forgot.
+/// `error`, so arriving at a failure does not shove the rest of the
+/// transcript down by 52px at the moment the reader is trying to read it.
 const double _retrySlotHeight = 52;
 
 // ---------------------------------------------------------------------------
@@ -519,7 +517,7 @@ class _ImageFrame extends StatelessWidget {
             ).shapes.nested, // rounded-xl
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BeuiAgentTheme.of(context).shapes.nested,
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -830,7 +828,7 @@ class _DitherPresenceState extends State<_DitherPresence> {
 
     final presenceTarget = widget.active ? 1.0 : 0.0;
     final overlayTarget = widget.active
-        ? (_kOverlayOpacity[widget.status] ?? 0.0)
+        ? _kOverlayOpacity[widget.status]!
         : 0.0;
     // Both channels here are opacity, so both survive reduced motion.
     final presenceMotion = motionFor(
@@ -1347,12 +1345,13 @@ class _RetryButtonState extends State<_RetryButton> {
   Widget build(BuildContext context) {
     final scale = (!widget.reduce && _pressed) ? 0.97 : 1.0;
     final bg = _hovered ? widget.colors.muted : Colors.transparent;
+    final retryLabel = BeuiAgentTheme.of(context).strings.retry;
 
     return Align(
       alignment: Alignment.centerLeft,
       child: Semantics(
         button: true,
-        label: 'Try again',
+        label: retryLabel,
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
           onEnter: (_) => setState(() => _hovered = true),
@@ -1389,7 +1388,7 @@ class _RetryButtonState extends State<_RetryButton> {
                   borderRadius: BorderRadius.circular(999),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 150),
-                    curve: Curves.easeOut,
+                    curve: beuiEaseOut,
                     constraints: const BoxConstraints(minHeight: 40),
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
@@ -1406,7 +1405,7 @@ class _RetryButtonState extends State<_RetryButton> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Try again',
+                          retryLabel,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
