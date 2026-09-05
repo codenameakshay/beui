@@ -11,6 +11,7 @@ import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 import '_focus_ring.dart';
+import 'file_upload.dart' show beuiFormatBytes;
 import 'tooltip.dart';
 
 // ---------------------------------------------------------------------------
@@ -248,22 +249,11 @@ class BeuiAttachmentUploadController {
 // Formatting helpers (source `formatBytes` / `formatDuration` / `formatMaxSize`)
 // ---------------------------------------------------------------------------
 
-/// Source `formatBytes` — note this variant tops out at GB and returns `null`
-/// for absent/zero sizes (unlike the sibling `beuiFormatBytes`, which is the
-/// upload-queue's 5-unit variant and never returns null).
-String? _formatBytes(int? bytes) {
-  if (bytes == null || bytes <= 0) return null;
-  const units = ['B', 'KB', 'MB', 'GB'];
-  final exponent = math.min(
-    (math.log(bytes) / math.log(1024)).floor(),
-    units.length - 1,
-  );
-  final value = bytes / math.pow(1024, exponent);
-  final text = value >= 10 || exponent == 0
-      ? value.toStringAsFixed(0)
-      : value.toStringAsFixed(1);
-  return '$text ${units[exponent]}';
-}
+/// Source `formatBytes`, on top of the shared [beuiFormatBytes]: this call
+/// site shows no size chip at all for an absent/zero size, rather than
+/// `beuiFormatBytes`'s `'0 B'`.
+String? _formatBytes(int? bytes) =>
+    bytes == null || bytes <= 0 ? null : beuiFormatBytes(bytes);
 
 /// Source `formatDuration` — `m:ss`, clamped at zero.
 String _formatDuration(Duration? value) {
@@ -472,7 +462,6 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
   BeuiAttachmentUploadItem? _previewItem;
   Rect? _previewOrigin;
   bool _previewOpen = false;
-  bool _reduce = false;
 
   List<BeuiAttachmentUploadItem> get _items => widget.value ?? _internal;
 
@@ -520,6 +509,10 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
     } else {
       setState(() {});
     }
+    // Mirror the new list into row entries here (the only mutation path for
+    // uncontrolled state, which never triggers didUpdateWidget); the
+    // controlled path re-syncs when the parent feeds the value back.
+    _sync();
     widget.onValueChange?.call(next);
   }
 
@@ -590,7 +583,8 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
     _setItems([...items, ...accepted]);
     final addedIds = accepted.map((item) => item.id).toList();
     setState(() => _uploadingIds.addAll(addedIds));
-    _schedule(_reduce ? _reducedLifecycle : _uploadProgress, () {
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    _schedule(reduce ? _reducedLifecycle : _uploadProgress, () {
       setState(() {
         _uploadingIds.removeAll(addedIds);
         _completeIds.addAll(addedIds);
@@ -607,7 +601,8 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
   void _requestRemove(BeuiAttachmentUploadItem item) {
     if (_removingIds.contains(item.id)) return;
     setState(() => _removingIds.add(item.id));
-    _schedule(_reduce ? _reducedLifecycle : _removePending, () {
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    _schedule(reduce ? _reducedLifecycle : _removePending, () {
       _finalizeRemove(item);
       setState(() => _removingIds.remove(item.id));
     });
@@ -624,8 +619,7 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
-    _reduce = MediaQuery.disableAnimationsOf(context);
-    _sync();
+    final reduce = MediaQuery.disableAnimationsOf(context);
 
     final items = _items;
     final maxReached = items.length >= widget.maxFiles;
@@ -637,7 +631,7 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
       children: [
         _Dropzone(
           colors: colors,
-          reduce: _reduce,
+          reduce: reduce,
           dragging: widget.dragging,
           enabled: !widget.disabled && !maxReached && widget.onBrowse != null,
           dimmed: widget.disabled || maxReached,
@@ -678,7 +672,7 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
                           key: ValueKey(entry.item.id),
                           item: entry.item,
                           colors: colors,
-                          reduce: _reduce,
+                          reduce: reduce,
                           exiting: entry.exiting,
                           arrivalIndex: uploadOrder.indexOf(entry.item.id),
                           playing:
@@ -752,14 +746,14 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
       barrierColor: const Color(0x73000000), // bg-black/45
       // Static glass backdrop (`backdrop-blur-xl` = 24px) — the documented
       // glass exception to the ≤10px animated-blur cap.
-      barrierBlur: _reduce ? 0 : beuiBlurSigma(24),
+      barrierBlur: reduce ? 0 : beuiBlurSigma(24),
       enterDuration: const Duration(milliseconds: 200),
       exitDuration: const Duration(milliseconds: 160),
       overlayBuilder: (context, animation, _) => _ImagePreviewLayer(
         item: preview,
         origin: _previewOrigin,
         colors: colors,
-        reduce: _reduce,
+        reduce: reduce,
         animation: animation,
         onClose: _closePreview,
       ),
@@ -846,55 +840,60 @@ class _DropzoneState extends State<_Dropzone> {
       ),
     );
 
-    Widget zone = DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.muted.withValues(
-          alpha: colors.muted.a * (_hovered ? 0.85 : 0.65),
-        ),
-        borderRadius: BorderRadius.circular(32), // rounded-[2rem]
-        border: _focusVisible ? Border.all(color: colors.ring, width: 2) : null,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8), // p-2 → the dashed frame's inset
-        child: CustomPaint(
-          painter: _DashedFramePainter(
-            color: frameColor,
-            radius: 24, // rounded-[1.5rem]
-            fill: dragging
-                ? colors.muted.withValues(alpha: colors.muted.a * 0.2)
-                : colors.background,
+    Widget zone = BeuiFocusRing(
+      focused: _focusVisible,
+      borderRadius: BorderRadius.circular(32), // rounded-[2rem]
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.muted.withValues(
+            alpha: colors.muted.a * (_hovered ? 0.85 : 0.65),
           ),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 192), // min-h-52 − p-2
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  glyph,
-                  const SizedBox(height: 12), // mb-3
-                  Text(
-                    widget.title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.14, // tracking-[-0.01em]
-                      color: colors.foreground,
+          borderRadius: BorderRadius.circular(32), // rounded-[2rem]
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8), // p-2 → the dashed frame's inset
+          child: CustomPaint(
+            painter: _DashedFramePainter(
+              color: frameColor,
+              radius: 24, // rounded-[1.5rem]
+              fill: dragging
+                  ? colors.muted.withValues(alpha: colors.muted.a * 0.2)
+                  : colors.background,
+            ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight: 192,
+              ), // min-h-52 − p-2
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    glyph,
+                    const SizedBox(height: 12), // mb-3
+                    Text(
+                      widget.title,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.14, // tracking-[-0.01em]
+                        color: colors.foreground,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4), // mt-1
-                  Text(
-                    widget.description,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      height: 20 / 12, // leading-5
-                      color: colors.mutedForeground,
+                    const SizedBox(height: 4), // mt-1
+                    Text(
+                      widget.description,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 20 / 12, // leading-5
+                        color: colors.mutedForeground,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -1747,8 +1746,6 @@ class _WaveformState extends State<_Waveform>
   }
 }
 
-/// Audio play/pause toggle — glyph swaps with a 0.2s EASE_OUT scale/fade,
-/// press dips to 0.94 on SPRING_PRESS.
 /// The play/pause mark inside the audio row's toggle.
 ///
 /// The source renders `<Play className="size-4 translate-x-px fill-current" />`
@@ -1807,6 +1804,8 @@ class _PlayGlyphPainter extends CustomPainter {
       old.playing != playing || old.color != color;
 }
 
+/// Audio play/pause toggle — glyph swaps with a 0.2s EASE_OUT scale/fade,
+/// press dips to 0.94 on SPRING_PRESS.
 class _PlayToggle extends StatefulWidget {
   const _PlayToggle({
     required this.playing,
@@ -1833,35 +1832,38 @@ class _PlayToggleState extends State<_PlayToggle> {
   @override
   Widget build(BuildContext context) {
     final colors = widget.colors;
-    Widget button = Container(
-      width: 36, // size-9
-      height: 36,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: colors.foreground,
-        shape: BoxShape.circle,
-        border: _focusVisible ? Border.all(color: colors.ring, width: 2) : null,
-      ),
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        switchInCurve: beuiEaseOut,
-        switchOutCurve: beuiEaseOut,
-        transitionBuilder: (child, animation) {
-          final fade = FadeTransition(opacity: animation, child: child);
-          if (widget.reduce) return fade;
-          return ScaleTransition(
-            scale: Tween<double>(begin: 0.8, end: 1).animate(animation),
-            child: fade,
-          );
-        },
-        child: SizedBox(
-          key: ValueKey(widget.playing),
-          width: 16, // size-4
-          height: 16,
-          child: CustomPaint(
-            painter: _PlayGlyphPainter(
-              playing: widget.playing,
-              color: colors.background,
+    Widget button = BeuiFocusRing(
+      focused: _focusVisible,
+      borderRadius: BorderRadius.circular(18), // half of size-9, i.e. a circle
+      child: Container(
+        width: 36, // size-9
+        height: 36,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: colors.foreground,
+          shape: BoxShape.circle,
+        ),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          switchInCurve: beuiEaseOut,
+          switchOutCurve: beuiEaseOut,
+          transitionBuilder: (child, animation) {
+            final fade = FadeTransition(opacity: animation, child: child);
+            if (widget.reduce) return fade;
+            return ScaleTransition(
+              scale: Tween<double>(begin: 0.8, end: 1).animate(animation),
+              child: fade,
+            );
+          },
+          child: SizedBox(
+            key: ValueKey(widget.playing),
+            width: 16, // size-4
+            height: 16,
+            child: CustomPaint(
+              painter: _PlayGlyphPainter(
+                playing: widget.playing,
+                color: colors.background,
+              ),
             ),
           ),
         ),
@@ -2147,25 +2149,27 @@ class _IconButtonState extends State<_IconButton> {
 
   @override
   Widget build(BuildContext context) {
-    Widget button = AnimatedContainer(
-      duration: const Duration(milliseconds: 150), // transition-colors
-      curve: beuiEaseOut,
-      width: widget.size,
-      height: widget.size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: _hovered ? widget.hoverBackground : widget.background,
-        borderRadius: BorderRadius.circular(widget.radius),
-        border: _focusVisible
-            ? Border.all(color: widget.colors.ring, width: 2)
-            : widget.borderColor == null
-            ? null
-            : Border.all(color: widget.borderColor!),
-      ),
-      child: Icon(
-        widget.icon,
-        size: widget.iconSize,
-        color: _hovered ? widget.hoverForeground : widget.foreground,
+    Widget button = BeuiFocusRing(
+      focused: _focusVisible,
+      borderRadius: BorderRadius.circular(widget.radius),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150), // transition-colors
+        curve: beuiEaseOut,
+        width: widget.size,
+        height: widget.size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: _hovered ? widget.hoverBackground : widget.background,
+          borderRadius: BorderRadius.circular(widget.radius),
+          border: widget.borderColor == null
+              ? null
+              : Border.all(color: widget.borderColor!),
+        ),
+        child: Icon(
+          widget.icon,
+          size: widget.iconSize,
+          color: _hovered ? widget.hoverForeground : widget.foreground,
+        ),
       ),
     );
 
@@ -2262,21 +2266,22 @@ class _ImageThumbnailState extends State<_ImageThumbnail> {
       );
     }
 
-    Widget thumb = Container(
-      width: 36, // size-9
-      height: 36,
-      decoration: BoxDecoration(
-        color: colors.muted,
-        borderRadius: BorderRadius.circular(10), // rounded-[10px]
-        border: Border.all(
-          color: _focusVisible
-              ? colors.ring
-              : colors.border.withValues(alpha: colors.border.a * 0.7),
-          width: _focusVisible ? 2 : 1,
+    Widget thumb = BeuiFocusRing(
+      focused: _focusVisible,
+      borderRadius: BorderRadius.circular(10), // rounded-[10px]
+      child: Container(
+        width: 36, // size-9
+        height: 36,
+        decoration: BoxDecoration(
+          color: colors.muted,
+          borderRadius: BorderRadius.circular(10), // rounded-[10px]
+          border: Border.all(
+            color: colors.border.withValues(alpha: colors.border.a * 0.7),
+          ),
         ),
+        clipBehavior: Clip.antiAlias,
+        child: Image(image: preview, fit: BoxFit.cover),
       ),
-      clipBehavior: Clip.antiAlias,
-      child: Image(image: preview, fit: BoxFit.cover),
     );
 
     thumb = SingleMotionBuilder(
