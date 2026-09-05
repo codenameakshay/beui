@@ -36,8 +36,10 @@ const _contentSpring = SpringMotion(
   SpringDescription(mass: 1, stiffness: 168.6, damping: 16.88),
 );
 
-/// Constant radius — never animated. Clamped to half the shell height in
-/// paint, so the pill-to-rounded-rect morph falls out of the resize for free.
+/// Constant radius — never animated. The pill-to-rounded-rect morph falls
+/// out of the resize for free: Flutter's `RRect` normalization caps a corner
+/// radius at half the box's own height, so a shell shorter than 64px (e.g.
+/// the resting pill) reads as a stadium shape on its own.
 const _radius = 32.0;
 
 /// iPhone pill dimensions; also the shell's pre-measure target so a

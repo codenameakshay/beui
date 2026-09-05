@@ -19,6 +19,7 @@ import '_engine.dart';
 /// port folds it into this model as a named constructor. That keeps [BeuiDock]'s
 /// item list homogeneous ([List] of non-nullable [BeuiDockItem]) and keeps the
 /// grouping visible at the call site.
+@immutable
 class BeuiDockItem {
   /// Creates a dock item.
   const BeuiDockItem({
