@@ -2,26 +2,8 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor/motor.dart' show MotionBuilder;
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: child);
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+import '../support.dart';
 
 List<BeuiCommandItem> _items(List<String> selected) => [
   BeuiCommandItem(
@@ -60,7 +42,9 @@ void main() {
     testWidgets('closed by default; ⌘K opens with input focused', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(BeuiCommandPalette(items: _items([]))));
+      await tester.pumpWidget(
+        beuiTestApp(BeuiCommandPalette(items: _items([]))),
+      );
       await tester.pump();
       expect(find.text('New file'), findsNothing);
 
@@ -78,14 +62,18 @@ void main() {
     });
 
     testWidgets('renders group headers', (tester) async {
-      await tester.pumpWidget(_wrap(BeuiCommandPalette(items: _items([]))));
+      await tester.pumpWidget(
+        beuiTestApp(BeuiCommandPalette(items: _items([]))),
+      );
       await _openWithShortcut(tester);
       expect(find.text('ACTIONS'), findsOneWidget);
       expect(find.text('LINKS'), findsOneWidget);
     });
 
     testWidgets('Esc closes the palette', (tester) async {
-      await tester.pumpWidget(_wrap(BeuiCommandPalette(items: _items([]))));
+      await tester.pumpWidget(
+        beuiTestApp(BeuiCommandPalette(items: _items([]))),
+      );
       await _openWithShortcut(tester);
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pump();
@@ -96,7 +84,9 @@ void main() {
     testWidgets('fuzzy filter matches subsequences and keywords', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(BeuiCommandPalette(items: _items([]))));
+      await tester.pumpWidget(
+        beuiTestApp(BeuiCommandPalette(items: _items([]))),
+      );
       await _openWithShortcut(tester);
       await tester.enterText(find.byType(EditableText), 'gh');
       await tester.pump(const Duration(milliseconds: 100));
@@ -110,7 +100,7 @@ void main() {
 
     testWidgets('shows the empty message when nothing matches', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiCommandPalette(items: _items([]), emptyMessage: 'Nothing here'),
         ),
       );
@@ -125,7 +115,7 @@ void main() {
     ) async {
       final selected = <String>[];
       await tester.pumpWidget(
-        _wrap(BeuiCommandPalette(items: _items(selected))),
+        beuiTestApp(BeuiCommandPalette(items: _items(selected))),
       );
       await _openWithShortcut(tester);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -140,7 +130,7 @@ void main() {
     testWidgets('tapping a row selects it', (tester) async {
       final selected = <String>[];
       await tester.pumpWidget(
-        _wrap(BeuiCommandPalette(items: _items(selected))),
+        beuiTestApp(BeuiCommandPalette(items: _items(selected))),
       );
       await _openWithShortcut(tester);
       await tester.tap(find.text('GitHub'));
@@ -152,7 +142,7 @@ void main() {
     testWidgets('controlled open works without the shortcut', (tester) async {
       final opens = <bool>[];
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiCommandPalette(
             items: _items([]),
             open: true,
@@ -165,14 +155,6 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pump();
       expect(opens.last, isFalse);
-    });
-
-    testWidgets('reduced motion opens with fade only', (tester) async {
-      await tester.pumpWidget(
-        _wrap(BeuiCommandPalette(items: _items([])), reduce: true),
-      );
-      await _openWithShortcut(tester);
-      expect(find.text('New file'), findsOneWidget);
     });
 
     // The active-row highlight is a `MotionBuilder<Rect>` that was handed
@@ -197,16 +179,13 @@ void main() {
         tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
       );
 
-      await tester.pumpWidget(_wrap(BeuiCommandPalette(items: _items([]))));
+      await tester.pumpWidget(
+        beuiTestApp(BeuiCommandPalette(items: _items([]))),
+      );
       await _openWithShortcut(tester);
 
       Rect highlight() => tester.getRect(
-        find
-            .descendant(
-              of: find.byType(MotionBuilder<Rect>),
-              matching: find.byType(DecoratedBox),
-            )
-            .first,
+        find.byKey(const ValueKey('beui-command-palette-highlight')),
       );
 
       final first = highlight();

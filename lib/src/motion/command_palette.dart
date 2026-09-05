@@ -51,14 +51,13 @@ class BeuiCommandItem {
 /// Subsequence fuzzy match (source `fuzzyMatch`).
 bool _fuzzyMatch(String needle, String hay) {
   if (needle.isEmpty) return true;
-  needle = needle.toLowerCase();
-  hay = hay.toLowerCase();
+  final n = needle.toLowerCase();
+  final h = hay.toLowerCase();
   var i = 0;
-  for (final ch in hay.split('')) {
-    if (ch == needle[i]) i++;
-    if (i == needle.length) return true;
+  for (var j = 0; j < h.length && i < n.length; j++) {
+    if (h.codeUnitAt(j) == n.codeUnitAt(i)) i++;
   }
-  return false;
+  return i == n.length;
 }
 
 /// Opened via a keyboard shortcut many times a day — the entrance must read
@@ -298,6 +297,12 @@ class _BeuiCommandPaletteState extends State<BeuiCommandPalette> {
     final grouped = _group(filtered);
     _schedulePillMeasure();
 
+    // Prune anchors for rows that fell out of the filter so a long session
+    // does not leak a GlobalKey per query ever typed.
+    final liveIds = {for (final item in filtered) item.id};
+    _rowKeys.removeWhere((id, _) => !liveIds.contains(id));
+    final indexById = {for (final (i, item) in filtered.indexed) item.id: i};
+
     // `rounded-2xl border border-border bg-card shadow-2xl`.
     Widget panel = Container(
       clipBehavior: Clip.antiAlias,
@@ -373,6 +378,9 @@ class _BeuiCommandPaletteState extends State<BeuiCommandPalette> {
                                     width: r.width,
                                     height: r.height,
                                     child: DecoratedBox(
+                                      key: const ValueKey(
+                                        'beui-command-palette-highlight',
+                                      ),
                                       decoration: BoxDecoration(
                                         color: colors.primary.withValues(
                                           alpha: 0.05,
@@ -415,11 +423,11 @@ class _BeuiCommandPaletteState extends State<BeuiCommandPalette> {
                                         GlobalKey.new,
                                       ),
                                       item: item,
-                                      active: filtered.indexOf(item) == _active,
+                                      active: indexById[item.id] == _active,
                                       hasIcons: hasIcons,
                                       colors: colors,
                                       onHover: () =>
-                                          _setActive(filtered.indexOf(item)),
+                                          _setActive(indexById[item.id]!),
                                       onTap: () => _select(item),
                                     ),
                                   // `mb-1 last:mb-0` on the group wrapper.
@@ -445,7 +453,7 @@ class _BeuiCommandPaletteState extends State<BeuiCommandPalette> {
 
     // Entrance: opacity + y -8 + scale 0.97 on PANEL_SPRING; exit 120ms
     // EASE_OUT. Reduced motion keeps the fade only (~100ms).
-    final fade = CurvedAnimation(parent: animation, curve: beuiEaseOut);
+    final fade = animation.drive(CurveTween(curve: beuiEaseOut));
     Widget animated = FadeTransition(opacity: fade, child: panel);
     if (!reduce) {
       animated = SingleMotionBuilder(
