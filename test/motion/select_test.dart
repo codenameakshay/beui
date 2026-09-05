@@ -161,7 +161,10 @@ void main() {
     testWidgets('shows the selected value in the trigger', (tester) async {
       await tester.pumpWidget(_app(_morph(defaultValue: 'banana')));
       await tester.pumpAndSettle();
-      expect(find.text('Banana'), findsWidgets);
+      // The panel is closed, so its off-stage measurement copy (which also
+      // carries the label) is excluded by find.text's default skipOffstage —
+      // this must resolve to the closed trigger alone.
+      expect(find.text('Banana'), findsOneWidget);
     });
 
     testWidgets('tap header opens and selecting commits', (tester) async {
