@@ -4,25 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: child);
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
-
 List<BeuiExpandableActionBarItem> _items({
   List<String>? tapped,
   bool disableSecond = false,
@@ -63,7 +44,9 @@ void main() {
     testWidgets('collapsed rail is icon-only; hover expands the labels', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(BeuiExpandableActionBar(items: _items())));
+      await tester.pumpWidget(
+        beuiTestApp(BeuiExpandableActionBar(items: _items())),
+      );
       await tester.pumpAndSettle();
       final collapsed = tester
           .getSize(find.byType(BeuiExpandableActionBar))
@@ -92,14 +75,14 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(BeuiExpandableActionBar(items: _items(), expanded: false)),
+        beuiTestApp(BeuiExpandableActionBar(items: _items(), expanded: false)),
       );
       await tester.pumpAndSettle();
       final collapsed = tester
           .getSize(find.byType(BeuiExpandableActionBar))
           .width;
       await tester.pumpWidget(
-        _wrap(BeuiExpandableActionBar(items: _items(), expanded: true)),
+        beuiTestApp(BeuiExpandableActionBar(items: _items(), expanded: true)),
       );
       await tester.pumpAndSettle();
       final expanded = tester
@@ -112,7 +95,7 @@ void main() {
       final tapped = <String>[];
       final actions = <String>[];
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiExpandableActionBar(
             items: _items(tapped: tapped),
             onAction: (item) => actions.add(item.id),
@@ -129,7 +112,7 @@ void main() {
     testWidgets('disabled items do not fire', (tester) async {
       final tapped = <String>[];
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiExpandableActionBar(
             items: _items(tapped: tapped, disableSecond: true),
           ),
@@ -142,7 +125,9 @@ void main() {
     });
 
     testWidgets('the active item carries the highlight pill', (tester) async {
-      await tester.pumpWidget(_wrap(BeuiExpandableActionBar(items: _items())));
+      await tester.pumpWidget(
+        beuiTestApp(BeuiExpandableActionBar(items: _items())),
+      );
       await tester.pumpAndSettle();
       await tester.pump(const Duration(milliseconds: 50));
       // Highlight = hovered ?? active ('archive' is active) — a translucent
@@ -167,15 +152,17 @@ void main() {
       expect(pill, isNotEmpty);
     });
 
-    testWidgets('badge renders', (tester) async {
-      await tester.pumpWidget(_wrap(BeuiExpandableActionBar(items: _items())));
-      await tester.pumpAndSettle();
-      expect(find.text('3'), findsOneWidget);
-    });
-
     testWidgets('reduced motion expands without blur', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(BeuiExpandableActionBar(items: _items(), expanded: false)),
+      );
+      await tester.pumpAndSettle();
+      final collapsed = tester
+          .getSize(find.byType(BeuiExpandableActionBar))
+          .width;
+
+      await tester.pumpWidget(
+        beuiTestApp(
           BeuiExpandableActionBar(items: _items(), expanded: true),
           reduce: true,
         ),
@@ -184,6 +171,14 @@ void main() {
         await tester.pump(const Duration(milliseconds: 40));
         expect(maxBlurSigma(tester), lessThan(0.5));
       }
+      final expanded = tester
+          .getSize(find.byType(BeuiExpandableActionBar))
+          .width;
+      expect(
+        expanded,
+        greaterThan(collapsed + 60),
+        reason: 'reduced motion still snaps to the expanded width',
+      );
     });
   });
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
@@ -244,6 +245,11 @@ class _BeuiExpandableActionBarState extends State<BeuiExpandableActionBar> {
     final m = _metrics[widget.size]!;
     _scheduleHighlightMeasure();
 
+    // Prune anchors for items that are gone so a long-lived bar does not leak
+    // a GlobalKey per item ever configured.
+    final liveIds = {for (final item in widget.items) item.id};
+    _itemKeys.removeWhere((id, _) => !liveIds.contains(id));
+
     final track = ClipRRect(
       borderRadius: BorderRadius.circular(999),
       child: BackdropFilter(
@@ -336,7 +342,11 @@ class _BeuiExpandableActionBarState extends State<BeuiExpandableActionBar> {
       skipTraversal: true,
       onFocusChange: (focused) {
         if (!widget.expandOnFocus) return;
-        focused ? _open() : _close();
+        if (focused) {
+          _open();
+        } else {
+          _close();
+        }
       },
       child: MouseRegion(
         onEnter: (_) {
@@ -544,7 +554,7 @@ class _Unfurl extends StatelessWidget {
         return ClipRect(
           child: Align(
             alignment: Alignment.centerLeft,
-            widthFactor: raw.clamp(0.0, double.infinity),
+            widthFactor: math.max(0.0, raw),
             child: Padding(
               padding: EdgeInsets.only(left: leadGap),
               child: body,
