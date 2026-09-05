@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
@@ -21,12 +23,18 @@ class _ExpandingArrowButtonDemo extends StatefulWidget {
 class _ExpandingArrowButtonDemoState extends State<_ExpandingArrowButtonDemo> {
   bool _confirmed = false; // hold band
   bool _continued = false; // slide band
+  Timer? _flashTimer;
+
+  @override
+  void dispose() {
+    _flashTimer?.cancel();
+    super.dispose();
+  }
 
   void _flash(void Function(bool) set) {
     set(true);
-    Future<void>.delayed(const Duration(milliseconds: 1800), () {
-      if (mounted) set(false);
-    });
+    _flashTimer?.cancel();
+    _flashTimer = Timer(const Duration(milliseconds: 1800), () => set(false));
   }
 
   @override

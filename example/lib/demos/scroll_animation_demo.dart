@@ -75,19 +75,13 @@ Widget _sectionRow(BeuiColors colors, int n) => Container(
 /// Source `SmoothScrollPreview`: `root={false}` over an
 /// `h-64 w-full max-w-lg rounded-2xl border bg-card` box holding 16 sections
 /// and a sticky scroll-to-top button.
-class _SmoothScrollPreview extends StatefulWidget {
+class _SmoothScrollPreview extends StatelessWidget {
   const _SmoothScrollPreview({required this.colors});
 
   final BeuiColors colors;
 
   @override
-  State<_SmoothScrollPreview> createState() => _SmoothScrollPreviewState();
-}
-
-class _SmoothScrollPreviewState extends State<_SmoothScrollPreview> {
-  @override
   Widget build(BuildContext context) {
-    final colors = widget.colors;
     return SizedBox(
       width: _lg,
       height: 256, // h-64
@@ -213,7 +207,7 @@ class _ScrollProgressPreview extends StatelessWidget {
 /// speed -0.6 / 0.5 / 0.9, and a closing `h-80` spacer.
 ///
 /// The source's two layers are remote `picsum.photos` photographs. The package
-/// ships no assets (spec §3), so they are drawn here — a gradient for the
+/// ships no assets, so they are drawn here — a gradient for the
 /// backdrop, a solid disc for the avatar. Geometry and drift are the port; the
 /// photograph is not reproducible and is not meant to be.
 class _ParallaxPreview extends StatelessWidget {

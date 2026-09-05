@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
@@ -35,13 +37,18 @@ class _AnimatedToastStackDemoState extends State<_AnimatedToastStackDemo> {
     (BeuiToastPosition.bottomRight, 'bottom-right'),
   ];
 
+  final List<Timer> _promiseTimers = [];
+
   @override
   void dispose() {
+    for (final t in _promiseTimers) {
+      t.cancel();
+    }
     _toasts.dispose();
     super.dispose();
   }
 
-  // EXAMPLES[0] — a promise toast that patches itself to success after 1.8s.
+  // A promise toast that patches itself to success after 1.8s.
   void _promise() {
     final id = _toasts.show(
       title: 'Publishing component',
@@ -49,16 +56,17 @@ class _AnimatedToastStackDemoState extends State<_AnimatedToastStackDemo> {
       status: BeuiToastStatus.loading,
       duration: Duration.zero, // sticky while loading
     );
-    Future<void>.delayed(const Duration(milliseconds: 1800), () {
-      if (!mounted) return;
-      _toasts.update(
-        id,
-        title: 'Publish complete',
-        description: 'Toast updated in-place from loading to success.',
-        status: BeuiToastStatus.success,
-        duration: const Duration(milliseconds: 3200),
-      );
-    });
+    _promiseTimers.add(
+      Timer(const Duration(milliseconds: 1800), () {
+        _toasts.update(
+          id,
+          title: 'Publish complete',
+          description: 'Toast updated in-place from loading to success.',
+          status: BeuiToastStatus.success,
+          duration: const Duration(milliseconds: 3200),
+        );
+      }),
+    );
   }
 
   void _success() => _toasts.show(

@@ -17,8 +17,8 @@ class _AgentThemeDemo extends StatefulWidget {
 }
 
 class _AgentThemeDemoState extends State<_AgentThemeDemo> {
-  var _expanded = false;
-  var _status = BeuiApprovalCardStatus.pending;
+  bool _expanded = false;
+  BeuiApprovalCardStatus _status = BeuiApprovalCardStatus.pending;
 
   @override
   Widget build(BuildContext context) {
@@ -158,16 +158,9 @@ class _AgentThemeDemoState extends State<_AgentThemeDemo> {
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                // This field is the reason A12 was caught.
-                                // The expandable body used to render each of
-                                // its children twice — once offstage to
-                                // measure, once to display — so this became
-                                // two EditableTexts with two FocusNodes and
-                                // two buffers, and the text on screen was not
-                                // necessarily the text the card would submit.
-                                // It is now instantiated exactly once; see the
-                                // EditableText-count test in
-                                // test/motion/approval_card_test.dart.
+                                // The expandable body renders its children
+                                // exactly once — see the EditableText-count
+                                // test in test/motion/approval_card_test.dart.
                                 BeuiInput(
                                   defaultValue: 'Shared layout',
                                   onChanged: (_) {},

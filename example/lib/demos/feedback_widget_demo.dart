@@ -18,6 +18,7 @@ class _FeedbackWidgetDemo extends StatefulWidget {
 
 class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
   int _attempts = 0;
+  String? _lastMessage;
 
   Future<void> _submit(BeuiFeedbackData data) async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
@@ -25,7 +26,7 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
     if (_attempts == 1) {
       throw StateError('Preview submission failed');
     }
-    debugPrint('feedback received: ${data.message}');
+    setState(() => _lastMessage = data.message);
   }
 
   @override
@@ -95,32 +96,46 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 448),
-        child: SizedBox(
-          height: 320,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: colors.background,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 320,
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: colors.border),
-              ),
-              child: Stack(
-                children: [
-                  Positioned.fill(child: fauxApp),
-                  Positioned.fill(
-                    child: BeuiFeedbackWidget(
-                      onSubmit: _submit,
-                      // Off by default for source fidelity; the gallery shows
-                      // it on because one tap is a complete answer and it is
-                      // the highest-leverage friction fix the widget offers.
-                      showSentiment: true,
-                    ),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: colors.background,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: colors.border),
                   ),
-                ],
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: fauxApp),
+                      Positioned.fill(
+                        child: BeuiFeedbackWidget(
+                          onSubmit: _submit,
+                          // Off by default for source fidelity; the gallery
+                          // shows it on because one tap is a complete answer
+                          // and it is the highest-leverage friction fix the
+                          // widget offers.
+                          showSentiment: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
+            if (_lastMessage != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                'Last submission received: "$_lastMessage"',
+                style: TextStyle(fontSize: 12, color: colors.mutedForeground),
+              ),
+            ],
+          ],
         ),
       ),
     );

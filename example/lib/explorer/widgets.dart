@@ -85,8 +85,7 @@ class Breadcrumb extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final children = <Widget>[];
-    for (var i = 0; i < crumbs.length; i++) {
-      final (label, onTap) = crumbs[i];
+    for (final (i, (label, onTap)) in crumbs.indexed) {
       if (i > 0) {
         children.add(
           Padding(

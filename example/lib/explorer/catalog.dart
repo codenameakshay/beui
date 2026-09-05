@@ -152,9 +152,9 @@ class _StackedDemos extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (var i = 0; i < builders.length; i++) ...[
+        for (final (i, builder) in builders.indexed) ...[
           if (i > 0) const SizedBox(height: 56),
-          builders[i](context),
+          builder(context),
         ],
       ],
     );

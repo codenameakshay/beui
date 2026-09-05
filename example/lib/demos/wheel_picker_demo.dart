@@ -40,6 +40,13 @@ class _WheelPickerDemoState extends State<_WheelPickerDemo> {
   List<BeuiWheelPickerOption> _opts(Iterable<String> values) =>
       values.map(BeuiWheelPickerOption.text).toList();
 
+  // A short month or a non-leap February can strand the day past the end —
+  // pull it back to the last valid day (mirrors the source effect).
+  void _clampDay() {
+    final dayCount = _daysIn(_months.indexOf(_month), int.parse(_year));
+    if (int.parse(_day) > dayCount) _day = '$dayCount';
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
@@ -47,10 +54,6 @@ class _WheelPickerDemoState extends State<_WheelPickerDemo> {
     final monthIndex = _months.indexOf(_month);
     final year = int.parse(_year);
     final dayCount = _daysIn(monthIndex, year);
-    // A short month or a non-leap February can strand the day past the end —
-    // pull it back to the last valid day (mirrors the source effect).
-    if (int.parse(_day) > dayCount) _day = '$dayCount';
-
     final days = List<String>.generate(dayCount, (i) => '${i + 1}');
     final years = List<String>.generate(60, (i) => '${1980 + i}');
 
@@ -97,7 +100,10 @@ class _WheelPickerDemoState extends State<_WheelPickerDemo> {
                 itemHeight: 42,
                 semanticLabel: 'Month',
                 style: transparentStyle.copyWith(width: 128),
-                onChanged: (v) => setState(() => _month = v),
+                onChanged: (v) => setState(() {
+                  _month = v;
+                  _clampDay();
+                }),
               ),
               BeuiWheelPicker(
                 options: _opts(days),
@@ -115,7 +121,10 @@ class _WheelPickerDemoState extends State<_WheelPickerDemo> {
                 itemHeight: 42,
                 semanticLabel: 'Year',
                 style: transparentStyle.copyWith(width: 80),
-                onChanged: (v) => setState(() => _year = v),
+                onChanged: (v) => setState(() {
+                  _year = v;
+                  _clampDay();
+                }),
               ),
             ],
           ),
