@@ -1133,7 +1133,7 @@ class _CitationRowState extends State<_CitationRow> {
               if (widget.citation.url != null && _interactive) ...[
                 const SizedBox(width: 6), // gap-1.5
                 Icon(
-                  LucideIcons.external_link,
+                  BeuiAgentTheme.of(context).icons.externalLink,
                   size: 14, // size-3.5
                   color: linkColor,
                 ),
