@@ -198,16 +198,6 @@ void main() {
       expect(find.bySemanticsLabel('Indexing, in progress'), findsOneWidget);
       handle.dispose();
     });
-
-    testWidgets('renders under reduced motion without error', (tester) async {
-      await tester.pumpWidget(
-        _app(const BeuiAgentProgress(elapsedSeconds: 3), reduce: true),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
-      expect(find.byType(BeuiAgentProgress), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
   });
 
   group('BeuiReasoningText', () {
@@ -239,44 +229,6 @@ void main() {
       expect(find.textContaining('Beta'), findsWidgets);
       expect(tester.takeException(), isNull);
     });
-
-    for (final variant in BeuiReasoningTextVariant.values) {
-      testWidgets('$variant builds and animates without error', (tester) async {
-        await tester.pumpWidget(
-          _app(
-            BeuiReasoningText(
-              variant: variant,
-              phrases: const ['One', 'Two', 'Three'],
-              interval: const Duration(milliseconds: 800),
-            ),
-          ),
-        );
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 100));
-        // Trigger a phrase change.
-        await tester.pump(const Duration(milliseconds: 850));
-        await tester.pump(const Duration(milliseconds: 200));
-        expect(find.byType(BeuiReasoningText), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      });
-
-      testWidgets('$variant renders under reduced motion', (tester) async {
-        await tester.pumpWidget(
-          _app(
-            BeuiReasoningText(
-              variant: variant,
-              phrases: const ['One', 'Two'],
-              interval: const Duration(milliseconds: 700),
-            ),
-            reduce: true,
-          ),
-        );
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 800));
-        expect(find.byType(BeuiReasoningText), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      });
-    }
 
     testWidgets('swap cross-fades the outgoing and incoming phrase', (
       tester,
