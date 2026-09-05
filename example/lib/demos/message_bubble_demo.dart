@@ -1,21 +1,12 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
 import 'agents_chat_preview.dart';
 
-/// Gallery route for `BeuiMessageBubble`.
-///
-/// The source registry entry ships one preview — the shared chat surface — and
-/// leaves the tones, groups and collapsible bodies to the page's *usage* code
-/// samples, which have no Flutter analogue. The audit's C20 found the
-/// consequence: half the bubble API (danger / tint / outline, collapsible,
-/// group, marker) had no rendered coverage anywhere in the gallery, so nobody
-/// ever looked at it — which is how `outline` shipped at ~1.1:1 and `danger` at
-/// 3.43:1 without being noticed.
-///
-/// So this route keeps the source preview *first* and adds a specimen sheet
-/// under it. The preview is still the 1:1 port; the sheet is the gallery doing
-/// the job the docs site does upstream.
+/// Gallery route for `BeuiMessageBubble`: the source preview's shared chat
+/// surface, plus a specimen sheet covering tones, grouping, collapsing and
+/// interaction that the source's docs-only usage samples don't render.
 Widget messageBubbleDemo(BuildContext context) => const _MessageBubbleDemo();
 
 class _MessageBubbleDemo extends StatelessWidget {
@@ -98,23 +89,7 @@ class _Section extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: colors.foreground,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          blurb,
-          style: TextStyle(
-            fontSize: 13,
-            height: 1.45,
-            color: colors.mutedForeground,
-          ),
-        ),
+        SectionLabel(title, note: blurb),
         const SizedBox(height: 14),
         DecoratedBox(
           decoration: BoxDecoration(

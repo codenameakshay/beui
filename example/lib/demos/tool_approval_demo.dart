@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiToolApproval] — mirrors the source docs preview:
 /// a terminal-run permission card that progresses through approve → running
 /// → complete (or deny), with a Replay control.
@@ -20,8 +22,6 @@ class _ToolApprovalDemoState extends State<_ToolApprovalDemo> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-
     return SingleChildScrollView(
       child: Center(
         child: ConstrainedBox(
@@ -29,15 +29,7 @@ class _ToolApprovalDemoState extends State<_ToolApprovalDemo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Permission card',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.4,
-                  color: colors.mutedForeground,
-                ),
-              ),
+              const SectionLabel('Permission card'),
               const SizedBox(height: 12),
               SizedBox(
                 height: 360,
@@ -50,8 +42,7 @@ class _ToolApprovalDemoState extends State<_ToolApprovalDemo> {
                     Positioned(
                       left: 0,
                       bottom: 0,
-                      child: _ReplayButton(
-                        colors: colors,
+                      child: ReplayButton(
                         onPressed: () => setState(() => _run++),
                       ),
                     ),
@@ -59,70 +50,17 @@ class _ToolApprovalDemoState extends State<_ToolApprovalDemo> {
                 ),
               ),
               const SizedBox(height: 32),
-              _SectionLabel('Severity tiers', colors: colors),
+              const SectionLabel('Severity tiers'),
               const SizedBox(height: 12),
               const _SeverityTiers(),
               const SizedBox(height: 32),
-              _SectionLabel('Lapsed end-states', colors: colors),
+              const SectionLabel('Lapsed end-states'),
               const SizedBox(height: 12),
               const _LapsedStates(),
               const SizedBox(height: 32),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel(this.text, {required this.colors});
-
-  final String text;
-  final BeuiColors colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.4,
-        color: colors.mutedForeground,
-      ),
-    );
-  }
-}
-
-class _ReplayButton extends StatelessWidget {
-  const _ReplayButton({required this.colors, required this.onPressed});
-
-  final BeuiColors colors;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton.icon(
-      onPressed: onPressed,
-      icon: Icon(
-        LucideIcons.rotate_ccw,
-        size: 12,
-        color: colors.mutedForeground,
-      ),
-      label: Text(
-        'Replay',
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: colors.mutedForeground,
-        ),
-      ),
-      style: TextButton.styleFrom(
-        foregroundColor: colors.mutedForeground,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
   }

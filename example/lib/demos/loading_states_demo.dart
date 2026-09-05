@@ -1,6 +1,8 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for the agent loading-states suite —
 /// [BeuiThinkingShimmer], [BeuiAgentProgress], and [BeuiReasoningText].
 Widget loadingStatesDemo(BuildContext context) => const _LoadingStatesDemo();
@@ -10,8 +12,6 @@ class _LoadingStatesDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Center(
@@ -20,14 +20,14 @@ class _LoadingStatesDemo extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _sectionLabel(colors, 'Thinking shimmer'),
+              const SectionLabel('Thinking shimmer'),
               const SizedBox(height: 12),
               const BeuiThinkingShimmer(
                 text: 'Thinking…',
                 style: TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 32),
-              _sectionLabel(colors, 'Agent progress'),
+              const SectionLabel('Agent progress'),
               const SizedBox(height: 12),
               const BeuiAgentProgress(
                 label: 'Churning',
@@ -35,10 +35,10 @@ class _LoadingStatesDemo extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 32),
-              _sectionLabel(colors, 'Reasoning text'),
+              const SectionLabel('Reasoning text'),
               const SizedBox(height: 16),
               for (final example in _reasoningExamples) ...[
-                _sectionLabel(colors, example.label, small: true),
+                SectionLabel(example.label),
                 const SizedBox(height: 8),
                 BeuiReasoningText(
                   variant: example.variant,
@@ -54,18 +54,6 @@ class _LoadingStatesDemo extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _sectionLabel(BeuiColors colors, String label, {bool small = false}) {
-    return Text(
-      label.toUpperCase(),
-      style: TextStyle(
-        fontSize: small ? 11 : 12,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 1.1,
-        color: colors.mutedForeground.withValues(alpha: small ? 0.6 : 0.85),
       ),
     );
   }

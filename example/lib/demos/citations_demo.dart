@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiCitations] — mirrors the source preview: progressive
 /// source append with inline markers, then a Replay control.
 Widget citationsDemo(BuildContext context) => const _CitationsDemo();
@@ -165,44 +167,7 @@ class _CitationsDemoState extends State<_CitationsDemo> {
               Positioned(
                 left: 0,
                 bottom: 0,
-                child: TextButton(
-                  onPressed: _replay,
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    // Desktop `adaptivePlatformDensity` is compact (-2,-2),
-                    // which eats 4px of the source's 24px button height.
-                    visualDensity: VisualDensity.standard,
-                    foregroundColor: colors.foreground,
-                  ),
-                  // Source: inline-flex items-center gap-1.5 px-2 py-1 text-xs.
-                  // `TextButton.icon` hardcodes an 8px gap, so build the row.
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        LucideIcons.rotate_ccw,
-                        size: 12,
-                        color: colors.mutedForeground,
-                      ),
-                      const SizedBox(width: 6), // gap-1.5
-                      Text(
-                        'Replay',
-                        style: TextStyle(
-                          fontSize: 12,
-                          height: 16 / 12, // text-xs
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0,
-                          color: colors.mutedForeground,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                child: ReplayButton(onPressed: _replay),
               ),
             ],
           ),

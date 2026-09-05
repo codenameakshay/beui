@@ -3,14 +3,16 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiToolResult] — mirrors the source docs previews:
 /// a streaming terminal run that collapses on complete, and a request result
 /// that ends in error with retry / copy chrome.
 ///
-/// The remaining sections cover the states the audit found unrepresented: a
-/// cancelled run, the two-line header under 400px, a capped viewport with its
-/// fade + "N more" cue, and two concurrent tool calls composed as a plain
-/// [Column] (the A25 recipe — there is no separate "tool group" component).
+/// The remaining sections show a cancelled run, the two-line header under
+/// 400px, a capped viewport with its fade + "N more" cue, and two concurrent
+/// tool calls composed as a plain [Column] (there is no separate "tool
+/// group" component).
 Widget toolResultDemo(BuildContext context) => const _ToolResultDemo();
 
 class _ToolResultDemo extends StatefulWidget {
@@ -36,7 +38,7 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _SectionLabel('Terminal output', colors: colors),
+              const SectionLabel('Terminal output'),
               const SizedBox(height: 12),
               SizedBox(
                 height: 300,
@@ -52,8 +54,7 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
                     Positioned(
                       left: 0,
                       bottom: 0,
-                      child: _ReplayButton(
-                        colors: colors,
+                      child: ReplayButton(
                         onPressed: () => setState(() => _terminalRun++),
                       ),
                     ),
@@ -61,7 +62,7 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
                 ),
               ),
               const SizedBox(height: 32),
-              _SectionLabel('Request result', colors: colors),
+              const SectionLabel('Request result'),
               const SizedBox(height: 12),
               SizedBox(
                 height: 300,
@@ -77,8 +78,7 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
                     Positioned(
                       left: 0,
                       bottom: 0,
-                      child: _ReplayButton(
-                        colors: colors,
+                      child: ReplayButton(
                         onPressed: () => setState(() => _requestRun++),
                       ),
                     ),
@@ -87,13 +87,12 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
               ),
 
               const SizedBox(height: 32),
-              _SectionLabel('Cancelled', colors: colors),
-              const SizedBox(height: 4),
-              _SectionNote(
-                'A run the user stopped. Neutral, not an error — the status '
-                'role is `neutral`, and the actions stay reachable so it can '
-                'be run again.',
-                colors: colors,
+              const SectionLabel(
+                'Cancelled',
+                note:
+                    'A run the user stopped. Neutral, not an error — the status '
+                    'role is `neutral`, and the actions stay reachable so it can '
+                    'be run again.',
               ),
               const SizedBox(height: 12),
               BeuiToolResult(
@@ -109,12 +108,11 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
               ),
 
               const SizedBox(height: 32),
-              _SectionLabel('Narrow header (two lines)', colors: colors),
-              const SizedBox(height: 4),
-              _SectionNote(
-                'Under 400px the seven-element header wraps: title and status '
-                'lead, metadata and the tool slug drop to a second line.',
-                colors: colors,
+              const SectionLabel(
+                'Narrow header (two lines)',
+                note:
+                    'Under 400px the seven-element header wraps: title and status '
+                    'lead, metadata and the tool slug drop to a second line.',
               ),
               const SizedBox(height: 12),
               Align(
@@ -148,13 +146,12 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
               ),
 
               const SizedBox(height: 32),
-              _SectionLabel('Capped output', colors: colors),
-              const SizedBox(height: 4),
-              _SectionNote(
-                'A 120px viewport over a 60-line log. The bottom fade and the '
-                '"+N more" count only appear while content is actually below '
-                'the fold — scroll to the end and both retire.',
-                colors: colors,
+              const SectionLabel(
+                'Capped output',
+                note:
+                    'A 120px viewport over a 60-line log. The bottom fade and the '
+                    '"+N more" count only appear while content is actually below '
+                    'the fold — scroll to the end and both retire.',
               ),
               const SizedBox(height: 12),
               BeuiToolResult(
@@ -170,13 +167,12 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
               ),
 
               const SizedBox(height: 32),
-              _SectionLabel('Concurrent tool calls', colors: colors),
-              const SizedBox(height: 4),
-              _SectionNote(
-                'Two tools running at once is a Column of BeuiToolResults in '
-                'one message — each with its own status, its own body, and its '
-                'own collapse. No extra component required.',
-                colors: colors,
+              const SectionLabel(
+                'Concurrent tool calls',
+                note:
+                    'Two tools running at once is a Column of BeuiToolResults in '
+                    'one message — each with its own status, its own body, and its '
+                    'own collapse. No extra component required.',
               ),
               const SizedBox(height: 12),
               _ConcurrentRun(
@@ -185,8 +181,7 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: _ReplayButton(
-                  colors: colors,
+                child: ReplayButton(
                   onPressed: () => setState(() => _concurrentRun++),
                 ),
               ),
@@ -194,78 +189,6 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel(this.text, {required this.colors});
-
-  final String text;
-  final BeuiColors colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.4,
-        color: colors.mutedForeground,
-      ),
-    );
-  }
-}
-
-class _SectionNote extends StatelessWidget {
-  const _SectionNote(this.text, {required this.colors});
-
-  final String text;
-  final BeuiColors colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 12,
-        height: 18 / 12,
-        color: colors.mutedForeground,
-      ),
-    );
-  }
-}
-
-class _ReplayButton extends StatelessWidget {
-  const _ReplayButton({required this.colors, required this.onPressed});
-
-  final BeuiColors colors;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton.icon(
-      onPressed: onPressed,
-      icon: Icon(
-        LucideIcons.rotate_ccw,
-        size: 12,
-        color: colors.mutedForeground,
-      ),
-      label: Text(
-        'Replay',
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: colors.mutedForeground,
-        ),
-      ),
-      style: TextButton.styleFrom(
-        foregroundColor: colors.mutedForeground,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
   }

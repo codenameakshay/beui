@@ -9,6 +9,8 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 Widget actionSwapDemo(BuildContext context) => const _ActionSwapDemo();
 
 Widget textAnimationDemo(BuildContext context) => const _TextAnimationDemo();
@@ -781,18 +783,9 @@ class _ButtonDemoState extends State<_ButtonDemo> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
     Widget caption(String text) => Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.3,
-          color: colors.mutedForeground,
-        ),
-      ),
+      child: SectionLabel(text),
     );
 
     return Column(
@@ -1358,18 +1351,9 @@ class _ActionSwapDemo extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
     Widget caption(String text) => Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.3,
-          color: colors.mutedForeground,
-        ),
-      ),
+      child: SectionLabel(text),
     );
 
     // The Blur / Roll previews: `flex items-center justify-center gap-3`
@@ -1475,15 +1459,7 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     Widget caption(String text) => Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.3,
-          color: colors.mutedForeground,
-        ),
-      ),
+      child: SectionLabel(text),
     );
 
     return Column(
@@ -1541,7 +1517,7 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
           ),
         ),
         const SizedBox(height: 32), // gap-8
-        Center(child: _ReplayPill(onTap: () => setState(() => _replay++))),
+        Center(child: ReplayButton(onPressed: () => setState(() => _replay++))),
         const SizedBox(height: 48),
 
         // TextShimmerPreview: `flex flex-col gap-4`, left-aligned inside a
@@ -1584,48 +1560,6 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// The Replay control from `TextRevealPreview` — preview chrome, not a beUI
-/// component: `h-9 rounded-full border border-border bg-card px-4 text-xs
-/// font-medium`.
-class _ReplayPill extends StatelessWidget {
-  const _ReplayPill({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    return GestureDetector(
-      onTap: onTap,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: Container(
-          height: 36, // h-9
-          padding: const EdgeInsets.symmetric(horizontal: 16), // px-4
-          decoration: BoxDecoration(
-            color: colors.card,
-            border: Border.all(color: colors.border),
-            borderRadius: BorderRadius.circular(18), // rounded-full
-          ),
-          // widthFactor: 1 shrink-wraps the pill to its label; without it the
-          // Container's alignment would expand to the row's full width.
-          child: Center(
-            widthFactor: 1,
-            child: Text(
-              'Replay',
-              style: TextStyle(
-                fontSize: 12, // text-xs
-                fontWeight: FontWeight.w500,
-                color: colors.foreground,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

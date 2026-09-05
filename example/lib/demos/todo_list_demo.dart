@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiTodoList] — mirrors the source preview: an
 /// auto-advancing implementation plan with morphing status marks, a rolling
 /// completion count, and a Replay control.
@@ -87,11 +89,6 @@ class _TodoListDemoState extends State<_TodoListDemo> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
-
     return SingleChildScrollView(
       child: Center(
         child: ConstrainedBox(
@@ -114,37 +111,13 @@ class _TodoListDemoState extends State<_TodoListDemo> {
                     Positioned(
                       left: 0,
                       bottom: 0,
-                      child: TextButton.icon(
-                        onPressed: _replay,
-                        icon: Icon(
-                          LucideIcons.rotate_ccw,
-                          size: 12,
-                          color: colors.mutedForeground,
-                        ),
-                        label: Text(
-                          'Replay',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: colors.mutedForeground,
-                          ),
-                        ),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          foregroundColor: colors.foreground,
-                        ),
-                      ),
+                      child: ReplayButton(onPressed: _replay),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 8),
-              _sectionLabel(colors, 'Empty · before the agent has planned'),
+              const SectionLabel('Empty · before the agent has planned'),
               const SizedBox(height: 12),
               // An empty task list is a normal state, not an error — the
               // description says what will appear here and when, so the panel
@@ -157,7 +130,7 @@ class _TodoListDemoState extends State<_TodoListDemo> {
                     'ticks tasks off as it goes.',
               ),
               const SizedBox(height: 32),
-              _sectionLabel(colors, 'Cancelled and pending rows'),
+              const SectionLabel('Cancelled and pending rows'),
               const SizedBox(height: 12),
               const BeuiTodoList(
                 collapseOnComplete: false,
@@ -191,18 +164,6 @@ class _TodoListDemoState extends State<_TodoListDemo> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _sectionLabel(BeuiColors colors, String label) {
-    return Text(
-      label.toUpperCase(),
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 1.1,
-        color: colors.mutedForeground.withValues(alpha: 0.85),
       ),
     );
   }

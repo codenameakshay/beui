@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiAgentActivity] — mirrors the source mixed-stream
 /// preview: frames of steps → search → tools, then complete, with Replay.
 Widget agentActivityDemo(BuildContext context) => const _AgentActivityDemo();
@@ -91,11 +93,6 @@ class _AgentActivityDemoState extends State<_AgentActivityDemo> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
-
     return SingleChildScrollView(
       child: Center(
         child: ConstrainedBox(
@@ -103,7 +100,7 @@ class _AgentActivityDemoState extends State<_AgentActivityDemo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _sectionLabel(colors, 'Mixed stream'),
+              const SectionLabel('Mixed stream'),
               const SizedBox(height: 16),
               SizedBox(
                 height: 330,
@@ -118,50 +115,15 @@ class _AgentActivityDemoState extends State<_AgentActivityDemo> {
                     Positioned(
                       left: 0,
                       bottom: 0,
-                      child: TextButton(
+                      child: ReplayButton(
                         onPressed: () => setState(() => _run++),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          // Desktop `adaptivePlatformDensity` is compact
-                          // (-2,-2) and eats 4px of the 24px source button.
-                          visualDensity: VisualDensity.standard,
-                          foregroundColor: colors.foreground,
-                        ),
-                        // Source: gap-1.5 px-2 py-1 text-xs — `TextButton.icon`
-                        // hardcodes an 8px gap, so build the row by hand.
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              LucideIcons.rotate_ccw,
-                              size: 12,
-                              color: colors.mutedForeground,
-                            ),
-                            const SizedBox(width: 6), // gap-1.5
-                            Text(
-                              'Replay',
-                              style: TextStyle(
-                                fontSize: 12,
-                                height: 16 / 12, // text-xs
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 0,
-                                color: colors.mutedForeground,
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 40),
-              _sectionLabel(colors, 'Completed · step summary'),
+              const SectionLabel('Completed · step summary'),
               const SizedBox(height: 12),
               BeuiAgentActivity(
                 items: const [
@@ -189,7 +151,7 @@ class _AgentActivityDemoState extends State<_AgentActivityDemo> {
                 maxHeight: 180,
               ),
               const SizedBox(height: 32),
-              _sectionLabel(colors, 'Trace rows'),
+              const SectionLabel('Trace rows'),
               const SizedBox(height: 12),
               const BeuiAgentActivity(
                 items: [
@@ -217,7 +179,7 @@ class _AgentActivityDemoState extends State<_AgentActivityDemo> {
                 maxHeight: 200,
               ),
               const SizedBox(height: 32),
-              _sectionLabel(colors, 'Failed · the run crashed'),
+              const SectionLabel('Failed · the run crashed'),
               const SizedBox(height: 12),
               // The failure states force the panel open and wear a card in the
               // status tier, so a crashed run can never read as a clean one.
@@ -240,7 +202,7 @@ class _AgentActivityDemoState extends State<_AgentActivityDemo> {
                 maxHeight: 140,
               ),
               const SizedBox(height: 32),
-              _sectionLabel(colors, 'Cancelled · stopped part-way'),
+              const SectionLabel('Cancelled · stopped part-way'),
               const SizedBox(height: 12),
               const BeuiAgentActivity(
                 items: [
@@ -264,18 +226,6 @@ class _AgentActivityDemoState extends State<_AgentActivityDemo> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _sectionLabel(BeuiColors colors, String label) {
-    return Text(
-      label.toUpperCase(),
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 1.1,
-        color: colors.mutedForeground.withValues(alpha: 0.85),
       ),
     );
   }

@@ -4,6 +4,8 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiStreamingResponse] — character-streamed response
 /// with completion actions, sources disclosure, and a Replay control. Mirrors
 /// the source `streaming-response.preview.tsx`.
@@ -91,10 +93,6 @@ class _StreamingResponseDemo extends StatefulWidget {
 }
 
 /// How the demonstrated stream ends.
-///
-/// `error` was reachable only from a unit test and `stopped` did not
-/// exist, so the gallery — the de-facto documentation — showed a response that
-/// could only ever succeed, while the demo copy talked about recovery.
 enum _Outcome {
   /// Streams to the end and completes.
   complete,
@@ -147,7 +145,7 @@ class _StreamingResponseDemoState extends State<_StreamingResponseDemo> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _ReplayButton(colors: colors, onPressed: _replay),
+                  ReplayButton(onPressed: _replay),
                   const SizedBox(width: 12),
                   for (final o in _Outcome.values)
                     Padding(
@@ -242,49 +240,6 @@ class _OutcomeChipState extends State<_OutcomeChip> {
                     : colors.mutedForeground,
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ReplayButton extends StatelessWidget {
-  const _ReplayButton({required this.colors, required this.onPressed});
-
-  final BeuiColors colors;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(6), // rounded-md
-        hoverColor: colors.muted,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                LucideIcons.rotate_ccw,
-                size: 12,
-                color: colors.mutedForeground,
-              ),
-              const SizedBox(width: 6), // gap-1.5
-              Text(
-                'Replay',
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 16 / 12,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0, // tracking-normal
-                  color: colors.mutedForeground,
-                ),
-              ),
-            ],
           ),
         ),
       ),

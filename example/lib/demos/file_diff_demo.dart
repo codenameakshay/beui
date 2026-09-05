@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiFileDiff], mirroring the source
 /// `agents/file-diff.preview.tsx` exactly: five diff rows streamed at the
 /// shared `useToolResultDemo(5, 360)` cadence inside a
@@ -160,7 +162,6 @@ class _FileDiffDemoState extends State<_FileDiffDemo> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
     // While streaming, reveal rows progressively from the raw list; once the
     // full diff has arrived, fold in any expanded context.
     final lines = _visible >= _diffLines.length
@@ -191,54 +192,9 @@ class _FileDiffDemoState extends State<_FileDiffDemo> {
             Positioned(
               left: 0,
               bottom: 0,
-              child: _ReplayButton(onPressed: _replay, colors: colors),
+              child: ReplayButton(onPressed: _replay),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Ghost "Replay" control matching the source preview's
-/// `rounded-md px-2 py-1 text-xs font-medium text-muted-foreground` button.
-class _ReplayButton extends StatelessWidget {
-  const _ReplayButton({required this.onPressed, required this.colors});
-
-  final VoidCallback onPressed;
-  final BeuiColors colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(6), // rounded-md
-        hoverColor: colors.muted,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                LucideIcons.rotate_ccw,
-                size: 12,
-                color: colors.mutedForeground,
-              ),
-              const SizedBox(width: 6), // gap-1.5
-              Text(
-                'Replay',
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 16 / 12,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0, // tracking-normal
-                  color: colors.mutedForeground,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

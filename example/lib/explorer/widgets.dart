@@ -33,15 +33,19 @@ class NewBadge extends StatelessWidget {
   }
 }
 
-/// An uppercase muted section label used above index grids ("NEW", "ALL").
+/// An uppercase muted section label used above index grids ("NEW", "ALL") and
+/// above the sub-sections of an agent-surface demo. [note] adds an optional
+/// sentence of muted body text underneath, for demos that need to explain
+/// what a section shows.
 class SectionLabel extends StatelessWidget {
-  const SectionLabel(this.text, {super.key});
+  const SectionLabel(this.text, {super.key, this.note});
   final String text;
+  final String? note;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Text(
+    final label = Text(
       text.toUpperCase(),
       style: TextStyle(
         fontSize: 12,
@@ -49,6 +53,22 @@ class SectionLabel extends StatelessWidget {
         letterSpacing: 0.8,
         color: colors.mutedForeground,
       ),
+    );
+    if (note == null) return label;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        label,
+        const SizedBox(height: 4),
+        Text(
+          note!,
+          style: TextStyle(
+            fontSize: 12,
+            height: 18 / 12,
+            color: colors.mutedForeground,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -197,6 +217,51 @@ class PreviewSurface extends StatelessWidget {
       child: child,
     );
   }
+}
+
+/// Ghost "Replay" control used across the agent-surface demos to restart a
+/// run.
+class ReplayButton extends StatelessWidget {
+  const ReplayButton({super.key, required this.onPressed});
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    return TextButton.icon(
+      onPressed: onPressed,
+      icon: Icon(
+        LucideIcons.rotate_ccw,
+        size: 12,
+        color: colors.mutedForeground,
+      ),
+      label: Text(
+        'Replay',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: colors.mutedForeground,
+        ),
+      ),
+      style: TextButton.styleFrom(
+        foregroundColor: colors.mutedForeground,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+    );
+  }
+}
+
+/// `Number.prototype.toLocaleString()` for the en-US grouping demos use.
+String groupThousands(int value) {
+  final digits = value.abs().toString();
+  final buffer = StringBuffer(value < 0 ? '-' : '');
+  for (var i = 0; i < digits.length; i++) {
+    if (i > 0 && (digits.length - i) % 3 == 0) buffer.write(',');
+    buffer.write(digits[i]);
+  }
+  return buffer.toString();
 }
 
 /// A big page heading (H1) matching the source's 30px / -0.75 tracking.
