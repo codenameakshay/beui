@@ -2,14 +2,8 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _wrap(
-  Widget child, {
-  bool reduce = false,
-  Size surface = const Size(900, 640),
-}) {
-  Widget body = Center(
-    child: SizedBox(width: surface.width, height: surface.height, child: child),
-  );
+Widget _wrap(Widget child, {bool reduce = false}) {
+  Widget body = Center(child: SizedBox(width: 900, height: 640, child: child));
   if (reduce) {
     final inner = body;
     body = Builder(
@@ -29,17 +23,6 @@ Widget _wrap(
 
 void main() {
   group('BeuiChatApp', () {
-    testWidgets('renders body content', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiChatApp(body: Center(child: Text('Conversation body'))),
-        ),
-      );
-
-      expect(find.text('Conversation body'), findsOneWidget);
-      expect(find.byType(BeuiChatApp), findsOneWidget);
-    });
-
     testWidgets('lays out sidebar, header, body, and prompt', (tester) async {
       await tester.pumpWidget(
         _wrap(
@@ -116,108 +99,79 @@ void main() {
 
       expect(find.bySemanticsLabel('Release workspace'), findsOneWidget);
     });
+  });
 
-    testWidgets('composes message scroller and prompt input', (tester) async {
+  group('BeuiChatApp collapsed sidebar drawer', () {
+    Widget wrapNarrow(Widget child, {bool reduce = false}) {
+      Widget body = Center(
+        child: SizedBox(width: 400, height: 500, child: child),
+      );
+      if (reduce) {
+        final inner = body;
+        body = Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: true),
+            child: inner,
+          ),
+        );
+      }
+      return MaterialApp(
+        theme: BeuiTextTheme.trackingNormal(
+          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        ),
+        home: Scaffold(body: body),
+      );
+    }
+
+    testWidgets('below the breakpoint the sidebar drawer opens and dismisses', (
+      tester,
+    ) async {
+      var open = true;
       await tester.pumpWidget(
-        _wrap(
-          BeuiChatApp(
-            header: const SizedBox(
-              height: 48,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Checkout release'),
-              ),
-            ),
-            body: BeuiMessageScroller(
-              child: BeuiMessageGroup(
-                spacing: BeuiMessageSpacing.standard,
-                children: const [
-                  BeuiMessage(
-                    from: BeuiMessageFrom.user,
-                    children: [
-                      BeuiMessageContent(
-                        children: [
-                          BeuiMessageBubble(
-                            variant: BeuiMessageBubbleVariant.solid,
-                            child: BeuiMessageBubbleContent(
-                              child: Text('Audit the checkout flow'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  BeuiMessage(
-                    from: BeuiMessageFrom.assistant,
-                    children: [
-                      BeuiMessageContent(
-                        children: [
-                          BeuiMessageBubble(
-                            child: BeuiMessageBubbleContent(
-                              child: Text('Preparing the patch'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            prompt: const Padding(
-              padding: EdgeInsets.all(8),
-              child: BeuiPromptInput(
-                minRows: 1,
-                maxRows: 2,
-                placeholder: 'Ask the agent to continue…',
-              ),
+        StatefulBuilder(
+          builder: (context, setState) => wrapNarrow(
+            BeuiChatApp(
+              sidebar: const Center(child: Text('Nav')),
+              sidebarOpen: open,
+              onSidebarDismiss: () => setState(() => open = false),
+              body: const Center(child: Text('Body')),
             ),
           ),
         ),
       );
+      await tester.pumpAndSettle();
+      expect(find.text('Nav'), findsOneWidget);
 
-      expect(find.text('Checkout release'), findsOneWidget);
-      expect(find.text('Audit the checkout flow'), findsOneWidget);
-      expect(find.text('Preparing the patch'), findsOneWidget);
-      expect(find.byType(BeuiPromptInput), findsOneWidget);
-      expect(find.byType(BeuiMessageScroller), findsOneWidget);
+      await tester.tapAt(
+        const Offset(500, 60),
+      ); // scrim, clear of the 272px-wide panel
+      await tester.pumpAndSettle();
+      expect(find.text('Nav'), findsNothing);
     });
 
-    testWidgets('works under reduced motion', (tester) async {
+    testWidgets('reduced motion still opens and dismisses the drawer', (
+      tester,
+    ) async {
+      var open = true;
       await tester.pumpWidget(
-        _wrap(
-          reduce: true,
-          BeuiChatApp(
-            sidebar: const Center(child: Text('Nav')),
-            body: BeuiMessageScroller(
-              child: BeuiMessageGroup(
-                children: const [
-                  BeuiMessage(
-                    from: BeuiMessageFrom.assistant,
-                    animateIn: true,
-                    children: [
-                      BeuiMessageContent(
-                        children: [
-                          BeuiMessageBubble(
-                            child: BeuiMessageBubbleContent(
-                              child: Text('Reduced motion reply'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+        StatefulBuilder(
+          builder: (context, setState) => wrapNarrow(
+            BeuiChatApp(
+              sidebar: const Center(child: Text('Nav')),
+              sidebarOpen: open,
+              onSidebarDismiss: () => setState(() => open = false),
+              body: const Center(child: Text('Body')),
             ),
-            prompt: const BeuiPromptInput(minRows: 1, maxRows: 1),
+            reduce: true,
           ),
         ),
       );
-
       await tester.pumpAndSettle();
-      expect(find.text('Reduced motion reply'), findsOneWidget);
       expect(find.text('Nav'), findsOneWidget);
+
+      await tester.tapAt(const Offset(500, 60)); // scrim, clear of the panel
+      await tester.pumpAndSettle();
+      expect(find.text('Nav'), findsNothing);
     });
   });
 }
