@@ -299,7 +299,6 @@ class _BeuiContextMenuState extends State<BeuiContextMenu> {
   late bool _internalOpen = widget.defaultOpen;
   Offset _point = Offset.zero;
   BeuiContextMenuModality _modality = BeuiContextMenuModality.pointer;
-  int _invocation = 0;
   int _activeIndex = -1;
   Rect? _pillRect;
   Size _panelSize = Size.zero;
@@ -357,7 +356,6 @@ class _BeuiContextMenuState extends State<BeuiContextMenu> {
     setState(() {
       _point = globalPoint;
       _modality = modality;
-      _invocation++;
       _activeIndex = -1;
       _pillRect = null;
       _panelSize = Size.zero;
@@ -414,35 +412,25 @@ class _BeuiContextMenuState extends State<BeuiContextMenu> {
 
   void _recomputePlacement(Size size) {
     final media = MediaQuery.sizeOf(context);
-    final left = _point.dx
-        .clamp(_viewportPadding, media.width - size.width - _viewportPadding)
-        .toDouble();
-    final top = _point.dy
-        .clamp(_viewportPadding, media.height - size.height - _viewportPadding)
-        .toDouble();
     // Prefer not to go above 0 when the menu is taller than remaining space.
-    final clampedLeft = left.isFinite
-        ? left
-              .clamp(
-                _viewportPadding,
-                math.max(
-                  _viewportPadding,
-                  media.width - size.width - _viewportPadding,
-                ),
-              )
-              .toDouble()
-        : _viewportPadding;
-    final clampedTop = top.isFinite
-        ? top
-              .clamp(
-                _viewportPadding,
-                math.max(
-                  _viewportPadding,
-                  media.height - size.height - _viewportPadding,
-                ),
-              )
-              .toDouble()
-        : _viewportPadding;
+    final clampedLeft = _point.dx
+        .clamp(
+          _viewportPadding,
+          math.max(
+            _viewportPadding,
+            media.width - size.width - _viewportPadding,
+          ),
+        )
+        .toDouble();
+    final clampedTop = _point.dy
+        .clamp(
+          _viewportPadding,
+          math.max(
+            _viewportPadding,
+            media.height - size.height - _viewportPadding,
+          ),
+        )
+        .toDouble();
 
     final origin = Offset(
       (_point.dx - clampedLeft)
@@ -483,17 +471,19 @@ class _BeuiContextMenuState extends State<BeuiContextMenu> {
     });
   }
 
-  void _scheduleMeasureAndFocus() {
+  static const _maxMeasureAttempts = 10;
+
+  void _scheduleMeasureAndFocus([int attempt = 0]) {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_open) return;
       final box = _panelKey.currentContext?.findRenderObject() as RenderBox?;
       if (box != null && box.hasSize) {
         _recomputePlacement(box.size);
         _scheduleMorphReady();
-      } else if (!_morphReady) {
+      } else if (!_morphReady && attempt < _maxMeasureAttempts) {
         // Portal may not have mounted yet (OverlayPortal show is also
         // post-frame) — try again next frame until we have a size.
-        _scheduleMeasureAndFocus();
+        _scheduleMeasureAndFocus(attempt + 1);
       }
       // Focus first enabled item after open.
       final selectable = _selectableIndices;
@@ -740,7 +730,6 @@ class _BeuiContextMenuState extends State<BeuiContextMenu> {
               },
               child: _MenuPanel(
                 key: _panelKey,
-                invocation: _invocation,
                 listKey: _listKey,
                 rowKeys: _rowKeys,
                 items: widget.items,
@@ -784,12 +773,9 @@ class _MenuPanel extends StatelessWidget {
     required this.onHover,
     required this.onSelect,
     required this.onPillMeasure,
-    required this.invocation,
     super.key,
   });
 
-  /// Bumped on every open so layout measurements restart cleanly.
-  final int invocation;
   final GlobalKey listKey;
   final Map<int, GlobalKey> rowKeys;
   final List<BeuiContextMenuItem> items;
@@ -858,6 +844,7 @@ class _MenuPanel extends StatelessWidget {
                       width: r.width,
                       height: r.height,
                       child: DecoratedBox(
+                        key: const ValueKey('beui-context-menu-highlight'),
                         decoration: BoxDecoration(
                           color: destructive
                               ? colors.destructive.withValues(alpha: 0.10)
