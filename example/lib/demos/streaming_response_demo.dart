@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../explorer/widgets.dart';
 
@@ -196,50 +195,29 @@ class _OutcomeChipState extends State<_OutcomeChip> {
   @override
   Widget build(BuildContext context) {
     final colors = widget.colors;
-    return Semantics(
-      button: true,
+    return DemoPressable(
       selected: widget.selected,
-      label: widget.label,
-      child: FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        onShowHoverHighlight: (v) => setState(() => _hovered = v),
-        shortcuts: const <ShortcutActivator, Intent>{
-          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-        },
-        actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) {
-              widget.onPressed();
-              return null;
-            },
-          ),
-        },
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: widget.onPressed,
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 28),
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: widget.selected
-                  ? colors.foreground
-                  : (_hovered ? colors.secondary : colors.muted),
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: Text(
-              widget.label,
-              style: TextStyle(
-                fontSize: 12,
-                height: 16 / 12,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0,
-                color: widget.selected
-                    ? colors.background
-                    : colors.mutedForeground,
-              ),
-            ),
+      semanticLabel: widget.label,
+      onPressed: widget.onPressed,
+      onHover: (v) => setState(() => _hovered = v),
+      builder: (context, focusVisible) => Container(
+        constraints: const BoxConstraints(minHeight: 28),
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: widget.selected
+              ? colors.foreground
+              : (_hovered ? colors.secondary : colors.muted),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          widget.label,
+          style: TextStyle(
+            fontSize: 12,
+            height: 16 / 12,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0,
+            color: widget.selected ? colors.background : colors.mutedForeground,
           ),
         ),
       ),

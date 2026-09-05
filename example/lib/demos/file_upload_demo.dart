@@ -4,12 +4,13 @@ import 'dart:ui' as ui;
 
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import '../explorer/widgets.dart';
 
 /// Gallery route for the two `blocks/file-upload` patterns —
 /// [BeuiAttachmentUpload] (the mixed attachment workspace) and [BeuiFileUpload]
 /// (the progress queue). Both dropzones fake a picker and simulated uploads;
-/// the package ships no picker plugin (spec §7).
+/// the package ships no picker plugin.
 Widget fileUploadDemo(BuildContext context) => const _FileUploadDemo();
 
 /// Gallery route for [BeuiAttachmentUpload] on its own.
@@ -564,7 +565,7 @@ class _UploadQueueSectionState extends State<_UploadQueueSection> {
 }
 
 /// One cell of the preview's Centered/Row segmented control.
-class _VariantChip extends StatefulWidget {
+class _VariantChip extends StatelessWidget {
   const _VariantChip({
     required this.label,
     required this.selected,
@@ -578,61 +579,30 @@ class _VariantChip extends StatefulWidget {
   final VoidCallback onPressed;
 
   @override
-  State<_VariantChip> createState() => _VariantChipState();
-}
-
-class _VariantChipState extends State<_VariantChip> {
-  bool _focusVisible = false;
-
-  @override
   Widget build(BuildContext context) {
-    final colors = widget.colors;
-    return Semantics(
-      button: true,
+    return DemoPressable(
       // A segmented control is a set of toggles; say so.
-      toggled: widget.selected,
-      label: widget.label,
-      onTap: widget.onPressed,
-      child: FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        shortcuts: const <ShortcutActivator, Intent>{
-          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-        },
-        actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) {
-              widget.onPressed();
-              return null;
-            },
+      toggled: selected,
+      semanticLabel: label,
+      onPressed: onPressed,
+      builder: (context, focusVisible) => Container(
+        height: 28, // h-7
+        padding: const EdgeInsets.symmetric(horizontal: 12), // px-3
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: selected ? colors.background : null,
+          border: Border.all(
+            color: focusVisible ? colors.focusRing : Colors.transparent,
+            width: 2,
           ),
-        },
-        onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: widget.onPressed,
-          child: Container(
-            height: 28, // h-7
-            padding: const EdgeInsets.symmetric(horizontal: 12), // px-3
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: widget.selected ? colors.background : null,
-              border: Border.all(
-                color: _focusVisible ? colors.focusRing : Colors.transparent,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: Text(
-              widget.label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: widget.selected
-                    ? colors.foreground
-                    : colors.mutedForeground,
-              ),
-            ),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: selected ? colors.foreground : colors.mutedForeground,
           ),
         ),
       ),
@@ -642,7 +612,7 @@ class _VariantChipState extends State<_VariantChip> {
 
 /// A demo icon button with the contract the gallery should be teaching:
 /// button semantics, keyboard activation, a hover cursor and a focus ring.
-class _DemoIconButton extends StatefulWidget {
+class _DemoIconButton extends StatelessWidget {
   const _DemoIconButton({
     required this.label,
     required this.icon,
@@ -656,51 +626,22 @@ class _DemoIconButton extends StatefulWidget {
   final VoidCallback onPressed;
 
   @override
-  State<_DemoIconButton> createState() => _DemoIconButtonState();
-}
-
-class _DemoIconButtonState extends State<_DemoIconButton> {
-  bool _focusVisible = false;
-
-  @override
   Widget build(BuildContext context) {
-    final colors = widget.colors;
-    return Semantics(
-      button: true,
-      label: widget.label,
-      onTap: widget.onPressed,
-      child: FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        shortcuts: const <ShortcutActivator, Intent>{
-          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-        },
-        actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) {
-              widget.onPressed();
-              return null;
-            },
+    return DemoPressable(
+      semanticLabel: label,
+      onPressed: onPressed,
+      builder: (context, focusVisible) => Container(
+        width: 36,
+        height: 36, // h-9 w-9
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: focusVisible ? colors.focusRing : colors.border,
+            width: focusVisible ? 2 : 1,
           ),
-        },
-        onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: widget.onPressed,
-          child: Container(
-            width: 36,
-            height: 36, // h-9 w-9
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: _focusVisible ? colors.focusRing : colors.border,
-                width: _focusVisible ? 2 : 1,
-              ),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(widget.icon, size: 14, color: colors.mutedForeground),
-          ),
+          shape: BoxShape.circle,
         ),
+        child: Icon(icon, size: 14, color: colors.mutedForeground),
       ),
     );
   }

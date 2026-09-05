@@ -1,6 +1,7 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import '../explorer/widgets.dart';
 
 /// Gallery route for [BeuiInput] — mirrors the source `input.preview.tsx`:
 /// an empty email field that errors (shake + message) on invalid input, a
@@ -105,67 +106,34 @@ class _InputDemoState extends State<_InputDemo> {
 /// [FocusableActionDetector] gives it a tab stop, Enter/Space activation, a
 /// hover cursor and a focus highlight, and the slot is sized to a real target
 /// instead of a 16px glyph.
-class _RevealToggle extends StatefulWidget {
+class _RevealToggle extends StatelessWidget {
   const _RevealToggle({required this.revealed, required this.onToggle});
 
   final bool revealed;
   final VoidCallback onToggle;
 
   @override
-  State<_RevealToggle> createState() => _RevealToggleState();
-}
-
-class _RevealToggleState extends State<_RevealToggle> {
-  bool _focusVisible = false;
-
-  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
-    final label = widget.revealed ? 'Hide password' : 'Show password';
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final label = revealed ? 'Hide password' : 'Show password';
 
-    return Semantics(
-      button: true,
-      label: label,
-      onTap: widget.onToggle,
-      child: FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        shortcuts: const <ShortcutActivator, Intent>{
-          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-        },
-        actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) {
-              widget.onToggle();
-              return null;
-            },
-          ),
-        },
-        onShowFocusHighlight: (value) => setState(() => _focusVisible = value),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: widget.onToggle,
-          child: Container(
-            // Fills the pill's height, so the target is 28x44 rather than the
-            // glyph's 16x16.
-            width: 28,
-            height: 44,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: _focusVisible ? colors.focusRing : Colors.transparent,
-                width: 2,
-              ),
-            ),
-            child: Icon(
-              widget.revealed ? LucideIcons.eye_off : LucideIcons.eye,
-            ),
+    return DemoPressable(
+      semanticLabel: label,
+      onPressed: onToggle,
+      builder: (context, focusVisible) => Container(
+        // Fills the pill's height, so the target is 28x44 rather than the
+        // glyph's 16x16.
+        width: 28,
+        height: 44,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: focusVisible ? colors.focusRing : Colors.transparent,
+            width: 2,
           ),
         ),
+        child: Icon(revealed ? LucideIcons.eye_off : LucideIcons.eye),
       ),
     );
   }

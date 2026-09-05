@@ -1,6 +1,7 @@
 // Small shared chrome widgets used across the explorer pages.
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'catalog.dart';
 import 'theme_scope.dart';
@@ -215,6 +216,69 @@ class PreviewSurface extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: child,
+    );
+  }
+}
+
+/// The interactive shell every hand-rolled demo control needs: button
+/// semantics, keyboard activation (Enter/Space), a hover cursor and a focus
+/// highlight. [builder] renders the visual — [DemoPressable] only supplies
+/// [focusVisible] so it can paint its own focus ring.
+class DemoPressable extends StatefulWidget {
+  const DemoPressable({
+    super.key,
+    required this.onPressed,
+    required this.builder,
+    this.semanticLabel,
+    this.selected,
+    this.toggled,
+    this.onHover,
+  });
+
+  final VoidCallback onPressed;
+  final Widget Function(BuildContext context, bool focusVisible) builder;
+  final String? semanticLabel;
+  final bool? selected;
+  final bool? toggled;
+  final ValueChanged<bool>? onHover;
+
+  @override
+  State<DemoPressable> createState() => _DemoPressableState();
+}
+
+class _DemoPressableState extends State<DemoPressable> {
+  bool _focusVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: widget.semanticLabel,
+      selected: widget.selected,
+      toggled: widget.toggled,
+      onTap: widget.onPressed,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+        onShowHoverHighlight: widget.onHover,
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onPressed();
+              return null;
+            },
+          ),
+        },
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onPressed,
+          child: widget.builder(context, _focusVisible),
+        ),
+      ),
     );
   }
 }
