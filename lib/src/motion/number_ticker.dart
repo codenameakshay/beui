@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_format.dart';
 import '_scroll_geometry.dart';
 
 /// A slot-machine number — the Flutter port of beUI's `number-ticker`.
@@ -163,17 +164,12 @@ class _BeuiNumberTickerState extends State<BeuiNumberTicker>
     return pad != null ? s.padLeft(pad, '0') : s;
   }
 
-  // Minimal, locale-free thousands grouping (server-safe, like the source's
-  // `toLocaleString()` default): groups of three with a comma separator.
+  // Locale-free thousands grouping (server-safe, like the source's
+  // `toLocaleString()` default).
   static String _grouped(int value) {
     final neg = value < 0;
-    final digits = value.abs().toString();
-    final buf = StringBuffer();
-    for (var i = 0; i < digits.length; i++) {
-      if (i > 0 && (digits.length - i) % 3 == 0) buf.write(',');
-      buf.write(digits[i]);
-    }
-    return neg ? '-${buf.toString()}' : buf.toString();
+    final grouped = beuiGroupThousands(value.abs().toString());
+    return neg ? '-$grouped' : grouped;
   }
 
   @override
@@ -269,9 +265,8 @@ class _Digit extends StatefulWidget {
 class _DigitState extends State<_Digit> {
   // Source DIGIT_HEIGHT_EM 1.1 — the slot is 1.1× the font size tall.
   static const double _heightEm = 1.1;
-  // Source `blur(10px)` → sigma 5 (the beuiBlurSigma px/2 convention; also the
-  // library's motion-blur budget cap).
-  static const double _maxBlurSigma = 5.0;
+  // Source `blur(10px)`; also the library's motion-blur budget cap.
+  static final double _maxBlurSigma = beuiBlurSigma(10);
 
   Timer? _releaseTimer;
 

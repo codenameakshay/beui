@@ -209,7 +209,7 @@ class _BeuiOverflowActionsState extends State<BeuiOverflowActions> {
               if (raw <= 0.001) return const SizedBox.shrink();
               Widget body = Opacity(opacity: t, child: child);
               if (!reduce) {
-                final sigma = (1 - t) * 2; // blur(4px) ≈ σ2
+                final sigma = beuiBlurSigma(4) * (1 - t);
                 if (sigma > 0.05) {
                   body = ImageFiltered(
                     imageFilter: ImageFilter.blur(
@@ -403,7 +403,7 @@ class _ToggleState extends State<_Toggle> {
           animation: animation,
           builder: (context, _) {
             final t = beuiEaseOut.transform(animation.value);
-            final sigma = (1 - t) * 1.5; // blur(3px) ≈ σ1.5
+            final sigma = beuiBlurSigma(3) * (1 - t);
             Widget body = child;
             if (sigma > 0.05) {
               body = ImageFiltered(

@@ -302,12 +302,12 @@ class _MorphingPanelState extends State<_MorphingPanel> {
           final p = beuiEaseOut.transform(1 - t); // exit progress 0 → 1
           opacity = 1 - p;
           dy = -8.0 * p;
-          blur = 2.0 * p;
+          blur = beuiBlurSigma(4) * p;
         } else {
           final e = beuiEaseOut.transform(t);
           opacity = e;
           dy = 8.0 * (1 - e);
-          blur = 2.0 * (1 - e);
+          blur = beuiBlurSigma(4) * (1 - e);
         }
         Widget body = inner!;
         if (blur > 0.05) {
