@@ -10,6 +10,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_scramble.dart';
 import '_transcript.dart';
 import 'loader.dart';
 import 'text_shimmer.dart';
@@ -948,17 +949,10 @@ class _ScramblePhraseState extends State<_ScramblePhrase>
       lastUpdate = elapsed;
       final progress = math.min(elapsed.inMilliseconds / durationMs, 1.0);
       final settled = (progress * characters.length).floor();
-      final next = StringBuffer();
-      for (var i = 0; i < characters.length; i++) {
-        final ch = characters[i];
-        if (i < settled || ch == ' ') {
-          next.write(ch);
-        } else {
-          next.write(_kScrambleGlyphs[_rng.nextInt(_kScrambleGlyphs.length)]);
-        }
-      }
       if (!mounted) return;
-      setState(() => _display = next.toString());
+      setState(
+        () => _display = beuiScramble(target, settled, _rng, _kScrambleGlyphs),
+      );
       // Completion runs off the ticker's own clock, not the wall clock, so the
       // ticker actually stops (and disposes) under fake async in tests.
       if (elapsed.inMilliseconds >= durationMs) {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_scramble.dart';
 import 'magnetic.dart';
 import 'text_reveal.dart';
 
@@ -305,17 +306,12 @@ class _GlitchCodeState extends State<_GlitchCode>
     final elapsed = (_clock.value * _scrambleMs).round();
     if (elapsed - _lastTickMs < _tickMs && _clock.value < 1) return;
     _lastTickMs = elapsed;
-    final chars = widget.code.split('');
+    final length = widget.code.length;
     final settled = _clock.value >= 1
-        ? chars.length
-        : (_clock.value * chars.length).floor();
+        ? length
+        : (_clock.value * length).floor();
     setState(() {
-      _display = [
-        for (var i = 0; i < chars.length; i++)
-          i < settled || chars[i] == ' '
-              ? chars[i]
-              : _glyphs[_random.nextInt(_glyphs.length)],
-      ].join();
+      _display = beuiScramble(widget.code, settled, _random, _glyphs);
     });
   }
 
