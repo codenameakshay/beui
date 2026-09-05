@@ -2,6 +2,9 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+// The demo "quote" refresh window (450ms) plus slack.
+const _quoteSettle = Duration(milliseconds: 600);
+
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = SingleChildScrollView(
     child: Center(child: SizedBox(width: 420, child: child)),
@@ -94,7 +97,7 @@ void main() {
   group('BeuiMultiChainSwap', () {
     testWidgets('renders header, fields and the quote row', (tester) async {
       await tester.pumpWidget(_swap());
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       expect(find.text('Swap'), findsOneWidget);
       expect(find.text('YOU PAY'), findsOneWidget);
       expect(find.text('YOU GET'), findsOneWidget);
@@ -109,9 +112,9 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(_swap());
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       await tester.enterText(find.byType(EditableText).first, '3');
-      await tester.pump(const Duration(milliseconds: 600)); // quoting settles
+      await tester.pump(_quoteSettle); // quoting settles
       expect(find.text('6'), findsOneWidget); // 3 ETH × rate 2
     });
 
@@ -119,16 +122,22 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(_swap());
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       await tester.enterText(find.byType(EditableText).first, '2');
       await tester.pump(const Duration(milliseconds: 100));
-      expect(find.byType(RotationTransition), findsWidgets); // spinners
-      await tester.pump(const Duration(milliseconds: 600));
+      expect(
+        find.descendant(
+          of: find.byType(BeuiMultiChainSwap),
+          matching: find.byType(RotationTransition),
+        ),
+        findsWidgets, // BeuiSpinner replaces the rate line while quoting
+      );
+      await tester.pump(_quoteSettle);
     });
 
     testWidgets('the flip button reverses direction', (tester) async {
       await tester.pumpWidget(_swap());
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       await tester.tap(find.bySemanticsLabel('Reverse direction'));
       await tester.pump(const Duration(milliseconds: 800));
       expect(find.textContaining('1 SOL ≈ 0.5 ETH'), findsOneWidget);
@@ -136,9 +145,9 @@ void main() {
 
     testWidgets('Max fills the from-amount with the balance', (tester) async {
       await tester.pumpWidget(_swap());
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       await tester.tap(find.text('MAX'));
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       expect(find.text('4'), findsOneWidget); // 2 ETH balance × rate 2
     });
 
@@ -155,10 +164,10 @@ void main() {
           ),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
 
       await tester.tap(find.text('MAX'));
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
 
       // Raw, ungrouped balance in the pay field — "4521", not "4,521".
       expect(find.text('4521'), findsOneWidget);
@@ -173,7 +182,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(_swap());
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       expect(find.text('Swap ETH → SOL'), findsOneWidget); // default "1"
 
       await tester.enterText(find.byType(EditableText).first, '');
@@ -181,7 +190,7 @@ void main() {
       expect(find.text('Enter an amount'), findsOneWidget);
 
       await tester.enterText(find.byType(EditableText).first, '5');
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       expect(find.text('Insufficient ETH'), findsOneWidget); // balance 2
     });
 
@@ -197,12 +206,12 @@ void main() {
       addTearDown(tester.view.reset);
 
       await tester.pumpWidget(_swap());
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       // Open the "from" picker.
       await tester.tap(find.text('ETH').first);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 16));
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       expect(find.text('Search name or paste address'), findsOneWidget);
 
       await tester.enterText(find.byType(EditableText).last, 'usd');
@@ -224,7 +233,7 @@ void main() {
 
     testWidgets('destination row validates addresses', (tester) async {
       await tester.pumpWidget(_swap());
-      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(_quoteSettle);
       await tester.tap(find.text('Send to different address'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 16));
