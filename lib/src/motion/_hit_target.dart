@@ -14,10 +14,10 @@ import 'package:flutter/widgets.dart';
 
 /// The touch-target floor, in logical pixels.
 ///
-/// 44 is the Apple HIG / WCAG 2.2 SC 2.5.8 (AAA) value and Flutter's own
-/// `kMinInteractiveDimension`. Material's `MaterialTapTargetSize.padded`
-/// applies the same number the same way — by padding the *hit test*, not the
-/// paint.
+/// 44 is the Apple HIG value and WCAG 2.2 SC 2.5.5 (AAA); SC 2.5.8 (AA) only
+/// asks for 24. Flutter's own `kMinInteractiveDimension` is 48, and Material's
+/// `MaterialTapTargetSize.padded` applies it the same way this helper does —
+/// by padding the *hit test*, not the paint.
 const double beuiMinHitTarget = 44;
 
 /// Grows [child]'s hit area to at least [minSize] square, leaving its painted

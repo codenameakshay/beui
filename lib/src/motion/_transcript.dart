@@ -181,7 +181,7 @@ class BeuiTranscriptScope extends InheritedWidget {
 
 /// The transcript's one and only live region.
 ///
-/// Wraps [child] in a [BeuiTranscriptScope] and renders a single zero-size
+/// Wraps [child] in a [BeuiTranscriptScope] and renders a single 1px
 /// `Semantics(liveRegion: true)` node whose label is the most recent
 /// announcement. Changing that label is what makes VoiceOver / TalkBack speak;
 /// the node carries no visual weight and is excluded from the reading order

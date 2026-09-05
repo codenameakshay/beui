@@ -2,8 +2,9 @@
 ///
 /// A one-to-one port of the source's `lib/ease.ts`. Framer Motion springs are
 /// parameterized by `stiffness`, `damping`, and `mass` — the exact same physical
-/// parameters as Flutter's [SpringDescription] — so the tokens carry over with
-/// zero fidelity loss. Do **not** approximate these springs with
+/// parameters as Flutter's [SpringDescription] — so the tokens carry over
+/// unchanged (trajectories are validated within tolerance, not pixel-matched
+/// to Framer). Do **not** approximate these springs with
 /// `Curves.elasticOut`/`bounceOut`; use the values verbatim.
 ///
 /// The spring/easing tokens are defined here; `lib/src/motion/_engine.dart` is
@@ -11,7 +12,7 @@
 /// two files are where `motor` appears directly. Components consume the
 /// `beui*` constants and the [motionFor] resolver defined here — never scatter
 /// `SpringMotion(...)`/`CurvedMotion(...)` literals across widgets. If `motor`
-/// is ever dropped, you rewrite these ~8 constants, not every component.
+/// is ever dropped, these tokens and the `_engine.dart` facade are the seam.
 ///
 /// See `docs/PORTING_SPEC.md` §1.
 library;
