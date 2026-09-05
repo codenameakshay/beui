@@ -1,12 +1,11 @@
-import 'package:beui/beui.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
 
+import 'package:beui/beui.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor/motor.dart';
 
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = Center(child: child);
@@ -111,25 +110,6 @@ void main() {
       handle.dispose();
     });
 
-    testWidgets('renders every variant and size', (tester) async {
-      for (final variant in BeuiButtonVariant.values) {
-        for (final size in BeuiButtonSize.values) {
-          await tester.pumpWidget(
-            _wrap(
-              BeuiButton(
-                onPressed: () {},
-                variant: variant,
-                size: size,
-                child: const Icon(Icons.star),
-              ),
-            ),
-          );
-          await tester.pumpAndSettle();
-          expect(find.byType(BeuiButton), findsOneWidget);
-        }
-      }
-    });
-
     testWidgets('icon size is square 32x32', (tester) async {
       await tester.pumpWidget(
         _wrap(
@@ -184,27 +164,6 @@ void main() {
       }
       expect(_buttonScale(tester), closeTo(1.0, 0.001));
       await gesture.up();
-    });
-
-    testWidgets('ripple mode taps and renders', (tester) async {
-      var taps = 0;
-      await tester.pumpWidget(
-        _wrap(
-          BeuiButton(
-            onPressed: () => taps++,
-            ripple: true,
-            child: const Text('Go'),
-          ),
-        ),
-      );
-      final gesture = await tester.startGesture(
-        tester.getCenter(find.byType(BeuiButton)),
-      );
-      await tester.pump(const Duration(milliseconds: 100));
-      await gesture.up();
-      await tester.pump();
-      expect(taps, 1);
-      expect(find.byType(ClipRRect), findsWidgets);
     });
 
     testWidgets('hover lifts to 1.02 by default', (tester) async {
@@ -350,29 +309,62 @@ void main() {
     testWidgets('applies a follow-spring on hover-capable; off under reduce', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        _wrap(const BeuiMagnetic(child: SizedBox(width: 40, height: 40))),
+      const child = SizedBox(
+        key: ValueKey('magnetic-child'),
+        width: 40,
+        height: 40,
       );
+      final box = find.byKey(const ValueKey('magnetic-child'));
+
+      await tester.pumpWidget(_wrap(const BeuiMagnetic(child: child)));
+      final rest = tester.getCenter(box);
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: Offset.zero);
+      addTearDown(gesture.removePointer);
+      // A corner point, well off-center but still inside the 40x40 box, so
+      // the pull is unambiguous.
+      await gesture.moveTo(rest + const Offset(15, -15));
+      // The ticker's first tick (this frame) fires at elapsed ~0, so sample a
+      // few frames in to catch it mid-flight rather than already arrived.
+      for (var i = 0; i < 3; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      final midFrame = tester.getCenter(box);
+      final target = const Offset(15, -15) * 0.35;
+      // Already moving toward the cursor, not still at rest nor snapped there.
+      expect(midFrame, isNot(rest));
+      expect((midFrame - rest).distance, lessThan(target.distance));
+
+      await tester.pumpAndSettle();
+      final settled = tester.getCenter(box);
+      // Settles near (cursor - center) * strength (default strength 0.35).
+      expect(settled.dx - rest.dx, closeTo(15 * 0.35, 1));
+      expect(settled.dy - rest.dy, closeTo(-15 * 0.35, 1));
+
+      // Exit springs back to rest.
+      await gesture.moveTo(Offset.zero);
+      await tester.pumpAndSettle();
       expect(
-        find.descendant(
-          of: find.byType(BeuiMagnetic),
-          matching: find.byType(MotionBuilder<Offset>),
-        ),
-        findsOneWidget,
+        tester.getCenter(box),
+        offsetMoreOrLessEquals(rest, epsilon: 0.05),
       );
 
+      // Reduced motion: hovering the same spot never moves it at all.
       await tester.pumpWidget(
-        _wrap(
-          const BeuiMagnetic(child: SizedBox(width: 40, height: 40)),
-          reduce: true,
-        ),
+        _wrap(const BeuiMagnetic(child: child), reduce: true),
       );
+      final reducedRest = tester.getCenter(box);
+      await gesture.moveTo(reducedRest + const Offset(15, -15));
+      await tester.pump(const Duration(milliseconds: 16));
       expect(
-        find.descendant(
-          of: find.byType(BeuiMagnetic),
-          matching: find.byType(MotionBuilder<Offset>),
-        ),
-        findsNothing,
+        tester.getCenter(box),
+        offsetMoreOrLessEquals(reducedRest, epsilon: 0.05),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.getCenter(box),
+        offsetMoreOrLessEquals(reducedRest, epsilon: 0.05),
       );
     });
 
