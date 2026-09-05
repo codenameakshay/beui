@@ -207,6 +207,12 @@ class _BeuiCylinderCarouselState extends State<BeuiCylinderCarousel>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _reduce = MediaQuery.disableAnimationsOf(context);
+  }
+
+  @override
   void didUpdateWidget(BeuiCylinderCarousel old) {
     super.didUpdateWidget(old);
     // Controlled index change → glide to the nearest wrapped target.
@@ -372,7 +378,6 @@ class _BeuiCylinderCarouselState extends State<BeuiCylinderCarousel>
 
   @override
   Widget build(BuildContext context) {
-    _reduce = MediaQuery.disableAnimationsOf(context);
     final convex = widget.curve == BeuiCylinderCurve.convex;
     final edgeOffset = (widget.visibleItems + 1) / 2;
 
@@ -529,9 +534,7 @@ class _CarouselBall extends StatelessWidget {
     if (convex) {
       x = o * gap;
     } else {
-      final th = o * alpha < -_thetaClamp
-          ? -_thetaClamp
-          : (o * alpha > _thetaClamp ? _thetaClamp : o * alpha);
+      final th = (o * alpha).clamp(-_thetaClamp, _thetaClamp);
       x = projection * math.sin(th) / (math.cos(th) + k);
     }
 
