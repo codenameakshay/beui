@@ -1,10 +1,11 @@
 import 'package:beui/beui.dart';
+import 'package:beui/src/motion/shader_background/shader_background.dart'
+    show beuiShaderRegistry;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _app(BeuiShaderVariant variant, {bool reduce = false}) {
-  Widget body = const SizedBox(width: 240, height: 240);
-  body = SizedBox(
+  Widget body = SizedBox(
     width: 240,
     height: 240,
     child: BeuiShaderBackground(variant: variant),
@@ -24,71 +25,39 @@ Widget _app(BeuiShaderVariant variant, {bool reduce = false}) {
 }
 
 void main() {
-  testWidgets('simplex-noise compiles, loads and paints', (tester) async {
-    await tester.pumpWidget(_app(BeuiShaderVariant.simplexNoise));
-    // Async FragmentProgram.fromAsset resolves, then the shader paints.
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 16));
-    expect(find.byType(BeuiShaderBackground), findsOneWidget);
-    expect(find.byType(CustomPaint), findsWidgets);
+  test('beuiShaderRegistry has an entry for every variant', () {
+    expect(beuiShaderRegistry.keys.toSet(), BeuiShaderVariant.values.toSet());
   });
 
-  testWidgets('reduced motion does not throw and still paints', (tester) async {
-    await tester.pumpWidget(_app(BeuiShaderVariant.simplexNoise, reduce: true));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 16));
-    expect(find.byType(CustomPaint), findsWidgets);
-  });
-
-  for (final v in const [
-    BeuiShaderVariant.dotGrid,
-    BeuiShaderVariant.meshGradient,
-    BeuiShaderVariant.staticMeshGradient,
-    BeuiShaderVariant.perlinNoise,
-    BeuiShaderVariant.swirl,
-    BeuiShaderVariant.waves,
-    BeuiShaderVariant.spiral,
-    BeuiShaderVariant.staticRadialGradient,
-    BeuiShaderVariant.neuroNoise,
-    BeuiShaderVariant.dithering,
-    BeuiShaderVariant.colorPanels,
-    BeuiShaderVariant.water,
-  ]) {
+  // Every variant compiles, loads and paints — texture variants (voronoi,
+  // metaballs, smokeRing, warp, godRays, dotOrbit, pulsingBorder,
+  // grainGradient, water) additionally decode the shared noise PNG, so all 21
+  // run inside runAsync to let that real async work settle; a plain pump
+  // never resolves it. `reduce` is a parameter within the same test rather
+  // than a separate one, so both motion paths are covered without doubling
+  // the suite.
+  for (final v in BeuiShaderVariant.values) {
     testWidgets('${v.name} compiles, loads and paints', (tester) async {
-      await tester.pumpWidget(_app(v));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 16));
-      expect(find.byType(BeuiShaderBackground), findsOneWidget);
-      expect(find.byType(CustomPaint), findsWidgets);
-    });
-  }
+      Future<void> pumpAndSettleAsync(bool reduce) async {
+        await tester.runAsync(() async {
+          await tester.pumpWidget(_app(v, reduce: reduce));
+          for (var k = 0; k < 12; k++) {
+            await tester.pump(const Duration(milliseconds: 16));
+            await Future<void>.delayed(const Duration(milliseconds: 8));
+          }
+        });
+        await tester.pump();
+        expect(
+          find.descendant(
+            of: find.byType(BeuiShaderBackground),
+            matching: find.byType(CustomPaint),
+          ),
+          findsOneWidget,
+        );
+      }
 
-  // Texture-driven variants also decode the shared noise PNG asynchronously,
-  // so they need real async (runAsync) before the shader paints.
-  for (final v in const [
-    BeuiShaderVariant.voronoi,
-    BeuiShaderVariant.metaballs,
-    BeuiShaderVariant.smokeRing,
-    BeuiShaderVariant.warp,
-    BeuiShaderVariant.godRays,
-    BeuiShaderVariant.dotOrbit,
-    BeuiShaderVariant.pulsingBorder,
-    BeuiShaderVariant.grainGradient,
-  ]) {
-    testWidgets('${v.name} compiles, loads and paints (texture)', (
-      tester,
-    ) async {
-      await tester.runAsync(() async {
-        await tester.pumpWidget(_app(v));
-        // Let FragmentProgram.fromAsset + the noise image codec resolve.
-        for (var k = 0; k < 12; k++) {
-          await tester.pump(const Duration(milliseconds: 16));
-          await Future<void>.delayed(const Duration(milliseconds: 8));
-        }
-      });
-      await tester.pump();
-      expect(find.byType(BeuiShaderBackground), findsOneWidget);
-      expect(find.byType(CustomPaint), findsWidgets);
+      await pumpAndSettleAsync(false);
+      await pumpAndSettleAsync(true);
     });
   }
 }
