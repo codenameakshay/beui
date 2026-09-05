@@ -2,15 +2,11 @@
 ///
 /// Package-internal. Not exported from `lib/beui.dart`.
 ///
-/// The audit found the transcript nesting three to five `liveRegion`
-/// nodes — the scroller's viewport, its inner content wrapper, its busy
-/// wrapper, every `BeuiStreamingResponse`, and every `BeuiMessageTyping` —
-/// whose labels are all *constants*. A live region only announces when its
-/// label changes, so the one thing a reader needs (the text arriving) was never
-/// announced, while any label that did change risked re-reading the whole
-/// transcript.
-///
-/// This file replaces that with a single ambient announcer:
+/// A live region only announces when its label changes, so nesting several
+/// `liveRegion` nodes with constant labels around the scroller, its streaming
+/// responses, and its typing indicators would announce nothing while a reader
+/// waits for the text arriving. This file is a single ambient announcer
+/// instead:
 ///
 /// * [BeuiTranscriptLiveRegion] owns exactly one live node and is mounted once,
 ///   by [BeuiMessageScroller], above the whole transcript.
@@ -70,16 +66,12 @@ class BeuiStreamAnnouncer {
 
   String _text = '';
   int _emitted = 0;
+  // How far into `_text` a previous `_boundary()` scan already confirmed
+  // there is no boundary character — so the next scan only has to look at
+  // text appended since, instead of rescanning from `_emitted` every time.
+  int _scanFrom = 0;
   Timer? _timer;
   bool _disposed = false;
-
-  /// How many characters have already been announced. Visible for tests.
-  @visibleForTesting
-  int get emittedLength => _emitted;
-
-  /// Whether a chunk is waiting on the throttle. Visible for tests.
-  @visibleForTesting
-  bool get isPending => _timer != null;
 
   /// Feeds the full text produced so far.
   ///
@@ -92,6 +84,7 @@ class BeuiStreamAnnouncer {
       // Not an append — the content was replaced. Start over, and do not speak
       // the part the reader has already heard.
       _emitted = 0;
+      _scanFrom = 0;
     }
     _text = text;
     _arm();
@@ -140,10 +133,15 @@ class BeuiStreamAnnouncer {
   }
 
   /// Index just past the last sentence terminator after [_emitted], or -1.
+  ///
+  /// Only the text appended since the previous no-match scan is rescanned —
+  /// `_scanFrom` remembers that everything before it was already checked.
   int _boundary() {
-    for (var i = _text.length - 1; i >= _emitted; i--) {
+    if (_scanFrom < _emitted) _scanFrom = _emitted;
+    for (var i = _text.length - 1; i >= _scanFrom; i--) {
       if (_kBoundaryChars.contains(_text[i])) return i + 1;
     }
+    _scanFrom = _text.length;
     return -1;
   }
 }
