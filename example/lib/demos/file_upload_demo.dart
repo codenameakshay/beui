@@ -13,12 +13,9 @@ import '../explorer/widgets.dart';
 /// the package ships no picker plugin.
 Widget fileUploadDemo(BuildContext context) => const _FileUploadDemo();
 
-/// Gallery route for [BeuiAttachmentUpload] on its own.
-///
-/// It used to be reachable only as the first half of the `file-upload` page,
-/// so the largest component in the library (2,300 lines, and the repo's
-/// keyboard/semantics reference implementation) had no catalog entry of its
-/// own and nothing linked to it.
+/// Gallery route for [BeuiAttachmentUpload] on its own — the largest
+/// component in the library and the repo's keyboard/semantics reference
+/// implementation.
 Widget attachmentUploadDemo(BuildContext context) =>
     const _AttachmentUploadSection();
 

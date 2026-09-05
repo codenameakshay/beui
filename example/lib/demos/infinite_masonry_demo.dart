@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 /// more tiles as you approach the end.
 ///
 /// The source cards show remote Unsplash photographs. The package ships no
-/// assets of its own (spec §3), so each card keeps the source's exact
+/// assets of its own, so each card keeps the source's exact
 /// `imageHeight` but fills that box with a flat `muted` panel; everything
 /// around it — the header, the captions, the categories, the page size and the
 /// tile rhythm — is the preview's.

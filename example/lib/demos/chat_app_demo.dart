@@ -498,7 +498,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
     _approvalStatus = BeuiApprovalCardStatus.pending;
   }
 
-  /// Handles the three sidebar nav buttons (C33) — each selects a distinct,
+  /// Handles the three sidebar nav buttons — each selects a distinct,
   /// visibly different state the demo already holds rather than a no-op.
   void _selectNav(_SidebarNav nav) {
     setState(() {
