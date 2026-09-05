@@ -190,10 +190,6 @@ const _stepDuration = Duration(milliseconds: 200);
 const _autoAdvanceDelay = Duration(milliseconds: 240);
 const _spinPeriod = Duration(milliseconds: 900);
 
-/// Compact-to-expanded height uses the shared layout spring so reversing
-/// mid-flight continues from the current height instead of restarting.
-const _expandSpring = beuiSpringLayout;
-
 // ---------------------------------------------------------------------------
 // BeuiApprovalCard
 // ---------------------------------------------------------------------------
@@ -444,6 +440,13 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
     _internalStep = widget.defaultStep;
     _internalExpanded = widget.defaultExpanded;
     _spin = AnimationController(vsync: this, duration: _spinPeriod);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // MediaQuery isn't available in initState; this also re-syncs whenever
+    // the ambient reduced-motion setting changes.
     _syncSpin();
   }
 
@@ -461,17 +464,10 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
   }
 
   void _syncSpin() {
-    final reduce =
-        WidgetsBinding
-            .instance
-            .platformDispatcher
-            .accessibilityFeatures
-            .disableAnimations ||
-        false;
-    // MediaQuery is not available in initState; also re-checked in build.
+    final reduce = MediaQuery.disableAnimationsOf(context);
     if (_busy && !reduce) {
       if (!_spin.isAnimating) _spin.repeat();
-    } else {
+    } else if (_spin.isAnimating || _spin.value != 0) {
       _spin
         ..stop()
         ..value = 0;
@@ -536,15 +532,6 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
     final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-
-    // Keep spin in sync with reduced-motion (MediaQuery only available here).
-    if (_busy && !reduce) {
-      if (!_spin.isAnimating) _spin.repeat();
-    } else if (_spin.isAnimating || _spin.value != 0) {
-      _spin
-        ..stop()
-        ..value = 0;
-    }
 
     final strings = agent.strings;
     final statusColors = agent.statusColorsFor(theme.brightness);
@@ -1531,8 +1518,9 @@ class _ProgressDots extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = BeuiAgentTheme.of(context).strings;
     return Semantics(
-      label: 'Question ${current + 1} of ${ids.length}',
+      label: strings.questionProgress(current + 1, ids.length),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -1584,26 +1572,16 @@ class _ProgressDot extends StatelessWidget {
       );
     }
 
-    // Drive scale + opacity with SPRING_SWAP via a packed value.
-    // Pack: scale in integer part * 100 + opacity * 100 → decode in builder.
-    // Simpler: two SingleMotionBuilders nested, or one MotionBuilder.
-    // Nested is fine for 6px dots.
-    return SingleMotionBuilder(
-      value: scale,
-      motion: motionFor(context, beuiSpringSwap, isMovement: true),
-      builder: (context, s, child) {
-        return SingleMotionBuilder(
-          value: opacity,
-          motion: motionFor(context, beuiSpringSwap, isMovement: false),
-          builder: (context, o, child) {
-            return Opacity(
-              opacity: o.clamp(0.0, 1.0),
-              child: Transform.scale(scale: s, child: child),
-            );
-          },
-          child: child,
-        );
-      },
+    // Scale (dx) + opacity (dy) on independent SPRING_SWAP channels via one
+    // Offset-valued builder, rather than nesting two scalar builders.
+    return MotionBuilder<Offset>(
+      value: Offset(scale, opacity),
+      motion: beuiSpringSwap,
+      converter: const OffsetMotionConverter(),
+      builder: (context, value, child) => Opacity(
+        opacity: value.dy.clamp(0.0, 1.0),
+        child: Transform.scale(scale: value.dx, child: child),
+      ),
       child: dot,
     );
   }
@@ -1846,7 +1824,9 @@ class _ExpandableBodyState extends State<_ExpandableBody> {
 
     return SingleMotionBuilder(
       value: target,
-      motion: motionFor(context, _expandSpring, isMovement: true),
+      // The shared layout spring, so reversing mid-flight continues from the
+      // current height instead of restarting.
+      motion: motionFor(context, beuiSpringLayout, isMovement: true),
       builder: (context, t, _) {
         final tt = t.clamp(0.0, 1.0);
         return _frame(
