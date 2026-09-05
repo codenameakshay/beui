@@ -594,7 +594,7 @@ void main() {
   // UX remediation — R2, R11, R31, R32, R37, R38
   // ---------------------------------------------------------------------
 
-  group('BeuiPreviewRail touch (R2)', () {
+  group('BeuiPreviewRail touch', () {
     testWidgets('the first tap previews instead of navigating blind', (
       tester,
     ) async {
@@ -680,7 +680,7 @@ void main() {
     });
   });
 
-  group('BeuiPreviewRail current location (R2)', () {
+  group('BeuiPreviewRail current location', () {
     testWidgets('highlightActive defaults on, so the rail says where you are', (
       tester,
     ) async {
@@ -706,7 +706,7 @@ void main() {
     });
   });
 
-  group('BeuiPreviewRail fitting its box (R11, R31)', () {
+  group('BeuiPreviewRail fitting its box', () {
     List<BeuiPreviewRailItem> many(int n) => [
       for (var i = 0; i < n; i++)
         BeuiPreviewRailItem(id: '$i', label: 'Item $i'),
@@ -814,7 +814,7 @@ void main() {
     });
   });
 
-  group('BeuiPreviewRailStyle.itemSize deprecation path (R37)', () {
+  group('BeuiPreviewRailStyle.itemSize deprecation path', () {
     test('resolvedItemSize is the single precedence rule', () {
       expect(const BeuiPreviewRailStyle().resolvedItemSize, 24);
       expect(const BeuiPreviewRailStyle(itemSize: 32).resolvedItemSize, 32);
@@ -858,7 +858,7 @@ void main() {
     });
   });
 
-  group('BeuiPreviewRail selection reconciliation (R38)', () {
+  group('BeuiPreviewRail selection reconciliation', () {
     testWidgets('defaultActiveId is re-read when the caller changes it', (
       tester,
     ) async {
@@ -923,7 +923,7 @@ void main() {
     });
   });
 
-  group('BeuiPreviewRail preview card (R32)', () {
+  group('BeuiPreviewRail preview card', () {
     testWidgets('the card takes no pointers, as its docs now say', (
       tester,
     ) async {

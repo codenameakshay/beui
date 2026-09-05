@@ -1,7 +1,7 @@
 import 'package:beui/beui.dart';
 // The shared live-edge affordance is package-internal — it is an implementation
 // detail of BeuiCodeBlock / BeuiFileDiff / BeuiToolResult, but its *contract*
-// (F9/F10) is what these tests pin.
+// is what these tests pin.
 import 'package:beui/src/motion/_focus_ring.dart' show BeuiFocusRing;
 import 'package:beui/src/motion/_viewport_follow.dart'
     show BeuiHiddenContentFooter, BeuiJumpToLatest;
@@ -31,7 +31,7 @@ Widget _host(Widget child, {BeuiAgentTheme? agent, bool reduce = false}) {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('BeuiJumpToLatest copy resolves through the theme (F9)', () {
+  group('BeuiJumpToLatest copy resolves through the theme', () {
     testWidgets('defaults to strings.jumpToLatest', (tester) async {
       await tester.pumpWidget(
         _host(BeuiJumpToLatest(visible: true, onTap: () {})),
@@ -79,7 +79,7 @@ void main() {
     });
   });
 
-  group('BeuiJumpToLatest is operable from the keyboard (F10)', () {
+  group('BeuiJumpToLatest is operable from the keyboard', () {
     testWidgets('Enter activates it', (tester) async {
       var taps = 0;
       await tester.pumpWidget(
@@ -124,7 +124,7 @@ void main() {
     });
   });
 
-  group('BeuiJumpToLatest goes quiet when hidden (F9)', () {
+  group('BeuiJumpToLatest goes quiet when hidden', () {
     testWidgets(
       'a pill on its way out is neither tappable nor offered to a reader',
       (tester) async {
@@ -176,7 +176,7 @@ void main() {
     );
   });
 
-  group('BeuiHiddenContentFooter copy resolves through the theme (F13)', () {
+  group('BeuiHiddenContentFooter copy resolves through the theme', () {
     testWidgets('a theme override reaches the count', (tester) async {
       final extent = ValueNotifier<double>(60);
       addTearDown(extent.dispose);

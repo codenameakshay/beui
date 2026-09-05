@@ -96,7 +96,7 @@ class _ApprovalCardDemo extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Header trigger invariant (A11)
+// Header trigger invariant
 // ---------------------------------------------------------------------------
 
 /// Two cards that look almost alike and behave deliberately differently.

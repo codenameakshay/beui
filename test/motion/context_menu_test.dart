@@ -318,7 +318,7 @@ void main() {
       expect(find.text('Open'), findsNothing);
     });
 
-    // F7. Same defect as the command palette's: the active-row highlight is a
+    // Same defect as the command palette's: the active-row highlight is a
     // `MotionBuilder<Rect>` fed `const NoMotion()` under reduced motion, and
     // NoMotion holds the rect it was seeded with forever rather than reaching
     // the target (see `_no_motion_semantics_test.dart`). The highlight stuck

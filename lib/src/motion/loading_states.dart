@@ -108,7 +108,7 @@ class BeuiAgentProgress extends StatefulWidget {
   ///
   /// Null (the default) resolves to false when a [BeuiMessageScroller] is
   /// above it and true otherwise — the transcript owns the conversation's one
-  /// live region (C6).
+  /// live region.
   final bool? announce;
 
   /// Controlled elapsed time in seconds. When set, the internal timer is
@@ -177,7 +177,7 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // C21. The two branches here used to be identical — the `if (reduce)` was
+    // The two branches here used to be identical — the `if (reduce)` was
     // dead code — so the controller looped either way. Under reduced motion
     // the painter pins scale to 1.0 and narrows opacity to a 0.35–0.8 band,
     // and `shouldRepaint` returns true on every tick, so the setting meant to
@@ -253,7 +253,7 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
 
     return Semantics(
       label: '${widget.label}, in progress',
-      // C6. This label only changes if the caller changes `label`, so as a
+      // This label only changes if the caller changes `label`, so as a
       // live region it announced once and then went inert while adding another
       // region to the transcript's nest. Inside a scroller the transcript owns
       // announcements; standalone it keeps its own.
@@ -420,7 +420,7 @@ class BeuiReasoningText extends StatefulWidget {
   /// interrupted itself up to 1.6 times a second with decorative filler
   /// ("Thinking", "Reading the context", …) that carries no information the
   /// reader can act on. The status a screen reader needs is the *transcript's*
-  /// busy state, which [BeuiMessageScroller] already reports (C6).
+  /// busy state, which [BeuiMessageScroller] already reports.
   ///
   /// Set true only when this is the sole indication that work is happening.
   final bool announce;
@@ -522,7 +522,7 @@ class _BeuiReasoningTextState extends State<BeuiReasoningText> {
 
     return Semantics(
       label: _phrase,
-      // C6: off by default — see [BeuiReasoningText.announce].
+      // Off by default — see [BeuiReasoningText.announce].
       liveRegion: widget.announce,
       container: true,
       child: Row(
@@ -573,7 +573,7 @@ class _PhraseSlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      // C17: phrase slots are start-aligned, which mirrors under RTL.
+      // Phrase slots are start-aligned, which mirrors under RTL.
       alignment: AlignmentDirectional.centerStart,
       children: [
         // Invisible sizer so the slot never collapses between phrases.
@@ -701,7 +701,7 @@ class _CascadePhraseState extends State<_CascadePhrase>
             final totalMs = _controller.duration!.inMilliseconds;
             return Stack(
               clipBehavior: Clip.hardEdge,
-              // C17: phrase slots are start-aligned, which mirrors under RTL.
+              // Phrase slots are start-aligned, which mirrors under RTL.
               alignment: AlignmentDirectional.centerStart,
               children: [
                 PositionedDirectional(
@@ -860,7 +860,7 @@ class _SwapPhraseState extends State<_SwapPhrase>
         final inOp = t;
         final inY = slide * (1 - t);
         return Stack(
-          // C17: phrase slots are start-aligned, which mirrors under RTL.
+          // Phrase slots are start-aligned, which mirrors under RTL.
           alignment: AlignmentDirectional.centerStart,
           children: [
             Opacity(

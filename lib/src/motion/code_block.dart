@@ -268,7 +268,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
         : (isLight ? readyGreen : readyGreenDark);
 
     // 0.97, the library press token. This widget used to press to 0.9, which
-    // read as a different component on the same screen (audit T8).
+    // read as a different component on the same screen.
     final pressTarget = (_copyPressed && !reduce) ? 0.97 : 1.0;
     final filename = _resolveFilename();
     final surface = Color.alphaBlend(
@@ -367,7 +367,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                           button: true,
                           // Live only while the confirmation is up, so the
                           // swap to "Copied" is announced instead of just
-                          // relabelling a silent node (audit R28 / T7).
+                          // relabelling a silent node.
                           liveRegion: _copied,
                           label: _copied
                               ? agent.strings.copied
@@ -522,7 +522,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                           ),
                           // Hidden-content cue: the viewport turns scrollbars
                           // off for fidelity, so without this a long file reads
-                          // as a short one that stops mid-statement (R12).
+                          // as a short one that stops mid-statement.
                           Positioned(
                             left: 0,
                             right: 0,
@@ -535,7 +535,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                           ),
                           // The reader owns the viewport: once they scroll off
                           // the live edge, following stops and this is how they
-                          // opt back in (R7).
+                          // opt back in.
                           Positioned(
                             right: 10,
                             bottom: 8,
@@ -741,7 +741,7 @@ class _CodeLineRow extends StatelessWidget {
                   style: baseStyle.copyWith(
                     // 0.75, not 0.35. The gutter is the cross-reference channel
                     // for "I changed line 19"; at 0.35 it measured 1.63:1 and
-                    // could not be read at all (audit R8).
+                    // could not be read at all.
                     color: colors.mutedForeground.withValues(alpha: 0.75),
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),

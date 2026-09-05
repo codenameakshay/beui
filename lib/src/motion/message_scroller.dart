@@ -377,7 +377,7 @@ class BeuiMessageScroller extends StatefulWidget {
   /// Defaults to the theme's `layout.conversationGutter` when it has been set,
   /// otherwise to the source's own `px-3 py-4`. Prior to the UX pass this
   /// defaulted to zero and *every* call site in the repo overrode it, which is
-  /// the definition of a wrong default (C27).
+  /// the definition of a wrong default.
   final EdgeInsetsGeometry? padding;
 
   /// Scroll physics for the viewport. Defaults to platform clamping physics.
@@ -422,15 +422,15 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
 
   /// Guards the programmatic-scroll flag against a stale timer or a settled
   /// animation belonging to an earlier follow. Every [scrollToEnd] /
-  /// [scrollToId] bumps it; late callbacks compare and bail (C5).
+  /// [scrollToId] bumps it; late callbacks compare and bail.
   int _scrollToken = 0;
 
   /// True while a smooth follow glide is in flight. A second growth arriving
   /// inside that window is the signal that the stream is outpacing the 320ms
-  /// animation, and the next follow jumps instead (C5).
+  /// animation, and the next follow jumps instead.
   bool _animatingFollow = false;
 
-  /// Messages registered since the reader left the live edge (C4).
+  /// Messages registered since the reader left the live edge.
   int _unread = 0;
 
   final GlobalKey<BeuiTranscriptLiveRegionState> _liveRegionKey =
@@ -486,7 +486,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
     setState(() {
       _following = next;
       // Returning to the live edge clears the backlog — the reader has now
-      // seen everything (C4).
+      // seen everything.
       if (next && _unread != 0) {
         _unread = 0;
         widget.onUnreadCountChange?.call(0);
@@ -582,7 +582,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
     final reduce = MediaQuery.disableAnimationsOf(context);
     var useSmooth = (smooth ?? widget.smooth) && !reduce;
 
-    // C5. The pre-fix code restarted a 320ms `animateTo` on every growth. At a
+    // The pre-fix code restarted a 320ms `animateTo` on every growth. At a
     // 16ms token cadence that is ~20 restarts before one completes, so the
     // viewport permanently trailed the live edge and `_programmaticClear` was
     // re-armed every tick — the guard never cleared for the whole stream and
@@ -790,7 +790,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
     return KeyEventResult.ignored;
   }
 
-  /// The viewport padding, with a real default (C27).
+  /// The viewport padding, with a real default.
   ///
   /// `BeuiAgentLayout.conversationGutter` ships as `EdgeInsets.zero`, so before
   /// this fallback the scroller rendered messages flush against its own edges
@@ -810,7 +810,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
       context,
     ).copyWith(scrollbars: !showRail, overscroll: false);
 
-    // C15. The lazy path builds only the rows in (and near) the viewport, so a
+    // The lazy path builds only the rows in (and near) the viewport, so a
     // streamed token re-measures a screenful rather than the whole transcript.
     final itemBuilder = widget.itemBuilder;
     if (itemBuilder != null) {
@@ -861,11 +861,11 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
         _isOverflowing() &&
         railItems.length > 1;
 
-    // C30. The transcript is a real, *visible* tab stop. Before this the
+    // The transcript is a real, *visible* tab stop. Before this the
     // keyboard escape hatch (ArrowUp / PageUp / Home releasing follow) sat
     // behind a bare `Focus` with no indicator, so a keyboard reader had to Tab
     // into something invisible before it worked.
-    // F20: every user-facing default in this widget resolves through the theme
+    // Every user-facing default in this widget resolves through the theme
     // role, so a non-English app relabels the transcript once instead of at
     // every call site.
     final strings = BeuiAgentTheme.of(context).strings;
@@ -887,7 +887,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
       child: viewport,
     );
 
-    // C6. One live region for the whole conversation, mounted here, above the
+    // One live region for the whole conversation, mounted here, above the
     // transcript. It replaces the three-to-five nested regions the audit found
     // — all with constant labels, so none of them ever announced the streamed
     // text they were wrapping. Descendant streaming surfaces detect this scope
@@ -974,7 +974,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
   }
 }
 
-/// The transcript's focusable viewport (C30).
+/// The transcript's focusable viewport.
 ///
 /// A keyboard reader can Tab to the transcript, see that it has focus, and use
 /// ArrowUp / PageUp / Home to leave the live edge. The ring is painted outside
@@ -1022,7 +1022,7 @@ class _ScrollerFocusState extends State<_ScrollerFocus> {
 }
 
 // ---------------------------------------------------------------------------
-// Jump-to-latest pill (C4)
+// Jump-to-latest pill
 // ---------------------------------------------------------------------------
 
 /// Pill exit — deliberately faster than the spring entrance, per the repo
@@ -1036,7 +1036,7 @@ const _jumpReduceMotion = CurvedMotion(
 );
 
 /// "Jump to latest" affordance shown while the reader is away from the live
-/// edge (C4).
+/// edge.
 ///
 /// The scroller already computed everything this needs — `_following`,
 /// `onFollowChange`, `scrollToEnd()` — and rendered nothing, so a reader who
@@ -1079,7 +1079,7 @@ class _JumpToLatestState extends State<_JumpToLatest> {
         ? '${widget.label}, $unread new ${unread == 1 ? 'message' : 'messages'}'
         : widget.label;
 
-    // C8/T9: the slop wrapper is outermost, and that placement is
+    // The slop wrapper is outermost, and that placement is
     // load-bearing — an ancestor RenderBox rejects a pointer outside
     // its own box before any child's hitTest runs, so a nested
     // BeuiMinHitTarget is dead weight.
@@ -1089,7 +1089,7 @@ class _JumpToLatestState extends State<_JumpToLatest> {
         label: label,
         child: Tooltip(
           message: widget.label,
-          // C22: the Semantics label above already names this control; a
+          // The Semantics label above already names this control; a
           // Tooltip that also contributes semantics makes a reader say it twice.
           excludeFromSemantics: true,
           child: FocusableActionDetector(
@@ -1118,7 +1118,7 @@ class _JumpToLatestState extends State<_JumpToLatest> {
                 focused: _focused,
                 borderRadius: BorderRadius.circular(999),
                 child: SingleMotionBuilder(
-                  // C31: 0.97 is this library's press scale.
+                  // 0.97 is this library's press scale.
                   value: (_pressed && !reduce) ? 0.97 : 1.0,
                   motion: motionFor(context, beuiSpringPress, isMovement: true),
                   builder: (context, scale, child) =>
@@ -1309,7 +1309,7 @@ class _RenderContentSizeReporter extends RenderProxyBox {
 /// One grid row per rail tick (source `<PreviewRail itemSize={14} …>`).
 const double _railItemSize = 14;
 
-/// Floor for the compressed rail pitch (C16).
+/// Floor for the compressed rail pitch.
 ///
 /// The source's fixed 14px pitch clips silently past ~28 messages in a 400px
 /// rail — the ticks for older turns are simply not rendered, with no scroll,
@@ -1343,7 +1343,7 @@ class _MessageRail extends StatefulWidget {
   final ValueChanged<String> onSelect;
 
   /// Width of the transcript the rail overlays — the ceiling for the preview
-  /// card (C28).
+  /// card.
   final double maxPreviewWidth;
 
   @override
@@ -1409,7 +1409,7 @@ class _MessageRailState extends State<_MessageRail> {
               ? constraints.maxHeight
               : n * _railItemSize;
 
-          // C16. Compress the pitch before clipping anything. Only when even
+          // Compress the pitch before clipping anything. Only when even
           // the floor overflows does the rail become scrollable — and then it
           // says so, with a fade at each end.
           var track = _railItemSize;
@@ -1513,7 +1513,7 @@ class _MessageRailState extends State<_MessageRail> {
                 if (preview != null)
                   PositionedDirectional(
                     end: 32,
-                    // C28. The card is 256px wide and used to be pinned there
+                    // The card is 256px wide and used to be pinned there
                     // regardless of how much room existed — below about 290px
                     // of component width it painted outside its own bounds and
                     // over the neighbouring UI. It now takes whatever the
@@ -1593,7 +1593,7 @@ class _MessageRailTick extends StatelessWidget {
       color: highlighted ? activeColor : inactiveColor,
     );
 
-    // C17. Directional origin: ticks grow from the trailing edge, which is the
+    // Directional origin: ticks grow from the trailing edge, which is the
     // right in LTR and the left in RTL — `Transform` resolves the geometry
     // against the ambient `Directionality`.
     Widget scaled(double value) => Transform(

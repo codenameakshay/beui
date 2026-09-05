@@ -375,7 +375,7 @@ class _BeuiCitationState extends State<BeuiCitation> {
                   padding: const EdgeInsets.symmetric(horizontal: 2), // mx-0.5
                   // The ring is a foreground overlay, so focusing costs no
                   // layout — the old in-decoration 2px border insetting the
-                  // badge reflowed the whole paragraph (audit R27).
+                  // badge reflowed the whole paragraph.
                   child: BeuiFocusRing(
                     focused: _focused,
                     borderRadius: BorderRadius.circular(6),
@@ -1260,7 +1260,7 @@ class _CitationEnterState extends State<_CitationEnter> {
     // The channel split, not an all-or-nothing switch. Reduced motion drops the
     // 6px rise and keeps the fade: rows arriving out of nowhere with no
     // transition at all is exactly what the project rule forbids, and
-    // `preview_rail` has done this correctly all along (audit R18 / T4).
+    // `preview_rail` has done this correctly all along.
     final fade = SingleMotionBuilder(
       value: _opacity,
       from: 0,

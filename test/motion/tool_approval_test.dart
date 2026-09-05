@@ -19,7 +19,7 @@ Widget _host({
   VoidCallback? onAlwaysAllow,
   VoidCallback? onDeny,
   VoidCallback? onRevoke,
-  // A pending card with no handlers now trips a debug assert (A5), so the
+  // A pending card with no handlers now trips a debug assert, so the
   // harness supplies no-ops by default. Tests that need the real null pass
   // `defaultHandlers: false`.
   bool defaultHandlers = true,
@@ -165,7 +165,7 @@ void main() {
       expect(find.text('Deny'), findsOneWidget);
     });
 
-    // A5. The old behaviour was to render a live-looking button that silently
+    // The old behaviour was to render a live-looking button that silently
     // did nothing — codified by the test this replaces.
     testWidgets('a null handler renders a disabled action, not an inert one', (
       tester,
@@ -449,7 +449,7 @@ void main() {
       handle.dispose();
     });
 
-    // A31. `androidTapTargetGuideline` measures the *semantics* rect, which
+    // `androidTapTargetGuideline` measures the *semantics* rect, which
     // `BeuiMinHitTarget` deliberately does not grow — the whole point is to
     // widen the touch area without inflating the layout and pushing the
     // buttons apart. So the honest assertion is behavioural: a press that
@@ -674,7 +674,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      // A43: a standing permission must never be silently indistinguishable
+      // A standing permission must never be silently indistinguishable
       // from a one-off.
       expect(find.text('Always allowed'), findsWidgets);
     });

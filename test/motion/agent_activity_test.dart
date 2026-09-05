@@ -870,7 +870,7 @@ void main() {
       handle.dispose();
     });
 
-    // A31. The visual stays at the source's 28px `h-7`; BeuiMinHitTarget grows
+    // The visual stays at the source's 28px `h-7`; BeuiMinHitTarget grows
     // only the hit area, so this is asserted by tapping outside the paint.
     // `androidTapTargetGuideline` measures the *semantics* rect, which follows
     // the paint, so it cannot see hit slop and is not the instrument here.
@@ -1008,7 +1008,7 @@ void main() {
     );
   });
 
-  // F1. While `working`, `canScroll` is false — the stream is an OverflowBox
+  // While `working`, `canScroll` is false — the stream is an OverflowBox
   // inside a ClipRect, and the `streamOffset` translate is the ONLY thing that
   // brings newly appended rows up into view. That translate was driven by a
   // `SingleMotionBuilder` handed `const NoMotion()` under reduced motion, and

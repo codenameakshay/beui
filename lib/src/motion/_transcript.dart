@@ -2,7 +2,7 @@
 ///
 /// Package-internal. Not exported from `lib/beui.dart`.
 ///
-/// The audit (C6) found the transcript nesting three to five `liveRegion`
+/// The audit found the transcript nesting three to five `liveRegion`
 /// nodes — the scroller's viewport, its inner content wrapper, its busy
 /// wrapper, every `BeuiStreamingResponse`, and every `BeuiMessageTyping` —
 /// whose labels are all *constants*. A live region only announces when its

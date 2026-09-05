@@ -928,9 +928,9 @@ void main() {
     });
   });
 
-  // F12: the last streaming viewport in the library with no pin concept. It
+  // The last streaming viewport in the library with no pin concept. It
   // now shares BeuiLiveEdgeFollower with the code block and the file diff.
-  group('BeuiToolResult live edge (F12)', () {
+  group('BeuiToolResult live edge', () {
     String longOutput(int n) =>
         [for (var i = 0; i < n; i++) 'line $i'].join('\n');
 
@@ -1031,7 +1031,7 @@ void main() {
       expect(find.text('Jump to latest'), findsNothing);
     });
 
-    testWidgets('the overflow cue speaks the shared hidden-lines copy (F13)', (
+    testWidgets('the overflow cue speaks the shared hidden-lines copy', (
       tester,
     ) async {
       await tester.pumpWidget(

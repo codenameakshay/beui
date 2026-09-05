@@ -81,7 +81,7 @@ const _strikeMotion = CurvedMotion(Duration(milliseconds: 280), beuiEaseOut);
 
 /// The strike retracting when a task leaves `completed`.
 ///
-/// A19: the draw-on and the retract used to share one 280ms token, so the
+/// The draw-on and the retract used to share one 280ms token, so the
 /// undo was as slow as the commit. Exits are faster than entrances everywhere
 /// else in the library; this is the pair that was missing one.
 const _strikeRetractMotion = CurvedMotion(
@@ -218,7 +218,7 @@ class BeuiTodoList extends StatefulWidget {
   /// Headline of the built-in empty state. Defaults to
   /// [BeuiAgentStrings.todoEmpty].
   ///
-  /// A28: "No tasks yet" alone is a shrug — it reports a fact the reader can
+  /// "No tasks yet" alone is a shrug — it reports a fact the reader can
   /// already see and says nothing about whether that is normal, whether
   /// something is broken, or what would change it. Pair it with
   /// [emptyDescription] (or override both) so the panel orients: what will
@@ -310,7 +310,7 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
 
   @override
   Widget build(BuildContext context) {
-    // A40: this was a `!` null-assert, so a consumer who installed the widget
+    // This was a `!` null-assert, so a consumer who installed the widget
     // without also installing `BeuiColors` got a crash out of a published
     // package. Every sibling in the agent family already fell back like this.
     final colors = BeuiColors.resolve(context);
@@ -318,7 +318,7 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
     final strings = agent.strings;
     final statusColors = agent.statusColorsFor(colors.brightness);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    // A36: was `isDark ? emerald-400 : emerald-600`, two Tailwind literals.
+    // Was `isDark ? emerald-400 : emerald-600`, two Tailwind literals.
     final completeCountColor = _allComplete
         ? statusColors.palette(BeuiAgentStatus.success).foreground
         : colors.mutedForeground;
@@ -388,7 +388,7 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
       ),
     );
 
-    // A38: `useGlassSurfaces` was dead across this whole cluster. Honouring it
+    // `useGlassSurfaces` was dead across this whole cluster. Honouring it
     // through `decorateCard` picks up both the glass fill and its backdrop
     // blur; with the token at its `false` default this is a no-op and the card
     // keeps the source's transparent, hairline-bordered shell below.
@@ -422,7 +422,7 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
 
 /// The empty panel: a headline plus an optional orienting line.
 ///
-/// A28. The headline routes through [BeuiAgentStrings.todoEmpty] and the
+/// The headline routes through [BeuiAgentStrings.todoEmpty] and the
 /// orienting line through [BeuiAgentStrings.todoEmptyDescription], so both
 /// stay localizable by default; [BeuiTodoList.emptyDescription] overrides the
 /// latter per instance.
@@ -463,7 +463,7 @@ class _EmptyState extends StatelessWidget {
                 Text(
                   description!,
                   // Supporting copy, but still information — full muted
-                  // contrast, no alpha multiplier (A8).
+                  // contrast, no alpha multiplier.
                   style: agent.typography.description.copyWith(
                     color: colors.mutedForeground,
                   ),
@@ -701,7 +701,7 @@ class _TodoHeaderIcon extends StatelessWidget {
       height: 24,
       child: AnimatedSwitcher(
         duration: _headerMarkIn,
-        // A19: the outgoing mark used to take the full 280ms too.
+        // The outgoing mark used to take the full 280ms too.
         reverseDuration: _headerMarkOut,
         switchInCurve: Curves.linear,
         switchOutCurve: Curves.linear,
@@ -802,7 +802,7 @@ class _HeaderCheckPainter extends CustomPainter {
 
   final Color color;
 
-  /// A36: was a bare `Colors.white`. It is ink drawn on [color], which is what
+  /// Was a bare `Colors.white`. It is ink drawn on [color], which is what
   /// the palette's `onSolid` slot means — retinting the disc now retints the
   /// stroke with it.
   final Color checkColor;
@@ -910,7 +910,7 @@ class _TodoRowState extends State<_TodoRow>
     super.dispose();
   }
 
-  /// A8: the task title is the content of this row. All three non-active
+  /// The task title is the content of this row. All three non-active
   /// states used to multiply `mutedForeground` by 0.55–0.65, putting the text
   /// under 3:1 while the information that distinguishes them — the mark and
   /// the strike-through — was already carrying that job redundantly.
@@ -989,7 +989,7 @@ class _TodoRowState extends State<_TodoRow>
             if (item.detail != null) ...[
               SizedBox(width: agent.layout.actionSpacing),
               DefaultTextStyle.merge(
-                // A8: "25%" is progress, not decoration.
+                // "25%" is progress, not decoration.
                 style: agent.typography.description.copyWith(
                   color: colors.mutedForeground,
                 ),
@@ -1003,7 +1003,7 @@ class _TodoRowState extends State<_TodoRow>
 
     if (reduce) return row;
 
-    // A18: the entrance used to rebuild an `Opacity` widget over this whole
+    // The entrance used to rebuild an `Opacity` widget over this whole
     // row — a `CustomPaint` mark, a `Stack`-composed strike, and the title —
     // on every frame. `FadeTransition` updates the opacity layer in place, and
     // the single `AnimatedBuilder` below passes `child` straight through, so
@@ -1083,7 +1083,7 @@ class _StrikethroughTitleState extends State<_StrikethroughTitle> {
                   ? const NoMotion()
                   : motionFor(
                       context,
-                      // A19: draw on in 280ms, retract in 160ms.
+                      // Draw on in 280ms, retract in 160ms.
                       _target > 0 ? _strikeMotion : _strikeRetractMotion,
                       isMovement: true,
                     ),
@@ -1179,7 +1179,7 @@ class _TodoStatusIconState extends State<_TodoStatusIcon>
     super.dispose();
   }
 
-  /// A36: was `isDark ? rose-400 : rose-600` for cancelled and bare
+  /// Was `isDark ? rose-400 : rose-600` for cancelled and bare
   /// `foreground` for in-progress. Every mark now takes its tier's foreground
   /// — see [_statusTier] for the mapping and the two deliberate choices in it.
   Color _strokeColor() =>
@@ -1208,7 +1208,7 @@ class _TodoStatusIconState extends State<_TodoStatusIcon>
     final inProgressBase =
         status == BeuiTodoItemStatus.inProgress; // dimmed base circle
 
-    // A18: these four channels used to be four *nested* `SingleMotionBuilder`s
+    // These four channels used to be four *nested* `SingleMotionBuilder`s
     // (plus a fifth for the ring opacity), so every row built a five-deep
     // animation tree and every frame of any one channel rebuilt the four
     // builders beneath it. They are one `MotionBuilder` now.

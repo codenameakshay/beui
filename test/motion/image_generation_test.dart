@@ -337,7 +337,7 @@ void main() {
     );
   }
 
-  group('BeuiImageGeneration progress (R13)', () {
+  group('BeuiImageGeneration progress', () {
     /// Fraction of the frame the determinate fill covers.
     double? fillFactor(WidgetTester tester) {
       final boxes = tester.widgetList<FractionallySizedBox>(
@@ -397,7 +397,7 @@ void main() {
     });
   });
 
-  group('BeuiImageGeneration cancel (R13)', () {
+  group('BeuiImageGeneration cancel', () {
     testWidgets('no stop control without a handler', (tester) async {
       await tester.pumpWidget(remediationHost());
       await pumpFrames(tester);
@@ -456,7 +456,7 @@ void main() {
     });
   });
 
-  group('BeuiImageGeneration error costs no layout shift (R24)', () {
+  group('BeuiImageGeneration error costs no layout shift', () {
     testWidgets('the retry slot is held open on every status', (tester) async {
       await tester.pumpWidget(remediationHost(onRetry: () {}));
       await pumpFrames(tester);
@@ -521,7 +521,7 @@ void main() {
     });
   });
 
-  group('BeuiImageGeneration failure legibility (R25)', () {
+  group('BeuiImageGeneration failure legibility', () {
     double contrast(Color a, Color b) {
       final la = a.computeLuminance();
       final lb = b.computeLuminance();
@@ -585,7 +585,7 @@ void main() {
     });
   });
 
-  group('BeuiImageGeneration reduced motion (R18)', () {
+  group('BeuiImageGeneration reduced motion', () {
     testWidgets('the reveal keeps its opacity channel', (tester) async {
       await tester.pumpWidget(
         remediationHost(
@@ -640,7 +640,7 @@ void main() {
     });
   });
 
-  group('BeuiImageGeneration dither field cost (R30)', () {
+  group('BeuiImageGeneration dither field cost', () {
     testWidgets('the painter repaints without rebuilding the widget', (
       tester,
     ) async {

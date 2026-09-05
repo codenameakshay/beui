@@ -69,7 +69,7 @@ void main() {
         ),
       );
       expect(find.text('End-aligned'), findsOneWidget);
-      // C17: alignment is logical, so a user bubble sits at the *end* — the
+      // Alignment is logical, so a user bubble sits at the *end* — the
       // right in LTR, the left in RTL — rather than at a hardcoded right.
       final align = tester.widget<Align>(
         find
@@ -237,7 +237,7 @@ void main() {
       expect(find.text('Show less'), findsOneWidget);
     });
 
-    // F2/F3. Under reduced motion both the height reveal and the chevron were
+    // Under reduced motion both the height reveal and the chevron were
     // driven by `SingleMotionBuilder`s handed `const NoMotion()`, which holds
     // its seeded value forever instead of snapping to the target (see
     // `_no_motion_semantics_test.dart`). The label swapped to "Show less" but

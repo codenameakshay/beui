@@ -28,7 +28,7 @@ import '_engine.dart';
 ///
 /// ## Narrow windows
 ///
-/// Below [sidebarBreakpoint] the sidebar leaves the flow (C3). The source
+/// Below [sidebarBreakpoint] the sidebar leaves the flow. The source
 /// hardcodes a 272px rail with no responsive behaviour at all, which on a
 /// 300px window left the conversation 28px — narrow enough to trip the message
 /// bubble's own minimum-width assert. Below the breakpoint the sidebar either
@@ -139,7 +139,7 @@ class BeuiChatApp extends StatelessWidget {
     final agent = BeuiAgentTheme.of(context);
     final bg = backgroundColor ?? colors.background;
     final radius = borderRadius ?? agent.shapes.cardRadius;
-    // C17: the rail's divider is on its *trailing* edge, which is the right in
+    // The rail's divider is on its *trailing* edge, which is the right in
     // LTR and the left in RTL.
     final borderSide = BorderSide(
       color: colors.border,
@@ -257,7 +257,7 @@ class BeuiChatApp extends StatelessWidget {
   }
 }
 
-/// The collapsed sidebar, as a scrimmed drawer inside the shell (C3).
+/// The collapsed sidebar, as a scrimmed drawer inside the shell.
 ///
 /// Deliberately *not* routed through the root overlay: the shell is a bordered,
 /// clipped surface that is frequently embedded inside a page, and a drawer that

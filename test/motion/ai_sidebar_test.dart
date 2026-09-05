@@ -365,7 +365,7 @@ void main() {
     );
   }
 
-  group('BeuiAiSidebar keyboard focus is visible (R4)', () {
+  group('BeuiAiSidebar keyboard focus is visible', () {
     testWidgets('the focused row renders a ring', (tester) async {
       await tester.pumpWidget(remediationHost());
       await tester.pumpAndSettle();
@@ -410,7 +410,7 @@ void main() {
     });
   });
 
-  group('BeuiAiSidebar selection vs hover (R5)', () {
+  group('BeuiAiSidebar selection vs hover', () {
     /// The row background painted behind [label].
     Color? fillBehind(WidgetTester tester, String label) {
       final container = tester
@@ -478,7 +478,7 @@ void main() {
     });
   });
 
-  group('BeuiAiSidebar disabled rows (R29)', () {
+  group('BeuiAiSidebar disabled rows', () {
     testWidgets('one dimming mechanism, not two compounded', (tester) async {
       await tester.pumpWidget(
         remediationHost(
@@ -536,7 +536,7 @@ void main() {
     });
   });
 
-  group('BeuiAiSidebar row actions on touch (R15)', () {
+  group('BeuiAiSidebar row actions on touch', () {
     double menuOpacity(WidgetTester tester, String label) {
       final row = find.ancestor(
         of: find.text(label),
@@ -598,7 +598,7 @@ void main() {
     });
   });
 
-  group('BeuiAiSidebar marquee restraint (R23)', () {
+  group('BeuiAiSidebar marquee restraint', () {
     const longLabel =
         'Review resource sidebar interaction details across every surface';
     final wide = <BeuiSidebarResource>[
@@ -673,7 +673,7 @@ void main() {
     });
   });
 
-  group('BeuiAiSidebar empty state and viewport (R26, R34)', () {
+  group('BeuiAiSidebar empty state and viewport', () {
     testWidgets('an empty tree is a state, not a zero-height box', (
       tester,
     ) async {

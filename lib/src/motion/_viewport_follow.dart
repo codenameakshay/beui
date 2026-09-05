@@ -397,7 +397,7 @@ class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
 ///
 /// ## The count rides *inside* the fade
 ///
-/// F13: this used to paint the gradient and then an **opaque** strip beneath
+/// This used to paint the gradient and then an **opaque** strip beneath
 /// it, which sat over a still-legible last row and hid it outright — the cue
 /// destroyed a line to announce that lines were missing. The count now sits in
 /// the bottom of the gradient itself, where the wash has already resolved to

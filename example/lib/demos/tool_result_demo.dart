@@ -477,7 +477,7 @@ class _RequestRunState extends State<_RequestRun> {
 }
 
 // ---------------------------------------------------------------------------
-// Concurrent tool calls (A25)
+// Concurrent tool calls
 // ---------------------------------------------------------------------------
 
 const _grepLines = <String>[

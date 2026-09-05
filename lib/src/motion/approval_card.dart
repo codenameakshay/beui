@@ -167,7 +167,7 @@ String _statusLabel(BeuiApprovalCardStatus status, BeuiAgentStrings strings) {
   };
 }
 
-/// Maps a card status onto the themeable status role (A36).
+/// Maps a card status onto the themeable status role.
 ///
 /// `rejected` lands on [BeuiAgentStatus.denied] rather than `failed`: nothing
 /// broke, a person said no. The two roles ship the same default palette, but
@@ -327,7 +327,7 @@ class BeuiApprovalCard extends StatefulWidget {
   ///
   /// **Reject, not Deny.** This card renders a *review verdict* — the user has
   /// read submitted work and turned it down. `BeuiToolApproval` renders a
-  /// *permission refusal* and says "Deny". The audit (A26) found the two words
+  /// *permission refusal* and says "Deny". The audit found the two words
   /// used interchangeably across siblings; they are kept distinct on purpose.
   final String? rejectLabel;
 
@@ -345,7 +345,7 @@ class BeuiApprovalCard extends StatefulWidget {
 
   /// Uncontrolled seed when [expanded] is null. Defaults to collapsed.
   ///
-  /// **The cluster's disclosure policy (A42).** Across the transcript the rule
+  /// **The cluster's disclosure policy.** Across the transcript the rule
   /// is: *a surface that is still asking or still running opens; a detail view
   /// the user can request stays shut.* The audit found `defaultOpen` set
   /// true/true/false/false across four sibling components with no stated
@@ -367,7 +367,7 @@ class BeuiApprovalCard extends StatefulWidget {
 
   /// Whether the header participates in expand/collapse.
   ///
-  /// **The invariant (A11).** The header row is a trigger *if and only if*
+  /// **The invariant.** The header row is a trigger *if and only if*
   /// `expandedChild != null && showExpandToggle`. When either is false the
   /// header is completely inert: no button semantics, no tap target, no
   /// keyboard stop, and [headerAction] behaves exactly as it does today. A
@@ -550,7 +550,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
     final statusColors = agent.statusColorsFor(theme.brightness);
 
     final question = _question;
-    // F19: `approvalCardTitle` shipped in the strings role and nothing read it,
+    // `approvalCardTitle` shipped in the strings role and nothing read it,
     // because the widget default beat it to the fallback slot.
     final displayTitle =
         question?.title ?? widget.title ?? strings.approvalCardTitle;
@@ -573,7 +573,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
 
     return Semantics(
       container: true,
-      // A30: the old gate was `_busy`, which switched the live region off at
+      // The old gate was `_busy`, which switched the live region off at
       // exactly the moment the outcome arrived — "Rejected" and "Changes
       // requested" were never announced. Hold it through the terminal
       // transition instead; the label below carries the outcome.
@@ -608,7 +608,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
                       onDismiss: widget.onDismiss,
                       headerAction: widget.headerAction,
                       expanded: _expanded,
-                      // A11: null here means "inert header" — the only switch
+                      // Null here means "inert header" — the only switch
                       // that turns the row into a control.
                       onToggleExpanded: _headerIsTrigger
                           ? () => _setExpanded(!_expanded)
@@ -805,7 +805,7 @@ class _HeaderRow extends StatelessWidget {
             strings.stepCounter(currentStep + 1, questionCount),
             style: agent.typography.status.copyWith(
               fontFeatures: const [FontFeature.tabularFigures()],
-              // A8: the step counter tells you where you are in the flow —
+              // The step counter tells you where you are in the flow —
               // information, not chrome. It no longer gets alpha-multiplied
               // down to 3:1.
               color: colors.mutedForeground,
@@ -910,7 +910,7 @@ class _HeaderTriggerState extends State<_HeaderTrigger> {
               key: const ValueKey<String>('beui-approval-expand'),
               behavior: HitTestBehavior.opaque,
               onTap: widget.onToggle,
-              // A31: the row is the control, so the *row* has to clear the
+              // The row is the control, so the *row* has to clear the
               // touch floor. `BeuiMinHitTarget` widens hit testing but cannot
               // grow the semantics rect an accessibility audit measures, and a
               // title's line box is only ~20px tall — so the minimum height is
@@ -1430,7 +1430,7 @@ class _SimpleActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final agent = BeuiAgentTheme.of(context);
     return Wrap(
-      // A31: the 44px hit targets overhang their visuals, so the gap has to
+      // The 44px hit targets overhang their visuals, so the gap has to
       // clear the overhang or a tap near the edge of Approve lands on Request
       // changes.
       spacing: agent.layout.actionSpacing + 4,
@@ -1663,7 +1663,7 @@ class _ExpandChevron extends StatelessWidget {
             ? const NoMotion()
             : motionFor(context, beuiSpringSwap, isMovement: true),
         builder: (context, t, child) {
-          // F6: NoMotion *holds* whatever value it was first given, so reading
+          // NoMotion *holds* whatever value it was first given, so reading
           // `t` under reduced motion freezes the chevron at its mount angle and
           // it never turns again. Snap to the target instead — the state still
           // reads, only the travel is dropped.

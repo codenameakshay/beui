@@ -780,7 +780,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // A31. Measured directly rather than through
+      // Measured directly rather than through
       // `meetsGuideline(androidTapTargetGuideline)`: that walks the whole
       // tree, and `BeuiButton` fixes its own height at 32px for
       // `BeuiButtonSize.sm`, which no wrapper in this file can grow — the
@@ -806,7 +806,7 @@ void main() {
     testWidgets('an expandedChild with nothing to collapse to asserts', (
       tester,
     ) async {
-      // A10: a chevron over a legitimately blank body is a wiring bug. The
+      // A chevron over a legitimately blank body is a wiring bug. The
       // assert is in the const constructor, so it throws while the widget is
       // being built rather than during the pump.
       expect(
@@ -818,7 +818,7 @@ void main() {
     testWidgets('a stateful expandedChild is instantiated exactly once', (
       tester,
     ) async {
-      // A12. The old implementation rendered each child twice — once offstage
+      // The old implementation rendered each child twice — once offstage
       // to measure it, once to display it — so a BeuiInput here became two
       // EditableTexts with two FocusNodes and two independent buffers. The
       // agent-theme demo does exactly this, which is how it was found.

@@ -158,7 +158,7 @@ class _AddedMessage {
   String content;
   bool streaming;
 
-  /// Whether generation was stopped before this reply finished (C32/C13):
+  /// Whether generation was stopped before this reply finished:
   /// renders as [BeuiStreamingResponseStatus.stopped] with a real Continue
   /// affordance instead of silently presenting a truncated answer as done.
   bool stopped = false;
@@ -183,7 +183,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
   String? _activeReplyId;
   final List<_AddedMessage> _messages = [];
 
-  /// F17: "Attach file" was an action the composer offered and then swallowed.
+  /// "Attach file" was an action the composer offered and then swallowed.
   /// The demo now owns real attachment state so the chip row, its upload
   /// progress, removal and retry are all reachable from the gallery.
   List<BeuiPromptAttachment> _attachments = const [];
@@ -356,7 +356,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
           content: value,
         ),
       );
-      // F15: the assistant turn is created *now*, empty and streaming, rather
+      // The assistant turn is created *now*, empty and streaming, rather
       // than after the think delay. Its typing indicator is the streaming
       // response's own `placeholder`, so it cross-fades into the first token
       // instead of a separate shimmer row unmounting and a blank bubble
@@ -499,7 +499,7 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
     _approvalStatus = BeuiApprovalCardStatus.pending;
   }
 
-  /// Handles the three sidebar nav buttons (C33) — each selects a distinct,
+  /// Handles the three sidebar nav buttons — each selects a distinct,
   /// visibly different state the demo already holds rather than a no-op.
   void _selectNav(_SidebarNav nav) {
     setState(() {
@@ -1085,12 +1085,12 @@ class _ChatAppDemoState extends State<_ChatAppDemo> {
                                     stoppedMessage:
                                         'Response stopped before it finished.',
                                     continueLabel: 'Continue generating',
-                                    // F16: the scroller owns the transcript's
+                                    // The scroller owns the transcript's
                                     // live region; without this it had nothing
                                     // to announce and a screen-reader user
                                     // heard the whole reply as silence.
                                     announceText: message.content,
-                                    // F15: one indicator identity — the dots
+                                    // One indicator identity — the dots
                                     // are this response's placeholder and
                                     // cross-fade into the first token.
                                     placeholder: const BeuiMessageTyping(),

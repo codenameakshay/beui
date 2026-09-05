@@ -175,7 +175,7 @@ void main() {
       expect(find.text('New file'), findsOneWidget);
     });
 
-    // F7. The active-row highlight is a `MotionBuilder<Rect>` that was handed
+    // The active-row highlight is a `MotionBuilder<Rect>` that was handed
     // `const NoMotion()` under reduced motion. NoMotion holds the rect it was
     // seeded with and never reaches the target (see
     // `_no_motion_semantics_test.dart`), so the highlight parked on the first

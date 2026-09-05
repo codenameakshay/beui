@@ -346,7 +346,7 @@ class BeuiImageGeneration extends StatelessWidget {
       label: resolvedLabel,
       progress: clampedProgress,
       onCancel: onCancel,
-      // F20: the last hardcoded literal on this surface.
+      // The last hardcoded literal on this surface.
       cancelLabel:
           cancelLabel ?? BeuiAgentTheme.of(context).strings.stopGenerating,
       child: child,
@@ -497,7 +497,7 @@ class _ImageFrame extends StatelessWidget {
     // The channel split the project rule asks for, not one switch for all four.
     // Opacity and saturation are colour transitions and survive reduced motion;
     // scale and blur are movement and snap. Previously every channel was cut,
-    // so the whole reveal hard-swapped (audit R18 / T4).
+    // so the whole reveal hard-swapped.
     final colourMotion = motionFor(context, _mediaMotion, isMovement: false);
     final movementMotion = motionFor(context, _mediaMotion, isMovement: true);
     // NoMotion *holds*; it does not jump. Routing scale and blur through it

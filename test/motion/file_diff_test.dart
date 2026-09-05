@@ -454,7 +454,7 @@ void main() {
   // UX remediation — R1, R7, R8, R12, R17, R19, R21, R22, R28, R36
   // ---------------------------------------------------------------------
 
-  group('BeuiFileDiff wide lines (R1)', () {
+  group('BeuiFileDiff wide lines', () {
     const wide = <BeuiFileDiffLine>[
       BeuiFileDiffLine(
         id: 'w',
@@ -545,7 +545,7 @@ void main() {
     });
   });
 
-  group('BeuiFileDiff change encoding (R19)', () {
+  group('BeuiFileDiff change encoding', () {
     /// The row tint behind [content], or null when the row is untinted.
     ///
     /// Narrowed to translucent washes on purpose: the transparent leading bar
@@ -616,7 +616,7 @@ void main() {
     });
   });
 
-  group('BeuiFileDiff gutters (R8)', () {
+  group('BeuiFileDiff gutters', () {
     testWidgets('line numbers are legible, not a 1.78:1 hairline', (
       tester,
     ) async {
@@ -629,7 +629,7 @@ void main() {
     });
   });
 
-  group('BeuiFileDiff path truncation (R17)', () {
+  group('BeuiFileDiff path truncation', () {
     Widget longPath() => MaterialApp(
       theme: BeuiTextTheme.trackingNormal(
         ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
@@ -723,7 +723,7 @@ void main() {
     });
   });
 
-  group('BeuiFileDiff copy in the header (R21, R28)', () {
+  group('BeuiFileDiff copy in the header', () {
     testWidgets('copy is reachable while the panel is collapsed', (
       tester,
     ) async {
@@ -764,7 +764,7 @@ void main() {
     });
   });
 
-  group('BeuiFileDiff hunks and navigation (R22)', () {
+  group('BeuiFileDiff hunks and navigation', () {
     const gapped = <BeuiFileDiffLine>[
       BeuiFileDiffLine(
         id: 'a',
@@ -852,7 +852,7 @@ void main() {
       expect(seen!.after.id, 'b');
     });
 
-    // F14: the band paints 20px tall against a 44px floor, so it carries
+    // The band paints 20px tall against a 44px floor, so it carries
     // vertical hit slop. The slop only works if BeuiMinHitTarget is the
     // outermost box of the control — this is the direct out-of-bounds tap the
     // helper's doc asks for, since the semantics rect stays at the paint.
@@ -949,7 +949,7 @@ void main() {
     );
   });
 
-  group('BeuiFileDiff hidden content and following (R7, R12)', () {
+  group('BeuiFileDiff hidden content and following', () {
     List<BeuiFileDiffLine> longDiff(int n) => [
       for (var i = 0; i < n; i++)
         BeuiFileDiffLine(
@@ -1058,7 +1058,7 @@ void main() {
     );
   });
 
-  group('BeuiFileDiff API shape (R36)', () {
+  group('BeuiFileDiff API shape', () {
     test('a label is required, in one form or another', () {
       expect(
         () => BeuiFileDiff(lines: _sampleLines),

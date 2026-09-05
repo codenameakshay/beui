@@ -1146,7 +1146,7 @@ class _ResourceRowState extends State<_ResourceRow> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
                   // focusRing, not ring: `ring` is the 6-12% hairline token
-                  // for borders and composites to 1.3:1 (audit R6).
+                  // for borders and composites to 1.3:1.
                   borderSide: BorderSide(color: colors.focusRing, width: 1.5),
                 ),
               ),
@@ -1338,7 +1338,7 @@ class _ResourceRowState extends State<_ResourceRow> {
                 },
           // The row's focus ring — `focused` was threaded all the way down here
           // and then never rendered, so the whole keyboard tree model was
-          // invisible to the person using it (audit R4).
+          // invisible to the person using it.
           child: BeuiFocusRing(
             focused: widget.focused && !widget.renaming,
             borderRadius: BorderRadius.circular(12),

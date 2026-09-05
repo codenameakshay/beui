@@ -233,7 +233,7 @@ class _ApprovalRunState extends State<_ApprovalRun> {
 }
 
 // ---------------------------------------------------------------------------
-// Severity tiers (A3)
+// Severity tiers
 // ---------------------------------------------------------------------------
 
 /// The three risk tiers side by side.
@@ -311,7 +311,7 @@ class _SeverityTiers extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Lapsed end-states (A21)
+// Lapsed end-states
 // ---------------------------------------------------------------------------
 
 /// `expired` (never ran — the window closed) and `timedOut` (ran, but was cut

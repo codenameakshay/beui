@@ -421,7 +421,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
 
   /// The clipboard payload: the caller's override, or the diff serialised as a
   /// unified diff body so consumers never have to re-derive what we already
-  /// hold (audit R35).
+  /// hold.
   String get _resolvedCopyText {
     final override = widget.copyText;
     if (override != null) return override;
@@ -577,7 +577,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
             onToggle: _toggle,
             // The copy control lives in the header so `collapseOnComplete`
             // cannot take it away at the exact moment the diff is finished and
-            // the reader wants it (audit R21).
+            // the reader wants it.
             canCopy: _canCopy,
             copied: _copied,
             onCopy: _handleCopy,
@@ -903,7 +903,7 @@ class _HeaderState extends State<_Header> {
           onTap: widget.onToggle,
           // Ring painted outside layout, in the dedicated focusRing role: the
           // old in-decoration `colors.ring` border was a 1.3:1 hairline token
-          // doing a focus indicator's job (audit R6).
+          // doing a focus indicator's job.
           child: BeuiFocusRing(
             focused: _focused,
             borderRadius: BorderRadius.circular(6),
@@ -1010,7 +1010,7 @@ class _HeaderState extends State<_Header> {
                 ? BeuiAgentTheme.of(context).strings.copied
                 : BeuiAgentTheme.of(context).strings.copyDiff,
             // Live only while the confirmation is up, so it is announced
-            // rather than silently relabelled (audit R28).
+            // rather than silently relabelled.
             liveRegion: widget.copied,
             colors: colors,
             onTap: () => unawaited(widget.onCopy()),
@@ -1328,7 +1328,7 @@ class _HunkSeparatorState extends State<_HunkSeparator> {
     final colors = widget.colors;
     final count = widget.gap.hiddenCount;
     final expandable = widget.onExpand != null;
-    // F13: pluralization is the theme's problem, not a `count == 1 ? …` here —
+    // Pluralization is the theme's problem, not a `count == 1 ? …` here —
     // languages with more than two plural forms cannot be served by a ternary.
     final strings = BeuiAgentTheme.of(context).strings;
     final text = expandable
@@ -1379,7 +1379,7 @@ class _HunkSeparatorState extends State<_HunkSeparator> {
       return Semantics(label: strings.hiddenLinesCollapsed(count), child: body);
     }
 
-    // F14: the band paints 20px tall — half the 44px floor. The slop wrapper is
+    // The band paints 20px tall — half the 44px floor. The slop wrapper is
     // OUTERMOST because every box below it (Semantics, MouseRegion,
     // FocusableActionDetector) is sized to the paint and would reject an
     // out-of-bounds pointer before this widget ever saw it. Width already
@@ -1489,7 +1489,7 @@ class _DiffLineRow extends StatelessWidget {
       TextSpan(style: baseStyle, children: spans),
       softWrap: wrap,
       // Never `ellipsis`. Truncating the end of a changed line hides the part
-      // that changed — the single P0 this component carried (audit R1).
+      // that changed — the single P0 this component carried.
       overflow: wrap ? TextOverflow.visible : TextOverflow.clip,
     );
 

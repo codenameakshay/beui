@@ -646,7 +646,7 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
       cancelledOverride: widget.cancelledSummary,
     );
 
-    // A24: reserve only what the stream actually occupies. The panel used to
+    // Reserve only what the stream actually occupies. The panel used to
     // hold the full `maxHeight` open for the whole run, so a single-item run
     // showed one row over ~180px of blank. `min` keeps the cap as a *ceiling*
     // rather than a floor; once the content outgrows it the viewport pins at
@@ -728,7 +728,7 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
       ],
     );
 
-    // A37/A38: a failure earns a card. `decorateCard` carries the theme's
+    // A failure earns a card. `decorateCard` carries the theme's
     // surface decision (muted fill, or glass + backdrop blur when
     // `useGlassSurfaces` is on); the ring on top is drawn in the status tier at
     // `emphasisBorderWidth` for a crash and the ordinary `borderWidth` for a
@@ -759,7 +759,7 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
       style: baseStyle,
       child: Semantics(
         container: true,
-        // A30: the old `liveRegion: _working` switched the announcement off at
+        // The old `liveRegion: _working` switched the announcement off at
         // exactly the moment the outcome arrived, so "Failed" was never spoken.
         // The region is now always live and its label carries the phase, so it
         // announces once per transition — including the terminal one — and
@@ -790,7 +790,7 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
 
 /// The completed-run summary line: a real disclosure button.
 ///
-/// A32: this used to be focusable and nothing else — no role, no name, no
+/// This used to be focusable and nothing else — no role, no name, no
 /// expanded state, no keyboard activation, and a focus "ring" drawn as a
 /// border inside the box model (which shifted the summary 2px on focus). It is
 /// now a labelled `button` carrying its `expanded` state, activated by Enter
@@ -906,7 +906,7 @@ class _SummaryTriggerState extends State<_SummaryTrigger> {
       child: row,
     );
 
-    // A31. The 28px visual keeps its source geometry (`h-7`); only the hit
+    // The 28px visual keeps its source geometry (`h-7`); only the hit
     // area grows, and the 8px of bottom slop lands in the stream's own `py-2`
     // padding where nothing else is interactive.
     //
@@ -1171,7 +1171,7 @@ class _StreamViewport extends StatelessWidget {
 
 /// Item entrance: an 180ms opacity ease and a 6→0px spring rise.
 ///
-/// A18: this used to nest two [SingleMotionBuilder]s and rebuild an [Opacity]
+/// This used to nest two [SingleMotionBuilder]s and rebuild an [Opacity]
 /// widget every frame. The two channels genuinely need different motions (a
 /// curve for the fade, a spring for the rise), so they are driven by two
 /// controllers instead — the fade through [FadeTransition], which updates an
@@ -1287,7 +1287,7 @@ class _StepRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = rowTheme.colors;
     final state = item.status;
-    // A8: the step label and its timing are the content of this row, not
+    // The step label and its timing are the content of this row, not
     // chrome. They used to be `mutedForeground` at 55% alpha — ~2.3:1. The
     // pending/complete distinction is carried by the mark, which is where a
     // status difference belongs.
@@ -1469,7 +1469,7 @@ class _SearchRow extends StatelessWidget {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final colors = rowTheme.colors;
     final results = item.results ?? const <BeuiAgentSearchResult>[];
-    // A31: a tappable result row is ~28px tall against a 44px floor, and the
+    // A tappable result row is ~28px tall against a 44px floor, and the
     // slop that fixes that overhangs its neighbours. Where the rows are
     // actually interactive the visual gap opens up to match, because hit slop
     // is not a substitute for spacing controls apart.
@@ -1536,7 +1536,7 @@ class _SearchRow extends StatelessWidget {
                 4,
               ), // pl-8 px-1.5 py-1
               child: Text(
-                // A8: "+5 more" is a count, not decoration — full muted
+                // "+5 more" is a count, not decoration — full muted
                 // contrast, no alpha multiplier.
                 rowTheme.strings.activityMoreResults(item.moreCount!),
                 style: rowTheme.body.copyWith(color: colors.mutedForeground),
@@ -1594,7 +1594,7 @@ class _SearchResultRow extends StatelessWidget {
                 result.domain!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                // A8: the domain is what makes a source verifiable. It was the
+                // The domain is what makes a source verifiable. It was the
                 // least legible string in the row at 55% muted.
                 style: rowTheme.body.copyWith(color: colors.mutedForeground),
               ),
@@ -1644,7 +1644,7 @@ class _ToolRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = rowTheme.colors;
-    // A36: the diff counters were Tailwind emerald-500 / rose-500 literals.
+    // The diff counters were Tailwind emerald-500 / rose-500 literals.
     // They are the success and failed tiers — retintable, and in light mode
     // now the 700 tier, which clears AA where the 500s did not.
     final additions = rowTheme.palette(BeuiAgentStatus.success).foreground;
@@ -1697,7 +1697,7 @@ class _ToolRow extends StatelessWidget {
                   item.target,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  // A8: this string names *what ran*. It was 70% muted.
+                  // This string names *what ran*. It was 70% muted.
                   style: rowTheme.type.mono.copyWith(
                     height: 16 / 12,
                     color: colors.mutedForeground,
@@ -1792,7 +1792,7 @@ class _TraceRow extends StatelessWidget {
                     item.detail!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    // A8: the detail *is* the command that ran.
+                    // The detail *is* the command that ran.
                     style: rowTheme.type.mono.copyWith(
                       height: 16 / 12,
                       color: colors.mutedForeground,

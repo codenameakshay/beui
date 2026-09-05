@@ -234,7 +234,7 @@ void main() {
   // UX remediation — R7, R8, R12, R14, R26, R28, R33, R36
   // ---------------------------------------------------------------------
 
-  group('BeuiCodeBlock gutters (R8)', () {
+  group('BeuiCodeBlock gutters', () {
     testWidgets('line numbers are legible, not a 1.63:1 hairline', (
       tester,
     ) async {
@@ -255,7 +255,7 @@ void main() {
     });
   });
 
-  group('BeuiCodeBlock empty state (R26)', () {
+  group('BeuiCodeBlock empty state', () {
     testWidgets('an empty finished block says so', (tester) async {
       await tester.pumpWidget(_wrap(const BeuiCodeBlock(code: '')));
       await tester.pumpAndSettle();
@@ -290,7 +290,7 @@ void main() {
     });
   });
 
-  group('BeuiCodeBlock copy control (R14, R28)', () {
+  group('BeuiCodeBlock copy control', () {
     testWidgets('the copied confirmation is announced', (tester) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
@@ -385,7 +385,7 @@ void main() {
     });
   });
 
-  group('BeuiCodeBlock hidden content and following (R7, R12)', () {
+  group('BeuiCodeBlock hidden content and following', () {
     String longCode(int n) =>
         [for (var i = 0; i < n; i++) 'const line$i = $i;'].join('\n');
 
@@ -472,7 +472,7 @@ void main() {
     );
   });
 
-  group('BeuiCodeBlock shared highlighter (R33)', () {
+  group('BeuiCodeBlock shared highlighter', () {
     testWidgets('JSON property names take the property colour, not number', (
       tester,
     ) async {

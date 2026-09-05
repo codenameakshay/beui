@@ -92,7 +92,7 @@ class _StreamingResponseDemo extends StatefulWidget {
 
 /// How the demonstrated stream ends.
 ///
-/// C20/C32: `error` was reachable only from a unit test and `stopped` did not
+/// `error` was reachable only from a unit test and `stopped` did not
 /// exist, so the gallery — the de-facto documentation — showed a response that
 /// could only ever succeed, while the demo copy talked about recovery.
 enum _Outcome {

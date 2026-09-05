@@ -35,7 +35,7 @@ enum BeuiStreamingResponseStatus {
   /// Renders a destructive-tinted notice under the partial answer and, when
   /// [BeuiStreamingResponse.onRetry] is supplied, a labelled retry control.
   /// Before the UX pass this state was pixel-identical to [complete] and
-  /// announced as plain `'Response'` — a failed answer looked finished (C1).
+  /// announced as plain `'Response'` — a failed answer looked finished.
   error,
 
   /// The reader (or the host) stopped the stream before it finished.
@@ -44,7 +44,7 @@ enum BeuiStreamingResponseStatus {
   /// from [error] because nothing went wrong. Renders a neutral notice and,
   /// when [BeuiStreamingResponse.onContinue] is supplied, a control to resume.
   /// Both demos previously flipped to [complete] on stop, presenting a
-  /// half-written answer as a finished one (C13).
+  /// half-written answer as a finished one.
   stopped,
 }
 
@@ -201,7 +201,7 @@ class BeuiStreamingResponse extends StatefulWidget {
   /// Either way there is exactly one live region per conversation. This
   /// replaces a `true` default that, combined with the scroller's own nested
   /// regions, produced three to five regions per transcript, none of which
-  /// ever announced the streamed text because every label was a constant (C6).
+  /// ever announced the streamed text because every label was a constant.
   ///
   /// Pass `false` for silence — for a decorative preview, or when the host app
   /// announces on its own (see [onAnnounce]).
@@ -254,7 +254,7 @@ class BeuiStreamingResponse extends StatefulWidget {
   /// [BeuiAgentStrings.continueAction] for this response.
   final String? continueLabel;
 
-  /// Shown in place of [child] before the first token arrives (C14).
+  /// Shown in place of [child] before the first token arrives.
   ///
   /// Gives a turn **one** indicator identity: pass the same thinking indicator
   /// here that you would render while pending, and it cross-fades into the
@@ -308,7 +308,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
   /// The plain text backing announcements, if any.
   String get _announceSource => widget.announceText ?? widget.copyText ?? '';
 
-  /// Whether the response has produced content (C14).
+  /// Whether the response has produced content.
   bool get _hasContent => widget.hasContent ?? _announceSource.isNotEmpty;
 
   bool get _shouldShowActions =>
@@ -324,7 +324,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
   /// Whether a notice (error / stopped) is shown under the content.
   bool get _hasNotice => _error || _stopped;
 
-  // -- announcements (C6) ---------------------------------------------------
+  // -- announcements ---------------------------------------------------
 
   BeuiStreamAnnouncer? _announcer;
 
@@ -452,7 +452,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
     // Flutter has no Semantics.busy — surface the state in the label. C1/C13:
     // failure and truncation are now *named*, not left indistinguishable from
     // a finished answer.
-    // F22: whole strings, not a stem plus a comma-joined modifier — a language
+    // Whole strings, not a stem plus a comma-joined modifier — a language
     // that inflects the noun for state cannot be served by concatenation, so
     // each state names itself.
     final statusLabel = switch (widget.status) {
@@ -462,7 +462,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
       BeuiStreamingResponseStatus.stopped => strings.responseStoppedSemantics,
     };
 
-    // C14. One indicator identity: the placeholder cross-fades into the first
+    // One indicator identity: the placeholder cross-fades into the first
     // token instead of the reader seeing shimmer → empty box → text. Opacity
     // only, so reduced motion keeps the transition.
     final placeholder = widget.placeholder;
@@ -503,7 +503,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
             ),
           ),
 
-          // C6. Our own live node, used only when no transcript owns one.
+          // Our own live node, used only when no transcript owns one.
           //
           // A separate node rather than a `liveRegion` on the content, so the
           // sentence chunk is announced *once* instead of the reader hearing
@@ -527,7 +527,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
               ),
             ),
 
-          // ----- failure / stopped notice (C1, C13) -----
+          // ----- failure / stopped notice -----
           BeuiAgentDisclosureInternal(
             open: _hasNotice,
             reduce: reduce,
@@ -556,7 +556,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
           ),
 
           // ----- completion actions -----
-          // C10. The reveal now animates `heightFactor` as well as opacity and
+          // The reveal now animates `heightFactor` as well as opacity and
           // translate, so a completing response no longer shoves ~40px of
           // transcript in one frame while a scroller is following the live
           // edge. This is the shared disclosure the audit asked the seven
@@ -574,7 +574,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // C8/T9. The row is a full hit target tall rather than 28.
+                  // The row is a full hit target tall rather than 28.
                   // Slop alone cannot fix the vertical axis: a `RenderBox`
                   // only offers a pointer to its children when the pointer is
                   // inside *its own* box, so an overhang above a 28px row is
@@ -592,7 +592,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                         if (_canCopy)
                           _ResponseAction(
                             label: _copied ? strings.copied : strings.copy,
-                            // C23. "Copied" used to swap a label on a node that
+                            // "Copied" used to swap a label on a node that
                             // was not live, so the confirmation was visual-only.
                             announce: _copied,
                             pressed: _copyPressed,
@@ -685,7 +685,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                         ],
                         if (_hasSources)
                           Padding(
-                            // C17: ml-1 is a *logical* start margin.
+                            // Ml-1 is a *logical* start margin.
                             padding: const EdgeInsetsDirectional.only(start: 4),
                             child: _SourcesToggle(
                               open: _currentSourcesOpen,
@@ -704,7 +704,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
                     ),
                   ),
                   if (_hasSources)
-                    // T8/C10: the seventh copy of `_AgentDisclosure` is gone —
+                    // The seventh copy of `_AgentDisclosure` is gone —
                     // this is the shared primitive, which also fixes the
                     // reduced-motion hard cut the local copy had.
                     BeuiAgentDisclosureInternal(
@@ -740,7 +740,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
 }
 
 // ---------------------------------------------------------------------------
-// Failure / stopped notice (C1, C13)
+// Failure / stopped notice
 // ---------------------------------------------------------------------------
 
 /// The affordance that tells a reader an answer did not finish.
@@ -748,7 +748,7 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
 /// Before the UX pass, `error` differed from `complete` by two absent thumb
 /// icons and nothing else, and `stopped` did not exist at all — a failed or
 /// truncated answer was indistinguishable from a finished one, in pixels and
-/// in semantics (C1, C13).
+/// in semantics.
 ///
 /// Redundant encoding, as the rest of the library does it: a glyph (shape), a
 /// tint (colour), and a message (text). Colour comes from the themeable status
@@ -859,7 +859,7 @@ class _NoticeActionState extends State<_NoticeAction> {
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
-    // C8/T9: outermost, so the slop is reachable — see _ResponseAction.
+    // Outermost, so the slop is reachable — see _ResponseAction.
     return BeuiMinHitTarget(
       child: Semantics(
         button: true,
@@ -890,7 +890,7 @@ class _NoticeActionState extends State<_NoticeAction> {
               focused: _focused,
               borderRadius: BorderRadius.circular(6),
               child: SingleMotionBuilder(
-                // C31: one press scale for the library.
+                // One press scale for the library.
                 value: (_pressed && !reduce) ? 0.97 : 1.0,
                 motion: motionFor(context, beuiSpringPress, isMovement: true),
                 builder: (context, scale, child) =>
@@ -958,7 +958,7 @@ class _ResponseAction extends StatefulWidget {
   final VoidCallback onTap;
   final Widget child;
 
-  /// Makes this control a live region for as long as it is true (C23).
+  /// Makes this control a live region for as long as it is true.
   ///
   /// Used for "Copied": the confirmation was previously a label swap on an
   /// ordinary node, so a screen reader never heard that the copy succeeded.
@@ -973,14 +973,14 @@ class _ResponseActionState extends State<_ResponseAction> {
 
   @override
   Widget build(BuildContext context) {
-    // C31. The source's whileTap is 0.9; on one screen the library ranged
+    // The source's whileTap is 0.9; on one screen the library ranged
     // 0.9–0.99. 0.97 is this port's single press scale.
     final pressTarget = (widget.pressed && !widget.reduce) ? 0.97 : 1.0;
     final bg = widget.active || widget.hovered
         ? widget.colors.muted
         : Colors.transparent;
 
-    // C8/T9. The slop wrapper is the *outermost* widget of the control, and
+    // The slop wrapper is the *outermost* widget of the control, and
     // that placement is load-bearing: `RenderBox.hitTest` rejects a pointer
     // outside its own box before consulting any child, so every proxy between
     // the parent and the slop — Semantics, Tooltip, FocusableActionDetector,
@@ -994,7 +994,7 @@ class _ResponseActionState extends State<_ResponseAction> {
         toggled: widget.toggleable ? widget.active : null,
         child: Tooltip(
           message: widget.label,
-          // C22. The Semantics label above is the accessible name; a Tooltip
+          // The Semantics label above is the accessible name; a Tooltip
           // that also contributes semantics makes a reader say it twice.
           excludeFromSemantics: true,
           child: FocusableActionDetector(
@@ -1094,7 +1094,7 @@ class _SourcesToggleState extends State<_SourcesToggle> {
     final fg = widget.hovered ? colors.foreground : colors.mutedForeground;
     final label = agent.strings.showSources(widget.count);
 
-    // C8/T9: outermost, so the slop is reachable — see _ResponseAction.
+    // Outermost, so the slop is reachable — see _ResponseAction.
     return BeuiMinHitTarget(
       child: Semantics(
         button: true,
@@ -1127,7 +1127,7 @@ class _SourcesToggleState extends State<_SourcesToggle> {
                 curve: beuiEaseOut,
                 constraints: const BoxConstraints(minHeight: 28), // min-h-7
                 decoration: BoxDecoration(
-                  // C24. At rest this control had no chrome and a chevron at
+                  // At rest this control had no chrome and a chevron at
                   // 50% alpha, so it read as static metadata rather than
                   // something you could open. It now carries a resting
                   // surface, like every other toggle in the library.
@@ -1135,7 +1135,7 @@ class _SourcesToggleState extends State<_SourcesToggle> {
                   borderRadius: agent.shapes.pill,
                 ),
                 child: Padding(
-                  // C17: ml-1 px-1.5 are logical insets.
+                  // Ml-1 px-1.5 are logical insets.
                   padding: const EdgeInsetsDirectional.only(start: 10, end: 6),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -1155,7 +1155,7 @@ class _SourcesToggleState extends State<_SourcesToggle> {
                       _Chevron(
                         open: widget.open,
                         reduce: widget.reduce,
-                        // C24/T3: full-strength token, not a 50% multiply of
+                        // Full-strength token, not a 50% multiply of
                         // an already-muted foreground.
                         color: colors.mutedForeground,
                       ),

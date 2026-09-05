@@ -468,7 +468,7 @@ void main() {
     testWidgets('BeuiTodoList falls back when BeuiColors is absent', (
       tester,
     ) async {
-      // A40: this widget used to null-assert on the extension, so a consumer
+      // This widget used to null-assert on the extension, so a consumer
       // whose theme lacked it got a crash out of a published package.
       await tester.pumpWidget(
         const MaterialApp(

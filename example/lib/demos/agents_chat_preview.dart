@@ -52,7 +52,7 @@ const _streamDelay = Duration(milliseconds: 140);
 const _replyDelay = Duration(milliseconds: 420);
 
 /// How a streamed turn ended — the preview models all three so the gallery
-/// stops teaching that a response only ever succeeds (C20, C32).
+/// stops teaching that a response only ever succeeds.
 enum ChatPreviewOutcome {
   /// Streams to the end and completes.
   complete,
@@ -125,13 +125,13 @@ class ChatPreview extends StatefulWidget {
   /// Composer placeholder.
   final String placeholder;
 
-  /// How the canned reply ends (C20). `complete` streams to the end; `error`
+  /// How the canned reply ends. `complete` streams to the end; `error`
   /// fails partway; `stopped` is what the composer's stop button produces.
   final ChatPreviewOutcome outcome;
 
   /// Whether responses carry copy / retry / feedback controls.
   ///
-  /// True by default (C20/T10). The flagship preview used to pass `false`,
+  /// True by default. The flagship preview used to pass `false`,
   /// so the library's "real chat" showcase had no copy, no retry, and no
   /// feedback on any response — the gallery modelling the wrong pattern.
   final bool showActions;
@@ -174,7 +174,7 @@ class _ChatPreviewState extends State<ChatPreview> {
   void _submit(String prompt, String? model) {
     if (_loading) return;
     final run = _nextId++;
-    // C14. The assistant row is created *now*, empty and streaming, so the
+    // The assistant row is created *now*, empty and streaming, so the
     // turn has one identity from "preparing" through "streaming" to "done".
     // The old flow rendered a separate pending row with its own differently
     // labelled indicator, unmounted it, then mounted the real row — the reader
@@ -254,7 +254,7 @@ class _ChatPreviewState extends State<ChatPreview> {
               _streamFull.length,
             );
 
-      // C20: the error route stops mid-answer, which is what a real failure
+      // The error route stops mid-answer, which is what a real failure
       // looks like — a partial response plus a distinct failure affordance.
       if (widget.outcome == ChatPreviewOutcome.error &&
           cursor >= (_streamFull.length * _failAt).floor()) {
@@ -284,7 +284,7 @@ class _ChatPreviewState extends State<ChatPreview> {
     });
   }
 
-  /// C13: stopping leaves the turn in `stopped`, not a fake `complete`.
+  /// Stopping leaves the turn in `stopped`, not a fake `complete`.
   void _stop() {
     _replyTimer?.cancel();
     _streamTimer?.cancel();
@@ -344,12 +344,12 @@ class _ChatPreviewState extends State<ChatPreview> {
                             : message.status,
                         showActions: widget.showActions,
                         // The scroller owns the transcript's live region; this
-                        // feeds it the actual streamed text (C6).
+                        // feeds it the actual streamed text.
                         announceText: message.content,
                         copyText: message.content,
                         onRetry: () => _resume(message),
                         onContinue: () => _resume(message),
-                        // C14. One indicator identity: the typing dots are the
+                        // One indicator identity: the typing dots are the
                         // response's *placeholder*, so they cross-fade into
                         // the first token instead of being a separate widget
                         // that unmounts and leaves an empty box behind.

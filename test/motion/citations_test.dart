@@ -531,7 +531,7 @@ void main() {
     );
   }
 
-  group('BeuiCitations row interactivity (R3)', () {
+  group('BeuiCitations row interactivity', () {
     testWidgets('a url alone does not make a row interactive', (tester) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(hostWithTap(citations: _sample(count: 1)));
@@ -591,7 +591,7 @@ void main() {
     });
   });
 
-  group('BeuiCitations row legibility (R9, R10)', () {
+  group('BeuiCitations row legibility', () {
     testWidgets('the domain is not alpha-multiplied into illegibility', (
       tester,
     ) async {
@@ -652,7 +652,7 @@ void main() {
     });
   });
 
-  group('BeuiCitation numbering (R16)', () {
+  group('BeuiCitation numbering', () {
     testWidgets('the marker derives its number from the rendered order', (
       tester,
     ) async {
@@ -752,7 +752,7 @@ void main() {
     });
   });
 
-  group('BeuiCitation marker (R14, R27)', () {
+  group('BeuiCitation marker', () {
     Widget marker() => MaterialApp(
       theme: BeuiTextTheme.trackingNormal(
         ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
@@ -826,7 +826,7 @@ void main() {
     });
   });
 
-  group('BeuiCitations reduced motion (R18)', () {
+  group('BeuiCitations reduced motion', () {
     testWidgets('rows fade in rather than appearing from nowhere', (
       tester,
     ) async {
@@ -860,7 +860,7 @@ void main() {
     });
   });
 
-  group('BeuiCitations empty state (R26)', () {
+  group('BeuiCitations empty state', () {
     testWidgets('no sources is a state, not a blank panel', (tester) async {
       await tester.pumpWidget(_host(citations: const []));
       await tester.pumpAndSettle();

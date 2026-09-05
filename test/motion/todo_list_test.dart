@@ -242,7 +242,7 @@ void main() {
       expect(find.text('50%'), findsOneWidget);
     });
 
-    // A16. This used to assert the *bug*: the private disclosure hard-cut
+    // This used to assert the *bug*: the private disclosure hard-cut
     // under reduced motion, so one pump after the tap the rows were simply
     // gone. The shared disclosure keeps the opacity channel — reduced motion
     // drops movement, not fades — so the panel now cross-fades out over
@@ -781,7 +781,7 @@ void main() {
     );
   });
 
-  // F4/F5. Both channels below are gated on `NoMotion` under reduced motion,
+  // Both channels below are gated on `NoMotion` under reduced motion,
   // and NoMotion holds its seeded value forever rather than snapping to the
   // target (see `_no_motion_semantics_test.dart`). Mounting straight into the
   // end state hides the bug — the controller's initial value IS the target —
