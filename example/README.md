@@ -59,7 +59,7 @@ class _WifiToggleState extends State<WifiToggle> {
   @override
   Widget build(BuildContext context) => BeuiSwitch(
     value: on,
-    label: const Text('Wi-Fi'),
+    label: 'Wi-Fi',
     onChanged: (value) => setState(() => on = value),
   );
 }

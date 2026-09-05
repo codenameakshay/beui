@@ -6,8 +6,13 @@ import 'package:flutter/material.dart';
 import '../explorer/widgets.dart';
 
 /// Gallery route for [BeuiCitations] — mirrors the source preview: progressive
-/// source append with inline markers, then a Replay control.
-Widget citationsDemo(BuildContext context) => const _CitationsDemo();
+/// source append with inline markers, then a Replay control. A second section
+/// shows [BeuiCitationStack] and [BeuiCitationList], the compact forms
+/// [BeuiCitations] composes internally.
+Widget citationsDemo(BuildContext context) => const Column(
+  mainAxisSize: MainAxisSize.min,
+  children: [_CitationsDemo(), SizedBox(height: 56), _CompactCitationsDemo()],
+);
 
 const _items = <BeuiCitationItem>[
   BeuiCitationItem(
@@ -171,6 +176,35 @@ class _CitationsDemoState extends State<_CitationsDemo> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// [BeuiCitationStack]'s overlapping favicon chips and [BeuiCitationList]'s
+/// always-expanded rows — the two compact forms [BeuiCitations] composes
+/// internally, shown here on their own so each has a live preview.
+class _CompactCitationsDemo extends StatelessWidget {
+  const _CompactCitationsDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 512),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SectionLabel('Stack — overlapping favicon chips'),
+            const SizedBox(height: 16),
+            const BeuiCitationStack(citations: _items),
+            const SizedBox(height: 40),
+            const SectionLabel('List — always-expanded rows'),
+            const SizedBox(height: 16),
+            BeuiCitationList(citations: _items, idPrefix: 'compact-list'),
+          ],
         ),
       ),
     );
