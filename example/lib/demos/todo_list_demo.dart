@@ -89,80 +89,78 @@ class _TodoListDemoState extends State<_TodoListDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 512), // max-w-lg
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 330,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: BeuiTodoList(
-                        key: ValueKey<int>(_run),
-                        items: _itemsAtStep(_step),
-                        title: const Text('Implementation plan'),
-                      ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 512), // max-w-lg
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: 330,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: BeuiTodoList(
+                      key: ValueKey<int>(_run),
+                      items: _itemsAtStep(_step),
+                      title: const Text('Implementation plan'),
                     ),
-                    Positioned(
-                      left: 0,
-                      bottom: 0,
-                      child: ReplayButton(onPressed: _replay),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              const SectionLabel('Empty · before the agent has planned'),
-              const SizedBox(height: 12),
-              // An empty task list is a normal state, not an error — the
-              // description says what will appear here and when, so the panel
-              // orients instead of shrugging.
-              const BeuiTodoList(
-                items: [],
-                title: Text('Implementation plan'),
-                emptyDescription:
-                    'The agent posts its plan here before it starts work, and '
-                    'ticks tasks off as it goes.',
-              ),
-              const SizedBox(height: 32),
-              const SectionLabel('Cancelled and pending rows'),
-              const SizedBox(height: 12),
-              const BeuiTodoList(
-                collapseOnComplete: false,
-                title: Text('Migration plan'),
-                items: [
-                  BeuiTodoItem(
-                    id: 'a',
-                    title: Text('Inspect the current data flow'),
-                    status: BeuiTodoItemStatus.completed,
                   ),
-                  BeuiTodoItem(
-                    id: 'b',
-                    title: Text('Update the response schema'),
-                    status: BeuiTodoItemStatus.inProgress,
-                    progress: 40,
-                    detail: Text('40%'),
-                  ),
-                  BeuiTodoItem(
-                    id: 'c',
-                    title: Text('Add coverage for edge cases'),
-                    status: BeuiTodoItemStatus.pending,
-                  ),
-                  BeuiTodoItem(
-                    id: 'd',
-                    title: Text('Backfill the legacy rows'),
-                    status: BeuiTodoItemStatus.cancelled,
+                  Positioned(
+                    left: 0,
+                    bottom: 0,
+                    child: ReplayButton(onPressed: _replay),
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
-            ],
-          ),
+            ),
+            const SizedBox(height: 8),
+            const SectionLabel('Empty · before the agent has planned'),
+            const SizedBox(height: 12),
+            // An empty task list is a normal state, not an error — the
+            // description says what will appear here and when, so the panel
+            // orients instead of shrugging.
+            const BeuiTodoList(
+              items: [],
+              title: Text('Implementation plan'),
+              emptyDescription:
+                  'The agent posts its plan here before it starts work, and '
+                  'ticks tasks off as it goes.',
+            ),
+            const SizedBox(height: 32),
+            const SectionLabel('Cancelled and pending rows'),
+            const SizedBox(height: 12),
+            const BeuiTodoList(
+              collapseOnComplete: false,
+              title: Text('Migration plan'),
+              items: [
+                BeuiTodoItem(
+                  id: 'a',
+                  title: Text('Inspect the current data flow'),
+                  status: BeuiTodoItemStatus.completed,
+                ),
+                BeuiTodoItem(
+                  id: 'b',
+                  title: Text('Update the response schema'),
+                  status: BeuiTodoItemStatus.inProgress,
+                  progress: 40,
+                  detail: Text('40%'),
+                ),
+                BeuiTodoItem(
+                  id: 'c',
+                  title: Text('Add coverage for edge cases'),
+                  status: BeuiTodoItemStatus.pending,
+                ),
+                BeuiTodoItem(
+                  id: 'd',
+                  title: Text('Backfill the legacy rows'),
+                  status: BeuiTodoItemStatus.cancelled,
+                ),
+              ],
+            ),
+            const SizedBox(height: 40),
+          ],
         ),
       ),
     );

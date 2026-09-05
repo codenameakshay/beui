@@ -31,163 +31,161 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
-    return SingleChildScrollView(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 512),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SectionLabel('Terminal output'),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: 300,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: _TerminalRun(
-                        key: ValueKey<int>(_terminalRun),
-                        onReplay: () => setState(() => _terminalRun++),
-                      ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 512),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SectionLabel('Terminal output'),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 300,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: _TerminalRun(
+                      key: ValueKey<int>(_terminalRun),
+                      onReplay: () => setState(() => _terminalRun++),
                     ),
-                    Positioned(
-                      left: 0,
-                      bottom: 0,
-                      child: ReplayButton(
-                        onPressed: () => setState(() => _terminalRun++),
-                      ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    bottom: 0,
+                    child: ReplayButton(
+                      onPressed: () => setState(() => _terminalRun++),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 32),
-              const SectionLabel('Request result'),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: 300,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: _RequestRun(
-                        key: ValueKey<int>(_requestRun),
-                        onReplay: () => setState(() => _requestRun++),
-                      ),
+            ),
+            const SizedBox(height: 32),
+            const SectionLabel('Request result'),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 300,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: _RequestRun(
+                      key: ValueKey<int>(_requestRun),
+                      onReplay: () => setState(() => _requestRun++),
                     ),
-                    Positioned(
-                      left: 0,
-                      bottom: 0,
-                      child: ReplayButton(
-                        onPressed: () => setState(() => _requestRun++),
-                      ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    bottom: 0,
+                    child: ReplayButton(
+                      onPressed: () => setState(() => _requestRun++),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-              const SizedBox(height: 32),
-              const SectionLabel(
-                'Cancelled',
-                note:
-                    'A run the user stopped. Neutral, not an error — the status '
-                    'role is `neutral`, and the actions stay reachable so it can '
-                    'be run again.',
-              ),
-              const SizedBox(height: 12),
-              BeuiToolResult(
-                tool: 'terminal.run',
-                title: 'Migration was cancelled',
-                kind: BeuiToolResultKind.terminal,
-                status: BeuiToolResultStatus.cancelled,
-                meta: '0.4s',
-                collapseOnComplete: false,
-                copyText: _cancelledOutput,
-                onRetry: () {},
-                child: const BeuiToolResultOutput(code: _cancelledOutput),
-              ),
+            const SizedBox(height: 32),
+            const SectionLabel(
+              'Cancelled',
+              note:
+                  'A run the user stopped. Neutral, not an error — the status '
+                  'role is `neutral`, and the actions stay reachable so it can '
+                  'be run again.',
+            ),
+            const SizedBox(height: 12),
+            BeuiToolResult(
+              tool: 'terminal.run',
+              title: 'Migration was cancelled',
+              kind: BeuiToolResultKind.terminal,
+              status: BeuiToolResultStatus.cancelled,
+              meta: '0.4s',
+              collapseOnComplete: false,
+              copyText: _cancelledOutput,
+              onRetry: () {},
+              child: const BeuiToolResultOutput(code: _cancelledOutput),
+            ),
 
-              const SizedBox(height: 32),
-              const SectionLabel(
-                'Narrow header (two lines)',
-                note:
-                    'Under 400px the seven-element header wraps: title and status '
-                    'lead, metadata and the tool slug drop to a second line.',
-              ),
-              const SizedBox(height: 12),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  width: 320,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: colors.border),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: BeuiToolResult(
-                        tool: 'http.request',
-                        title: 'Fetching project activity',
-                        kind: BeuiToolResultKind.request,
-                        status: BeuiToolResultStatus.success,
-                        meta: 'GET /v1/activity',
-                        collapseOnComplete: false,
-                        copyText: _narrowOutput,
-                        onRetry: () {},
-                        child: const BeuiToolResultOutput(
-                          code: _narrowOutput,
-                          language: BeuiCodeLanguage.json,
-                        ),
+            const SizedBox(height: 32),
+            const SectionLabel(
+              'Narrow header (two lines)',
+              note:
+                  'Under 400px the seven-element header wraps: title and status '
+                  'lead, metadata and the tool slug drop to a second line.',
+            ),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: 320,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: colors.border),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: BeuiToolResult(
+                      tool: 'http.request',
+                      title: 'Fetching project activity',
+                      kind: BeuiToolResultKind.request,
+                      status: BeuiToolResultStatus.success,
+                      meta: 'GET /v1/activity',
+                      collapseOnComplete: false,
+                      copyText: _narrowOutput,
+                      onRetry: () {},
+                      child: const BeuiToolResultOutput(
+                        code: _narrowOutput,
+                        language: BeuiCodeLanguage.json,
                       ),
                     ),
                   ),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 32),
-              const SectionLabel(
-                'Capped output',
-                note:
-                    'A 120px viewport over a 60-line log. The bottom fade and the '
-                    '"+N more" count only appear while content is actually below '
-                    'the fold — scroll to the end and both retire.',
-              ),
-              const SizedBox(height: 12),
-              BeuiToolResult(
-                tool: 'terminal.run',
-                title: 'Building 60 modules',
-                kind: BeuiToolResultKind.terminal,
-                status: BeuiToolResultStatus.success,
-                meta: '11.2s',
-                maxHeight: 120,
-                collapseOnComplete: false,
-                copyText: _longOutput,
-                child: BeuiToolResultOutput(code: _longOutput),
-              ),
+            const SizedBox(height: 32),
+            const SectionLabel(
+              'Capped output',
+              note:
+                  'A 120px viewport over a 60-line log. The bottom fade and the '
+                  '"+N more" count only appear while content is actually below '
+                  'the fold — scroll to the end and both retire.',
+            ),
+            const SizedBox(height: 12),
+            BeuiToolResult(
+              tool: 'terminal.run',
+              title: 'Building 60 modules',
+              kind: BeuiToolResultKind.terminal,
+              status: BeuiToolResultStatus.success,
+              meta: '11.2s',
+              maxHeight: 120,
+              collapseOnComplete: false,
+              copyText: _longOutput,
+              child: BeuiToolResultOutput(code: _longOutput),
+            ),
 
-              const SizedBox(height: 32),
-              const SectionLabel(
-                'Concurrent tool calls',
-                note:
-                    'Two tools running at once is a Column of BeuiToolResults in '
-                    'one message — each with its own status, its own body, and its '
-                    'own collapse. No extra component required.',
+            const SizedBox(height: 32),
+            const SectionLabel(
+              'Concurrent tool calls',
+              note:
+                  'Two tools running at once is a Column of BeuiToolResults in '
+                  'one message — each with its own status, its own body, and its '
+                  'own collapse. No extra component required.',
+            ),
+            const SizedBox(height: 12),
+            _ConcurrentRun(
+              key: ValueKey<int>(_concurrentRun),
+              onReplay: () => setState(() => _concurrentRun++),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ReplayButton(
+                onPressed: () => setState(() => _concurrentRun++),
               ),
-              const SizedBox(height: 12),
-              _ConcurrentRun(
-                key: ValueKey<int>(_concurrentRun),
-                onReplay: () => setState(() => _concurrentRun++),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: ReplayButton(
-                  onPressed: () => setState(() => _concurrentRun++),
-                ),
-              ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            ),
+            const SizedBox(height: 24),
+          ],
         ),
       ),
     );

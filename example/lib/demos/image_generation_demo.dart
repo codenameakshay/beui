@@ -23,50 +23,48 @@ class _ImageGenerationDemoState extends State<_ImageGenerationDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 576), // max-w-xl
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SectionLabel('Generated image surface'),
-              const SizedBox(height: 16),
-              _GenerationRun(
-                key: ValueKey<int>(_run),
-                onReplay: () => setState(() => _run++),
-              ),
-              const SizedBox(height: 24),
-              const SectionLabel('Statuses'),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                children: [
-                  for (final status in BeuiImageGenerationStatus.values)
-                    SizedBox(
-                      width: 160,
-                      child: BeuiImageGeneration(
-                        status: status,
-                        prompt: status == BeuiImageGenerationStatus.error
-                            ? 'a quiet mountain landscape at sunset'
-                            : null,
-                        resolution: '512 × 512',
-                        onRetry: status == BeuiImageGenerationStatus.error
-                            ? () {}
-                            : null,
-                        child:
-                            status == BeuiImageGenerationStatus.complete ||
-                                status == BeuiImageGenerationStatus.refining ||
-                                status == BeuiImageGenerationStatus.error
-                            ? const _GeneratedArtwork()
-                            : null,
-                      ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 576), // max-w-xl
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SectionLabel('Generated image surface'),
+            const SizedBox(height: 16),
+            _GenerationRun(
+              key: ValueKey<int>(_run),
+              onReplay: () => setState(() => _run++),
+            ),
+            const SizedBox(height: 24),
+            const SectionLabel('Statuses'),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              children: [
+                for (final status in BeuiImageGenerationStatus.values)
+                  SizedBox(
+                    width: 160,
+                    child: BeuiImageGeneration(
+                      status: status,
+                      prompt: status == BeuiImageGenerationStatus.error
+                          ? 'a quiet mountain landscape at sunset'
+                          : null,
+                      resolution: '512 × 512',
+                      onRetry: status == BeuiImageGenerationStatus.error
+                          ? () {}
+                          : null,
+                      child:
+                          status == BeuiImageGenerationStatus.complete ||
+                              status == BeuiImageGenerationStatus.refining ||
+                              status == BeuiImageGenerationStatus.error
+                          ? const _GeneratedArtwork()
+                          : null,
                     ),
-                ],
-              ),
-            ],
-          ),
+                  ),
+              ],
+            ),
+          ],
         ),
       ),
     );
