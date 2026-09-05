@@ -8,6 +8,7 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
 import 'action_swap.dart';
 
 /// One notification in a [BeuiNotificationStack] — the Flutter port of the
@@ -155,8 +156,8 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
   // -height cards. Same technique as the dynamic-island's ResizeObserver port.
   List<GlobalKey> _measureKeys = const [];
   List<double>? _heights;
-  String? _measuredSig;
-  String? _pendingSig;
+  int? _measuredSig;
+  int? _pendingSig;
 
   bool get _isControlled => widget.expanded != null;
   bool get _expanded => widget.expanded ?? _internalExpanded;
@@ -209,27 +210,27 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
     }
   }
 
-  void _onEnter() => _setExpanded(true);
-
-  void _onExit() {
-    if (!_hasFocus) _setExpanded(false);
-  }
-
   // --- measurement ---------------------------------------------------------
 
-  String _signature(double width, List<BeuiNotificationStackItem> visible) {
+  int _signature(double width, List<BeuiNotificationStackItem> visible) {
     final scale = MediaQuery.textScalerOf(context).scale(14);
-    final buf = StringBuffer('${width.round()}|$scale');
-    for (final it in visible) {
-      buf.write(
-        '|${it.id}~${it.title.length}~${it.description?.length ?? -1}'
-        '~${it.trailing != null}',
-      );
-    }
-    return buf.toString();
+    return Object.hash(
+      width.round(),
+      scale,
+      Object.hashAll(
+        visible.map(
+          (it) => Object.hash(
+            it.id,
+            it.title.length,
+            it.description?.length ?? -1,
+            it.trailing != null,
+          ),
+        ),
+      ),
+    );
   }
 
-  void _ensureMeasured(String sig) {
+  void _ensureMeasured(int sig) {
     if (sig == _measuredSig || sig == _pendingSig) return;
     _pendingSig = sig;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -377,8 +378,11 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
         ? '$count notifications. ${widget.expandedLabel}.'
         : '$count notifications. Expand notifications.';
 
-    Widget wrapped = child;
-    if (_hasFocus) wrapped = _focusRing(colors, wrapped);
+    final wrapped = BeuiFocusRing(
+      focused: _hasFocus,
+      borderRadius: BorderRadius.circular(_surfaceRadius),
+      child: child,
+    );
 
     return Semantics(
       button: true,
@@ -389,8 +393,10 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
         onKeyEvent: _onKey,
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
-          onEnter: (_) => _onEnter(),
-          onExit: (_) => _onExit(),
+          onEnter: (_) => _setExpanded(true),
+          onExit: (_) {
+            if (!_hasFocus) _setExpanded(false);
+          },
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: _onTap,
@@ -398,21 +404,6 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _focusRing(BeuiColors colors, Widget child) {
-    // Approximates focus-visible:ring-2 ring-offset-2: a 2px surface-colored gap
-    // then a 2px ring, drawn as stacked hard box shadows.
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(_surfaceRadius),
-        boxShadow: [
-          BoxShadow(color: colors.ring, spreadRadius: 4),
-          BoxShadow(color: colors.background, spreadRadius: 2),
-        ],
-      ),
-      child: child,
     );
   }
 
@@ -560,57 +551,56 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16), // px-4
-      child: Opacity(opacity: opacity, child: _cardContent(item, colors)),
-    );
-  }
-
-  Widget _cardContent(BeuiNotificationStackItem item, BeuiColors colors) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16), // py-4
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      child: Opacity(
+        opacity: opacity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16), // py-4
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  item.title,
-                  style: TextStyle(
-                    fontSize: 14, // text-sm
-                    height: 1.375, // leading-snug
-                    fontWeight: FontWeight.w500,
-                    color: colors.foreground,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      item.title,
+                      style: TextStyle(
+                        fontSize: 14, // text-sm
+                        height: 1.375, // leading-snug
+                        fontWeight: FontWeight.w500,
+                        color: colors.foreground,
+                      ),
+                    ),
                   ),
-                ),
+                  if (item.trailing != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12), // gap-3
+                      child: DefaultTextStyle.merge(
+                        style: TextStyle(
+                          fontSize: 12, // text-xs
+                          color: colors.mutedForeground,
+                        ),
+                        child: item.trailing!,
+                      ),
+                    ),
+                ],
               ),
-              if (item.trailing != null)
+              if (item.description != null)
                 Padding(
-                  padding: const EdgeInsets.only(left: 12), // gap-3
-                  child: DefaultTextStyle.merge(
+                  padding: const EdgeInsets.only(top: 6), // gap-1.5
+                  child: Text(
+                    item.description!,
                     style: TextStyle(
                       fontSize: 12, // text-xs
+                      height: 1.625, // leading-relaxed
                       color: colors.mutedForeground,
                     ),
-                    child: item.trailing!,
                   ),
                 ),
             ],
           ),
-          if (item.description != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 6), // gap-1.5
-              child: Text(
-                item.description!,
-                style: TextStyle(
-                  fontSize: 12, // text-xs
-                  height: 1.625, // leading-relaxed
-                  color: colors.mutedForeground,
-                ),
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }

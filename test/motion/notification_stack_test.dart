@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = Align(alignment: Alignment.topCenter, child: child);
   if (reduce) {
@@ -191,6 +193,7 @@ void main() {
       await tester.tap(find.byType(BeuiNotificationStack));
       await tester.pumpAndSettle();
       expect(find.text('View all'), findsOneWidget);
+      expect(maxBlurSigma(tester), 0);
     });
   });
 }
