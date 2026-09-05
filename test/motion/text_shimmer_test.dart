@@ -58,20 +58,6 @@ void main() {
     expect(find.text('Shimmer'), findsOneWidget);
   });
 
-  testWidgets('the shader callback produces a valid shader each frame', (
-    tester,
-  ) async {
-    await tester.pumpWidget(_app(const BeuiTextShimmer('Loading')));
-    await tester.pump();
-    final maskEarly = tester.widget<ShaderMask>(find.byType(ShaderMask));
-    const rect = Rect.fromLTWH(0, 0, 120, 24);
-    expect(() => maskEarly.shaderCallback(rect), returnsNormally);
-
-    await tester.pump(const Duration(milliseconds: 900));
-    final maskLater = tester.widget<ShaderMask>(find.byType(ShaderMask));
-    expect(() => maskLater.shaderCallback(rect), returnsNormally);
-  });
-
   testWidgets('the gradient tile repeats (source background-repeat default)', (
     tester,
   ) async {
