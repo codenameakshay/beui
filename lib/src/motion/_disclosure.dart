@@ -48,11 +48,10 @@ const double _settleY = 4;
 ///
 /// ## Reduced motion keeps the fade
 ///
-/// The eight copies this replaces all hard-cut under reduced motion: they
-/// swapped to a static `Offstage` + `heightFactor: open ? 1 : 0`, so the panel
-/// blinked in and out with no transition at all. That violates the project rule
-/// (drop *movement*, keep opacity/color — see [motionFor]); one of them even
-/// carried a comment claiming it faded when it did not.
+/// A hard cut to a static `Offstage` + `heightFactor: open ? 1 : 0` under
+/// reduced motion would blink the panel in and out with no transition at all,
+/// violating the project rule (drop *movement*, keep opacity/color — see
+/// [motionFor]).
 ///
 /// Here the reduce branch keeps a ~120ms opacity cross-fade and snaps only the
 /// height and the translate. The channel split is expressed the way
