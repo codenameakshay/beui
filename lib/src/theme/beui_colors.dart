@@ -103,18 +103,30 @@ class BeuiGlass {
   final Color border;
 
   /// Stronger, more opaque fill for modals / sheets (source `--glass-strong-bg`).
+  @Deprecated(
+    'No component reads this; only blur and bg are rendered. Removed in 2.0.',
+  )
   final Color strongBg;
 
   /// Lighter fill for subtle overlays (source `--glass-thin-bg`).
+  @Deprecated(
+    'No component reads this; only blur and bg are rendered. Removed in 2.0.',
+  )
   final Color thinBg;
 
   /// Backdrop blur radius for [bg], in logical pixels (source `glass`, 20px).
   final double blur;
 
   /// Backdrop blur radius for [strongBg] (source `glass-strong`, 16px).
+  @Deprecated(
+    'No component reads this; only blur and bg are rendered. Removed in 2.0.',
+  )
   final double strongBlur;
 
   /// Backdrop blur radius for [thinBg] (source `glass-thin`, 12px).
+  @Deprecated(
+    'No component reads this; only blur and bg are rendered. Removed in 2.0.',
+  )
   final double thinBlur;
 
   /// Returns a copy with the given fields replaced.
@@ -623,28 +635,18 @@ BeuiColors _base(BeuiColorTheme theme, Brightness brightness) {
 /// for the neutral [BeuiColorTheme.defaultMono].
 _Brand? _brandFor(BeuiColorTheme theme, Brightness brightness) {
   final isLight = brightness == Brightness.light;
-  switch (theme) {
-    case BeuiColorTheme.defaultMono:
-      return null;
-    case BeuiColorTheme.violet:
-      return isLight ? _violetLight : _violetDark;
-    case BeuiColorTheme.blue:
-      return isLight ? _blueLight : _blueDark;
-    case BeuiColorTheme.green:
-      return isLight ? _greenLight : _greenDark;
-    case BeuiColorTheme.amber:
-      return isLight ? _amberLight : _amberDark;
-    case BeuiColorTheme.bloodOrange:
-      return isLight ? _bloodOrangeLight : _bloodOrangeDark;
-    case BeuiColorTheme.rose:
-      return isLight ? _roseLight : _roseDark;
-    case BeuiColorTheme.red:
-      return isLight ? _redLight : _redDark;
-    case BeuiColorTheme.teal:
-      return isLight ? _tealLight : _tealDark;
-    case BeuiColorTheme.indigo:
-      return isLight ? _indigoLight : _indigoDark;
-    case BeuiColorTheme.lime:
-      return isLight ? _limeLight : _limeDark;
-  }
+  return switch (theme) {
+    BeuiColorTheme.defaultMono => null,
+    BeuiColorTheme.violet => isLight ? _violetLight : _violetDark,
+    BeuiColorTheme.blue => isLight ? _blueLight : _blueDark,
+    BeuiColorTheme.green => isLight ? _greenLight : _greenDark,
+    BeuiColorTheme.amber => isLight ? _amberLight : _amberDark,
+    BeuiColorTheme.bloodOrange =>
+      isLight ? _bloodOrangeLight : _bloodOrangeDark,
+    BeuiColorTheme.rose => isLight ? _roseLight : _roseDark,
+    BeuiColorTheme.red => isLight ? _redLight : _redDark,
+    BeuiColorTheme.teal => isLight ? _tealLight : _tealDark,
+    BeuiColorTheme.indigo => isLight ? _indigoLight : _indigoDark,
+    BeuiColorTheme.lime => isLight ? _limeLight : _limeDark,
+  };
 }

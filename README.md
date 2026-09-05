@@ -267,7 +267,7 @@ Three layers, installed once on [ThemeData](https://api.flutter.dev/flutter/mate
 | --- | --- | --- |
 | `ThemeData.fontFamily` / `BeuiTextTheme` | Global sans/mono **family names** and Material letter-spacing normalisation. The package ships no font files. | `ThemeData(fontFamily: 'General Sans')` plus `BeuiTextTheme.trackingNormal(...)` |
 | `BeuiColors` | Palette: core tokens, brand themes, `BeuiGlass`, and `focusRing` (WCAG 2.2 3:1 non-text contrast). Not typography, radii, or spacing. | `extensions: [BeuiColors.of(theme, brightness)]` |
-| `BeuiAgentTheme` | AI-agent **semantics**: type roles, bubble/card radii, conversation spacing, density, borders, optional glass cards, default icons, status palettes, and localizable `BeuiAgentStrings`. | `extensions: [BeuiAgentTheme(...)]` — omit it and widgets use source-fidelity defaults identical to 1.0.0 |
+| `BeuiAgentTheme` | AI-agent **semantics**: type roles, bubble/card radii, conversation spacing, borders, optional glass cards, default icons, status palettes, and localizable `BeuiAgentStrings`. | `extensions: [BeuiAgentTheme(...)]` — omit it and widgets use source-fidelity defaults |
 
 ```dart
 ThemeData(
@@ -283,7 +283,6 @@ ThemeData(
         card: BorderRadius.circular(18),
       ),
       layout: BeuiAgentLayout(
-        density: BeuiAgentDensity.compact,
         turnSpacing: 12,
         bubblePadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
       ),

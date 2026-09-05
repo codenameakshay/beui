@@ -358,24 +358,15 @@ class BeuiAgentStatusColors {
       brightness == Brightness.dark ? dark : light;
 
   /// The palette for [status].
-  BeuiAgentStatusPalette palette(BeuiAgentStatus status) {
-    switch (status) {
-      case BeuiAgentStatus.pending:
-        return pending;
-      case BeuiAgentStatus.running:
-        return running;
-      case BeuiAgentStatus.success:
-        return success;
-      case BeuiAgentStatus.failed:
-        return failed;
-      case BeuiAgentStatus.denied:
-        return denied;
-      case BeuiAgentStatus.neutral:
-        return neutral;
-      case BeuiAgentStatus.destructive:
-        return destructive;
-    }
-  }
+  BeuiAgentStatusPalette palette(BeuiAgentStatus status) => switch (status) {
+    BeuiAgentStatus.pending => pending,
+    BeuiAgentStatus.running => running,
+    BeuiAgentStatus.success => success,
+    BeuiAgentStatus.failed => failed,
+    BeuiAgentStatus.denied => denied,
+    BeuiAgentStatus.neutral => neutral,
+    BeuiAgentStatus.destructive => destructive,
+  };
 
   /// Returns a copy with the given tiers replaced.
   BeuiAgentStatusColors copyWith({

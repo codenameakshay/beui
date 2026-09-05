@@ -42,25 +42,22 @@ BeuiAgentStatusPalette _denied(BeuiAgentStatusColors c) => c.denied;
 BeuiAgentStatusPalette _destructive(BeuiAgentStatusColors c) => c.destructive;
 
 void main() {
-  group('BeuiAgentStatusColors.of resolves by brightness', () {
-    test('light', () {
-      expect(
-        BeuiAgentStatusColors.of(Brightness.light),
-        BeuiAgentStatusColors.light,
-      );
-    });
-
-    test('dark', () {
-      expect(
-        BeuiAgentStatusColors.of(Brightness.dark),
-        BeuiAgentStatusColors.dark,
-      );
-    });
+  test('BeuiAgentStatusColors.of resolves by brightness', () {
+    expect(
+      BeuiAgentStatusColors.of(Brightness.light),
+      BeuiAgentStatusColors.light,
+    );
+    expect(
+      BeuiAgentStatusColors.of(Brightness.dark),
+      BeuiAgentStatusColors.dark,
+    );
   });
 
-  group('palette() maps every BeuiAgentStatus to its named tier', () {
-    test('light', () {
-      const colors = BeuiAgentStatusColors.light;
+  test('palette() maps every BeuiAgentStatus to its named tier', () {
+    for (final colors in [
+      BeuiAgentStatusColors.light,
+      BeuiAgentStatusColors.dark,
+    ]) {
       final expectedByStatus = <BeuiAgentStatus, BeuiAgentStatusPalette>{
         BeuiAgentStatus.pending: colors.pending,
         BeuiAgentStatus.running: colors.running,
@@ -71,29 +68,13 @@ void main() {
         BeuiAgentStatus.destructive: colors.destructive,
       };
       for (final status in BeuiAgentStatus.values) {
-        final result = colors.palette(status);
-        expect(result, isNotNull, reason: status.name);
-        expect(result, expectedByStatus[status], reason: status.name);
+        expect(
+          colors.palette(status),
+          expectedByStatus[status],
+          reason: status.name,
+        );
       }
-    });
-
-    test('dark', () {
-      const colors = BeuiAgentStatusColors.dark;
-      final expectedByStatus = <BeuiAgentStatus, BeuiAgentStatusPalette>{
-        BeuiAgentStatus.pending: colors.pending,
-        BeuiAgentStatus.running: colors.running,
-        BeuiAgentStatus.success: colors.success,
-        BeuiAgentStatus.failed: colors.failed,
-        BeuiAgentStatus.denied: colors.denied,
-        BeuiAgentStatus.neutral: colors.neutral,
-        BeuiAgentStatus.destructive: colors.destructive,
-      };
-      for (final status in BeuiAgentStatus.values) {
-        final result = colors.palette(status);
-        expect(result, isNotNull, reason: status.name);
-        expect(result, expectedByStatus[status], reason: status.name);
-      }
-    });
+    }
   });
 
   group('badge foreground clears WCAG AA (4.5:1) on every card surface', () {
@@ -192,26 +173,13 @@ void main() {
     });
   });
 
-  group('denied defaults equal failed', () {
-    test('light', () {
-      const colors = BeuiAgentStatusColors.light;
+  test('denied defaults equal failed', () {
+    for (final colors in [
+      BeuiAgentStatusColors.light,
+      BeuiAgentStatusColors.dark,
+    ]) {
       expect(colors.denied, colors.failed);
-      expect(colors.denied.foreground, colors.failed.foreground);
-      expect(colors.denied.background, colors.failed.background);
-      expect(colors.denied.border, colors.failed.border);
-      expect(colors.denied.solid, colors.failed.solid);
-      expect(colors.denied.onSolid, colors.failed.onSolid);
-    });
-
-    test('dark', () {
-      const colors = BeuiAgentStatusColors.dark;
-      expect(colors.denied, colors.failed);
-      expect(colors.denied.foreground, colors.failed.foreground);
-      expect(colors.denied.background, colors.failed.background);
-      expect(colors.denied.border, colors.failed.border);
-      expect(colors.denied.solid, colors.failed.solid);
-      expect(colors.denied.onSolid, colors.failed.onSolid);
-    });
+    }
   });
 
   group('copyWith round-trips', () {

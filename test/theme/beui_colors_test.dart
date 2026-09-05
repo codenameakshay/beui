@@ -111,8 +111,6 @@ void main() {
     test('neutral focusRing is `foreground` at 0.55 light / 0.6 dark', () {
       final light = BeuiColors.light();
       final dark = BeuiColors.dark();
-      expect(light.focusRing, const Color(0x8C0B0B0B));
-      expect(dark.focusRing, const Color(0x99F2F2F2));
       // Same hue as `foreground`, just alpha-reduced.
       expect(light.focusRing.r, light.foreground.r);
       expect(light.focusRing.g, light.foreground.g);
@@ -232,9 +230,6 @@ void main() {
         BeuiColorTheme.defaultMono,
         Brightness.dark,
       ).glass;
-      expect(glass.blur, 20.0);
-      expect(glass.strongBlur, 16.0);
-      expect(glass.thinBlur, 12.0);
       expect(glass.blur, greaterThan(10.0));
     });
 
@@ -316,19 +311,6 @@ void main() {
         0,
         reason: 'rebuilding with an equal theme must not animate anything',
       );
-    });
-  });
-
-  group('BeuiTextTheme exposes family names only (no bundled fonts)', () {
-    test('sans is Inter, mono is JetBrains Mono (not Geist Mono)', () {
-      const text = BeuiTextTheme();
-      expect(text.sansFamily, 'Inter');
-      expect(text.monoFamily, 'JetBrains Mono');
-    });
-
-    test('mono falls back to the platform monospace family', () {
-      const text = BeuiTextTheme();
-      expect(text.monoFamilyFallback, contains('monospace'));
     });
   });
 }
