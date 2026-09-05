@@ -434,7 +434,7 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final status = widget.status;
     final showSuccess = status == BeuiOtpStatus.success;

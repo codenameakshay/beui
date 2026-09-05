@@ -69,7 +69,7 @@ class BeuiScrollProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final source =
         progress ??

@@ -98,10 +98,7 @@ class _BeuiSharedLayoutBgState extends State<BeuiSharedLayoutBg>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final color = widget.pillColor ?? colors.primary.withValues(alpha: 0.06);
 

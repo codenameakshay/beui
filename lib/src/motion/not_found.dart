@@ -47,7 +47,7 @@ class _Copy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       spacing: 8, // gap-2
@@ -91,7 +91,7 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     return Wrap(
       spacing: 12, // gap-3
       runSpacing: 12,
@@ -327,7 +327,7 @@ class _GlitchCodeState extends State<_GlitchCode>
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final style = TextStyle(
       fontSize: widget.fontSize,
@@ -411,7 +411,7 @@ class BeuiNotFoundMagnetic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final fontSize = _bigCode(context, max: 192);
     return _Stage(
       children: [
@@ -502,7 +502,7 @@ class _BeuiNotFoundSpotlightState extends State<BeuiNotFoundSpotlight> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final fontSize = _bigCode(context, vw: 0.16, max: 160);
     final codeStyle = TextStyle(
@@ -637,7 +637,7 @@ class _BeuiNotFoundStackedState extends State<BeuiNotFoundStacked> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     BoxDecoration card([List<BoxShadow>? shadow]) => BoxDecoration(

@@ -361,10 +361,7 @@ class _BeuiChromaticTextRevealState extends State<BeuiChromaticTextReveal>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final style = widget.style ?? DefaultTextStyle.of(context).style;
     final foreground = widget.foregroundColor ?? colors.foreground;
     final palette = widget.colors?.isNotEmpty ?? false

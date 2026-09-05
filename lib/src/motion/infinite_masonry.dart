@@ -330,10 +330,7 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final radius = BorderRadius.circular(24); // rounded-3xl

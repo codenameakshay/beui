@@ -205,7 +205,7 @@ class _BeuiPopoverState extends State<BeuiPopover> {
       _measure();
       _syncFocus();
     });
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final geo = _buildGeo(

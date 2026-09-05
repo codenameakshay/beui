@@ -83,10 +83,7 @@ class BeuiDrawer extends StatelessWidget {
   }
 
   Widget _panel(BuildContext context, Animation<double> animation) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isRight = side == BeuiDrawerSide.right;
     final width = math.min(320.0, MediaQuery.of(context).size.width * 0.85);

@@ -135,7 +135,7 @@ class BeuiChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final bg = backgroundColor ?? colors.background;
     final radius = borderRadius ?? agent.shapes.cardRadius;

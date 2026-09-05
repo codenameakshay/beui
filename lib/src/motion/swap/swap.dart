@@ -183,7 +183,7 @@ class _BeuiMultiChainSwapState extends State<BeuiMultiChainSwap> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final from = _token(_fromId);
     final to = _token(_toId);

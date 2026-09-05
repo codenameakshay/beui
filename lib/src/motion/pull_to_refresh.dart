@@ -297,9 +297,7 @@ class _BeuiPullToRefreshState extends State<BeuiPullToRefresh> {
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, Theme.of(context).brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final panelMotion = motionFor(context, beuiSpringPanel, isMovement: true);
 

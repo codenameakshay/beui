@@ -275,10 +275,7 @@ class _BeuiWheelPickerState extends State<BeuiWheelPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final style = widget.style;
     final reduce = _reduce;
     final enabled = widget.enabled;

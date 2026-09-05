@@ -195,10 +195,7 @@ class _BeuiSwitchState extends State<BeuiSwitch>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final style = widget.style;
 
     final reduce = MediaQuery.disableAnimationsOf(context);

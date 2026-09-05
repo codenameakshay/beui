@@ -495,7 +495,7 @@ class _ToastItemState extends State<_ToastItem> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final exiting = widget.exiting;
 

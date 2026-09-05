@@ -448,7 +448,7 @@ class _SwipeRowState extends State<_SwipeRow>
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final item = widget.item;
 
     Widget surface = Container(

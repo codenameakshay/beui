@@ -273,9 +273,9 @@ class _BeuiCommandPaletteState extends State<BeuiCommandPalette> {
       open: _open,
       onDismiss: () => _setOpen(false),
       // bg-background/5 + backdrop blur(12px) — the source's glass veil.
-      barrierColor: Theme.of(
+      barrierColor: BeuiColors.resolve(
         context,
-      ).extension<BeuiColors>()!.background.withValues(alpha: 0.05),
+      ).background.withValues(alpha: 0.05),
       barrierBlur: 6, // blur(12px) ≈ σ6
       enterDuration: const Duration(milliseconds: 180),
       exitDuration: const Duration(milliseconds: 120),
@@ -289,7 +289,7 @@ class _BeuiCommandPaletteState extends State<BeuiCommandPalette> {
     Animation<double> animation,
     LayerLink link,
   ) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final media = MediaQuery.of(context);
     final filtered = _filtered;

@@ -230,10 +230,7 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final elapsed = widget.elapsedSeconds ?? _internalSeconds;
     final base =
@@ -501,10 +498,7 @@ class _BeuiReasoningTextState extends State<BeuiReasoningText> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final style =
         (widget.style ??

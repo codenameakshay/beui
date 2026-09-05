@@ -682,7 +682,7 @@ class _BeuiContextMenuState extends State<BeuiContextMenu> {
       _scheduleMeasureAndFocus();
     }
 
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final visualOpen = _open && _morphReady;
     final instant = reduce || _modality == BeuiContextMenuModality.keyboard;

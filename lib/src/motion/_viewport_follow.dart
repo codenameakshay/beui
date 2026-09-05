@@ -242,10 +242,7 @@ class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final label = widget.label ?? agent.strings.jumpToLatest;
@@ -440,10 +437,7 @@ class BeuiHiddenContentFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final resolve = label ?? BeuiAgentTheme.of(context).strings.hiddenLines;
 
     return ExcludeSemantics(

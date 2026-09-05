@@ -253,10 +253,7 @@ class _MorphPanelState extends State<MorphPanel> {
     double panelWidth,
     bool reduce,
   ) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     // Under reduced motion the box snaps (stiff spring) rather than animating a
     // movement; the content still cross-fades.

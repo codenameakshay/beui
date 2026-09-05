@@ -68,10 +68,7 @@ class _WalletActionButtonState extends State<_WalletActionButton> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final target = (_pressed && !reduce) ? 0.94 : 1.0;
 

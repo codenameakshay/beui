@@ -372,10 +372,7 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final style = widget.style;
 
@@ -1207,8 +1204,7 @@ class _SuccessBadgeState extends State<_SuccessBadge>
 
   @override
   Widget build(BuildContext context) {
-    final accent =
-        Theme.of(context).extension<BeuiColors>()?.accent ?? widget.success;
+    final accent = BeuiColors.resolve(context).accent;
 
     final disc = SingleMotionBuilder(
       value: _popped ? 1.0 : 0.0,

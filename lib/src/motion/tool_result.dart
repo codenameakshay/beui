@@ -157,9 +157,7 @@ class BeuiToolResultOutput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final palette = BeuiSyntaxPalette.of(theme.brightness);
     final lines = code.split('\n');
@@ -605,9 +603,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final strings = agent.strings;
     final reduce = MediaQuery.disableAnimationsOf(context);

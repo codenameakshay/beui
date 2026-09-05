@@ -79,10 +79,7 @@ class _WalletSearchBarState extends State<WalletSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     return MorphPanel(
       open: _open,
@@ -261,10 +258,7 @@ class _RecentRowState extends State<_RecentRow> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final hoverActive = widget.armed && _hovered;
 
     return MouseRegion(

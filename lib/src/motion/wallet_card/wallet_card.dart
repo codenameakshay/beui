@@ -153,10 +153,7 @@ class _BeuiWalletCardState extends State<BeuiWalletCard> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     final shown = _formatBalance();
     const masked = '*******'; // 7 dots, source `"*".repeat(7)`
@@ -303,10 +300,7 @@ class _EyeToggleState extends State<_EyeToggle> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     return Semantics(
       button: true,
@@ -366,10 +360,7 @@ class _BellButtonState extends State<_BellButton>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final target = (_pressed && !reduce) ? 0.9 : 1.0;
 

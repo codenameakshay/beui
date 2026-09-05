@@ -103,7 +103,7 @@ class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
   @override
   Widget build(BuildContext context) {
     if (!_mounted) return const SizedBox.shrink();
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final open = widget.open;
 

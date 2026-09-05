@@ -45,10 +45,7 @@ class _WalletAccountSwitcherState extends State<WalletAccountSwitcher> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final active = widget.activeAccount;
 
     return MorphPanel(
@@ -200,10 +197,7 @@ class _AccountRowState extends State<_AccountRow> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     final hoverActive = widget.armed && _hovered && !widget.selected;
     final bg = widget.selected

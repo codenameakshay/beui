@@ -288,7 +288,7 @@ class BeuiAnimatedSidebarTrigger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = BeuiAnimatedSidebarScope.maybeOf(context);
-    final colors = _colorsOf(context);
+    final colors = BeuiColors.resolve(context);
     final open = scope == null
         ? true
         : (scope.isMobile ? scope.openMobile : scope.expanded);
@@ -699,7 +699,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = _colorsOf(context);
+    final colors = BeuiColors.resolve(context);
     final screenW = MediaQuery.sizeOf(context).width;
     final isMobile = screenW < widget.mobileBreakpoint;
     final expanded = _expanded;
@@ -1948,10 +1948,3 @@ class _SubButtonState extends State<_SubButton> {
 
 // ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
-
-BeuiColors _colorsOf(BuildContext context) {
-  final theme = Theme.of(context);
-  return theme.extension<BeuiColors>() ??
-      BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
-}

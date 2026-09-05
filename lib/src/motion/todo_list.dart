@@ -310,13 +310,10 @@ class _BeuiTodoListState extends State<BeuiTodoList> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     // A40: this was a `!` null-assert, so a consumer who installed the widget
     // without also installing `BeuiColors` got a crash out of a published
     // package. Every sibling in the agent family already fell back like this.
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final strings = agent.strings;
     final statusColors = agent.statusColorsFor(colors.brightness);

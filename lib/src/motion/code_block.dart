@@ -245,9 +245,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final palette = BeuiSyntaxPalette.of(theme.brightness);

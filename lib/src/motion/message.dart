@@ -360,7 +360,7 @@ class BeuiMessageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final size = agent.layout.avatarSize;
     final avatar = SizedBox(
@@ -450,7 +450,7 @@ class BeuiMessageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final from = BeuiMessageScope.maybeOf(context) ?? BeuiMessageFrom.assistant;
     final agent = BeuiAgentTheme.of(context);
     return Padding(
@@ -488,7 +488,7 @@ class BeuiMessageFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final from = BeuiMessageScope.maybeOf(context) ?? BeuiMessageFrom.assistant;
     final agent = BeuiAgentTheme.of(context);
     return ConstrainedBox(
@@ -531,7 +531,7 @@ class BeuiMessageMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     // source: `mx-auto flex w-fit max-w-[88%] …` — shrink to fit, capped at
     // 88% of the row.
@@ -648,7 +648,7 @@ class _BeuiMessageTypingState extends State<BeuiMessageTyping>
     final reduce = _reduce;
     final color =
         DefaultTextStyle.of(context).style.color ??
-        Theme.of(context).extension<BeuiColors>()!.mutedForeground;
+        BeuiColors.resolve(context).mutedForeground;
 
     return Semantics(
       label: widget.label,

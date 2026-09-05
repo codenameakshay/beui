@@ -601,8 +601,7 @@ class _BeuiHoldActionButtonState extends State<BeuiHoldActionButton>
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).extension<BeuiColors>() ?? BeuiColors.light();
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final bg = widget.backgroundColor ?? colors.primary;
     final fg = widget.foregroundColor ?? colors.primaryForeground;
@@ -996,8 +995,7 @@ class _BeuiSlideActionButtonState extends State<BeuiSlideActionButton> {
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).extension<BeuiColors>() ?? BeuiColors.light();
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final thumbColor =
         widget.thumbColor ?? (_completed ? colors.background : colors.primary);

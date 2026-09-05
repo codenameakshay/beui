@@ -623,7 +623,7 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     _reduce = MediaQuery.disableAnimationsOf(context);
     _sync();
 

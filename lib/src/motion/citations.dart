@@ -322,10 +322,7 @@ class _BeuiCitationState extends State<BeuiCitation> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final fg = (_hovered || _focused)
         ? colors.foreground
         : colors.mutedForeground;
@@ -471,10 +468,7 @@ class _BeuiCitationFaviconState extends State<BeuiCitationFavicon> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final favicon = widget.url != null ? beuiFaviconUrl(widget.url!) : null;
     final showImage = favicon != null && _failedUrl != favicon;
 
@@ -551,10 +545,7 @@ class BeuiCitationStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final shown = citations.take(limit).toList(growable: false);
     if (shown.isEmpty) return const SizedBox.shrink();
 
@@ -817,11 +808,8 @@ class _BeuiCitationsState extends State<BeuiCitations> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     // Advisory, not fatal: a URL-only row is a legitimate (and now correctly
     // *static*) configuration, so this guides rather than crashes.
@@ -1085,10 +1073,7 @@ class _CitationRowState extends State<_CitationRow> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final highlighted = _hovered || _focused;
     final titleColor = highlighted
         ? colors.foreground

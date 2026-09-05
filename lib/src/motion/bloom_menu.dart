@@ -169,7 +169,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     _scheduleMeasure();
 
     return Stack(
@@ -213,7 +213,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
     Animation<double> animation,
     LayerLink link,
   ) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final panelSize = _panelSize ?? Size(_panelWidth(context), 300);
     final triggerSize = _triggerMeasured ?? _triggerSize;

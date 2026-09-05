@@ -105,10 +105,7 @@ class BeuiFocusRing extends StatelessWidget {
   Widget build(BuildContext context) {
     // Same fallback every agent widget uses: the installed palette, or the
     // neutral one at the ambient brightness.
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final ringColor = color ?? colors.focusRing;
 
     return Stack(

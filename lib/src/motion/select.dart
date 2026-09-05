@@ -332,10 +332,7 @@ class _BeuiSelectState extends State<BeuiSelect>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _measure();
     });
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     return BeuiOverlay(
@@ -491,10 +488,7 @@ class _BeuiSelectState extends State<BeuiSelect>
     Animation<double> animation,
     LayerLink link,
   ) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isTop = _placement == _Placement.top;
     final width = _panelWidth;
@@ -840,10 +834,7 @@ class _BeuiMorphSelectState extends State<BeuiMorphSelect> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _measure();
     });
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final selected = _selectedIndex() >= 0;

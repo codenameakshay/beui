@@ -227,10 +227,7 @@ class BeuiToolApprovalCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
 
     return DecoratedBox(
@@ -579,9 +576,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final strings = agent.strings;
     final statusColors = agent.statusColorsFor(theme.brightness);

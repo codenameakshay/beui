@@ -2,7 +2,7 @@
 ///
 /// A one-to-one port of the source's `lib/themes.ts` (the canonical inlined
 /// palette) and `lib/theme-css.ts` (the alias / glass tier). Components read
-/// their colors from `Theme.of(context).extension<BeuiColors>()!`, never from
+/// their colors from [BeuiColors.resolve], never from
 /// hardcoded literals.
 ///
 /// The palette is computed at build time, not runtime: oklch source values are
@@ -204,7 +204,7 @@ class _Brand {
 /// );
 /// ```
 ///
-/// Components read it back with `Theme.of(context).extension<BeuiColors>()!`.
+/// Components read it back with [BeuiColors.resolve].
 @immutable
 class BeuiColors extends ThemeExtension<BeuiColors> {
   /// Creates a fully-specified palette. Prefer [BeuiColors.of] / [BeuiColors.light]
@@ -256,6 +256,17 @@ class BeuiColors extends ThemeExtension<BeuiColors> {
       ring: brand.ring,
       focusRing: brand.focusRing,
     );
+  }
+
+  /// The palette installed on the nearest [Theme], or the neutral palette for
+  /// that theme's brightness when the consumer did not add the extension.
+  ///
+  /// Every component reads its colors through this so a bare `MaterialApp`
+  /// renders instead of throwing on a missing extension.
+  static BeuiColors resolve(BuildContext context) {
+    final theme = Theme.of(context);
+    return theme.extension<BeuiColors>() ??
+        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
   }
 
   /// The neutral [BeuiColorTheme.defaultMono] palette in light mode.

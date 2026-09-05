@@ -238,7 +238,7 @@ class _BeuiExpandableActionBarState extends State<BeuiExpandableActionBar> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final m = _metrics[widget.size]!;
     _scheduleHighlightMeasure();

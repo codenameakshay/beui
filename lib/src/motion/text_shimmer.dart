@@ -98,10 +98,7 @@ class _BeuiTextShimmerState extends State<BeuiTextShimmer>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final base = widget.baseColor ?? colors.mutedForeground;
     final highlight = widget.highlightColor ?? colors.foreground;
     final style = widget.style ?? DefaultTextStyle.of(context).style;

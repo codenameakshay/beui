@@ -291,7 +291,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final scope = _BubbleScope.maybeOf(context);
     final variant = scope?.variant ?? BeuiMessageBubbleVariant.soft;
@@ -702,7 +702,7 @@ class _BeuiMessageBubbleCollapsibleState
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final chevronMotion = motionFor(context, beuiSpringSwap, isMovement: true);

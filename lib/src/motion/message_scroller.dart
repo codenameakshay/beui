@@ -854,9 +854,7 @@ class BeuiMessageScrollerState extends State<BeuiMessageScroller> {
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, Theme.of(context).brightness);
+    final colors = BeuiColors.resolve(context);
     final railItems = _resolvedRailItems();
     final showRail =
         widget.navigation == BeuiMessageScrollerNavigation.rail &&
@@ -1383,9 +1381,7 @@ class _MessageRailState extends State<_MessageRail> {
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, Theme.of(context).brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final items = widget.items;
     final n = items.length;

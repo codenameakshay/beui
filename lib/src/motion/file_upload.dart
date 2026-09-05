@@ -411,7 +411,7 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final maxReached =
         widget.maxFiles != null && _items.length >= widget.maxFiles!;

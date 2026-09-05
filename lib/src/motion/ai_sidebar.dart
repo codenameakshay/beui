@@ -789,10 +789,7 @@ class _BeuiAiSidebarState extends State<BeuiAiSidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final flat = _flat;
 
     // Keep focus on a live row.

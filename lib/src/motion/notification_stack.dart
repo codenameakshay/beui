@@ -256,7 +256,7 @@ class _BeuiNotificationStackState extends State<BeuiNotificationStack> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     if (widget.items.isEmpty) return _emptyState(colors);

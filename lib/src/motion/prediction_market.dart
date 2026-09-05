@@ -368,7 +368,7 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     // Tailwind `sm:` keys off the viewport, not the element box (the ticket is
     // capped at 400px yet still takes the `sm:` type scale on desktop).

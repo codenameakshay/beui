@@ -322,10 +322,7 @@ class _BeuiBounceSidebarState extends State<BeuiBounceSidebar>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     final selectedIndex = _selectedIndex;
     final selectedValue = _selectedValue;

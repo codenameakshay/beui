@@ -130,10 +130,7 @@ class _BeuiRadioGroupState<T> extends State<BeuiRadioGroup<T>> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
 
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final list = widget.orientation == Axis.vertical
@@ -255,10 +252,7 @@ class _BeuiRadioItemState<T> extends State<BeuiRadioItem<T>> {
   @override
   Widget build(BuildContext context) {
     final scope = _RadioScope.of<T>(context);
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     final enabled = widget.enabled;
     final reduce = scope.reduce;

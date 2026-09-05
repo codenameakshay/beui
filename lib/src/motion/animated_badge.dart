@@ -173,7 +173,7 @@ class _BeuiAnimatedBadgeState extends State<BeuiAnimatedBadge> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final scheme = _BadgeScheme.of(widget.status, colors);
     final radius = BorderRadius.circular(widget._height / 2); // rounded-full
