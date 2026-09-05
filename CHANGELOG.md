@@ -1,3 +1,78 @@
+## Unreleased
+
+Codebase slop audit. No component was redesigned; this release removes
+duplication, dead code, and process residue that accumulated across the
+1.x agent passes, and fixes the bugs found on the way. The public API is
+additive except for the deprecations listed below.
+
+### Fixed
+
+* A fresh `pub get` no longer fails to compile: `flutter_lucide` renamed
+  `trash_2` to `trash` in 1.41 and `rotate_ccw_clock` only exists from
+  1.31, so the lower bound is now `>=1.41.0` and the glyph is renamed.
+* `BeuiAgentTheme.decorateCard` passed the glass palette's 20px CSS radius
+  straight in as a Gaussian sigma, rendering at twice the source blur.
+* A `MaterialApp` without the `BeuiColors` extension no longer throws in
+  36 components, and two components no longer fall back to the light
+  palette in dark mode: every lookup goes through `BeuiColors.resolve`.
+* `BeuiRangeSlider` adopts the shared slider state, so a range whose max
+  is not a step multiple can reach it, fractional steps stop leaking
+  float dust, and its semantics gain increase/decrease actions.
+* `BeuiAttachmentUpload`: cancelling or removing a row mid-transfer no
+  longer flips it to "Upload complete" when the simulated timer fires.
+* `BeuiContextMenu` no longer throws from `num.clamp` on viewports
+  narrower than the panel; its remeasure loop is capped.
+* `BeuiPopover`'s hover-close delay is cancelled on re-hover and dispose.
+* `BeuiPreviewRail`'s two-tap touch preview no longer resets itself on an
+  unrelated rebuild.
+* `BeuiPromptInput` re-measures when `maxRows` changes.
+* `BeuiShaderBackground` discards a program that finished loading after
+  the variant changed, and disposes superseded shaders and the noise codec.
+* `BeuiAnimatedSidebar` honours a custom `width` in the offcanvas box;
+  two `AnimatedOpacity` wrappers that could never animate are gone.
+* `BeuiExpandingArrowButton` no longer allocates a `CurvedAnimation` per
+  frame per chevron or wraps its reveal in a dead `TweenAnimationBuilder`.
+* Availability scheduler's time select no longer leaks a
+  `ScrollController` per overlay rebuild.
+* Cascade text (`BeuiTextCascade`, stateful button, action swap, loading
+  states) animates grapheme clusters instead of UTF-16 code units.
+* Six hand-rolled focus borders use `BeuiFocusRing`, so focusing no
+  longer shifts layout and the ring meets 3:1 contrast.
+
+### Added
+
+* `BeuiColors.resolve(context)`; `beuiSpringSnap` and `beuiSpringScroll`
+  motion tokens.
+* `BeuiAiSidebar.onRenameError`, `BeuiFeedbackWidget.onSubmitError`
+  (errors were previously swallowed); `BeuiMultiChainSwap.networkFee`,
+  `slippage`, `eta` (previously hardcoded literals).
+* `BeuiAgentIcons.externalLink` now reaches the citation and attachment
+  link glyphs.
+* Widget tests for `BeuiMagnetic` and `BeuiParallax`.
+
+### Deprecated (removed in 2.0)
+
+* `beuiSidebarCanContain` (use `BeuiSidebarResource.canContain`),
+  `citationTargetId`, `BeuiGlass.strongBg`/`thinBg`/`strongBlur`/`thinBlur`,
+  `BeuiAgentLayout.density` and `BeuiAgentDensity` (no component reads them).
+
+### Internal
+
+* Shared helpers replace per-file copies: cascade text, disclosure
+  chevron, ring spinner, streaming status icon, glyph scramble, shake
+  interpolator, thousands grouping and address truncation; `lerpDouble`,
+  `listEquals`, `num.clamp`, `Curves.*` and `math.pi` replace hand-rolled
+  equivalents; every blur routes through `beuiBlurSigma`.
+* Dead parameters, fields, branches and the test-only probe shader are
+  gone; comments no longer cite internal audit ticket ids.
+* `test/support.dart` owns the themed test app, blur probe, frame pump
+  and contrast math; ~110 tautological or build-only tests are deleted
+  and the shader tests now assert the shader's own paint.
+* The gallery's 14-in-one `core_demos.dart` is split per catalog slug
+  (which fixes the Code tab's source paths), with one shared replay
+  button, section label and pressable control.
+* `.pubignore` excludes the example's platform folders and fonts.
+
 ## 1.2.0
 
 UX-audit remediation across the chat/agent family — 154 audited findings
