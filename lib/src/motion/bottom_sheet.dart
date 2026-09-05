@@ -138,7 +138,6 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
   final ValueNotifier<double> _drag = ValueNotifier<double>(0);
   double _rawDy = 0; // raw finger travel (px) — the fling logic reads this
   double _returnFrom = 0; // drag offset captured at release
-  bool _reduce = false;
 
   @override
   void initState() {
@@ -218,7 +217,7 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
       _snap = target;
     });
     _drag.value = 0;
-    if (_reduce) {
+    if (MediaQuery.disableAnimationsOf(context)) {
       _returnFrom = 0; // no settle animation under reduced motion
     } else {
       _return.forward(from: 0);
@@ -228,7 +227,7 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
 
   @override
   Widget build(BuildContext context) {
-    _reduce = MediaQuery.disableAnimationsOf(context);
+    final reduce = MediaQuery.disableAnimationsOf(context);
     final viewportH = MediaQuery.of(context).size.height;
     // Height is set directly per snap (source's `style.height`) — no tween; only
     // the drag `y` transform animates.
@@ -239,13 +238,13 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
         alignment: Alignment.bottomCenter,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 672), // max-w-2xl (42rem)
-          child: _buildSheet(target),
+          child: _buildSheet(target, reduce),
         ),
       ),
     );
   }
 
-  Widget _buildSheet(double height) {
+  Widget _buildSheet(double height, bool reduce) {
     // PERF: the full surface (Material / decoration / scrollable content) is
     // built once per state build and threaded through the `child` slot, so
     // each slide frame and drag pointer-move only re-runs the
@@ -258,7 +257,7 @@ class _BottomSheetPanelState extends State<_BottomSheetPanel>
         final t = widget.animation.value.clamp(0.0, 1.0);
         final double translate;
         final double opacity;
-        if (_reduce) {
+        if (reduce) {
           translate = _offsetNow();
           opacity = beuiEaseDrawer.transform(t); // source reduce ease
         } else {

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
 
 /// Dot diameter in logical pixels (source `DOT_SIZE` / `h-1.5 w-1.5`).
 const _dotSize = 6.0;
@@ -525,19 +526,20 @@ class _SidebarRowState extends State<_SidebarRow> {
           child: AnimatedOpacity(
             duration: const Duration(milliseconds: 150),
             opacity: enabled ? 1 : 0.4,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              curve: Curves.easeOut,
-              constraints: const BoxConstraints(minHeight: _itemMinHeight),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: _focused
-                    ? Border.all(color: colors.ring, width: 2)
-                    : Border.all(color: Colors.transparent, width: 2),
+            child: BeuiFocusRing(
+              focused: _focused,
+              borderRadius: BorderRadius.circular(8),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                curve: Curves.easeOut,
+                constraints: const BoxConstraints(minHeight: _itemMinHeight),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                alignment: Alignment.centerLeft,
+                child: content,
               ),
-              alignment: Alignment.centerLeft,
-              child: content,
             ),
           ),
         ),
