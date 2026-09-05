@@ -2,6 +2,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 
 const _sampleLines = <BeuiFileDiffLine>[
   BeuiFileDiffLine(
@@ -36,12 +37,6 @@ const _sampleLines = <BeuiFileDiffLine>[
 /// The streaming chrome spins forever, so `pumpAndSettle` never returns on any
 /// streaming path; scroll animations still need real frames to tick, so one
 /// long `pump(400ms)` does not stand in for them either.
-Future<void> pumpFrames(WidgetTester tester, int count) async {
-  for (var i = 0; i < count; i++) {
-    await tester.pump(const Duration(milliseconds: 20));
-  }
-}
-
 Widget _host({
   Key? key,
   String? file = 'src/runner.ts',

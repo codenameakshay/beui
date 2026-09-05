@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
 import '_engine.dart';
 
 /// Size of a [BeuiExpandableActionBar] (source `ExpandableActionBarSize`).
@@ -246,7 +247,10 @@ class _BeuiExpandableActionBarState extends State<BeuiExpandableActionBar> {
     final track = ClipRRect(
       borderRadius: BorderRadius.circular(999),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12), // backdrop-blur-xl
+        filter: ImageFilter.blur(
+          sigmaX: beuiBlurSigma(24), // backdrop-blur-xl
+          sigmaY: beuiBlurSigma(24),
+        ),
         child: Container(
           padding: EdgeInsets.all(m.trackPad),
           decoration: BoxDecoration(

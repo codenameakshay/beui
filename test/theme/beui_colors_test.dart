@@ -1,32 +1,7 @@
-import 'dart:math' as math;
-
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-/// Source-over composite of [src] onto an opaque [dst].
-Color _composite(Color src, Color dst) {
-  final a = src.a;
-  return Color.from(
-    alpha: 1,
-    red: src.r * a + dst.r * (1 - a),
-    green: src.g * a + dst.g * (1 - a),
-    blue: src.b * a + dst.b * (1 - a),
-  );
-}
-
-double _channel(double c) =>
-    c <= 0.03928 ? c / 12.92 : math.pow((c + 0.055) / 1.055, 2.4).toDouble();
-
-double _luminance(Color c) =>
-    0.2126 * _channel(c.r) + 0.7152 * _channel(c.g) + 0.0722 * _channel(c.b);
-
-/// WCAG 2.x relative-contrast ratio between two **opaque** colors.
-double _contrast(Color a, Color b) {
-  final la = _luminance(a);
-  final lb = _luminance(b);
-  return (math.max(la, lb) + 0.05) / (math.min(la, lb) + 0.05);
-}
+import '../support.dart';
 
 void main() {
   group('BeuiColors.of resolves every theme × brightness', () {
@@ -107,8 +82,8 @@ void main() {
       for (final theme in BeuiColorTheme.values) {
         for (final brightness in Brightness.values) {
           final colors = BeuiColors.of(theme, brightness);
-          final ratio = _contrast(
-            _composite(colors.focusRing, colors.background),
+          final ratio = contrastRatio(
+            composite(colors.focusRing, colors.background),
             colors.background,
           );
           expect(
@@ -125,8 +100,8 @@ void main() {
     test('the `ring` token it replaces does NOT clear 3:1 (the bug)', () {
       for (final brightness in Brightness.values) {
         final colors = BeuiColors.of(BeuiColorTheme.defaultMono, brightness);
-        final ratio = _contrast(
-          _composite(colors.ring, colors.background),
+        final ratio = contrastRatio(
+          composite(colors.ring, colors.background),
           colors.background,
         );
         expect(ratio, lessThan(2.0));

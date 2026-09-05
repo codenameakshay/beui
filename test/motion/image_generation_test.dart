@@ -2,17 +2,12 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 
 /// Advances [count] frames of 20ms.
 ///
 /// The dither mark spins for as long as the run is active, so `pumpAndSettle`
 /// never returns on any in-progress status.
-Future<void> pumpFrames(WidgetTester tester, [int count = 30]) async {
-  for (var i = 0; i < count; i++) {
-    await tester.pump(const Duration(milliseconds: 20));
-  }
-}
-
 Widget _host({
   Widget? child,
   BeuiImageGenerationStatus status = BeuiImageGenerationStatus.generating,
@@ -348,7 +343,7 @@ void main() {
 
     testWidgets('an indeterminate run shows no hairline', (tester) async {
       await tester.pumpWidget(remediationHost());
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       expect(fillFactor(tester), isNull);
     });
 
@@ -356,7 +351,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(remediationHost(progress: 0.4));
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       expect(fillFactor(tester), moreOrLessEquals(0.4, epsilon: 0.01));
     });
 
@@ -364,7 +359,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(remediationHost(progress: 4));
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       expect(fillFactor(tester), 1.0);
       expect(tester.takeException(), isNull);
     });
@@ -376,7 +371,7 @@ void main() {
           progress: 1,
         ),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       expect(fillFactor(tester), isNull);
     });
 
@@ -385,7 +380,7 @@ void main() {
       await tester.pumpWidget(
         remediationHost(progress: 0.42, prompt: 'a quiet mountain'),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       // Four words and a spinner across a 10-60s operation is the canonical
       // "is it frozen?" surface — for a screen reader most of all.
       expect(
@@ -400,13 +395,13 @@ void main() {
   group('BeuiImageGeneration cancel', () {
     testWidgets('no stop control without a handler', (tester) async {
       await tester.pumpWidget(remediationHost());
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       expect(find.byIcon(LucideIcons.square), findsNothing);
     });
 
     testWidgets('a stop control appears in-frame while active', (tester) async {
       await tester.pumpWidget(remediationHost(onCancel: () {}));
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       expect(find.byIcon(LucideIcons.square), findsOneWidget);
     });
 
@@ -417,7 +412,7 @@ void main() {
           onCancel: () {},
         ),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       expect(find.byIcon(LucideIcons.square), findsNothing);
     });
 
@@ -427,7 +422,7 @@ void main() {
       final handle = tester.ensureSemantics();
       var cancels = 0;
       await tester.pumpWidget(remediationHost(onCancel: () => cancels++));
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
 
       expect(find.bySemanticsLabel('Stop generating'), findsOneWidget);
 
@@ -436,7 +431,7 @@ void main() {
       expect(cancels, 1);
 
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pump();
       expect(cancels, 2);
@@ -448,7 +443,7 @@ void main() {
     ) async {
       var cancels = 0;
       await tester.pumpWidget(remediationHost(onCancel: () => cancels++));
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       final centre = tester.getCenter(find.byIcon(LucideIcons.square));
       await tester.tapAt(centre + const Offset(0, 18));
       await tester.pump();
@@ -459,7 +454,7 @@ void main() {
   group('BeuiImageGeneration error costs no layout shift', () {
     testWidgets('the retry slot is held open on every status', (tester) async {
       await tester.pumpWidget(remediationHost(onRetry: () {}));
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       final generating = tester.getSize(find.byType(BeuiImageGeneration));
 
       await tester.pumpWidget(
@@ -468,7 +463,7 @@ void main() {
           onRetry: () {},
         ),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       // The component reserves its media frame with AspectRatio; the error
       // branch was the one place it forgot, and appended 52px.
       expect(tester.getSize(find.byType(BeuiImageGeneration)), generating);
@@ -479,7 +474,7 @@ void main() {
     ) async {
       var retries = 0;
       await tester.pumpWidget(remediationHost(onRetry: () => retries++));
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       await tester.tap(find.text('Try again'), warnIfMissed: false);
       await tester.pump();
       expect(retries, 0);
@@ -493,7 +488,7 @@ void main() {
           onRetry: () => retries++,
         ),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       await tester.tap(find.text('Try again'));
       await tester.pump();
       expect(retries, 1);
@@ -503,7 +498,7 @@ void main() {
       await tester.pumpWidget(
         remediationHost(onRetry: () {}, reserveErrorSlot: false),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       final generating = tester.getSize(find.byType(BeuiImageGeneration));
 
       await tester.pumpWidget(
@@ -513,7 +508,7 @@ void main() {
           reserveErrorSlot: false,
         ),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       expect(
         tester.getSize(find.byType(BeuiImageGeneration)).height,
         greaterThan(generating.height),
@@ -536,7 +531,7 @@ void main() {
       await tester.pumpWidget(
         remediationHost(status: BeuiImageGenerationStatus.error),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       final style = tester.widget<Text>(find.text('Generation failed')).style!;
       final colors = BeuiColors.light();
       // `destructive` is tuned as a fill and measured 3.94:1 as body text.
@@ -549,7 +544,7 @@ void main() {
       await tester.pumpWidget(
         remediationHost(status: BeuiImageGenerationStatus.error),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       final style = tester.widget<Text>(find.text('Generation failed')).style!;
       final colors = BeuiColors.light();
       expect(
@@ -579,7 +574,7 @@ void main() {
           ),
         ),
       );
-      await pumpFrames(tester);
+      await pumpFrames(tester, 30);
       final style = tester.widget<Text>(find.text('Generation failed')).style!;
       expect(style.color, BeuiColors.dark().destructive);
     });

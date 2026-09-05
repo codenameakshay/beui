@@ -1,9 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:beui/beui.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = Align(alignment: Alignment.bottomRight, child: child);
@@ -43,14 +42,6 @@ BeuiToast _toast(
 final Finder _closeButton = find.byWidgetPredicate(
   (w) => w is Semantics && w.properties.label == 'Dismiss toast',
 );
-
-double _maxBlurSigma(WidgetTester tester) => tester
-    .widgetList<ImageFiltered>(find.byType(ImageFiltered))
-    .map((f) {
-      final m = RegExp(r'blur\(([\d.]+)').firstMatch(f.imageFilter.toString());
-      return m == null ? 0.0 : double.parse(m.group(1)!);
-    })
-    .fold<double>(0, math.max);
 
 void main() {
   group('BeuiToastController', () {
@@ -254,10 +245,10 @@ void main() {
         _wrap(BeuiAnimatedToastStack(toasts: [_toast('a')])),
       );
       await tester.pump(const Duration(milliseconds: 30)); // mid-enter
-      expect(_maxBlurSigma(tester), greaterThan(1.0));
+      expect(maxBlurSigma(tester), greaterThan(1.0));
 
       await tester.pumpAndSettle();
-      expect(_maxBlurSigma(tester), lessThan(0.5));
+      expect(maxBlurSigma(tester), lessThan(0.5));
       expect(find.text('Toast a'), findsOneWidget);
     });
 
@@ -389,7 +380,7 @@ void main() {
       );
       for (var i = 0; i < 6; i++) {
         await tester.pump(const Duration(milliseconds: 30));
-        expect(_maxBlurSigma(tester), lessThan(0.5));
+        expect(maxBlurSigma(tester), lessThan(0.5));
       }
       await tester.pumpAndSettle();
       expect(find.text('Toast a'), findsOneWidget);

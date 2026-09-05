@@ -1,9 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = Center(child: child);
@@ -56,14 +55,6 @@ List<BeuiExpandableTabsItem> get _items => const [
     ),
   ),
 ];
-
-double _maxBlurSigma(WidgetTester tester) => tester
-    .widgetList<ImageFiltered>(find.byType(ImageFiltered))
-    .map((f) {
-      final m = RegExp(r'blur\(([\d.]+)').firstMatch(f.imageFilter.toString());
-      return m == null ? 0.0 : double.parse(m.group(1)!);
-    })
-    .fold<double>(0, math.max);
 
 void main() {
   group('BeuiExpandableTabs', () {
@@ -167,7 +158,7 @@ void main() {
       await tester.tap(find.byIcon(LucideIcons.house), warnIfMissed: false);
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 40));
-        expect(_maxBlurSigma(tester), lessThan(0.5));
+        expect(maxBlurSigma(tester), lessThan(0.5));
       }
       expect(find.text('Home panel'), findsOneWidget);
     });

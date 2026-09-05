@@ -123,7 +123,10 @@ class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
                   onTap: widget.onClose,
                   child: ClipRect(
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                      filter: ImageFilter.blur(
+                        sigmaX: beuiBlurSigma(4),
+                        sigmaY: beuiBlurSigma(4),
+                      ),
                       child: ColoredBox(
                         color: colors.background.withValues(alpha: 0.4),
                       ),

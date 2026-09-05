@@ -37,6 +37,7 @@ import 'dart:ui' show ImageFilter, lerpDouble;
 import 'package:flutter/material.dart';
 
 import '../tokens/icons.dart';
+import '../tokens/motion.dart';
 import 'beui_agent_status_colors.dart';
 import 'beui_agent_strings.dart';
 import 'beui_colors.dart';
@@ -938,8 +939,8 @@ class BeuiAgentTheme extends ThemeExtension<BeuiAgentTheme> {
         borderRadius: shapes.card,
         child: BackdropFilter(
           filter: ImageFilter.blur(
-            sigmaX: colors.glass.blur,
-            sigmaY: colors.glass.blur,
+            sigmaX: beuiBlurSigma(colors.glass.blur),
+            sigmaY: beuiBlurSigma(colors.glass.blur),
           ),
           child: surface,
         ),

@@ -1,9 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 
 Widget _app({
   ValueChanged<String>? onSelect,
@@ -43,14 +42,6 @@ Future<void> _drainClose(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 800));
 }
-
-double _maxBlurSigma(WidgetTester tester) => tester
-    .widgetList<ImageFiltered>(find.byType(ImageFiltered))
-    .map((f) {
-      final m = RegExp(r'blur\(([\d.]+)').firstMatch(f.imageFilter.toString());
-      return m == null ? 0.0 : double.parse(m.group(1)!);
-    })
-    .fold<double>(0, math.max);
 
 void main() {
   group('BeuiBloomMenu', () {
@@ -147,7 +138,7 @@ void main() {
       await tester.tap(find.text('Create').first);
       for (var i = 0; i < 6; i++) {
         await tester.pump(const Duration(milliseconds: 60));
-        expect(_maxBlurSigma(tester), lessThan(0.5));
+        expect(maxBlurSigma(tester), lessThan(0.5));
       }
       expect(find.text('Doc'), findsOneWidget);
     });

@@ -376,7 +376,10 @@ class _MorphBox extends StatelessWidget {
     return ClipRRect(
       borderRadius: rrect,
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+        filter: ImageFilter.blur(
+          sigmaX: beuiBlurSigma(12),
+          sigmaY: beuiBlurSigma(12),
+        ),
         child: content,
       ),
     );

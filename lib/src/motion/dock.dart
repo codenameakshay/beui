@@ -324,8 +324,10 @@ class _BeuiDockState extends State<BeuiDock> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16), // rounded-2xl = 16px radius
           child: BackdropFilter(
-            // backdrop-blur-xl = 24px CSS blur → sigma 24/2 = 12.
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            filter: ImageFilter.blur(
+              sigmaX: beuiBlurSigma(24), // backdrop-blur-xl
+              sigmaY: beuiBlurSigma(24),
+            ),
             child: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: _barPaddingH, // px-2

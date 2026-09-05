@@ -1,9 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = Center(child: child);
@@ -25,18 +24,6 @@ Widget _wrap(Widget child, {bool reduce = false}) {
 }
 
 /// Max blur sigma currently applied by any ImageFiltered in the tree.
-double _maxBlur(WidgetTester tester) {
-  final sigmas = tester
-      .widgetList<ImageFiltered>(find.byType(ImageFiltered))
-      .map((f) {
-        final m = RegExp(
-          r'blur\(([\d.]+)',
-        ).firstMatch(f.imageFilter.toString());
-        return m == null ? 0.0 : double.parse(m.group(1)!);
-      });
-  return sigmas.fold<double>(0, math.max);
-}
-
 const _items = [
   BeuiActionSwapItem(id: 'copy', label: 'Copy link', icon: Icons.link),
   BeuiActionSwapItem(id: 'copied', label: 'Copied', icon: Icons.check),
@@ -166,11 +153,11 @@ void main() {
       );
       await tester.pumpWidget(app('a', 'One'));
       await tester.pumpAndSettle();
-      expect(_maxBlur(tester), 0);
+      expect(maxBlurSigma(tester), 0);
 
       await tester.pumpWidget(app('b', 'Two'));
       await tester.pump(const Duration(milliseconds: 60));
-      expect(_maxBlur(tester), greaterThan(0.5));
+      expect(maxBlurSigma(tester), greaterThan(0.5));
     });
   });
 
@@ -266,7 +253,7 @@ void main() {
             .widgetList<Transform>(find.byType(Transform))
             .any((t) => t.transform.getTranslation().y.abs() > 0.5);
         expect(translated, isFalse, reason: '$variant should not translate');
-        expect(_maxBlur(tester), 0, reason: '$variant should not blur');
+        expect(maxBlurSigma(tester), 0, reason: '$variant should not blur');
       }
       await tester.pumpAndSettle();
     }

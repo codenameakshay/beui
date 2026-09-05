@@ -655,7 +655,10 @@ class _ToastSurface extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12), // backdrop-blur-xl
+        filter: ImageFilter.blur(
+          sigmaX: beuiBlurSigma(24), // backdrop-blur-xl
+          sigmaY: beuiBlurSigma(24),
+        ),
         child: Container(
           padding: const EdgeInsets.all(12), // p-3
           decoration: BoxDecoration(

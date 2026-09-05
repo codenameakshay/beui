@@ -578,7 +578,10 @@ class _QuoteShimmer extends StatelessWidget {
     );
     if (quoting && !reduce) {
       body = ImageFiltered(
-        imageFilter: ImageFilter.blur(sigmaX: 1, sigmaY: 1), // blur(2px)
+        imageFilter: ImageFilter.blur(
+          sigmaX: beuiBlurSigma(2),
+          sigmaY: beuiBlurSigma(2),
+        ),
         child: body,
       );
     }
