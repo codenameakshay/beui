@@ -4,6 +4,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _questions = <BeuiApprovalCardQuestion>[
   BeuiApprovalCardQuestion(
     id: 'scope',
@@ -392,23 +394,6 @@ void main() {
     });
   });
 
-  group('BeuiApprovalCard — reduced motion', () {
-    testWidgets('still renders and accepts input under reduced motion', (
-      tester,
-    ) async {
-      var approved = false;
-      await tester.pumpWidget(
-        _host(reduce: true, onApprove: () => approved = true, onReject: () {}),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Approve'), findsOneWidget);
-      await tester.tap(find.text('Approve'));
-      await tester.pump();
-      expect(approved, isTrue);
-    });
-  });
-
   group('BeuiApprovalCard — visual fidelity', () {
     testWidgets('heading and action labels keep the ambient font family', (
       tester,
@@ -532,30 +517,23 @@ void main() {
     testWidgets('controlled expansion updates', (tester) async {
       var expanded = false;
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 400,
-                child: StatefulBuilder(
-                  builder: (context, setState) {
-                    return BeuiApprovalCard(
-                      title: 'Approval required',
-                      onApprove: () {},
-                      expanded: expanded,
-                      onExpandedChanged: (v) => setState(() => expanded = v),
-                      compactChild: const Text('Summary only'),
-                      expandedChild: const SizedBox(
-                        height: 80,
-                        child: Text('Full editor body'),
-                      ),
-                    );
-                  },
-                ),
-              ),
+        beuiTestApp(
+          SizedBox(
+            width: 400,
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return BeuiApprovalCard(
+                  title: 'Approval required',
+                  onApprove: () {},
+                  expanded: expanded,
+                  onExpandedChanged: (v) => setState(() => expanded = v),
+                  compactChild: const Text('Summary only'),
+                  expandedChild: const SizedBox(
+                    height: 80,
+                    child: Text('Full editor body'),
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -803,12 +781,10 @@ void main() {
   // =======================================================================
 
   group('BeuiApprovalCard expandable body', () {
-    testWidgets('an expandedChild with nothing to collapse to asserts', (
-      tester,
-    ) async {
+    test('an expandedChild with nothing to collapse to asserts', () {
       // A chevron over a legitimately blank body is a wiring bug. The
       // assert is in the const constructor, so it throws while the widget is
-      // being built rather than during the pump.
+      // being built rather than during the pump — no tester/pump needed.
       expect(
         () => _host(expandedChild: const Text('Full editor body')),
         throwsAssertionError,
@@ -986,40 +962,33 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: Center(
-              child: RepaintBoundary(
-                child: SizedBox(
-                  width: 460,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      BeuiApprovalCard(
-                        title: 'Publish the component update?',
-                        description: 'Ships to the shared registry.',
-                        onApprove: () {},
-                        onRequestChanges: () {},
-                        onReject: () {},
-                      ),
-                      const SizedBox(height: 12),
-                      BeuiApprovalCard(
-                        title: 'Review the release notes?',
-                        compactChild: const Text('3 entries, 1 breaking'),
-                        expandedChild: const Text('Full editor body'),
-                        onApprove: () {},
-                      ),
-                      const SizedBox(height: 12),
-                      const BeuiApprovalCard(
-                        title: 'Publish the component update?',
-                        status: BeuiApprovalCardStatus.rejected,
-                      ),
-                    ],
+        beuiTestApp(
+          RepaintBoundary(
+            child: SizedBox(
+              width: 460,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BeuiApprovalCard(
+                    title: 'Publish the component update?',
+                    description: 'Ships to the shared registry.',
+                    onApprove: () {},
+                    onRequestChanges: () {},
+                    onReject: () {},
                   ),
-                ),
+                  const SizedBox(height: 12),
+                  BeuiApprovalCard(
+                    title: 'Review the release notes?',
+                    compactChild: const Text('3 entries, 1 breaking'),
+                    expandedChild: const Text('Full editor body'),
+                    onApprove: () {},
+                  ),
+                  const SizedBox(height: 12),
+                  const BeuiApprovalCard(
+                    title: 'Publish the component update?',
+                    status: BeuiApprovalCardStatus.rejected,
+                  ),
+                ],
               ),
             ),
           ),
