@@ -4,12 +4,9 @@
 /// language enum belongs with the tokenizer rather than with one widget.
 /// `code_block.dart` re-exports it, so the public API is unchanged.
 ///
-/// Three ~180-line copies of this existed — `code_block.dart`,
-/// `file_diff.dart`, and `tool_result.dart` — and they had **already
-/// diverged**, which is the whole argument for this file. The audit found the
-/// two diff branches disagreeing outright, and the three tokenizers disagreeing
-/// on JSON, on bash, and on comment handling. Each divergence is resolved below
-/// in favour of the implementation with evidence behind it.
+/// `code_block.dart`, `file_diff.dart`, and `tool_result.dart` all share this
+/// one tokenizer rather than keeping their own copies, so diff, JSON, bash,
+/// and comment handling behave identically across every code surface.
 ///
 /// Highlighting is a deliberately **reduced** port of the source's Shiki
 /// themes: a small hand-rolled scanner, not a lexer. Full Shiki fidelity is out
@@ -73,12 +70,9 @@ class BeuiSyntaxToken {
   String toString() => 'BeuiSyntaxToken($text, $color)';
 }
 
-/// The colour roles the tokenizer paints with.
-///
-/// The union of the three palettes this replaces. `code_block` had
-/// [diffAdd] / [diffDel] but no [property] / [variable]; `tool_result` had
-/// [property] / [variable] but no diff colours; `file_diff` had neither. Every
-/// shared slot already agreed on its value across all three.
+/// The colour roles the tokenizer paints with, covering every code surface
+/// in the library: diff colours ([diffAdd] / [diffDel]) alongside JSON/code
+/// roles ([property] / [variable]).
 @immutable
 class BeuiSyntaxPalette {
   /// Creates a palette. Prefer [BeuiSyntaxPalette.of].
@@ -334,14 +328,16 @@ List<BeuiSyntaxToken> _highlightJson(String line, BeuiSyntaxPalette palette) {
       i = end;
       continue;
     }
-    if (_isDigit(ch) ||
-        (ch == '-' && i + 1 < line.length && _isDigit(line[i + 1]))) {
+    if (_isDigit(line.codeUnitAt(i)) ||
+        (ch == '-' &&
+            i + 1 < line.length &&
+            _isDigit(line.codeUnitAt(i + 1)))) {
       final end = _scanNumber(line, i);
       out.add(BeuiSyntaxToken(line.substring(i, end), palette.number));
       i = end;
       continue;
     }
-    if (_isIdentStart(ch)) {
+    if (_isIdentStart(line.codeUnitAt(i))) {
       final end = _scanIdent(line, i);
       final word = line.substring(i, end);
       final color = (word == 'true' || word == 'false' || word == 'null')
@@ -384,7 +380,7 @@ List<BeuiSyntaxToken> _highlightBash(String line, BeuiSyntaxPalette palette) {
       break;
     }
     if (ch == "'" || ch == '"' || ch == '`') {
-      final end = _scanString(line, i, quote: ch);
+      final end = _scanString(line, i);
       out.add(BeuiSyntaxToken(line.substring(i, end), palette.string));
       i = end;
       first = false;
@@ -400,16 +396,15 @@ List<BeuiSyntaxToken> _highlightBash(String line, BeuiSyntaxPalette palette) {
       i++;
     }
     final word = line.substring(start, i);
-    out.add(
-      BeuiSyntaxToken(
-        word,
-        first
-            ? palette.variable
-            : _isBareNumber(word)
-            ? palette.number
-            : palette.string,
-      ),
-    );
+    final Color color;
+    if (first) {
+      color = palette.variable;
+    } else if (_isBareNumber(word)) {
+      color = palette.number;
+    } else {
+      color = palette.string;
+    }
+    out.add(BeuiSyntaxToken(word, color));
     first = false;
   }
   return out;
@@ -419,10 +414,9 @@ List<BeuiSyntaxToken> _highlightBash(String line, BeuiSyntaxPalette palette) {
 bool _isBareNumber(String word) {
   var sawDigit = false;
   for (var i = 0; i < word.length; i++) {
-    final ch = word[i];
-    if (_isDigit(ch)) {
+    if (_isDigit(word.codeUnitAt(i))) {
       sawDigit = true;
-    } else if (ch != '.') {
+    } else if (word[i] != '.') {
       return false;
     }
   }
@@ -453,15 +447,17 @@ List<BeuiSyntaxToken> _highlightGeneric(
 
     // Strings: ' " `
     if (ch == "'" || ch == '"' || ch == '`') {
-      final end = _scanString(line, i, quote: ch);
+      final end = _scanString(line, i);
       out.add(BeuiSyntaxToken(line.substring(i, end), palette.string));
       i = end;
       continue;
     }
 
     // Numbers, including a leading `.` (`.5`).
-    if (_isDigit(ch) ||
-        (ch == '.' && i + 1 < line.length && _isDigit(line[i + 1]))) {
+    if (_isDigit(line.codeUnitAt(i)) ||
+        (ch == '.' &&
+            i + 1 < line.length &&
+            _isDigit(line.codeUnitAt(i + 1)))) {
       final end = _scanNumber(line, i);
       out.add(BeuiSyntaxToken(line.substring(i, end), palette.number));
       i = end;
@@ -469,7 +465,7 @@ List<BeuiSyntaxToken> _highlightGeneric(
     }
 
     // Identifiers / keywords.
-    if (_isIdentStart(ch) || ch == r'$') {
+    if (_isIdentStart(line.codeUnitAt(i)) || ch == r'$') {
       final end = _scanIdent(line, i);
       final word = line.substring(i, end);
       final color = keywords.contains(word)
@@ -501,24 +497,16 @@ bool _callsAhead(String line, int end) {
   return j < line.length && line[j] == '(';
 }
 
-bool _isDigit(String ch) {
-  final c = ch.codeUnitAt(0);
-  return c >= 0x30 && c <= 0x39;
-}
+bool _isDigit(int c) => c >= 0x30 && c <= 0x39;
 
-bool _isIdentStart(String ch) {
-  final c = ch.codeUnitAt(0);
-  return (c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A) || c == 0x5F; // _
-}
+bool _isIdentStart(int c) =>
+    (c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A) || c == 0x5F; // _
 
-bool _isIdentPart(String ch) {
-  final c = ch.codeUnitAt(0);
-  return _isIdentStart(ch) || _isDigit(ch) || c == 0x24; // $
-}
+bool _isIdentPart(int c) => _isIdentStart(c) || _isDigit(c) || c == 0x24; // $
 
 int _scanIdent(String s, int start) {
   var i = start + 1;
-  while (i < s.length && _isIdentPart(s[i])) {
+  while (i < s.length && _isIdentPart(s.codeUnitAt(i))) {
     i++;
   }
   return i;
@@ -528,7 +516,7 @@ int _scanNumber(String s, int start) {
   var i = start;
   if (s[i] == '-') i++;
   while (i < s.length &&
-      (_isDigit(s[i]) ||
+      (_isDigit(s.codeUnitAt(i)) ||
           s[i] == '.' ||
           s[i] == 'e' ||
           s[i] == 'E' ||
@@ -546,8 +534,8 @@ int _scanNumber(String s, int start) {
   return i;
 }
 
-int _scanString(String s, int start, {String? quote}) {
-  final q = quote ?? s[start];
+int _scanString(String s, int start) {
+  final q = s[start];
   var i = start + 1;
   while (i < s.length) {
     if (s[i] == r'\' && i + 1 < s.length) {
