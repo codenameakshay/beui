@@ -4,15 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
 import '_engine.dart';
 import 'smooth_scroll.dart';
-
-/// Soft follow so the indicator trails the scroll instead of snapping —
-/// deliberately looser than the shared UI springs (source `PROGRESS_SPRING`,
-/// stiffness 120 · damping 30 · mass 0.6).
-const _progressSpring = SpringMotion(
-  SpringDescription(mass: 0.6, stiffness: 120, damping: 30),
-);
 
 enum _Variant { bar, circle }
 
@@ -84,7 +78,7 @@ class BeuiScrollProgress extends StatelessWidget {
           if (!spring || reduce) return _paint(raw, colors);
           return SingleMotionBuilder(
             value: raw,
-            motion: _progressSpring,
+            motion: beuiSpringScroll,
             builder: (context, smoothed, _) => _paint(smoothed, colors),
           );
         },

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -141,7 +142,7 @@ class BeuiApprovalCardAnswer {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is BeuiApprovalCardAnswer &&
-          _listEq(selected, other.selected) &&
+          listEquals(selected, other.selected) &&
           custom == other.custom;
 
   @override
@@ -1879,12 +1880,3 @@ class _MeasureSize extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // Utils
 // ---------------------------------------------------------------------------
-
-bool _listEq(List<String> a, List<String> b) {
-  if (identical(a, b)) return true;
-  if (a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
-}

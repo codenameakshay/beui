@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show ImageFilter, lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -683,8 +683,6 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
   }
 }
 
-double _lerp(double a, double b, double t) => a + (b - a) * t;
-
 /// The trigger↔panel morph slot. Slides in from ±[contentOffset], scales
 /// 0.97→1 and blurs 2px→0 (the panel); the trigger additionally rolls in from a
 /// 45° tilt. Opacity/blur finish on the compressed [_morphFadeFraction] window
@@ -719,7 +717,7 @@ class _MorphSlot extends StatelessWidget {
         final move = _morphCloseEase.transform(t);
         final dir = isPanel ? contentOffset : -contentOffset;
         final dx = (1 - move) * dir;
-        final scale = _lerp(_morphScale, 1, move);
+        final scale = lerpDouble(_morphScale, 1, move)!;
         final blur = (1 - opacity) * beuiBlurSigma(_morphBlurPx);
         final rotation = isPanel ? 0.0 : (1 - move) * (math.pi / 4);
 
@@ -1290,7 +1288,7 @@ class _SprinkleState extends State<_Sprinkle>
   }
 
   double _kf3(double t, double a, double b, double c) =>
-      t < 0.5 ? _lerp(a, b, t / 0.5) : _lerp(b, c, (t - 0.5) / 0.5);
+      t < 0.5 ? lerpDouble(a, b, t / 0.5)! : lerpDouble(b, c, (t - 0.5) / 0.5)!;
 
   @override
   Widget build(BuildContext context) {

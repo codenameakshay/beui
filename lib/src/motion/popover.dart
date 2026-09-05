@@ -1,10 +1,11 @@
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show ImageFilter, lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
 import '_engine.dart' show SingleMotionBuilder, SpringMotion;
 
 /// Which side of the trigger the panel oozes out of.
@@ -56,8 +57,6 @@ const _gooCloseSpring = SpringMotion(
 );
 
 const int _hoverCloseDelayMs = 120;
-
-double _lerp(double a, double b, double t) => a + (b - a) * t;
 
 /// A popover whose panel **oozes** out of the trigger like liquid — the Flutter
 /// port of beUI's `popover` (gooey variant).
@@ -258,9 +257,7 @@ class _BeuiPopoverState extends State<BeuiPopover> {
         SingleMotionBuilder(
           value: _open ? 1.0 : 0.0,
           motion: reduce
-              ? const SpringMotion(
-                  SpringDescription(mass: 1, stiffness: 700, damping: 60),
-                )
+              ? beuiSpringSnap
               : (_open ? _gooOpenSpring : _gooCloseSpring),
           builder: (context, p, _) {
             return Stack(
@@ -410,11 +407,11 @@ _Geo? _buildGeo(
 _RRect _rectForProgress(_Geo geo, double p) {
   final a = geo.trigger, b = geo.panel;
   return _RRect(
-    _lerp(a.x, b.x, p),
-    _lerp(a.y, b.y, p),
-    _lerp(a.w, b.w, p),
-    _lerp(a.h, b.h, p),
-    _lerp(a.r, b.r, p),
+    lerpDouble(a.x, b.x, p)!,
+    lerpDouble(a.y, b.y, p)!,
+    lerpDouble(a.w, b.w, p)!,
+    lerpDouble(a.h, b.h, p)!,
+    lerpDouble(a.r, b.r, p)!,
   );
 }
 

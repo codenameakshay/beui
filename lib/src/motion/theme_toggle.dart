@@ -68,10 +68,10 @@ enum BeuiThemeRevealStart {
 Motion _revealMotion(BeuiThemeRevealVariant variant) => switch (variant) {
   BeuiThemeRevealVariant.rectangle => const CurvedMotion(
     Duration(milliseconds: 400),
-    Cubic(0, 0, 0.58, 1),
+    Curves.easeOut,
   ),
   BeuiThemeRevealVariant.circle || BeuiThemeRevealVariant.circleBlur =>
-    const CurvedMotion(Duration(milliseconds: 700), Cubic(0.4, 0, 0.2, 1)),
+    const CurvedMotion(Duration(milliseconds: 700), Curves.fastOutSlowIn),
   BeuiThemeRevealVariant.blinds => const CurvedMotion(
     Duration(milliseconds: 700),
     beuiEaseOut,

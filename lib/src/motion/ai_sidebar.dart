@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -91,7 +92,7 @@ class BeuiSidebarResource {
         other.label == label &&
         other.kind == kind &&
         other.disabled == disabled &&
-        _listEq(other.children, children);
+        listEquals(other.children, children);
   }
 
   @override
@@ -102,15 +103,6 @@ class BeuiSidebarResource {
     disabled,
     children == null ? null : Object.hashAll(children!),
   );
-}
-
-bool _listEq(List<BeuiSidebarResource>? a, List<BeuiSidebarResource>? b) {
-  if (identical(a, b)) return true;
-  if (a == null || b == null || a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
 }
 
 /// Where a moved item lands relative to a drop target — source

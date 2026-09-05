@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -1639,7 +1641,7 @@ class _MenuButtonState extends State<_MenuButton> {
                                     height: 16,
                                     child: Center(
                                       child: Transform.rotate(
-                                        angle: t * 1.57079632679, // 90°
+                                        angle: t * math.pi / 2,
                                         child: Icon(
                                           LucideIcons.chevron_right,
                                           size: 14,

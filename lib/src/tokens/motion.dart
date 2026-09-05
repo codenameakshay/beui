@@ -105,6 +105,19 @@ const beuiEaseInOut = Cubic(0.77, 0, 0.175, 1);
 /// The source's dedicated curve for edge-drawer slides.
 const beuiEaseDrawer = Cubic(0.32, 0.72, 0, 1);
 
+/// Near-instant settle used when a movement spring is replaced under reduced
+/// motion but the surface still needs to reach its end state through the
+/// same builder: mass 1 · stiffness 700 · damping 60.
+const beuiSpringSnap = SpringMotion(
+  SpringDescription(mass: 1, stiffness: 700, damping: 60),
+);
+
+/// Scroll-linked follow spring shared by `scroll-progress.tsx` and
+/// `parallax.tsx`: mass 0.6 · stiffness 120 · damping 30.
+const beuiSpringScroll = SpringMotion(
+  SpringDescription(mass: 0.6, stiffness: 120, damping: 30),
+);
+
 // ---------------------------------------------------------------------------
 // Blur convention
 // ---------------------------------------------------------------------------

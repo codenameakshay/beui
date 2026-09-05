@@ -1192,11 +1192,7 @@ class _Chevron extends StatelessWidget {
     final reduce = MediaQuery.disableAnimationsOf(context);
     return SingleMotionBuilder(
       value: open ? 1.0 : 0.0,
-      motion: reduce
-          ? const SpringMotion(
-              SpringDescription(mass: 1, stiffness: 700, damping: 60),
-            )
-          : _chevronSpring,
+      motion: reduce ? beuiSpringSnap : _chevronSpring,
       builder: (context, p, child) =>
           Transform.rotate(angle: p * math.pi, child: child),
       child: Icon(LucideIcons.chevron_down, size: 16, color: color),

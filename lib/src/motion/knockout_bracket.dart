@@ -151,8 +151,6 @@ const _reflowSpring = SpringMotion(
 /// EASE_OUT }`.
 const _reflowOpacityMs = 280;
 
-int _clampInt(int n, int lo, int hi) => n < lo ? lo : (n > hi ? hi : n);
-
 // Column x-offset and window test — shared by the layout pass and the render
 // pass so the two can't drift.
 double _colX(int r, int page) => _padX + (r - page) * _colW;
@@ -247,19 +245,19 @@ class _BeuiKnockoutBracketState extends State<BeuiKnockoutBracket> {
   @override
   void initState() {
     super.initState();
-    _page = _clampInt(widget.initialRound, 0, _maxPage);
+    _page = widget.initialRound.clamp(0, _maxPage);
   }
 
   @override
   void didUpdateWidget(BeuiKnockoutBracket old) {
     super.didUpdateWidget(old);
     // Keep the page valid if the round list shrinks under us.
-    final clamped = _clampInt(_page, 0, _maxPage);
+    final clamped = _page.clamp(0, _maxPage);
     if (clamped != _page) _page = clamped;
   }
 
   void _goto(int next) {
-    final clamped = _clampInt(next, 0, _maxPage);
+    final clamped = next.clamp(0, _maxPage);
     if (clamped == _page) return;
     setState(() => _page = clamped);
     widget.onRoundChanged?.call(clamped);

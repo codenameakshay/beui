@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -726,7 +727,11 @@ class _BeuiContextMenuState extends State<BeuiContextMenu> {
                     ? 0.0
                     : (_origin.dy / size.height) * 2 - 1;
                 // Collapsed ≈ 16px origin sliver → scale from ~0.08 toward 1.
-                final scale = _lerp(0.08, 1.0, beuiEaseOut.transform(progress));
+                final scale = lerpDouble(
+                  0.08,
+                  1.0,
+                  beuiEaseOut.transform(progress),
+                )!;
                 return Transform.scale(
                   scale: scale,
                   alignment: Alignment(ax, ay),
@@ -762,8 +767,6 @@ class _BeuiContextMenuState extends State<BeuiContextMenu> {
 class _OpenContextMenuIntent extends Intent {
   const _OpenContextMenuIntent();
 }
-
-double _lerp(double a, double b, double t) => a + (b - a) * t;
 
 class _MenuPanel extends StatelessWidget {
   const _MenuPanel({

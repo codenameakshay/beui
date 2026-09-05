@@ -46,7 +46,7 @@ const _itemSpring = SpringMotion(
 
 const _triggerSize = Size(144, 44); // source `h-11 w-36`
 const _panelMaxWidth = 420.0; // min(86vw, 420px)
-const _enterMs = 800.0; // hosts the 0.08s + 0.45s iris + item staggers
+const _enterMs = 800; // hosts the 0.08s + 0.45s iris + item staggers
 
 /// A "Create" pill that blooms open into a grid menu — the Flutter port of
 /// beUI's `bloom-menu` block.
@@ -121,7 +121,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
     super.initState();
     _clock = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: _enterMs ~/ 1),
+      duration: const Duration(milliseconds: _enterMs),
     );
   }
 
@@ -523,7 +523,7 @@ class _PanelContent extends StatelessWidget {
 
 /// Tailwind `transition-colors` — 150ms on its default ease.
 const _hoverFade = Duration(milliseconds: 150);
-const _hoverCurve = Cubic(0.4, 0, 0.2, 1);
+const _hoverCurve = Curves.fastOutSlowIn;
 
 /// The header dismiss glyph (source `hover:text-foreground`).
 class _CloseButton extends StatefulWidget {

@@ -54,11 +54,12 @@ const _widthDuration = Duration(milliseconds: 220); // inline `width 220ms`
 const _swapBlurSigma = 4.0; // SWAP_BLUR blur(8px)
 const _rollBlurSigma = 1.5; // ROLL_BLUR blur(3px)
 
-/// Framer Motion's built-in `"easeInOut"` — cubic-bezier(0.42, 0, 0.58, 1).
-/// The source's `BLUR_TRANSITION.ease` uses this built-in, NOT the design-token
-/// `EASE_IN_OUT` ([beuiEaseInOut]). (The roll variant's exit uses the
-/// design-token `EASE_OUT` / [beuiEaseOut] per `ROLL_EXIT_TRANSITION`.)
-const _framerEaseInOut = Cubic(0.42, 0, 0.58, 1);
+/// Framer Motion's built-in `"easeInOut"` is cubic-bezier(0.42, 0, 0.58, 1),
+/// i.e. Flutter's [Curves.easeInOut]. The source's `BLUR_TRANSITION.ease`
+/// uses this built-in, NOT the design-token `EASE_IN_OUT` ([beuiEaseInOut]).
+/// (The roll variant's exit uses the design-token `EASE_OUT` / [beuiEaseOut]
+/// per `ROLL_EXIT_TRANSITION`.)
+const _framerEaseInOut = Curves.easeInOut;
 
 /// The [BeuiActionSwapVariant] that drives single-element content (icons, and
 /// the non-cascade text path). [BeuiActionSwapVariant.cascade] has no

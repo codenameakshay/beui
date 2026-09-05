@@ -1,11 +1,11 @@
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show ImageFilter, lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../theme/beui_colors.dart';
 import '../../tokens/motion.dart';
-import '../_engine.dart' show SingleMotionBuilder, SpringMotion;
+import '../_engine.dart' show SingleMotionBuilder;
 import '_constants.dart';
 
 /// Shared geometry passed to a morph panel body so it can react to the growth.
@@ -255,27 +255,21 @@ class _MorphPanelState extends State<MorphPanel> {
   ) {
     final colors = BeuiColors.resolve(context);
 
-    // Under reduced motion the box snaps (stiff spring) rather than animating a
-    // movement; the content still cross-fades.
-    const snap = SpringMotion(
-      SpringDescription(mass: 1, stiffness: 700, damping: 60),
-    );
-
     return SingleMotionBuilder(
       value: widget.open ? 1.0 : 0.0,
-      motion: reduce ? snap : kWalletMorph,
+      motion: reduce ? beuiSpringSnap : kWalletMorph,
       builder: (context, p, _) {
         if (p < 0.001 && !widget.open) return const SizedBox.shrink();
 
         final target = Rect.fromLTWH(0, 0, panelWidth, _panelHeight);
         final rect = Rect.lerp(_triggerRect, target, p)!;
-        final radius = _lerpDouble(
+        final radius = lerpDouble(
           _triggerRect.height / 2 < kPanelRadius
               ? _triggerRect.height / 2
               : kPanelRadius,
           kPanelRadius,
           p,
-        );
+        )!;
 
         final info = WalletMorphInfo(
           progress: p,
@@ -346,8 +340,6 @@ class _MorphPanelState extends State<MorphPanel> {
     );
   }
 }
-
-double _lerpDouble(double a, double b, double t) => a + (b - a) * t;
 
 /// The morphing surface chrome: bordered, background-filled, backdrop-blurred
 /// rounded rect that clips its content as it grows (source `border
