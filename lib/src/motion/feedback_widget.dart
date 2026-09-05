@@ -194,6 +194,7 @@ class BeuiFeedbackWidget extends StatefulWidget {
   /// Creates a feedback widget.
   const BeuiFeedbackWidget({
     this.onSubmit,
+    this.onSubmitError,
     this.position = BeuiFeedbackPosition.bottomRight,
     this.title = 'Help us improve',
     this.placeholder = 'Share an idea or report a bug',
@@ -212,6 +213,11 @@ class BeuiFeedbackWidget extends StatefulWidget {
   /// Called on submit. May be async; the button shows a sending state until it
   /// resolves. Throwing routes to the error/retry view.
   final FutureOr<void> Function(BeuiFeedbackData data)? onSubmit;
+
+  /// Called with the error and stack trace when [onSubmit] throws, in
+  /// addition to switching to the error/retry view. When null, the error is
+  /// reported via [FlutterError.reportError] instead of being swallowed.
+  final void Function(Object error, StackTrace stackTrace)? onSubmitError;
 
   /// Which bottom corner to anchor to. Defaults to [BeuiFeedbackPosition.bottomRight].
   final BeuiFeedbackPosition position;
@@ -363,8 +369,15 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
       _text.clear();
       _sentiment = null;
       _scheduleSuccessClose();
-    } catch (_) {
+    } catch (error, stackTrace) {
       // Preserve the message so a rejected submission can be retried.
+      if (widget.onSubmitError != null) {
+        widget.onSubmitError!(error, stackTrace);
+      } else {
+        FlutterError.reportError(
+          FlutterErrorDetails(exception: error, stack: stackTrace),
+        );
+      }
       if (!mounted) return;
       setState(() => _status = _Status.error);
     }

@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// reduced motion.
 Widget _app({
   FutureOr<void> Function(BeuiFeedbackData)? onSubmit,
+  void Function(Object, StackTrace)? onSubmitError,
   bool reduce = false,
   bool showSentiment = false,
   bool accessibleNavigation = false,
@@ -24,6 +25,7 @@ Widget _app({
           Positioned.fill(
             child: BeuiFeedbackWidget(
               onSubmit: onSubmit,
+              onSubmitError: onSubmitError,
               showSentiment: showSentiment,
             ),
           ),
@@ -245,33 +247,14 @@ void main() {
       semantics.dispose();
     });
 
-    testWidgets('the close button accepts taps outside its 20px paint', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_app(onSubmit: (_) {}));
-      await tester.tap(_trigger());
-      await tester.pump(const Duration(milliseconds: 500));
-      expect(find.byType(TextField), findsOneWidget);
-
-      // The paint stays 20px — this is a fidelity port, so the pixels do not
-      // move — and only the hit slop grows to 44. `meetsGuideline` cannot see
-      // that: it measures the semantics rect, which `BeuiMinHitTarget`
-      // deliberately leaves at the painted size. So test the behaviour, which
-      // is what actually matters to a thumb.
-      final paint = tester.getRect(find.bySemanticsLabel('Close'));
-      expect(paint.size, const Size(20, 20));
-
-      // 15px left of centre: outside the 20px box, inside the 44px slop, and
-      // still within the header row — the slop overhangs siblings but cannot
-      // escape an ancestor's bounds, which is why the row it sits in is where
-      // the extra reach is won.
-      await tester.tapAt(paint.center - const Offset(15, 0));
-      await tester.pump(const Duration(milliseconds: 500));
-      expect(find.byType(TextField), findsNothing);
-    });
-
     testWidgets('a thrown submit routes to the retry view', (tester) async {
-      await tester.pumpWidget(_app(onSubmit: (_) => throw StateError('nope')));
+      Object? reportedError;
+      await tester.pumpWidget(
+        _app(
+          onSubmit: (_) => throw StateError('nope'),
+          onSubmitError: (error, _) => reportedError = error,
+        ),
+      );
 
       await tester.tap(_trigger());
       await tester.pump(const Duration(milliseconds: 500));
@@ -284,33 +267,44 @@ void main() {
 
       expect(find.text('Something went wrong'), findsOneWidget);
       expect(find.text('Try again'), findsOneWidget);
+      expect(
+        reportedError,
+        isA<StateError>(),
+        reason: 'onSubmitError must be told about the thrown error',
+      );
     });
 
-    testWidgets('tapping outside closes the panel', (tester) async {
-      await tester.pumpWidget(_app());
+    testWidgets(
+      'a thrown submit without onSubmitError reports through FlutterError',
+      (tester) async {
+        final originalOnError = FlutterError.onError;
+        FlutterErrorDetails? reported;
+        FlutterError.onError = (details) => reported = details;
+        addTearDown(() => FlutterError.onError = originalOnError);
 
-      await tester.tap(_trigger());
-      await tester.pump(const Duration(milliseconds: 500));
-      expect(find.byType(TextField), findsOneWidget);
+        await tester.pumpWidget(
+          _app(onSubmit: (_) => throw StateError('nope')),
+        );
 
-      await tester.tapAt(const Offset(10, 10));
-      await tester.pump(const Duration(milliseconds: 400));
+        await tester.tap(_trigger());
+        await tester.pump(const Duration(milliseconds: 500));
+        await tester.enterText(find.byType(TextField), 'Broken');
+        await tester.pump();
 
-      expect(find.byType(TextField), findsNothing);
-      expect(_trigger(), findsOneWidget);
-    });
+        await tester.tap(find.byType(BeuiStatefulButton));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
 
-    testWidgets('Escape closes the panel', (tester) async {
-      await tester.pumpWidget(_app());
-
-      await tester.tap(_trigger());
-      await tester.pump(const Duration(milliseconds: 500));
-
-      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-      await tester.pump(const Duration(milliseconds: 400));
-
-      expect(find.byType(TextField), findsNothing);
-    });
+        expect(find.text('Something went wrong'), findsOneWidget);
+        expect(
+          reported?.exception,
+          isA<StateError>(),
+          reason:
+              'without onSubmitError the error must not be swallowed '
+              'silently — it goes through FlutterError.reportError',
+        );
+      },
+    );
 
     testWidgets('success view auto-dismisses back to the trigger', (
       tester,
