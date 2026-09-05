@@ -5,6 +5,7 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
 
 // ── Data model ───────────────────────────────────────────────────────────────
 // One-to-one with the source `Team` / `MatchSide` / `Match` / `Round` types.
@@ -904,7 +905,9 @@ Widget _shieldSlot(BeuiColors colors) => SizedBox(
 /// Two-letter stand-in when a team has no artwork — "Real Madrid" → RM. Takes
 /// the first *rune*, not the first code unit: an emoji or astral first character
 /// is a surrogate pair and indexing it renders a replacement glyph.
-String _initials(String name) => name
+///
+/// Shared with `knockout_wheel.dart`, which already imports this file.
+String beuiKnockoutInitials(String name) => name
     .trim()
     .split(RegExp(r'\s+'))
     .take(2)
@@ -931,7 +934,7 @@ Widget _initialsSlot(BeuiColors colors, String name) => SizedBox(
         shape: BoxShape.circle,
       ),
       child: Text(
-        _initials(name),
+        beuiKnockoutInitials(name),
         style: TextStyle(
           fontSize: 10,
           height: 1,
@@ -1016,23 +1019,24 @@ class _ChevronButtonState extends State<_ChevronButton> {
             width: 44,
             height: 44,
             child: Center(
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: active
-                      ? colors.foreground.withValues(alpha: 0.1)
-                      : Colors.transparent,
-                  border: _focus
-                      ? Border.all(color: colors.ring, width: 2)
-                      : null,
-                ),
-                child: Icon(
-                  widget.icon,
-                  size: 20,
-                  color: active ? colors.foreground : colors.mutedForeground,
+              child: BeuiFocusRing(
+                focused: _focus,
+                borderRadius: BorderRadius.circular(18),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: active
+                        ? colors.foreground.withValues(alpha: 0.1)
+                        : Colors.transparent,
+                  ),
+                  child: Icon(
+                    widget.icon,
+                    size: 20,
+                    color: active ? colors.foreground : colors.mutedForeground,
+                  ),
                 ),
               ),
             ),
