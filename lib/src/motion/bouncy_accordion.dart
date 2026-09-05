@@ -243,8 +243,8 @@ class _AccordionRowState extends State<_AccordionRow> {
   @override
   void didUpdateWidget(_AccordionRow old) {
     super.didUpdateWidget(old);
-    // Content may reflow (theme/text scale); re-measure each frame is cheap and
-    // keeps the spring target honest.
+    // Content may reflow (theme/text scale); re-measure on the next update so
+    // the spring target stays honest.
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
   }
 
