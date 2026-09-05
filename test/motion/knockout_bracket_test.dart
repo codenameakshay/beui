@@ -1,7 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor/motor.dart';
 
 // A compact 4-round bracket (4 → 2 → 1 ... actually 4 rounds: 8→4→2→1) so paging
 // past the initial window is exercised. Each round holds half as many matches as
@@ -48,6 +47,18 @@ void _sizeView(WidgetTester tester, {Size size = const Size(1400, 1000)}) {
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 }
+
+/// A card's own key resolves to the `_ReflowSlot`, whose nearest render
+/// object is the `Transform.translate` it wraps its content in — measuring
+/// that key directly reports the pre-translate (0, 0) origin, not the
+/// animated position. A `Text` descendant sits below the transform, so it
+/// reports the real, animated position.
+Finder _cardText(String matchId) => find
+    .descendant(
+      of: find.byKey(ValueKey('card-$matchId')),
+      matching: find.byType(Text),
+    )
+    .first;
 
 /// The source `THIRD_PLACE`: both slots stay TBD until the semi-finals resolve.
 const _thirdPlace = BeuiMatch(
@@ -297,42 +308,48 @@ void main() {
   });
 
   group('BeuiKnockoutBracket motion fidelity', () {
-    testWidgets('cards ride a spring (MotionBuilder) under normal motion', (
+    testWidgets('cards glide to their new column under normal motion', (
       tester,
     ) async {
       _sizeView(tester);
       await tester.pumpWidget(_app(rounds: _bracket()));
+      await tester.pumpAndSettle();
+      // sf1 moves from a secondary column to the new base column when paging
+      // from the quarter-finals — the REFLOW spring's x offset is exercised.
+      final card = _cardText('sf1');
+      final before = tester.getTopLeft(card);
+
+      await tester.tap(find.bySemanticsLabel('Next round'));
       await tester.pump();
-      expect(
-        find.descendant(
-          of: find.byType(BeuiKnockoutBracket),
-          matching: find.byType(MotionBuilder<Offset>),
-        ),
-        findsWidgets,
-      );
+      await tester.pump(const Duration(milliseconds: 90)); // mid-spring
+      final mid = tester.getTopLeft(card);
+      await tester.pumpAndSettle();
+      final settled = tester.getTopLeft(card);
+
+      expect(settled.dx, lessThan(before.dx));
+      expect(mid.dx, lessThan(before.dx));
+      expect(mid.dx, greaterThan(settled.dx));
     });
 
-    testWidgets('reduced motion snaps position (no offset MotionBuilder)', (
+    testWidgets('reduced motion snaps cards straight to their new column', (
       tester,
     ) async {
       _sizeView(tester);
       await tester.pumpWidget(_app(rounds: _bracket(), reduce: true));
+      await tester.pumpAndSettle();
+      final card = _cardText('sf1');
+      final before = tester.getTopLeft(card);
+
+      await tester.tap(find.bySemanticsLabel('Next round'));
       await tester.pump();
-      expect(
-        find.descendant(
-          of: find.byType(BeuiKnockoutBracket),
-          matching: find.byType(MotionBuilder<Offset>),
-        ),
-        findsNothing,
-      );
-      // Opacity fade is preserved even under reduced motion.
-      expect(
-        find.descendant(
-          of: find.byType(BeuiKnockoutBracket),
-          matching: find.byType(AnimatedOpacity),
-        ),
-        findsWidgets,
-      );
+      final justAfterTap = tester.getTopLeft(card);
+      await tester.pumpAndSettle();
+      final settled = tester.getTopLeft(card);
+
+      expect(settled.dx, lessThan(before.dx));
+      // No position spring under reduced motion: it lands immediately,
+      // ahead of the opacity cross-fade (which reduced motion still keeps).
+      expect(justAfterTap.dx, settled.dx);
     });
   });
 
