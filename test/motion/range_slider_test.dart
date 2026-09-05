@@ -311,6 +311,57 @@ void main() {
         reason: 'glide must not overshoot the target position',
       );
     });
+
+    // The shared snap rule (`BeuiSliderStateMixin`) treats max as a candidate
+    // in its own right: for min 0 / max 10 / step 3, the nearest multiple of
+    // 3 below 10 is 9, but 10 itself is closer, so End must land on 10 rather
+    // than getting stuck one step short.
+    testWidgets('End reaches max even when step does not divide it evenly', (
+      tester,
+    ) async {
+      double? changed;
+      await tester.pumpWidget(
+        _Controlled(
+          initial: 0,
+          observe: (v) => changed = v,
+          build: (value, onChanged) => BeuiRangeSlider(
+            value: value,
+            min: 0,
+            max: 10,
+            step: 3,
+            onChanged: onChanged,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final from = tester.getCenter(find.byKey(_thumb));
+      await tester.dragFrom(from, const Offset(2, 0));
+      await tester.pumpAndSettle();
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.end);
+      await tester.pumpAndSettle();
+      expect(changed, 10);
+    });
+
+    testWidgets('semantics announce the value and the next/previous step', (
+      tester,
+    ) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(host(initial: 20));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.getSemantics(find.byType(BeuiRangeSlider)),
+        isSemantics(
+          value: '20',
+          increasedValue: '25',
+          decreasedValue: '15',
+          isSlider: true,
+        ),
+      );
+      handle.dispose();
+    });
   });
 
   // =========================================================================

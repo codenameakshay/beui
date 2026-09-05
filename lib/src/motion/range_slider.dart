@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
@@ -19,18 +18,11 @@ import 'range_slider_shared.dart';
 // (springy): it drives the thumb's grab-grow SCALE *only* (scaleY 1 → 1.35),
 // the bit of personality you feel under the finger.
 //
-// Both carry over verbatim as component-local SpringMotion constants
-// (sanctioned by the source's `AGENTS.md` for genuinely component-specific
-// tuning) — neither matches one of the five shared `beuiSpring*` tokens. No
-// elastic-curve approximation.
-
-/// Glide for the thumb/fill **position** — critically damped, no overshoot, so
-/// the handle eases onto each snapped step and stops dead on the tick. Source
-/// `SPRING_GLIDE`.
-/// (Now shared by the whole slider family — see `range_slider_shared.dart`,
-/// where it has its single definition. Aliased here so every reference in this
-/// file, and the commentary above, still reads as the source's `SPRING_GLIDE`.)
-const _glideSpring = beuiSliderGlideSpring;
+// SPRING_GLIDE is shared by the whole slider family — see
+// `beuiSliderGlideSpring` in `range_slider_shared.dart`. SPRING_BOUNCY is
+// this component's own (sanctioned by the source's `AGENTS.md` for
+// genuinely component-specific tuning) — it matches no shared `beuiSpring*`
+// token. No elastic-curve approximation.
 
 /// Bouncy grab feedback for the thumb **scale** only. Source `SPRING_BOUNCY`.
 const _grabSpring = SpringMotion(
@@ -44,8 +36,6 @@ const beuiRangeSliderThumbKey = ValueKey<String>('beui_range_slider_thumb');
 /// Test handle on the single-thumb slider's tick-dot layer.
 @visibleForTesting
 const beuiRangeSliderTicksKey = ValueKey<String>('beui_range_slider_ticks');
-
-double _clamp(double v, double lo, double hi) => math.min(hi, math.max(lo, v));
 
 // Shared track geometry (source `h-10`, `w-1.5`, `h-5`, `inset-x-[3px]`).
 const double _trackHeight = 40;
@@ -63,8 +53,9 @@ const double _tickInset = _thumbWidth / 2;
 ///
 /// One vertical-bar thumb selects a value over `[min, max]`; a fill runs from the
 /// left track edge to the thumb. Tick dots mark each [step]. The thumb + fill
-/// **glide** to each snapped step under a critically-damped spring ([_glideSpring],
-/// the source's `SPRING_GLIDE`) — no overshoot, it stops exactly on the tick.
+/// **glide** to each snapped step under a critically-damped spring
+/// ([beuiSliderGlideSpring], the source's `SPRING_GLIDE`) — no overshoot, it
+/// stops exactly on the tick.
 /// Grabbing the thumb grows it (scaleY 1 → 1.35) under the bouncy [_grabSpring]
 /// (`SPRING_BOUNCY`), the only springy/overshooting part of the control.
 ///
@@ -133,22 +124,28 @@ class BeuiRangeSlider extends StatefulWidget {
   State<BeuiRangeSlider> createState() => _BeuiRangeSliderState();
 }
 
-class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
+class _BeuiRangeSliderState extends State<BeuiRangeSlider>
+    with BeuiSliderStateMixin<BeuiRangeSlider> {
   late final FocusNode _focus = FocusNode(debugLabel: 'beui_range_slider');
 
-  double? _internal;
   bool _grabbed = false;
 
-  bool get _controlled => widget.value != null;
-
-  double get _current =>
-      _clamp(_controlled ? widget.value! : _internal!, widget.min, widget.max);
-
   @override
-  void initState() {
-    super.initState();
-    _internal = widget.defaultValue;
-  }
+  double? get sliderValue => widget.value;
+  @override
+  double get sliderDefaultValue => widget.defaultValue;
+  @override
+  double get sliderMin => widget.min;
+  @override
+  double get sliderMax => widget.max;
+  @override
+  double get sliderStep => widget.step;
+  @override
+  bool get sliderEnabled => widget.enabled;
+  @override
+  ValueChanged<double>? get sliderOnChanged => widget.onChanged;
+  @override
+  ValueChanged<double>? get sliderOnChangeEnd => widget.onChangeEnd;
 
   @override
   void dispose() {
@@ -156,75 +153,33 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
     super.dispose();
   }
 
-  double _snap(double value) {
-    final steps = ((value - widget.min) / widget.step).roundToDouble();
-    return _clamp(widget.min + steps * widget.step, widget.min, widget.max);
-  }
-
-  double _fraction(double value) =>
-      (value - widget.min) / (widget.max - widget.min);
-
   double _travel(double trackWidth) => trackWidth - _thumbWidth;
 
+  // The thumb has width, so (unlike `sliderValueFromDx`) the pointer maps
+  // over the shorter span its centre can actually travel.
   double _valueFromDx(double dx, double trackWidth) {
     final travel = _travel(trackWidth);
-    if (travel <= 0) return widget.min;
-    final ratio = _clamp((dx - _thumbWidth / 2) / travel, 0, 1);
-    return widget.min + ratio * (widget.max - widget.min);
-  }
-
-  void _commit(double rawValue, {bool isEnd = false}) {
-    final snapped = _snap(rawValue);
-    if (snapped != _current) {
-      if (!_controlled) setState(() => _internal = snapped);
-      widget.onChanged?.call(snapped);
-    }
-    if (isEnd) widget.onChangeEnd?.call(snapped);
+    if (travel <= 0) return sliderMin;
+    final ratio = sliderClamp((dx - _thumbWidth / 2) / travel, 0, 1);
+    return sliderMin + ratio * (sliderMax - sliderMin);
   }
 
   void _onPanStart(DragStartDetails details, double trackWidth) {
     if (!widget.enabled) return;
     _focus.requestFocus();
     setState(() => _grabbed = true);
-    _commit(_valueFromDx(details.localPosition.dx, trackWidth));
+    commitValue(_valueFromDx(details.localPosition.dx, trackWidth));
   }
 
   void _onPanUpdate(DragUpdateDetails details, double trackWidth) {
     if (!widget.enabled || !_grabbed) return;
-    _commit(_valueFromDx(details.localPosition.dx, trackWidth));
+    commitValue(_valueFromDx(details.localPosition.dx, trackWidth));
   }
 
   void _onPanEnd() {
     if (!_grabbed) return;
     setState(() => _grabbed = false);
-    _commit(_current, isEnd: true);
-  }
-
-  KeyEventResult _onKey(KeyEvent event) {
-    if (!widget.enabled) return KeyEventResult.ignored;
-    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
-      return KeyEventResult.ignored;
-    }
-    final key = event.logicalKey;
-    if (key == LogicalKeyboardKey.arrowRight ||
-        key == LogicalKeyboardKey.arrowUp) {
-      _commit(_current + widget.step);
-      return KeyEventResult.handled;
-    }
-    if (key == LogicalKeyboardKey.arrowLeft ||
-        key == LogicalKeyboardKey.arrowDown) {
-      _commit(_current - widget.step);
-      return KeyEventResult.handled;
-    }
-    if (key == LogicalKeyboardKey.home) {
-      _commit(widget.min);
-      return KeyEventResult.handled;
-    }
-    if (key == LogicalKeyboardKey.end) {
-      _commit(widget.max);
-      return KeyEventResult.handled;
-    }
-    return KeyEventResult.ignored;
+    commitValue(currentValue, isEnd: true);
   }
 
   @override
@@ -232,12 +187,15 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final enabled = widget.enabled;
-    final current = _current;
 
     // Ask the resolver whether the position may glide. NoMotion freezes at the
     // source value rather than snapping to the target, so under reduced motion
     // we place the thumb/fill directly at the step (instant, no glide).
-    final glideMotion = motionFor(context, _glideSpring, isMovement: true);
+    final glideMotion = motionFor(
+      context,
+      beuiSliderGlideSpring,
+      isMovement: true,
+    );
 
     final steps = ((widget.max - widget.min) / widget.step).floor();
     final showTicks = widget.showTicks && steps > 0 && steps <= 50;
@@ -246,7 +204,7 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
       builder: (context, constraints) {
         final trackWidth = constraints.maxWidth;
         final travel = _travel(trackWidth);
-        final targetX = _thumbWidth / 2 + _fraction(current) * travel;
+        final targetX = _thumbWidth / 2 + valueFraction * travel;
 
         Widget thumb() {
           final grow = _grabbed && enabled && !reduce;
@@ -407,7 +365,11 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
         enabled: enabled,
         label: widget.label,
         slider: true,
-        value: '${current.round()}',
+        value: sliderValueText(null),
+        increasedValue: sliderStepUpText(null),
+        decreasedValue: sliderStepDownText(null),
+        onIncrease: enabled ? increaseSliderValue : null,
+        onDecrease: enabled ? decreaseSliderValue : null,
         child: Opacity(
           opacity: enabled ? 1.0 : 0.5,
           child: MouseRegion(
@@ -419,7 +381,7 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider> {
             child: Focus(
               focusNode: _focus,
               canRequestFocus: enabled,
-              onKeyEvent: (_, event) => _onKey(event),
+              onKeyEvent: (_, event) => handleSliderKey(event),
               onFocusChange: (_) => setState(() {}),
               child: slider,
             ),
