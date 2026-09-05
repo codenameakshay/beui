@@ -232,7 +232,7 @@ void main() {
       expect(find.text("Couldn't load more"), findsOneWidget);
       expect(find.text('Network error'), findsOneWidget);
 
-      await tester.tap(find.text('Try again'));
+      await tester.tap(find.text('Retry'));
       await tester.pump();
       expect(retries, 1);
     });
@@ -259,31 +259,17 @@ void main() {
   });
 
   group('BeuiInfiniteMasonry motion', () {
-    testWidgets('reduced motion renders items without reveal animation', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _wrap(
-          reduce: true,
-          _feed(
-            items: const ['Item 0', 'Item 1'],
-            hasMore: false,
-            onLoadMore: () async {},
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('Item 0'), findsOneWidget);
-      expect(find.text('Item 1'), findsOneWidget);
-    });
-
-    testWidgets('newly appended items reveal and settle visible', (
-      tester,
-    ) async {
+    /// Both tests append a third item after the initial mount, since only
+    /// items arriving after `items.length at mount` are eligible to reveal.
+    Future<StateSetter> pumpAppendable(
+      WidgetTester tester, {
+      required bool reduce,
+    }) async {
       var items = const ['Item 0', 'Item 1'];
       late StateSetter setOuter;
       await tester.pumpWidget(
         _wrap(
+          reduce: reduce,
           StatefulBuilder(
             builder: (context, setState) {
               setOuter = setState;
@@ -297,11 +283,59 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-
       setOuter(() => items = const ['Item 0', 'Item 1', 'Item 2']);
-      await tester.pump(); // mount the new item (reveal starts)
-      await tester.pumpAndSettle(); // spring + fade settle
+      return setOuter;
+    }
+
+    // `_MasonryItemReveal` is keyed on the item's own key, so it can be found
+    // directly rather than walking up from its rendered content — which also
+    // dodges any unrelated Transform elsewhere in the tree.
+    // ValueKey<Object>, matching how _MasonryItemReveal is keyed
+    // (BeuiInfiniteMasonryKey = Object) — ValueKey equality checks
+    // runtimeType too, so a bare ValueKey<String> would never match.
+    Finder itemReveal() => find.byKey(const ValueKey<Object>('Item 2'));
+
+    testWidgets('reduced motion mounts a newly appended item with no offset', (
+      tester,
+    ) async {
+      await pumpAppendable(tester, reduce: true);
+      await tester.pump(); // mount the new item
       expect(find.text('Item 2'), findsOneWidget);
+      // No reveal machinery under reduced motion: no Transform driving the
+      // item in from a y offset.
+      expect(
+        find.descendant(of: itemReveal(), matching: find.byType(Transform)),
+        findsNothing,
+      );
+    });
+
+    testWidgets('a newly appended item reveals: offset and opacity settle', (
+      tester,
+    ) async {
+      await pumpAppendable(tester, reduce: false);
+      await tester.pump(); // mount the new item (reveal starts, y = 12)
+
+      Transform translateOf() => tester.widget<Transform>(
+        find.descendant(of: itemReveal(), matching: find.byType(Transform)),
+      );
+      double opacityOf() => tester
+          .widget<AnimatedOpacity>(
+            find.descendant(
+              of: itemReveal(),
+              matching: find.byType(AnimatedOpacity),
+            ),
+          )
+          .opacity;
+
+      expect(translateOf().transform.getTranslation().y, moreOrLessEquals(12));
+      expect(opacityOf(), 0.0);
+
+      await tester.pumpAndSettle(); // spring + fade settle
+      expect(
+        translateOf().transform.getTranslation().y,
+        moreOrLessEquals(0, epsilon: 0.01),
+      );
+      expect(opacityOf(), 1.0);
     });
   });
 }
