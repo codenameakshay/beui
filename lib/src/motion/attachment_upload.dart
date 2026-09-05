@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../overlay/beui_overlay.dart';
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -585,12 +586,16 @@ class _BeuiAttachmentUploadState extends State<BeuiAttachmentUpload> {
     setState(() => _uploadingIds.addAll(addedIds));
     final reduce = MediaQuery.disableAnimationsOf(context);
     _schedule(reduce ? _reducedLifecycle : _uploadProgress, () {
+      // Only rows still in flight complete: a cancel or remove in the
+      // meantime took the id out of _uploadingIds and must stay cancelled.
+      final finished = addedIds.where(_uploadingIds.contains).toList();
+      if (finished.isEmpty) return;
       setState(() {
-        _uploadingIds.removeAll(addedIds);
-        _completeIds.addAll(addedIds);
+        _uploadingIds.removeAll(finished);
+        _completeIds.addAll(finished);
       });
       _schedule(_uploadCompleteHold, () {
-        setState(() => _completeIds.removeAll(addedIds));
+        setState(() => _completeIds.removeAll(finished));
       });
     });
     widget.onAttachmentsAdded?.call(accepted);
@@ -1303,7 +1308,7 @@ class _RowBody extends StatelessWidget {
                     if (item.kind == BeuiAttachmentKind.audio)
                       ..._audioSlots(context)
                     else
-                      ..._fileSlots(),
+                      ..._fileSlots(context),
                   ],
                 ),
               ),
@@ -1340,7 +1345,7 @@ class _RowBody extends StatelessWidget {
     );
   }
 
-  List<Widget> _fileSlots() {
+  List<Widget> _fileSlots(BuildContext context) {
     final size = _formatBytes(item.size);
     final trailing = item.kind == BeuiAttachmentKind.link ? 'Web' : size;
     return [
@@ -1376,7 +1381,7 @@ class _RowBody extends StatelessWidget {
         ),
       if (onOpenLink != null && item.kind == BeuiAttachmentKind.link)
         _IconButton(
-          icon: LucideIcons.external_link,
+          icon: BeuiAgentTheme.of(context).icons.externalLink,
           semanticsLabel: 'Open ${item.name}',
           tooltip: 'Open link',
           size: 32, // size-8

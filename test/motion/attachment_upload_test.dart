@@ -663,6 +663,26 @@ void main() {
       expect(removed, isEmpty);
     });
 
+    testWidgets('a cancelled transfer never flips to complete', (tester) async {
+      final controller = BeuiAttachmentUploadController();
+      await tester.pumpWidget(
+        _wrap(BeuiAttachmentUpload(controller: controller, onCancel: (_) {})),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      controller.add([_candidate('a')]);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.bySemanticsLabel('Cancel upload of a.pdf'));
+      await tester.pump();
+
+      // Past the 900ms simulated transfer: the row must not report success.
+      await tester.pump(const Duration(milliseconds: 800));
+      expect(find.byIcon(LucideIcons.check), findsNothing);
+      expect(find.bySemanticsLabel('Upload complete for a.pdf'), findsNothing);
+      await tester.pump(_settleAdd);
+    });
+
     testWidgets('without onCancel the uploading slot stays blank', (
       tester,
     ) async {
