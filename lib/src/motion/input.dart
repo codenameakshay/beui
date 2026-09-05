@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
+import '_shake.dart';
 
 /// Optional style overrides for [BeuiInput]. Null fields resolve from the
 /// ambient [BeuiColors] theme extension (or sensible defaults). Mirrors the
@@ -267,12 +268,10 @@ class _BeuiInputState extends State<BeuiInput>
     // Fire the shake on the rising edge of an error, mirroring the source's
     // `useEffect([hasError])` — or whenever the caller bumps `errorNonce`, so a
     // repeated rejection of the same value still registers as a rejection.
-    final wasError = old.error != null && old.error != false;
-    final rising = _hasError && !wasError;
     final replay =
         _hasError &&
         (widget.errorNonce != old.errorNonce || widget.error != old.error);
-    if ((rising || replay) && !MediaQuery.disableAnimationsOf(context)) {
+    if (replay && !MediaQuery.disableAnimationsOf(context)) {
       _shake.forward(from: 0);
     }
     if (widget.focusNode != old.focusNode) {
@@ -301,6 +300,11 @@ class _BeuiInputState extends State<BeuiInput>
     final colors = BeuiColors.resolve(context);
     final s = widget.style;
     final reduce = MediaQuery.disableAnimationsOf(context);
+    final fieldTextStyle = TextStyle(
+      fontSize: 16,
+      height: 1.5,
+      color: colors.foreground,
+    );
 
     final height = s?.height ?? 44.0;
     final radius = s?.borderRadius ?? height / 2;
@@ -357,20 +361,19 @@ class _BeuiInputState extends State<BeuiInput>
                 left: hasLeft ? 0 : 14,
                 right: hasRight ? 0 : 14,
               ),
-              child: _EditableTextLine(
+              // Full-strength `mutedForeground` (5.9:1) keeps the 4.5:1 AA
+              // floor on placeholder text that is often the field's only
+              // label.
+              child: TextField(
                 controller: _controller,
                 focusNode: _focusNode,
                 enabled: widget.enabled,
                 obscureText: widget.obscureText,
                 keyboardType: widget.keyboardType,
-                placeholder: widget.placeholder,
                 onChanged: widget.onChanged,
                 onSubmitted: widget.onSubmitted,
-                textColor: colors.foreground,
-                // Full-strength `mutedForeground` (5.9:1). The 0.6 multiplier
-                // that used to sit here dropped it to 2.55:1 — under the 4.5:1
-                // AA floor, on text that is often the field's only label.
-                placeholderColor: colors.mutedForeground,
+                cursorColor: colors.foreground,
+                style: fieldTextStyle,
                 autofillHints: widget.autofillHints,
                 textInputAction: widget.textInputAction,
                 textCapitalization: widget.textCapitalization,
@@ -380,6 +383,23 @@ class _BeuiInputState extends State<BeuiInput>
                 readOnly: widget.readOnly,
                 enableSuggestions: widget.enableSuggestions,
                 autofocus: widget.autofocus,
+                decoration: InputDecoration(
+                  isDense: true,
+                  isCollapsed: true,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  hintText: widget.placeholder,
+                  hintStyle: fieldTextStyle.copyWith(
+                    color: colors.mutedForeground,
+                  ),
+                  // Material would append a character counter under the
+                  // field when `maxLength` is set. The pill is a
+                  // fixed-height single line with no room for one, and the
+                  // source has no counter — suppress it and leave the
+                  // remaining-character affordance to the caller.
+                  counterText: '',
+                ),
               ),
             ),
           ),
@@ -506,105 +526,13 @@ class _BeuiInputState extends State<BeuiInput>
     );
   }
 
-  /// Interpolation of the source keyframes `[0, -6, 6, -4, 4, -2, 0]`, evenly
-  /// spaced across `t ∈ [0, 1]`. The source passes no `ease`, and Framer eases
-  /// each keyframe segment with its multi-keyframe default (`easeInOut`) rather
-  /// than stepping linearly between them — so each segment is eased here too.
-  static double _shakeX(double t) {
-    const frames = [0.0, -6.0, 6.0, -4.0, 4.0, -2.0, 0.0];
-    if (t <= 0) return 0;
-    if (t >= 1) return 0;
-    final scaled = t * (frames.length - 1);
-    final i = scaled.floor();
-    final f = Curves.easeInOut.transform(scaled - i);
-    return frames[i] + (frames[i + 1] - frames[i]) * f;
-  }
-}
+  // Source keyframes `[0, -6, 6, -4, 4, -2, 0]`. The source passes no `ease`,
+  // and Framer eases each keyframe segment with its multi-keyframe default
+  // (`easeInOut`) rather than stepping linearly between them.
+  static const _shakeFrames = [0.0, -6.0, 6.0, -4.0, 4.0, -2.0, 0.0];
 
-/// A thin single-line editable text row wired to a [TextEditingController], with
-/// a placeholder overlay. Split out so the field's decoration/layout stays
-/// readable.
-class _EditableTextLine extends StatelessWidget {
-  const _EditableTextLine({
-    required this.controller,
-    required this.focusNode,
-    required this.enabled,
-    required this.obscureText,
-    required this.keyboardType,
-    required this.placeholder,
-    required this.onChanged,
-    required this.onSubmitted,
-    required this.textColor,
-    required this.placeholderColor,
-    required this.autofillHints,
-    required this.textInputAction,
-    required this.textCapitalization,
-    required this.maxLength,
-    required this.inputFormatters,
-    required this.onEditingComplete,
-    required this.readOnly,
-    required this.enableSuggestions,
-    required this.autofocus,
-  });
-
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final bool enabled;
-  final bool obscureText;
-  final TextInputType? keyboardType;
-  final String? placeholder;
-  final ValueChanged<String>? onChanged;
-  final ValueChanged<String>? onSubmitted;
-  final Color textColor;
-  final Color placeholderColor;
-  final List<String>? autofillHints;
-  final TextInputAction? textInputAction;
-  final TextCapitalization textCapitalization;
-  final int? maxLength;
-  final List<TextInputFormatter>? inputFormatters;
-  final VoidCallback? onEditingComplete;
-  final bool readOnly;
-  final bool enableSuggestions;
-  final bool autofocus;
-
-  @override
-  Widget build(BuildContext context) {
-    final textStyle = TextStyle(fontSize: 16, height: 1.5, color: textColor);
-    return TextField(
-      controller: controller,
-      focusNode: focusNode,
-      enabled: enabled,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
-      cursorColor: textColor,
-      style: textStyle,
-      autofillHints: autofillHints,
-      textInputAction: textInputAction,
-      textCapitalization: textCapitalization,
-      maxLength: maxLength,
-      inputFormatters: inputFormatters,
-      onEditingComplete: onEditingComplete,
-      readOnly: readOnly,
-      enableSuggestions: enableSuggestions,
-      autofocus: autofocus,
-      decoration: InputDecoration(
-        isDense: true,
-        isCollapsed: true,
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        hintText: placeholder,
-        hintStyle: textStyle.copyWith(color: placeholderColor),
-        // Material would append a character counter under the field when
-        // `maxLength` is set. The pill is a fixed-height single line with no
-        // room for one, and the source has no counter — suppress it and leave
-        // the remaining-character affordance to the caller.
-        counterText: '',
-      ),
-    );
-  }
+  static double _shakeX(double t) =>
+      beuiShakeOffset(t, _shakeFrames, Curves.easeInOut);
 }
 
 /// The green success check that strokes itself on (`M5 12.5l4.5 4.5L19 7.5`,
@@ -714,12 +642,9 @@ class _ErrorMessage extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         switchInCurve: beuiEaseOut,
         switchOutCurve: beuiEaseOut,
-        // AnimatedSwitcher's default layout builder centres its children. The
-        // empty branch below is `width: double.infinity`, so the stack is
-        // always full-width and the message rendered dead centre under the
-        // field — visible in the committed golden — while the `left: 4` inset
-        // that was meant to align it with the label did nothing at all.
-        // Directional so it still starts at the correct edge under RTL.
+        // Left-aligns the message under the field (AnimatedSwitcher's default
+        // layout builder centres children); directional so RTL still starts
+        // at the correct edge.
         layoutBuilder: (currentChild, previousChildren) => Stack(
           alignment: AlignmentDirectional.topStart,
           children: [...previousChildren, ?currentChild],
@@ -733,7 +658,7 @@ class _ErrorMessage extends StatelessWidget {
               animation: animation,
               builder: (context, inner) {
                 final t = animation.value;
-                final blur = 2.0 * (1 - t);
+                final blur = beuiBlurSigma(4) * (1 - t);
                 Widget body = Transform.translate(
                   offset: Offset(0, -4 * (1 - t)),
                   child: inner,

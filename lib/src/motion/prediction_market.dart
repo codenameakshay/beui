@@ -9,6 +9,8 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_format.dart';
+import '_shake.dart';
 import 'button/base.dart';
 import 'button/stateful.dart';
 import 'number_ticker.dart';
@@ -115,6 +117,8 @@ class BeuiPredictionMarketQuote {
   final String? error;
 }
 
+enum _OrderStatus { idle, placing, filled }
+
 String _sanitizeAmount(String value) {
   final normalized = value.replaceAll(RegExp(r'[^\d.]'), '');
   final parts = normalized.split('.');
@@ -127,12 +131,7 @@ String _formatCurrency(double value, [int maxFractionDigits = 2]) {
   final negative = value < 0;
   final fixed = value.abs().toStringAsFixed(maxFractionDigits);
   final parts = fixed.split('.');
-  final digits = parts.first;
-  final grouped = StringBuffer();
-  for (var i = 0; i < digits.length; i++) {
-    if (i > 0 && (digits.length - i) % 3 == 0) grouped.write(',');
-    grouped.write(digits[i]);
-  }
+  final grouped = beuiGroupThousands(parts.first);
   final tail = parts.length > 1 ? '.${parts[1]}' : '';
   return '${negative ? '-' : ''}\$$grouped$tail';
 }
@@ -239,7 +238,7 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
   );
   final TextEditingController _input = TextEditingController();
   final FocusNode _inputFocus = FocusNode(debugLabel: 'BeuiPredictionMarket');
-  String _status = 'idle'; // idle | placing | filled
+  _OrderStatus _status = _OrderStatus.idle;
   Timer? _fillTimer;
   late final AnimationController _shake;
 
@@ -267,7 +266,7 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
   void _setOrder(BeuiPredictionMarketOrder next) {
     _fillTimer?.cancel();
     _fillTimer = null;
-    if (_status != 'idle') _status = 'idle';
+    if (_status != _OrderStatus.idle) _status = _OrderStatus.idle;
     if (widget.value == null) {
       setState(() => _internal = next);
     } else {
@@ -326,24 +325,20 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
       setState(() {}); // surface the error state on the button
       return;
     }
-    setState(() => _status = 'placing');
+    setState(() => _status = _OrderStatus.placing);
     _fillTimer = Timer(const Duration(milliseconds: 650), () {
       if (!mounted) return;
-      setState(() => _status = 'filled');
+      setState(() => _status = _OrderStatus.filled);
       widget.onTrade?.call(_order, quote);
     });
   }
 
-  // Shake keyframes (source `x: [0,-5,5,-3,3,-1,0]`, 380ms EASE_OUT).
+  // Shake keyframes (source `x: [0,-5,5,-3,3,-1,0]`, 380ms EASE_OUT, eased
+  // globally then interpolated linearly between frames).
   static const _shakeFrames = [0.0, -5.0, 5.0, -3.0, 3.0, -1.0, 0.0];
 
-  double _shakeX(double t) {
-    final eased = beuiEaseOut.transform(t);
-    final pos = eased * (_shakeFrames.length - 1);
-    final i = pos.floor().clamp(0, _shakeFrames.length - 2);
-    return _shakeFrames[i] +
-        (_shakeFrames[i + 1] - _shakeFrames[i]) * (pos - i);
-  }
+  double _shakeX(double t) =>
+      beuiShakeOffset(t, _shakeFrames, beuiEaseOut, perSegment: false);
 
   /// Source `amountInputSize`. Each rung carries an `sm:` step that doubles as
   /// the desktop size, so the ticket reads far larger at/above the 640px
@@ -376,11 +371,11 @@ class _BeuiPredictionMarketState extends State<BeuiPredictionMarket>
     final order = _order;
     final quote = _quote;
     final buy = order.mode == BeuiPredictionMarketMode.buy;
-    final placing = _status == 'placing';
+    final placing = _status == _OrderStatus.placing;
 
-    final actionState = _status == 'placing'
+    final actionState = _status == _OrderStatus.placing
         ? BeuiButtonState.loading
-        : _status == 'filled'
+        : _status == _OrderStatus.filled
         ? BeuiButtonState.success
         : quote.valid
         ? BeuiButtonState.idle
@@ -1229,7 +1224,7 @@ class _CharSlot extends StatelessWidget {
         final t = raw.clamp(0.0, 1.0);
         Widget body = child!;
         if (!reduce) {
-          final sigma = 5.0 * (1 - t); // blur(10px) ≈ σ5
+          final sigma = beuiBlurSigma(10) * (1 - t);
           if (sigma > 0.05) {
             body = ImageFiltered(
               imageFilter: ImageFilter.blur(

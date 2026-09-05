@@ -7,6 +7,12 @@ import 'package:flutter/services.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_shake.dart';
+
+// The success accent (source Tailwind `emerald-500`). Distinct from
+// [BeuiColors.success] (a different oklch hue) — the source hardcodes this
+// exact swatch for the OTP check and border, not the theme's success token.
+const _emerald500 = Color(0xFF10B981);
 
 /// External validation state of a [BeuiOtpInput] (source `OTPStatus`).
 enum BeuiOtpStatus {
@@ -230,13 +236,12 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
     }
   }
 
-  void _armHardwareGuard() {
-    _hardwareGuard = true;
-    _scheduleGuardClear();
-  }
-
-  void _armSoftGuard() {
-    _softGuard = true;
+  void _armGuard({required bool hardware}) {
+    if (hardware) {
+      _hardwareGuard = true;
+    } else {
+      _softGuard = true;
+    }
     _scheduleGuardClear();
   }
 
@@ -295,17 +300,17 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
     }
     if (digit != null) {
       _insert(digit);
-      _armHardwareGuard();
+      _armGuard(hardware: true);
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.backspace) {
       _backspace();
-      _armHardwareGuard();
+      _armGuard(hardware: true);
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.delete) {
       _clearSlot(_active);
-      _armHardwareGuard();
+      _armGuard(hardware: true);
       return KeyEventResult.handled;
     }
     if (key == LogicalKeyboardKey.arrowLeft) {
@@ -380,7 +385,7 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
     }
 
     // A soft edit landed; a paired hardware echo (reverse order) must skip.
-    _armSoftGuard();
+    _armGuard(hardware: false);
 
     if (removed.isNotEmpty && insertedRaw.isEmpty) {
       // Deletion — apply source backspace semantics per removed character.
@@ -418,19 +423,11 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
     _focusNode.requestFocus();
   }
 
-  // Shake keyframes (source `x: [0, -5, 5, -3, 3, -1, 0]`, 450ms EASE_OUT).
+  // Shake keyframes (source `x: [0, -5, 5, -3, 3, -1, 0]`, 450ms EASE_OUT,
+  // eased per segment — Framer expands a single `ease` to one per keyframe).
   static const _shakeFrames = [0.0, -5.0, 5.0, -3.0, 3.0, -1.0, 0.0];
 
-  double _shakeX(double t) {
-    // Framer eases *each* keyframe segment (a single `ease` is expanded to one
-    // per segment), so the six hops stay evenly spaced across the 450ms rather
-    // than the whole timeline being warped.
-    final segments = _shakeFrames.length - 1;
-    final pos = t.clamp(0.0, 1.0) * segments;
-    final i = pos.floor().clamp(0, segments - 1);
-    final local = beuiEaseOut.transform((pos - i).clamp(0.0, 1.0));
-    return _shakeFrames[i] + (_shakeFrames[i + 1] - _shakeFrames[i]) * local;
-  }
+  double _shakeX(double t) => beuiShakeOffset(t, _shakeFrames, beuiEaseOut);
 
   @override
   Widget build(BuildContext context) {
@@ -444,7 +441,6 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
         : status == BeuiOtpStatus.error
         ? widget.errorMessage
         : widget.hint;
-    const emerald500 = Color(0xFF10B981);
 
     final slotsRow = Row(
       mainAxisSize: MainAxisSize.min,
@@ -515,7 +511,7 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
             top: 0,
             bottom: 0,
             child: Center(
-              child: _SuccessCheck(reduce: reduce, color: emerald500),
+              child: _SuccessCheck(reduce: reduce, color: _emerald500),
             ),
           ),
       ],
@@ -552,7 +548,7 @@ class _BeuiOtpInputState extends State<BeuiOtpInput>
                   style: TextStyle(
                     fontSize: 14,
                     color: showSuccess
-                        ? emerald500
+                        ? _emerald500
                         : status == BeuiOtpStatus.error
                         ? colors.destructive
                         : colors.mutedForeground,
@@ -589,12 +585,11 @@ class _Slot extends StatelessWidget {
   Widget build(BuildContext context) {
     final filled = char.isNotEmpty;
     final showSuccess = status == BeuiOtpStatus.success;
-    const emerald500 = Color(0xFF10B981);
 
     final Color border;
     final Color textColor;
     if (showSuccess) {
-      border = emerald500.withValues(alpha: 0.6);
+      border = _emerald500.withValues(alpha: 0.6);
       textColor = colors.foreground;
     } else if (status == BeuiOtpStatus.error) {
       border = colors.destructive.withValues(alpha: 0.6);
@@ -757,7 +752,7 @@ class _DigitRoll extends StatelessWidget {
         final t = animation.value;
         final eased = beuiEaseOut.transform(t);
         final dy = exiting ? -(1 - eased) * 14 : (1 - eased) * 14;
-        final sigma = (1 - t) * 2; // blur(4px) ≈ σ2
+        final sigma = beuiBlurSigma(4) * (1 - t);
         Widget body = child;
         if (sigma > 0.05) {
           body = ImageFiltered(
