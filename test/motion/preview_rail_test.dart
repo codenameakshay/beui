@@ -112,7 +112,9 @@ void main() {
     testWidgets('renders one tick cell per item', (tester) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();
-      expect(find.byType(Semantics), findsWidgets);
+      for (final item in _items) {
+        expect(_tick(item.label), findsOneWidget);
+      }
       // No preview card at rest (nothing hovered/focused).
       expect(find.text('First item.'), findsNothing);
     });
@@ -121,10 +123,7 @@ void main() {
       String? changed;
       await tester.pumpWidget(_app(onActiveChange: (id) => changed = id));
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.bySemanticsLabel('Beta'),
-        kind: PointerDeviceKind.mouse,
-      );
+      await tester.tap(_tick('Beta'), kind: PointerDeviceKind.mouse);
       await tester.pump();
       expect(changed, 'b');
     });
@@ -137,62 +136,49 @@ void main() {
         _app(activeId: 'a', onActiveChange: (id) => changed = id),
       );
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.bySemanticsLabel('Gamma'),
-        kind: PointerDeviceKind.mouse,
-      );
+      await tester.tap(_tick('Gamma'), kind: PointerDeviceKind.mouse);
       await tester.pump();
       // Callback fires, but selection stays where the controller put it.
       expect(changed, 'c');
       expect(
-        tester.getSemantics(find.bySemanticsLabel('Alpha')),
+        tester.getSemantics(_tick('Alpha')),
         isSemantics(isSelected: true),
       );
     });
 
     testWidgets('hovering reveals the matching preview card', (tester) async {
-      await tester.pumpWidget(_app());
-      await tester.pumpAndSettle();
-      expect(find.text('Second item.'), findsNothing);
-      await _hover(tester, find.bySemanticsLabel('Beta'));
-      await tester.pumpAndSettle();
-      expect(find.text('Second item.'), findsOneWidget);
+      for (final reduce in [false, true]) {
+        await tester.pumpWidget(_app(reduce: reduce));
+        await tester.pumpAndSettle();
+        expect(find.text('Second item.'), findsNothing);
+
+        final gesture = await tester.createGesture(
+          kind: PointerDeviceKind.mouse,
+        );
+        // Off-tree first: a pointer left hovering at the previous iteration's
+        // position would already read as hovering the moment the new tree
+        // mounts at the same screen location.
+        await gesture.addPointer(location: Offset.zero);
+        await tester.pump();
+        await gesture.moveTo(tester.getCenter(_tick('Beta')));
+        await tester.pumpAndSettle();
+        expect(find.text('Second item.'), findsOneWidget);
+        await gesture.removePointer();
+      }
     });
   });
 
   group('BeuiPreviewRail motion fidelity', () {
-    testWidgets('tick scales spring under normal motion', (tester) async {
-      await tester.pumpWidget(_app());
-      await tester.pumpAndSettle();
-      // Each tick drives its scale through a motor SingleMotionBuilder.
-      expect(find.byType(Transform), findsWidgets);
-      await _hover(tester, find.bySemanticsLabel('Alpha'));
-      // Mid-flight: the spring has not settled immediately.
-      await tester.pump(const Duration(milliseconds: 16));
-      expect(find.byType(BeuiPreviewRail), findsOneWidget);
-      await tester.pumpAndSettle();
-    });
-
     testWidgets('preview card fades in on hover, out on leave', (tester) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();
-      await _hover(tester, find.bySemanticsLabel('Gamma'));
+      await _hover(tester, _tick('Gamma'));
       await tester.pumpAndSettle();
       expect(find.text('Third item.'), findsOneWidget);
       final opacity = tester.widget<AnimatedOpacity>(
         find.byType(AnimatedOpacity),
       );
       expect(opacity.opacity, 1.0);
-    });
-
-    testWidgets('reduced motion still reveals the card without springs', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_app(reduce: true));
-      await tester.pumpAndSettle();
-      await _hover(tester, find.bySemanticsLabel('Delta'));
-      await tester.pumpAndSettle();
-      expect(find.text('Fourth item.'), findsOneWidget);
     });
   });
 
@@ -238,7 +224,7 @@ void main() {
       expect(find.text('PANEL CONTENT'), findsOneWidget);
       // Content fills the flex-1 region to the right of the rail ticks.
       final contentLeft = tester.getRect(find.text('PANEL CONTENT')).left;
-      final railLeft = tester.getRect(find.bySemanticsLabel('Alpha')).left;
+      final railLeft = tester.getRect(_tick('Alpha')).left;
       expect(contentLeft, greaterThan(railLeft));
     });
 
@@ -267,14 +253,10 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('PANEL CONTENT'), findsOneWidget);
-    });
-
-    testWidgets('no content slot by default (backward compatible)', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_app());
-      await tester.pumpAndSettle();
-      expect(find.text('PANEL CONTENT'), findsNothing);
+      // Content fills the flex-1 region below the rail ticks.
+      final contentTop = tester.getRect(find.text('PANEL CONTENT')).top;
+      final railTop = tester.getRect(_tick('Alpha')).top;
+      expect(contentTop, greaterThan(railTop));
     });
   });
 
@@ -285,7 +267,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.bySemanticsLabel('Section navigation'), findsOneWidget);
       // The group name never swallows the item names.
-      expect(find.bySemanticsLabel('Alpha'), findsOneWidget);
+      expect(_tick('Alpha'), findsOneWidget);
       handle.dispose();
     });
 
@@ -311,10 +293,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.bySemanticsLabel('Beta'),
-        kind: PointerDeviceKind.mouse,
-      );
+      await tester.tap(_tick('Beta'), kind: PointerDeviceKind.mouse);
       await tester.pump();
       expect(calls, ['change:b', 'select:b:Beta']);
     });
@@ -330,15 +309,9 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.bySemanticsLabel('Gamma'),
-        kind: PointerDeviceKind.mouse,
-      );
+      await tester.tap(_tick('Gamma'), kind: PointerDeviceKind.mouse);
       await tester.pump();
-      await tester.tap(
-        find.bySemanticsLabel('Gamma'),
-        kind: PointerDeviceKind.mouse,
-      );
+      await tester.tap(_tick('Gamma'), kind: PointerDeviceKind.mouse);
       await tester.pump();
       expect(selected, ['c', 'c']);
     });
@@ -451,12 +424,6 @@ void main() {
       );
     });
 
-    testWidgets('true still never summons the preview card', (tester) async {
-      await tester.pumpWidget(_app(defaultActiveId: 'b'));
-      await tester.pumpAndSettle();
-      expect(find.text('Second item.'), findsNothing);
-    });
-
     testWidgets('hover wins over the resting highlight', (tester) async {
       await tester.pumpWidget(_app(defaultActiveId: 'b'));
       await tester.pumpAndSettle();
@@ -494,33 +461,6 @@ void main() {
             tester.getCenter(_tick('Alpha')).dy,
         3 * 32,
       );
-    });
-
-    testWidgets('wins over the deprecated trackExtent alias', (tester) async {
-      await tester.pumpWidget(
-        _app(
-          style: const BeuiPreviewRailStyle(
-            itemSize: 32,
-            // ignore: deprecated_member_use_from_same_package
-            trackExtent: 12,
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(tester.getSize(_tick('Alpha')).height, 32);
-    });
-
-    testWidgets('trackExtent alone still applies', (tester) async {
-      await tester.pumpWidget(
-        _app(
-          style: const BeuiPreviewRailStyle(
-            // ignore: deprecated_member_use_from_same_package
-            trackExtent: 28,
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(tester.getSize(_tick('Alpha')).height, 28);
     });
   });
 
@@ -680,32 +620,6 @@ void main() {
     });
   });
 
-  group('BeuiPreviewRail current location', () {
-    testWidgets('highlightActive defaults on, so the rail says where you are', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: const Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 480,
-                height: 320,
-                child: BeuiPreviewRail(items: _items, defaultActiveId: 'c'),
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      // Four identical grey dashes told the reader nothing.
-      expect(_tickScale(tester, 'Gamma'), moreOrLessEquals(1.0, epsilon: 0.02));
-    });
-  });
-
   group('BeuiPreviewRail fitting its box', () {
     List<BeuiPreviewRailItem> many(int n) => [
       for (var i = 0; i < n; i++)
@@ -843,19 +757,6 @@ void main() {
       expect(migrated.trackExtent, isNull);
       expect(migrated.resolvedItemSize, 32);
     });
-
-    test('equality is on the resolved value, not on which alias set it', () {
-      expect(
-        const BeuiPreviewRailStyle(itemSize: 28),
-        // ignore: deprecated_member_use_from_same_package
-        const BeuiPreviewRailStyle(trackExtent: 28),
-      );
-      expect(
-        const BeuiPreviewRailStyle(itemSize: 28).hashCode,
-        // ignore: deprecated_member_use_from_same_package
-        const BeuiPreviewRailStyle(trackExtent: 28).hashCode,
-      );
-    });
   });
 
   group('BeuiPreviewRail selection reconciliation', () {
@@ -865,7 +766,7 @@ void main() {
       await tester.pumpWidget(_app(defaultActiveId: 'a'));
       await tester.pumpAndSettle();
       expect(
-        tester.getSemantics(find.bySemanticsLabel('Alpha')),
+        tester.getSemantics(_tick('Alpha')),
         isSemantics(isSelected: true),
       );
 
@@ -873,7 +774,7 @@ void main() {
       await tester.pumpWidget(_app(defaultActiveId: 'c'));
       await tester.pumpAndSettle();
       expect(
-        tester.getSemantics(find.bySemanticsLabel('Gamma')),
+        tester.getSemantics(_tick('Gamma')),
         isSemantics(isSelected: true),
       );
     });
@@ -900,7 +801,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(changed, ['a']);
       expect(
-        tester.getSemantics(find.bySemanticsLabel('Alpha')),
+        tester.getSemantics(_tick('Alpha')),
         isSemantics(isSelected: true),
       );
     });

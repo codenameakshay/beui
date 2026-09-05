@@ -620,7 +620,6 @@ class _BeuiPreviewRailState extends State<BeuiPreviewRail> {
       rail = _ScrollableRail(
         isHorizontal: _isHorizontal,
         extent: available,
-        surface: colors.background,
         child: rail,
       );
     }
@@ -787,13 +786,11 @@ class _ScrollableRail extends StatelessWidget {
   const _ScrollableRail({
     required this.isHorizontal,
     required this.extent,
-    required this.surface,
     required this.child,
   });
 
   final bool isHorizontal;
   final double extent;
-  final Color surface;
   final Widget child;
 
   @override
@@ -832,7 +829,7 @@ class _ScrollableRail extends StatelessWidget {
 
 /// A single interactive tick: a short line that springs its scale toward the
 /// magnitude set by its distance from the displayed item.
-class _RailTick extends StatelessWidget {
+class _RailTick extends StatefulWidget {
   const _RailTick({
     required this.item,
     required this.isHorizontal,
@@ -869,65 +866,74 @@ class _RailTick extends StatelessWidget {
   final void Function(PointerDeviceKind? kind) onActivate;
 
   @override
+  State<_RailTick> createState() => _RailTickState();
+}
+
+class _RailTickState extends State<_RailTick> {
+  // Kind is captured on the down event and consumed by the tap, so the rail
+  // can tell a finger from a mouse. Assistive / keyboard activation never
+  // sets it, which is exactly the "commit immediately" path. Held as a field,
+  // not a build-local, so a rebuild between the down and tap events (a hover
+  // or focus change, say) doesn't reset it before the tap reads it.
+  PointerDeviceKind? _lastKind;
+
+  @override
   Widget build(BuildContext context) {
     // Cell: vertical → track tall, length wide; horizontal → length tall, track
     // wide (source `h-5 w-12` / `h-12 w-5`). The cell is one gap short of the
     // slot so neighbouring hover regions do not touch; the pitch is unchanged
     // and the line stays centred, so nothing moves.
-    final slot = math.max(track - _tickGap, thickness);
-    final cellWidth = isHorizontal ? slot : length;
-    final cellHeight = isHorizontal ? length : slot;
+    final slot = math.max(widget.track - _tickGap, widget.thickness);
+    final cellWidth = widget.isHorizontal ? slot : widget.length;
+    final cellHeight = widget.isHorizontal ? widget.length : slot;
 
     // The line itself, aligned to its scale origin (vertical origin-left,
     // horizontal origin-bottom).
     final line = Container(
-      width: isHorizontal ? thickness : length,
-      height: isHorizontal ? length : thickness,
-      color: highlighted ? activeColor : inactiveColor,
+      width: widget.isHorizontal ? widget.thickness : widget.length,
+      height: widget.isHorizontal ? widget.length : widget.thickness,
+      color: widget.highlighted ? widget.activeColor : widget.inactiveColor,
     );
-    final origin = isHorizontal ? Alignment.bottomCenter : Alignment.centerLeft;
+    final origin = widget.isHorizontal
+        ? Alignment.bottomCenter
+        : Alignment.centerLeft;
     final align = Align(alignment: origin, child: line);
 
     Widget scaled(double value) => Transform(
       alignment: origin,
       transform: Matrix4.diagonal3Values(
-        isHorizontal ? 1.0 : value,
-        isHorizontal ? value : 1.0,
+        widget.isHorizontal ? 1.0 : value,
+        widget.isHorizontal ? value : 1.0,
         1.0,
       ),
       child: align,
     );
 
     // Snap under reduced motion; otherwise spring the scale on SPRING_LAYOUT.
-    final animatedLine = reduce
-        ? scaled(scale)
+    final animatedLine = widget.reduce
+        ? scaled(widget.scale)
         : SingleMotionBuilder(
-            value: scale,
+            value: widget.scale,
             motion: beuiSpringLayout,
             builder: (context, value, _) => scaled(value),
           );
 
-    // Kind is captured on the down event and consumed by the tap, so the rail
-    // can tell a finger from a mouse. Assistive / keyboard activation never
-    // sets it, which is exactly the "commit immediately" path.
-    PointerDeviceKind? lastKind;
-
     return Semantics(
       button: true,
-      selected: selected,
-      label: item.label,
+      selected: widget.selected,
+      label: widget.item.label,
       // Announce the intermediate touch state rather than leaving a screen
       // reader to wonder why the first activation did nothing visible to it.
-      hint: previewing ? 'Previewing. Activate again to open' : null,
+      hint: widget.previewing ? 'Previewing. Activate again to open' : null,
       // The dead zone is *outside* the hover region, not inside it: a Padding
       // wrapped around the MouseRegion would still report a hover across the
       // full slot and the cascade would keep re-firing.
       child: Padding(
-        padding: isHorizontal
+        padding: widget.isHorizontal
             ? const EdgeInsets.symmetric(horizontal: _tickGap / 2)
             : const EdgeInsets.symmetric(vertical: _tickGap / 2),
         child: MouseRegion(
-          onEnter: (_) => onHover(true),
+          onEnter: (_) => widget.onHover(true),
           cursor: SystemMouseCursors.click,
           child: FocusableActionDetector(
             mouseCursor: SystemMouseCursors.click,
@@ -938,19 +944,19 @@ class _RailTick extends StatelessWidget {
             actions: <Type, Action<Intent>>{
               ActivateIntent: CallbackAction<ActivateIntent>(
                 onInvoke: (_) {
-                  onActivate(null);
+                  widget.onActivate(null);
                   return null;
                 },
               ),
             },
-            onShowFocusHighlight: onFocus,
+            onShowFocusHighlight: widget.onFocus,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTapDown: (details) => lastKind = details.kind,
+              onTapDown: (details) => _lastKind = details.kind,
               onTap: () {
-                final kind = lastKind;
-                lastKind = null;
-                onActivate(kind);
+                final kind = _lastKind;
+                _lastKind = null;
+                widget.onActivate(kind);
               },
               child: SizedBox(
                 width: cellWidth,
@@ -1020,7 +1026,7 @@ class _PreviewCard extends StatelessWidget {
               animation: animation,
               builder: (context, inner) {
                 final t = animation.value;
-                final blur = 3.0 * (1 - t);
+                final blur = beuiBlurSigma(6) * (1 - t);
                 // Enter: y 4 → 0 (source `y: 4 → 0`, blur(6px) → 0 mapped to σ3).
                 Widget out = Transform.translate(
                   offset: Offset(0, 4 * (1 - t)),
