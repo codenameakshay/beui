@@ -198,7 +198,6 @@ class _BeuiWaveSliderState extends State<BeuiWaveSlider>
 
     final children = <Widget>[];
     for (var i = 0; i < bars; i++) {
-      if (i > 0) children.add(const SizedBox(width: _barGap));
       final distance = (i - head).abs();
       // Gaussian crest centred on the handle.
       final crest = math.exp(-(distance * distance) / (2 * _spread * _spread));
@@ -241,6 +240,7 @@ class _BeuiWaveSliderState extends State<BeuiWaveSlider>
                     height: _barHeight,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: _barGap,
                       children: children,
                     ),
                   ),

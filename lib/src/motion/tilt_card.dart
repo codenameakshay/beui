@@ -69,7 +69,7 @@ class _BeuiTiltCardState extends State<BeuiTiltCard> {
     });
   }
 
-  void _onExit(PointerExitEvent e) {
+  void _onExit(PointerExitEvent _) {
     setState(() {
       _rx = 0;
       _ry = 0;

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui' show ImageFilter;
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 
 import '../overlay/beui_overlay.dart';
@@ -94,7 +95,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   void _show({bool immediate = false}) {
     _timer?.cancel();
     final warm =
-        DateTime.now().millisecondsSinceEpoch - _lastHiddenAtMs < _warmWindowMs;
+        clock.now().millisecondsSinceEpoch - _lastHiddenAtMs < _warmWindowMs;
     final delay = immediate || warm ? Duration.zero : widget.delay;
     _timer = Timer(delay, () {
       if (mounted) setState(() => _open = true);
@@ -105,7 +106,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     _timer?.cancel();
     _timer = null;
     if (_open) {
-      _lastHiddenAtMs = DateTime.now().millisecondsSinceEpoch;
+      _lastHiddenAtMs = clock.now().millisecondsSinceEpoch;
       setState(() => _open = false);
     }
   }

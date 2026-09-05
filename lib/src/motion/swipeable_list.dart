@@ -581,28 +581,19 @@ class _SwipeRowState extends State<_SwipeRow>
   }
 }
 
-({Color color, Color? dark}) _toneColor(
-  BeuiSwipeActionTone tone,
-  BeuiColors c,
-) {
+Color _toneColor(BeuiSwipeActionTone tone, BeuiColors c) {
   final isDark = c.brightness == Brightness.dark;
   switch (tone) {
     case BeuiSwipeActionTone.neutral:
-      return (color: c.mutedForeground, dark: null);
+      return c.mutedForeground;
     case BeuiSwipeActionTone.primary:
-      return (color: c.foreground, dark: null);
+      return c.foreground;
     case BeuiSwipeActionTone.success:
-      return (
-        color: isDark ? const Color(0xFF34D399) : const Color(0xFF059669),
-        dark: null,
-      );
+      return isDark ? const Color(0xFF34D399) : const Color(0xFF059669);
     case BeuiSwipeActionTone.warning:
-      return (
-        color: isDark ? const Color(0xFFFBBF24) : const Color(0xFFD97706),
-        dark: null,
-      );
+      return isDark ? const Color(0xFFFBBF24) : const Color(0xFFD97706);
     case BeuiSwipeActionTone.danger:
-      return (color: c.destructive, dark: null);
+      return c.destructive;
   }
 }
 
@@ -635,7 +626,7 @@ class _RailButtonState extends State<_RailButton> {
     // is hover-stable.
     final tone = action.tone == BeuiSwipeActionTone.neutral && _hovered
         ? widget.colors.foreground
-        : _toneColor(action.tone, widget.colors).color;
+        : _toneColor(action.tone, widget.colors);
 
     Widget body = SizedBox(
       width: widget.width,

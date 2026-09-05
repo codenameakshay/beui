@@ -137,7 +137,8 @@ class _BeuiRadioGroupState<T> extends State<BeuiRadioGroup<T>> {
         ? Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _withSpacing(widget.items, widget.spacing, Axis.vertical),
+            spacing: widget.spacing,
+            children: widget.items,
           )
         : Wrap(
             spacing: widget.spacing,
@@ -171,15 +172,6 @@ class _BeuiRadioGroupState<T> extends State<BeuiRadioGroup<T>> {
         ),
       ),
     );
-  }
-
-  List<Widget> _withSpacing(List<Widget> items, double gap, Axis axis) {
-    final out = <Widget>[];
-    for (var i = 0; i < items.length; i++) {
-      if (i > 0) out.add(SizedBox(height: gap));
-      out.add(items[i]);
-    }
-    return out;
   }
 }
 
@@ -277,7 +269,7 @@ class _BeuiRadioItemState<T> extends State<BeuiRadioItem<T>> {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: borderColor, width: 2),
+        border: Border.all(color: borderColor, width: _borderWidth),
       ),
     );
 

@@ -196,7 +196,7 @@ class BeuiWheelPicker extends StatefulWidget {
 }
 
 class _BeuiWheelPickerState extends State<BeuiWheelPicker> {
-  late FixedExtentScrollController _controller;
+  late final FixedExtentScrollController _controller;
   late int _selected;
   late final FocusNode _focusNode = FocusNode();
   bool _focusVisible = false;

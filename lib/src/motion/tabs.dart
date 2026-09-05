@@ -206,7 +206,7 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
     final triggers = <Widget>[];
     for (final tab in widget.tabs) {
       triggers.add(
-        _TabTrigger<T>(
+        _TabTrigger(
           key: ValueKey(tab.value),
           measureKey: _triggerKeys[tab.value]!,
           focusNode: _focusNodes[tab.value]!,
@@ -229,15 +229,7 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
             runSpacing: gap,
             children: triggers,
           )
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < triggers.length; i++) ...[
-                if (i > 0) SizedBox(width: gap),
-                triggers[i],
-              ],
-            ],
-          );
+        : Row(mainAxisSize: MainAxisSize.min, spacing: gap, children: triggers);
 
     final indicatorLayer = _indicator == null
         ? const SizedBox.shrink()
@@ -398,7 +390,7 @@ class _Indicator extends StatelessWidget {
   }
 }
 
-class _TabTrigger<T> extends StatefulWidget {
+class _TabTrigger extends StatefulWidget {
   const _TabTrigger({
     required this.measureKey,
     required this.focusNode,
@@ -421,10 +413,10 @@ class _TabTrigger<T> extends StatefulWidget {
   final ValueChanged<int> onMove;
 
   @override
-  State<_TabTrigger<T>> createState() => _TabTriggerState<T>();
+  State<_TabTrigger> createState() => _TabTriggerState();
 }
 
-class _TabTriggerState<T> extends State<_TabTrigger<T>> {
+class _TabTriggerState extends State<_TabTrigger> {
   bool _hovered = false;
   bool _focusVisible = false;
 

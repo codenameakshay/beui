@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart'
     show PointerScrollEvent, PointerSignalEvent;
@@ -215,7 +216,7 @@ class _BeuiSmoothScrollState extends State<BeuiSmoothScroll>
     // it sits in can each own a provider without stealing the other's metrics.
     if (metrics.axis != _axis) return;
     final y = metrics.pixels;
-    final now = DateTime.now();
+    final now = clock.now();
     final dtMs = _lastTime == null
         ? 16.0
         : math.max(1, now.difference(_lastTime!).inMicroseconds / 1000);

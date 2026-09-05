@@ -127,7 +127,8 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
       return Text(_current, style: style, maxLines: 1, softWrap: false);
     }
 
-    final fromSize = _measure(_previous!, style);
+    final previous = _previous!;
+    final fromSize = _measure(previous, style);
     final toSize = _measure(_current, style);
     final height = toSize.height > fromSize.height
         ? toSize.height
@@ -158,53 +159,32 @@ class _BeuiTextCascadeState extends State<BeuiTextCascade>
                   left: 0,
                   top: 0,
                   bottom: 0,
-                  child: _exitLetters(_previous!, t, totalMs, roll, style),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (var i = 0; i < previous.length; i++)
+                        _exitLetter(previous[i], i, t, totalMs, roll, style),
+                    ],
+                  ),
                 ),
                 Positioned(
                   key: ValueKey('in-$_current'),
                   left: 0,
                   top: 0,
                   bottom: 0,
-                  child: _enterLetters(_current, t, totalMs, roll, style),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (var i = 0; i < _current.length; i++)
+                        _enterLetter(_current[i], i, t * totalMs, roll, style),
+                    ],
+                  ),
                 ),
               ],
             );
           },
         ),
       ),
-    );
-  }
-
-  Widget _exitLetters(
-    String text,
-    double t,
-    int totalMs,
-    double roll,
-    TextStyle style,
-  ) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var i = 0; i < text.length; i++)
-          _exitLetter(text[i], i, t, totalMs, roll, style),
-      ],
-    );
-  }
-
-  Widget _enterLetters(
-    String text,
-    double t,
-    int totalMs,
-    double roll,
-    TextStyle style,
-  ) {
-    final elapsedMs = t * totalMs;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var i = 0; i < text.length; i++)
-          _enterLetter(text[i], i, elapsedMs, roll, style),
-      ],
     );
   }
 
