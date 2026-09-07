@@ -230,6 +230,35 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('reduced motion advances without scrambling glyphs', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiReasoningText(
+            phrases: ['Alpha', 'Bravo'],
+            variant: BeuiReasoningTextVariant.scramble,
+            interval: Duration(milliseconds: 600),
+          ),
+          reduce: true,
+        ),
+      );
+      await tester.pump();
+      expect(
+        tester.widget<BeuiTextShimmer>(find.byType(BeuiTextShimmer)).text,
+        'Alpha…',
+      );
+
+      // Only 50ms elapses after the phrase changes. Reduced motion should
+      // show the new phrase immediately instead of entering a scramble pass.
+      await tester.pump(const Duration(milliseconds: 650));
+      expect(
+        tester.widget<BeuiTextShimmer>(find.byType(BeuiTextShimmer)).text,
+        'Bravo…',
+      );
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('swap cross-fades the outgoing and incoming phrase', (
       tester,
     ) async {
