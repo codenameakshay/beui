@@ -853,7 +853,11 @@ class _TodoRowState extends State<_TodoRow>
     _enter = SingleMotionController(
       vsync: this,
       // Reduced motion starts settled: there is no movement to drop because
-      // the row never travels.
+      // the row never travels. `widget.reduce` (not `motionFor`/MediaQuery)
+      // deliberately: this row is built lazily inside a `ListView.builder`'s
+      // sliver layout callback, where `MediaQuery.disableAnimationsOf` inside
+      // `initState` trips Flutter's "dependOnInheritedWidgetOfExactType
+      // called before initState() completed" assertion.
       motion: widget.reduce ? const NoMotion() : beuiSpringLayout,
       initialValue: widget.reduce ? 1 : 0,
     );
@@ -1042,14 +1046,12 @@ class _StrikethroughTitleState extends State<_StrikethroughTitle> {
           child: IgnorePointer(
             child: SingleMotionBuilder(
               value: _target,
-              motion: widget.reduce
-                  ? const NoMotion()
-                  : motionFor(
-                      context,
-                      // Draw on in 280ms, retract in 160ms.
-                      _target > 0 ? _strikeMotion : _strikeRetractMotion,
-                      isMovement: true,
-                    ),
+              // Draw on in 280ms, retract in 160ms.
+              motion: motionFor(
+                context,
+                _target > 0 ? _strikeMotion : _strikeRetractMotion,
+                isMovement: true,
+              ),
               builder: (context, t, _) {
                 // `_target` is maintained correctly for both modes, but under
                 // reduce the motion is `NoMotion`, which holds the builder's
@@ -1179,21 +1181,9 @@ class _TodoStatusIconState extends State<_TodoStatusIcon>
     // the only place its channel order matters.
     final channels = <Motion>[
       motionFor(context, _fillFade, isMovement: false),
-      motionFor(
-        context,
-        reduce ? const NoMotion() : _checkDraw,
-        isMovement: false,
-      ),
-      motionFor(
-        context,
-        reduce ? const NoMotion() : _cancelDraw,
-        isMovement: false,
-      ),
-      motionFor(
-        context,
-        reduce ? const NoMotion() : beuiSpringLayout,
-        isMovement: true,
-      ),
+      motionFor(context, _checkDraw, isMovement: true),
+      motionFor(context, _cancelDraw, isMovement: true),
+      motionFor(context, beuiSpringLayout, isMovement: true),
     ];
 
     Widget animated(double spinTurns) {
