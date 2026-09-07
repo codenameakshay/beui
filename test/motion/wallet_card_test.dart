@@ -62,6 +62,30 @@ Widget _app({
 
 void main() {
   group('BeuiWalletCard account switcher', () {
+    testWidgets('account panel grows from its trigger when opening', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Main Wallet'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // The overlay is mounted on this frame. It must still be between the
+      // trigger and its final header-wide rect; mounting at progress 1 would
+      // make the panel already full width here.
+      final surface = find.ancestor(
+        of: find.byType(BackdropFilter),
+        matching: find.byType(ClipRRect),
+      );
+      expect(surface, findsOneWidget);
+      final openingWidth = tester.getSize(surface).width;
+      await tester.pumpAndSettle();
+      final settledWidth = tester.getSize(surface).width;
+      expect(openingWidth, lessThan(settledWidth));
+    });
+
     for (final reduce in [false, true]) {
       testWidgets('trigger morphs open, revealing the account list'
           '${reduce ? " (reduced motion)" : ""}', (tester) async {
