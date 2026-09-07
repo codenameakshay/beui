@@ -2,6 +2,8 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _accounts = [
   BeuiWalletAccount(
     id: 'main',
@@ -31,33 +33,17 @@ Widget _app({
   VoidCallback? onSend,
   ValueChanged<String>? onSearchSubmit,
 }) {
-  Widget card = Center(
-    child: BeuiWalletCard(
-      accounts: _accounts,
-      balance: balance,
-      defaultChange: defaultChange,
-      searchRecent: _recent,
-      hasNotifications: hasNotifications,
-      onAccountChange: onAccountChange,
-      onSend: onSend,
-      onSearchSubmit: onSearchSubmit,
-    ),
+  final card = BeuiWalletCard(
+    accounts: _accounts,
+    balance: balance,
+    defaultChange: defaultChange,
+    searchRecent: _recent,
+    hasNotifications: hasNotifications,
+    onAccountChange: onAccountChange,
+    onSend: onSend,
+    onSearchSubmit: onSearchSubmit,
   );
-  if (reduce) {
-    final inner = card;
-    card = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: card),
-  );
+  return beuiTestApp(card, reduce: reduce);
 }
 
 void main() {

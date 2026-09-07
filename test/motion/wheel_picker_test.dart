@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _options = <String>['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];
 
 List<BeuiWheelPickerOption> _opts() =>
@@ -20,34 +22,18 @@ Widget _app({
   int visibleCount = 5,
   double itemHeight = 36,
 }) {
-  Widget child = Center(
-    child: BeuiWheelPicker(
-      key: const ValueKey('wp'),
-      options: _opts(),
-      value: value,
-      defaultValue: defaultValue,
-      enabled: enabled,
-      visibleCount: visibleCount,
-      itemHeight: itemHeight,
-      semanticLabel: 'Fruit',
-      onChanged: onChanged,
-    ),
+  final picker = BeuiWheelPicker(
+    key: const ValueKey('wp'),
+    options: _opts(),
+    value: value,
+    defaultValue: defaultValue,
+    enabled: enabled,
+    visibleCount: visibleCount,
+    itemHeight: itemHeight,
+    semanticLabel: 'Fruit',
+    onChanged: onChanged,
   );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
-  );
+  return beuiTestApp(picker, reduce: reduce);
 }
 
 ListWheelScrollView _wheel(WidgetTester tester) =>
