@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 List<BeuiCitationItem> _sampleSources({int count = 2}) {
   const all = <BeuiCitationItem>[
     BeuiCitationItem(
@@ -48,43 +50,29 @@ Widget _host({
   String? retryLabel,
   BeuiAgentTheme? agent,
 }) {
-  Widget body = Center(
-    child: SizedBox(
-      width: 400,
-      child: BeuiStreamingResponse(
-        status: status,
-        copyText: copyText,
-        onCopy: onCopy,
-        onRetry: onRetry,
-        sources: sources,
-        sourcesOpen: sourcesOpen,
-        defaultSourcesOpen: defaultSourcesOpen,
-        onSourcesOpenChange: onSourcesOpenChange,
-        sourceIdPrefix: sourceIdPrefix,
-        feedback: feedback,
-        defaultFeedback: defaultFeedback,
-        onFeedbackChange: onFeedbackChange,
-        announce: announce,
-        showActions: showActions,
-        retryLabel: retryLabel,
-        child: child,
-      ),
-    ),
+  final response = BeuiStreamingResponse(
+    status: status,
+    copyText: copyText,
+    onCopy: onCopy,
+    onRetry: onRetry,
+    sources: sources,
+    sourcesOpen: sourcesOpen,
+    defaultSourcesOpen: defaultSourcesOpen,
+    onSourcesOpenChange: onSourcesOpenChange,
+    sourceIdPrefix: sourceIdPrefix,
+    feedback: feedback,
+    defaultFeedback: defaultFeedback,
+    onFeedbackChange: onFeedbackChange,
+    announce: announce,
+    showActions: showActions,
+    retryLabel: retryLabel,
+    child: child,
   );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light(), ?agent]),
-    ),
-    home: Scaffold(body: body),
+  return beuiTestApp(
+    response,
+    width: 400,
+    reduce: reduce,
+    extensions: [?agent],
   );
 }
 

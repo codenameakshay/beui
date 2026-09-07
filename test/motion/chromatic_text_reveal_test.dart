@@ -4,24 +4,10 @@ import 'package:beui/src/motion/chromatic_text_reveal.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _prefix = 'Build faster with';
 const _fg = Color(0xFF00AA55);
-
-Widget _app(Widget child, {bool reduce = false}) {
-  Widget body = child;
-  if (reduce) {
-    body = MediaQuery(
-      data: const MediaQueryData(disableAnimations: true),
-      child: body,
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: Center(child: body)),
-  );
-}
 
 Widget _reveal({
   List<String> words = const ['Flutter'],
@@ -171,7 +157,7 @@ void main() {
       tester,
     ) async {
       final handle = tester.ensureSemantics();
-      await tester.pumpWidget(_app(_reveal()));
+      await tester.pumpWidget(beuiTestApp(_reveal()));
       await tester.pump();
 
       expect(find.textContaining(_prefix), findsOneWidget);
@@ -186,7 +172,7 @@ void main() {
     testWidgets(
       'sweeps the word through a ShaderMask, then settles to plain foreground text',
       (tester) async {
-        await tester.pumpWidget(_app(_reveal()));
+        await tester.pumpWidget(beuiTestApp(_reveal()));
         await tester.pump();
         // No enclosing scrollable → counts as in view and starts on first
         // layout (startOnView defaults to true).
@@ -222,7 +208,7 @@ void main() {
     ) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           _reveal(
             words: const ['Flutter', 'Dart'],
             duration: const Duration(milliseconds: 200),
@@ -248,7 +234,7 @@ void main() {
     testWidgets('loop: false holds on the last word', (tester) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           _reveal(
             words: const ['One', 'Two'],
             duration: const Duration(milliseconds: 100),
@@ -277,7 +263,7 @@ void main() {
       (tester) async {
         final handle = tester.ensureSemantics();
         await tester.pumpWidget(
-          _app(
+          beuiTestApp(
             _reveal(
               words: const ['Flutter', 'Dart'],
               duration: const Duration(milliseconds: 200),
@@ -307,7 +293,7 @@ void main() {
 
     testWidgets('an empty word list renders the prefix alone', (tester) async {
       final handle = tester.ensureSemantics();
-      await tester.pumpWidget(_app(_reveal(words: const [])));
+      await tester.pumpWidget(beuiTestApp(_reveal(words: const [])));
       await tester.pumpAndSettle();
 
       expect(find.text(_prefix), findsOneWidget);

@@ -131,8 +131,6 @@ final _light = <String, Col>{
 final _lightGlass = <String, Col>{
   'bg': oklch(99, 0, 0, a: 0.55),
   'border': oklch(15, 0, 0, a: 0.08),
-  'strongBg': rgb(255, 255, 255, a: 0.7),
-  'thinBg': rgb(255, 255, 255, a: 0.45),
 };
 
 // Neutral base — dark (themes.ts BASE_DARK, + theme-css.ts second tier).
@@ -163,8 +161,6 @@ final _dark = <String, Col>{
 final _darkGlass = <String, Col>{
   'bg': rgb(28, 28, 28, a: 0.55),
   'border': rgb(255, 255, 255, a: 0.08),
-  'strongBg': rgb(28, 28, 28, a: 0.6),
-  'thinBg': rgb(21, 21, 21, a: 0.45),
 };
 
 // A colored theme overrides only the five brand tokens (themes.ts brand()):
@@ -426,8 +422,6 @@ void _glassConst(String name, Map<String, Col> g) {
   _line('const BeuiGlass $name = BeuiGlass(');
   _line('  bg: ${g['bg']!.literal}, // ${g['bg']!.source}');
   _line('  border: ${g['border']!.literal}, // ${g['border']!.source}');
-  _line('  strongBg: ${g['strongBg']!.literal}, // ${g['strongBg']!.source}');
-  _line('  thinBg: ${g['thinBg']!.literal}, // ${g['thinBg']!.source}');
   _line(');');
 }
 

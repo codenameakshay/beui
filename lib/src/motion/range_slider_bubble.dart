@@ -197,12 +197,14 @@ class _BeuiBubbleSliderState extends State<BeuiBubbleSlider>
       beuiSliderGlideSpring,
       isMovement: true,
     );
-    // The bubble's presence is an OPACITY transition, so the resolver keeps it
-    // under reduced motion (isMovement: false) — only its scale/y are dropped.
+    // Case 2 of the resolver (a short fallback beats nothing, per drawer /
+    // bottom-sheet): the springy dragging entrance collapses to the plain
+    // exit curve under reduced motion instead of `beuiSpringPanel`.
     final revealMotion = motionFor(
       context,
-      reduce ? _bubbleExit : (_dragging ? beuiSpringPanel : _bubbleExit),
-      isMovement: false,
+      _dragging ? beuiSpringPanel : _bubbleExit,
+      isMovement: true,
+      reducedFallback: _bubbleExit,
     );
 
     final readout =
@@ -338,7 +340,7 @@ class _BeuiBubbleSliderState extends State<BeuiBubbleSlider>
                 bottom: thumbBottom,
                 child: SingleMotionBuilder(
                   value: (_dragging && enabled && !reduce) ? 1.25 : 1.0,
-                  motion: reduce ? const NoMotion() : beuiSpringPress,
+                  motion: motionFor(context, beuiSpringPress, isMovement: true),
                   builder: (context, scale, child) =>
                       Transform.scale(scale: scale, child: child),
                   child: thumbBox,

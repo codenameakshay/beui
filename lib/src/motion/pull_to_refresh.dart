@@ -574,7 +574,11 @@ class _RefreshBuddyState extends State<_RefreshBuddy>
     final swapMotion = motionFor(context, beuiSpringSwap, isMovement: true);
 
     Widget character = SingleMotionBuilder(
-      motion: widget.reduce ? const NoMotion() : swapMotion,
+      // [swapMotion] is already resolved through `motionFor` (isMovement:
+      // true), so it is NoMotion under reduced motion already — and
+      // [scaleTarget] stays pinned at 1.0 whenever reduced, so it never needs
+      // to move under the frozen motion anyway.
+      motion: swapMotion,
       value: scaleTarget,
       builder: (context, bodyScale, _) {
         return AnimatedBuilder(

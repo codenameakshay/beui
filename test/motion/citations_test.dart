@@ -5,6 +5,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 List<BeuiCitationItem> _sample({int count = 3}) {
   const all = <BeuiCitationItem>[
     BeuiCitationItem(
@@ -40,42 +42,23 @@ Widget _host({
   bool reduce = false,
   List<Widget> above = const [],
 }) {
-  Widget child = Center(
-    child: SizedBox(
-      width: 360,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ...above,
-          BeuiCitations(
-            citations: citations,
-            title: title,
-            open: open,
-            defaultOpen: defaultOpen,
-            onOpenChange: onOpenChange,
-            onCitationTap: onCitationTap,
-            idPrefix: idPrefix,
-          ),
-        ],
+  final column = Column(
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      ...above,
+      BeuiCitations(
+        citations: citations,
+        title: title,
+        open: open,
+        defaultOpen: defaultOpen,
+        onOpenChange: onOpenChange,
+        onCitationTap: onCitationTap,
+        idPrefix: idPrefix,
       ),
-    ),
+    ],
   );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
-  );
+  return beuiTestApp(column, width: 360, reduce: reduce);
 }
 
 void main() {
@@ -94,13 +77,6 @@ void main() {
     test('returns null for invalid input', () {
       expect(beuiFaviconUrl('not a url'), isNull);
       expect(beuiFaviconUrl('/relative'), isNull);
-    });
-  });
-
-  group('citationTargetId', () {
-    test('sanitizes non-url-safe characters', () {
-      expect(citationTargetId('preview', 'a b/c'), 'preview-a-b-c');
-      expect(citationTargetId('p', 'ok_id-1'), 'p-ok_id-1');
     });
   });
 

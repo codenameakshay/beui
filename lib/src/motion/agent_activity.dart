@@ -1065,9 +1065,7 @@ class _StreamViewport extends StatelessWidget {
     // Stream sticks to bottom while working (source animate y: streamOffset).
     list = SingleMotionBuilder(
       value: streamOffset,
-      motion: reduce
-          ? const NoMotion()
-          : motionFor(context, beuiSpringLayout, isMovement: true),
+      motion: motionFor(context, beuiSpringLayout, isMovement: true),
       builder: (context, y, child) {
         // `NoMotion` HOLDS its seeded value forever — it does not snap to the
         // target (see `test/motion/_no_motion_semantics_test.dart`). While
@@ -1170,6 +1168,10 @@ class _EnterAnimState extends State<_EnterAnim> with TickerProviderStateMixin {
     );
     _rise = SingleMotionController(
       vsync: this,
+      // motionFor is unsafe here: initState cannot register a MediaQuery
+      // dependency, so this stays a direct widget.reduce check (already a
+      // single reduced-motion read, made once in the ancestor's build and
+      // threaded down).
       motion: widget.reduce ? const NoMotion() : beuiSpringLayout,
       initialValue: widget.reduce ? 0 : 1,
     );

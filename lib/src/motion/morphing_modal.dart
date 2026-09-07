@@ -7,7 +7,7 @@ import 'package:flutter/scheduler.dart';
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
-import '_engine.dart' show NoMotion, SingleMotionBuilder;
+import '_engine.dart' show SingleMotionBuilder;
 
 /// Where the modal sits in the viewport.
 enum BeuiModalPlacement {
@@ -170,7 +170,7 @@ class _MorphingPanelState extends State<_MorphingPanel> {
         ? sizer
         : SingleMotionBuilder(
             value: measured,
-            motion: reduce ? const NoMotion() : beuiSpringPanel,
+            motion: motionFor(context, beuiSpringPanel, isMovement: true),
             builder: (context, h, child) => SizedBox(
               // NoMotion freezes rather than snaps — place at target directly.
               height: reduce ? measured : h,

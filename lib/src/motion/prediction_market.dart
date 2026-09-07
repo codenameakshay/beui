@@ -725,7 +725,7 @@ class _ModeTabsState extends State<_ModeTabs> {
         if (_indicator != null)
           MotionBuilder<Rect>(
             value: _indicator!,
-            motion: widget.reduce ? const NoMotion() : beuiSpringLayout,
+            motion: motionFor(context, beuiSpringLayout, isMovement: true),
             converter: const RectMotionConverter(),
             builder: (context, rect, _) {
               final r = widget.reduce ? _indicator! : rect;
@@ -833,7 +833,7 @@ class _OutcomeCellsState extends State<_OutcomeCells> {
           if (_pill != null)
             MotionBuilder<Rect>(
               value: _pill!,
-              motion: widget.reduce ? const NoMotion() : _outcomePillSpring,
+              motion: motionFor(context, _outcomePillSpring, isMovement: true),
               converter: const RectMotionConverter(),
               builder: (context, rect, _) {
                 final r = widget.reduce ? _pill! : rect;

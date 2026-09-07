@@ -2,24 +2,13 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: SizedBox(width: 900, height: 640, child: child));
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+import '../support.dart';
+
+Widget _wrap(Widget child, {bool reduce = false}) => beuiTestApp(
+  SizedBox(height: 640, child: child),
+  width: 900,
+  reduce: reduce,
+);
 
 void main() {
   group('BeuiChatApp', () {

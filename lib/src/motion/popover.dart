@@ -269,9 +269,12 @@ class _BeuiPopoverState extends State<BeuiPopover> {
         ),
         SingleMotionBuilder(
           value: _open ? 1.0 : 0.0,
-          motion: reduce
-              ? beuiSpringSnap
-              : (_open ? _gooOpenSpring : _gooCloseSpring),
+          motion: motionFor(
+            context,
+            _open ? _gooOpenSpring : _gooCloseSpring,
+            isMovement: true,
+            reducedFallback: beuiSpringSnap,
+          ),
           builder: (context, p, _) {
             return Stack(
               clipBehavior: Clip.none,

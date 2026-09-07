@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _models = <BeuiPromptModel>[
   BeuiPromptModel(value: 'gpt', label: 'GPT'),
   BeuiPromptModel(value: 'claude', label: 'Claude'),
@@ -17,24 +19,8 @@ const _actions = <BeuiPromptAction>[
   BeuiPromptAction(value: 'skill', label: 'Use a skill'),
 ];
 
-Widget _app(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: SizedBox(width: 400, child: child));
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+Widget _app(Widget child, {bool reduce = false}) =>
+    beuiTestApp(child, width: 400, reduce: reduce);
 
 void main() {
   group('BeuiPromptInput text', () {

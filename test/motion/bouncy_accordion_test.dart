@@ -4,6 +4,8 @@ import 'package:beui/src/motion/bouncy_accordion.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _items = <BeuiBouncyAccordionItem>[
   BeuiBouncyAccordionItem(
     id: 'a',
@@ -36,19 +38,7 @@ Widget _host({
     onChanged: onChanged,
     collapsible: collapsible,
   );
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(
-      body: Builder(
-        builder: (context) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(disableAnimations: reduce),
-          child: Center(child: SizedBox(width: 360, child: accordion)),
-        ),
-      ),
-    ),
-  );
+  return beuiTestApp(accordion, width: 360, reduce: reduce);
 }
 
 void main() {

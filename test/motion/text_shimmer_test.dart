@@ -4,26 +4,12 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _app(Widget child, {bool reduce = false}) {
-  Widget body = child;
-  if (reduce) {
-    body = MediaQuery(
-      data: const MediaQueryData(disableAnimations: true),
-      child: body,
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: Center(child: body)),
-  );
-}
+import '../support.dart';
 
 void main() {
   testWidgets('shimmer sweep advances continuously over time', (tester) async {
     await tester.pumpWidget(
-      _app(
+      beuiTestApp(
         const BeuiTextShimmer(
           'Loading',
           style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
@@ -51,7 +37,7 @@ void main() {
   });
 
   testWidgets('paints text through a srcIn ShaderMask', (tester) async {
-    await tester.pumpWidget(_app(const BeuiTextShimmer('Shimmer')));
+    await tester.pumpWidget(beuiTestApp(const BeuiTextShimmer('Shimmer')));
     await tester.pump();
     final mask = tester.widget<ShaderMask>(find.byType(ShaderMask));
     expect(mask.blendMode, BlendMode.srcIn);
@@ -73,7 +59,7 @@ void main() {
     const base = Color(0xFF000000);
     const highlight = Color(0xFFFFFFFF);
     await tester.pumpWidget(
-      _app(
+      beuiTestApp(
         const BeuiTextShimmer(
           'Loading',
           baseColor: base,
@@ -129,7 +115,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      _app(const BeuiTextShimmer('Loading'), reduce: true),
+      beuiTestApp(const BeuiTextShimmer('Loading'), reduce: true),
     );
     // settle is safe here: with no repeating controller there is no infinite
     // animation to wait on.

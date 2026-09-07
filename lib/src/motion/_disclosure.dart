@@ -71,12 +71,13 @@ const double _settleY = 4;
 /// would reflow the text). The child is then laid out at the full [openHeight]
 /// inside an [OverflowBox] and clipped to the animated fraction.
 class BeuiAgentDisclosureInternal extends StatelessWidget {
-  /// Creates a disclosure. [reduce] is threaded in by the parent rather than
-  /// read from the media query here, matching every call site in the library
-  /// (parents already resolve it once per build for their other channels).
+  /// Creates a disclosure. [reduce], when given, is threaded in by the parent
+  /// rather than read from the media query here, matching most call sites in
+  /// the library (parents already resolve it once per build for their other
+  /// channels). Left null, it falls back to the ambient media query.
   const BeuiAgentDisclosureInternal({
     required this.open,
-    required this.reduce,
+    this.reduce,
     required this.child,
     this.openHeight,
     this.openMotion = beuiDisclosureOpenMotion,
@@ -89,8 +90,9 @@ class BeuiAgentDisclosureInternal extends StatelessWidget {
   final bool open;
 
   /// Whether the platform asked for reduced motion. Movement snaps; the
-  /// opacity cross-fade is kept.
-  final bool reduce;
+  /// opacity cross-fade is kept. Null resolves against the ambient
+  /// [MediaQuery.disableAnimationsOf].
+  final bool? reduce;
 
   /// The revealed content.
   final Widget child;
@@ -119,7 +121,8 @@ class BeuiAgentDisclosureInternal extends StatelessWidget {
     // motion, which is also how we detect that case; `reduce` lets a caller
     // (or a test) force it independently.
     final movement = motionFor(context, base, isMovement: true);
-    final reduced = reduce || movement is NoMotion;
+    final effectiveReduce = reduce ?? MediaQuery.disableAnimationsOf(context);
+    final reduced = effectiveReduce || movement is NoMotion;
 
     if (reduced) {
       // Movement snaps, the fade survives — shortened to ~120ms. The eight

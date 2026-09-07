@@ -211,7 +211,7 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider>
           final isFocused = _focus.hasFocus;
           return SingleMotionBuilder(
             value: grow ? 1.35 : 1.0,
-            motion: reduce ? const NoMotion() : _grabSpring,
+            motion: motionFor(context, _grabSpring, isMovement: true),
             builder: (context, scaleY, child) =>
                 Transform.scale(scaleY: scaleY, child: child),
             child: Container(

@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:beui/src/motion/ai_sidebar.dart';
 // The focus ring is package-internal; these tests pin that the row finally
 // renders the `focused` flag it has always been threaded.
 import 'package:beui/src/motion/_focus_ring.dart' show BeuiFocusRing;

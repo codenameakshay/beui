@@ -2,30 +2,17 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 Widget _wrap(
   Widget child, {
   bool reduce = false,
   Size surface = const Size(400, 360),
-}) {
-  Widget body = Center(
-    child: SizedBox(width: surface.width, height: surface.height, child: child),
-  );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+}) => beuiTestApp(
+  SizedBox(height: surface.height, child: child),
+  width: surface.width,
+  reduce: reduce,
+);
 
 Widget _tallMessages(int count) {
   return BeuiMessageGroup(

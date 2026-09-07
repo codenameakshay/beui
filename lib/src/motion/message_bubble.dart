@@ -373,16 +373,16 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
       ),
     );
 
+    // Reduced motion drops the pop's scale (snapped below) but keeps the
+    // surface fading in on a short curve rather than holding at NoMotion.
     final surfaceMotion = motionFor(
       context,
       _bubblePop,
       isMovement: true,
-      reducedFallback: const NoMotion(),
-    );
-    final opacityMotion = motionFor(
-      context,
-      const CurvedMotion(Duration(milliseconds: 120), beuiEaseOut),
-      isMovement: false,
+      reducedFallback: const CurvedMotion(
+        Duration(milliseconds: 120),
+        beuiEaseOut,
+      ),
     );
 
     // `min-w-9` against `0.82 × available` asserts in debug the moment the
@@ -407,7 +407,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
                 child: SingleMotionBuilder(
                   value: _progress,
                   from: _animateIn ? 0.0 : 1.0,
-                  motion: reduce ? opacityMotion : surfaceMotion,
+                  motion: surfaceMotion,
                   builder: (context, t, child) {
                     final tt = t.clamp(0.0, 1.0);
                     final scale = reduce || !_animateIn
@@ -730,19 +730,19 @@ class _BeuiMessageBubbleCollapsibleState
     // holds its seeded value forever (see
     // `test/motion/_no_motion_semantics_test.dart`), which froze the reveal at
     // 0 and left "Show more" swapping its label while the body stayed clipped.
-    final motion = reduce
-        ? motionFor(
-            context,
-            const CurvedMotion(Duration(milliseconds: 120), beuiEaseOut),
-            isMovement: false,
-          )
-        : motionFor(
-            context,
-            _open
-                ? const CurvedMotion(Duration(milliseconds: 220), beuiEaseOut)
-                : const CurvedMotion(Duration(milliseconds: 140), beuiEaseOut),
-            isMovement: true,
-          );
+    // [reducedFallback] is exactly this: a real curve for the reduced case
+    // rather than a hold.
+    final motion = motionFor(
+      context,
+      _open
+          ? const CurvedMotion(Duration(milliseconds: 220), beuiEaseOut)
+          : const CurvedMotion(Duration(milliseconds: 140), beuiEaseOut),
+      isMovement: true,
+      reducedFallback: const CurvedMotion(
+        Duration(milliseconds: 120),
+        beuiEaseOut,
+      ),
+    );
 
     final content = SingleMotionBuilder(
       value: target,
@@ -1001,9 +1001,10 @@ class _CollapsibleTriggerState extends State<_CollapsibleTrigger> {
                         const SizedBox(width: 4), // gap-1
                         SingleMotionBuilder(
                           value: widget.open ? 1.0 : 0.0,
-                          motion: widget.reduce
-                              ? const NoMotion()
-                              : widget.chevronMotion,
+                          // [chevronMotion] is already resolved through
+                          // `motionFor` by the caller (isMovement: true), so
+                          // it is NoMotion under reduced motion already.
+                          motion: widget.chevronMotion,
                           builder: (context, t, child) {
                             // NoMotion holds its seeded value, so the frozen
                             // `t` pinned the chevron at its mount angle. Read

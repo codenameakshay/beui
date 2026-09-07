@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/beui_colors.dart';
 import '../../tokens/icons.dart';
+import '../../tokens/motion.dart';
 import '../_engine.dart' show SingleMotionBuilder;
 import '_constants.dart';
 import '_morph.dart';
@@ -106,7 +107,6 @@ class _WalletSearchBarState extends State<WalletSearchBar> {
   }
 
   Widget _panel(BuildContext context, BeuiColors colors, WalletMorphInfo info) {
-    final reduce = MediaQuery.disableAnimationsOf(context);
     final filtered = _filtered;
     final contentOpacity = ((info.progress - 0.15) / 0.85).clamp(0.0, 1.0);
     // Icon+input glide from where the trigger sat toward their final position.
@@ -120,7 +120,12 @@ class _WalletSearchBarState extends State<WalletSearchBar> {
         SingleMotionBuilder(
           value: info.open ? 0.0 : startShift,
           from: startShift,
-          motion: reduce ? kWalletMorph : kWalletGlide,
+          motion: motionFor(
+            context,
+            kWalletGlide,
+            isMovement: true,
+            reducedFallback: kWalletMorph,
+          ),
           builder: (context, dx, child) =>
               Transform.translate(offset: Offset(dx, 0), child: child),
           child: SizedBox(

@@ -247,16 +247,11 @@ class _BeuiMessageState extends State<BeuiMessage> {
         beuiEaseOut,
       ),
     );
-    final opacityMotion = motionFor(
-      context,
-      const CurvedMotion(Duration(milliseconds: 120), beuiEaseOut),
-      isMovement: false,
-    );
 
     final body = SingleMotionBuilder(
       value: _progress,
       from: widget.animateIn ? 0.0 : 1.0,
-      motion: reduce ? opacityMotion : motion,
+      motion: motion,
       builder: (context, t, child) {
         final tt = t.clamp(0.0, 1.0);
         Widget out = child!;

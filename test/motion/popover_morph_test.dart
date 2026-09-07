@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 Widget _app({
   bool? open,
   ValueChanged<bool>? onOpenChange,
@@ -10,42 +12,26 @@ Widget _app({
   BeuiMorphPopoverSide side = BeuiMorphPopoverSide.bottom,
   BeuiMorphPopoverAlign align = BeuiMorphPopoverAlign.end,
   bool reduce = false,
-}) {
-  Widget body = Center(
-    child: BeuiMorphPopover(
-      open: open,
-      defaultOpen: defaultOpen,
-      onOpenChange: onOpenChange,
-      side: side,
-      align: align,
-      content: const SizedBox(
-        width: 180,
-        height: 120,
-        child: Center(child: Text('Panel body')),
-      ),
-      child: const SizedBox(
-        width: 120,
-        height: 40,
-        child: Center(child: Text('Trigger')),
-      ),
+}) => beuiTestApp(
+  BeuiMorphPopover(
+    open: open,
+    defaultOpen: defaultOpen,
+    onOpenChange: onOpenChange,
+    side: side,
+    align: align,
+    content: const SizedBox(
+      width: 180,
+      height: 120,
+      child: Center(child: Text('Panel body')),
     ),
-  );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    child: const SizedBox(
+      width: 120,
+      height: 40,
+      child: Center(child: Text('Trigger')),
     ),
-    home: Scaffold(body: body),
-  );
-}
+  ),
+  reduce: reduce,
+);
 
 void main() {
   testWidgets('tap toggles open via onOpenChange (uncontrolled)', (

@@ -8,26 +8,10 @@ Widget _app({
   ValueChanged<String>? onSelect,
   String triggerLabel = 'Create',
   bool reduce = false,
-}) {
-  Widget body = Center(
-    child: BeuiBloomMenu(onSelect: onSelect, triggerLabel: triggerLabel),
-  );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+}) => beuiTestApp(
+  BeuiBloomMenu(onSelect: onSelect, triggerLabel: triggerLabel),
+  reduce: reduce,
+);
 
 /// Opens the menu and lets the bloom choreography settle (the overlay renders
 /// in the root overlay, so explicit pumps are used instead of pumpAndSettle).

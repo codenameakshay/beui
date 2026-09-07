@@ -1275,9 +1275,12 @@ class _ActionsPresence extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final target = visible ? 1.0 : 0.0;
-    final motion = visible
-        ? (reduce ? _actionsInReduced : _actionsIn)
-        : (reduce ? _actionsOutReduced : _actionsOut);
+    final motion = motionFor(
+      context,
+      visible ? _actionsIn : _actionsOut,
+      isMovement: true,
+      reducedFallback: visible ? _actionsInReduced : _actionsOutReduced,
+    );
 
     // The double-fire fix, and the reason it is spelled `!visible ||
     // hidden` rather than `hidden` alone.
@@ -1325,7 +1328,7 @@ class _ActionsPresence extends StatelessWidget {
     if (reduce) {
       return SingleMotionBuilder(
         value: target,
-        motion: motionFor(context, motion, isMovement: false),
+        motion: motion,
         builder: (context, t, child) => frame(t, child!, movement: false),
         child: child,
       );
@@ -1333,7 +1336,7 @@ class _ActionsPresence extends StatelessWidget {
 
     return SingleMotionBuilder(
       value: target,
-      motion: motionFor(context, motion, isMovement: true),
+      motion: motion,
       builder: (context, t, child) => frame(t, child!, movement: true),
       child: child,
     );

@@ -1,9 +1,24 @@
-## Unreleased
+## 2.0.0
 
 Codebase slop audit. No component was redesigned; this release removes
 duplication, dead code, and process residue that accumulated across the
-1.x agent passes, and fixes the bugs found on the way. The public API is
-additive except for the deprecations listed below.
+1.x agent passes, and fixes the bugs found on the way. It is a major
+because the dead and deprecated API below is deleted rather than kept.
+
+### Removed (breaking)
+
+* `beuiSidebarCanContain` (use `BeuiSidebarResource.canContain`) and
+  `citationTargetId`.
+* `BeuiGlass.strongBg`, `thinBg`, `strongBlur`, `thinBlur` — no component
+  rendered them; `bg`, `border` and `blur` remain.
+* `BeuiAgentLayout.density` and `BeuiAgentDensity` — no component branched
+  on them; `BeuiAgentTheme.compact` still tightens the spacing tokens.
+* The 1.x compatibility slots `BeuiCodeBlock.filenameNode`,
+  `BeuiFileDiff.fileNode` and `BeuiPreviewRailStyle.trackExtent`; use
+  `filename`/`filenameWidget`, `file`/`fileWidget` and `itemSize`.
+* The widget-test key constants for the animated, AI and bounce sidebars
+  are no longer exported from the barrel; they are `@visibleForTesting`
+  internals.
 
 ### Fixed
 
@@ -50,12 +65,6 @@ additive except for the deprecations listed below.
   link glyphs.
 * Widget tests for `BeuiMagnetic` and `BeuiParallax`.
 
-### Deprecated (removed in 2.0)
-
-* `beuiSidebarCanContain` (use `BeuiSidebarResource.canContain`),
-  `citationTargetId`, `BeuiGlass.strongBg`/`thinBg`/`strongBlur`/`thinBlur`,
-  `BeuiAgentLayout.density` and `BeuiAgentDensity` (no component reads them).
-
 ### Internal
 
 * Shared helpers replace per-file copies: cascade text, disclosure
@@ -72,6 +81,16 @@ additive except for the deprecations listed below.
   (which fixes the Code tab's source paths), with one shared replay
   button, section label and pressable control.
 * `.pubignore` excludes the example's platform folders and fonts.
+* Reduced-motion token swaps route through `motionFor` (95 call sites);
+  the bare `MediaQuery.disableAnimationsOf` reads that remain gate
+  non-motion decisions (whether to mount a transform, blur or ticker).
+  `BeuiAgentDisclosureInternal.reduce` is optional and defaults to the
+  ambient value.
+* A table-driven test guards every field of the eleven theme value types
+  against a wrong `??` in `copyWith`, a field missing from `==`, or a
+  swapped pair in `lerp`.
+* Fifty test files build their app through `beuiTestApp` instead of a
+  private copy of the themed `MaterialApp`.
 
 ## 1.2.0
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
-import '../tokens/motion.dart' show beuiSpringPanel;
+import '../tokens/motion.dart' show beuiSpringPanel, motionFor;
 import '_engine.dart' show CurvedMotion, SingleMotionBuilder;
 
 /// Which side of the trigger the panel morphs out of.
@@ -187,7 +187,12 @@ class _BeuiMorphPopoverState extends State<BeuiMorphPopover> {
             height: geo.height,
             child: SingleMotionBuilder(
               value: _open ? 1.0 : 0.0,
-              motion: reduce ? _reduceFade : beuiSpringPanel,
+              motion: motionFor(
+                context,
+                beuiSpringPanel,
+                isMovement: true,
+                reducedFallback: _reduceFade,
+              ),
               builder: (context, p, _) {
                 if (p <= 0.001 && !_open) {
                   return const SizedBox.shrink();

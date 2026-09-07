@@ -6,26 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
 import '_follow_contract.dart';
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: SizedBox(width: 400, child: child));
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+Widget _wrap(Widget child, {bool reduce = false}) =>
+    beuiTestApp(child, width: 400, reduce: reduce);
 
 void main() {
   group('BeuiCodeBlock', () {
@@ -155,32 +140,6 @@ void main() {
         ),
       );
       expect(find.byKey(const Key('fn')), findsOneWidget);
-    });
-
-    testWidgets('the deprecated untyped slot still renders both shapes', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiCodeBlock(
-            code: 'x',
-            // ignore: deprecated_member_use_from_same_package
-            filenameNode: Text('legacy.tsx', key: Key('legacy')),
-          ),
-        ),
-      );
-      expect(find.byKey(const Key('legacy')), findsOneWidget);
-
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiCodeBlock(
-            code: 'x',
-            // ignore: deprecated_member_use_from_same_package
-            filenameNode: 'legacy-string.tsx',
-          ),
-        ),
-      );
-      expect(find.text('legacy-string.tsx'), findsOneWidget);
     });
 
     testWidgets('highlight lines paint the fill and leading bar', (

@@ -2,21 +2,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _app(Widget child, {bool reduce = false}) {
-  Widget body = child;
-  if (reduce) {
-    body = MediaQuery(
-      data: const MediaQueryData(disableAnimations: true),
-      child: body,
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: Center(child: body)),
-  );
-}
+import '../support.dart';
 
 /// The maximum vertical translate across every [Transform.translate] our reveal
 /// emits — a proxy for "how far below the baseline the units still are".
@@ -42,7 +28,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      _app(
+      beuiTestApp(
         const BeuiTextReveal('Motion in words', style: TextStyle(fontSize: 32)),
       ),
     );
@@ -63,7 +49,7 @@ void main() {
 
   testWidgets('char split renders one unit per character', (tester) async {
     await tester.pumpWidget(
-      _app(const BeuiTextReveal('abc', split: BeuiTextRevealSplit.char)),
+      beuiTestApp(const BeuiTextReveal('abc', split: BeuiTextRevealSplit.char)),
     );
     await tester.pumpAndSettle();
     expect(find.text('a'), findsOneWidget);
@@ -75,7 +61,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      _app(
+      beuiTestApp(
         const BeuiTextReveal('Motion in words', style: TextStyle(fontSize: 32)),
         reduce: true,
       ),

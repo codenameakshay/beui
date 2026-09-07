@@ -13,22 +13,14 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 Widget _host(Widget child, {required BeuiAgentStrings strings, Size? surface}) {
   final size = surface ?? const Size(400, 400);
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(
-        extensions: [
-          BeuiColors.light(),
-          BeuiAgentTheme(strings: strings),
-        ],
-      ),
-    ),
-    home: Scaffold(
-      body: Center(
-        child: SizedBox(width: size.width, height: size.height, child: child),
-      ),
-    ),
+  return beuiTestApp(
+    SizedBox(height: size.height, child: child),
+    width: size.width,
+    extensions: [BeuiAgentTheme(strings: strings)],
   );
 }
 

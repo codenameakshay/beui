@@ -4,31 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _trigger = ValueKey<String>('trigger');
 
-Widget _app({BeuiTooltipSide side = BeuiTooltipSide.top, Widget? child}) {
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(
-      body: Center(
-        child: BeuiTooltip(
-          side: side,
-          content: const Text('TIP'),
-          child:
-              child ??
-              const SizedBox(
-                key: _trigger,
-                width: 80,
-                height: 32,
-                child: ColoredBox(color: Color(0xFF888888)),
-              ),
-        ),
+Widget _app({BeuiTooltipSide side = BeuiTooltipSide.top, Widget? child}) =>
+    beuiTestApp(
+      BeuiTooltip(
+        side: side,
+        content: const Text('TIP'),
+        child:
+            child ??
+            const SizedBox(
+              key: _trigger,
+              width: 80,
+              height: 32,
+              child: ColoredBox(color: Color(0xFF888888)),
+            ),
       ),
-    ),
-  );
-}
+    );
 
 Future<TestGesture> _hover(WidgetTester tester, Finder target) async {
   final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);

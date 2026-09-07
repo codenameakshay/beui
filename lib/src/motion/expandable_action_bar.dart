@@ -284,7 +284,7 @@ class _BeuiExpandableActionBarState extends State<BeuiExpandableActionBar> {
                 if (_highlightRect != null)
                   MotionBuilder<Rect>(
                     value: _highlightRect!,
-                    motion: reduce ? const NoMotion() : _itemSpring,
+                    motion: motionFor(context, _itemSpring, isMovement: true),
                     converter: const RectMotionConverter(),
                     builder: (context, rect, _) {
                       final r = reduce ? _highlightRect! : rect;

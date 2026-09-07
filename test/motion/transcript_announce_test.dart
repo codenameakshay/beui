@@ -14,12 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _app(Widget child) => MaterialApp(
-  theme: BeuiTextTheme.trackingNormal(
-    ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-  ),
-  home: Scaffold(body: child),
-);
+import '../support.dart';
 
 /// Every `liveRegion: true` node in the tree, by label.
 List<String> _liveRegions(WidgetTester tester) {
@@ -163,7 +158,7 @@ void main() {
       late bool inside;
       late bool outside;
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           Column(
             children: [
               Builder(
@@ -195,7 +190,7 @@ void main() {
       final handle = tester.ensureSemantics();
       final key = GlobalKey<BeuiTranscriptLiveRegionState>();
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           BeuiTranscriptLiveRegion(
             key: key,
             label: 'Conversation',
@@ -224,7 +219,7 @@ void main() {
       final handle = tester.ensureSemantics();
       final key = GlobalKey<BeuiTranscriptLiveRegionState>();
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           BeuiTranscriptLiveRegion(
             key: key,
             label: 'Conversation',
@@ -246,7 +241,7 @@ void main() {
     ) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           SizedBox(
             height: 300,
             child: BeuiMessageScroller(
@@ -294,7 +289,7 @@ void main() {
     testWidgets('streamed text reaches that one region', (tester) async {
       final handle = tester.ensureSemantics();
 
-      Widget build(String text) => _app(
+      Widget build(String text) => beuiTestApp(
         SizedBox(
           height: 300,
           child: BeuiMessageScroller(
@@ -321,8 +316,9 @@ void main() {
     testWidgets('a standalone response keeps its own region', (tester) async {
       final handle = tester.ensureSemantics();
 
-      Widget build(String text) =>
-          _app(BeuiStreamingResponse(announceText: text, child: Text(text)));
+      Widget build(String text) => beuiTestApp(
+        BeuiStreamingResponse(announceText: text, child: Text(text)),
+      );
 
       await tester.pumpWidget(build(''));
       await tester.pumpAndSettle();
@@ -341,7 +337,7 @@ void main() {
     ) async {
       final heard = <String>[];
 
-      Widget build(String text) => _app(
+      Widget build(String text) => beuiTestApp(
         SizedBox(
           height: 300,
           child: BeuiMessageScroller(

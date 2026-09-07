@@ -406,13 +406,13 @@ class _BeuiSelectState extends State<BeuiSelect>
               ),
             ),
           ),
-          KeyedSubtree(key: _triggerKey, child: _buildTrigger(colors)),
+          KeyedSubtree(key: _triggerKey, child: _buildTrigger(colors, reduce)),
         ],
       ),
     );
   }
 
-  Widget _buildTrigger(BeuiColors colors) {
+  Widget _buildTrigger(BeuiColors colors, bool reduce) {
     final selected = _selectedIndex() >= 0;
     final label = selected
         ? widget.options[_selectedIndex()].label
@@ -436,7 +436,6 @@ class _BeuiSelectState extends State<BeuiSelect>
           child: AnimatedBuilder(
             animation: _cornerCtrl,
             builder: (context, _) {
-              final reduce = MediaQuery.disableAnimationsOf(context);
               final near = reduce
                   ? _radius
                   : _cornerTween.evaluate(_cornerCtrl);
@@ -1137,10 +1136,14 @@ class _Chevron extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reduce = MediaQuery.disableAnimationsOf(context);
     return SingleMotionBuilder(
       value: open ? 1.0 : 0.0,
-      motion: reduce ? beuiSpringSnap : _chevronSpring,
+      motion: motionFor(
+        context,
+        _chevronSpring,
+        isMovement: true,
+        reducedFallback: beuiSpringSnap,
+      ),
       builder: (context, p, child) =>
           Transform.rotate(angle: p * math.pi, child: child),
       child: Icon(LucideIcons.chevron_down, size: 16, color: color),

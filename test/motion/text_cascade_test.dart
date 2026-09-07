@@ -2,6 +2,8 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 class _Host extends StatefulWidget {
   const _Host({required this.initial, this.reduce = false});
   final String initial;
@@ -17,24 +19,13 @@ class _HostState extends State<_Host> {
   void set(String t) => setState(() => _text = t);
 
   @override
-  Widget build(BuildContext context) {
-    Widget body = DefaultTextStyle(
+  Widget build(BuildContext context) => beuiTestApp(
+    DefaultTextStyle(
       style: const TextStyle(fontSize: 28),
       child: BeuiTextCascade(_text),
-    );
-    if (widget.reduce) {
-      body = MediaQuery(
-        data: const MediaQueryData(disableAnimations: true),
-        child: body,
-      );
-    }
-    return MaterialApp(
-      theme: BeuiTextTheme.trackingNormal(
-        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      ),
-      home: Scaffold(body: Center(child: body)),
-    );
-  }
+    ),
+    reduce: widget.reduce,
+  );
 }
 
 /// Hosts a cascade given only a partial style, so the ambient [DefaultTextStyle]
@@ -128,15 +119,10 @@ void main() {
     // surrounding layout — seen on beui.dev/components/motion/text-animation as
     // a 5px jump of the whole column on every cascade.
     await tester.pumpWidget(
-      MaterialApp(
-        theme: BeuiTextTheme.trackingNormal(
-          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-        ),
-        home: const Scaffold(
-          body: DefaultTextStyle(
-            style: TextStyle(fontSize: 14, height: 1.43),
-            child: Center(child: _SlotHost()),
-          ),
+      beuiTestApp(
+        const DefaultTextStyle(
+          style: TextStyle(fontSize: 14, height: 1.43),
+          child: _SlotHost(),
         ),
       ),
     );

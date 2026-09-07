@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _thumb = ValueKey<String>('beui_switch_thumb');
 
 /// Wraps a [BeuiSwitch] in a themed app. [reduce] forces reduced motion.
@@ -12,32 +14,16 @@ Widget _app({
   bool enabled = true,
   bool reduce = false,
   String? label,
-}) {
-  Widget child = Center(
-    child: BeuiSwitch(
-      key: const ValueKey('sw'),
-      value: value,
-      enabled: enabled,
-      label: label,
-      onChanged: onChanged ?? (_) {},
-    ),
-  );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
-  );
-}
+}) => beuiTestApp(
+  BeuiSwitch(
+    key: const ValueKey('sw'),
+    value: value,
+    enabled: enabled,
+    label: label,
+    onChanged: onChanged ?? (_) {},
+  ),
+  reduce: reduce,
+);
 
 double _thumbX(WidgetTester tester) => tester.getTopLeft(find.byKey(_thumb)).dx;
 

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 // The components' own `@visibleForTesting` keys, mirrored here — they are
 // deliberately not part of the barrel's public surface.
 const _thumb = ValueKey<String>('beui_range_slider_thumb');
@@ -19,26 +21,8 @@ const _rulerNeedle = ValueKey<String>('beui_ruler_slider_needle');
 
 /// Wraps a slider in a themed app at a known width, optionally with reduced
 /// motion switched on.
-Widget _app({required Widget child, bool reduce = false, double width = 200}) {
-  Widget body = Center(
-    child: SizedBox(width: width, child: child),
-  );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+Widget _app({required Widget child, bool reduce = false, double width = 200}) =>
+    beuiTestApp(child, width: width, reduce: reduce);
 
 /// Drives a **controlled** slider the way a real app does: holds the value and
 /// feeds every `onChanged` straight back, so the handle tracks the parent.

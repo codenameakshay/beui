@@ -2,6 +2,8 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 /// Fixed-height card so lane distribution and positions are deterministic.
 Widget _card(String item, int index) =>
     SizedBox(height: 100, child: Text(item));
@@ -13,26 +15,11 @@ Widget _wrap(
   double width = 900,
   double height = 600,
   bool reduce = false,
-}) {
-  Widget body = Center(
-    child: SizedBox(width: width, height: height, child: child),
-  );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+}) => beuiTestApp(
+  SizedBox(height: height, child: child),
+  width: width,
+  reduce: reduce,
+);
 
 BeuiInfiniteMasonry<String> _feed({
   required List<String> items,

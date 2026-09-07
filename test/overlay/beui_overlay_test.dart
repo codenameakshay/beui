@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _panel = ValueKey<String>('panel');
 
 class _Host extends StatefulWidget {
@@ -22,38 +24,29 @@ class _HostState extends State<_Host> {
   void hide() => setState(() => open = false);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: BeuiTextTheme.trackingNormal(
-        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      ),
-      home: Scaffold(
-        body: Center(
-          child: BeuiOverlay(
-            open: open,
-            barrierDismissible: widget.barrierDismissible,
-            trapFocus: widget.trapFocus,
-            onDismiss: () {
-              dismissCount++;
-              setState(() => open = false);
-            },
-            overlayBuilder: (context, animation, link) => Center(
-              child: FadeTransition(
-                opacity: animation,
-                child: Container(
-                  key: _panel,
-                  width: 200,
-                  height: 120,
-                  color: const Color(0xFF202020),
-                ),
-              ),
-            ),
-            child: const SizedBox(width: 50, height: 50),
+  Widget build(BuildContext context) => beuiTestApp(
+    BeuiOverlay(
+      open: open,
+      barrierDismissible: widget.barrierDismissible,
+      trapFocus: widget.trapFocus,
+      onDismiss: () {
+        dismissCount++;
+        setState(() => open = false);
+      },
+      overlayBuilder: (context, animation, link) => Center(
+        child: FadeTransition(
+          opacity: animation,
+          child: Container(
+            key: _panel,
+            width: 200,
+            height: 120,
+            color: const Color(0xFF202020),
           ),
         ),
       ),
-    );
-  }
+      child: const SizedBox(width: 50, height: 50),
+    ),
+  );
 }
 
 /// Like [_Host], but boxes the trigger in a [ClipRect] to prove the panel
@@ -74,28 +67,21 @@ class _ClipHostState extends State<_ClipHost> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: BeuiTextTheme.trackingNormal(
-        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      ),
-      home: Scaffold(
-        body: Center(
-          child: ClipRect(
-            key: clipKey,
-            child: SizedBox(
-              width: 50,
-              height: 50,
-              child: BeuiOverlay(
-                open: open,
-                overlayBuilder: (context, animation, link) => Container(
-                  key: _panel,
-                  width: 200,
-                  height: 200,
-                  color: const Color(0xFF202020),
-                ),
-                child: const SizedBox(width: 50, height: 50),
-              ),
+    return beuiTestApp(
+      ClipRect(
+        key: clipKey,
+        child: SizedBox(
+          width: 50,
+          height: 50,
+          child: BeuiOverlay(
+            open: open,
+            overlayBuilder: (context, animation, link) => Container(
+              key: _panel,
+              width: 200,
+              height: 200,
+              color: const Color(0xFF202020),
             ),
+            child: const SizedBox(width: 50, height: 50),
           ),
         ),
       ),

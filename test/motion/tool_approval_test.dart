@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 Widget _host({
   String tool = 'terminal.run',
   String title = 'Allow this tool to run?',
@@ -27,45 +29,24 @@ Widget _host({
   bool dark = false,
   double width = 400,
 }) {
-  Widget body = Center(
-    child: SizedBox(
-      width: width,
-      child: BeuiToolApproval(
-        tool: tool,
-        title: title,
-        description: description,
-        parameters: parameters,
-        status: status,
-        severity: severity,
-        grant: grant,
-        open: open,
-        defaultOpen: defaultOpen,
-        allowAlways: allowAlways,
-        onOpenChange: onOpenChange,
-        onApprove: defaultHandlers ? (onApprove ?? () {}) : onApprove,
-        onAlwaysAllow: onAlwaysAllow,
-        onDeny: defaultHandlers ? (onDeny ?? () {}) : onDeny,
-        onRevoke: onRevoke,
-      ),
-    ),
+  final approval = BeuiToolApproval(
+    tool: tool,
+    title: title,
+    description: description,
+    parameters: parameters,
+    status: status,
+    severity: severity,
+    grant: grant,
+    open: open,
+    defaultOpen: defaultOpen,
+    allowAlways: allowAlways,
+    onOpenChange: onOpenChange,
+    onApprove: defaultHandlers ? (onApprove ?? () {}) : onApprove,
+    onAlwaysAllow: onAlwaysAllow,
+    onDeny: defaultHandlers ? (onDeny ?? () {}) : onDeny,
+    onRevoke: onRevoke,
   );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      dark
-          ? ThemeData.dark().copyWith(extensions: [BeuiColors.dark()])
-          : ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
+  return beuiTestApp(approval, width: width, reduce: reduce, dark: dark);
 }
 
 const _sampleParams = <BeuiToolApprovalParameter>[
@@ -295,17 +276,10 @@ void main() {
 
     testWidgets('BeuiToolApprovalCode renders code text', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: const Scaffold(
-            body: Center(
-              child: BeuiToolApprovalCode(
-                code: 'echo hello',
-                language: BeuiCodeLanguage.bash,
-              ),
-            ),
+        beuiTestApp(
+          const BeuiToolApprovalCode(
+            code: 'echo hello',
+            language: BeuiCodeLanguage.bash,
           ),
         ),
       );
@@ -593,32 +567,19 @@ void main() {
       var status = BeuiToolApprovalStatus.pending;
 
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: StatefulBuilder(
-              builder: (context, setState) {
-                return Center(
-                  child: SizedBox(
-                    width: 400,
-                    child: BeuiToolApproval(
-                      tool: 'terminal.run',
-                      status: status,
-                      onApprove: () {
-                        approved++;
-                        setState(
-                          () => status = BeuiToolApprovalStatus.approving,
-                        );
-                      },
-                      onDeny: () {},
-                    ),
-                  ),
-                );
+        beuiTestApp(
+          StatefulBuilder(
+            builder: (context, setState) => BeuiToolApproval(
+              tool: 'terminal.run',
+              status: status,
+              onApprove: () {
+                approved++;
+                setState(() => status = BeuiToolApprovalStatus.approving);
               },
+              onDeny: () {},
             ),
           ),
+          width: 400,
         ),
       );
       await tester.pumpAndSettle();
@@ -812,37 +773,26 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(
-              extensions: [
-                BeuiColors.light(),
-                BeuiAgentTheme(
-                  statusLight: BeuiAgentStatusColors.light.copyWith(
-                    pending: const BeuiAgentStatusPalette(
-                      foreground: Color(0xFF112233),
-                      background: Color(0xFF445566),
-                      border: Color(0xFF778899),
-                      solid: Color(0xFFAABBCC),
-                      onSolid: Color(0xFFFFFFFF),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+        beuiTestApp(
+          BeuiToolApproval(
+            tool: 'terminal.run',
+            onApprove: () {},
+            onDeny: () {},
           ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 400,
-                child: BeuiToolApproval(
-                  tool: 'terminal.run',
-                  onApprove: () {},
-                  onDeny: () {},
+          width: 400,
+          extensions: [
+            BeuiAgentTheme(
+              statusLight: BeuiAgentStatusColors.light.copyWith(
+                pending: const BeuiAgentStatusPalette(
+                  foreground: Color(0xFF112233),
+                  background: Color(0xFF445566),
+                  border: Color(0xFF778899),
+                  solid: Color(0xFFAABBCC),
+                  onSolid: Color(0xFFFFFFFF),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       );
       await tester.pump();
@@ -863,32 +813,21 @@ void main() {
 
     testWidgets('labels route through the theme strings role', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(
-              extensions: [
-                BeuiColors.light(),
-                BeuiAgentTheme(
-                  strings: const BeuiAgentStrings(
-                    allowOnce: 'Autoriser une fois',
-                    deny: 'Refuser',
-                  ),
-                ),
-              ],
-            ),
+        beuiTestApp(
+          BeuiToolApproval(
+            tool: 'terminal.run',
+            onApprove: () {},
+            onDeny: () {},
           ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 400,
-                child: BeuiToolApproval(
-                  tool: 'terminal.run',
-                  onApprove: () {},
-                  onDeny: () {},
-                ),
+          width: 400,
+          extensions: [
+            BeuiAgentTheme(
+              strings: const BeuiAgentStrings(
+                allowOnce: 'Autoriser une fois',
+                deny: 'Refuser',
               ),
             ),
-          ),
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -899,30 +838,17 @@ void main() {
 
     testWidgets('a per-instance label beats the theme string', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(
-              extensions: [
-                BeuiColors.light(),
-                BeuiAgentTheme(
-                  strings: const BeuiAgentStrings(deny: 'Refuser'),
-                ),
-              ],
-            ),
+        beuiTestApp(
+          BeuiToolApproval(
+            tool: 'terminal.run',
+            denyLabel: 'Nope',
+            onApprove: () {},
+            onDeny: () {},
           ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 400,
-                child: BeuiToolApproval(
-                  tool: 'terminal.run',
-                  denyLabel: 'Nope',
-                  onApprove: () {},
-                  onDeny: () {},
-                ),
-              ),
-            ),
-          ),
+          width: 400,
+          extensions: [
+            BeuiAgentTheme(strings: const BeuiAgentStrings(deny: 'Refuser')),
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -941,55 +867,46 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: Center(
-              child: RepaintBoundary(
-                child: SizedBox(
-                  width: 420,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      BeuiToolApproval(
-                        tool: 'terminal.run',
-                        description: 'Run the validation suite.',
-                        parameters: const [
-                          BeuiToolApprovalParameter(
-                            id: 'command',
-                            label: 'Command',
-                            value: 'bun test checkout',
-                          ),
-                        ],
-                        onApprove: () {},
-                        onAlwaysAllow: () {},
-                        onDeny: () {},
-                      ),
-                      const SizedBox(height: 12),
-                      BeuiToolApproval(
-                        tool: 'fs.remove',
-                        title: 'Delete the project directory?',
-                        severity: BeuiToolApprovalSeverity.destructive,
-                        onApprove: () {},
-                        onAlwaysAllow: () {},
-                        onDeny: () {},
-                      ),
-                      const SizedBox(height: 12),
-                      BeuiToolApproval(
-                        tool: 'terminal.run',
-                        status: BeuiToolApprovalStatus.approved,
-                        grant: BeuiToolApprovalGrant.always,
-                        onApprove: () {},
-                        onRevoke: () {},
-                      ),
-                    ],
-                  ),
+        beuiTestApp(
+          RepaintBoundary(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BeuiToolApproval(
+                  tool: 'terminal.run',
+                  description: 'Run the validation suite.',
+                  parameters: const [
+                    BeuiToolApprovalParameter(
+                      id: 'command',
+                      label: 'Command',
+                      value: 'bun test checkout',
+                    ),
+                  ],
+                  onApprove: () {},
+                  onAlwaysAllow: () {},
+                  onDeny: () {},
                 ),
-              ),
+                const SizedBox(height: 12),
+                BeuiToolApproval(
+                  tool: 'fs.remove',
+                  title: 'Delete the project directory?',
+                  severity: BeuiToolApprovalSeverity.destructive,
+                  onApprove: () {},
+                  onAlwaysAllow: () {},
+                  onDeny: () {},
+                ),
+                const SizedBox(height: 12),
+                BeuiToolApproval(
+                  tool: 'terminal.run',
+                  status: BeuiToolApprovalStatus.approved,
+                  grant: BeuiToolApprovalGrant.always,
+                  onApprove: () {},
+                  onRevoke: () {},
+                ),
+              ],
             ),
           ),
+          width: 420,
         ),
       );
       await tester.pump();

@@ -358,7 +358,7 @@ class _BeuiFluidSliderState extends State<BeuiFluidSlider>
               onFocusChange: (_) => setState(() {}),
               child: SingleMotionBuilder(
                 value: pressed ? _grabScale : 1.0,
-                motion: reduce ? const NoMotion() : beuiSpringPress,
+                motion: motionFor(context, beuiSpringPress, isMovement: true),
                 builder: (context, scale, child) =>
                     Transform.scale(scale: scale, child: child),
                 child: slider,

@@ -2,6 +2,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 import '_follow_contract.dart';
 
 const _sampleLines = <BeuiFileDiffLine>[
@@ -52,41 +53,22 @@ Widget _host({
   Future<void> Function()? onCopy,
   bool reduce = false,
 }) {
-  Widget child = Center(
-    child: SizedBox(
-      width: 400,
-      child: BeuiFileDiff(
-        key: key,
-        file: fileWidget == null ? file : null,
-        fileWidget: fileWidget,
-        lines: lines,
-        status: status,
-        open: open,
-        defaultOpen: defaultOpen,
-        onOpenChange: onOpenChange,
-        collapseOnComplete: collapseOnComplete,
-        copyText: copyText,
-        copyable: copyable,
-        onCopy: onCopy,
-        maxHeight: 150,
-      ),
-    ),
+  final diff = BeuiFileDiff(
+    key: key,
+    file: fileWidget == null ? file : null,
+    fileWidget: fileWidget,
+    lines: lines,
+    status: status,
+    open: open,
+    defaultOpen: defaultOpen,
+    onOpenChange: onOpenChange,
+    collapseOnComplete: collapseOnComplete,
+    copyText: copyText,
+    copyable: copyable,
+    onCopy: onCopy,
+    maxHeight: 150,
   );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
-  );
+  return beuiTestApp(diff, width: 400, reduce: reduce);
 }
 
 void main() {

@@ -3,25 +3,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _pill = ValueKey<String>('beui_shared_pill');
 
-Widget _app() => MaterialApp(
-  theme: BeuiTextTheme.trackingNormal(
-    ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+Widget _app() => beuiTestApp(
+  BeuiSharedLayoutBg(
+    children: [
+      for (var i = 0; i < 4; i++)
+        SizedBox(height: 56, child: Center(child: Text('Item $i'))),
+    ],
   ),
-  home: Scaffold(
-    body: Center(
-      child: SizedBox(
-        width: 300,
-        child: BeuiSharedLayoutBg(
-          children: [
-            for (var i = 0; i < 4; i++)
-              SizedBox(height: 56, child: Center(child: Text('Item $i'))),
-          ],
-        ),
-      ),
-    ),
-  ),
+  width: 300,
 );
 
 Future<TestGesture> _mouse(WidgetTester tester) async {

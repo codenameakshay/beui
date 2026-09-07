@@ -5,21 +5,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _app({bool reduce = false}) {
-  Widget card = const BeuiTiltCard(child: SizedBox(width: 200, height: 200));
-  if (reduce) {
-    card = MediaQuery(
-      data: const MediaQueryData(disableAnimations: true),
-      child: card,
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: Center(child: card)),
-  );
-}
+import '../support.dart';
+
+Widget _app({bool reduce = false}) => beuiTestApp(
+  const BeuiTiltCard(child: SizedBox(width: 200, height: 200)),
+  reduce: reduce,
+);
 
 Future<TestGesture> _mouse(WidgetTester tester) async {
   final g = await tester.createGesture(kind: PointerDeviceKind.mouse);

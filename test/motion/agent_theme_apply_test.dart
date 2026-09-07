@@ -2,25 +2,19 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 Widget _host(
   Widget child, {
   BeuiColors? colors,
   BeuiAgentTheme? agent,
   String? fontFamily,
-}) {
-  final body = Center(child: SizedBox(width: 400, child: child));
-  final palette = colors ?? BeuiColors.light();
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData(
-        brightness: Brightness.light,
-        fontFamily: fontFamily,
-        useMaterial3: true,
-      ).copyWith(extensions: [palette, ?agent]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+}) => beuiTestApp(
+  child,
+  width: 400,
+  fontFamily: fontFamily,
+  extensions: [?colors, ?agent],
+);
 
 BoxDecoration? _bubbleDecoration(WidgetTester tester) {
   final boxes = tester.widgetList<DecoratedBox>(

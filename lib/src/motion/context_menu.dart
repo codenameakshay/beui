@@ -821,9 +821,11 @@ class _MenuPanel extends StatelessWidget {
               if (pillRect != null)
                 MotionBuilder<Rect>(
                   value: pillRect!,
-                  motion: reduce
-                      ? const NoMotion()
-                      : motionFor(context, beuiSpringLayout, isMovement: true),
+                  motion: motionFor(
+                    context,
+                    beuiSpringLayout,
+                    isMovement: true,
+                  ),
                   converter: const RectMotionConverter(),
                   builder: (context, rect, _) {
                     final activeItem =

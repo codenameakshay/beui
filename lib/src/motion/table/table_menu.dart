@@ -153,9 +153,15 @@ class _TableMenuState extends State<_TableMenu> {
         child: SingleMotionBuilder(
           value: _open ? 1.0 : 0.0,
           from: 0,
-          motion: reduce
-              ? const CurvedMotion(Duration(milliseconds: 120), beuiEaseOut)
-              : beuiSpringPanel,
+          motion: motionFor(
+            context,
+            beuiSpringPanel,
+            isMovement: true,
+            reducedFallback: const CurvedMotion(
+              Duration(milliseconds: 120),
+              beuiEaseOut,
+            ),
+          ),
           builder: (context, t, child) {
             final clamped = t.clamp(0.0, 1.0);
             // Opacity rides the overlay's own enter/exit clock so close always

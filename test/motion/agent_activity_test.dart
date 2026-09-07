@@ -4,25 +4,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _app(Widget child, {bool reduce = false, bool dark = false}) {
-  Widget body = child;
-  if (reduce) {
-    body = MediaQuery(
-      data: const MediaQueryData(disableAnimations: true),
-      child: body,
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      dark
-          ? ThemeData.dark().copyWith(extensions: [BeuiColors.dark()])
-          : ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(
-      body: Center(child: SizedBox(width: 400, child: body)),
-    ),
-  );
-}
+import '../support.dart';
+
+Widget _app(Widget child, {bool reduce = false, bool dark = false}) =>
+    beuiTestApp(child, width: 400, reduce: reduce, dark: dark);
 
 const _failedTool = BeuiAgentActivityTool(
   id: 'run',

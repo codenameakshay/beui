@@ -41,16 +41,6 @@ import 'beui_agent_status_colors.dart';
 import 'beui_agent_strings.dart';
 import 'beui_colors.dart';
 
-/// Compact versus standard content density for agent surfaces.
-@Deprecated('No component branches on density. Removed in 2.0.')
-enum BeuiAgentDensity {
-  /// Tighter paddings and gaps — a consumer choice, not the source default.
-  compact,
-
-  /// Source-fidelity spacing (the default).
-  standard,
-}
-
 /// Type roles used by agent widgets. Colors are applied by the widget from
 /// [BeuiColors]; these styles carry size, weight, height, and (for [mono])
 /// family. Sans styles leave [TextStyle.fontFamily] unset so
@@ -284,7 +274,6 @@ class BeuiAgentLayout {
   /// Creates agent layout tokens. Defaults match the source Tailwind gaps
   /// (`gap-4` 16, `gap-1.5` 6, bubble `px-3.5 py-2.5`, card `p-4`).
   const BeuiAgentLayout({
-    this.density = BeuiAgentDensity.standard,
     this.conversationGutter = EdgeInsets.zero,
     this.turnSpacing = 16,
     this.groupedMessageSpacing = 6,
@@ -301,12 +290,6 @@ class BeuiAgentLayout {
     this.iconSize = 16,
     this.rowGap = 8,
   });
-
-  /// Compact versus standard density hint. Widgets with their own spacing
-  /// enums still honour those enums; this flag is for surfaces that only
-  /// expose one density and for [BeuiAgentTheme.compact].
-  @Deprecated('No component branches on density. Removed in 2.0.')
-  final BeuiAgentDensity density;
 
   /// Horizontal (and optional vertical) inset of a conversation viewport.
   /// Defaults to zero so [BeuiMessageScroller.padding] remains the opt-in
@@ -350,7 +333,6 @@ class BeuiAgentLayout {
 
   /// Returns a copy with the given fields replaced.
   BeuiAgentLayout copyWith({
-    BeuiAgentDensity? density,
     EdgeInsets? conversationGutter,
     double? turnSpacing,
     double? groupedMessageSpacing,
@@ -365,7 +347,6 @@ class BeuiAgentLayout {
     double? rowGap,
   }) {
     return BeuiAgentLayout(
-      density: density ?? this.density,
       conversationGutter: conversationGutter ?? this.conversationGutter,
       turnSpacing: turnSpacing ?? this.turnSpacing,
       groupedMessageSpacing:
@@ -383,10 +364,9 @@ class BeuiAgentLayout {
     );
   }
 
-  /// Linearly interpolates two layout contracts. [density] snaps at 0.5.
+  /// Linearly interpolates two layout contracts.
   static BeuiAgentLayout lerp(BeuiAgentLayout a, BeuiAgentLayout b, double t) {
     return BeuiAgentLayout(
-      density: t < 0.5 ? a.density : b.density,
       conversationGutter: EdgeInsets.lerp(
         a.conversationGutter,
         b.conversationGutter,
@@ -422,7 +402,6 @@ class BeuiAgentLayout {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is BeuiAgentLayout &&
-        other.density == density &&
         other.conversationGutter == conversationGutter &&
         other.turnSpacing == turnSpacing &&
         other.groupedMessageSpacing == groupedMessageSpacing &&
@@ -439,7 +418,6 @@ class BeuiAgentLayout {
 
   @override
   int get hashCode => Object.hash(
-    density,
     conversationGutter,
     turnSpacing,
     groupedMessageSpacing,
@@ -844,7 +822,6 @@ class BeuiAgentTheme extends ThemeExtension<BeuiAgentTheme> {
   /// paddings and gaps shrink. Useful as a starting point, not a second look.
   static const compact = BeuiAgentTheme(
     layout: BeuiAgentLayout(
-      density: BeuiAgentDensity.compact,
       turnSpacing: 10,
       groupedMessageSpacing: 4,
       groupedMessageSpacingRelaxed: 8,

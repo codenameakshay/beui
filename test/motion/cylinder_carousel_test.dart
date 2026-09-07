@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 List<Widget> _balls([int n = 7]) => [
   for (var i = 0; i < n; i++)
     DecoratedBox(
@@ -25,38 +27,21 @@ Widget _app({
   bool autoRotate = false,
   bool reduce = false,
 }) {
-  Widget child = Center(
-    child: SizedBox(
-      width: 400,
+  final carousel = SizedBox(
+    height: 200,
+    child: BeuiCylinderCarousel(
+      curve: curve,
+      itemSize: 120,
       height: 200,
-      child: BeuiCylinderCarousel(
-        curve: curve,
-        itemSize: 120,
-        height: 200,
-        snap: snap,
-        autoRotate: autoRotate,
-        defaultIndex: defaultIndex,
-        index: index,
-        onIndexChange: onIndexChange,
-        children: _balls(),
-      ),
+      snap: snap,
+      autoRotate: autoRotate,
+      defaultIndex: defaultIndex,
+      index: index,
+      onIndexChange: onIndexChange,
+      children: _balls(),
     ),
   );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
-  );
+  return beuiTestApp(carousel, width: 400, reduce: reduce);
 }
 
 void main() {

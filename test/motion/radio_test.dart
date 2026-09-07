@@ -4,6 +4,8 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _dot = ValueKey<String>('beui_radio_dot');
 
 Widget _app({
@@ -11,37 +13,21 @@ Widget _app({
   String? defaultValue,
   ValueChanged<String>? onChanged,
   bool reduce = false,
-}) {
-  Widget child = Center(
-    child: BeuiRadioGroup<String>(
-      key: const ValueKey('rg'),
-      value: value,
-      defaultValue: defaultValue,
-      onChanged: onChanged,
-      items: const [
-        BeuiRadioItem(value: 'a', label: 'A'),
-        BeuiRadioItem(value: 'b', label: 'B'),
-        BeuiRadioItem(value: 'c', label: 'C'),
-        BeuiRadioItem(value: 'd', label: 'D', enabled: false),
-      ],
-    ),
-  );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
-  );
-}
+}) => beuiTestApp(
+  BeuiRadioGroup<String>(
+    key: const ValueKey('rg'),
+    value: value,
+    defaultValue: defaultValue,
+    onChanged: onChanged,
+    items: const [
+      BeuiRadioItem(value: 'a', label: 'A'),
+      BeuiRadioItem(value: 'b', label: 'B'),
+      BeuiRadioItem(value: 'c', label: 'C'),
+      BeuiRadioItem(value: 'd', label: 'D', enabled: false),
+    ],
+  ),
+  reduce: reduce,
+);
 
 double _dotY(WidgetTester tester) => tester.getTopLeft(find.byKey(_dot)).dy;
 

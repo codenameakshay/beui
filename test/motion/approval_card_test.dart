@@ -66,56 +66,37 @@ Widget _host({
   String? rejectLabel,
   String? requestChangesLabel,
 }) {
-  Widget body = Center(
-    child: SizedBox(
-      width: 400,
-      child: BeuiApprovalCard(
-        title: title,
-        description: description,
-        questions: questions,
-        status: status,
-        answers: answers,
-        defaultAnswers: defaultAnswers,
-        onAnswersChange: onAnswersChange,
-        step: step,
-        defaultStep: defaultStep,
-        onStepChange: onStepChange,
-        onSubmit: onSubmit,
-        onApprove: onApprove,
-        onReject: onReject,
-        onRequestChanges: onRequestChanges,
-        onDismiss: onDismiss,
-        approveLabel: approveLabel,
-        submitLabel: submitLabel,
-        result: result,
-        expanded: expanded,
-        defaultExpanded: defaultExpanded,
-        onExpandedChanged: onExpandedChanged,
-        headerAction: headerAction,
-        compactChild: compactChild,
-        expandedChild: expandedChild,
-        showExpandToggle: showExpandToggle,
-        rejectLabel: rejectLabel,
-        requestChangesLabel: requestChangesLabel,
-        child: child,
-      ),
-    ),
+  Widget cardWidget = BeuiApprovalCard(
+    title: title,
+    description: description,
+    questions: questions,
+    status: status,
+    answers: answers,
+    defaultAnswers: defaultAnswers,
+    onAnswersChange: onAnswersChange,
+    step: step,
+    defaultStep: defaultStep,
+    onStepChange: onStepChange,
+    onSubmit: onSubmit,
+    onApprove: onApprove,
+    onReject: onReject,
+    onRequestChanges: onRequestChanges,
+    onDismiss: onDismiss,
+    approveLabel: approveLabel,
+    submitLabel: submitLabel,
+    result: result,
+    expanded: expanded,
+    defaultExpanded: defaultExpanded,
+    onExpandedChanged: onExpandedChanged,
+    headerAction: headerAction,
+    compactChild: compactChild,
+    expandedChild: expandedChild,
+    showExpandToggle: showExpandToggle,
+    rejectLabel: rejectLabel,
+    requestChangesLabel: requestChangesLabel,
+    child: child,
   );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
+  return beuiTestApp(cardWidget, width: 400, reduce: reduce);
 }
 
 void main() {

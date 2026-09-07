@@ -87,11 +87,6 @@ class BeuiPreviewRailStyle {
     this.tickLength,
     this.tickThickness,
     this.itemSize,
-    @Deprecated(
-      'Renamed to itemSize, matching the source prop. Will be removed in the '
-      'next major; itemSize already wins when both are set.',
-    )
-    this.trackExtent,
   });
 
   /// Colour of the highlighted (nearest) tick. Defaults to `BeuiColors.foreground`.
@@ -115,47 +110,22 @@ class BeuiPreviewRailStyle {
   /// has no class names: it collects that geometry into this one class, so
   /// [tickLength], [tickThickness] and `itemSize` are the same *kind* of knob
   /// and belong together. Putting `itemSize` on the widget would split the
-  /// rail's geometry across two places, and — because it is the same quantity
-  /// as the pre-existing [trackExtent] — would give one value two homes.
+  /// rail's geometry across two places.
   ///
   /// Resolves to 24 when null, matching the source's own `itemSize = 24`
-  /// default (`h-6`). Read it through [resolvedItemSize], which also applies
-  /// the deprecated [trackExtent] fallback.
+  /// default (`h-6`). Read it through [resolvedItemSize].
   final double? itemSize;
 
-  /// Spacing track per item.
-  ///
-  /// Superseded by [itemSize], which is the same quantity under the source's
-  /// own name. When both are set [itemSize] wins.
-  @Deprecated(
-    'Renamed to itemSize, matching the source prop. Will be removed in the '
-    'next major; itemSize already wins when both are set.',
-  )
-  final double? trackExtent;
-
-  /// The slot extent actually used: [itemSize], else the deprecated
-  /// [trackExtent], else the source default of 24.
-  ///
-  /// The one place the alias is resolved, so the precedence rule cannot drift
-  /// between the widget and its tests.
-  double get resolvedItemSize =>
-      itemSize ??
-      // ignore: deprecated_member_use_from_same_package
-      trackExtent ??
-      24.0;
+  /// The slot extent actually used: [itemSize], else the source default of 24.
+  double get resolvedItemSize => itemSize ?? 24.0;
 
   /// Returns a copy with the given fields replaced.
-  ///
-  /// Setting [itemSize] also drops any inherited [trackExtent], so a caller can
-  /// migrate off the alias without the old value silently surviving in a copy.
   BeuiPreviewRailStyle copyWith({
     Color? activeTickColor,
     Color? inactiveTickColor,
     double? tickLength,
     double? tickThickness,
     double? itemSize,
-    @Deprecated('Renamed to itemSize, matching the source prop.')
-    double? trackExtent,
   }) {
     return BeuiPreviewRailStyle(
       activeTickColor: activeTickColor ?? this.activeTickColor,
@@ -163,8 +133,6 @@ class BeuiPreviewRailStyle {
       tickLength: tickLength ?? this.tickLength,
       tickThickness: tickThickness ?? this.tickThickness,
       itemSize: itemSize ?? this.itemSize,
-      // ignore: deprecated_member_use_from_same_package
-      trackExtent: itemSize != null ? null : (trackExtent ?? this.trackExtent),
     );
   }
 

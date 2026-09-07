@@ -4,12 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-ThemeData _theme({Brightness brightness = Brightness.light}) {
-  final base = brightness == Brightness.dark
-      ? ThemeData.dark().copyWith(extensions: [BeuiColors.dark()])
-      : ThemeData.light().copyWith(extensions: [BeuiColors.light()]);
-  return BeuiTextTheme.trackingNormal(base);
-}
+import '../support.dart';
 
 Widget _host({
   String? tool = 'terminal.run',
@@ -35,46 +30,34 @@ Widget _host({
   double width = 400,
   Brightness brightness = Brightness.light,
 }) {
-  Widget body = Center(
-    child: SizedBox(
-      width: width,
-      child: BeuiToolResult(
-        tool: tool,
-        toolWidget: toolWidget,
-        title: title,
-        titleWidget: titleWidget,
-        status: status,
-        kind: kind,
-        meta: meta,
-        icon: icon,
-        open: open,
-        defaultOpen: defaultOpen,
-        onOpenChange: onOpenChange,
-        collapseOnComplete: collapseOnComplete,
-        keepActionsVisibleWhenCollapsed: keepActionsVisibleWhenCollapsed,
-        maxHeight: maxHeight,
-        hiddenLineCount: hiddenLineCount,
-        copyText: copyText,
-        onCopy: onCopy,
-        onRetry: onRetry,
-        child:
-            child ??
-            const BeuiToolResultOutput(code: 'line one\nline two\nline three'),
-      ),
-    ),
+  final result = BeuiToolResult(
+    tool: tool,
+    toolWidget: toolWidget,
+    title: title,
+    titleWidget: titleWidget,
+    status: status,
+    kind: kind,
+    meta: meta,
+    icon: icon,
+    open: open,
+    defaultOpen: defaultOpen,
+    onOpenChange: onOpenChange,
+    collapseOnComplete: collapseOnComplete,
+    keepActionsVisibleWhenCollapsed: keepActionsVisibleWhenCollapsed,
+    maxHeight: maxHeight,
+    hiddenLineCount: hiddenLineCount,
+    copyText: copyText,
+    onCopy: onCopy,
+    onRetry: onRetry,
+    child:
+        child ??
+        const BeuiToolResultOutput(code: 'line one\nline two\nline three'),
   );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: _theme(brightness: brightness),
-    home: Scaffold(body: body),
+  return beuiTestApp(
+    result,
+    width: width,
+    reduce: reduce,
+    brightness: brightness,
   );
 }
 
@@ -164,37 +147,26 @@ void main() {
     ) async {
       // Theme strings replace the defaults…
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(
-              extensions: [
-                BeuiColors.light(),
-                const BeuiAgentTheme(
-                  strings: BeuiAgentStrings(
-                    statusFailed: 'Échec',
-                    copyResult: 'Copier',
-                    runAgain: 'Relancer',
-                  ),
-                ),
-              ],
-            ),
+        beuiTestApp(
+          BeuiToolResult(
+            tool: 'terminal.run',
+            title: 'Localised',
+            status: BeuiToolResultStatus.error,
+            collapseOnComplete: false,
+            copyText: 'x',
+            onRetry: () {},
+            child: const BeuiToolResultOutput(code: 'x'),
           ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 400,
-                child: BeuiToolResult(
-                  tool: 'terminal.run',
-                  title: 'Localised',
-                  status: BeuiToolResultStatus.error,
-                  collapseOnComplete: false,
-                  copyText: 'x',
-                  onRetry: () {},
-                  child: const BeuiToolResultOutput(code: 'x'),
-                ),
+          width: 400,
+          extensions: [
+            const BeuiAgentTheme(
+              strings: BeuiAgentStrings(
+                statusFailed: 'Échec',
+                copyResult: 'Copier',
+                runAgain: 'Relancer',
               ),
             ),
-          ),
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -204,33 +176,22 @@ void main() {
 
       // …and a per-instance label beats the theme.
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(
-              extensions: [
-                BeuiColors.light(),
-                const BeuiAgentTheme(
-                  strings: BeuiAgentStrings(copyResult: 'Copier'),
-                ),
-              ],
-            ),
+        beuiTestApp(
+          BeuiToolResult(
+            tool: 'terminal.run',
+            title: 'Localised',
+            status: BeuiToolResultStatus.error,
+            collapseOnComplete: false,
+            copyText: 'x',
+            copyLabel: 'Kopieren',
+            child: const BeuiToolResultOutput(code: 'x'),
           ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 400,
-                child: BeuiToolResult(
-                  tool: 'terminal.run',
-                  title: 'Localised',
-                  status: BeuiToolResultStatus.error,
-                  collapseOnComplete: false,
-                  copyText: 'x',
-                  copyLabel: 'Kopieren',
-                  child: const BeuiToolResultOutput(code: 'x'),
-                ),
-              ),
+          width: 400,
+          extensions: [
+            const BeuiAgentTheme(
+              strings: BeuiAgentStrings(copyResult: 'Copier'),
             ),
-          ),
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -778,35 +739,26 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(520, 200));
       addTearDown(() => tester.binding.setSurfaceSize(null));
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: Center(
-              child: RepaintBoundary(
-                key: const ValueKey('golden'),
-                child: SizedBox(
-                  width: 460,
-                  child: BeuiToolResult(
-                    tool: 'terminal.run',
-                    title: 'Tests passed',
-                    meta: '2.9s',
-                    kind: BeuiToolResultKind.terminal,
-                    status: BeuiToolResultStatus.success,
-                    collapseOnComplete: false,
-                    copyText: '49 pass · 0 fail',
-                    onRetry: _noop,
-                    child: const BeuiToolResultOutput(
-                      code:
-                          r'$ bun test tests/a11y.test.tsx'
-                          '\n49 pass · 0 fail',
-                    ),
-                  ),
-                ),
+        beuiTestApp(
+          RepaintBoundary(
+            key: const ValueKey('golden'),
+            child: BeuiToolResult(
+              tool: 'terminal.run',
+              title: 'Tests passed',
+              meta: '2.9s',
+              kind: BeuiToolResultKind.terminal,
+              status: BeuiToolResultStatus.success,
+              collapseOnComplete: false,
+              copyText: '49 pass · 0 fail',
+              onRetry: _noop,
+              child: const BeuiToolResultOutput(
+                code:
+                    r'$ bun test tests/a11y.test.tsx'
+                    '\n49 pass · 0 fail',
               ),
             ),
           ),
+          width: 460,
         ),
       );
       // Fixed pumps, never pumpAndSettle: the header labels roll in through
