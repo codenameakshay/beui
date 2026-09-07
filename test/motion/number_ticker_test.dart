@@ -2,6 +2,8 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 class _Host extends StatefulWidget {
   const _Host({required this.initial, this.reduce = false});
   final int initial;
@@ -17,24 +19,13 @@ class _HostState extends State<_Host> {
   void set(int v) => setState(() => _value = v);
 
   @override
-  Widget build(BuildContext context) {
-    Widget body = DefaultTextStyle(
+  Widget build(BuildContext context) => beuiTestApp(
+    DefaultTextStyle(
       style: const TextStyle(fontSize: 28),
       child: BeuiNumberTicker(value: _value),
-    );
-    if (widget.reduce) {
-      body = MediaQuery(
-        data: const MediaQueryData(disableAnimations: true),
-        child: body,
-      );
-    }
-    return MaterialApp(
-      theme: BeuiTextTheme.trackingNormal(
-        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      ),
-      home: Scaffold(body: Center(child: body)),
-    );
-  }
+    ),
+    reduce: widget.reduce,
+  );
 }
 
 /// Reads the vertical translation of every digit-column [Transform] (scoped to
@@ -106,20 +97,13 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: BeuiTextTheme.trackingNormal(
-          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-        ),
-        home: const Scaffold(
-          body: Center(
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 28),
-              child: BeuiNumberTicker(
-                value: 999,
-                duration: Duration(milliseconds: 300),
-                stagger: Duration(milliseconds: 200),
-              ),
-            ),
+      beuiTestApp(
+        const DefaultTextStyle(
+          style: TextStyle(fontSize: 28),
+          child: BeuiNumberTicker(
+            value: 999,
+            duration: Duration(milliseconds: 300),
+            stagger: Duration(milliseconds: 200),
           ),
         ),
       ),
@@ -191,20 +175,13 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: BeuiTextTheme.trackingNormal(
-          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-        ),
-        home: const Scaffold(
-          body: Center(
-            child: DefaultTextStyle(
-              style: TextStyle(fontSize: 28),
-              child: BeuiNumberTicker(
-                value: 8,
-                blur: true,
-                duration: Duration(milliseconds: 900),
-              ),
-            ),
+      beuiTestApp(
+        const DefaultTextStyle(
+          style: TextStyle(fontSize: 28),
+          child: BeuiNumberTicker(
+            value: 8,
+            blur: true,
+            duration: Duration(milliseconds: 900),
           ),
         ),
       ),
