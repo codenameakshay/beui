@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:motor/motor.dart';
 
+import '../support.dart';
+
 List<BeuiTodoItem> _sample({
   BeuiTodoItemStatus a = BeuiTodoItemStatus.pending,
   BeuiTodoItemStatus b = BeuiTodoItemStatus.pending,
@@ -47,40 +49,23 @@ Widget _host({
   Widget? emptyState,
   List<ThemeExtension<dynamic>>? extensions,
 }) {
-  Widget child = Center(
-    child: SizedBox(
-      width: 360,
-      child: BeuiTodoList(
-        items: items,
-        title: title,
-        open: open,
-        defaultOpen: defaultOpen,
-        onOpenChange: onOpenChange,
-        collapseOnComplete: collapseOnComplete,
-        emptyLabel: emptyLabel,
-        emptyDescription: emptyDescription,
-        emptyState: emptyState,
-      ),
-    ),
+  final list = BeuiTodoList(
+    items: items,
+    title: title,
+    open: open,
+    defaultOpen: defaultOpen,
+    onOpenChange: onOpenChange,
+    collapseOnComplete: collapseOnComplete,
+    emptyLabel: emptyLabel,
+    emptyDescription: emptyDescription,
+    emptyState: emptyState,
   );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  final base = dark ? ThemeData.dark() : ThemeData.light();
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      base.copyWith(
-        extensions:
-            extensions ?? [dark ? BeuiColors.dark() : BeuiColors.light()],
-      ),
-    ),
-    home: Scaffold(body: child),
+  return beuiTestApp(
+    list,
+    width: 360,
+    reduce: reduce,
+    dark: dark,
+    extensions: extensions ?? const [],
   );
 }
 
@@ -753,14 +738,7 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(420, 300));
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
-      MaterialApp(
-        theme: BeuiTextTheme.trackingNormal(
-          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-        ),
-        home: const Scaffold(
-          body: Center(child: RepaintBoundary(child: _TodoGolden())),
-        ),
-      ),
+      beuiTestApp(const RepaintBoundary(child: _TodoGolden())),
     );
     // Two fixed advances, never pumpAndSettle: the in-progress ring is an
     // indefinite ticker. The first pump lets the row entrances start (they are
