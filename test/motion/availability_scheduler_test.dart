@@ -2,6 +2,8 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 /// A controlled harness that holds the week and feeds it back on change, so
 /// interaction tests observe the real re-render.
 class _Harness extends StatefulWidget {
@@ -17,29 +19,14 @@ class _HarnessState extends State<_Harness> {
   BeuiWeekAvailability _week = beuiDefaultWeek();
 
   @override
-  Widget build(BuildContext context) {
-    Widget child = BeuiAvailabilityScheduler(
+  Widget build(BuildContext context) => beuiTestApp(
+    BeuiAvailabilityScheduler(
       value: _week,
       onChanged: (next) => setState(() => _week = next),
-    );
-    if (widget.reduce) {
-      final inner = child;
-      child = Builder(
-        builder: (context) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(disableAnimations: true),
-          child: inner,
-        ),
-      );
-    }
-    return MaterialApp(
-      theme: BeuiTextTheme.trackingNormal(
-        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-      ),
-      home: Scaffold(
-        body: Align(alignment: Alignment.topCenter, child: child),
-      ),
-    );
-  }
+    ),
+    alignment: Alignment.topCenter,
+    reduce: widget.reduce,
+  );
 }
 
 void main() {
@@ -127,22 +114,15 @@ void main() {
 
   testWidgets('rest-state golden (default week)', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: BeuiTextTheme.trackingNormal(
-          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-        ),
-        home: Scaffold(
-          body: Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: BeuiAvailabilityScheduler(
-                value: beuiDefaultWeek(),
-                onChanged: (_) {},
-              ),
-            ),
+      beuiTestApp(
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: BeuiAvailabilityScheduler(
+            value: beuiDefaultWeek(),
+            onChanged: (_) {},
           ),
         ),
+        alignment: Alignment.topCenter,
       ),
     );
     await tester.pumpAndSettle();
