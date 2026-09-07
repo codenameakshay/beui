@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _icons = <IconData>[
   LucideIcons.house,
   LucideIcons.mail,
@@ -14,27 +16,21 @@ const _icons = <IconData>[
   LucideIcons.sparkles,
 ];
 
-Widget _app({bool magnify = false, bool reduce = false, int activeIndex = 0}) {
-  Widget dock = BeuiDock(
-    magnify: magnify,
-    items: [
-      for (var i = 0; i < _icons.length; i++)
-        BeuiDockItem(icon: _icons[i], active: i == activeIndex, onTap: () {}),
-    ],
-  );
-  if (reduce) {
-    dock = MediaQuery(
-      data: const MediaQueryData(disableAnimations: true),
-      child: dock,
+Widget _app({bool magnify = false, bool reduce = false, int activeIndex = 0}) =>
+    beuiTestApp(
+      BeuiDock(
+        magnify: magnify,
+        items: [
+          for (var i = 0; i < _icons.length; i++)
+            BeuiDockItem(
+              icon: _icons[i],
+              active: i == activeIndex,
+              onTap: () {},
+            ),
+        ],
+      ),
+      reduce: reduce,
     );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: Center(child: dock)),
-  );
-}
 
 Future<TestGesture> _mouse(WidgetTester tester) async {
   final g = await tester.createGesture(kind: PointerDeviceKind.mouse);
