@@ -1006,7 +1006,9 @@ class _ActionsButtonState extends State<_ActionsButton> {
     final enabled = widget.enabled;
     final plus = SingleMotionBuilder(
       value: widget.open ? 45.0 : 0.0,
-      motion: widget.reduce ? const NoMotion() : widget.swapMotion,
+      // [swapMotion] is already resolved through `motionFor` by the caller
+      // (isMovement: true), so it is NoMotion under reduced motion already.
+      motion: widget.swapMotion,
       builder: (context, deg, child) {
         // Reduced motion snaps (bypass NoMotion freeze-at-source).
         final angle = (widget.swapMotion is NoMotion || widget.reduce)
