@@ -281,22 +281,10 @@ class _MorphPanelState extends State<MorphPanel> {
       builder: (context, p, _) {
         if (p < 0.001 && !widget.open) return const SizedBox.shrink();
 
-        // Both rects, in the trigger's own frame (BeuiOverlay's link anchors
-        // there): the trigger sits at this frame's origin, and the panel's
-        // header-relative target shifts by -_triggerRect.topLeft to land in
-        // the same frame — a pure reparametrisation, not a geometry change.
-        final triggerRect = Rect.fromLTWH(
-          0,
-          0,
-          _triggerRect.width,
-          _triggerRect.height,
-        );
-        final target = Rect.fromLTWH(
-          -_triggerRect.left,
-          -_triggerRect.top,
-          panelWidth,
-          _panelHeight,
-        );
+        // The follower is shifted back to the header-relative origin, so the
+        // full target rect remains inside its hit-test box.
+        final triggerRect = _triggerRect;
+        final target = Rect.fromLTWH(0, 0, panelWidth, _panelHeight);
         final rect = Rect.lerp(triggerRect, target, p)!;
         final radius = lerpDouble(
           _triggerRect.height / 2 < kPanelRadius
@@ -322,6 +310,7 @@ class _MorphPanelState extends State<MorphPanel> {
           link: link,
           targetAnchor: Alignment.topLeft,
           followerAnchor: Alignment.topLeft,
+          offset: Offset(-_triggerRect.left, -_triggerRect.top),
           showWhenUnlinked: false,
           child: SizedBox(
             width: panelWidth,

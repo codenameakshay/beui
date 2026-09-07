@@ -122,6 +122,31 @@ void main() {
   });
 
   group('BeuiWalletCard search bar', () {
+    testWidgets('recent searches remain tappable across the leftward morph', (
+      tester,
+    ) async {
+      String? submitted;
+      await tester.pumpWidget(
+        _app(onSearchSubmit: (value) => submitted = value),
+      );
+      await tester.pumpAndSettle();
+
+      final trigger = tester.getRect(find.byIcon(LucideIcons.search));
+      await tester.tap(find.byIcon(LucideIcons.search));
+      await tester.pumpAndSettle();
+
+      final recent = tester.getRect(find.text('vitalik.eth'));
+      // The search surface grows left from its right-side trigger. This point
+      // is inside the visible recent row but left of the trigger's old
+      // follower bounds, so it exercises the panel's full hit region.
+      await tester.tapAt(
+        Offset((recent.left + trigger.left) / 2, recent.center.dy),
+      );
+      await tester.pump();
+
+      expect(submitted, 'vitalik.eth');
+    });
+
     testWidgets('icon morphs into a bar exposing recent searches', (
       tester,
     ) async {
