@@ -29,7 +29,20 @@ class _BeuiSpinnerState extends State<BeuiSpinner>
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1000),
-  )..repeat();
+  );
+  bool _reduce = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    _reduce = reduce;
+    if (reduce) {
+      _controller.stop();
+    } else if (!_controller.isAnimating) {
+      _controller.repeat();
+    }
+  }
 
   @override
   void dispose() {
@@ -39,13 +52,11 @@ class _BeuiSpinnerState extends State<BeuiSpinner>
 
   @override
   Widget build(BuildContext context) {
-    return RotationTransition(
-      turns: _controller,
-      child: CustomPaint(
-        size: Size.square(widget.size),
-        painter: _ArcPainter(color: widget.color, stroke: widget.size * 0.12),
-      ),
+    final arc = CustomPaint(
+      size: Size.square(widget.size),
+      painter: _ArcPainter(color: widget.color, stroke: widget.size * 0.12),
     );
+    return _reduce ? arc : RotationTransition(turns: _controller, child: arc);
   }
 }
 
