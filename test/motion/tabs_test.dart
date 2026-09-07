@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _indicator = ValueKey<String>('beui_tabs_indicator');
 
 Widget _app({
@@ -13,48 +15,31 @@ Widget _app({
   bool reduce = false,
   bool withContent = false,
 }) {
-  Widget child = Align(
-    alignment: Alignment.topLeft,
-    child: BeuiTabs<String>(
-      key: const ValueKey('tabs'),
-      value: value,
-      defaultValue: defaultValue,
-      onChanged: onChanged,
-      variant: variant,
-      tabs: [
-        BeuiTab(
-          value: 'one',
-          label: const Text('One'),
-          content: withContent ? const Text('content One') : null,
-        ),
-        BeuiTab(
-          value: 'two',
-          label: const Text('Two'),
-          content: withContent ? const Text('content Two') : null,
-        ),
-        BeuiTab(
-          value: 'three',
-          label: const Text('Three'),
-          content: withContent ? const Text('content Three') : null,
-        ),
-      ],
-    ),
-  );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
+  final tabs = BeuiTabs<String>(
+    key: const ValueKey('tabs'),
+    value: value,
+    defaultValue: defaultValue,
+    onChanged: onChanged,
+    variant: variant,
+    tabs: [
+      BeuiTab(
+        value: 'one',
+        label: const Text('One'),
+        content: withContent ? const Text('content One') : null,
       ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
+      BeuiTab(
+        value: 'two',
+        label: const Text('Two'),
+        content: withContent ? const Text('content Two') : null,
+      ),
+      BeuiTab(
+        value: 'three',
+        label: const Text('Three'),
+        content: withContent ? const Text('content Three') : null,
+      ),
+    ],
   );
+  return beuiTestApp(tabs, alignment: Alignment.topLeft, reduce: reduce);
 }
 
 double _indicatorX(WidgetTester tester) =>
@@ -131,27 +116,20 @@ void main() {
     });
 
     testWidgets('panel stays left-aligned mid-transition', (tester) async {
-      Widget build(String value) => MaterialApp(
-        theme: BeuiTextTheme.trackingNormal(
-          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-        ),
-        home: Scaffold(
-          body: Align(
-            alignment: Alignment.topLeft,
-            child: BeuiTabs<String>(
-              key: const ValueKey('t'),
-              value: value,
-              tabs: const [
-                BeuiTab(
-                  value: 'a',
-                  label: Text('A'),
-                  content: Text('a very long panel body for tab a'),
-                ),
-                BeuiTab(value: 'b', label: Text('B'), content: Text('short b')),
-              ],
+      Widget build(String value) => beuiTestApp(
+        BeuiTabs<String>(
+          key: const ValueKey('t'),
+          value: value,
+          tabs: const [
+            BeuiTab(
+              value: 'a',
+              label: Text('A'),
+              content: Text('a very long panel body for tab a'),
             ),
-          ),
+            BeuiTab(value: 'b', label: Text('B'), content: Text('short b')),
+          ],
         ),
+        alignment: Alignment.topLeft,
       );
       await tester.pumpWidget(build('a'));
       await tester.pumpAndSettle();
@@ -276,30 +254,21 @@ void main() {
       BorderRadiusGeometry? listBorderRadius,
       EdgeInsetsGeometry? triggerPadding,
       double width = 600,
-    }) => MaterialApp(
-      theme: BeuiTextTheme.trackingNormal(
-        ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+    }) => beuiTestApp(
+      BeuiTabs<String>(
+        defaultValue: 'one',
+        wrap: wrap,
+        gap: gap,
+        listBorderRadius: listBorderRadius,
+        triggerPadding: triggerPadding,
+        tabs: const [
+          BeuiTab(value: 'one', label: Text('One')),
+          BeuiTab(value: 'two', label: Text('Two')),
+          BeuiTab(value: 'three', label: Text('Three')),
+        ],
       ),
-      home: Scaffold(
-        body: Align(
-          alignment: Alignment.topLeft,
-          child: SizedBox(
-            width: width,
-            child: BeuiTabs<String>(
-              defaultValue: 'one',
-              wrap: wrap,
-              gap: gap,
-              listBorderRadius: listBorderRadius,
-              triggerPadding: triggerPadding,
-              tabs: const [
-                BeuiTab(value: 'one', label: Text('One')),
-                BeuiTab(value: 'two', label: Text('Two')),
-                BeuiTab(value: 'three', label: Text('Three')),
-              ],
-            ),
-          ),
-        ),
-      ),
+      alignment: Alignment.topLeft,
+      width: width,
     );
 
     testWidgets('defaults are unchanged: single row, no Wrap, 4px gap', (
