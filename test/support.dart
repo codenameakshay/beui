@@ -10,15 +10,28 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// A `MaterialApp` carrying the neutral beUI palette, with [child] centred in
-/// a `Scaffold`. [reduce] turns on `disableAnimations` for the subtree so a
-/// test can assert the reduced-motion path.
+/// A `MaterialApp` carrying the neutral beUI palette, with [child] aligned in
+/// a `Scaffold` (centred by default; pass [alignment] to match a component's
+/// natural corner, e.g. a toast stack or a top-anchored popover). [reduce]
+/// turns on `disableAnimations` for the subtree so a test can assert the
+/// reduced-motion path. [width] wraps [child] in a `SizedBox` of that width,
+/// matching the fixed-width harness most component tests pump into. [dark]
+/// is a shorthand for `brightness: Brightness.dark`. [extensions] appends
+/// extra theme extensions (e.g. `BeuiAgentTheme`) after `BeuiColors`, and
+/// [fontFamily] threads a fixed font through the theme the same way a
+/// font-sensitive metrics test does.
 Widget beuiTestApp(
   Widget child, {
   bool reduce = false,
   Brightness brightness = Brightness.light,
+  bool dark = false,
+  Alignment alignment = Alignment.center,
+  double? width,
+  List<ThemeExtension<dynamic>> extensions = const [],
+  String? fontFamily,
 }) {
-  Widget body = Center(child: child);
+  Widget content = width == null ? child : SizedBox(width: width, child: child);
+  Widget body = Align(alignment: alignment, child: content);
   if (reduce) {
     final inner = body;
     body = Builder(
@@ -28,14 +41,16 @@ Widget beuiTestApp(
       ),
     );
   }
-  final base = brightness == Brightness.dark
-      ? ThemeData.dark()
-      : ThemeData.light();
-  final colors = brightness == Brightness.dark
-      ? BeuiColors.dark()
-      : BeuiColors.light();
+  final effectiveDark = dark || brightness == Brightness.dark;
+  final base = ThemeData(
+    brightness: effectiveDark ? Brightness.dark : Brightness.light,
+    fontFamily: fontFamily,
+  );
+  final colors = effectiveDark ? BeuiColors.dark() : BeuiColors.light();
   return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(base.copyWith(extensions: [colors])),
+    theme: BeuiTextTheme.trackingNormal(
+      base.copyWith(extensions: [colors, ...extensions]),
+    ),
     home: Scaffold(body: body),
   );
 }

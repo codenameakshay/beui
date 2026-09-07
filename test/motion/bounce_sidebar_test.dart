@@ -1,7 +1,8 @@
-import 'package:beui/beui.dart';
 import 'package:beui/src/motion/bounce_sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../support.dart';
 
 const _items = <BeuiBounceSidebarItem>[
   BeuiBounceSidebarItem(id: 'overview', label: Text('Overview')),
@@ -11,24 +12,8 @@ const _items = <BeuiBounceSidebarItem>[
   BeuiBounceSidebarItem(id: 'changelog', label: Text('Changelog')),
 ];
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: SizedBox(width: 220, child: child));
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+Widget _wrap(Widget child, {bool reduce = false}) =>
+    beuiTestApp(child, width: 220, reduce: reduce);
 
 void main() {
   group('BeuiBounceSidebar', () {

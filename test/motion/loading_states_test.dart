@@ -2,21 +2,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _app(Widget child, {bool reduce = false}) {
-  Widget body = child;
-  if (reduce) {
-    body = MediaQuery(
-      data: const MediaQueryData(disableAnimations: true),
-      child: body,
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: Center(child: body)),
-  );
-}
+import '../support.dart';
 
 void main() {
   group('beuiFormatAgentElapsed', () {
@@ -40,7 +26,7 @@ void main() {
     testWidgets('renders default text through a shimmer ShaderMask', (
       tester,
     ) async {
-      await tester.pumpWidget(_app(const BeuiThinkingShimmer()));
+      await tester.pumpWidget(beuiTestApp(const BeuiThinkingShimmer()));
       await tester.pump();
       expect(find.text('Thinking…'), findsOneWidget);
       expect(find.byType(ShaderMask), findsOneWidget);
@@ -49,7 +35,7 @@ void main() {
 
     testWidgets('accepts a custom message and duration', (tester) async {
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           const BeuiThinkingShimmer(
             text: 'Reviewing your direction',
             duration: Duration(seconds: 2),
@@ -64,7 +50,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           const BeuiThinkingShimmer(
             text: 'Reviewing',
             duration: Duration(seconds: 2),
@@ -84,7 +70,9 @@ void main() {
     });
 
     testWidgets('reduced motion holds a static highlight', (tester) async {
-      await tester.pumpWidget(_app(const BeuiThinkingShimmer(), reduce: true));
+      await tester.pumpWidget(
+        beuiTestApp(const BeuiThinkingShimmer(), reduce: true),
+      );
       await tester.pumpAndSettle();
       expect(
         tester.binding.hasScheduledFrame,
@@ -98,7 +86,9 @@ void main() {
   group('BeuiAgentProgress', () {
     testWidgets('renders label and controlled elapsed time', (tester) async {
       await tester.pumpWidget(
-        _app(const BeuiAgentProgress(label: 'Searching', elapsedSeconds: 12.3)),
+        beuiTestApp(
+          const BeuiAgentProgress(label: 'Searching', elapsedSeconds: 12.3),
+        ),
       );
       await tester.pump();
       expect(find.text('Searching'), findsOneWidget);
@@ -108,7 +98,7 @@ void main() {
 
     testWidgets('formats multi-minute controlled elapsed', (tester) async {
       await tester.pumpWidget(
-        _app(const BeuiAgentProgress(elapsedSeconds: 151.6)),
+        beuiTestApp(const BeuiAgentProgress(elapsedSeconds: 151.6)),
       );
       await tester.pump();
       expect(find.text('Churning'), findsOneWidget);
@@ -122,7 +112,7 @@ void main() {
       // initialSeconds. Reading `clock.now()` puts both on the same clock, so
       // the displayed value is exact and consumers can drive it in tests.
       await tester.pumpWidget(
-        _app(const BeuiAgentProgress(initialSeconds: 1.0)),
+        beuiTestApp(const BeuiAgentProgress(initialSeconds: 1.0)),
       );
       await tester.pump();
       expect(find.text('1.0s'), findsOneWidget);
@@ -141,7 +131,9 @@ void main() {
 
     testWidgets('paused running freezes the initial value', (tester) async {
       await tester.pumpWidget(
-        _app(const BeuiAgentProgress(initialSeconds: 5.0, running: false)),
+        beuiTestApp(
+          const BeuiAgentProgress(initialSeconds: 5.0, running: false),
+        ),
       );
       await tester.pump();
       expect(find.text('5.0s'), findsOneWidget);
@@ -157,7 +149,7 @@ void main() {
       // long the pause lasted. The start instant is now re-anchored on every
       // resume, off the seconds already counted.
       Widget build({required bool running}) =>
-          _app(BeuiAgentProgress(initialSeconds: 1.0, running: running));
+          beuiTestApp(BeuiAgentProgress(initialSeconds: 1.0, running: running));
 
       await tester.pumpWidget(build(running: true));
       await tester.pump();
@@ -181,7 +173,9 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _app(const BeuiAgentProgress(elapsedSeconds: 3, initialSeconds: 40)),
+        beuiTestApp(
+          const BeuiAgentProgress(elapsedSeconds: 3, initialSeconds: 40),
+        ),
       );
       await tester.pump();
       expect(find.text('3.0s'), findsOneWidget);
@@ -193,7 +187,9 @@ void main() {
 
     testWidgets('exposes an accessible status label', (tester) async {
       final handle = tester.ensureSemantics();
-      await tester.pumpWidget(_app(const BeuiAgentProgress(label: 'Indexing')));
+      await tester.pumpWidget(
+        beuiTestApp(const BeuiAgentProgress(label: 'Indexing')),
+      );
       await tester.pump();
       expect(find.bySemanticsLabel('Indexing, in progress'), findsOneWidget);
       handle.dispose();
@@ -202,7 +198,7 @@ void main() {
 
   group('BeuiReasoningText', () {
     testWidgets('renders default phrase and ascii-line loader', (tester) async {
-      await tester.pumpWidget(_app(const BeuiReasoningText()));
+      await tester.pumpWidget(beuiTestApp(const BeuiReasoningText()));
       await tester.pump();
       // Invisible sizer + visible phrase both contain "Thinking…".
       expect(find.textContaining('Thinking'), findsWidgets);
@@ -212,7 +208,7 @@ void main() {
 
     testWidgets('cycles phrases on the given interval', (tester) async {
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           const BeuiReasoningText(
             phrases: ['Alpha', 'Beta'],
             variant: BeuiReasoningTextVariant.swap,
@@ -263,7 +259,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           const BeuiReasoningText(
             phrases: ['Alpha', 'Bravo', 'Charlie-the-longest'],
             variant: BeuiReasoningTextVariant.swap,
@@ -291,7 +287,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           const BeuiReasoningText(
             phrases: ['Alpha', 'Bravo', 'Charlie-the-longest'],
             variant: BeuiReasoningTextVariant.scramble,
@@ -322,7 +318,7 @@ void main() {
       // here — BeuiTextShimmer and BeuiLoader both repeat() forever by design,
       // so a frame is always scheduled — so count transient callbacks instead.
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           const BeuiReasoningText(
             phrases: ['Alpha', 'Bravo'],
             variant: BeuiReasoningTextVariant.scramble,
@@ -347,7 +343,7 @@ void main() {
 
     testWidgets('custom indicator replaces the default loader', (tester) async {
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           const BeuiReasoningText(
             indicator: Icon(Icons.hourglass_top, size: 14),
             phrases: ['Working'],
@@ -360,7 +356,9 @@ void main() {
     });
 
     testWidgets('empty phrases fall back to defaults', (tester) async {
-      await tester.pumpWidget(_app(const BeuiReasoningText(phrases: [])));
+      await tester.pumpWidget(
+        beuiTestApp(const BeuiReasoningText(phrases: [])),
+      );
       await tester.pump();
       expect(find.textContaining('Thinking'), findsWidgets);
     });
@@ -368,7 +366,7 @@ void main() {
     testWidgets('exposes the active phrase to semantics', (tester) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
-        _app(const BeuiReasoningText(phrases: ['Forming a response'])),
+        beuiTestApp(const BeuiReasoningText(phrases: ['Forming a response'])),
       );
       await tester.pump();
       expect(find.bySemanticsLabel('Forming a response'), findsOneWidget);

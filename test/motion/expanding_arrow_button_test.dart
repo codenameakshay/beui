@@ -2,31 +2,14 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: child);
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+import '../support.dart';
 
 void main() {
   group('BeuiExpandingArrowButton', () {
     testWidgets('tap fires onPressed', (tester) async {
       var taps = 0;
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiExpandingArrowButton(
             onPressed: () => taps++,
             child: const Text('Book a demo'),
@@ -41,7 +24,7 @@ void main() {
     testWidgets('disabled does not fire', (tester) async {
       var taps = 0;
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiExpandingArrowButton(
             onPressed: null,
             child: const Text('Book a demo'),
@@ -61,7 +44,7 @@ void main() {
     testWidgets('completes after hold duration', (tester) async {
       var done = 0;
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiHoldActionButton(
             holdDuration: const Duration(milliseconds: 200),
             onHoldComplete: () => done++,
@@ -82,7 +65,7 @@ void main() {
     testWidgets('release early cancels', (tester) async {
       var done = 0;
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiHoldActionButton(
             holdDuration: const Duration(milliseconds: 800),
             onHoldComplete: () => done++,
@@ -103,7 +86,7 @@ void main() {
     testWidgets('dragging the thumb past threshold completes', (tester) async {
       var done = 0;
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiSlideActionButton(
             threshold: 0.5,
             resetDelay: const Duration(seconds: 10),

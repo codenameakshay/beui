@@ -4,25 +4,13 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = child;
-  if (reduce) {
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: child,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(
-      body: Center(child: SizedBox(width: 320, height: 400, child: body)),
-    ),
-  );
-}
+import '../support.dart';
+
+Widget _wrap(Widget child, {bool reduce = false}) => beuiTestApp(
+  SizedBox(height: 400, child: child),
+  width: 320,
+  reduce: reduce,
+);
 
 void main() {
   group('BeuiPullToRefresh', () {
