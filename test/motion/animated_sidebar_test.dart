@@ -203,6 +203,58 @@ void main() {
       expect(panel.width, closeTo(kBeuiAnimatedSidebarIconWidth, 8));
     });
 
+    testWidgets('reduced motion snaps the icon rail in both directions', (
+      tester,
+    ) async {
+      const expandedWidth = 320.0;
+      const collapsedWidth = 72.0;
+      var expanded = true;
+      await tester.pumpWidget(
+        _wrap(
+          StatefulBuilder(
+            builder: (context, setState) {
+              return BeuiAnimatedSidebar(
+                groups: _groups,
+                width: expandedWidth,
+                iconWidth: collapsedWidth,
+                expanded: expanded,
+                onExpandedChange: (value) => setState(() => expanded = value),
+                defaultSelectedId: 'tasks',
+                child: const Column(
+                  children: [
+                    BeuiAnimatedSidebarTrigger(),
+                    Expanded(child: SizedBox.expand()),
+                  ],
+                ),
+              );
+            },
+          ),
+          reduce: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSize(find.byKey(beuiAnimatedSidebarPanelKey)).width,
+        closeTo(expandedWidth, 1),
+      );
+
+      await tester.tap(find.byType(BeuiAnimatedSidebarTrigger));
+      await tester.pump();
+      expect(expanded, isFalse);
+      expect(
+        tester.getSize(find.byKey(beuiAnimatedSidebarPanelKey)).width,
+        closeTo(collapsedWidth, 8),
+      );
+
+      await tester.tap(find.byType(BeuiAnimatedSidebarTrigger));
+      await tester.pump();
+      expect(expanded, isTrue);
+      expect(
+        tester.getSize(find.byKey(beuiAnimatedSidebarPanelKey)).width,
+        closeTo(expandedWidth, 1),
+      );
+    });
+
     testWidgets('mobile mode opens sheet from trigger', (tester) async {
       await tester.pumpWidget(
         _wrap(

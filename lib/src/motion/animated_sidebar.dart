@@ -900,7 +900,8 @@ class _DesktopRail extends StatelessWidget {
       value: targetWidth,
       motion: motion,
       builder: (context, w, _) {
-        final width = w.clamp(0.0, double.infinity);
+        // NoMotion holds its value; reduced motion snaps directly to the target.
+        final width = reduce ? targetWidth : w.clamp(0.0, double.infinity);
         final offcanvasHidden =
             collapsible == BeuiAnimatedSidebarCollapsible.offcanvas &&
             !expanded;
