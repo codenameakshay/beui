@@ -215,18 +215,6 @@ class _CitationRevision extends ChangeNotifier {
   void bump() => notifyListeners();
 }
 
-final _nonIdChar = RegExp(r'[^a-zA-Z0-9_-]');
-
-String _sanitizeId(String citationId) {
-  return citationId.replaceAll(_nonIdChar, '-');
-}
-
-/// Builds the DOM-style target id (`prefix-sanitizedId`) used in the source.
-@Deprecated('No widget consumes DOM-style target ids. Removed in 2.0.')
-String citationTargetId(String prefix, String citationId) {
-  return '$prefix-${_sanitizeId(citationId)}';
-}
-
 // ---------------------------------------------------------------------------
 // BeuiCitation — inline superscript marker
 // ---------------------------------------------------------------------------

@@ -311,7 +311,7 @@ Container(color: colors.card /* colors.foreground, .primary, .border, .muted, â€
 
 Each `BeuiColorTheme` value carries picker metadata (`name`, `slug`, `swatch`) for building a theme switcher. Overlay surfaces use a dedicated frosted-glass tier (`BeuiGlass`) with the source's 12â€“20px backdrop blur.
 
-Agent widgets that previously hard-coded `text-sm` / `rounded-2xl` / Lucide defaults now resolve those from `BeuiAgentTheme.of(context)`, which falls back to the same numbers and glyphs when the extension is missing. See the **Agent Theme** gallery route for a live custom palette, radii, density, icons, and an expandable approval card:
+Agent widgets that previously hard-coded `text-sm` / `rounded-2xl` / Lucide defaults now resolve those from `BeuiAgentTheme.of(context)`, which falls back to the same numbers and glyphs when the extension is missing. See the **Agent Theme** gallery route for a live custom palette, radii, icons, and an expandable approval card:
 
 ![Custom BeuiAgentTheme applied to real agent widgets](docs/screenshots/agent-theme.png)
 

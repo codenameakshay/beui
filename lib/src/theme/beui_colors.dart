@@ -78,23 +78,15 @@ enum BeuiColorTheme {
 /// Carries both the translucent fill [Color]s and their backdrop **blur radii**.
 ///
 /// **Documented blur exception.** The global motion rules cap blur at ≤ 10px,
-/// but glass surfaces deliberately use 12–20px backdrop blur ([blur] 20,
-/// [strongBlur] 16, [thinBlur] 12), matching the source `theme-css.ts`. This is
-/// a sanctioned exception to the cap, not a rule violation — it applies to these
-/// static surface backdrops only, never to transform motion.
+/// but glass surfaces deliberately use a 20px backdrop blur ([blur]), matching
+/// the source `theme-css.ts`. This is a sanctioned exception to the cap, not a
+/// rule violation — it applies to this static surface backdrop only, never to
+/// transform motion.
 @immutable
 class BeuiGlass {
-  /// Creates a glass surface descriptor. Blur radii default to the source
-  /// values (the documented 12–20px exception to the ≤10px motion cap).
-  const BeuiGlass({
-    required this.bg,
-    required this.border,
-    required this.strongBg,
-    required this.thinBg,
-    this.blur = 20.0,
-    this.strongBlur = 16.0,
-    this.thinBlur = 12.0,
-  });
+  /// Creates a glass surface descriptor. The blur radius defaults to the
+  /// source value (the documented 20px exception to the ≤10px motion cap).
+  const BeuiGlass({required this.bg, required this.border, this.blur = 20.0});
 
   /// Standard glass fill (source `--glass-bg`).
   final Color bg;
@@ -102,51 +94,15 @@ class BeuiGlass {
   /// Hairline glass border (source `--glass-border`).
   final Color border;
 
-  /// Stronger, more opaque fill for modals / sheets (source `--glass-strong-bg`).
-  @Deprecated(
-    'No component reads this; only blur and bg are rendered. Removed in 2.0.',
-  )
-  final Color strongBg;
-
-  /// Lighter fill for subtle overlays (source `--glass-thin-bg`).
-  @Deprecated(
-    'No component reads this; only blur and bg are rendered. Removed in 2.0.',
-  )
-  final Color thinBg;
-
   /// Backdrop blur radius for [bg], in logical pixels (source `glass`, 20px).
   final double blur;
 
-  /// Backdrop blur radius for [strongBg] (source `glass-strong`, 16px).
-  @Deprecated(
-    'No component reads this; only blur and bg are rendered. Removed in 2.0.',
-  )
-  final double strongBlur;
-
-  /// Backdrop blur radius for [thinBg] (source `glass-thin`, 12px).
-  @Deprecated(
-    'No component reads this; only blur and bg are rendered. Removed in 2.0.',
-  )
-  final double thinBlur;
-
   /// Returns a copy with the given fields replaced.
-  BeuiGlass copyWith({
-    Color? bg,
-    Color? border,
-    Color? strongBg,
-    Color? thinBg,
-    double? blur,
-    double? strongBlur,
-    double? thinBlur,
-  }) {
+  BeuiGlass copyWith({Color? bg, Color? border, double? blur}) {
     return BeuiGlass(
       bg: bg ?? this.bg,
       border: border ?? this.border,
-      strongBg: strongBg ?? this.strongBg,
-      thinBg: thinBg ?? this.thinBg,
       blur: blur ?? this.blur,
-      strongBlur: strongBlur ?? this.strongBlur,
-      thinBlur: thinBlur ?? this.thinBlur,
     );
   }
 
@@ -156,11 +112,7 @@ class BeuiGlass {
     return BeuiGlass(
       bg: Color.lerp(a.bg, b.bg, t)!,
       border: Color.lerp(a.border, b.border, t)!,
-      strongBg: Color.lerp(a.strongBg, b.strongBg, t)!,
-      thinBg: Color.lerp(a.thinBg, b.thinBg, t)!,
       blur: lerpDouble(a.blur, b.blur, t)!,
-      strongBlur: lerpDouble(a.strongBlur, b.strongBlur, t)!,
-      thinBlur: lerpDouble(a.thinBlur, b.thinBlur, t)!,
     );
   }
 
@@ -170,16 +122,11 @@ class BeuiGlass {
     return other is BeuiGlass &&
         other.bg == bg &&
         other.border == border &&
-        other.strongBg == strongBg &&
-        other.thinBg == thinBg &&
-        other.blur == blur &&
-        other.strongBlur == strongBlur &&
-        other.thinBlur == thinBlur;
+        other.blur == blur;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(bg, border, strongBg, thinBg, blur, strongBlur, thinBlur);
+  int get hashCode => Object.hash(bg, border, blur);
 }
 
 /// The five brand-token overrides a colored theme applies on top of the neutral

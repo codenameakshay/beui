@@ -32,8 +32,6 @@ const Color _lFocusRing = Color(0x8C0B0B0B); // oklch(15% 0 0 / 0.55)
 const BeuiGlass _glassLight = BeuiGlass(
   bg: Color(0x8CFCFCFC), // oklch(99% 0 0 / 0.55)
   border: Color(0x140B0B0B), // oklch(15% 0 0 / 0.08)
-  strongBg: Color(0xB3FFFFFF), // rgb(255 255 255 / 0.7)
-  thinBg: Color(0x73FFFFFF), // rgb(255 255 255 / 0.45)
 );
 
 // ── Neutral base — dark ──────────────────────────────────────────
@@ -60,8 +58,6 @@ const Color _dFocusRing = Color(0x99F2F2F2); // oklch(96% 0 0 / 0.6)
 const BeuiGlass _glassDark = BeuiGlass(
   bg: Color(0x8C1C1C1C), // rgb(28 28 28 / 0.55)
   border: Color(0x14FFFFFF), // rgb(255 255 255 / 0.08)
-  strongBg: Color(0x991C1C1C), // rgb(28 28 28 / 0.6)
-  thinBg: Color(0x73151515), // rgb(21 21 21 / 0.45)
 );
 
 // ── Brand overrides (colored themes start from the neutral base) ──

@@ -186,11 +186,6 @@ class BeuiFileDiff extends StatefulWidget {
     required this.lines,
     this.file,
     this.fileWidget,
-    @Deprecated(
-      'Split into file (String) and fileWidget (Widget) so the compiler can '
-      'reject file: 42. Pass one of those instead.',
-    )
-    this.fileNode,
     this.status = BeuiFileDiffStatus.streaming,
     this.open,
     this.defaultOpen = true,
@@ -207,10 +202,7 @@ class BeuiFileDiff extends StatefulWidget {
     this.emptyPlaceholder,
     super.key,
   }) : assert(
-         file != null ||
-             fileWidget != null ||
-             // ignore: deprecated_member_use_from_same_package
-             fileNode != null,
+         file != null || fileWidget != null,
          'BeuiFileDiff needs a header label: pass file (a path String) or '
          'fileWidget (a Widget).',
        );
@@ -226,13 +218,6 @@ class BeuiFileDiff extends StatefulWidget {
   /// (source `file: ReactNode`). Wins over [file] when both are set, and is
   /// rendered verbatim — truncation is the caller's business.
   final Widget? fileWidget;
-
-  /// Deprecated untyped file slot, kept so existing call sites compile.
-  @Deprecated(
-    'Split into file (String) and fileWidget (Widget) so the compiler can '
-    'reject file: 42. Pass one of those instead.',
-  )
-  final Object? fileNode;
 
   /// Diff rows, top to bottom. Progressive streaming is achieved by growing
   /// this list over time (source preview slices visible rows).
@@ -514,17 +499,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
         child: widget.fileWidget!,
       );
     }
-    // ignore: deprecated_member_use_from_same_package
-    final legacy = widget.fileNode;
-    if (widget.file == null && legacy is Widget) {
-      return DefaultTextStyle(
-        style: style,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-        child: legacy,
-      );
-    }
-    final path = widget.file ?? legacy?.toString() ?? '';
+    final path = widget.file ?? '';
     return _MiddleTruncatedText(text: path, style: style);
   }
 

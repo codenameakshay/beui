@@ -97,13 +97,6 @@ void main() {
     });
   });
 
-  group('citationTargetId', () {
-    test('sanitizes non-url-safe characters', () {
-      expect(citationTargetId('preview', 'a b/c'), 'preview-a-b-c');
-      expect(citationTargetId('p', 'ok_id-1'), 'p-ok_id-1');
-    });
-  });
-
   group('BeuiCitations', () {
     testWidgets('renders title, count, and rows when open', (tester) async {
       await tester.pumpWidget(

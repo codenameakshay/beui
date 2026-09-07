@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:beui/src/motion/bounce_sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -157,32 +157,6 @@ void main() {
       expect(find.byKey(const Key('fn')), findsOneWidget);
     });
 
-    testWidgets('the deprecated untyped slot still renders both shapes', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiCodeBlock(
-            code: 'x',
-            // ignore: deprecated_member_use_from_same_package
-            filenameNode: Text('legacy.tsx', key: Key('legacy')),
-          ),
-        ),
-      );
-      expect(find.byKey(const Key('legacy')), findsOneWidget);
-
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiCodeBlock(
-            code: 'x',
-            // ignore: deprecated_member_use_from_same_package
-            filenameNode: 'legacy-string.tsx',
-          ),
-        ),
-      );
-      expect(find.text('legacy-string.tsx'), findsOneWidget);
-    });
-
     testWidgets('highlight lines paint the fill and leading bar', (
       tester,
     ) async {

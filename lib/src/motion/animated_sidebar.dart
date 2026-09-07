@@ -72,17 +72,20 @@ const List<BoxShadow> _detachedShadow = [
 
 /// Test handle on the desktop sidebar panel.
 @visibleForTesting
+@visibleForTesting
 const beuiAnimatedSidebarPanelKey = ValueKey<String>(
   'beui_animated_sidebar_panel',
 );
 
 /// Test handle on the mobile sheet panel.
 @visibleForTesting
+@visibleForTesting
 const beuiAnimatedSidebarMobilePanelKey = ValueKey<String>(
   'beui_animated_sidebar_mobile_panel',
 );
 
 /// Test handle on the active-item shared-layout indicator.
+@visibleForTesting
 @visibleForTesting
 const beuiAnimatedSidebarActiveKey = ValueKey<String>(
   'beui_animated_sidebar_active',
@@ -91,6 +94,7 @@ const beuiAnimatedSidebarActiveKey = ValueKey<String>(
 /// Test handle on the desktop panel's chrome — the surface carrying the
 /// variant's background, border, corner radius and shadow.
 @visibleForTesting
+@visibleForTesting
 const beuiAnimatedSidebarChromeKey = ValueKey<String>(
   'beui_animated_sidebar_chrome',
 );
@@ -98,6 +102,7 @@ const beuiAnimatedSidebarChromeKey = ValueKey<String>(
 /// Test handle on the `inset` variant's detached content surface (source
 /// `AnimatedSidebarInset`'s `md:peer-data-[variant=inset]` chrome). Absent for
 /// the `sidebar` and `floating` variants, and on mobile.
+@visibleForTesting
 @visibleForTesting
 const beuiAnimatedSidebarInsetKey = ValueKey<String>(
   'beui_animated_sidebar_inset',

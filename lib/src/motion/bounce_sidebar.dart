@@ -30,6 +30,7 @@ const _bounceSpringBase = SpringMotion(
 
 /// Test handle on the bouncing indicator dot.
 @visibleForTesting
+@visibleForTesting
 const beuiBounceSidebarIndicatorKey = ValueKey<String>(
   'beui_bounce_sidebar_indicator',
 );

@@ -225,20 +225,12 @@ export 'src/motion/animated_sidebar.dart'
         BeuiAnimatedSidebarSide,
         BeuiAnimatedSidebarTrigger,
         BeuiAnimatedSidebarVariant,
-        beuiAnimatedSidebarActiveKey,
-        beuiAnimatedSidebarChromeKey,
-        beuiAnimatedSidebarInsetKey,
-        beuiAnimatedSidebarMobilePanelKey,
-        beuiAnimatedSidebarPanelKey,
         kBeuiAnimatedSidebarIconWidth,
         kBeuiAnimatedSidebarMobileBreakpoint,
         kBeuiAnimatedSidebarMobileWidth,
         kBeuiAnimatedSidebarWidth;
 export 'src/motion/bounce_sidebar.dart'
-    show
-        BeuiBounceSidebar,
-        BeuiBounceSidebarItem,
-        beuiBounceSidebarIndicatorKey;
+    show BeuiBounceSidebar, BeuiBounceSidebarItem;
 export 'src/motion/center_morph_modal.dart' show BeuiCenterMorphModal;
 export 'src/motion/context_menu.dart'
     show
@@ -274,10 +266,6 @@ export 'src/motion/ai_sidebar.dart'
         BeuiSidebarResourceKind,
         BeuiSidebarResourceMenuControls,
         BeuiSidebarResourceMove,
-        beuiAiSidebarKey,
-        beuiAiSidebarRenameKey,
-        beuiAiSidebarRowKey,
-        beuiSidebarCanContain,
         beuiSidebarContains,
         beuiSidebarFind,
         beuiSidebarInsert,
@@ -310,8 +298,7 @@ export 'src/motion/citations.dart'
         BeuiCitationList,
         BeuiCitationStack,
         BeuiCitations,
-        beuiFaviconUrl,
-        citationTargetId;
+        beuiFaviconUrl;
 export 'src/motion/code_block.dart'
     show BeuiCodeBlock, BeuiCodeBlockStatus, BeuiCodeLanguage;
 export 'src/motion/file_diff.dart'

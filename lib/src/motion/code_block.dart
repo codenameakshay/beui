@@ -71,11 +71,6 @@ class BeuiCodeBlock extends StatefulWidget {
     this.language = BeuiCodeLanguage.typescript,
     this.filename,
     this.filenameWidget,
-    @Deprecated(
-      'Split into filename (String) and filenameWidget (Widget) so the '
-      'compiler can reject filename: 42. Pass one of those instead.',
-    )
-    this.filenameNode,
     this.status = BeuiCodeBlockStatus.complete,
     this.showLineNumbers = true,
     this.highlightLines = const [],
@@ -93,25 +88,13 @@ class BeuiCodeBlock extends StatefulWidget {
   /// Language label + highlighter (source `language`, default `typescript`).
   final BeuiCodeLanguage language;
 
-  /// Optional filename shown in the chrome bar, as plain text.
-  ///
-  /// Narrowed from the old `Object?`: the untyped slot accepted `filename: 42`
-  /// and rendered `"42"`. Pass a widget through [filenameWidget] instead.
+  /// Optional filename shown in the chrome bar, as plain text. Pass a widget
+  /// through [filenameWidget] instead.
   final String? filename;
 
   /// Optional filename shown in the chrome bar, as an arbitrary widget
   /// (source `filename?: ReactNode`). Wins over [filename] when both are set.
   final Widget? filenameWidget;
-
-  /// Deprecated untyped filename slot, kept so existing call sites compile.
-  ///
-  /// A [String] renders as text, a [Widget] renders as-is, and anything else
-  /// falls back to `toString()` — the old behaviour, bug included.
-  @Deprecated(
-    'Split into filename (String) and filenameWidget (Widget) so the '
-    'compiler can reject filename: 42. Pass one of those instead.',
-  )
-  final Object? filenameNode;
 
   /// Streaming vs complete chrome (source `status`, default `complete`).
   final BeuiCodeBlockStatus status;
@@ -236,11 +219,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
   Widget? _resolveFilename() {
     if (widget.filenameWidget != null) return widget.filenameWidget;
     if (widget.filename != null) return Text(widget.filename!);
-    // ignore: deprecated_member_use_from_same_package
-    final legacy = widget.filenameNode;
-    if (legacy == null) return null;
-    if (legacy is Widget) return legacy;
-    return Text(legacy.toString());
+    return null;
   }
 
   @override

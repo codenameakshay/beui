@@ -172,14 +172,6 @@ class BeuiSidebarResourceMenuControls {
 // Tree helpers (pure — mirrored from the source)
 // ---------------------------------------------------------------------------
 
-/// Whether [kind] can contain children.
-@Deprecated(
-  'Duplicates BeuiSidebarResource.canContain; construct a resource of this '
-  'kind and read .canContain instead. Removed in 2.0.',
-)
-bool beuiSidebarCanContain(BeuiSidebarResourceKind kind) =>
-    BeuiSidebarResource(id: '', label: '', kind: kind).canContain;
-
 /// Flatten [items] respecting [expanded] folder ids.
 List<_FlatResource> _flatten(
   List<BeuiSidebarResource> items,
@@ -354,13 +346,16 @@ class _FlatResource {
 // ---------------------------------------------------------------------------
 
 /// Root key for the AI sidebar tree.
+@visibleForTesting
 const beuiAiSidebarKey = ValueKey<String>('beui.ai-sidebar');
 
 /// Row key for [id] (used by tests and focus).
+@visibleForTesting
 ValueKey<String> beuiAiSidebarRowKey(String id) =>
     ValueKey<String>('beui.ai-sidebar.row.$id');
 
 /// Inline-rename field key for [id].
+@visibleForTesting
 ValueKey<String> beuiAiSidebarRenameKey(String id) =>
     ValueKey<String>('beui.ai-sidebar.rename.$id');
 

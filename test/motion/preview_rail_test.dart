@@ -728,34 +728,10 @@ void main() {
     });
   });
 
-  group('BeuiPreviewRailStyle.itemSize deprecation path', () {
-    test('resolvedItemSize is the single precedence rule', () {
+  group('BeuiPreviewRailStyle.itemSize', () {
+    test('resolvedItemSize falls back to the source default of 24', () {
       expect(const BeuiPreviewRailStyle().resolvedItemSize, 24);
       expect(const BeuiPreviewRailStyle(itemSize: 32).resolvedItemSize, 32);
-      expect(
-        // ignore: deprecated_member_use_from_same_package
-        const BeuiPreviewRailStyle(trackExtent: 28).resolvedItemSize,
-        28,
-      );
-      expect(
-        const BeuiPreviewRailStyle(
-          itemSize: 32,
-          // ignore: deprecated_member_use_from_same_package
-          trackExtent: 12,
-        ).resolvedItemSize,
-        32,
-      );
-    });
-
-    test('copyWith(itemSize:) drops an inherited trackExtent', () {
-      const legacy = BeuiPreviewRailStyle(
-        // ignore: deprecated_member_use_from_same_package
-        trackExtent: 12,
-      );
-      final migrated = legacy.copyWith(itemSize: 32);
-      // ignore: deprecated_member_use_from_same_package
-      expect(migrated.trackExtent, isNull);
-      expect(migrated.resolvedItemSize, 32);
     });
   });
 
