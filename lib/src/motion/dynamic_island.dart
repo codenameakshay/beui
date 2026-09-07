@@ -177,7 +177,7 @@ class _BeuiDynamicIslandState extends State<BeuiDynamicIsland> {
         value: _contentSize ?? _pillSize,
         from: _pillSize,
         converter: const SizeMotionConverter(),
-        motion: reduce ? const NoMotion() : _shellSpring,
+        motion: motionFor(context, _shellSpring, isMovement: true),
         builder: (context, size, child) {
           // NoMotion freezes rather than snaps — place directly at target.
           final s = reduce ? (_contentSize ?? _pillSize) : size;
