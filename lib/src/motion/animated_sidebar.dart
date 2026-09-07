@@ -1083,7 +1083,7 @@ class _MobileSheet extends StatelessWidget {
             ignoring: !open,
             child: SingleMotionBuilder(
               value: open ? 1.0 : 0.0,
-              motion: reduce ? _reducedMotion : _panelSlide,
+              motion: slideMotion,
               builder: (context, t, _) {
                 if (t <= 0.001) return const SizedBox.shrink();
                 return GestureDetector(

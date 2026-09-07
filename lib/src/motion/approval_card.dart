@@ -1637,9 +1637,7 @@ class _ExpandChevron extends StatelessWidget {
       height: 20,
       child: SingleMotionBuilder(
         value: target,
-        motion: reduce
-            ? const NoMotion()
-            : motionFor(context, beuiSpringSwap, isMovement: true),
+        motion: motionFor(context, beuiSpringSwap, isMovement: true),
         builder: (context, t, child) {
           // NoMotion *holds* whatever value it was first given, so reading
           // `t` under reduced motion freezes the chevron at its mount angle and

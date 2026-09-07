@@ -1099,15 +1099,17 @@ class _AttachmentRowState extends State<_AttachmentRow> {
 
   @override
   Widget build(BuildContext context) {
-    final reduce = widget.reduce;
     final target = widget.exiting || !_entered ? 0.0 : 1.0;
 
     // Position/scale + the list reflow ride the row transition: SPRING_LAYOUT
     // for arrivals, ITEM_TRANSITION otherwise (source `rowTransition`).
-    final Motion travel = reduce
-        ? _itemTransition
-        : _arrival
-        ? beuiSpringLayout
+    final Motion travel = _arrival
+        ? motionFor(
+            context,
+            beuiSpringLayout,
+            isMovement: true,
+            reducedFallback: _itemTransition,
+          )
         : _itemTransition;
     // Opacity keeps its own 0.16s EASE_OUT clock on arrival (source's
     // `opacity` override) and is never dropped under reduced motion.
@@ -1136,7 +1138,7 @@ class _AttachmentRowState extends State<_AttachmentRow> {
         builder: (context, t, child) {
           final clamped = t.clamp(0.0, 1.0);
           Widget body = child!;
-          if (!reduce) {
+          if (!widget.reduce) {
             // initial y: -16 on arrival, 6 otherwise; exit y: -4.
             final dy = widget.exiting
                 ? -4 * (1 - clamped)
@@ -1155,7 +1157,7 @@ class _AttachmentRowState extends State<_AttachmentRow> {
           return ClipRect(
             child: Align(
               alignment: Alignment.topCenter,
-              heightFactor: reduce ? 1 : clamped,
+              heightFactor: widget.reduce ? 1 : clamped,
               child: body,
             ),
           );
@@ -1163,7 +1165,7 @@ class _AttachmentRowState extends State<_AttachmentRow> {
         child: _RowBody(
           item: widget.item,
           colors: widget.colors,
-          reduce: reduce,
+          reduce: widget.reduce,
           playing: widget.playing,
           uploading: widget.uploading,
           uploadComplete: widget.uploadComplete,
