@@ -698,10 +698,13 @@ class _FlipButtonState extends State<_FlipButton> {
     );
 
     // Accumulating 180° spins on a 380/26/0.6 spring; tap dips to 0.9.
+    final flipMotion = motionFor(context, _flipSpring, isMovement: true);
     body = SingleMotionBuilder(
       value: widget.reduce ? 0.0 : widget.rotation,
-      motion: _flipSpring,
-      active: !widget.reduce,
+      motion: flipMotion,
+      // Inactive under reduced motion so the controller snaps straight to 0
+      // instead of NoMotion's freeze-in-place.
+      active: flipMotion is! NoMotion,
       builder: (context, deg, child) =>
           Transform.rotate(angle: deg * math.pi / 180, child: child),
       child: body,
@@ -828,6 +831,11 @@ class _DestinationRow extends StatelessWidget {
     final address = controller.text;
     final hasAddress = address.isNotEmpty;
     final valid = _isValidAddress(address);
+    final heightMotion = motionFor(
+      context,
+      const CurvedMotion(Duration(milliseconds: 220), beuiEaseOut),
+      isMovement: true,
+    );
 
     return Container(
       clipBehavior: Clip.antiAlias,
@@ -891,11 +899,12 @@ class _DestinationRow extends StatelessWidget {
           // Height auto expand, 220ms EASE_OUT (fade-only under reduce).
           SingleMotionBuilder(
             value: show ? 1.0 : 0.0,
-            motion: const CurvedMotion(
-              Duration(milliseconds: 220),
-              beuiEaseOut,
-            ),
-            active: !reduce,
+            motion: heightMotion,
+            // Inactive under reduced motion so the controller snaps straight
+            // to target instead of NoMotion's freeze-in-place — the opacity
+            // read below (`Opacity(opacity: t, …)`) is not itself gated on
+            // `reduce`, so it needs `t` to stay in sync.
+            active: heightMotion is! NoMotion,
             builder: (context, raw, child) {
               final t = raw.clamp(0.0, 1.0);
               if (t <= 0.001) return const SizedBox.shrink();

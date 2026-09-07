@@ -102,6 +102,7 @@ class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final open = widget.open;
+    final sheetMotion = motionFor(context, beuiSpringPanel, isMovement: true);
 
     return Positioned.fill(
       child: Stack(
@@ -147,8 +148,12 @@ class _BeuiTokenPickerState extends State<BeuiTokenPicker> {
                     // Source drives both the enter and the exit on SPRING_PANEL
                     // (the AnimatePresence `transition`), so the sheet retracts
                     // on the same spring it arrives on.
-                    motion: beuiSpringPanel,
-                    active: !reduce,
+                    motion: sheetMotion,
+                    // Inactive under reduced motion so the controller snaps
+                    // straight to target instead of NoMotion's freeze-in-place
+                    // (the builder ignores `t` under reduce anyway, but keeps
+                    // the controller's internal value in sync for consistency).
+                    active: sheetMotion is! NoMotion,
                     builder: (context, t, child) {
                       if (reduce) {
                         return AnimatedOpacity(

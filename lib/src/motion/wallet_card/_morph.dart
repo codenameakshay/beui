@@ -277,7 +277,12 @@ class _MorphPanelState extends State<MorphPanel> {
       value: widget.open ? 1.0 : 0.0,
       // The lazy overlay starts at the trigger geometry on each opening.
       from: reduce ? 1.0 : 0.0,
-      motion: reduce ? beuiSpringSnap : kWalletMorph,
+      motion: motionFor(
+        context,
+        kWalletMorph,
+        isMovement: true,
+        reducedFallback: beuiSpringSnap,
+      ),
       builder: (context, p, _) {
         if (p < 0.001 && !widget.open) return const SizedBox.shrink();
 
