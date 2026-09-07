@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 /// Wraps a [BeuiCheckbox] in a themed app. [reduce] forces reduced motion.
 Widget _app({
   required bool value,
@@ -11,33 +13,17 @@ Widget _app({
   bool indeterminate = false,
   bool reduce = false,
   String? label,
-}) {
-  Widget child = Center(
-    child: BeuiCheckbox(
-      key: const ValueKey('cb'),
-      value: value,
-      indeterminate: indeterminate,
-      enabled: enabled,
-      label: label,
-      onChanged: onChanged ?? (_) {},
-    ),
-  );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
-  );
-}
+}) => beuiTestApp(
+  BeuiCheckbox(
+    key: const ValueKey('cb'),
+    value: value,
+    indeterminate: indeterminate,
+    enabled: enabled,
+    label: label,
+    onChanged: onChanged ?? (_) {},
+  ),
+  reduce: reduce,
+);
 
 Finder _mark() => find.descendant(
   of: find.byType(BeuiCheckbox),
