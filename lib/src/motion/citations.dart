@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 
@@ -7,6 +5,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_chevron.dart';
 import '_disclosure.dart';
 import '_engine.dart';
 import '_focus_ring.dart';
@@ -106,6 +105,10 @@ String? beuiFaviconUrl(String value) {
 /// number trustworthy: the badge is derived from the registry rather than
 /// hand-numbered at the call site, so a marker can no longer read `[2]` while
 /// pointing at row 3.
+///
+/// Storage is process-global (`static`), keyed by `idPrefix`; entries live
+/// until the owning [BeuiCitations]/[BeuiCitationList] calls `dispose`, which
+/// unregisters its prefix.
 class _CitationAnchors {
   static final Map<String, Map<String, GlobalKey>> _keys =
       <String, Map<String, GlobalKey>>{};
@@ -212,11 +215,14 @@ class _CitationRevision extends ChangeNotifier {
   void bump() => notifyListeners();
 }
 
+final _nonIdChar = RegExp(r'[^a-zA-Z0-9_-]');
+
 String _sanitizeId(String citationId) {
-  return citationId.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '-');
+  return citationId.replaceAll(_nonIdChar, '-');
 }
 
 /// Builds the DOM-style target id (`prefix-sanitizedId`) used in the source.
+@Deprecated('No widget consumes DOM-style target ids. Removed in 2.0.')
 String citationTargetId(String prefix, String citationId) {
   return '$prefix-${_sanitizeId(citationId)}';
 }
@@ -322,10 +328,7 @@ class _BeuiCitationState extends State<BeuiCitation> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final fg = (_hovered || _focused)
         ? colors.foreground
         : colors.mutedForeground;
@@ -378,7 +381,7 @@ class _BeuiCitationState extends State<BeuiCitation> {
                   padding: const EdgeInsets.symmetric(horizontal: 2), // mx-0.5
                   // The ring is a foreground overlay, so focusing costs no
                   // layout — the old in-decoration 2px border insetting the
-                  // badge reflowed the whole paragraph (audit R27).
+                  // badge reflowed the whole paragraph.
                   child: BeuiFocusRing(
                     focused: _focused,
                     borderRadius: BorderRadius.circular(6),
@@ -471,10 +474,7 @@ class _BeuiCitationFaviconState extends State<BeuiCitationFavicon> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final favicon = widget.url != null ? beuiFaviconUrl(widget.url!) : null;
     final showImage = favicon != null && _failedUrl != favicon;
 
@@ -551,10 +551,7 @@ class BeuiCitationStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final shown = citations.take(limit).toList(growable: false);
     if (shown.isEmpty) return const SizedBox.shrink();
 
@@ -817,11 +814,8 @@ class _BeuiCitationsState extends State<BeuiCitations> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     // Advisory, not fatal: a URL-only row is a legitimate (and now correctly
     // *static*) configuration, so this guides rather than crashes.
@@ -999,7 +993,7 @@ class _CitationsHeaderState extends State<_CitationsHeader> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      _Chevron(
+                      BeuiDisclosureChevron(
                         open: widget.open,
                         reduce: widget.reduce,
                         color: colors.mutedForeground.withValues(alpha: 0.6),
@@ -1012,37 +1006,6 @@ class _CitationsHeaderState extends State<_CitationsHeader> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _Chevron extends StatelessWidget {
-  const _Chevron({
-    required this.open,
-    required this.reduce,
-    required this.color,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      BeuiAgentTheme.of(context).icons.expand,
-      size: 14,
-      color: color,
-    );
-    if (reduce) {
-      return Transform.rotate(angle: open ? math.pi : 0, child: icon);
-    }
-    return SingleMotionBuilder(
-      value: open ? 180.0 : 0.0,
-      motion: motionFor(context, beuiSpringSwap, isMovement: true),
-      builder: (context, deg, child) =>
-          Transform.rotate(angle: deg * math.pi / 180.0, child: child),
-      child: icon,
     );
   }
 }
@@ -1085,10 +1048,7 @@ class _CitationRowState extends State<_CitationRow> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final highlighted = _hovered || _focused;
     final titleColor = highlighted
         ? colors.foreground
@@ -1173,7 +1133,7 @@ class _CitationRowState extends State<_CitationRow> {
               if (widget.citation.url != null && _interactive) ...[
                 const SizedBox(width: 6), // gap-1.5
                 Icon(
-                  LucideIcons.external_link,
+                  BeuiAgentTheme.of(context).icons.externalLink,
                   size: 14, // size-3.5
                   color: linkColor,
                 ),
@@ -1275,7 +1235,7 @@ class _CitationEnterState extends State<_CitationEnter> {
     // The channel split, not an all-or-nothing switch. Reduced motion drops the
     // 6px rise and keeps the fade: rows arriving out of nowhere with no
     // transition at all is exactly what the project rule forbids, and
-    // `preview_rail` has done this correctly all along (audit R18 / T4).
+    // `preview_rail` has done this correctly all along.
     final fade = SingleMotionBuilder(
       value: _opacity,
       from: 0,

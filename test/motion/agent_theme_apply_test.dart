@@ -7,18 +7,8 @@ Widget _host(
   BeuiColors? colors,
   BeuiAgentTheme? agent,
   String? fontFamily,
-  bool reduce = false,
 }) {
-  Widget body = Center(child: SizedBox(width: 400, child: child));
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
+  final body = Center(child: SizedBox(width: 400, child: child));
   final palette = colors ?? BeuiColors.light();
   return MaterialApp(
     theme: BeuiTextTheme.trackingNormal(
@@ -468,7 +458,7 @@ void main() {
     testWidgets('BeuiTodoList falls back when BeuiColors is absent', (
       tester,
     ) async {
-      // A40: this widget used to null-assert on the extension, so a consumer
+      // This widget used to null-assert on the extension, so a consumer
       // whose theme lacked it got a crash out of a published package.
       await tester.pumpWidget(
         const MaterialApp(

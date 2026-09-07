@@ -28,7 +28,7 @@ import '_engine.dart';
 ///
 /// ## Narrow windows
 ///
-/// Below [sidebarBreakpoint] the sidebar leaves the flow (C3). The source
+/// Below [sidebarBreakpoint] the sidebar leaves the flow. The source
 /// hardcodes a 272px rail with no responsive behaviour at all, which on a
 /// 300px window left the conversation 28px — narrow enough to trip the message
 /// bubble's own minimum-width assert. Below the breakpoint the sidebar either
@@ -135,11 +135,11 @@ class BeuiChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final bg = backgroundColor ?? colors.background;
     final radius = borderRadius ?? agent.shapes.cardRadius;
-    // C17: the rail's divider is on its *trailing* edge, which is the right in
+    // The rail's divider is on its *trailing* edge, which is the right in
     // LTR and the left in RTL.
     final borderSide = BorderSide(
       color: colors.border,
@@ -257,7 +257,7 @@ class BeuiChatApp extends StatelessWidget {
   }
 }
 
-/// The collapsed sidebar, as a scrimmed drawer inside the shell (C3).
+/// The collapsed sidebar, as a scrimmed drawer inside the shell.
 ///
 /// Deliberately *not* routed through the root overlay: the shell is a bordered,
 /// clipped surface that is frequently embedded inside a page, and a drawer that
@@ -280,8 +280,19 @@ class _SidebarDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reduce = MediaQuery.disableAnimationsOf(context);
-    // Panel travel is movement, so reduced motion snaps it; the scrim is
-    // opacity, so it keeps fading. One channel each, as the project rule says.
+    // Scrim opacity always transitions (`motionFor` never drops a
+    // non-movement channel) — that makes it the single safe source for both
+    // the scrim fade and the drawer's visibility gate below, so nothing
+    // re-derives the open/close target a second time.
+    final scrimMotion = motionFor(
+      context,
+      const CurvedMotion(Duration(milliseconds: 160), beuiEaseOut),
+      isMovement: false,
+    );
+    // Panel travel is movement, so reduced motion drops it. `NoMotion` would
+    // freeze at whichever value it was seeded with rather than reaching the
+    // target (see `_no_motion_semantics_test.dart`), so the drop is applied
+    // in the builder below instead of trusted to the motion.
     final panelMotion = motionFor(
       context,
       open
@@ -289,16 +300,31 @@ class _SidebarDrawer extends StatelessWidget {
           : const CurvedMotion(Duration(milliseconds: 140), beuiEaseOut),
       isMovement: true,
     );
-    final scrimMotion = motionFor(
-      context,
-      const CurvedMotion(Duration(milliseconds: 160), beuiEaseOut),
-      isMovement: false,
+
+    final panel = FocusScope(
+      child: Shortcuts(
+        shortcuts: <ShortcutActivator, Intent>{
+          const SingleActivator(LogicalKeyboardKey.escape):
+              const DismissIntent(),
+        },
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            DismissIntent: CallbackAction<DismissIntent>(
+              onInvoke: (_) {
+                onDismiss?.call();
+                return null;
+              },
+            ),
+          },
+          child: child,
+        ),
+      ),
     );
 
     return SingleMotionBuilder(
       value: open ? 1.0 : 0.0,
-      motion: reduce ? scrimMotion : panelMotion,
-      builder: (context, t, child) {
+      motion: scrimMotion,
+      builder: (context, t, stackChild) {
         final v = t.clamp(0.0, 1.0);
         if (v <= 0.001) return const SizedBox.shrink();
         return Positioned.fill(
@@ -311,48 +337,34 @@ class _SidebarDrawer extends StatelessWidget {
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: onDismiss,
-                    child: SingleMotionBuilder(
-                      value: open ? 1.0 : 0.0,
-                      motion: scrimMotion,
-                      builder: (context, s, _) => ColoredBox(
-                        color: scrimColor.withValues(
-                          alpha: scrimColor.a * s.clamp(0.0, 1.0),
-                        ),
-                      ),
+                    child: ColoredBox(
+                      color: scrimColor.withValues(alpha: scrimColor.a * v),
                     ),
                   ),
                 ),
               ),
-              PositionedDirectional(
-                top: 0,
-                bottom: 0,
-                start: reduce ? 0 : -width * (1 - v),
-                width: width,
-                child: FocusScope(
-                  child: Shortcuts(
-                    shortcuts: <ShortcutActivator, Intent>{
-                      const SingleActivator(LogicalKeyboardKey.escape):
-                          const DismissIntent(),
-                    },
-                    child: Actions(
-                      actions: <Type, Action<Intent>>{
-                        DismissIntent: CallbackAction<DismissIntent>(
-                          onInvoke: (_) {
-                            onDismiss?.call();
-                            return null;
-                          },
-                        ),
-                      },
-                      child: child!,
-                    ),
-                  ),
-                ),
+              SingleMotionBuilder(
+                value: open ? 1.0 : 0.0,
+                motion: panelMotion,
+                builder: (context, panelT, panelChild) {
+                  final s = reduce
+                      ? (open ? 1.0 : 0.0)
+                      : panelT.clamp(0.0, 1.0);
+                  return PositionedDirectional(
+                    top: 0,
+                    bottom: 0,
+                    start: -width * (1 - s),
+                    width: width,
+                    child: panelChild!,
+                  );
+                },
+                child: stackChild,
               ),
             ],
           ),
         );
       },
-      child: child,
+      child: panel,
     );
   }
 }

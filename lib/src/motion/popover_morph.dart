@@ -1,3 +1,5 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -31,8 +33,6 @@ const double _clipHidden = 0.92;
 /// Close animates on the same spring as open, so the panel morphs back into its
 /// corner instead of snapping shut. Reduced motion swaps to this brief fade.
 const _reduceFade = CurvedMotion(Duration(milliseconds: 120));
-
-double _lerp(double a, double b, double t) => a + (b - a) * t;
 
 /// A popover whose panel **morphs open from the trigger corner** — the Flutter
 /// port of beUI's `popover-morph` (the morph variant of popover).
@@ -142,10 +142,7 @@ class _BeuiMorphPopoverState extends State<BeuiMorphPopover> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final geo = _buildGeo(
@@ -318,7 +315,7 @@ class _MorphPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clip = _clipRect();
-    final scale = reduce ? 1.0 : _lerp(0.96, 1.0, progress);
+    final scale = reduce ? 1.0 : lerpDouble(0.96, 1.0, progress)!;
 
     final panel = DecoratedBox(
       decoration: BoxDecoration(

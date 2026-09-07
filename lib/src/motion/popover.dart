@@ -1,10 +1,12 @@
+import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show ImageFilter, lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
 import '_engine.dart' show SingleMotionBuilder, SpringMotion;
 
 /// Which side of the trigger the panel oozes out of.
@@ -56,8 +58,6 @@ const _gooCloseSpring = SpringMotion(
 );
 
 const int _hoverCloseDelayMs = 120;
-
-double _lerp(double a, double b, double t) => a + (b - a) * t;
 
 /// A popover whose panel **oozes** out of the trigger like liquid — the Flutter
 /// port of beUI's `popover` (gooey variant).
@@ -152,8 +152,14 @@ class _BeuiPopoverState extends State<BeuiPopover> {
     _internalOpen = widget.defaultOpen;
   }
 
+  /// Cancellable, so re-hovering inside the delay (or disposing mid-delay)
+  /// doesn't leave a stale close still pending. See the note in
+  /// `message_bubble.dart`'s `_ContentRevealState._delay`.
+  Timer? _closeTimer;
+
   @override
   void dispose() {
+    _closeTimer?.cancel();
     _focusNode.dispose();
     super.dispose();
   }
@@ -180,6 +186,12 @@ class _BeuiPopoverState extends State<BeuiPopover> {
   }
 
   void _setOpen(bool next) {
+    // Re-hovering (or refocusing) inside the close delay cancels it — a
+    // pointer that dips out and back in should never see the panel close.
+    if (next) {
+      _closeTimer?.cancel();
+      _closeTimer = null;
+    }
     final was = _open;
     if (widget.open == null) {
       setState(() => _internalOpen = next);
@@ -205,7 +217,7 @@ class _BeuiPopoverState extends State<BeuiPopover> {
       _measure();
       _syncFocus();
     });
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final geo = _buildGeo(
@@ -258,9 +270,7 @@ class _BeuiPopoverState extends State<BeuiPopover> {
         SingleMotionBuilder(
           value: _open ? 1.0 : 0.0,
           motion: reduce
-              ? const SpringMotion(
-                  SpringDescription(mass: 1, stiffness: 700, damping: 60),
-                )
+              ? beuiSpringSnap
               : (_open ? _gooOpenSpring : _gooCloseSpring),
           builder: (context, p, _) {
             return Stack(
@@ -337,7 +347,8 @@ class _BeuiPopoverState extends State<BeuiPopover> {
   }
 
   void _scheduleClose() {
-    Future<void>.delayed(const Duration(milliseconds: _hoverCloseDelayMs), () {
+    _closeTimer?.cancel();
+    _closeTimer = Timer(const Duration(milliseconds: _hoverCloseDelayMs), () {
       if (mounted && widget.trigger == BeuiPopoverTrigger.hover) {
         _setOpen(false);
       }
@@ -410,11 +421,11 @@ _Geo? _buildGeo(
 _RRect _rectForProgress(_Geo geo, double p) {
   final a = geo.trigger, b = geo.panel;
   return _RRect(
-    _lerp(a.x, b.x, p),
-    _lerp(a.y, b.y, p),
-    _lerp(a.w, b.w, p),
-    _lerp(a.h, b.h, p),
-    _lerp(a.r, b.r, p),
+    lerpDouble(a.x, b.x, p)!,
+    lerpDouble(a.y, b.y, p)!,
+    lerpDouble(a.w, b.w, p)!,
+    lerpDouble(a.h, b.h, p)!,
+    lerpDouble(a.r, b.r, p)!,
   );
 }
 

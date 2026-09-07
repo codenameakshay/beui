@@ -3,11 +3,7 @@ import 'package:beui/src/motion/_hit_target.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _app({
-  required VoidCallback onTap,
-  double minSize = beuiMinHitTarget,
-  bool enabled = true,
-}) {
+Widget _app({required VoidCallback onTap, double minSize = beuiMinHitTarget}) {
   // The default test surface is 800x600; a 20x20 target centred in it has
   // ample margin on every side for the widest slop used below (60px), so no
   // extra Stack/Align scaffolding is needed to keep off-centre taps on
@@ -18,7 +14,6 @@ Widget _app({
         child: BeuiMinHitTarget(
           key: const ValueKey('hit'),
           minSize: minSize,
-          enabled: enabled,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: onTap,
@@ -66,21 +61,6 @@ void main() {
       // 30px out: outside the 44px slop (half-width 22).
       await tester.tapAt(center + const Offset(30, 0));
       expect(tapped, isFalse);
-    });
-  });
-
-  group('BeuiMinHitTarget enabled: false', () {
-    testWidgets('is a pass-through — no slop beyond the paint', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(_app(onTap: () => tapped = true, enabled: false));
-      final center = tester.getCenter(find.byKey(const ValueKey('hit')));
-
-      await tester.tapAt(center + const Offset(15, 0));
-      expect(tapped, isFalse);
-
-      // The child itself is still reachable — only the slop is disabled.
-      await tester.tapAt(center);
-      expect(tapped, isTrue);
     });
   });
 

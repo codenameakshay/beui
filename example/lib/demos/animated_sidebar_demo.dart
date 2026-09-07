@@ -95,50 +95,22 @@ class _AnimatedSidebarDemoState extends State<_AnimatedSidebarDemo> {
     ],
   );
 
-  String get _title {
-    switch (_active) {
-      case 'search':
-        return 'Search';
-      case 'ai':
-        return 'AI Assistant';
-      case 'inbox':
-        return 'Inbox';
-      case 'all-people':
-        return 'All people';
-      case 'recent':
-        return 'Recent activity';
-      case 'segments':
-        return 'Segments';
-      case 'pipeline':
-        return 'Pipeline';
-      case 'forecast':
-        return 'Forecast';
-      case 'closed':
-        return 'Closed deals';
-      case 'automations':
-        return 'Automations';
-      case 'runs':
-        return 'Runs';
-      case 'templates':
-        return 'Templates';
-      case 'companies':
-        return 'Companies';
-      case 'tasks':
-        return 'Tasks';
-      case 'notes':
-        return 'Notes';
-      case 'dashboard':
-        return 'Dashboard';
-      case 'people':
-        return 'People';
-      case 'opportunities':
-        return 'Opportunities';
-      case 'workflows':
-        return 'Workflows';
-      default:
-        return _active;
+  static String? _labelOf(List<BeuiAnimatedSidebarItem> items, String id) {
+    for (final item in items) {
+      if (item.id == id) return item.label;
+      final kids = item.children;
+      if (kids != null) {
+        final found = _labelOf(kids, id);
+        if (found != null) return found;
+      }
     }
+    return null;
   }
+
+  String get _title =>
+      _labelOf(_quickLinks.items, _active) ??
+      _labelOf(_workspaces.items, _active) ??
+      _active;
 
   @override
   Widget build(BuildContext context) {

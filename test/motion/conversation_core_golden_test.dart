@@ -205,7 +205,7 @@ void main() {
   });
 
   testWidgets('chat app shell below the sidebar breakpoint', (tester) async {
-    // C3: the same shell at 360px wide. The sidebar is out of the flow rather
+    // The same shell at 360px wide. The sidebar is out of the flow rather
     // than leaving the conversation 88px.
     await tester.pumpWidget(
       _app(

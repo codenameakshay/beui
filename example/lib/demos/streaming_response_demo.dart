@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import '../explorer/widgets.dart';
 
 /// Gallery route for [BeuiStreamingResponse] — character-streamed response
 /// with completion actions, sources disclosure, and a Replay control. Mirrors
@@ -91,10 +92,6 @@ class _StreamingResponseDemo extends StatefulWidget {
 }
 
 /// How the demonstrated stream ends.
-///
-/// C20/C32: `error` was reachable only from a unit test and `stopped` did not
-/// exist, so the gallery — the de-facto documentation — showed a response that
-/// could only ever succeed, while the demo copy talked about recovery.
 enum _Outcome {
   /// Streams to the end and completes.
   complete,
@@ -147,7 +144,7 @@ class _StreamingResponseDemoState extends State<_StreamingResponseDemo> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _ReplayButton(colors: colors, onPressed: _replay),
+                  ReplayButton(onPressed: _replay),
                   const SizedBox(width: 12),
                   for (final o in _Outcome.values)
                     Padding(
@@ -198,93 +195,29 @@ class _OutcomeChipState extends State<_OutcomeChip> {
   @override
   Widget build(BuildContext context) {
     final colors = widget.colors;
-    return Semantics(
-      button: true,
+    return DemoPressable(
       selected: widget.selected,
-      label: widget.label,
-      child: FocusableActionDetector(
-        mouseCursor: SystemMouseCursors.click,
-        onShowHoverHighlight: (v) => setState(() => _hovered = v),
-        shortcuts: const <ShortcutActivator, Intent>{
-          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-        },
-        actions: <Type, Action<Intent>>{
-          ActivateIntent: CallbackAction<ActivateIntent>(
-            onInvoke: (_) {
-              widget.onPressed();
-              return null;
-            },
-          ),
-        },
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: widget.onPressed,
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 28),
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: widget.selected
-                  ? colors.foreground
-                  : (_hovered ? colors.secondary : colors.muted),
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: Text(
-              widget.label,
-              style: TextStyle(
-                fontSize: 12,
-                height: 16 / 12,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0,
-                color: widget.selected
-                    ? colors.background
-                    : colors.mutedForeground,
-              ),
-            ),
-          ),
+      semanticLabel: widget.label,
+      onPressed: widget.onPressed,
+      onHover: (v) => setState(() => _hovered = v),
+      builder: (context, focusVisible) => Container(
+        constraints: const BoxConstraints(minHeight: 28),
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: widget.selected
+              ? colors.foreground
+              : (_hovered ? colors.secondary : colors.muted),
+          borderRadius: BorderRadius.circular(999),
         ),
-      ),
-    );
-  }
-}
-
-class _ReplayButton extends StatelessWidget {
-  const _ReplayButton({required this.colors, required this.onPressed});
-
-  final BeuiColors colors;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(6), // rounded-md
-        hoverColor: colors.muted,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                LucideIcons.rotate_ccw,
-                size: 12,
-                color: colors.mutedForeground,
-              ),
-              const SizedBox(width: 6), // gap-1.5
-              Text(
-                'Replay',
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 16 / 12,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0, // tracking-normal
-                  color: colors.mutedForeground,
-                ),
-              ),
-            ],
+        child: Text(
+          widget.label,
+          style: TextStyle(
+            fontSize: 12,
+            height: 16 / 12,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0,
+            color: widget.selected ? colors.background : colors.mutedForeground,
           ),
         ),
       ),

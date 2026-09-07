@@ -49,7 +49,6 @@ void main() {
 
     for (final entry in kAllEntries) {
       final builder = entry.builder;
-      if (builder == null) continue;
 
       final colors = BeuiColors.of(BeuiColorTheme.defaultMono, Brightness.dark);
       // `fontFamily: 'Geist'` mirrors explorer_app.dart. Without it the tree

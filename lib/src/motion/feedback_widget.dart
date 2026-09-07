@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
+import 'dart:ui' show ImageFilter, lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -194,6 +194,7 @@ class BeuiFeedbackWidget extends StatefulWidget {
   /// Creates a feedback widget.
   const BeuiFeedbackWidget({
     this.onSubmit,
+    this.onSubmitError,
     this.position = BeuiFeedbackPosition.bottomRight,
     this.title = 'Help us improve',
     this.placeholder = 'Share an idea or report a bug',
@@ -212,6 +213,11 @@ class BeuiFeedbackWidget extends StatefulWidget {
   /// Called on submit. May be async; the button shows a sending state until it
   /// resolves. Throwing routes to the error/retry view.
   final FutureOr<void> Function(BeuiFeedbackData data)? onSubmit;
+
+  /// Called with the error and stack trace when [onSubmit] throws, in
+  /// addition to switching to the error/retry view. When null, the error is
+  /// reported via [FlutterError.reportError] instead of being swallowed.
+  final void Function(Object error, StackTrace stackTrace)? onSubmitError;
 
   /// Which bottom corner to anchor to. Defaults to [BeuiFeedbackPosition.bottomRight].
   final BeuiFeedbackPosition position;
@@ -363,8 +369,15 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
       _text.clear();
       _sentiment = null;
       _scheduleSuccessClose();
-    } catch (_) {
+    } catch (error, stackTrace) {
       // Preserve the message so a rejected submission can be retried.
+      if (widget.onSubmitError != null) {
+        widget.onSubmitError!(error, stackTrace);
+      } else {
+        FlutterError.reportError(
+          FlutterErrorDetails(exception: error, stack: stackTrace),
+        );
+      }
       if (!mounted) return;
       setState(() => _status = _Status.error);
     }
@@ -372,10 +385,7 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final style = widget.style;
 
@@ -686,8 +696,6 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
   }
 }
 
-double _lerp(double a, double b, double t) => a + (b - a) * t;
-
 /// The trigger↔panel morph slot. Slides in from ±[contentOffset], scales
 /// 0.97→1 and blurs 2px→0 (the panel); the trigger additionally rolls in from a
 /// 45° tilt. Opacity/blur finish on the compressed [_morphFadeFraction] window
@@ -722,7 +730,7 @@ class _MorphSlot extends StatelessWidget {
         final move = _morphCloseEase.transform(t);
         final dir = isPanel ? contentOffset : -contentOffset;
         final dx = (1 - move) * dir;
-        final scale = _lerp(_morphScale, 1, move);
+        final scale = lerpDouble(_morphScale, 1, move)!;
         final blur = (1 - opacity) * beuiBlurSigma(_morphBlurPx);
         final rotation = isPanel ? 0.0 : (1 - move) * (math.pi / 4);
 
@@ -1207,8 +1215,7 @@ class _SuccessBadgeState extends State<_SuccessBadge>
 
   @override
   Widget build(BuildContext context) {
-    final accent =
-        Theme.of(context).extension<BeuiColors>()?.accent ?? widget.success;
+    final accent = BeuiColors.resolve(context).accent;
 
     final disc = SingleMotionBuilder(
       value: _popped ? 1.0 : 0.0,
@@ -1294,7 +1301,7 @@ class _SprinkleState extends State<_Sprinkle>
   }
 
   double _kf3(double t, double a, double b, double c) =>
-      t < 0.5 ? _lerp(a, b, t / 0.5) : _lerp(b, c, (t - 0.5) / 0.5);
+      t < 0.5 ? lerpDouble(a, b, t / 0.5)! : lerpDouble(b, c, (t - 0.5) / 0.5)!;
 
   @override
   Widget build(BuildContext context) {

@@ -37,7 +37,7 @@ List<BeuiSwipeableListItem> _items({List<String>? log}) => [
       BeuiSwipeAction(
         id: 'delete',
         label: 'Delete',
-        icon: LucideIcons.trash_2,
+        icon: LucideIcons.trash,
         tone: BeuiSwipeActionTone.danger,
         onPressed: (item) => log?.add('delete:${item.id}'),
       ),
@@ -145,7 +145,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.drag(find.text('Design review'), const Offset(-130, 0));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(LucideIcons.trash_2));
+      await tester.tap(find.byIcon(LucideIcons.trash));
       await tester.pumpAndSettle();
       expect(log, ['delete:a']);
       expect(actions, ['delete@right']);

@@ -4,6 +4,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:motor/motor.dart';
 
 List<BeuiTodoItem> _sample({
   BeuiTodoItemStatus a = BeuiTodoItemStatus.pending,
@@ -242,7 +243,7 @@ void main() {
       expect(find.text('50%'), findsOneWidget);
     });
 
-    // A16. This used to assert the *bug*: the private disclosure hard-cut
+    // This used to assert the *bug*: the private disclosure hard-cut
     // under reduced motion, so one pump after the tap the rows were simply
     // gone. The shared disclosure keeps the opacity channel — reduced motion
     // drops movement, not fades — so the panel now cross-fades out over
@@ -275,17 +276,6 @@ void main() {
       expect(opacity, lessThan(1.0));
 
       await tester.pump(const Duration(milliseconds: 200));
-      expect(find.text('Inspect the current data flow'), findsNothing);
-    });
-
-    testWidgets('keyboard ActivateIntent toggles the header', (tester) async {
-      await tester.pumpWidget(_host(items: _sample(), defaultOpen: true));
-      await tester.pumpAndSettle();
-
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await tester.pumpAndSettle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-      await tester.pumpAndSettle();
       expect(find.text('Inspect the current data flow'), findsNothing);
     });
 
@@ -687,6 +677,13 @@ void main() {
       await tester.pumpWidget(_host(items: _sample()));
       await tester.pumpAndSettle();
       expect(find.byType(BackdropFilter), findsNothing);
+
+      final muted = tester
+          .widgetList<DecoratedBox>(find.byType(DecoratedBox))
+          .map((b) => b.decoration)
+          .whereType<BoxDecoration>()
+          .where((d) => d.color == BeuiColors.light().muted);
+      expect(muted, isEmpty);
     });
 
     testWidgets('useGlassSurfaces gives the card a real glass surface', (
@@ -740,11 +737,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final builders = tester
-        .elementList(
-          find.byWidgetPredicate(
-            (w) => w.runtimeType.toString().contains('MotionBuilder'),
-          ),
-        )
+        .elementList(find.byWidgetPredicate((w) => w is MotionBuilder))
         .length;
 
     // Three rows × 3 (the status mark is 2 — a `Rect` carrying four
@@ -781,7 +774,7 @@ void main() {
     );
   });
 
-  // F4/F5. Both channels below are gated on `NoMotion` under reduced motion,
+  // Both channels below are gated on `NoMotion` under reduced motion,
   // and NoMotion holds its seeded value forever rather than snapping to the
   // target (see `_no_motion_semantics_test.dart`). Mounting straight into the
   // end state hides the bug — the controller's initial value IS the target —

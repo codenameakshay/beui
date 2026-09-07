@@ -116,6 +116,9 @@ class _BeuiOverlayState extends State<BeuiOverlay>
     debugLabel: 'BeuiOverlay',
     skipTraversal: true,
   );
+  // Raw AnimationControllers, not `motor`: `overlayBuilder` hands callers a
+  // plain `Animation<double>` to drive their own entrance, which is the
+  // framework type these controllers already produce for free.
   late final AnimationController _controller;
   // The barrier fade runs on its own clock (it may be shorter than the
   // panel's, e.g. the drawer's 250ms backdrop under a 400ms panel envelope).
@@ -203,10 +206,7 @@ class _BeuiOverlayState extends State<BeuiOverlay>
   @override
   void dispose() {
     _escapeStack.remove(this);
-    if (_escapeStack.isEmpty && _escapeHandlerInstalled) {
-      _escapeHandlerInstalled = false;
-      HardwareKeyboard.instance.removeHandler(_handleGlobalEscape);
-    }
+    _uninstallEscapeHandlerIfEmpty();
     _overlayFocus.dispose();
     _controller.dispose();
     _barrier.dispose();
@@ -269,10 +269,17 @@ class _BeuiOverlayState extends State<BeuiOverlay>
       }
     } else {
       if (!_escapeStack.remove(this)) return;
-      if (_escapeStack.isEmpty && _escapeHandlerInstalled) {
-        _escapeHandlerInstalled = false;
-        HardwareKeyboard.instance.removeHandler(_handleGlobalEscape);
-      }
+      _uninstallEscapeHandlerIfEmpty();
+    }
+  }
+
+  /// Removes the global Esc handler once the last overlay that needed it is
+  /// gone. Shared by [dispose] and [_syncEscapeRegistration] — both drop this
+  /// state from [_escapeStack] and then need the same cleanup.
+  static void _uninstallEscapeHandlerIfEmpty() {
+    if (_escapeStack.isEmpty && _escapeHandlerInstalled) {
+      _escapeHandlerInstalled = false;
+      HardwareKeyboard.instance.removeHandler(_handleGlobalEscape);
     }
   }
 

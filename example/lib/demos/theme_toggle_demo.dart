@@ -42,12 +42,12 @@ class _ThemeToggleDemo extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  for (var i = 0; i < _variants.length; i++) ...[
+                  for (final (i, variant) in _variants.indexed) ...[
                     if (i > 0) const SizedBox(width: 20), // gap-5
                     _ToggleCell(
                       colors: c,
-                      variant: _variants[i].$1,
-                      label: _variants[i].$2,
+                      variant: variant.$1,
+                      label: variant.$2,
                     ),
                   ],
                 ],

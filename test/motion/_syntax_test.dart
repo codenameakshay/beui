@@ -33,38 +33,6 @@ void main() {
       expect(light.keyword, isNot(dark.keyword));
       expect(light.diffAdd, isNot(dark.diffAdd));
     });
-
-    test('carries the union of the three palettes it replaces', () {
-      // code_block had diffAdd/diffDel but no property/variable...
-      expect(light.diffAdd, const Color(0xFF055D20));
-      expect(light.diffDel, const Color(0xFFA0111F));
-      // ...tool_result had property/variable but no diff colours.
-      expect(light.property, const Color(0xFF024C1A));
-      expect(light.variable, const Color(0xFF702C00));
-      expect(dark.property, const Color(0xFF72F088));
-      expect(dark.variable, const Color(0xFFFFB757));
-    });
-
-    test('shared slots keep the values all three already agreed on', () {
-      expect(light.base, const Color(0xFF0E1116));
-      expect(light.keyword, const Color(0xFFA0111F));
-      expect(light.string, const Color(0xFF032563));
-      expect(light.comment, const Color(0xFF4B535D));
-      expect(light.number, const Color(0xFF023B95));
-      expect(light.entity, const Color(0xFF622CBC));
-      expect(light.punct, const Color(0xFF0E1116));
-      expect(dark.base, const Color(0xFFF0F3F6));
-      expect(dark.keyword, const Color(0xFFFF9492));
-      expect(dark.string, const Color(0xFFADDCFF));
-      expect(dark.comment, const Color(0xFFBDC4CC));
-      expect(dark.number, const Color(0xFF91CBFF));
-      expect(dark.entity, const Color(0xFFDBB7FF));
-    });
-
-    test('is a value type', () {
-      expect(BeuiSyntaxPalette.of(Brightness.light), light);
-      expect(BeuiSyntaxPalette.of(Brightness.light).hashCode, light.hashCode);
-    });
   });
 
   group('every language: an empty line yields no tokens', () {

@@ -1,7 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// A 1×1 transparent PNG — enough to give an image row a real [ImageProvider]
@@ -664,6 +663,26 @@ void main() {
       expect(removed, isEmpty);
     });
 
+    testWidgets('a cancelled transfer never flips to complete', (tester) async {
+      final controller = BeuiAttachmentUploadController();
+      await tester.pumpWidget(
+        _wrap(BeuiAttachmentUpload(controller: controller, onCancel: (_) {})),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+
+      controller.add([_candidate('a')]);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.bySemanticsLabel('Cancel upload of a.pdf'));
+      await tester.pump();
+
+      // Past the 900ms simulated transfer: the row must not report success.
+      await tester.pump(const Duration(milliseconds: 800));
+      expect(find.byIcon(LucideIcons.check), findsNothing);
+      expect(find.bySemanticsLabel('Upload complete for a.pdf'), findsNothing);
+      await tester.pump(_settleAdd);
+    });
+
     testWidgets('without onCancel the uploading slot stays blank', (
       tester,
     ) async {
@@ -724,6 +743,23 @@ void main() {
       await tester.drag(scrubber, const Offset(30, 0));
       await tester.pump();
       expect(seeks, isNotEmpty);
+
+      // Arrow keys step the playhead too, for anyone not using a pointer.
+      final gestureCtx = tester.element(
+        find.descendant(of: scrubber, matching: find.byType(GestureDetector)),
+      );
+      Focus.of(gestureCtx).requestFocus();
+      await tester.pump();
+
+      seeks.clear();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pump();
+      expect(seeks, hasLength(1));
+
+      seeks.clear();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await tester.pump();
+      expect(seeks, hasLength(1));
     });
 
     testWidgets('the scrubber reports itself as a slider with a position', (

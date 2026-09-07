@@ -1,6 +1,7 @@
 // Small shared chrome widgets used across the explorer pages.
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'catalog.dart';
 import 'theme_scope.dart';
@@ -33,15 +34,19 @@ class NewBadge extends StatelessWidget {
   }
 }
 
-/// An uppercase muted section label used above index grids ("NEW", "ALL").
+/// An uppercase muted section label used above index grids ("NEW", "ALL") and
+/// above the sub-sections of an agent-surface demo. [note] adds an optional
+/// sentence of muted body text underneath, for demos that need to explain
+/// what a section shows.
 class SectionLabel extends StatelessWidget {
-  const SectionLabel(this.text, {super.key});
+  const SectionLabel(this.text, {super.key, this.note});
   final String text;
+  final String? note;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Text(
+    final label = Text(
       text.toUpperCase(),
       style: TextStyle(
         fontSize: 12,
@@ -49,6 +54,22 @@ class SectionLabel extends StatelessWidget {
         letterSpacing: 0.8,
         color: colors.mutedForeground,
       ),
+    );
+    if (note == null) return label;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        label,
+        const SizedBox(height: 4),
+        Text(
+          note!,
+          style: TextStyle(
+            fontSize: 12,
+            height: 18 / 12,
+            color: colors.mutedForeground,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -64,8 +85,7 @@ class Breadcrumb extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final children = <Widget>[];
-    for (var i = 0; i < crumbs.length; i++) {
-      final (label, onTap) = crumbs[i];
+    for (final (i, (label, onTap)) in crumbs.indexed) {
       if (i > 0) {
         children.add(
           Padding(
@@ -178,16 +198,15 @@ class _ExplorerCardState extends State<ExplorerCard> {
 
 /// The bordered surface that frames a live demo on a detail page.
 class PreviewSurface extends StatelessWidget {
-  const PreviewSurface({super.key, required this.child, this.minHeight = 360});
+  const PreviewSurface({super.key, required this.child});
   final Widget child;
-  final double minHeight;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     return Container(
       width: double.infinity,
-      constraints: BoxConstraints(minHeight: minHeight),
+      constraints: const BoxConstraints(minHeight: 360),
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         color: colors.card.withValues(alpha: 0.4),
@@ -198,6 +217,114 @@ class PreviewSurface extends StatelessWidget {
       child: child,
     );
   }
+}
+
+/// The interactive shell every hand-rolled demo control needs: button
+/// semantics, keyboard activation (Enter/Space), a hover cursor and a focus
+/// highlight. [builder] renders the visual — [DemoPressable] only supplies
+/// [focusVisible] so it can paint its own focus ring.
+class DemoPressable extends StatefulWidget {
+  const DemoPressable({
+    super.key,
+    required this.onPressed,
+    required this.builder,
+    this.semanticLabel,
+    this.selected,
+    this.toggled,
+    this.onHover,
+  });
+
+  final VoidCallback onPressed;
+  final Widget Function(BuildContext context, bool focusVisible) builder;
+  final String? semanticLabel;
+  final bool? selected;
+  final bool? toggled;
+  final ValueChanged<bool>? onHover;
+
+  @override
+  State<DemoPressable> createState() => _DemoPressableState();
+}
+
+class _DemoPressableState extends State<DemoPressable> {
+  bool _focusVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: widget.semanticLabel,
+      selected: widget.selected,
+      toggled: widget.toggled,
+      onTap: widget.onPressed,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
+        onShowHoverHighlight: widget.onHover,
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+        },
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onPressed();
+              return null;
+            },
+          ),
+        },
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onPressed,
+          child: widget.builder(context, _focusVisible),
+        ),
+      ),
+    );
+  }
+}
+
+/// Ghost "Replay" control used across the agent-surface demos to restart a
+/// run.
+class ReplayButton extends StatelessWidget {
+  const ReplayButton({super.key, required this.onPressed});
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<BeuiColors>()!;
+    return TextButton.icon(
+      onPressed: onPressed,
+      icon: Icon(
+        LucideIcons.rotate_ccw,
+        size: 12,
+        color: colors.mutedForeground,
+      ),
+      label: Text(
+        'Replay',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: colors.mutedForeground,
+        ),
+      ),
+      style: TextButton.styleFrom(
+        foregroundColor: colors.mutedForeground,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+    );
+  }
+}
+
+/// `Number.prototype.toLocaleString()` for the en-US grouping demos use.
+String groupThousands(int value) {
+  final digits = value.abs().toString();
+  final buffer = StringBuffer(value < 0 ? '-' : '');
+  for (var i = 0; i < digits.length; i++) {
+    if (i > 0 && (digits.length - i) % 3 == 0) buffer.write(',');
+    buffer.write(digits[i]);
+  }
+  return buffer.toString();
 }
 
 /// A big page heading (H1) matching the source's 30px / -0.75 tracking.

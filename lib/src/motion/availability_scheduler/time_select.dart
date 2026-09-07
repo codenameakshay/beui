@@ -53,9 +53,31 @@ class TimeSelect extends StatefulWidget {
 class _TimeSelectState extends State<TimeSelect> {
   bool _open = false;
 
+  /// Created on open (scrolled to the selected option) and reused for the
+  /// life of that open panel, rather than rebuilt on every overlay rebuild.
+  ScrollController? _scrollController;
+
   void _setOpen(bool next) {
     if (_open == next) return;
+    if (next) {
+      _scrollController?.dispose();
+      _scrollController = ScrollController(
+        initialScrollOffset: _initialScrollOffset,
+      );
+    }
     setState(() => _open = next);
+  }
+
+  double get _initialScrollOffset {
+    final selectedIndex = widget.options.indexWhere(
+      (o) => o.value == widget.value,
+    );
+    return selectedIndex <= 0
+        ? 0
+        : (selectedIndex * _optionExtent -
+                  _panelMaxHeight / 2 +
+                  _optionExtent / 2)
+              .clamp(0.0, double.infinity);
   }
 
   String get _label {
@@ -66,11 +88,14 @@ class _TimeSelectState extends State<TimeSelect> {
   }
 
   @override
+  void dispose() {
+    _scrollController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     return BeuiOverlay(
       open: _open,
@@ -93,24 +118,11 @@ class _TimeSelectState extends State<TimeSelect> {
     Animation<double> animation,
     LayerLink link,
   ) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final width = link.leaderSize?.width ?? 132;
-    final selectedIndex = widget.options.indexWhere(
-      (o) => o.value == widget.value,
-    );
-    final controller = ScrollController(
-      initialScrollOffset: selectedIndex <= 0
-          ? 0
-          : (selectedIndex * _optionExtent -
-                    _panelMaxHeight / 2 +
-                    _optionExtent / 2)
-                .clamp(0.0, double.infinity),
-    );
+    final controller = _scrollController!;
 
     final panel = Material(
       type: MaterialType.transparency,

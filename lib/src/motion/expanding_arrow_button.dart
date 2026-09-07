@@ -289,29 +289,11 @@ class _TrailChevron extends StatelessWidget {
         : Duration.zero;
     final color = _neutral950.withValues(alpha: opacity);
 
-    return TweenAnimationBuilder<double>(
-      // Re-key so the delay restarts when active flips.
-      key: ValueKey<bool>(active),
-      tween: Tween(begin: active ? 0 : 1, end: active ? 1 : 0),
-      duration: Duration(milliseconds: reduce ? 0 : 180),
-      curve: beuiEaseOut,
-      builder: (context, t, child) {
-        // Apply delay by holding at 0 until the delay window passes — a simple
-        // approximation of Framer's per-item delay without a ticker per chevron.
-        return child!;
-      },
-      child: _DelayedReveal(
-        delay: delay,
-        active: active,
-        reduce: reduce,
-        child: Transform.translate(
-          offset: Offset(active && !reduce ? 0 : -6, 0),
-          child: Opacity(
-            opacity: active ? 1 : 0,
-            child: _DottedChevron(color: color, size: const Size(20, 28)),
-          ),
-        ),
-      ),
+    return _DelayedReveal(
+      delay: delay,
+      active: active,
+      reduce: reduce,
+      child: _DottedChevron(color: color, size: const Size(20, 28)),
     );
   }
 }
@@ -388,7 +370,7 @@ class _DelayedRevealState extends State<_DelayedReveal>
     return AnimatedBuilder(
       animation: _c,
       builder: (context, child) {
-        final t = CurvedAnimation(parent: _c, curve: beuiEaseOut).value;
+        final t = beuiEaseOut.transform(_c.value);
         return Opacity(
           opacity: t,
           child: Transform.translate(
@@ -601,8 +583,7 @@ class _BeuiHoldActionButtonState extends State<BeuiHoldActionButton>
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).extension<BeuiColors>() ?? BeuiColors.light();
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final bg = widget.backgroundColor ?? colors.primary;
     final fg = widget.foregroundColor ?? colors.primaryForeground;
@@ -996,8 +977,7 @@ class _BeuiSlideActionButtonState extends State<BeuiSlideActionButton> {
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).extension<BeuiColors>() ?? BeuiColors.light();
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final thumbColor =
         widget.thumbColor ?? (_completed ? colors.background : colors.primary);
@@ -1146,12 +1126,7 @@ class _BeuiSlideActionButtonState extends State<BeuiSlideActionButton> {
                   left: 4,
                   top: 4,
                   child: GestureDetector(
-                    onTap: _completed
-                        ? null
-                        : () {
-                            // Keyboard / a11y: Enter/Space complete immediately
-                            // (source onKeyDown).
-                          },
+                    key: const ValueKey('beui-slide-action-thumb'),
                     onPanStart: _completed
                         ? null
                         : (_) => setState(() {

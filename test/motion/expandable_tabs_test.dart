@@ -1,28 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: child);
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+import '../support.dart';
 
 List<BeuiExpandableTabsItem> get _items => const [
   BeuiExpandableTabsItem(
@@ -57,20 +37,12 @@ List<BeuiExpandableTabsItem> get _items => const [
   ),
 ];
 
-double _maxBlurSigma(WidgetTester tester) => tester
-    .widgetList<ImageFiltered>(find.byType(ImageFiltered))
-    .map((f) {
-      final m = RegExp(r'blur\(([\d.]+)').firstMatch(f.imageFilter.toString());
-      return m == null ? 0.0 : double.parse(m.group(1)!);
-    })
-    .fold<double>(0, math.max);
-
 void main() {
   group('BeuiExpandableTabs', () {
     testWidgets('closed bar shows icons only at the bar height', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(BeuiExpandableTabs(items: _items)));
+      await tester.pumpWidget(beuiTestApp(BeuiExpandableTabs(items: _items)));
       await tester.pumpAndSettle();
       expect(find.byIcon(LucideIcons.house), findsOneWidget);
       expect(find.byIcon(LucideIcons.search), findsOneWidget);
@@ -82,7 +54,7 @@ void main() {
     testWidgets('tapping a tab opens its panel and expands the shell', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(BeuiExpandableTabs(items: _items)));
+      await tester.pumpWidget(beuiTestApp(BeuiExpandableTabs(items: _items)));
       await tester.pumpAndSettle();
       final closed = tester.getSize(find.byType(BeuiExpandableTabs));
 
@@ -96,7 +68,7 @@ void main() {
     });
 
     testWidgets('tapping the active tab again closes', (tester) async {
-      await tester.pumpWidget(_wrap(BeuiExpandableTabs(items: _items)));
+      await tester.pumpWidget(beuiTestApp(BeuiExpandableTabs(items: _items)));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(LucideIcons.house));
       await tester.pumpAndSettle();
@@ -108,7 +80,7 @@ void main() {
     });
 
     testWidgets('switching tabs swaps panels', (tester) async {
-      await tester.pumpWidget(_wrap(BeuiExpandableTabs(items: _items)));
+      await tester.pumpWidget(beuiTestApp(BeuiExpandableTabs(items: _items)));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(LucideIcons.house));
       await tester.pumpAndSettle();
@@ -119,7 +91,7 @@ void main() {
     });
 
     testWidgets('tapping outside closes the open panel', (tester) async {
-      await tester.pumpWidget(_wrap(BeuiExpandableTabs(items: _items)));
+      await tester.pumpWidget(beuiTestApp(BeuiExpandableTabs(items: _items)));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(LucideIcons.house));
       await tester.pumpAndSettle();
@@ -129,7 +101,7 @@ void main() {
     });
 
     testWidgets('Escape closes the open panel', (tester) async {
-      await tester.pumpWidget(_wrap(BeuiExpandableTabs(items: _items)));
+      await tester.pumpWidget(beuiTestApp(BeuiExpandableTabs(items: _items)));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(LucideIcons.house));
       await tester.pumpAndSettle();
@@ -143,7 +115,7 @@ void main() {
     ) async {
       final changes = <String?>[];
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiExpandableTabs(
             items: _items,
             value: 'search',
@@ -161,13 +133,13 @@ void main() {
 
     testWidgets('reduced motion opens without blur', (tester) async {
       await tester.pumpWidget(
-        _wrap(BeuiExpandableTabs(items: _items), reduce: true),
+        beuiTestApp(BeuiExpandableTabs(items: _items), reduce: true),
       );
       await tester.pump(const Duration(milliseconds: 50));
       await tester.tap(find.byIcon(LucideIcons.house), warnIfMissed: false);
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 40));
-        expect(_maxBlurSigma(tester), lessThan(0.5));
+        expect(maxBlurSigma(tester), lessThan(0.5));
       }
       expect(find.text('Home panel'), findsOneWidget);
     });

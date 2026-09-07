@@ -361,10 +361,7 @@ class _BeuiChromaticTextRevealState extends State<BeuiChromaticTextReveal>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final style = widget.style ?? DefaultTextStyle.of(context).style;
     final foreground = widget.foregroundColor ?? colors.foreground;
     final palette = widget.colors?.isNotEmpty ?? false
@@ -385,8 +382,8 @@ class _BeuiChromaticTextRevealState extends State<BeuiChromaticTextReveal>
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        // Source: prefix + U+00A0 (a non-breaking space, so the gap is painted
-        // width and never collapses at the end of the run).
+        // Source: prefix + a trailing space, so the gap is painted width and
+        // never collapses at the end of the run.
         Text(
           hasWords ? '${widget.prefix} ' : widget.prefix,
           style: style,

@@ -1,32 +1,7 @@
-import 'dart:math' as math;
-
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-/// Source-over composite of [src] onto an opaque [dst].
-Color _composite(Color src, Color dst) {
-  final a = src.a;
-  return Color.from(
-    alpha: 1,
-    red: src.r * a + dst.r * (1 - a),
-    green: src.g * a + dst.g * (1 - a),
-    blue: src.b * a + dst.b * (1 - a),
-  );
-}
-
-double _channel(double c) =>
-    c <= 0.03928 ? c / 12.92 : math.pow((c + 0.055) / 1.055, 2.4).toDouble();
-
-double _luminance(Color c) =>
-    0.2126 * _channel(c.r) + 0.7152 * _channel(c.g) + 0.0722 * _channel(c.b);
-
-/// WCAG 2.x relative-contrast ratio between two **opaque** colors.
-double _contrast(Color a, Color b) {
-  final la = _luminance(a);
-  final lb = _luminance(b);
-  return (math.max(la, lb) + 0.05) / (math.min(la, lb) + 0.05);
-}
+import '../support.dart';
 
 // The opaque surfaces agent badges actually sit on.
 //
@@ -40,7 +15,7 @@ const _lightSurfaces = <String, Color>{
 // Dark: the tool_approval card is composited here from its translucent
 // ingredients; the other two are the raw opaque tokens.
 final _darkSurfaces = <String, Color>{
-  'tool_approval card (muted @0.20 over background)': _composite(
+  'tool_approval card (muted @0.20 over background)': composite(
     const Color(0xFF1C1C1C).withValues(alpha: 0.20),
     const Color(0xFF151515),
   ),
@@ -67,25 +42,22 @@ BeuiAgentStatusPalette _denied(BeuiAgentStatusColors c) => c.denied;
 BeuiAgentStatusPalette _destructive(BeuiAgentStatusColors c) => c.destructive;
 
 void main() {
-  group('BeuiAgentStatusColors.of resolves by brightness', () {
-    test('light', () {
-      expect(
-        BeuiAgentStatusColors.of(Brightness.light),
-        BeuiAgentStatusColors.light,
-      );
-    });
-
-    test('dark', () {
-      expect(
-        BeuiAgentStatusColors.of(Brightness.dark),
-        BeuiAgentStatusColors.dark,
-      );
-    });
+  test('BeuiAgentStatusColors.of resolves by brightness', () {
+    expect(
+      BeuiAgentStatusColors.of(Brightness.light),
+      BeuiAgentStatusColors.light,
+    );
+    expect(
+      BeuiAgentStatusColors.of(Brightness.dark),
+      BeuiAgentStatusColors.dark,
+    );
   });
 
-  group('palette() maps every BeuiAgentStatus to its named tier', () {
-    test('light', () {
-      const colors = BeuiAgentStatusColors.light;
+  test('palette() maps every BeuiAgentStatus to its named tier', () {
+    for (final colors in [
+      BeuiAgentStatusColors.light,
+      BeuiAgentStatusColors.dark,
+    ]) {
       final expectedByStatus = <BeuiAgentStatus, BeuiAgentStatusPalette>{
         BeuiAgentStatus.pending: colors.pending,
         BeuiAgentStatus.running: colors.running,
@@ -96,29 +68,13 @@ void main() {
         BeuiAgentStatus.destructive: colors.destructive,
       };
       for (final status in BeuiAgentStatus.values) {
-        final result = colors.palette(status);
-        expect(result, isNotNull, reason: status.name);
-        expect(result, expectedByStatus[status], reason: status.name);
+        expect(
+          colors.palette(status),
+          expectedByStatus[status],
+          reason: status.name,
+        );
       }
-    });
-
-    test('dark', () {
-      const colors = BeuiAgentStatusColors.dark;
-      final expectedByStatus = <BeuiAgentStatus, BeuiAgentStatusPalette>{
-        BeuiAgentStatus.pending: colors.pending,
-        BeuiAgentStatus.running: colors.running,
-        BeuiAgentStatus.success: colors.success,
-        BeuiAgentStatus.failed: colors.failed,
-        BeuiAgentStatus.denied: colors.denied,
-        BeuiAgentStatus.neutral: colors.neutral,
-        BeuiAgentStatus.destructive: colors.destructive,
-      };
-      for (final status in BeuiAgentStatus.values) {
-        final result = colors.palette(status);
-        expect(result, isNotNull, reason: status.name);
-        expect(result, expectedByStatus[status], reason: status.name);
-      }
-    });
+    }
   });
 
   group('badge foreground clears WCAG AA (4.5:1) on every card surface', () {
@@ -127,11 +83,11 @@ void main() {
       for (final tierEntry in _gatedTiers.entries) {
         final palette = tierEntry.value(colors);
         for (final surfaceEntry in _lightSurfaces.entries) {
-          final compositedBadgeBg = _composite(
+          final compositedBadgeBg = composite(
             palette.background,
             surfaceEntry.value,
           );
-          final ratio = _contrast(palette.foreground, compositedBadgeBg);
+          final ratio = contrastRatio(palette.foreground, compositedBadgeBg);
           expect(
             ratio,
             greaterThanOrEqualTo(4.5),
@@ -148,11 +104,11 @@ void main() {
       for (final tierEntry in _gatedTiers.entries) {
         final palette = tierEntry.value(colors);
         for (final surfaceEntry in _darkSurfaces.entries) {
-          final compositedBadgeBg = _composite(
+          final compositedBadgeBg = composite(
             palette.background,
             surfaceEntry.value,
           );
-          final ratio = _contrast(palette.foreground, compositedBadgeBg);
+          final ratio = contrastRatio(palette.foreground, compositedBadgeBg);
           expect(
             ratio,
             greaterThanOrEqualTo(4.5),
@@ -168,7 +124,7 @@ void main() {
   group('neutral foreground clears 4.5:1 on plain background', () {
     test('light', () {
       const colors = BeuiAgentStatusColors.light;
-      final ratio = _contrast(
+      final ratio = contrastRatio(
         colors.neutral.foreground,
         _lightSurfaces['plain background']!,
       );
@@ -177,7 +133,7 @@ void main() {
 
     test('dark', () {
       const colors = BeuiAgentStatusColors.dark;
-      final ratio = _contrast(
+      final ratio = contrastRatio(
         colors.neutral.foreground,
         _darkSurfaces['plain background']!,
       );
@@ -189,16 +145,16 @@ void main() {
     test('light', () {
       const colors = BeuiAgentStatusColors.light;
       final card = _lightSurfaces['approval_card card (opaque muted)']!;
-      final compositedEdge = _composite(colors.destructive.border, card);
-      final ratio = _contrast(compositedEdge, card);
+      final compositedEdge = composite(colors.destructive.border, card);
+      final ratio = contrastRatio(compositedEdge, card);
       expect(ratio, greaterThanOrEqualTo(3.0));
     });
 
     test('dark', () {
       const colors = BeuiAgentStatusColors.dark;
       final card = _darkSurfaces['approval_card card (opaque muted)']!;
-      final compositedEdge = _composite(colors.destructive.border, card);
-      final ratio = _contrast(compositedEdge, card);
+      final compositedEdge = composite(colors.destructive.border, card);
+      final ratio = contrastRatio(compositedEdge, card);
       expect(ratio, greaterThanOrEqualTo(3.0));
     });
   });
@@ -217,26 +173,13 @@ void main() {
     });
   });
 
-  group('denied defaults equal failed', () {
-    test('light', () {
-      const colors = BeuiAgentStatusColors.light;
+  test('denied defaults equal failed', () {
+    for (final colors in [
+      BeuiAgentStatusColors.light,
+      BeuiAgentStatusColors.dark,
+    ]) {
       expect(colors.denied, colors.failed);
-      expect(colors.denied.foreground, colors.failed.foreground);
-      expect(colors.denied.background, colors.failed.background);
-      expect(colors.denied.border, colors.failed.border);
-      expect(colors.denied.solid, colors.failed.solid);
-      expect(colors.denied.onSolid, colors.failed.onSolid);
-    });
-
-    test('dark', () {
-      const colors = BeuiAgentStatusColors.dark;
-      expect(colors.denied, colors.failed);
-      expect(colors.denied.foreground, colors.failed.foreground);
-      expect(colors.denied.background, colors.failed.background);
-      expect(colors.denied.border, colors.failed.border);
-      expect(colors.denied.solid, colors.failed.solid);
-      expect(colors.denied.onSolid, colors.failed.onSolid);
-    });
+    }
   });
 
   group('copyWith round-trips', () {

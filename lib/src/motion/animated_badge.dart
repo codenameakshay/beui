@@ -7,6 +7,7 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_spinner.dart';
 
 /// Status of a [BeuiAnimatedBadge] — a fixed, exhaustive set, mirroring the
 /// source `AnimatedBadgeStatus` union.
@@ -173,7 +174,7 @@ class _BeuiAnimatedBadgeState extends State<BeuiAnimatedBadge> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final scheme = _BadgeScheme.of(widget.status, colors);
     final radius = BorderRadius.circular(widget._height / 2); // rounded-full
@@ -374,7 +375,7 @@ class _IconSlot extends StatelessWidget {
         status == BeuiAnimatedBadgeStatus.loading && !reduce && !customIcon;
     final Widget glyph = spin
         ? RepaintBoundary(
-            child: _LoaderSpinner(size: size, color: color),
+            child: BeuiSpinner(size: size, color: color),
           )
         : Icon(icon, size: size, color: color);
 
@@ -685,76 +686,4 @@ class _PulseState extends State<_Pulse> with SingleTickerProviderStateMixin {
       ),
     );
   }
-}
-
-/// The loading spinner — a centre-painted 3/4 arc (matching Lucide's
-/// `loader-circle`) spun in place by a [RotationTransition], 1s linear loop
-/// (source's loading-icon `rotate: 360`). Custom-painted so it stays optically
-/// centred and crisp at any size, instead of orbiting like a rotated font glyph.
-class _LoaderSpinner extends StatefulWidget {
-  const _LoaderSpinner({required this.size, required this.color});
-
-  final double size;
-  final Color color;
-
-  @override
-  State<_LoaderSpinner> createState() => _LoaderSpinnerState();
-}
-
-class _LoaderSpinnerState extends State<_LoaderSpinner>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1000),
-  )..repeat();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RotationTransition(
-      turns: _controller,
-      child: CustomPaint(
-        size: Size.square(widget.size),
-        painter: _SpinnerPainter(
-          color: widget.color,
-          stroke: widget.size * 0.12,
-        ),
-      ),
-    );
-  }
-}
-
-class _SpinnerPainter extends CustomPainter {
-  _SpinnerPainter({required this.color, required this.stroke});
-
-  final Color color;
-  final double stroke;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.shortestSide - stroke) / 2;
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke
-      ..strokeCap = StrokeCap.round;
-    // 3/4 arc from the top, like Lucide's loader-circle.
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
-      math.pi * 1.5,
-      false,
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_SpinnerPainter old) =>
-      old.color != color || old.stroke != stroke;
 }

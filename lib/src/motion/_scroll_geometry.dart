@@ -43,40 +43,48 @@ mixin ScrollGeometryMixin<T extends StatefulWidget> on State<T> {
     if (mounted) onScrollGeometryChanged();
   }
 
+  RenderBox? _findBox(BuildContext? ctx) =>
+      ctx?.findRenderObject() as RenderBox?;
+
   void _scheduleAnchorMeasure() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final box = context.findRenderObject() as RenderBox?;
       final position = _position;
-      final scrollableContext = position != null && position.hasPixels
-          ? Scrollable.maybeOf(context)?.context
-          : null;
-      final viewportBox = scrollableContext?.findRenderObject() as RenderBox?;
+      if (position == null || !position.hasPixels) return;
+      final box = _findBox(context);
+      final viewportBox = _findBox(Scrollable.maybeOf(context)?.context);
       if (box == null || viewportBox == null || !box.attached || !box.hasSize) {
         return;
       }
       final topInViewport = box
           .localToGlobal(Offset.zero, ancestor: viewportBox)
           .dy;
-      _anchor = topInViewport + position!.pixels;
+      _anchor = topInViewport + position.pixels;
       onScrollGeometryChanged();
     });
   }
 
   /// Height of the tracked viewport, or null before attachment.
-  double? get viewportHeight => (_position?.hasViewportDimension ?? false)
-      ? _position!.viewportDimension
-      : null;
+  double? get viewportHeight {
+    final position = _position;
+    return (position != null && position.hasViewportDimension)
+        ? position.viewportDimension
+        : null;
+  }
 
   /// The element's top edge in viewport coordinates, or null before the first
   /// layout has been measured.
-  double? get topInViewport => _anchor == null || _position == null
-      ? null
-      : _anchor! - _position!.pixels;
+  double? get topInViewport {
+    final anchor = _anchor;
+    final position = _position;
+    return (anchor == null || position == null)
+        ? null
+        : anchor - position.pixels;
+  }
 
   /// The element's own height, or null before layout.
   double? get elementHeight {
-    final box = context.findRenderObject() as RenderBox?;
+    final box = _findBox(context);
     return (box != null && box.hasSize) ? box.size.height : null;
   }
 

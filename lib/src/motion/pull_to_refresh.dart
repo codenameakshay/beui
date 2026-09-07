@@ -275,18 +275,10 @@ class _BeuiPullToRefreshState extends State<BeuiPullToRefresh> {
     }
   }
 
-  void _onPointerUp(PointerUpEvent e) {
-    if (e.pointer != _pointerId) return;
-    if (_gestureActive && (_dragging || _y > 0)) {
-      _finishPull();
-    } else {
-      _gestureActive = false;
-      _pointerId = null;
-    }
-  }
-
-  void _onPointerCancel(PointerCancelEvent e) {
-    if (e.pointer != _pointerId) return;
+  // Same wind-down whether the finger lifts or the gesture is cancelled
+  // (e.g. a system interruption).
+  void _onPointerEnd(int pointer) {
+    if (pointer != _pointerId) return;
     if (_gestureActive && (_dragging || _y > 0)) {
       _finishPull();
     } else {
@@ -297,31 +289,20 @@ class _BeuiPullToRefreshState extends State<BeuiPullToRefresh> {
 
   @override
   Widget build(BuildContext context) {
-    final colors =
-        Theme.of(context).extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, Theme.of(context).brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final panelMotion = motionFor(context, beuiSpringPanel, isMovement: true);
 
     // While dragging (or reduced) the indicator must sit exactly where the
-    // finger put it; only the release is sprung.
-    //
-    // This used to be expressed as `NoMotion`, which does NOT mean "snap" —
-    // it holds its seeded value forever and never reaches the target (see
-    // `test/motion/_no_motion_semantics_test.dart`). Because `_dragging` is
-    // true for the whole pull, `y` stayed pinned at 0 for every frame of it:
-    // the indicator never faded in, never scaled, and the content never
-    // translated. Only the status *label* moved, because that reads plain
-    // state rather than the animated value — which is why the bug survived
-    // the existing tests, and why it hit every user, not just reduced-motion
-    // ones.
-    //
-    // `active: false` is motor's own mechanism for this: it stops the
-    // controller and assigns `controller.value = widget.value` outright. The
-    // rendered value therefore tracks the drag frame for frame, AND the
-    // controller stays seeded at the real position — so when `active` flips
-    // back to true on release, the panel spring starts from where the finger
-    // left off instead of springing up from a stale 0.
+    // finger put it; only the release is sprung. `NoMotion` would be wrong
+    // here — it holds its seeded value forever rather than snapping to a
+    // moving target (see `test/motion/_no_motion_semantics_test.dart`), which
+    // would pin the indicator at its starting position for the whole drag.
+    // `active: false` is motor's mechanism for an actual snap: it stops the
+    // controller and assigns `controller.value = widget.value` outright, so
+    // the rendered value tracks the drag frame for frame while the controller
+    // stays seeded at the real position — letting the release spring start
+    // from where the finger left off instead of from a stale 0.
     final snapY = _dragging || reduce;
 
     final defaultLabelStyle = TextStyle(
@@ -354,8 +335,8 @@ class _BeuiPullToRefreshState extends State<BeuiPullToRefresh> {
         behavior: HitTestBehavior.translucent,
         onPointerDown: _onPointerDown,
         onPointerMove: _onPointerMove,
-        onPointerUp: _onPointerUp,
-        onPointerCancel: _onPointerCancel,
+        onPointerUp: (e) => _onPointerEnd(e.pointer),
+        onPointerCancel: (e) => _onPointerEnd(e.pointer),
         child: SingleMotionBuilder(
           motion: panelMotion,
           active: !snapY,
@@ -602,9 +583,7 @@ class _RefreshBuddyState extends State<_RefreshBuddy>
             final t = _loop.value;
             // easeInOut wave 0→1→0 for y/rotate/blink.
             final wave = math.sin(t * math.pi * 2); // -1..1
-            final easeWave = beuiEaseInOut.transform(
-              (math.sin(t * math.pi * 2) + 1) / 2,
-            );
+            final easeWave = beuiEaseInOut.transform((wave + 1) / 2);
 
             double bodyY = 0;
             double bodyRotate = 0;

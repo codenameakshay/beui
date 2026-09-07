@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -141,7 +142,7 @@ class BeuiApprovalCardAnswer {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is BeuiApprovalCardAnswer &&
-          _listEq(selected, other.selected) &&
+          listEquals(selected, other.selected) &&
           custom == other.custom;
 
   @override
@@ -166,7 +167,7 @@ String _statusLabel(BeuiApprovalCardStatus status, BeuiAgentStrings strings) {
   };
 }
 
-/// Maps a card status onto the themeable status role (A36).
+/// Maps a card status onto the themeable status role.
 ///
 /// `rejected` lands on [BeuiAgentStatus.denied] rather than `failed`: nothing
 /// broke, a person said no. The two roles ship the same default palette, but
@@ -188,10 +189,6 @@ BeuiAgentStatus _statusRole(BeuiApprovalCardStatus status) => switch (status) {
 const _stepDuration = Duration(milliseconds: 200);
 const _autoAdvanceDelay = Duration(milliseconds: 240);
 const _spinPeriod = Duration(milliseconds: 900);
-
-/// Compact-to-expanded height uses the shared layout spring so reversing
-/// mid-flight continues from the current height instead of restarting.
-const _expandSpring = beuiSpringLayout;
 
 // ---------------------------------------------------------------------------
 // BeuiApprovalCard
@@ -326,7 +323,7 @@ class BeuiApprovalCard extends StatefulWidget {
   ///
   /// **Reject, not Deny.** This card renders a *review verdict* — the user has
   /// read submitted work and turned it down. `BeuiToolApproval` renders a
-  /// *permission refusal* and says "Deny". The audit (A26) found the two words
+  /// *permission refusal* and says "Deny". The audit found the two words
   /// used interchangeably across siblings; they are kept distinct on purpose.
   final String? rejectLabel;
 
@@ -344,7 +341,7 @@ class BeuiApprovalCard extends StatefulWidget {
 
   /// Uncontrolled seed when [expanded] is null. Defaults to collapsed.
   ///
-  /// **The cluster's disclosure policy (A42).** Across the transcript the rule
+  /// **The cluster's disclosure policy.** Across the transcript the rule
   /// is: *a surface that is still asking or still running opens; a detail view
   /// the user can request stays shut.* The audit found `defaultOpen` set
   /// true/true/false/false across four sibling components with no stated
@@ -366,7 +363,7 @@ class BeuiApprovalCard extends StatefulWidget {
 
   /// Whether the header participates in expand/collapse.
   ///
-  /// **The invariant (A11).** The header row is a trigger *if and only if*
+  /// **The invariant.** The header row is a trigger *if and only if*
   /// `expandedChild != null && showExpandToggle`. When either is false the
   /// header is completely inert: no button semantics, no tap target, no
   /// keyboard stop, and [headerAction] behaves exactly as it does today. A
@@ -416,7 +413,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
   bool get _expanded => widget.expanded ?? _internalExpanded;
   bool get _expandable => widget.expandedChild != null;
 
-  /// The A11 invariant, in one place: the header is a trigger only when there
+  /// The header-trigger invariant, in one place: the header is a trigger only when there
   /// is something to expand *and* the caller left the toggle on.
   bool get _headerIsTrigger => _expandable && widget.showExpandToggle;
 
@@ -443,6 +440,13 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
     _internalStep = widget.defaultStep;
     _internalExpanded = widget.defaultExpanded;
     _spin = AnimationController(vsync: this, duration: _spinPeriod);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // MediaQuery isn't available in initState; this also re-syncs whenever
+    // the ambient reduced-motion setting changes.
     _syncSpin();
   }
 
@@ -460,17 +464,10 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
   }
 
   void _syncSpin() {
-    final reduce =
-        WidgetsBinding
-            .instance
-            .platformDispatcher
-            .accessibilityFeatures
-            .disableAnimations ||
-        false;
-    // MediaQuery is not available in initState; also re-checked in build.
+    final reduce = MediaQuery.disableAnimationsOf(context);
     if (_busy && !reduce) {
       if (!_spin.isAnimating) _spin.repeat();
-    } else {
+    } else if (_spin.isAnimating || _spin.value != 0) {
       _spin
         ..stop()
         ..value = 0;
@@ -532,26 +529,15 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-
-    // Keep spin in sync with reduced-motion (MediaQuery only available here).
-    if (_busy && !reduce) {
-      if (!_spin.isAnimating) _spin.repeat();
-    } else if (_spin.isAnimating || _spin.value != 0) {
-      _spin
-        ..stop()
-        ..value = 0;
-    }
 
     final strings = agent.strings;
     final statusColors = agent.statusColorsFor(theme.brightness);
 
     final question = _question;
-    // F19: `approvalCardTitle` shipped in the strings role and nothing read it,
+    // `approvalCardTitle` shipped in the strings role and nothing read it,
     // because the widget default beat it to the fallback slot.
     final displayTitle =
         question?.title ?? widget.title ?? strings.approvalCardTitle;
@@ -574,7 +560,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
 
     return Semantics(
       container: true,
-      // A30: the old gate was `_busy`, which switched the live region off at
+      // The old gate was `_busy`, which switched the live region off at
       // exactly the moment the outcome arrived — "Rejected" and "Changes
       // requested" were never announced. Hold it through the terminal
       // transition instead; the label below carries the outcome.
@@ -609,7 +595,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
                       onDismiss: widget.onDismiss,
                       headerAction: widget.headerAction,
                       expanded: _expanded,
-                      // A11: null here means "inert header" — the only switch
+                      // Null here means "inert header" — the only switch
                       // that turns the row into a control.
                       onToggleExpanded: _headerIsTrigger
                           ? () => _setExpanded(!_expanded)
@@ -618,7 +604,7 @@ class _BeuiApprovalCardState extends State<BeuiApprovalCard>
                     BeuiAgentDisclosureInternal(
                       open: _interactive,
                       reduce: reduce,
-                      // A4 — the double-fire fix. The disclosure gates hit
+                      // The double-fire fix. The disclosure gates hit
                       // testing on its *animated* value, so for the ~140ms the
                       // body spends collapsing after a decision it was still
                       // tappable: a fast double-tap on Approve fired
@@ -806,7 +792,7 @@ class _HeaderRow extends StatelessWidget {
             strings.stepCounter(currentStep + 1, questionCount),
             style: agent.typography.status.copyWith(
               fontFeatures: const [FontFeature.tabularFigures()],
-              // A8: the step counter tells you where you are in the flow —
+              // The step counter tells you where you are in the flow —
               // information, not chrome. It no longer gets alpha-multiplied
               // down to 3:1.
               color: colors.mutedForeground,
@@ -836,7 +822,7 @@ class _HeaderRow extends StatelessWidget {
                   colors: colors,
                   child: triggerArea,
                 )
-              // A11's other half: with no expandedChild (or the toggle turned
+              // The invariant's other half: with no expandedChild (or the toggle turned
               // off) the header is plain content — no Semantics(button), no
               // Focus stop, no hit target.
               : triggerArea,
@@ -856,7 +842,7 @@ class _HeaderRow extends StatelessWidget {
 
 /// Makes the header row a real control: button semantics, Enter/Space, a
 /// visible non-shifting focus ring, and a 44px hit target over the same
-/// visual (A11 + A31).
+/// visual.
 class _HeaderTrigger extends StatefulWidget {
   const _HeaderTrigger({
     required this.expanded,
@@ -911,7 +897,7 @@ class _HeaderTriggerState extends State<_HeaderTrigger> {
               key: const ValueKey<String>('beui-approval-expand'),
               behavior: HitTestBehavior.opaque,
               onTap: widget.onToggle,
-              // A31: the row is the control, so the *row* has to clear the
+              // The row is the control, so the *row* has to clear the
               // touch floor. `BeuiMinHitTarget` widens hit testing but cannot
               // grow the semantics rect an accessibility audit measures, and a
               // title's line box is only ~20px tall — so the minimum height is
@@ -1431,7 +1417,7 @@ class _SimpleActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final agent = BeuiAgentTheme.of(context);
     return Wrap(
-      // A31: the 44px hit targets overhang their visuals, so the gap has to
+      // The 44px hit targets overhang their visuals, so the gap has to
       // clear the overhang or a tap near the edge of Approve lands on Request
       // changes.
       spacing: agent.layout.actionSpacing + 4,
@@ -1532,8 +1518,9 @@ class _ProgressDots extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = BeuiAgentTheme.of(context).strings;
     return Semantics(
-      label: 'Question ${current + 1} of ${ids.length}',
+      label: strings.questionProgress(current + 1, ids.length),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -1585,26 +1572,16 @@ class _ProgressDot extends StatelessWidget {
       );
     }
 
-    // Drive scale + opacity with SPRING_SWAP via a packed value.
-    // Pack: scale in integer part * 100 + opacity * 100 → decode in builder.
-    // Simpler: two SingleMotionBuilders nested, or one MotionBuilder.
-    // Nested is fine for 6px dots.
-    return SingleMotionBuilder(
-      value: scale,
-      motion: motionFor(context, beuiSpringSwap, isMovement: true),
-      builder: (context, s, child) {
-        return SingleMotionBuilder(
-          value: opacity,
-          motion: motionFor(context, beuiSpringSwap, isMovement: false),
-          builder: (context, o, child) {
-            return Opacity(
-              opacity: o.clamp(0.0, 1.0),
-              child: Transform.scale(scale: s, child: child),
-            );
-          },
-          child: child,
-        );
-      },
+    // Scale (dx) + opacity (dy) on independent SPRING_SWAP channels via one
+    // Offset-valued builder, rather than nesting two scalar builders.
+    return MotionBuilder<Offset>(
+      value: Offset(scale, opacity),
+      motion: beuiSpringSwap,
+      converter: const OffsetMotionConverter(),
+      builder: (context, value, child) => Opacity(
+        opacity: value.dy.clamp(0.0, 1.0),
+        child: Transform.scale(scale: value.dx, child: child),
+      ),
       child: dot,
     );
   }
@@ -1664,7 +1641,7 @@ class _ExpandChevron extends StatelessWidget {
             ? const NoMotion()
             : motionFor(context, beuiSpringSwap, isMovement: true),
         builder: (context, t, child) {
-          // F6: NoMotion *holds* whatever value it was first given, so reading
+          // NoMotion *holds* whatever value it was first given, so reading
           // `t` under reduced motion freezes the chevron at its mount angle and
           // it never turns again. Snap to the target instead — the state still
           // reads, only the travel is dropped.
@@ -1702,7 +1679,7 @@ class _ExpandableBody extends StatefulWidget {
 
 /// Cross-fades a compact summary into a detailed body, springing the height.
 ///
-/// **A12 — each child is built exactly once.** The previous implementation
+/// **Each child is built exactly once.** The previous implementation
 /// rendered `compact` and `expandedChild` twice each: once inside two
 /// `Offstage` subtrees purely to measure them, and again inside the animation
 /// builder. For inert content that was merely wasteful; for anything stateful
@@ -1807,7 +1784,7 @@ class _ExpandableBodyState extends State<_ExpandableBody> {
 
   @override
   Widget build(BuildContext context) {
-    // Built once per build, used once — this is the whole of the A12 fix.
+    // Built once per build, used once — this is the whole fix.
     final compact = _MeasureSize(
       onChange: _onCompactSize,
       child: widget.compact,
@@ -1847,7 +1824,9 @@ class _ExpandableBodyState extends State<_ExpandableBody> {
 
     return SingleMotionBuilder(
       value: target,
-      motion: motionFor(context, _expandSpring, isMovement: true),
+      // The shared layout spring, so reversing mid-flight continues from the
+      // current height instead of restarting.
+      motion: motionFor(context, beuiSpringLayout, isMovement: true),
       builder: (context, t, _) {
         final tt = t.clamp(0.0, 1.0);
         return _frame(
@@ -1881,12 +1860,3 @@ class _MeasureSize extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // Utils
 // ---------------------------------------------------------------------------
-
-bool _listEq(List<String> a, List<String> b) {
-  if (identical(a, b)) return true;
-  if (a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
-}

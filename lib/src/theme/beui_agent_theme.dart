@@ -21,7 +21,6 @@
 ///         card: BorderRadius.circular(18),
 ///       ),
 ///       layout: BeuiAgentLayout(
-///         density: BeuiAgentDensity.compact,
 ///         turnSpacing: 12,
 ///         bubblePadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
 ///       ),
@@ -37,11 +36,13 @@ import 'dart:ui' show ImageFilter, lerpDouble;
 import 'package:flutter/material.dart';
 
 import '../tokens/icons.dart';
+import '../tokens/motion.dart';
 import 'beui_agent_status_colors.dart';
 import 'beui_agent_strings.dart';
 import 'beui_colors.dart';
 
 /// Compact versus standard content density for agent surfaces.
+@Deprecated('No component branches on density. Removed in 2.0.')
 enum BeuiAgentDensity {
   /// Tighter paddings and gaps — a consumer choice, not the source default.
   compact,
@@ -304,6 +305,7 @@ class BeuiAgentLayout {
   /// Compact versus standard density hint. Widgets with their own spacing
   /// enums still honour those enums; this flag is for surfaces that only
   /// expose one density and for [BeuiAgentTheme.compact].
+  @Deprecated('No component branches on density. Removed in 2.0.')
   final BeuiAgentDensity density;
 
   /// Horizontal (and optional vertical) inset of a conversation viewport.
@@ -938,8 +940,8 @@ class BeuiAgentTheme extends ThemeExtension<BeuiAgentTheme> {
         borderRadius: shapes.card,
         child: BackdropFilter(
           filter: ImageFilter.blur(
-            sigmaX: colors.glass.blur,
-            sigmaY: colors.glass.blur,
+            sigmaX: beuiBlurSigma(colors.glass.blur),
+            sigmaY: beuiBlurSigma(colors.glass.blur),
           ),
           child: surface,
         ),

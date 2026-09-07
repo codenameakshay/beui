@@ -202,8 +202,11 @@ class _BeuiTextRevealState extends State<BeuiTextReveal>
   bool _textChanged(BeuiTextReveal old) {
     final a = old.text, b = widget.text;
     if (a is List && b is List) {
-      return a.length != b.length ||
-          List.generate(a.length, (i) => a[i] != b[i]).any((x) => x);
+      if (a.length != b.length) return true;
+      for (var i = 0; i < a.length; i++) {
+        if (a[i] != b[i]) return true;
+      }
+      return false;
     }
     return a != b;
   }

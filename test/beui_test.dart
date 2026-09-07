@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:beui/beui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  // Placeholder smoke test — verifies the package and barrel compile.
-  // Replaced by per-component widget + golden tests as components are ported.
-  test('beui package scaffolds and imports cleanly', () {
-    expect(beuiVersion, '1.2.0');
+  test('beuiVersion matches the version in pubspec.yaml', () {
+    final pubspec = File('pubspec.yaml').readAsStringSync();
+    final match = RegExp(
+      r'^version:\s*(\S+)',
+      multiLine: true,
+    ).firstMatch(pubspec);
+    expect(match, isNotNull, reason: 'pubspec.yaml has no version: line');
+    expect(beuiVersion, match!.group(1));
   });
 }

@@ -4,6 +4,8 @@ import 'dart:ui' as ui;
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiImageGeneration] — mirrors the source preview:
 /// progressive queued → generating → refining → complete cycle with Replay.
 Widget imageGenerationDemo(BuildContext context) =>
@@ -21,68 +23,48 @@ class _ImageGenerationDemoState extends State<_ImageGenerationDemo> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-
-    return SingleChildScrollView(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 576), // max-w-xl
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Generated image surface',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.4,
-                  color: colors.mutedForeground,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _GenerationRun(
-                key: ValueKey<int>(_run),
-                onReplay: () => setState(() => _run++),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Statuses',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.4,
-                  color: colors.mutedForeground,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                children: [
-                  for (final status in BeuiImageGenerationStatus.values)
-                    SizedBox(
-                      width: 160,
-                      child: BeuiImageGeneration(
-                        status: status,
-                        prompt: status == BeuiImageGenerationStatus.error
-                            ? 'a quiet mountain landscape at sunset'
-                            : null,
-                        resolution: '512 × 512',
-                        onRetry: status == BeuiImageGenerationStatus.error
-                            ? () {}
-                            : null,
-                        child:
-                            status == BeuiImageGenerationStatus.complete ||
-                                status == BeuiImageGenerationStatus.refining ||
-                                status == BeuiImageGenerationStatus.error
-                            ? const _GeneratedArtwork()
-                            : null,
-                      ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 576), // max-w-xl
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SectionLabel('Generated image surface'),
+            const SizedBox(height: 16),
+            _GenerationRun(
+              key: ValueKey<int>(_run),
+              onReplay: () => setState(() => _run++),
+            ),
+            const SizedBox(height: 24),
+            const SectionLabel('Statuses'),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              children: [
+                for (final status in BeuiImageGenerationStatus.values)
+                  SizedBox(
+                    width: 160,
+                    child: BeuiImageGeneration(
+                      status: status,
+                      prompt: status == BeuiImageGenerationStatus.error
+                          ? 'a quiet mountain landscape at sunset'
+                          : null,
+                      resolution: '512 × 512',
+                      onRetry: status == BeuiImageGenerationStatus.error
+                          ? () {}
+                          : null,
+                      child:
+                          status == BeuiImageGenerationStatus.complete ||
+                              status == BeuiImageGenerationStatus.refining ||
+                              status == BeuiImageGenerationStatus.error
+                          ? const _GeneratedArtwork()
+                          : null,
                     ),
-                ],
-              ),
-            ],
-          ),
+                  ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -184,7 +166,6 @@ class _GenerationRunState extends State<_GenerationRun> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
     final active =
         _status == BeuiImageGenerationStatus.queued ||
         _status == BeuiImageGenerationStatus.generating ||
@@ -205,29 +186,7 @@ class _GenerationRunState extends State<_GenerationRun> {
           child: const _GeneratedArtwork(),
         ),
         const SizedBox(height: 16),
-        TextButton.icon(
-          onPressed: widget.onReplay,
-          icon: Icon(
-            LucideIcons.rotate_ccw,
-            size: 16,
-            color: colors.mutedForeground,
-          ),
-          label: Text(
-            'Replay',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: colors.mutedForeground,
-            ),
-          ),
-          style: TextButton.styleFrom(
-            foregroundColor: colors.mutedForeground,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            minimumSize: const Size(0, 40),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: const StadiumBorder(),
-          ),
-        ),
+        ReplayButton(onPressed: widget.onReplay),
       ],
     );
   }

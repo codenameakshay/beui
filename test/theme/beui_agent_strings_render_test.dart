@@ -48,7 +48,7 @@ String _lines(int n) =>
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('code block and file diff copy (F21)', () {
+  group('code block and file diff copy', () {
     testWidgets('copyCode reaches the code block copy control', (tester) async {
       await tester.pumpWidget(
         _host(
@@ -85,7 +85,7 @@ void main() {
     });
   });
 
-  group('hidden-content copy (F13)', () {
+  group('hidden-content copy', () {
     testWidgets('hiddenLines reaches a capped code block', (tester) async {
       await tester.pumpWidget(
         _host(
@@ -183,7 +183,7 @@ void main() {
     });
   });
 
-  group('streaming response screen-reader names (F22)', () {
+  group('streaming response screen-reader names', () {
     Future<void> pumpStatus(
       WidgetTester tester,
       BeuiStreamingResponseStatus status,
@@ -223,7 +223,7 @@ void main() {
     });
   });
 
-  group('message scroller (F20)', () {
+  group('message scroller', () {
     Widget tallMessages(int count) => BeuiMessageGroup(
       children: [
         for (var i = 0; i < count; i++)
@@ -277,7 +277,7 @@ void main() {
     });
   });
 
-  group('image generation and prompt input (F20)', () {
+  group('image generation and prompt input', () {
     testWidgets('stopGenerating reaches the cancel control', (tester) async {
       await tester.pumpWidget(
         _host(
@@ -315,7 +315,7 @@ void main() {
     });
   });
 
-  group('approval card fields that had gone dead (F19)', () {
+  group('approval card fields that had gone dead', () {
     testWidgets('approvalCardTitle reaches the header', (tester) async {
       await tester.pumpWidget(
         _host(

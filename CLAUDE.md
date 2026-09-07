@@ -8,8 +8,6 @@ A **one-to-one Flutter port of beUI v2** — a React motion-component library (s
 
 The port's defining goal is **motion fidelity** — matching the source's spring physics and timing, not just its visual layout. Read [docs/PORTING_SPEC.md](docs/PORTING_SPEC.md) before porting any component; it holds the full component catalog, the spring/easing token mapping, the theme system, and the React→Flutter convention table. This file is the working guide; the spec is the source of truth for *what* to build.
 
-> Status: greenfield. The project skeleton is not scaffolded yet. The commands and structure below are the intended conventions — establish them with the first code.
-
 ## Commands
 
 ```bash

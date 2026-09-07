@@ -155,7 +155,7 @@ class BeuiMessage extends StatefulWidget {
 
   /// Plays the trailing-edge pop-up once when this row mounts.
   ///
-  /// Defaults to **true** (C12). The source defaults it off, which meant
+  /// Defaults to **true**. The source defaults it off, which meant
   /// nothing in the library animated out of the box.
   ///
   /// The entrance is mount-only and keyed off widget identity, not off this
@@ -180,7 +180,6 @@ class _BeuiMessageState extends State<BeuiMessage> {
   /// 0 = entrance start, 1 = settled. Seeded to 0 when [BeuiMessage.animateIn]
   /// is true so the first frame paints the enter pose, then we flip to 1.
   late double _progress = widget.animateIn ? 0.0 : 1.0;
-  bool _scheduled = false;
 
   @override
   void initState() {
@@ -191,7 +190,7 @@ class _BeuiMessageState extends State<BeuiMessage> {
   @override
   void didUpdateWidget(covariant BeuiMessage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // C12. Switching the entrance off mid-flight settles the row rather than
+    // Switching the entrance off mid-flight settles the row rather than
     // leaving it half-scaled. Switching it *on* after mount stays ignored —
     // the entrance is mount-only by contract, and replaying it on a prop
     // change would re-fire on every streamed token.
@@ -201,8 +200,6 @@ class _BeuiMessageState extends State<BeuiMessage> {
   }
 
   void _scheduleEnter() {
-    if (_scheduled) return;
-    _scheduled = true;
     // Post-frame so the first paint lands on the enter pose, then the spring
     // drives to settled — same "mount-only" contract as the source.
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -271,7 +268,7 @@ class _BeuiMessageState extends State<BeuiMessage> {
             offset: Offset(0, dy),
             child: Transform.scale(
               scale: scale,
-              // C17: the row grows out of its own corner — trailing for user
+              // The row grows out of its own corner — trailing for user
               // rows, leading for assistant rows — in either text direction.
               alignment: widget.from == BeuiMessageFrom.user
                   ? AlignmentDirectional.bottomEnd
@@ -360,7 +357,7 @@ class BeuiMessageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final size = agent.layout.avatarSize;
     final avatar = SizedBox(
@@ -450,13 +447,13 @@ class BeuiMessageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final from = BeuiMessageScope.maybeOf(context) ?? BeuiMessageFrom.assistant;
     final agent = BeuiAgentTheme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4), // px-1
       child: DefaultTextStyle.merge(
-        // C29. `height: 1` on 11px metadata leaves no room for a second line,
+        // `height: 1` on 11px metadata leaves no room for a second line,
         // and a `Row` cannot make one — a long author name plus a timestamp
         // overflowed rather than wrapping. `Wrap` costs nothing in the common
         // single-line case and a hair of leading buys legible wrapped text.
@@ -488,7 +485,7 @@ class BeuiMessageFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final from = BeuiMessageScope.maybeOf(context) ?? BeuiMessageFrom.assistant;
     final agent = BeuiAgentTheme.of(context);
     return ConstrainedBox(
@@ -496,7 +493,7 @@ class BeuiMessageFooter extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4), // px-1
         child: DefaultTextStyle.merge(
-          // C29, as in the header: wrap rather than overflow.
+          // As in the header: wrap rather than overflow.
           style: agent.typography.metadata.copyWith(
             color: colors.mutedForeground,
             height: 1.35,
@@ -531,7 +528,7 @@ class BeuiMessageMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     // source: `mx-auto flex w-fit max-w-[88%] …` — shrink to fit, capped at
     // 88% of the row.
@@ -603,7 +600,7 @@ class BeuiMessageTyping extends StatefulWidget {
   /// above it and true otherwise — the same rule as
   /// [BeuiStreamingResponse.announce]. Its label is a constant, so as a live
   /// region inside a transcript it announced nothing useful while adding one
-  /// more region to the nest the audit found (C6).
+  /// more region to the nest the audit found.
   final bool? announce;
 
   @override
@@ -624,7 +621,7 @@ class _BeuiMessageTypingState extends State<BeuiMessageTyping>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // C21. The ticker used to `repeat()` unconditionally: under reduced motion
+    // The ticker used to `repeat()` unconditionally: under reduced motion
     // the dots painted a static 0.45 opacity while the controller still drove
     // a rebuild every frame, so the one setting meant to *save* motion and
     // battery cost a permanent 60fps rebuild of every pending turn.
@@ -648,7 +645,7 @@ class _BeuiMessageTypingState extends State<BeuiMessageTyping>
     final reduce = _reduce;
     final color =
         DefaultTextStyle.of(context).style.color ??
-        Theme.of(context).extension<BeuiColors>()!.mutedForeground;
+        BeuiColors.resolve(context).mutedForeground;
 
     return Semantics(
       label: widget.label,

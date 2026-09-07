@@ -18,8 +18,6 @@ export 'package:motor/motor.dart'
         CurvedMotion,
         Motion,
         MotionBuilder,
-        MotionController,
-        MotionConverter,
         NoMotion,
         OffsetMotionConverter,
         RectMotionConverter,

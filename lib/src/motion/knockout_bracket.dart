@@ -5,6 +5,7 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_focus_ring.dart';
 
 // ── Data model ───────────────────────────────────────────────────────────────
 // One-to-one with the source `Team` / `MatchSide` / `Match` / `Round` types.
@@ -151,8 +152,6 @@ const _reflowSpring = SpringMotion(
 /// EASE_OUT }`.
 const _reflowOpacityMs = 280;
 
-int _clampInt(int n, int lo, int hi) => n < lo ? lo : (n > hi ? hi : n);
-
 // Column x-offset and window test — shared by the layout pass and the render
 // pass so the two can't drift.
 double _colX(int r, int page) => _padX + (r - page) * _colW;
@@ -247,19 +246,19 @@ class _BeuiKnockoutBracketState extends State<BeuiKnockoutBracket> {
   @override
   void initState() {
     super.initState();
-    _page = _clampInt(widget.initialRound, 0, _maxPage);
+    _page = widget.initialRound.clamp(0, _maxPage);
   }
 
   @override
   void didUpdateWidget(BeuiKnockoutBracket old) {
     super.didUpdateWidget(old);
     // Keep the page valid if the round list shrinks under us.
-    final clamped = _clampInt(_page, 0, _maxPage);
+    final clamped = _page.clamp(0, _maxPage);
     if (clamped != _page) _page = clamped;
   }
 
   void _goto(int next) {
-    final clamped = _clampInt(next, 0, _maxPage);
+    final clamped = next.clamp(0, _maxPage);
     if (clamped == _page) return;
     setState(() => _page = clamped);
     widget.onRoundChanged?.call(clamped);
@@ -267,10 +266,7 @@ class _BeuiKnockoutBracketState extends State<BeuiKnockoutBracket> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final rounds = widget.rounds;
@@ -909,7 +905,9 @@ Widget _shieldSlot(BeuiColors colors) => SizedBox(
 /// Two-letter stand-in when a team has no artwork — "Real Madrid" → RM. Takes
 /// the first *rune*, not the first code unit: an emoji or astral first character
 /// is a surrogate pair and indexing it renders a replacement glyph.
-String _initials(String name) => name
+///
+/// Shared with `knockout_wheel.dart`, which already imports this file.
+String beuiKnockoutInitials(String name) => name
     .trim()
     .split(RegExp(r'\s+'))
     .take(2)
@@ -936,7 +934,7 @@ Widget _initialsSlot(BeuiColors colors, String name) => SizedBox(
         shape: BoxShape.circle,
       ),
       child: Text(
-        _initials(name),
+        beuiKnockoutInitials(name),
         style: TextStyle(
           fontSize: 10,
           height: 1,
@@ -1021,23 +1019,24 @@ class _ChevronButtonState extends State<_ChevronButton> {
             width: 44,
             height: 44,
             child: Center(
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: active
-                      ? colors.foreground.withValues(alpha: 0.1)
-                      : Colors.transparent,
-                  border: _focus
-                      ? Border.all(color: colors.ring, width: 2)
-                      : null,
-                ),
-                child: Icon(
-                  widget.icon,
-                  size: 20,
-                  color: active ? colors.foreground : colors.mutedForeground,
+              child: BeuiFocusRing(
+                focused: _focus,
+                borderRadius: BorderRadius.circular(18),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: active
+                        ? colors.foreground.withValues(alpha: 0.1)
+                        : Colors.transparent,
+                  ),
+                  child: Icon(
+                    widget.icon,
+                    size: 20,
+                    color: active ? colors.foreground : colors.mutedForeground,
+                  ),
                 ),
               ),
             ),

@@ -81,7 +81,7 @@ Source `AGENTS.md` explicitly sanctions one-off springs where tuning is genuinel
 | `swipeable-list.tsx` (`ROW_SETTLE`) | 560 / 48 / 0.82 (+restDelta/restSpeed) | Distance-based row release, native-feeling |
 | `tooltip.tsx` | 380 / 30 / 0.7 | Spring spawn (with separate opacity/blur durations) |
 | `animated-toast-stack.tsx` (`STACK_SPRING`) | 420 / 34 / 0.75 | Stack reflow on enter/dismiss |
-| `bloom-menu.tsx` (`SPRING_FOLDER` / grid item) | 320 / 24 / 0.9 · 460 / 30 | Button→grid morph · staggered grid items |
+| `bloom-menu.tsx` (`SPRING_FOLDER` / grid item) | 300 / 32 / 0.9 · 440 / 34 | Button→grid morph · staggered grid items |
 | `swap/controls.tsx` (flip) | 380 / 26 / 0.6 | Swap-direction flip rotation |
 | `scroll-progress.tsx` / `parallax.tsx` | 120 / 30 / 0.6 | Smoothed scroll-driven follow (`useSpring`) |
 | `not-found/terminal.tsx` (`TYPE_SPRING`) | 320 / 30 / 0.6 | Terminal type-in caret/line |

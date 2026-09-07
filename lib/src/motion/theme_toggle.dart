@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 
 import '../tokens/icons.dart';
-import '../tokens/motion.dart' show beuiEaseOut;
+import '../tokens/motion.dart' show beuiBlurSigma, beuiEaseOut;
 import '_engine.dart' show CurvedMotion, Motion, SingleMotionController;
 import 'action_swap.dart' show BeuiActionSwapIcon, BeuiActionSwapVariant;
 
@@ -68,10 +68,10 @@ enum BeuiThemeRevealStart {
 Motion _revealMotion(BeuiThemeRevealVariant variant) => switch (variant) {
   BeuiThemeRevealVariant.rectangle => const CurvedMotion(
     Duration(milliseconds: 400),
-    Cubic(0, 0, 0.58, 1),
+    Curves.easeOut,
   ),
   BeuiThemeRevealVariant.circle || BeuiThemeRevealVariant.circleBlur =>
-    const CurvedMotion(Duration(milliseconds: 700), Cubic(0.4, 0, 0.2, 1)),
+    const CurvedMotion(Duration(milliseconds: 700), Curves.fastOutSlowIn),
   BeuiThemeRevealVariant.blinds => const CurvedMotion(
     Duration(milliseconds: 700),
     beuiEaseOut,
@@ -462,8 +462,8 @@ class _RevealOverlay extends StatelessWidget {
             child: RepaintBoundary(
               child: ImageFiltered(
                 imageFilter: ImageFilter.blur(
-                  sigmaX: 4,
-                  sigmaY: 4,
+                  sigmaX: beuiBlurSigma(8),
+                  sigmaY: beuiBlurSigma(8),
                   tileMode: TileMode.decal,
                 ),
                 child: RawImage(

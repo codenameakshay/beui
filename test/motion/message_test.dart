@@ -93,55 +93,6 @@ void main() {
       );
       expect(side, BeuiMessageBubbleSide.end);
     });
-
-    testWidgets('animateIn settles without throwing', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessage(
-            from: BeuiMessageFrom.user,
-            animateIn: true,
-            children: [
-              BeuiMessageContent(
-                children: [
-                  BeuiMessageBubble(
-                    animateIn: true,
-                    variant: BeuiMessageBubbleVariant.solid,
-                    child: BeuiMessageBubbleContent(child: Text('Pop')),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-      await tester.pump(); // post-frame enter
-      await tester.pump(const Duration(milliseconds: 400));
-      expect(find.text('Pop'), findsOneWidget);
-    });
-
-    testWidgets('reduced motion still renders animateIn', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessage(
-            from: BeuiMessageFrom.assistant,
-            animateIn: true,
-            children: [
-              BeuiMessageContent(
-                children: [
-                  BeuiMessageBubble(
-                    child: BeuiMessageBubbleContent(child: Text('Calm')),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          reduce: true,
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
-      expect(find.text('Calm'), findsOneWidget);
-    });
   });
 
   group('BeuiMessageGroup', () {
@@ -179,19 +130,18 @@ void main() {
           ),
         ),
       );
-      expect(find.text('A'), findsOneWidget);
-      expect(find.text('B'), findsOneWidget);
+      // Measured between the row widgets themselves (not their bubble text)
+      // so bubble padding doesn't leak into the gap being measured.
+      final rows = find.byType(BeuiMessage);
+      final gap =
+          tester.getTopLeft(rows.at(1)).dy -
+          tester.getBottomLeft(rows.at(0)).dy;
+      // Compact spacing: default BeuiAgentLayout.groupedMessageSpacing = 6.
+      expect(gap, moreOrLessEquals(6, epsilon: 0.5));
     });
   });
 
   group('BeuiMessageAvatar', () {
-    testWidgets('renders child', (tester) async {
-      await tester.pumpWidget(
-        _wrap(const BeuiMessageAvatar(child: Text('AK'))),
-      );
-      expect(find.text('AK'), findsOneWidget);
-    });
-
     testWidgets('placeholder reserves space but hides content', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -211,53 +161,12 @@ void main() {
     });
   });
 
-  group('BeuiMessageMarker', () {
-    testWidgets('renders centered chip', (tester) async {
-      await tester.pumpWidget(
-        _wrap(const BeuiMessageMarker(child: Text('Today'))),
-      );
-      expect(find.text('Today'), findsOneWidget);
-    });
-  });
-
   group('BeuiMessageTyping', () {
     testWidgets('exposes label to semantics', (tester) async {
       await tester.pumpWidget(
         _wrap(const BeuiMessageTyping(label: 'Thinking')),
       );
       expect(find.bySemanticsLabel('Thinking'), findsOneWidget);
-    });
-
-    testWidgets('renders under reduced motion', (tester) async {
-      await tester.pumpWidget(_wrap(const BeuiMessageTyping(), reduce: true));
-      expect(find.byType(BeuiMessageTyping), findsOneWidget);
-    });
-  });
-
-  group('BeuiMessageHeader / Footer', () {
-    testWidgets('render metadata chips', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessage(
-            from: BeuiMessageFrom.assistant,
-            children: [
-              BeuiMessageContent(
-                children: [
-                  BeuiMessageHeader(children: [Text('Assistant'), Text('Now')]),
-                  BeuiMessageBubble(
-                    child: BeuiMessageBubbleContent(child: Text('Body')),
-                  ),
-                  BeuiMessageFooter(children: [Text('Seen')]),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-      expect(find.text('Assistant'), findsOneWidget);
-      expect(find.text('Now'), findsOneWidget);
-      expect(find.text('Seen'), findsOneWidget);
-      expect(find.text('Body'), findsOneWidget);
     });
   });
 }

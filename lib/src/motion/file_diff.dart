@@ -2,17 +2,18 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_chevron.dart';
 import '_disclosure.dart';
 import '_engine.dart';
 import '_focus_ring.dart';
 import '_hit_target.dart';
+import '_status_icon.dart';
 import '_syntax.dart';
 import '_viewport_follow.dart';
 
@@ -120,8 +121,6 @@ class BeuiFileDiffHunkGap {
 // Motion tokens
 // ---------------------------------------------------------------------------
 
-const _chevronMotion = beuiSpringSwap;
-const _pressMotion = beuiSpringPress;
 const _spinPeriod = Duration(milliseconds: 900);
 const _copyFeedback = Duration(milliseconds: 1600);
 
@@ -365,11 +364,11 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
     final next = widget.status;
     if (prev != BeuiFileDiffStatus.streaming &&
         next == BeuiFileDiffStatus.streaming) {
-      _setOpen(true);
+      _openFromWidgetUpdate(true);
     } else if (prev == BeuiFileDiffStatus.streaming &&
         next == BeuiFileDiffStatus.complete &&
         widget.collapseOnComplete) {
-      _setOpen(false);
+      _openFromWidgetUpdate(false);
     }
 
     if (_streaming != (oldWidget.status == BeuiFileDiffStatus.streaming)) {
@@ -398,16 +397,22 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
     super.dispose();
   }
 
+  /// Auto open/collapse on a status transition, called from
+  /// [didUpdateWidget]. That runs as part of the in-flight rebuild the parent
+  /// already triggered, so mutating the field directly (no `setState`) is
+  /// picked up by the imminent build; wrapping it in `setState` here would
+  /// assert.
+  void _openFromWidgetUpdate(bool next) {
+    if (next == _currentOpen) return;
+    if (!_isControlled) _internalOpen = next;
+    widget.onOpenChange?.call(next);
+  }
+
+  /// User-driven open/collapse (tap, keyboard). Always outside a build, so it
+  /// always needs `setState` to schedule one.
   void _setOpen(bool next) {
     if (next == _currentOpen) return;
-    if (!_isControlled) {
-      // Mutate directly so a didUpdateWidget-driven collapse is visible in the
-      // imminent build; also mark dirty when we're not already rebuilding.
-      _internalOpen = next;
-      if (SchedulerBinding.instance.schedulerPhase == SchedulerPhase.idle) {
-        setState(() {});
-      }
-    }
+    if (!_isControlled) setState(() => _internalOpen = next);
     widget.onOpenChange?.call(next);
   }
 
@@ -421,7 +426,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
 
   /// The clipboard payload: the caller's override, or the diff serialised as a
   /// unified diff body so consumers never have to re-derive what we already
-  /// hold (audit R35).
+  /// hold.
   String get _resolvedCopyText {
     final override = widget.copyText;
     if (override != null) return override;
@@ -526,9 +531,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isLight = theme.brightness == Brightness.light;
     final palette = BeuiSyntaxPalette.of(theme.brightness);
@@ -579,7 +582,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
             onToggle: _toggle,
             // The copy control lives in the header so `collapseOnComplete`
             // cannot take it away at the exact moment the diff is finished and
-            // the reader wants it (audit R21).
+            // the reader wants it.
             canCopy: _canCopy,
             copied: _copied,
             onCopy: _handleCopy,
@@ -905,7 +908,7 @@ class _HeaderState extends State<_Header> {
           onTap: widget.onToggle,
           // Ring painted outside layout, in the dedicated focusRing role: the
           // old in-decoration `colors.ring` border was a 1.3:1 hairline token
-          // doing a focus indicator's job (audit R6).
+          // doing a focus indicator's job.
           child: BeuiFocusRing(
             focused: _focused,
             borderRadius: BorderRadius.circular(6),
@@ -958,16 +961,22 @@ class _HeaderState extends State<_Header> {
                     width: 16,
                     height: 16,
                     child: Center(
-                      child: _StatusIcon(
+                      child: BeuiStreamingStatusIcon(
+                        icon: widget.streaming
+                            ? LucideIcons.loader_circle
+                            : LucideIcons.check,
                         streaming: widget.streaming,
                         reduce: widget.reduce,
                         color: colors.mutedForeground.withValues(alpha: 0.6),
                         spin: widget.spin,
+                        semanticLabel: widget.streaming
+                            ? 'Applying changes'
+                            : 'Changes applied',
                       ),
                     ),
                   ),
                   const SizedBox(width: 8), // gap-2
-                  _Chevron(
+                  BeuiDisclosureChevron(
                     open: widget.open,
                     reduce: widget.reduce,
                     color: chevronColor,
@@ -1012,7 +1021,7 @@ class _HeaderState extends State<_Header> {
                 ? BeuiAgentTheme.of(context).strings.copied
                 : BeuiAgentTheme.of(context).strings.copyDiff,
             // Live only while the confirmation is up, so it is announced
-            // rather than silently relabelled (audit R28).
+            // rather than silently relabelled.
             liveRegion: widget.copied,
             colors: colors,
             onTap: () => unawaited(widget.onCopy()),
@@ -1091,7 +1100,7 @@ class _HeaderActionState extends State<_HeaderAction> {
               onTap: widget.onTap,
               child: SingleMotionBuilder(
                 value: (_pressed && !reduce) ? 0.97 : 1.0,
-                motion: motionFor(context, _pressMotion, isMovement: true),
+                motion: motionFor(context, beuiSpringPress, isMovement: true),
                 builder: (context, scale, child) =>
                     Transform.scale(scale: scale, child: child),
                 child: BeuiFocusRing(
@@ -1122,63 +1131,6 @@ class _HeaderActionState extends State<_HeaderAction> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _StatusIcon extends StatelessWidget {
-  const _StatusIcon({
-    required this.streaming,
-    required this.reduce,
-    required this.color,
-    required this.spin,
-  });
-
-  final bool streaming;
-  final bool reduce;
-  final Color color;
-  final AnimationController spin;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      streaming ? LucideIcons.loader_circle : LucideIcons.check,
-      size: 14,
-      color: color,
-      semanticLabel: streaming ? 'Applying changes' : 'Changes applied',
-    );
-    if (!streaming || reduce) return icon;
-    return RotationTransition(turns: spin, child: icon);
-  }
-}
-
-class _Chevron extends StatelessWidget {
-  const _Chevron({
-    required this.open,
-    required this.reduce,
-    required this.color,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      BeuiAgentTheme.of(context).icons.expand,
-      size: 14,
-      color: color,
-    );
-    if (reduce) {
-      return Transform.rotate(angle: open ? math.pi : 0, child: icon);
-    }
-    return SingleMotionBuilder(
-      value: open ? 180.0 : 0.0,
-      motion: motionFor(context, _chevronMotion, isMovement: true),
-      builder: (context, deg, child) =>
-          Transform.rotate(angle: deg * math.pi / 180.0, child: child),
-      child: icon,
     );
   }
 }
@@ -1330,7 +1282,7 @@ class _HunkSeparatorState extends State<_HunkSeparator> {
     final colors = widget.colors;
     final count = widget.gap.hiddenCount;
     final expandable = widget.onExpand != null;
-    // F13: pluralization is the theme's problem, not a `count == 1 ? …` here —
+    // Pluralization is the theme's problem, not a `count == 1 ? …` here —
     // languages with more than two plural forms cannot be served by a ternary.
     final strings = BeuiAgentTheme.of(context).strings;
     final text = expandable
@@ -1381,7 +1333,7 @@ class _HunkSeparatorState extends State<_HunkSeparator> {
       return Semantics(label: strings.hiddenLinesCollapsed(count), child: body);
     }
 
-    // F14: the band paints 20px tall — half the 44px floor. The slop wrapper is
+    // The band paints 20px tall — half the 44px floor. The slop wrapper is
     // OUTERMOST because every box below it (Semantics, MouseRegion,
     // FocusableActionDetector) is sized to the paint and would reject an
     // out-of-bounds pointer before this widget ever saw it. Width already
@@ -1491,8 +1443,13 @@ class _DiffLineRow extends StatelessWidget {
       TextSpan(style: baseStyle, children: spans),
       softWrap: wrap,
       // Never `ellipsis`. Truncating the end of a changed line hides the part
-      // that changed — the single P0 this component carried (audit R1).
+      // that changed — the single P0 this component carried.
       overflow: wrap ? TextOverflow.visible : TextOverflow.clip,
+    );
+
+    final paddedCode = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      child: code,
     );
 
     final row = Row(
@@ -1533,18 +1490,7 @@ class _DiffLineRow extends StatelessWidget {
             style: baseStyle.copyWith(color: markerColor),
           ),
         ),
-        if (wrap)
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: code,
-            ),
-          )
-        else
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: code,
-          ),
+        if (wrap) Expanded(child: paddedCode) else paddedCode,
       ],
     );
 

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
@@ -212,7 +213,6 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
   bool _postFrameScheduled = false;
 
   // Cached per-build geometry the scroll callback reads.
-  int _columns = 1;
   double _triggerInset = 320;
 
   @override
@@ -330,10 +330,7 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final radius = BorderRadius.circular(24); // rounded-3xl
@@ -374,11 +371,11 @@ class _BeuiInfiniteMasonryState<T> extends State<BeuiInfiniteMasonry<T>> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final width = math.max(0.0, constraints.maxWidth - 24); // p-3
-              _columns = _columnsFor(width);
-              _triggerInset = _computeTriggerInset(_columns);
+              final columns = _columnsFor(width);
+              _triggerInset = _computeTriggerInset(columns);
               _scheduleFillCheck();
 
-              final cols = _distribute(_columns, colors, reduce);
+              final cols = _distribute(columns, colors, reduce);
 
               return NotificationListener<ScrollNotification>(
                 onNotification: _onScrollNotification,
@@ -780,9 +777,10 @@ class _RetryButtonState extends State<_RetryButton> {
   @override
   Widget build(BuildContext context) {
     final colors = widget.colors;
+    final retryLabel = BeuiAgentTheme.of(context).strings.retry;
     return Semantics(
       button: true,
-      label: 'Try again',
+      label: retryLabel,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         onEnter: (_) => setState(() => _hovered = true),
@@ -802,7 +800,7 @@ class _RetryButtonState extends State<_RetryButton> {
               border: Border.all(color: colors.border),
             ),
             child: Text(
-              'Try again',
+              retryLabel,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,

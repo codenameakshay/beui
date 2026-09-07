@@ -171,26 +171,28 @@ class BeuiSelect extends StatefulWidget {
   State<BeuiSelect> createState() => _BeuiSelectState();
 }
 
-class _BeuiSelectState extends State<BeuiSelect>
-    with SingleTickerProviderStateMixin {
+/// The state shared by [BeuiSelect] and [BeuiMorphSelect]: the controlled /
+/// uncontrolled value, the trigger + off-stage measurement plumbing, the
+/// active-option index, and the keyboard contract (Enter/Space/ArrowDown to
+/// open, Up/Down to move, Enter to commit). Both variants open and close
+/// their panel with different motion, so [_setOpen] stays abstract.
+mixin _SelectStateMixin<W extends StatefulWidget> on State<W> {
+  List<BeuiSelectOption> get _options;
+  String? get _controlledValue;
+  String? get _defaultValue;
+  ValueChanged<String>? get _onChanged;
+  void _setOpen(bool next);
+
   final GlobalKey _triggerKey = GlobalKey();
   final GlobalKey _measureKey = GlobalKey();
-  final FocusNode _panelFocus = FocusNode(debugLabel: 'BeuiSelect panel');
+  final FocusNode _panelFocus = FocusNode(debugLabel: 'beui_select_panel');
 
-  late final AnimationController _cornerCtrl;
-  Animatable<double> _cornerTween = ConstantTween<double>(_radius);
-
-  bool _open = false;
   String? _internalValue;
   Size _triggerSize = Size.zero;
   double _panelHeight = 0;
-  _Placement _placement = _Placement.bottom;
   int _active = -1;
-  bool _triggerHovered = false; // source hover:border-(--color-border-strong)
-  bool _triggerFocused =
-      false; // source focus-visible:ring-2 ring-foreground/20
 
-  String? get _value => widget.value ?? _internalValue;
+  String? get _value => _controlledValue ?? _internalValue;
 
   /// Bounded width for the panel (and its off-stage measurement); falls back to
   /// a sensible default until the trigger has been measured.
@@ -199,28 +201,22 @@ class _BeuiSelectState extends State<BeuiSelect>
   @override
   void initState() {
     super.initState();
-    _internalValue = widget.defaultValue;
-    _cornerCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-      value: 1,
-    );
+    _internalValue = _defaultValue;
   }
 
   @override
   void dispose() {
-    _cornerCtrl.dispose();
     _panelFocus.dispose();
     super.dispose();
   }
 
-  int _selectedIndex() => widget.options.indexWhere((o) => o.value == _value);
-  int _firstEnabled() => widget.options.indexWhere((o) => o.enabled);
+  int _selectedIndex() => _options.indexWhere((o) => o.value == _value);
+  int _firstEnabled() => _options.indexWhere((o) => o.enabled);
 
   /// The selected option's leading glyph, or null when nothing is selected.
   Widget? get _selectedIcon {
     final i = _selectedIndex();
-    return i >= 0 ? widget.options[i].icon : null;
+    return i >= 0 ? _options[i].icon : null;
   }
 
   void _measure() {
@@ -234,62 +230,23 @@ class _BeuiSelectState extends State<BeuiSelect>
     }
   }
 
-  void _decidePlacement() {
-    final box = _triggerKey.currentContext?.findRenderObject() as RenderBox?;
-    if (box == null || !box.hasSize) {
-      _placement = _Placement.bottom;
-      return;
-    }
-    final top = box.localToGlobal(Offset.zero).dy;
-    final screenH = MediaQuery.sizeOf(context).height;
-    final below = screenH - (top + box.size.height);
-    final needed = _panelHeight + 16;
-    _placement = (below < needed && top > below)
-        ? _Placement.top
-        : _Placement.bottom;
-  }
-
-  void _setOpen(bool next) {
-    if (next == _open) return;
-    if (next) {
-      _decidePlacement();
-      final sel = _selectedIndex();
-      _active = sel >= 0 ? sel : _firstEnabled();
-      // Trigger edge pinches flat (0) then rounds back to 12 — source open
-      // keyframes [12,0,12] over 0.6s.
-      _cornerTween = _openCornerSeq;
-      _cornerCtrl.duration = const Duration(milliseconds: 600);
-    } else {
-      // Close keyframes [12,0,12] over 0.42s.
-      _cornerTween = _closeCornerSeq;
-      _cornerCtrl.duration = const Duration(milliseconds: 420);
-    }
-    _cornerCtrl.forward(from: 0);
-    setState(() => _open = next);
-    if (next) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => _panelFocus.requestFocus(),
-      );
-    }
-  }
-
   void _select(int index) {
-    if (index < 0 || index >= widget.options.length) return;
-    final opt = widget.options[index];
+    if (index < 0 || index >= _options.length) return;
+    final opt = _options[index];
     if (!opt.enabled) return;
-    if (widget.value == null) setState(() => _internalValue = opt.value);
-    widget.onChanged?.call(opt.value);
+    if (_controlledValue == null) setState(() => _internalValue = opt.value);
+    _onChanged?.call(opt.value);
     _setOpen(false);
   }
 
   void _moveActive(int delta) {
-    final n = widget.options.length;
+    final n = _options.length;
     if (n == 0) return;
     var i = _active;
     for (var step = 0; step < n; step++) {
       i = (i + delta) % n;
       if (i < 0) i += n;
-      if (widget.options[i].enabled) {
+      if (_options[i].enabled) {
         setState(() => _active = i);
         return;
       }
@@ -326,16 +283,90 @@ class _BeuiSelectState extends State<BeuiSelect>
     }
     return KeyEventResult.ignored;
   }
+}
+
+class _BeuiSelectState extends State<BeuiSelect>
+    with SingleTickerProviderStateMixin, _SelectStateMixin<BeuiSelect> {
+  late final AnimationController _cornerCtrl;
+  Animatable<double> _cornerTween = ConstantTween<double>(_radius);
+
+  bool _open = false;
+  _Placement _placement = _Placement.bottom;
+  bool _triggerHovered = false; // source hover:border-(--color-border-strong)
+  bool _triggerFocused =
+      false; // source focus-visible:ring-2 ring-foreground/20
+
+  @override
+  List<BeuiSelectOption> get _options => widget.options;
+  @override
+  String? get _controlledValue => widget.value;
+  @override
+  String? get _defaultValue => widget.defaultValue;
+  @override
+  ValueChanged<String>? get _onChanged => widget.onChanged;
+
+  @override
+  void initState() {
+    super.initState();
+    _cornerCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+      value: 1,
+    );
+  }
+
+  @override
+  void dispose() {
+    _cornerCtrl.dispose();
+    super.dispose();
+  }
+
+  void _decidePlacement() {
+    final box = _triggerKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) {
+      _placement = _Placement.bottom;
+      return;
+    }
+    final top = box.localToGlobal(Offset.zero).dy;
+    final screenH = MediaQuery.sizeOf(context).height;
+    final below = screenH - (top + box.size.height);
+    final needed = _panelHeight + 16;
+    _placement = (below < needed && top > below)
+        ? _Placement.top
+        : _Placement.bottom;
+  }
+
+  @override
+  void _setOpen(bool next) {
+    if (next == _open) return;
+    if (next) {
+      _decidePlacement();
+      final sel = _selectedIndex();
+      _active = sel >= 0 ? sel : _firstEnabled();
+      // Trigger edge pinches flat (0) then rounds back to 12 — source open
+      // keyframes [12,0,12] over 0.6s.
+      _cornerTween = _openCornerSeq;
+      _cornerCtrl.duration = const Duration(milliseconds: 600);
+    } else {
+      // Close keyframes [12,0,12] over 0.42s.
+      _cornerTween = _closeCornerSeq;
+      _cornerCtrl.duration = const Duration(milliseconds: 420);
+    }
+    _cornerCtrl.forward(from: 0);
+    setState(() => _open = next);
+    if (next) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _panelFocus.requestFocus(),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _measure();
     });
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     return BeuiOverlay(
@@ -491,10 +522,7 @@ class _BeuiSelectState extends State<BeuiSelect>
     Animation<double> animation,
     LayerLink link,
   ) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isTop = _placement == _Placement.top;
     final width = _panelWidth;
@@ -718,55 +746,23 @@ class BeuiMorphSelect extends StatefulWidget {
   State<BeuiMorphSelect> createState() => _BeuiMorphSelectState();
 }
 
-class _BeuiMorphSelectState extends State<BeuiMorphSelect> {
-  final GlobalKey _triggerKey = GlobalKey();
-  final GlobalKey _measureKey = GlobalKey();
-  final FocusNode _panelFocus = FocusNode(debugLabel: 'BeuiMorphSelect panel');
-
+class _BeuiMorphSelectState extends State<BeuiMorphSelect>
+    with _SelectStateMixin<BeuiMorphSelect> {
   bool _open = false;
-  String? _internalValue;
-  Size _triggerSize = Size.zero;
-  double _panelHeight = 0;
-  int _active = -1;
 
-  String? get _value => widget.value ?? _internalValue;
+  @override
+  List<BeuiSelectOption> get _options => widget.options;
+  @override
+  String? get _controlledValue => widget.value;
+  @override
+  String? get _defaultValue => widget.defaultValue;
+  @override
+  ValueChanged<String>? get _onChanged => widget.onChanged;
 
-  double get _panelWidth => _triggerSize.width > 0 ? _triggerSize.width : 240;
   double get _triggerHeight =>
       _triggerSize.height > 0 ? _triggerSize.height : 41;
 
   @override
-  void initState() {
-    super.initState();
-    _internalValue = widget.defaultValue;
-  }
-
-  @override
-  void dispose() {
-    _panelFocus.dispose();
-    super.dispose();
-  }
-
-  int _selectedIndex() => widget.options.indexWhere((o) => o.value == _value);
-  int _firstEnabled() => widget.options.indexWhere((o) => o.enabled);
-
-  /// The selected option's leading glyph, or null when nothing is selected.
-  Widget? get _selectedIcon {
-    final i = _selectedIndex();
-    return i >= 0 ? widget.options[i].icon : null;
-  }
-
-  void _measure() {
-    final t = _triggerKey.currentContext?.findRenderObject() as RenderBox?;
-    if (t != null && t.hasSize && t.size != _triggerSize) {
-      setState(() => _triggerSize = t.size);
-    }
-    final p = _measureKey.currentContext?.findRenderObject() as RenderBox?;
-    if (p != null && p.hasSize && p.size.height != _panelHeight) {
-      setState(() => _panelHeight = p.size.height);
-    }
-  }
-
   void _setOpen(bool next) {
     if (next == _open) return;
     if (next) {
@@ -781,69 +777,12 @@ class _BeuiMorphSelectState extends State<BeuiMorphSelect> {
     }
   }
 
-  void _select(int index) {
-    if (index < 0 || index >= widget.options.length) return;
-    final opt = widget.options[index];
-    if (!opt.enabled) return;
-    if (widget.value == null) setState(() => _internalValue = opt.value);
-    widget.onChanged?.call(opt.value);
-    _setOpen(false);
-  }
-
-  void _moveActive(int delta) {
-    final n = widget.options.length;
-    if (n == 0) return;
-    var i = _active;
-    for (var step = 0; step < n; step++) {
-      i = (i + delta) % n;
-      if (i < 0) i += n;
-      if (widget.options[i].enabled) {
-        setState(() => _active = i);
-        return;
-      }
-    }
-  }
-
-  KeyEventResult _onTriggerKey(FocusNode node, KeyEvent event) {
-    if (event is KeyUpEvent) return KeyEventResult.ignored;
-    final k = event.logicalKey;
-    if (k == LogicalKeyboardKey.enter ||
-        k == LogicalKeyboardKey.numpadEnter ||
-        k == LogicalKeyboardKey.space ||
-        k == LogicalKeyboardKey.arrowDown) {
-      _setOpen(true);
-      return KeyEventResult.handled;
-    }
-    return KeyEventResult.ignored;
-  }
-
-  KeyEventResult _onPanelKey(FocusNode node, KeyEvent event) {
-    if (event is KeyUpEvent) return KeyEventResult.ignored;
-    final k = event.logicalKey;
-    if (k == LogicalKeyboardKey.arrowDown) {
-      _moveActive(1);
-      return KeyEventResult.handled;
-    }
-    if (k == LogicalKeyboardKey.arrowUp) {
-      _moveActive(-1);
-      return KeyEventResult.handled;
-    }
-    if (k == LogicalKeyboardKey.enter || k == LogicalKeyboardKey.numpadEnter) {
-      _select(_active);
-      return KeyEventResult.handled;
-    }
-    return KeyEventResult.ignored;
-  }
-
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _measure();
     });
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final selected = _selectedIndex() >= 0;
@@ -1201,11 +1140,7 @@ class _Chevron extends StatelessWidget {
     final reduce = MediaQuery.disableAnimationsOf(context);
     return SingleMotionBuilder(
       value: open ? 1.0 : 0.0,
-      motion: reduce
-          ? const SpringMotion(
-              SpringDescription(mass: 1, stiffness: 700, damping: 60),
-            )
-          : _chevronSpring,
+      motion: reduce ? beuiSpringSnap : _chevronSpring,
       builder: (context, p, child) =>
           Transform.rotate(angle: p * math.pi, child: child),
       child: Icon(LucideIcons.chevron_down, size: 16, color: color),

@@ -148,6 +148,13 @@ void main() {
       expect(find.byIcon(LucideIcons.rotate_ccw), findsOneWidget);
       expect(find.byIcon(LucideIcons.thumbs_up), findsNothing);
       expect(find.byIcon(LucideIcons.thumbs_down), findsNothing);
+
+      // Error with nothing configured (no copy/retry/sources): nothing to
+      // show at all — unlike complete, error gets no feedback thumbs either.
+      await tester.pumpWidget(_host(status: BeuiStreamingResponseStatus.error));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(LucideIcons.copy), findsNothing);
+      expect(find.byIcon(LucideIcons.thumbs_up), findsNothing);
     });
 
     testWidgets('showActions false suppresses the actions row', (tester) async {
@@ -358,23 +365,6 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('1 source'), findsOneWidget);
       expect(find.text('1 sources'), findsNothing);
-    });
-
-    testWidgets('no actions when nothing to show after streaming', (
-      tester,
-    ) async {
-      // complete without copy/retry/sources → feedback still shows because complete.
-      await tester.pumpWidget(
-        _host(status: BeuiStreamingResponseStatus.complete),
-      );
-      await tester.pumpAndSettle();
-      expect(find.byIcon(LucideIcons.thumbs_up), findsOneWidget);
-
-      // error without copy/retry/sources → nothing to show.
-      await tester.pumpWidget(_host(status: BeuiStreamingResponseStatus.error));
-      await tester.pumpAndSettle();
-      expect(find.byIcon(LucideIcons.copy), findsNothing);
-      expect(find.byIcon(LucideIcons.thumbs_up), findsNothing);
     });
 
     testWidgets('reduced motion still reveals actions when complete', (

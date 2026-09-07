@@ -146,7 +146,7 @@ class BeuiMessageBubble extends StatefulWidget {
 
   /// Plays the surface pop once when this bubble mounts.
   ///
-  /// Defaults to **true** (C12). The source defaults it off, and the audit
+  /// Defaults to **true**. The source defaults it off, and the audit
   /// found the consequence: nothing in the library animated out of the box and
   /// the flagship preview opted assistant rows out entirely, so the port's
   /// best asset — its entrance motion — was invisible unless you knew to ask
@@ -181,7 +181,7 @@ class _BeuiMessageBubbleState extends State<BeuiMessageBubble> {
       variant: widget.variant,
       notifyLayout: _notifyLayout,
       child: Align(
-        // C17: bubbles align to the *logical* end/start, so the bubble and the
+        // Bubbles align to the *logical* end/start, so the bubble and the
         // column it lives in can no longer disagree about sides in RTL.
         alignment: resolved == BeuiMessageBubbleSide.end
             ? AlignmentDirectional.centerEnd
@@ -231,10 +231,10 @@ class BeuiMessageBubbleContent extends StatefulWidget {
   ///
   /// The resolved width is clamped to never fall below the bubble's own
   /// minimum, so a narrow shell can no longer produce impossible constraints
-  /// (C3).
+  ///.
   final double? maxWidthFactor;
 
-  /// Accessible name for an interactive bubble (C7).
+  /// Accessible name for an interactive bubble.
   ///
   /// Only meaningful when [onTap] is set — the bubble then reports itself as a
   /// button, and this is what a screen reader announces. Defaults to the
@@ -268,7 +268,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
       return;
     }
 
-    // C12. The seed used to be strictly one-shot, so a later prop change was
+    // The seed used to be strictly one-shot, so a later prop change was
     // silently ignored. Turning the entrance *off* mid-flight now settles the
     // bubble immediately — a caller disabling animation should not leave a
     // half-scaled surface on screen. Turning it *on* after mount is
@@ -291,7 +291,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final scope = _BubbleScope.maybeOf(context);
     final variant = scope?.variant ?? BeuiMessageBubbleVariant.soft;
@@ -304,7 +304,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
     final widthFactor =
         widget.maxWidthFactor ?? agent.layout.maxBubbleWidthFactor;
 
-    // C9. `danger` was `colors.destructive` on a 10% wash — 3.43:1, and colour
+    // `danger` was `colors.destructive` on a 10% wash — 3.43:1, and colour
     // was its *only* signal. It now uses the themeable destructive status tier
     // (a 700/300 foreground) and gains a leading `triangle_alert`, so the state
     // survives both a contrast check and a colourblind reader.
@@ -323,7 +323,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
       BeuiMessageBubbleVariant.solid => colors.foreground,
       BeuiMessageBubbleVariant.soft => colors.muted,
       BeuiMessageBubbleVariant.tint => colors.primary.withValues(alpha: 0.1),
-      // C9. `outline` was `background` behind a border multiplied down to
+      // `outline` was `background` behind a border multiplied down to
       // ~1.1:1 — an invisible bubble on an invisible edge. A `card` fill gives
       // it a surface you can actually see even where the hairline cannot carry
       // the shape alone.
@@ -385,7 +385,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
       isMovement: false,
     );
 
-    // C3. `min-w-9` against `0.82 × available` asserts in debug the moment the
+    // `min-w-9` against `0.82 × available` asserts in debug the moment the
     // shell gets narrower than ~44px — reachable through a `BeuiChatApp` whose
     // 272px sidebar left the body 28px on a 300px window. Clamp rather than
     // crash: a bubble narrower than its own minimum is simply the minimum.
@@ -417,7 +417,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
                       opacity: tt,
                       child: Transform.scale(
                         scale: scale,
-                        // C17: the pop grows out of the bubble's own corner,
+                        // The pop grows out of the bubble's own corner,
                         // which is the trailing corner in LTR and the leading
                         // one in RTL.
                         alignment: align == BeuiMessageBubbleSide.end
@@ -457,7 +457,7 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
 
         if (!interactive) return shell;
 
-        // C7. An interactive bubble is a button and must say so. Before this
+        // An interactive bubble is a button and must say so. Before this
         // it carried a tap handler, no role, and no name — its own rail tick
         // twenty files away had the complete contract.
         return Semantics(
@@ -487,12 +487,12 @@ class _BeuiMessageBubbleContentState extends State<BeuiMessageBubbleContent> {
               },
               onTapCancel: () => setState(() => _pressed = false),
               child: AnimatedScale(
-                // C31: 0.99 is imperceptible. 0.97 is the library's press
+                // 0.99 is imperceptible. 0.97 is the library's press
                 // scale.
                 scale: _pressed && !reduce ? 0.97 : 1.0,
                 duration: const Duration(milliseconds: 150),
                 curve: beuiEaseOut,
-                // C2. The ring used to be a `Border` inside a `BoxDecoration`,
+                // The ring used to be a `Border` inside a `BoxDecoration`,
                 // so focusing both inset the child by 2px — the "indicator"
                 // was a layout jitter — and painted in `colors.ring`, a 12%
                 // hairline token that composites to 1.29:1 against 3:1
@@ -535,7 +535,7 @@ class _ContentRevealState extends State<_ContentReveal> {
   double _value = 0;
   bool _started = false;
 
-  /// C34. This was a bare `Future.delayed` with only a `mounted` guard, so a
+  /// This was a bare `Future.delayed` with only a `mounted` guard, so a
   /// bubble disposed inside the 40ms window left a pending callback holding
   /// the State alive. A cancellable timer, cancelled in `dispose`.
   Timer? _delay;
@@ -555,7 +555,7 @@ class _ContentRevealState extends State<_ContentReveal> {
   void didUpdateWidget(covariant _ContentReveal oldWidget) {
     super.didUpdateWidget(oldWidget);
     // The entrance was switched off mid-flight — settle rather than hold a
-    // half-faded body (C12).
+    // half-faded body.
     if (!widget.animateIn && oldWidget.animateIn) {
       _delay?.cancel();
       _delay = null;
@@ -702,7 +702,7 @@ class _BeuiMessageBubbleCollapsibleState
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final chevronMotion = motionFor(context, beuiSpringSwap, isMovement: true);
@@ -710,7 +710,7 @@ class _BeuiMessageBubbleCollapsibleState
     final more = widget.moreLabel ?? const Text('Show more');
     final less = widget.lessLabel ?? const Text('Show less');
 
-    // C25. The collapsed height was always measured with the *assistant* body
+    // The collapsed height was always measured with the *assistant* body
     // style, so a user-side bubble whose type ramp differs clipped at the
     // wrong line. Read the side the bubble actually renders on.
     final user =
@@ -719,7 +719,7 @@ class _BeuiMessageBubbleCollapsibleState
     final lineH = (body.height ?? 24 / 14) * (body.fontSize ?? 14);
     final collapsedH = widget.collapsedLines * lineH;
 
-    // C11. Expanding used to snap: the chevron sprang while the content
+    // Expanding used to snap: the chevron sprang while the content
     // popped to full height in one frame. Height now rides the same
     // 220ms/140ms disclosure curve as the rest of the library, and the fade
     // mask dissolves with it rather than switching off.
@@ -802,7 +802,7 @@ class _BeuiMessageBubbleCollapsibleState
   }
 }
 
-/// Animates between a clamped height and the child's natural height (C11).
+/// Animates between a clamped height and the child's natural height.
 ///
 /// Lays the child out unconstrained vertically, then sizes itself to
 /// `lerp(collapsedHeight, naturalHeight, t)` and clips. No offstage measuring
@@ -936,10 +936,10 @@ class _CollapsibleTriggerState extends State<_CollapsibleTrigger> {
     final agent = BeuiAgentTheme.of(context);
     final colors = widget.colors;
 
-    // C26. The trigger reported `button` (via InkWell) but never `expanded`,
+    // The trigger reported `button` (via InkWell) but never `expanded`,
     // so a screen-reader user could not tell whether the body was open — the
     // one fact this control exists to change.
-    // C8/T9: outermost, so the 44px slop is actually reachable — an ancestor
+    // Outermost, so the 44px slop is actually reachable — an ancestor
     // RenderBox rejects a pointer outside its own box before any child's
     // hitTest runs.
     return BeuiMinHitTarget(
@@ -972,7 +972,7 @@ class _CollapsibleTriggerState extends State<_CollapsibleTrigger> {
               focused: _focused,
               borderRadius: agent.shapes.pill,
               child: SingleMotionBuilder(
-                value: (_pressed && !widget.reduce) ? 0.97 : 1.0, // C31
+                value: (_pressed && !widget.reduce) ? 0.97 : 1.0,
                 motion: motionFor(context, beuiSpringPress, isMovement: true),
                 builder: (context, scale, child) =>
                     Transform.scale(scale: scale, child: child),

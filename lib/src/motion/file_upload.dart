@@ -115,11 +115,17 @@ String _rejectionMessage(List<BeuiFileUploadItem> rejected, int maxFileSize) {
   return '${rejected.length} files exceed the $limit limit';
 }
 
-String _fileKind(BeuiFileUploadItem item) {
+/// Lowercase filename extension, or empty when the name has none.
+String _extensionOf(BeuiFileUploadItem item) {
   final dot = item.name.lastIndexOf('.');
-  if (dot > 0 && dot < item.name.length - 1) {
-    return item.name.substring(dot + 1).toUpperCase();
-  }
+  return dot > 0 && dot < item.name.length - 1
+      ? item.name.substring(dot + 1).toLowerCase()
+      : '';
+}
+
+String _fileKind(BeuiFileUploadItem item) {
+  final extension = _extensionOf(item);
+  if (extension.isNotEmpty) return extension.toUpperCase();
   final type = item.type;
   if (type != null && type.contains('/')) {
     return type.split('/').last.toUpperCase();
@@ -127,53 +133,55 @@ String _fileKind(BeuiFileUploadItem item) {
   return 'FILE';
 }
 
+const _imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'];
+const _videoExtensions = ['mp4', 'mov', 'webm', 'mkv'];
+const _audioExtensions = ['mp3', 'wav', 'flac', 'ogg'];
+const _archiveExtensions = ['zip', 'rar', '7z', 'tar', 'gz'];
+const _spreadsheetExtensions = ['csv', 'xls', 'xlsx'];
+const _documentExtensions = ['pdf', 'doc', 'docx', 'md', 'txt'];
+const _codeExtensions = [
+  'css',
+  'html',
+  'js',
+  'jsx',
+  'json',
+  'mdx',
+  'ts',
+  'tsx',
+  'xml',
+  'yaml',
+  'yml',
+  'dart',
+];
+
 IconData _fileIcon(BeuiFileUploadItem item) {
-  final dot = item.name.lastIndexOf('.');
-  final extension = dot > 0 && dot < item.name.length - 1
-      ? item.name.substring(dot + 1).toLowerCase()
-      : '';
+  final extension = _extensionOf(item);
   final type = item.type ?? '';
-  if (type.startsWith('image/') ||
-      ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].contains(extension)) {
+  if (type.startsWith('image/') || _imageExtensions.contains(extension)) {
     return LucideIcons.file_image;
   }
-  if (type.startsWith('video/') ||
-      ['mp4', 'mov', 'webm', 'mkv'].contains(extension)) {
+  if (type.startsWith('video/') || _videoExtensions.contains(extension)) {
     return LucideIcons.file_video_camera;
   }
-  if (type.startsWith('audio/') ||
-      ['mp3', 'wav', 'flac', 'ogg'].contains(extension)) {
+  if (type.startsWith('audio/') || _audioExtensions.contains(extension)) {
     return LucideIcons.file_music;
   }
   if (type.contains('zip') ||
       type.contains('compressed') ||
-      ['zip', 'rar', '7z', 'tar', 'gz'].contains(extension)) {
+      _archiveExtensions.contains(extension)) {
     return LucideIcons.file_archive;
   }
   if (type.contains('spreadsheet') ||
       type.contains('excel') ||
-      ['csv', 'xls', 'xlsx'].contains(extension)) {
+      _spreadsheetExtensions.contains(extension)) {
     return LucideIcons.file_spreadsheet;
   }
   if (type.contains('pdf') ||
       type.startsWith('text/') ||
-      ['pdf', 'doc', 'docx', 'md', 'txt'].contains(extension)) {
+      _documentExtensions.contains(extension)) {
     return LucideIcons.file_text;
   }
-  if ([
-    'css',
-    'html',
-    'js',
-    'jsx',
-    'json',
-    'mdx',
-    'ts',
-    'tsx',
-    'xml',
-    'yaml',
-    'yml',
-    'dart',
-  ].contains(extension)) {
+  if (_codeExtensions.contains(extension)) {
     return LucideIcons.file_code;
   }
   return LucideIcons.file;
@@ -329,26 +337,50 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
   }
 
   void _setItems(List<BeuiFileUploadItem> next) {
-    if (widget.value == null) {
-      setState(() => _internal = next);
-    } else {
-      setState(() {});
-    }
+    setState(() {
+      if (widget.value == null) _internal = next;
+      _syncDerived();
+    });
     widget.onValueChange?.call(next);
   }
 
   @override
   void initState() {
     super.initState();
-    _sync();
-    _checkRejections();
+    _syncDerived();
   }
 
   @override
   void didUpdateWidget(BeuiFileUpload oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _syncDerived();
+  }
+
+  /// Reconciles every piece of state derived from [_items] — row entries,
+  /// the rejected-batch callback, and the rejection banner — so it stays
+  /// current on every path that can change [_items]: a controlled `value`
+  /// update ([didUpdateWidget]) and an uncontrolled internal change
+  /// ([_setItems]).
+  void _syncDerived() {
     _sync();
     _checkRejections();
+    _syncRejectionSlot();
+  }
+
+  void _syncRejectionSlot() {
+    final rejectedItems = _rejectedItems;
+    if (widget.showRejectionNotice && rejectedItems.isNotEmpty) {
+      final text = _rejectionMessage(rejectedItems, widget.maxFileSize!);
+      if (_rejectionSlot == null) {
+        _rejectionSlot = _RejectionSlot(text);
+      } else {
+        _rejectionSlot!
+          ..text = text
+          ..exiting = false;
+      }
+    } else if (_rejectionSlot != null) {
+      _rejectionSlot!.exiting = true;
+    }
   }
 
   /// Mirrors [_acceptedItems] into row entries; vanished rows animate out
@@ -411,26 +443,10 @@ class _BeuiFileUploadState extends State<BeuiFileUpload> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final maxReached =
         widget.maxFiles != null && _items.length >= widget.maxFiles!;
-    _sync();
-    _checkRejections();
-
-    final rejectedItems = _rejectedItems;
-    if (widget.showRejectionNotice && rejectedItems.isNotEmpty) {
-      final text = _rejectionMessage(rejectedItems, widget.maxFileSize!);
-      if (_rejectionSlot == null) {
-        _rejectionSlot = _RejectionSlot(text);
-      } else {
-        _rejectionSlot!
-          ..text = text
-          ..exiting = false;
-      }
-    } else if (_rejectionSlot != null) {
-      _rejectionSlot!.exiting = true;
-    }
 
     final resolvedTitle =
         widget.title ?? (widget.dragAndDrop ? 'Drop files here' : 'Add files');
@@ -882,10 +898,50 @@ class _Row extends StatelessWidget {
 
     // Row enter: y 8 → 0 fade over 220ms EASE_OUT; exit y → -6 and collapse
     // so the queue reflows (source ROW_TRANSITION + layout).
+    return _HeightReveal(
+      exiting: exiting,
+      reduce: reduce,
+      onExited: onExited,
+      translateY: (enter: 8.0, exit: -6.0),
+      child: card,
+    );
+  }
+}
+
+/// Fades and height-collapses [child] on entry/exit, firing [onExited] once
+/// an exit animation finishes — shared by [_Row] and [_RejectionNotice].
+class _HeightReveal extends StatelessWidget {
+  const _HeightReveal({
+    required this.exiting,
+    required this.reduce,
+    required this.onExited,
+    required this.child,
+    this.exitDuration = const Duration(milliseconds: 220),
+    this.translateY,
+  });
+
+  final bool exiting;
+  final bool reduce;
+  final VoidCallback onExited;
+  final Widget child;
+
+  /// Enter is always 220ms; only the exit pace differs between callers.
+  static const _enterDuration = Duration(milliseconds: 220);
+  final Duration exitDuration;
+
+  /// Optional (enter, exit) vertical slide distance in px, applied under
+  /// full motion only. Null keeps the fade/height-collapse alone.
+  final ({double enter, double exit})? translateY;
+
+  @override
+  Widget build(BuildContext context) {
     return SingleMotionBuilder(
       value: exiting ? 0.0 : 1.0,
       from: 0.0,
-      motion: const CurvedMotion(Duration(milliseconds: 220), beuiEaseOut),
+      motion: CurvedMotion(
+        exiting ? exitDuration : _enterDuration,
+        beuiEaseOut,
+      ),
       onAnimationStatusChanged: (animationStatus) {
         if (exiting &&
             (animationStatus == AnimationStatus.completed ||
@@ -893,11 +949,14 @@ class _Row extends StatelessWidget {
           onExited();
         }
       },
-      builder: (context, t, child) {
+      builder: (context, t, inner) {
         final clamped = t.clamp(0.0, 1.0);
-        Widget body = Opacity(opacity: clamped, child: child);
-        if (!reduce) {
-          final dy = exiting ? -6.0 * (1 - clamped) : 8.0 * (1 - clamped);
+        Widget body = Opacity(opacity: clamped, child: inner);
+        final offsets = translateY;
+        if (!reduce && offsets != null) {
+          final dy = exiting
+              ? offsets.exit * (1 - clamped)
+              : offsets.enter * (1 - clamped);
           body = Transform.translate(offset: Offset(0, dy), child: body);
         }
         return ClipRect(
@@ -908,7 +967,7 @@ class _Row extends StatelessWidget {
           ),
         );
       },
-      child: card,
+      child: child,
     );
   }
 }
@@ -958,30 +1017,11 @@ class _RejectionNotice extends StatelessWidget {
     return Semantics(
       liveRegion: true,
       container: true,
-      child: SingleMotionBuilder(
-        value: exiting ? 0.0 : 1.0,
-        from: 0.0,
-        motion: CurvedMotion(
-          Duration(milliseconds: exiting ? 160 : 220),
-          beuiEaseOut,
-        ),
-        onAnimationStatusChanged: (animationStatus) {
-          if (exiting &&
-              (animationStatus == AnimationStatus.completed ||
-                  animationStatus == AnimationStatus.dismissed)) {
-            onExited();
-          }
-        },
-        builder: (context, t, child) {
-          final clamped = t.clamp(0.0, 1.0);
-          return ClipRect(
-            child: Align(
-              alignment: Alignment.topCenter,
-              heightFactor: reduce ? 1 : clamped,
-              child: Opacity(opacity: clamped, child: child),
-            ),
-          );
-        },
+      child: _HeightReveal(
+        exiting: exiting,
+        reduce: reduce,
+        onExited: onExited,
+        exitDuration: const Duration(milliseconds: 160),
         child: card,
       ),
     );

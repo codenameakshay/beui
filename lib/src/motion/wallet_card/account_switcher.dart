@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../theme/beui_colors.dart';
 import '../../tokens/icons.dart';
+import '../_format.dart';
 import '_constants.dart';
 import '_morph.dart';
 import '_types.dart';
-import '_utils.dart';
 import 'account_avatar.dart';
 import 'copy_button.dart';
 
@@ -45,10 +45,7 @@ class _WalletAccountSwitcherState extends State<WalletAccountSwitcher> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final active = widget.activeAccount;
 
     return MorphPanel(
@@ -200,10 +197,7 @@ class _AccountRowState extends State<_AccountRow> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     final hoverActive = widget.armed && _hovered && !widget.selected;
     final bg = widget.selected
@@ -254,7 +248,7 @@ class _AccountRowState extends State<_AccountRow> {
                               ),
                             ),
                             Text(
-                              truncateAddress(widget.account.address),
+                              beuiTruncateAddress(widget.account.address),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(

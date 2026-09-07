@@ -3,12 +3,10 @@
 ///
 /// Package-internal. Not exported from `lib/beui.dart`.
 ///
-/// The audit found interactive targets from 14px (message-rail ticks) to 36px
-/// (sidebar rows) against a 44px floor — inline citation markers at 16px, the
-/// approval actions at 27px, copy buttons at 28px, the feedback close at 20px
-/// (under even WCAG 2.5.8's relaxed 24px). The fix is uniform and must not
-/// touch the visual: this port's whole premise is source fidelity, so the
-/// painted geometry stays exactly where it is and only the hit slop grows.
+/// Interactive targets throughout the port (inline citation markers, approval
+/// actions, copy buttons, feedback close) are smaller than the 44px touch
+/// floor. Wrapping them in [BeuiMinHitTarget] grows the hit slop to that
+/// floor without moving the painted geometry, keeping source-fidelity intact.
 library;
 
 import 'package:flutter/rendering.dart';
@@ -16,10 +14,10 @@ import 'package:flutter/widgets.dart';
 
 /// The touch-target floor, in logical pixels.
 ///
-/// 44 is the Apple HIG / WCAG 2.2 SC 2.5.8 (AAA) value and Flutter's own
-/// `kMinInteractiveDimension`. Material's `MaterialTapTargetSize.padded`
-/// applies the same number the same way — by padding the *hit test*, not the
-/// paint.
+/// 44 is the Apple HIG value and WCAG 2.2 SC 2.5.5 (AAA); SC 2.5.8 (AA) only
+/// asks for 24. Flutter's own `kMinInteractiveDimension` is 48, and Material's
+/// `MaterialTapTargetSize.padded` applies it the same way this helper does —
+/// by padding the *hit test*, not the paint.
 const double beuiMinHitTarget = 44;
 
 /// Grows [child]'s hit area to at least [minSize] square, leaving its painted
@@ -60,7 +58,6 @@ class BeuiMinHitTarget extends StatelessWidget {
   const BeuiMinHitTarget({
     required this.child,
     this.minSize = beuiMinHitTarget,
-    this.enabled = true,
     super.key,
   });
 
@@ -70,15 +67,9 @@ class BeuiMinHitTarget extends StatelessWidget {
   /// The hit-area floor in both axes. Defaults to [beuiMinHitTarget].
   final double minSize;
 
-  /// When false this is a pass-through, for callers that gate the slop on
-  /// pointer kind (a mouse does not need 44px).
-  final bool enabled;
-
   @override
-  Widget build(BuildContext context) {
-    if (!enabled) return child;
-    return _MinHitTarget(minSize: minSize, child: child);
-  }
+  Widget build(BuildContext context) =>
+      _MinHitTarget(minSize: minSize, child: child);
 }
 
 class _MinHitTarget extends SingleChildRenderObjectWidget {

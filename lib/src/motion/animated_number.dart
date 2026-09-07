@@ -107,7 +107,7 @@ class _BeuiAnimatedNumberState extends State<BeuiAnimatedNumber>
       if (i > 0 && (digits.length - i) % 3 == 0) buf.write(',');
       buf.write(digits[i]);
     }
-    return neg ? '-${buf.toString()}' : buf.toString();
+    return neg ? '-$buf' : buf.toString();
   }
 
   @override
@@ -117,7 +117,12 @@ class _BeuiAnimatedNumberState extends State<BeuiAnimatedNumber>
 
     // Reduced motion: no count-up — render the final value directly.
     if (reduce) {
-      return Text(_format(widget.value), style: style, maxLines: 1);
+      return Text(
+        _format(widget.value),
+        style: style,
+        maxLines: 1,
+        softWrap: false,
+      );
     }
 
     // Gated: hold the seed until the widget scrolls into view.

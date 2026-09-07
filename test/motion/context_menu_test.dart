@@ -3,26 +3,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor/motor.dart' show MotionBuilder;
 
-Widget _wrap(Widget child, {bool reduce = false}) {
-  Widget body = Center(child: child);
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+import '../support.dart';
 
 List<BeuiContextMenuItem> _items({
   List<String>? selected,
@@ -82,7 +64,7 @@ void main() {
   group('BeuiContextMenu', () {
     testWidgets('opens on secondary tap', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiContextMenu(
             items: _items(),
             child: const SizedBox(
@@ -104,7 +86,7 @@ void main() {
 
     testWidgets('opens on long press', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiContextMenu(
             items: _items(),
             child: const SizedBox(
@@ -135,7 +117,7 @@ void main() {
     testWidgets('item selection invokes callback and closes', (tester) async {
       final selected = <String>[];
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiContextMenu(
             items: _items(selected: selected),
             child: const SizedBox(
@@ -162,7 +144,7 @@ void main() {
       (tester) async {
         var offline = false;
         await tester.pumpWidget(
-          _wrap(
+          beuiTestApp(
             StatefulBuilder(
               builder: (context, setState) {
                 return BeuiContextMenu(
@@ -193,7 +175,7 @@ void main() {
 
     testWidgets('Esc dismisses', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiContextMenu(
             items: _items(),
             child: const SizedBox(
@@ -216,7 +198,7 @@ void main() {
     testWidgets('keyboard arrows + Enter select active item', (tester) async {
       final selected = <String>[];
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiContextMenu(
             items: _items(selected: selected),
             child: const SizedBox(
@@ -243,7 +225,7 @@ void main() {
     testWidgets('reduced motion still opens and selects', (tester) async {
       final selected = <String>[];
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiContextMenu(
             items: _items(selected: selected),
             child: const SizedBox(
@@ -269,7 +251,7 @@ void main() {
       var open = false;
       final changes = <bool>[];
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           StatefulBuilder(
             builder: (context, setState) {
               return BeuiContextMenu(
@@ -302,7 +284,7 @@ void main() {
 
     testWidgets('disabled trigger does not open', (tester) async {
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiContextMenu(
             enabled: false,
             items: _items(),
@@ -318,7 +300,7 @@ void main() {
       expect(find.text('Open'), findsNothing);
     });
 
-    // F7. Same defect as the command palette's: the active-row highlight is a
+    // Same defect as the command palette's: the active-row highlight is a
     // `MotionBuilder<Rect>` fed `const NoMotion()` under reduced motion, and
     // NoMotion holds the rect it was seeded with forever rather than reaching
     // the target (see `_no_motion_semantics_test.dart`). The highlight stuck
@@ -338,7 +320,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _wrap(
+        beuiTestApp(
           BeuiContextMenu(
             items: _items(),
             child: const SizedBox(
@@ -352,12 +334,7 @@ void main() {
       await _openSecondary(tester, find.text('Trigger'));
 
       Rect highlight() => tester.getRect(
-        find
-            .descendant(
-              of: find.byType(MotionBuilder<Rect>),
-              matching: find.byType(DecoratedBox),
-            )
-            .first,
+        find.byKey(const ValueKey('beui-context-menu-highlight')),
       );
 
       // The pill only exists once a row is active, so the first arrow both

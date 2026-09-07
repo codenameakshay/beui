@@ -1,6 +1,8 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiTable] — a 1:1 port of the source preview
 /// (`components/previews/motion/table.preview.tsx`): one virtualized 10,000-row
 /// grid with sortable headers, row selection, column resize and reorder, above
@@ -66,17 +68,6 @@ List<_Person> _buildPeople(int count) => [
       mrr: 12 + ((i * 37) % 488),
     ),
 ];
-
-/// `Number.prototype.toLocaleString()` for the en-US grouping the source uses.
-String _grouped(int value) {
-  final digits = value.abs().toString();
-  final buffer = StringBuffer(value < 0 ? '-' : '');
-  for (var i = 0; i < digits.length; i++) {
-    if (i > 0 && (digits.length - i) % 3 == 0) buffer.write(',');
-    buffer.write(digits[i]);
-  }
-  return buffer.toString();
-}
 
 class _TableDemo extends StatefulWidget {
   const _TableDemo();
@@ -157,10 +148,10 @@ class _TableDemoState extends State<_TableDemo> {
         sortable: true,
         align: BeuiTableAlign.right,
         width: 110,
-        value: (r) => '\$${_grouped(r.mrr)}',
+        value: (r) => '\$${groupThousands(r.mrr)}',
         sortValue: (r) => r.mrr,
         cell: (r) => Text(
-          '\$${_grouped(r.mrr)}',
+          '\$${groupThousands(r.mrr)}',
           style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
         ),
       ),
@@ -185,10 +176,13 @@ class _TableDemoState extends State<_TableDemo> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${_grouped(_data.length)} rows', style: captionStyle),
+                Text(
+                  '${groupThousands(_data.length)} rows',
+                  style: captionStyle,
+                ),
                 if (_selected.isNotEmpty)
                   Text(
-                    '${_grouped(_selected.length)} selected',
+                    '${groupThousands(_selected.length)} selected',
                     style: captionStyle,
                   ),
               ],

@@ -119,27 +119,37 @@ class _AiSidebarDemoState extends State<_AiSidebarDemo> {
   String _active = 'resource-review';
   bool _expanded = true;
 
-  String _labelOf(List<BeuiSidebarResource> items, String id) {
+  String? _labelOf(List<BeuiSidebarResource> items, String id) {
     for (final item in items) {
       if (item.id == id) return item.label;
       final kids = item.children;
       if (kids != null) {
         final found = _labelOf(kids, id);
-        if (found != id) return found;
+        if (found != null) return found;
       }
     }
-    return id;
+    return null;
   }
 
+  String? _moveError;
+
   Future<void> _onMove(BeuiSidebarResourceMove move) async {
-    // Simulate network latency — reject to test rollback if needed.
     await Future<void>.delayed(const Duration(milliseconds: 450));
+    // Archived resources are read-only — reject drops onto them so the
+    // optimistic move rolls back (BeuiAiSidebar.onMoveError below).
+    if (move.targetId == 'archived') {
+      throw StateError('Archived resources are read-only');
+    }
+  }
+
+  void _onMoveError(Object error, BeuiSidebarResourceMove move) {
+    setState(() => _moveError = '$error');
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
-    final activeLabel = _labelOf(_items, _active);
+    final activeLabel = _labelOf(_items, _active) ?? _active;
 
     // Source wrapper: `w-full px-0 py-2 sm:p-3`.
     return Padding(
@@ -181,6 +191,7 @@ class _AiSidebarDemoState extends State<_AiSidebarDemo> {
               // Source group 2: `Projects` label + the flex-1 resource tree.
               panelContent: _ProjectsPane(
                 colors: colors,
+                moveError: _moveError,
                 tree: BeuiAiSidebar(
                   items: _items,
                   activeId: _active,
@@ -188,6 +199,7 @@ class _AiSidebarDemoState extends State<_AiSidebarDemo> {
                   onActiveChange: (id) => setState(() => _active = id),
                   onItemsChange: (next) => setState(() => _items = next),
                   onMove: _onMove,
+                  onMoveError: _onMoveError,
                 ),
               ),
               child: _Detail(colors: colors, activeLabel: activeLabel),
@@ -202,10 +214,15 @@ class _AiSidebarDemoState extends State<_AiSidebarDemo> {
 /// Sidebar group 2 — the `Projects` label plus the scrolling resource tree
 /// with the source's bottom fade.
 class _ProjectsPane extends StatelessWidget {
-  const _ProjectsPane({required this.colors, required this.tree});
+  const _ProjectsPane({
+    required this.colors,
+    required this.tree,
+    this.moveError,
+  });
 
   final BeuiColors colors;
   final Widget tree;
+  final String? moveError;
 
   @override
   Widget build(BuildContext context) {
@@ -235,6 +252,16 @@ class _ProjectsPane extends StatelessWidget {
               ),
             ),
           ),
+          if (moveError != null) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                moveError!,
+                style: TextStyle(fontSize: 11, color: colors.destructive),
+              ),
+            ),
+            const SizedBox(height: 4),
+          ],
           const SizedBox(height: 4), // mb-1
           // This is the documented pattern for a scrolling resource tree:
           // the consumer supplies its own scrollable + bottom fade, since

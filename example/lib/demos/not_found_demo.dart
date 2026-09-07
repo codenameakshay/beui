@@ -4,6 +4,22 @@ import 'package:flutter/material.dart';
 /// Gallery route for the not-found variants — pick one with the chips.
 Widget notFoundDemo(BuildContext context) => const _NotFoundDemo();
 
+enum _NotFoundVariant {
+  glitch,
+  magnetic,
+  spotlight,
+  stacked,
+  terminal;
+
+  Widget build() => switch (this) {
+    _NotFoundVariant.glitch => const BeuiNotFoundGlitch(),
+    _NotFoundVariant.magnetic => const BeuiNotFoundMagnetic(),
+    _NotFoundVariant.spotlight => const BeuiNotFoundSpotlight(),
+    _NotFoundVariant.stacked => const BeuiNotFoundStacked(),
+    _NotFoundVariant.terminal => const BeuiNotFoundTerminal(),
+  };
+}
+
 class _NotFoundDemo extends StatefulWidget {
   const _NotFoundDemo();
 
@@ -12,17 +28,10 @@ class _NotFoundDemo extends StatefulWidget {
 }
 
 class _NotFoundDemoState extends State<_NotFoundDemo> {
-  String _variant = 'glitch';
+  _NotFoundVariant _variant = _NotFoundVariant.glitch;
 
   @override
   Widget build(BuildContext context) {
-    final variants = {
-      'glitch': () => const BeuiNotFoundGlitch(),
-      'magnetic': () => const BeuiNotFoundMagnetic(),
-      'spotlight': () => const BeuiNotFoundSpotlight(),
-      'stacked': () => const BeuiNotFoundStacked(),
-      'terminal': () => const BeuiNotFoundTerminal(),
-    };
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -31,18 +40,18 @@ class _NotFoundDemoState extends State<_NotFoundDemo> {
             spacing: 8,
             alignment: WrapAlignment.center,
             children: [
-              for (final name in variants.keys)
+              for (final variant in _NotFoundVariant.values)
                 BeuiButton(
-                  variant: name == _variant
+                  variant: variant == _variant
                       ? BeuiButtonVariant.primary
                       : BeuiButtonVariant.outline,
                   size: BeuiButtonSize.sm,
-                  onPressed: () => setState(() => _variant = name),
-                  child: Text(name),
+                  onPressed: () => setState(() => _variant = variant),
+                  child: Text(variant.name),
                 ),
             ],
           ),
-          KeyedSubtree(key: ValueKey(_variant), child: variants[_variant]!()),
+          KeyedSubtree(key: ValueKey(_variant), child: _variant.build()),
         ],
       ),
     );

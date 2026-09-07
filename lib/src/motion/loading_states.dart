@@ -10,6 +10,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_scramble.dart';
 import '_transcript.dart';
 import 'loader.dart';
 import 'text_shimmer.dart';
@@ -108,7 +109,7 @@ class BeuiAgentProgress extends StatefulWidget {
   ///
   /// Null (the default) resolves to false when a [BeuiMessageScroller] is
   /// above it and true otherwise — the transcript owns the conversation's one
-  /// live region (C6).
+  /// live region.
   final bool? announce;
 
   /// Controlled elapsed time in seconds. When set, the internal timer is
@@ -177,7 +178,7 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // C21. The two branches here used to be identical — the `if (reduce)` was
+    // The two branches here used to be identical — the `if (reduce)` was
     // dead code — so the controller looped either way. Under reduced motion
     // the painter pins scale to 1.0 and narrows opacity to a 0.35–0.8 band,
     // and `shouldRepaint` returns true on every tick, so the setting meant to
@@ -230,10 +231,7 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final elapsed = widget.elapsedSeconds ?? _internalSeconds;
     final base =
@@ -256,7 +254,7 @@ class _BeuiAgentProgressState extends State<BeuiAgentProgress>
 
     return Semantics(
       label: '${widget.label}, in progress',
-      // C6. This label only changes if the caller changes `label`, so as a
+      // This label only changes if the caller changes `label`, so as a
       // live region it announced once and then went inert while adding another
       // region to the transcript's nest. Inside a scroller the transcript owns
       // announcements; standalone it keeps its own.
@@ -423,7 +421,7 @@ class BeuiReasoningText extends StatefulWidget {
   /// interrupted itself up to 1.6 times a second with decorative filler
   /// ("Thinking", "Reading the context", …) that carries no information the
   /// reader can act on. The status a screen reader needs is the *transcript's*
-  /// busy state, which [BeuiMessageScroller] already reports (C6).
+  /// busy state, which [BeuiMessageScroller] already reports.
   ///
   /// Set true only when this is the sole indication that work is happening.
   final bool announce;
@@ -501,10 +499,7 @@ class _BeuiReasoningTextState extends State<BeuiReasoningText> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final style =
         (widget.style ??
@@ -528,7 +523,7 @@ class _BeuiReasoningTextState extends State<BeuiReasoningText> {
 
     return Semantics(
       label: _phrase,
-      // C6: off by default — see [BeuiReasoningText.announce].
+      // Off by default — see [BeuiReasoningText.announce].
       liveRegion: widget.announce,
       container: true,
       child: Row(
@@ -579,7 +574,7 @@ class _PhraseSlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      // C17: phrase slots are start-aligned, which mirrors under RTL.
+      // Phrase slots are start-aligned, which mirrors under RTL.
       alignment: AlignmentDirectional.centerStart,
       children: [
         // Invisible sizer so the slot never collapses between phrases.
@@ -707,7 +702,7 @@ class _CascadePhraseState extends State<_CascadePhrase>
             final totalMs = _controller.duration!.inMilliseconds;
             return Stack(
               clipBehavior: Clip.hardEdge,
-              // C17: phrase slots are start-aligned, which mirrors under RTL.
+              // Phrase slots are start-aligned, which mirrors under RTL.
               alignment: AlignmentDirectional.centerStart,
               children: [
                 PositionedDirectional(
@@ -735,8 +730,8 @@ class _CascadePhraseState extends State<_CascadePhrase>
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        for (var i = 0; i < text.length; i++)
-          _letter(text[i], i, t, totalMs, roll, exiting: exiting),
+        for (final (i, glyph) in text.characters.indexed)
+          _letter(glyph, i, t, totalMs, roll, exiting: exiting),
       ],
     );
   }
@@ -866,7 +861,7 @@ class _SwapPhraseState extends State<_SwapPhrase>
         final inOp = t;
         final inY = slide * (1 - t);
         return Stack(
-          // C17: phrase slots are start-aligned, which mirrors under RTL.
+          // Phrase slots are start-aligned, which mirrors under RTL.
           alignment: AlignmentDirectional.centerStart,
           children: [
             Opacity(
@@ -954,17 +949,10 @@ class _ScramblePhraseState extends State<_ScramblePhrase>
       lastUpdate = elapsed;
       final progress = math.min(elapsed.inMilliseconds / durationMs, 1.0);
       final settled = (progress * characters.length).floor();
-      final next = StringBuffer();
-      for (var i = 0; i < characters.length; i++) {
-        final ch = characters[i];
-        if (i < settled || ch == ' ') {
-          next.write(ch);
-        } else {
-          next.write(_kScrambleGlyphs[_rng.nextInt(_kScrambleGlyphs.length)]);
-        }
-      }
       if (!mounted) return;
-      setState(() => _display = next.toString());
+      setState(
+        () => _display = beuiScramble(target, settled, _rng, _kScrambleGlyphs),
+      );
       // Completion runs off the ticker's own clock, not the wall clock, so the
       // ticker actually stops (and disposes) under fake async in tests.
       if (elapsed.inMilliseconds >= durationMs) {

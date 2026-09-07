@@ -25,31 +25,6 @@ Widget _wrap(Widget child, {bool reduce = false}) {
 
 void main() {
   group('BeuiMessageBubble', () {
-    testWidgets('renders soft content by default', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessageBubble(
-            child: BeuiMessageBubbleContent(child: Text('Soft hello')),
-          ),
-        ),
-      );
-      expect(find.text('Soft hello'), findsOneWidget);
-    });
-
-    for (final variant in BeuiMessageBubbleVariant.values) {
-      testWidgets('renders $variant', (tester) async {
-        await tester.pumpWidget(
-          _wrap(
-            BeuiMessageBubble(
-              variant: variant,
-              child: BeuiMessageBubbleContent(child: Text('v-${variant.name}')),
-            ),
-          ),
-        );
-        expect(find.text('v-${variant.name}'), findsOneWidget);
-      });
-    }
-
     testWidgets('inherits align from BeuiMessageSideScope', (tester) async {
       await tester.pumpWidget(
         _wrap(
@@ -69,7 +44,7 @@ void main() {
         ),
       );
       expect(find.text('End-aligned'), findsOneWidget);
-      // C17: alignment is logical, so a user bubble sits at the *end* — the
+      // Alignment is logical, so a user bubble sits at the *end* — the
       // right in LTR, the left in RTL — rather than at a hardcoded right.
       final align = tester.widget<Align>(
         find
@@ -112,35 +87,6 @@ void main() {
       );
       expect(align.alignment, AlignmentDirectional.centerStart);
     });
-
-    testWidgets('animateIn settles', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessageBubble(
-            animateIn: true,
-            child: BeuiMessageBubbleContent(child: Text('Pop in')),
-          ),
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      expect(find.text('Pop in'), findsOneWidget);
-    });
-
-    testWidgets('reduced motion animateIn still shows content', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessageBubble(
-            animateIn: true,
-            child: BeuiMessageBubbleContent(child: Text('Reduced')),
-          ),
-          reduce: true,
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
-      expect(find.text('Reduced'), findsOneWidget);
-    });
   });
 
   group('BeuiMessageBubbleContent', () {
@@ -159,27 +105,6 @@ void main() {
       await tester.tap(find.text('Tap me'));
       await tester.pump();
       expect(taps, 1);
-    });
-  });
-
-  group('BeuiMessageBubbleGroup', () {
-    testWidgets('stacks multiple bubbles', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const BeuiMessageBubbleGroup(
-            children: [
-              BeuiMessageBubble(
-                child: BeuiMessageBubbleContent(child: Text('One')),
-              ),
-              BeuiMessageBubble(
-                child: BeuiMessageBubbleContent(child: Text('Two')),
-              ),
-            ],
-          ),
-        ),
-      );
-      expect(find.text('One'), findsOneWidget);
-      expect(find.text('Two'), findsOneWidget);
     });
   });
 
@@ -237,7 +162,7 @@ void main() {
       expect(find.text('Show less'), findsOneWidget);
     });
 
-    // F2/F3. Under reduced motion both the height reveal and the chevron were
+    // Under reduced motion both the height reveal and the chevron were
     // driven by `SingleMotionBuilder`s handed `const NoMotion()`, which holds
     // its seeded value forever instead of snapping to the target (see
     // `_no_motion_semantics_test.dart`). The label swapped to "Show less" but

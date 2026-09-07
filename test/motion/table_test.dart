@@ -200,6 +200,31 @@ void main() {
       // compare would wrongly put 'Zebra' (Z=85) before 'apple' (a=97).
       expect(apple, lessThan(zebra));
     });
+
+    testWidgets('sort is stable: ties keep their original order', (
+      tester,
+    ) async {
+      // Every row shares an MRR, so a stable sort must preserve input order —
+      // Dart's `List.sort` is an unstable introsort and would shuffle these.
+      final tied = [
+        for (var i = 0; i < 24; i++)
+          {'id': '$i', 'name': 'P$i', 'role': 'Member', 'mrr': '100'},
+      ];
+      await tester.pumpWidget(
+        _app(data: tied, columns: _columns(), onSortChange: (_) {}),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('MRR'));
+      await tester.pumpAndSettle();
+
+      final names = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((t) => t.data)
+          .whereType<String>()
+          .where((s) => s.startsWith('P'))
+          .toList();
+      expect(names.take(3).toList(), ['P0', 'P1', 'P2']);
+    });
   });
 
   group('BeuiTable editable', () {
@@ -247,11 +272,39 @@ void main() {
       final gesture = await tester.startGesture(tester.getCenter(grip));
       await tester.pump();
       await gesture.moveBy(const Offset(60, 0));
-      await tester.pump();
-      // The dragged header lifts via Transform.scale (SPRING_PRESS, 1.04).
-      expect(find.byType(Transform), findsWidgets);
+      // Mid-spring: SPRING_PRESS is still easing the dragged header toward
+      // its 1.04 lift target.
+      await tester.pump(const Duration(milliseconds: 40));
+
+      final scales = tester
+          .widgetList<Transform>(
+            find.descendant(
+              of: find.byType(BeuiTable<_Row>),
+              matching: find.byType(Transform),
+            ),
+          )
+          .map((t) => t.transform.entry(0, 0));
+      expect(
+        scales,
+        anyElement(greaterThan(1.0)),
+        reason: 'the dragged header must lift on a scale spring',
+      );
+
       await gesture.up();
       await tester.pumpAndSettle();
+
+      // Released and settled: nothing stays scaled up.
+      for (final s
+          in tester
+              .widgetList<Transform>(
+                find.descendant(
+                  of: find.byType(BeuiTable<_Row>),
+                  matching: find.byType(Transform),
+                ),
+              )
+              .map((t) => t.transform.entry(0, 0))) {
+        expect(s, closeTo(1.0, 0.01));
+      }
     });
 
     testWidgets('sort arrow animates with a rotation under normal motion', (
@@ -259,7 +312,23 @@ void main() {
     ) async {
       await tester.pumpWidget(_app(data: _people, columns: _columns()));
       await tester.pumpAndSettle();
-      expect(find.byType(AnimatedRotation), findsWidgets);
+
+      final before = tester
+          .widgetList<AnimatedRotation>(find.byType(AnimatedRotation))
+          .map((r) => r.turns)
+          .toList();
+      expect(before, everyElement(0.0), reason: 'no column is sorted yet');
+
+      // asc, then desc — the arrow rotates to 0.5 turns only when desc.
+      await tester.tap(find.text('MRR'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('MRR'));
+      await tester.pumpAndSettle();
+
+      final after = tester
+          .widgetList<AnimatedRotation>(find.byType(AnimatedRotation))
+          .map((r) => r.turns);
+      expect(after.where((t) => t == 0.5), hasLength(1));
     });
 
     testWidgets('reduced motion drops the reorder scale animation', (
@@ -280,10 +349,21 @@ void main() {
       await tester.pump();
       await gesture.moveBy(const Offset(60, 0));
       await tester.pump();
-      // Under reduced motion the lift target stays 1.0 (opacity only). The
-      // header still settles without a scale-up; assert no exception and the
-      // grid remains intact.
-      expect(find.text('Name'), findsOneWidget);
+
+      // No scaling component (identity on the diagonal) under reduced motion —
+      // the lift is opacity-only.
+      for (final s
+          in tester
+              .widgetList<Transform>(
+                find.descendant(
+                  of: find.byType(BeuiTable<_Row>),
+                  matching: find.byType(Transform),
+                ),
+              )
+              .map((t) => t.transform.entry(0, 0))) {
+        expect(s, 1.0);
+      }
+
       await gesture.up();
       await tester.pumpAndSettle();
     });
@@ -353,33 +433,6 @@ void main() {
       for (final a in rules) {
         expect(a, closeTo(expected, 0.001));
       }
-    });
-  });
-
-  group('BeuiTable sort', () {
-    testWidgets('sort is stable: ties keep their original order', (
-      tester,
-    ) async {
-      // Every row shares an MRR, so a stable sort must preserve input order —
-      // Dart's `List.sort` is an unstable introsort and would shuffle these.
-      final tied = [
-        for (var i = 0; i < 24; i++)
-          {'id': '$i', 'name': 'P$i', 'role': 'Member', 'mrr': '100'},
-      ];
-      await tester.pumpWidget(
-        _app(data: tied, columns: _columns(), onSortChange: (_) {}),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('MRR'));
-      await tester.pumpAndSettle();
-
-      final names = tester
-          .widgetList<Text>(find.byType(Text))
-          .map((t) => t.data)
-          .whereType<String>()
-          .where((s) => s.startsWith('P'))
-          .toList();
-      expect(names.take(3).toList(), ['P0', 'P1', 'P2']);
     });
   });
 

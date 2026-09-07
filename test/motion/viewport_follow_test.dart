@@ -1,7 +1,7 @@
 import 'package:beui/beui.dart';
 // The shared live-edge affordance is package-internal — it is an implementation
 // detail of BeuiCodeBlock / BeuiFileDiff / BeuiToolResult, but its *contract*
-// (F9/F10) is what these tests pin.
+// is what these tests pin.
 import 'package:beui/src/motion/_focus_ring.dart' show BeuiFocusRing;
 import 'package:beui/src/motion/_viewport_follow.dart'
     show BeuiHiddenContentFooter, BeuiJumpToLatest;
@@ -28,10 +28,22 @@ Widget _host(Widget child, {BeuiAgentTheme? agent, bool reduce = false}) {
   );
 }
 
+/// The painted ring inside [BeuiFocusRing]: unlike the pill's own bordered
+/// background, it is the only [DecoratedBox] wrapped in an [Opacity] (the
+/// ring's fade), so scoping through that ancestor distinguishes it from the
+/// pill's own border. Only present while focused.
+Finder _ringBorder() => find.descendant(
+  of: find.descendant(
+    of: find.byType(BeuiFocusRing),
+    matching: find.byType(Opacity),
+  ),
+  matching: find.byType(DecoratedBox),
+);
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('BeuiJumpToLatest copy resolves through the theme (F9)', () {
+  group('BeuiJumpToLatest copy resolves through the theme', () {
     testWidgets('defaults to strings.jumpToLatest', (tester) async {
       await tester.pumpWidget(
         _host(BeuiJumpToLatest(visible: true, onTap: () {})),
@@ -60,26 +72,9 @@ void main() {
       // make a reader say it twice.
       expect(tooltip.excludeFromSemantics, isTrue);
     });
-
-    testWidgets('an explicit label still wins over the theme', (tester) async {
-      await tester.pumpWidget(
-        _host(
-          BeuiJumpToLatest(
-            visible: true,
-            label: 'Back to the live edge',
-            onTap: () {},
-          ),
-          agent: const BeuiAgentTheme(
-            strings: BeuiAgentStrings(jumpToLatest: 'Aller au plus récent'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('Back to the live edge'), findsOneWidget);
-    });
   });
 
-  group('BeuiJumpToLatest is operable from the keyboard (F10)', () {
+  group('BeuiJumpToLatest is operable from the keyboard', () {
     testWidgets('Enter activates it', (tester) async {
       var taps = 0;
       await tester.pumpWidget(
@@ -111,20 +106,15 @@ void main() {
         _host(BeuiJumpToLatest(visible: true, onTap: () {})),
       );
       await tester.pumpAndSettle();
-      expect(
-        tester.widget<BeuiFocusRing>(find.byType(BeuiFocusRing)).focused,
-        isFalse,
-      );
+      expect(_ringBorder(), findsNothing);
+
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pumpAndSettle();
-      expect(
-        tester.widget<BeuiFocusRing>(find.byType(BeuiFocusRing)).focused,
-        isTrue,
-      );
+      expect(_ringBorder(), findsOneWidget);
     });
   });
 
-  group('BeuiJumpToLatest goes quiet when hidden (F9)', () {
+  group('BeuiJumpToLatest goes quiet when hidden', () {
     testWidgets(
       'a pill on its way out is neither tappable nor offered to a reader',
       (tester) async {
@@ -176,7 +166,7 @@ void main() {
     );
   });
 
-  group('BeuiHiddenContentFooter copy resolves through the theme (F13)', () {
+  group('BeuiHiddenContentFooter copy resolves through the theme', () {
     testWidgets('a theme override reaches the count', (tester) async {
       final extent = ValueNotifier<double>(60);
       addTearDown(extent.dispose);

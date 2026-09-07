@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../theme/beui_colors.dart';
@@ -241,8 +243,8 @@ class _AccordionRowState extends State<_AccordionRow> {
   @override
   void didUpdateWidget(_AccordionRow old) {
     super.didUpdateWidget(old);
-    // Content may reflow (theme/text scale); re-measure each frame is cheap and
-    // keeps the spring target honest.
+    // Content may reflow (theme/text scale); re-measure on the next update so
+    // the spring target stays honest.
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
   }
 
@@ -257,10 +259,7 @@ class _AccordionRowState extends State<_AccordionRow> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final item = widget.item;
 
@@ -457,7 +456,7 @@ class _AccordionRowState extends State<_AccordionRow> {
                       color: colors.mutedForeground,
                     ),
                     (deg, child) => Transform.rotate(
-                      angle: deg * 3.1415926535897932 / 180.0,
+                      angle: deg * math.pi / 180,
                       child: child,
                     ),
                   ),

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiApprovalCard] — mirrors the source previews:
 /// multi-step questions + simple review-and-approve, each with Replay.
 Widget approvalCardDemo(BuildContext context) => const _ApprovalCardDemo();
@@ -47,56 +49,30 @@ class _ApprovalCardDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-
-    // Sizes to its content instead of demanding a bounded height: the gallery
-    // lays demos out inside a SingleChildScrollView, where an ordinary
-    // ListView asserts and the preview renders nothing. Scrolling is left to
-    // that outer view rather than nesting a second scrollable.
-    return ListView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      children: [
-        Text(
-          'Questions',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: colors.mutedForeground,
-          ),
-        ),
-        const SizedBox(height: 12),
-        const _QuestionPreview(),
-        const SizedBox(height: 40),
-        Text(
-          'Review and approve',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: colors.mutedForeground,
-          ),
-        ),
-        const SizedBox(height: 12),
-        const _ReviewPreview(),
-        const SizedBox(height: 40),
-        Text(
-          'Header trigger',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: colors.mutedForeground,
-          ),
-        ),
-        const SizedBox(height: 12),
-        const _HeaderTriggerPreview(),
-      ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionLabel('Questions'),
+          const SizedBox(height: 12),
+          const _QuestionPreview(),
+          const SizedBox(height: 40),
+          const SectionLabel('Review and approve'),
+          const SizedBox(height: 12),
+          const _ReviewPreview(),
+          const SizedBox(height: 40),
+          const SectionLabel('Header trigger'),
+          const SizedBox(height: 12),
+          const _HeaderTriggerPreview(),
+        ],
+      ),
     );
   }
 }
 
 // ---------------------------------------------------------------------------
-// Header trigger invariant (A11)
+// Header trigger invariant
 // ---------------------------------------------------------------------------
 
 /// Two cards that look almost alike and behave deliberately differently.
@@ -179,8 +155,6 @@ class _QuestionPreviewState extends State<_QuestionPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 512),
@@ -195,10 +169,7 @@ class _QuestionPreviewState extends State<_QuestionPreview> {
               Positioned(
                 left: 0,
                 bottom: 0,
-                child: _ReplayButton(
-                  colors: colors,
-                  onPressed: () => setState(() => _run += 1),
-                ),
+                child: ReplayButton(onPressed: () => setState(() => _run += 1)),
               ),
             ],
           ),
@@ -261,8 +232,6 @@ class _ReviewPreviewState extends State<_ReviewPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 512),
@@ -277,10 +246,7 @@ class _ReviewPreviewState extends State<_ReviewPreview> {
               Positioned(
                 left: 0,
                 bottom: 0,
-                child: _ReplayButton(
-                  colors: colors,
-                  onPressed: () => setState(() => _run += 1),
-                ),
+                child: ReplayButton(onPressed: () => setState(() => _run += 1)),
               ),
             ],
           ),
@@ -349,21 +315,21 @@ class _MetaList extends StatelessWidget {
 
   final BeuiColors colors;
 
+  static const _rows = [
+    ('Release', 'approval-card', true),
+    ('Checks', '4 passed', false),
+    ('Visibility', 'Public registry', false),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final rows = const [
-      ('Release', 'approval-card', true),
-      ('Checks', '4 passed', false),
-      ('Visibility', 'Public registry', false),
-    ];
-
     // Source markup: `<dl class="grid gap-1 text-xs">` with each row
     // `flex items-center justify-between gap-4 py-1` — 12/16 text plus py-1
     // makes a 24px row, gap-1 (4px) between rows.
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        for (final (i, (label, value, mono)) in rows.indexed) ...[
+        for (final (i, (label, value, mono)) in _rows.indexed) ...[
           if (i > 0) const SizedBox(height: 4), // gap-1
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4), // py-1
@@ -394,43 +360,6 @@ class _MetaList extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Replay chrome
-// ---------------------------------------------------------------------------
-
-class _ReplayButton extends StatelessWidget {
-  const _ReplayButton({required this.colors, required this.onPressed});
-
-  final BeuiColors colors;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton.icon(
-      onPressed: onPressed,
-      icon: Icon(
-        LucideIcons.rotate_ccw,
-        size: 12,
-        color: colors.mutedForeground,
-      ),
-      label: Text(
-        'Replay',
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: colors.mutedForeground,
-        ),
-      ),
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        foregroundColor: colors.foreground,
-      ),
     );
   }
 }

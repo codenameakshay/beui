@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motor/motor.dart';
 
 // A finished 3-round draw (4 → 2 → 1), so the hub carries a champion and the
 // winning run is lit at rest. Node count is 1 + 2 + 4 + 8 = 15: the hub, a ring
@@ -314,20 +313,26 @@ void main() {
   });
 
   group('BeuiKnockoutWheel motion fidelity', () {
-    testWidgets('marks scale in on a spring under normal motion', (
+    testWidgets('a mark settles at full scale under normal motion', (
       tester,
     ) async {
       _sizeView(tester);
+      // The entrance delay is a real `Timer` (see `_DelayedFade`), not a
+      // fake-clock-driven ticker, and mounting the wheel's 15 marks and
+      // CustomPaint rings already costs more real wall-clock time than the
+      // longest per-ring delay — so by the first observable frame the mark
+      // has always already entered. What's left to verify for real is the
+      // actual rendered matrix, not just that some Transform exists.
       await tester.pumpWidget(_app(rounds: _draw()));
-      await tester.pump();
-      expect(
-        find.descendant(
-          of: find.byType(BeuiKnockoutWheel),
-          matching: find.byType(SingleMotionBuilder),
-        ),
-        findsNWidgets(15),
-      );
+      final mark = find.byKey(const ValueKey('sf1'));
       await _settle(tester);
+      final scale = tester
+          .widget<Transform>(
+            find.descendant(of: mark, matching: find.byType(Transform)),
+          )
+          .transform
+          .getMaxScaleOnAxis();
+      expect(scale, closeTo(1.0, 0.01));
     });
 
     testWidgets('reduced motion drops the scale-in but keeps the fade', (
@@ -337,20 +342,16 @@ void main() {
       await tester.pumpWidget(_app(rounds: _draw(), reduce: true));
       await tester.pump();
 
-      // Movement dropped: no spring drives a transform anywhere in the wheel.
+      final hub = find.byKey(const ValueKey('f1'));
+      // Movement dropped: the reduced branch skips the scale spring (and its
+      // Transform) for the mark entirely.
       expect(
-        find.descendant(
-          of: find.byType(BeuiKnockoutWheel),
-          matching: find.byType(SingleMotionBuilder),
-        ),
+        find.descendant(of: hub, matching: find.byType(Transform)),
         findsNothing,
       );
       // Opacity is preserved, per the library's reduced-motion rule.
       expect(
-        find.descendant(
-          of: find.byType(BeuiKnockoutWheel),
-          matching: find.byType(AnimatedOpacity),
-        ),
+        find.descendant(of: hub, matching: find.byType(AnimatedOpacity)),
         findsWidgets,
       );
       await _settle(tester);

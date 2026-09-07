@@ -96,9 +96,13 @@ enum BeuiShaderVariant {
   perlinNoise,
 }
 
-/// Maps each [BeuiShaderVariant] to its [ShaderSpec]. Variants absent from the
-/// map are not yet ported and throw [UnimplementedError] when constructed.
-final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = {
+/// Maps each [BeuiShaderVariant] to its [ShaderSpec] — total, one entry per
+/// enum value (`shader_background_test.dart` asserts the two sets match, so
+/// a variant added without a registry entry fails a test rather than
+/// [BeuiShaderBackground] going blank at runtime). Unmodifiable: this is
+/// shared, process-wide state, not a per-instance config a caller could
+/// safely mutate.
+final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = Map.unmodifiable({
   BeuiShaderVariant.simplexNoise: beuiSimplexNoiseSpec,
   BeuiShaderVariant.dotGrid: beuiDotGridSpec,
   BeuiShaderVariant.meshGradient: beuiMeshGradientSpec,
@@ -120,7 +124,7 @@ final Map<BeuiShaderVariant, ShaderSpec> beuiShaderRegistry = {
   BeuiShaderVariant.pulsingBorder: beuiPulsingBorderSpec,
   BeuiShaderVariant.grainGradient: beuiGrainGradientSpec,
   BeuiShaderVariant.water: beuiWaterSpec,
-};
+});
 
 /// A full-bleed animated GPU shader background — the Flutter port of beUI's
 /// `shader-background`, backed by fragment shaders ported from
@@ -173,15 +177,18 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
 
   late Ticker _ticker;
   ui.FragmentShader? _shader;
-  double _time = 0;
+  // A notifier, not a setState'd field: only the painter reads the clock, so
+  // ticking it repaints via CustomPaint's `repaint` listenable instead of
+  // rebuilding the whole widget every frame.
+  final ValueNotifier<double> _time = ValueNotifier(0);
 
-  ShaderSpec? get _spec => beuiShaderRegistry[widget.variant];
+  ShaderSpec get _spec => beuiShaderRegistry[widget.variant]!;
 
   @override
   void initState() {
     super.initState();
     _ticker = createTicker(_onTick);
-    if (_spec != null) _load();
+    _load();
   }
 
   /// Lazily loads the shared noise PNG (tries the consumer-facing
@@ -203,18 +210,28 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
       );
     } on Exception {
       data = await rootBundle.load('assets/beui_shader_noise.png');
+    } on FlutterError {
+      // rootBundle.load throws FlutterError (an Error, not an Exception) for
+      // a missing asset key.
+      data = await rootBundle.load('assets/beui_shader_noise.png');
     }
     final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
-    final frame = await codec.getNextFrame();
-    return frame.image;
+    try {
+      return (await codec.getNextFrame()).image;
+    } finally {
+      codec.dispose();
+    }
   }
 
   Future<void> _load() async {
-    final spec = _spec!;
+    final spec = _spec;
     if (spec.needsNoise) _ensureNoise();
     var program = _programCache[spec.asset];
     program ??= _programCache[spec.asset] = await _loadProgram(spec.asset);
-    if (!mounted) return;
+    // A variant change while this await was pending started a newer load;
+    // installing this program would paint the old variant over it.
+    if (!mounted || !identical(spec, _spec)) return;
+    _shader?.dispose();
     // Not _syncTicker() here: on a warm program cache _load runs synchronously
     // inside initState, and _syncTicker reads MediaQuery (an inherited-widget
     // dependency, illegal before initState completes). The post-frame callback
@@ -230,6 +247,8 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
       return await ui.FragmentProgram.fromAsset('packages/beui/$bare');
     } on Exception {
       return ui.FragmentProgram.fromAsset(bare);
+    } on FlutterError {
+      return ui.FragmentProgram.fromAsset(bare);
     }
   }
 
@@ -237,8 +256,9 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
   void didUpdateWidget(BeuiShaderBackground old) {
     super.didUpdateWidget(old);
     if (old.variant != widget.variant) {
+      _shader?.dispose();
       _shader = null;
-      if (_spec != null) _load();
+      _load();
     } else {
       _syncTicker();
     }
@@ -249,10 +269,7 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
   void _syncTicker() {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final shouldRun =
-        _shader != null &&
-        (_spec?.animated ?? false) &&
-        widget.speed != 0 &&
-        !reduce;
+        _shader != null && _spec.animated && widget.speed != 0 && !reduce;
     if (shouldRun && !_ticker.isActive) {
       _ticker.start();
     } else if (!shouldRun && _ticker.isActive) {
@@ -261,12 +278,13 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
   }
 
   void _onTick(Duration elapsed) {
-    setState(() => _time = elapsed.inMicroseconds / 1e6 * widget.speed);
+    _time.value = elapsed.inMicroseconds / 1e6 * widget.speed;
   }
 
   @override
   void dispose() {
     _ticker.dispose();
+    _time.dispose();
     _shader?.dispose();
     super.dispose();
   }
@@ -278,12 +296,8 @@ class _BeuiShaderBackgroundState extends State<BeuiShaderBackground>
       if (mounted) _syncTicker();
     });
     final spec = _spec;
-    assert(
-      spec != null,
-      'BeuiShaderVariant.${widget.variant.name} is not yet ported.',
-    );
     final shader = _shader;
-    if (shader == null || spec == null) return const SizedBox.expand();
+    if (shader == null) return const SizedBox.expand();
     // Texture variants can't paint until the noise image is decoded.
     if (spec.needsNoise && _noiseImage == null) return const SizedBox.expand();
     final colors = (widget.colors ?? spec.defaultColors)
@@ -317,13 +331,13 @@ class _ShaderPainter extends CustomPainter {
     required this.params,
     required this.time,
     this.noise,
-  });
+  }) : super(repaint: time);
 
   final ui.FragmentShader shader;
   final ShaderSpec spec;
   final List<Color> colors;
   final Map<String, double> params;
-  final double time;
+  final ValueNotifier<double> time;
   final ui.Image? noise;
 
   @override
@@ -332,7 +346,7 @@ class _ShaderPainter extends CustomPainter {
       ShaderUniformCtx(
         shader: shader,
         size: size,
-        time: time,
+        time: time.value,
         colors: colors,
         params: params,
       ),
@@ -344,7 +358,6 @@ class _ShaderPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ShaderPainter old) =>
-      old.time != time ||
       old.colors != colors ||
       old.params != params ||
       old.shader != shader ||

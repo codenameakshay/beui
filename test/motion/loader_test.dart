@@ -25,29 +25,7 @@ Widget _app(BeuiLoaderVariant variant, {bool reduce = false}) {
 void main() {
   // Loaders loop forever — never pumpAndSettle (it would time out); pump a
   // fixed number of frames instead.
-  group('BeuiLoader renders every variant', () {
-    for (final variant in BeuiLoaderVariant.values) {
-      testWidgets('$variant builds and animates without error', (tester) async {
-        await tester.pumpWidget(_app(variant));
-        await tester.pump(); // first animated frame
-        await tester.pump(const Duration(milliseconds: 120));
-        expect(find.byType(BeuiLoader), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      });
-    }
-  });
-
   group('BeuiLoader reduced motion', () {
-    for (final variant in BeuiLoaderVariant.values) {
-      testWidgets('$variant renders under reduced motion', (tester) async {
-        await tester.pumpWidget(_app(variant, reduce: true));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 120));
-        expect(find.byType(BeuiLoader), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      });
-    }
-
     testWidgets('spinner drops rotation, keeps an opacity pulse', (
       tester,
     ) async {
@@ -90,8 +68,16 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(find.byType(CustomPaint), findsWidgets);
-      expect(tester.takeException(), isNull);
+      final painter = tester
+          .widget<CustomPaint>(
+            find.descendant(
+              of: find.byType(BeuiLoader),
+              matching: find.byType(CustomPaint),
+            ),
+          )
+          .painter;
+      // Private painter type — read the color field dynamically.
+      expect((painter as dynamic).color, const Color(0xFF00FF00));
     });
 
     testWidgets('exposes an accessible label', (tester) async {

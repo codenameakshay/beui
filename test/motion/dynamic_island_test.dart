@@ -1,8 +1,7 @@
-import 'dart:math' as math;
-
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = Align(alignment: Alignment.topCenter, child: child);
@@ -46,14 +45,6 @@ BeuiDynamicIsland _island(String? view, {bool compactDot = true}) =>
         ),
       ],
     );
-
-double _maxBlurSigma(WidgetTester tester) => tester
-    .widgetList<ImageFiltered>(find.byType(ImageFiltered))
-    .map((f) {
-      final m = RegExp(r'blur\(([\d.]+)').firstMatch(f.imageFilter.toString());
-      return m == null ? 0.0 : double.parse(m.group(1)!);
-    })
-    .fold<double>(0, math.max);
 
 void main() {
   group('BeuiDynamicIsland', () {
@@ -183,7 +174,7 @@ void main() {
       await tester.pumpWidget(_wrap(_island('timer')));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 40)); // mid-enter
-      expect(_maxBlurSigma(tester), greaterThan(0.5));
+      expect(maxBlurSigma(tester), greaterThan(0.5));
     });
 
     testWidgets('reduced motion snaps the size with no blur', (tester) async {
@@ -192,7 +183,7 @@ void main() {
       await tester.pumpWidget(_wrap(_island('timer'), reduce: true));
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 40));
-        expect(_maxBlurSigma(tester), lessThan(0.5));
+        expect(maxBlurSigma(tester), lessThan(0.5));
       }
       final size = tester.getSize(find.byType(BeuiDynamicIsland));
       expect(size.width, moreOrLessEquals(220 + 48, epsilon: 2));

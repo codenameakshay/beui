@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
 import '../theme/beui_agent_status_colors.dart';
@@ -8,6 +6,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_chevron.dart';
 import '_disclosure.dart';
 import '_engine.dart';
 import '_hit_target.dart';
@@ -58,7 +57,7 @@ enum BeuiToolApprovalStatus {
 /// How consequential the requested capability is — the risk tier that drives
 /// [BeuiToolApproval]'s glyph, border, badge, and action emphasis.
 ///
-/// The audit's A3: `rm -rf ~/project` and `ls` rendered byte-identically, so
+/// `rm -rf ~/project` and `ls` rendered byte-identically, so
 /// the card could not warn. Severity is *declared by the caller*, never
 /// inferred from the tool slug — guessing risk from a string is exactly the
 /// kind of silent heuristic a permission prompt must not have.
@@ -80,7 +79,7 @@ enum BeuiToolApprovalSeverity {
 
 /// Which grant a [BeuiToolApproval] was approved under.
 ///
-/// The audit's A43: after the fact, "approved once" and "always allowed" were
+/// After the fact, "approved once" and "always allowed" were
 /// indistinguishable, so a user could not tell whether they had handed over a
 /// standing permission. Pass it back on the approved/complete states and the
 /// badge says which — and, with [BeuiToolApproval.onRevoke], offers a way out.
@@ -99,7 +98,7 @@ class BeuiToolApprovalParameter {
   /// Creates a parameter row.
   ///
   /// [label] and [value] each accept a [String] or a [Widget]; anything else
-  /// is a debug assertion failure (the audit's A41 — `value: 42` used to
+  /// is a debug assertion failure (`value: 42` used to
   /// compile and render `"42"` through `toString()`). Prefer the typed
   /// [BeuiToolApprovalParameter.text] and [BeuiToolApprovalParameter.widget]
   /// constructors in new code.
@@ -117,25 +116,19 @@ class BeuiToolApprovalParameter {
        );
 
   /// Creates a plain text parameter row — the statically-typed path.
-  ///
-  /// The initializers deliberately narrow [Object] to [String]; an
-  /// initializing formal cannot express that, hence the ignores.
-  // ignore_for_file: prefer_initializing_formals
   const BeuiToolApprovalParameter.text({
     required this.id,
-    required String label,
-    required String value,
-  }) : label = label,
-       value = value;
+    required String this.label,
+    required String this.value,
+  });
 
   /// Creates a parameter row whose value is a widget (typically a
   /// [BeuiToolApprovalCode]) — the statically-typed path.
   const BeuiToolApprovalParameter.widget({
     required this.id,
-    required String label,
-    required Widget value,
-  }) : label = label,
-       value = value;
+    required String this.label,
+    required Widget this.value,
+  });
 
   /// Stable identity for the row (source `id`).
   final String id;
@@ -165,7 +158,7 @@ const _actionsOutReduced = CurvedMotion(
 );
 const _spinPeriod = Duration(milliseconds: 900);
 
-/// Press scale for every control in the agent cluster (the audit's A17 — this
+/// Press scale for every control in the agent cluster (this
 /// file used 0.97, `tool_result` used 0.9, `message_bubble` 0.99).
 const double beuiAgentPressScale = 0.97;
 
@@ -227,10 +220,7 @@ class BeuiToolApprovalCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
 
     return DecoratedBox(
@@ -284,7 +274,7 @@ class BeuiToolApprovalCode extends StatelessWidget {
 /// [BeuiToolApprovalStatus.pending] auto-collapses the details panel — the
 /// decision is made, so the evidence folds away.
 ///
-/// **`defaultOpen` policy (the audit's A42).** Across the transcript the rule
+/// **`defaultOpen` policy.** Across the transcript the rule
 /// is: *a surface that is still asking or still running opens; a historical
 /// record collapses.* This card is asking, so it opens whenever it has
 /// parameters. [BeuiToolResult] force-opens while running and collapses on
@@ -350,7 +340,7 @@ class BeuiToolApproval extends StatefulWidget {
   /// Tool slug shown mono under the title (e.g. `terminal.run`).
   ///
   /// This is the string that says *what will run*, so it is rendered at full
-  /// foreground contrast rather than as muted metadata (the audit's A8/A14).
+  /// foreground contrast rather than as muted metadata.
   /// For a non-text slug use [toolWidget].
   final String? tool;
 
@@ -401,7 +391,7 @@ class BeuiToolApproval extends StatefulWidget {
   /// Height cap on the details panel before it scrolls. Defaults to 240.
   ///
   /// Without a cap a 300-line diff expanded the card indefinitely inside a
-  /// transcript (the audit's A23). Pass [double.infinity] for the old
+  /// transcript. Pass [double.infinity] for the old
   /// unbounded behaviour.
   final double detailsMaxHeight;
 
@@ -418,7 +408,7 @@ class BeuiToolApproval extends StatefulWidget {
   /// Allow-once handler (source `onApprove`).
   ///
   /// Null renders the button disabled and dimmed rather than live-but-inert
-  /// (the audit's A5), and trips a debug assertion while the card is pending —
+  ///, and trips a debug assertion while the card is pending —
   /// a pending approval with no way to approve is a wiring bug.
   final VoidCallback? onApprove;
 
@@ -481,13 +471,9 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
       widget.status == BeuiToolApprovalStatus.approving ||
       widget.status == BeuiToolApprovalStatus.running;
   bool get _pending => widget.status == BeuiToolApprovalStatus.pending;
-  bool get _error => widget.status == BeuiToolApprovalStatus.error;
-  bool get _lapsed =>
-      widget.status == BeuiToolApprovalStatus.expired ||
-      widget.status == BeuiToolApprovalStatus.timedOut;
   bool get _currentOpen => widget.open ?? _internalOpen;
 
-  /// A1: a card with something to show, shows it.
+  /// A card with something to show, shows it.
   bool get _resolvedDefaultOpen =>
       widget.defaultOpen ?? widget.parameters.isNotEmpty;
 
@@ -553,7 +539,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
         return strings.statusApproving;
       case BeuiToolApprovalStatus.approved:
       case BeuiToolApprovalStatus.complete:
-        // A43: say *which* grant was used, so a standing permission is never
+        // Say *which* grant was used, so a standing permission is never
         // silently indistinguishable from a one-off.
         if (widget.grant == BeuiToolApprovalGrant.always) {
           return widget.alwaysAllowedLabel ?? strings.statusAlwaysAllowed;
@@ -579,9 +565,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final strings = agent.strings;
     final statusColors = agent.statusColorsFor(theme.brightness);
@@ -590,7 +574,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
     final destructive = widget.severity == BeuiToolApprovalSeverity.destructive;
     final elevated = widget.severity == BeuiToolApprovalSeverity.elevated;
 
-    // A5: a pending card that cannot be acted on is a wiring bug, not a
+    // A pending card that cannot be acted on is a wiring bug, not a
     // design. Surfaced in debug; in release the buttons simply render
     // disabled, which is at least honest.
     assert(
@@ -650,13 +634,10 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                       _LeadingGlyph(
                         status: widget.status,
                         severity: widget.severity,
-                        busy: _busy,
-                        error: _error,
                         reduce: reduce,
                         spin: _spin,
                         colors: colors,
                         palette: badge,
-                        lapsed: _lapsed,
                       ),
                       SizedBox(width: agent.layout.rowGap + 4),
                       Expanded(
@@ -671,7 +652,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // A14: the tool identity leads. It is
+                                      // The tool identity leads. It is
                                       // the answer to "what am I allowing?",
                                       // so it is the first and most legible
                                       // line, not muted metadata underneath.
@@ -700,7 +681,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                                   ),
                                 ),
                                 SizedBox(width: agent.layout.rowGap + 4),
-                                // A30: the badge is the live region, and it is
+                                // The badge is the live region, and it is
                                 // live for every non-pending state — the old
                                 // code gated it on `busy`, i.e. switched it off
                                 // exactly when "Denied" / "Failed" arrived.
@@ -732,7 +713,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                             ],
                             if (widget.parameters.isNotEmpty) ...[
                               const SizedBox(height: 8),
-                              // A13: a real control, not a caption-styled row.
+                              // A real control, not a caption-styled row.
                               _DetailsToggle(
                                 open: _currentOpen,
                                 hovered: _detailsHovered,
@@ -817,7 +798,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
                         vertical: 12,
                       ),
                       child: Wrap(
-                        // A31: real spacing, not just hit-slop overhang — the
+                        // Real spacing, not just hit-slop overhang — the
                         // 44px targets overhang their siblings, so the gap has
                         // to be wide enough that the slop does not steal the
                         // neighbour's taps.
@@ -845,7 +826,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
 
   /// The action row.
   ///
-  /// **A6 — visual weight follows safety.** The old row put the maximum-
+  /// **Visual weight follows safety.** The old row put the maximum-
   /// emphasis solid on `Allow once`, outlined the *most consequential* grant
   /// (`Always allow`), and left `Deny` as a ghost, last and faintest: the
   /// safest exit was the hardest thing on the card to see. Now `Deny` always
@@ -866,7 +847,7 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
       required VoidCallback? onPressed,
       Color? textColor,
     }) {
-      // A31: a 44px touch target over the 32px pill.
+      // A 44px touch target over the 32px pill.
       //
       // The `SizedBox` is load-bearing, not decoration. `BeuiMinHitTarget`
       // widens hit testing by accepting out-of-bounds points, but a parent
@@ -886,8 +867,8 @@ class _BeuiToolApprovalState extends State<BeuiToolApproval>
               size: BeuiButtonSize.sm,
               pressScale: beuiAgentPressScale,
               borderRadius: radius,
-              // A4 belt-and-braces: a null handler is a disabled button, which
-              // BeuiButton renders dimmed and refuses to activate (A5).
+              // Belt-and-braces: a null handler is a disabled button, which
+              // BeuiButton renders dimmed and refuses to activate.
               onPressed: onPressed,
               child: Text(
                 label,
@@ -943,24 +924,26 @@ class _LeadingGlyph extends StatelessWidget {
   const _LeadingGlyph({
     required this.status,
     required this.severity,
-    required this.busy,
-    required this.error,
     required this.reduce,
     required this.spin,
     required this.colors,
     required this.palette,
-    required this.lapsed,
   });
 
   final BeuiToolApprovalStatus status;
   final BeuiToolApprovalSeverity severity;
-  final bool busy;
-  final bool error;
   final bool reduce;
   final AnimationController spin;
   final BeuiColors colors;
   final BeuiAgentStatusPalette palette;
-  final bool lapsed;
+
+  bool get busy =>
+      status == BeuiToolApprovalStatus.approving ||
+      status == BeuiToolApprovalStatus.running;
+  bool get error => status == BeuiToolApprovalStatus.error;
+  bool get lapsed =>
+      status == BeuiToolApprovalStatus.expired ||
+      status == BeuiToolApprovalStatus.timedOut;
 
   IconData _icon(BeuiAgentIcons icons) {
     if (busy) return icons.spinner;
@@ -971,7 +954,7 @@ class _LeadingGlyph extends StatelessWidget {
       return icons.approved;
     }
     if (lapsed) return LucideIcons.clock;
-    // A3: the destructive tier swaps the reassuring shield for a warning
+    // The destructive tier swaps the reassuring shield for a warning
     // triangle while the decision is still open.
     if (severity == BeuiToolApprovalSeverity.destructive) return icons.warning;
     return icons.shield;
@@ -1045,7 +1028,7 @@ class _StatusBadge extends StatelessWidget {
 
 /// The "View details" gateway.
 ///
-/// A13: this used to be a 12px caption row with a chevron and no affordance
+/// This used to be a 12px caption row with a chevron and no affordance
 /// beyond a hover colour — the single control standing between the user and
 /// the command they are approving. It is now a real ghost button: focusable,
 /// Enter/Space-activatable, 44px of hit target, and it reports its expanded
@@ -1073,20 +1056,11 @@ class _DetailsToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chevron = Icon(
-      LucideIcons.chevron_down,
-      size: 14,
+    final rotated = BeuiDisclosureChevron(
+      open: open,
       color: colors.foreground,
+      reduce: reduce,
     );
-    final rotated = reduce
-        ? Transform.rotate(angle: open ? math.pi : 0, child: chevron)
-        : SingleMotionBuilder(
-            value: open ? 180.0 : 0.0,
-            motion: motionFor(context, beuiSpringSwap, isMovement: true),
-            builder: (context, deg, child) =>
-                Transform.rotate(angle: deg * math.pi / 180.0, child: child),
-            child: chevron,
-          );
 
     return Align(
       alignment: AlignmentDirectional.centerStart,
@@ -1114,7 +1088,7 @@ class _DetailsToggle extends StatelessWidget {
   }
 }
 
-/// The capped, scrollable parameter list (A23).
+/// The capped, scrollable parameter list.
 class _DetailsPanel extends StatefulWidget {
   const _DetailsPanel({
     required this.parameters,
@@ -1155,23 +1129,18 @@ class _DetailsPanelState extends State<_DetailsPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
+        spacing: 8,
         children: [
-          for (var i = 0; i < parameters.length; i++) ...[
-            if (i > 0) const SizedBox(height: 8),
-            _ParameterRow(
-              parameter: parameters[i],
-              colors: colors,
-              agent: agent,
-            ),
-          ],
+          for (final parameter in parameters)
+            _ParameterRow(parameter: parameter, colors: colors, agent: agent),
         ],
       ),
     );
 
     if (!maxHeight.isFinite) return rows;
 
-    // A23: cap the panel and scroll it, with a visible thumb — the sibling
-    // surfaces that hide their scrollbars are exactly the T6 complaint, so
+    // Cap the panel and scroll it, with a visible thumb — the sibling
+    // surfaces that hide their scrollbars are exactly the complaint, so
     // this one shows its.
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: maxHeight),
@@ -1200,7 +1169,7 @@ class _ParameterRow extends StatelessWidget {
     final labelStyle = agent.typography.metadata.copyWith(
       color: colors.mutedForeground,
     );
-    // A8: the value is information-bearing — it is the argument the tool will
+    // The value is information-bearing — it is the argument the tool will
     // run with — so it is no longer multiplied down to 0.85 alpha.
     final valueStyle = agent.typography.mono.copyWith(
       fontSize: 12,
@@ -1229,7 +1198,7 @@ class _ParameterRow extends StatelessWidget {
   }
 }
 
-/// "Always allowed · Revoke" (A21).
+/// "Always allowed · Revoke".
 ///
 /// A standing grant that cannot be taken back is a trap. This row is the
 /// minimum honest affordance: it states that the permission persists, and puts
@@ -1310,7 +1279,7 @@ class _ActionsPresence extends StatelessWidget {
         ? (reduce ? _actionsInReduced : _actionsIn)
         : (reduce ? _actionsOutReduced : _actionsOut);
 
-    // A4 — the double-fire fix, and the reason it is spelled `!visible ||
+    // The double-fire fix, and the reason it is spelled `!visible ||
     // hidden` rather than `hidden` alone.
     //
     // The gate used to be driven purely by the animation value, so for the

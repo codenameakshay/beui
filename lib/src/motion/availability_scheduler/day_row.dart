@@ -189,10 +189,7 @@ class _DayRowState extends State<DayRow> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final actions = Row(
@@ -207,7 +204,7 @@ class _DayRowState extends State<DayRow> {
           ),
         ),
         const SizedBox(width: 4),
-        CopyMenu(fromLabel: widget.day.label, onApply: widget.onCopy),
+        CopyMenu(from: widget.day, onApply: widget.onCopy),
       ],
     );
 

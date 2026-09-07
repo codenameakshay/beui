@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery route for [BeuiCodeBlock], mirroring the source
 /// `agents/code-block.preview.tsx` exactly: one streaming TypeScript block in a
 /// `relative h-[340px] w-full max-w-xl` frame, with the ghost `Replay` control
@@ -85,7 +87,6 @@ class _CodeBlockDemoState extends State<_CodeBlockDemo> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
     final complete = _visible >= _lines.length;
     final code = _lines.take(_visible).join('\n');
 
@@ -115,7 +116,7 @@ class _CodeBlockDemoState extends State<_CodeBlockDemo> {
                   Positioned(
                     left: 0,
                     bottom: 0,
-                    child: _ReplayButton(onPressed: _replay, colors: colors),
+                    child: ReplayButton(onPressed: _replay),
                   ),
                 ],
               ),
@@ -131,51 +132,6 @@ class _CodeBlockDemoState extends State<_CodeBlockDemo> {
               maxHeight: 160,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Ghost "Replay" control matching the source preview's
-/// `rounded-full px-2 py-1 text-xs font-medium text-muted-foreground` button.
-class _ReplayButton extends StatelessWidget {
-  const _ReplayButton({required this.onPressed, required this.colors});
-
-  final VoidCallback onPressed;
-  final BeuiColors colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(999),
-        hoverColor: colors.muted,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                LucideIcons.rotate_ccw,
-                size: 12,
-                color: colors.mutedForeground,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'Replay',
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 16 / 12,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0, // tracking-normal
-                  color: colors.mutedForeground,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

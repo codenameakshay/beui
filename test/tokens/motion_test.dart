@@ -67,26 +67,16 @@ void main() {
   });
 
   group('easing curves carry the source ease.ts cubic-beziers verbatim', () {
-    test('beuiEaseOut', () {
-      expect(beuiEaseOut.a, 0.16);
-      expect(beuiEaseOut.b, 1);
-      expect(beuiEaseOut.c, 0.3);
-      expect(beuiEaseOut.d, 1);
-    });
-
-    test('beuiEaseInOut', () {
-      expect(beuiEaseInOut.a, 0.77);
-      expect(beuiEaseInOut.b, 0);
-      expect(beuiEaseInOut.c, 0.175);
-      expect(beuiEaseInOut.d, 1);
-    });
-
-    test('beuiEaseDrawer', () {
-      expect(beuiEaseDrawer.a, 0.32);
-      expect(beuiEaseDrawer.b, 0.72);
-      expect(beuiEaseDrawer.c, 0);
-      expect(beuiEaseDrawer.d, 1);
-    });
+    final cases = <(String, Cubic, (double, double, double, double))>[
+      ('beuiEaseOut', beuiEaseOut, (0.16, 1, 0.3, 1)),
+      ('beuiEaseInOut', beuiEaseInOut, (0.77, 0, 0.175, 1)),
+      ('beuiEaseDrawer', beuiEaseDrawer, (0.32, 0.72, 0, 1)),
+    ];
+    for (final (name, curve, expected) in cases) {
+      test(name, () {
+        expect((curve.a, curve.b, curve.c, curve.d), expected);
+      });
+    }
   });
 
   group('motionFor gates movement on reduced motion', () {

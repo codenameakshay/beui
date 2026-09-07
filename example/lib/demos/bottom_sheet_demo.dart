@@ -50,13 +50,13 @@ class _BottomSheetDemoState extends State<_BottomSheetDemo> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Source: <ul className="divide-y divide-border"> with py-3 rows.
-              for (var i = 0; i < _actions.length; i++) ...[
+              for (final (i, action) in _actions.indexed) ...[
                 if (i > 0)
                   Divider(height: 1, thickness: 1, color: colors.border),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Text(
-                    _actions[i],
+                    action,
                     style: TextStyle(fontSize: 14, color: colors.foreground),
                   ),
                 ),

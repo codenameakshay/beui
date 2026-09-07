@@ -1,13 +1,8 @@
 import 'package:flutter/widgets.dart';
 
+import '../tokens/motion.dart';
 import '_engine.dart';
 import '_scroll_geometry.dart';
-
-/// Soft follow so the drift trails the scroll — deliberately looser than the
-/// shared UI springs (source `PARALLAX_SPRING`, 120 · 30 · 0.6).
-const _parallaxSpring = SpringMotion(
-  SpringDescription(mass: 0.6, stiffness: 120, damping: 30),
-);
 
 /// Axis the parallax drift moves along.
 enum BeuiParallaxAxis {
@@ -83,7 +78,7 @@ class _BeuiParallaxState extends State<BeuiParallax> with ScrollGeometryMixin {
     if (!widget.spring) return at(_drift);
     return SingleMotionBuilder(
       value: _drift,
-      motion: _parallaxSpring,
+      motion: beuiSpringScroll,
       builder: (context, value, _) => at(value),
     );
   }

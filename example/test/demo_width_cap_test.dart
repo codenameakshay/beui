@@ -86,7 +86,6 @@ void main() {
 
     for (final entry in kAllEntries) {
       final builder = entry.builder;
-      if (builder == null) continue;
 
       await tester.pumpWidget(
         _wrap(

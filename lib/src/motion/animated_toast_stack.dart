@@ -8,6 +8,7 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_spinner.dart';
 
 /// Status of a toast — a fixed, exhaustive set mirroring the source
 /// `ToastStatus` union. Each status carries a default glyph (source
@@ -495,7 +496,7 @@ class _ToastItemState extends State<_ToastItem> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final exiting = widget.exiting;
 
@@ -655,7 +656,10 @@ class _ToastSurface extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12), // backdrop-blur-xl
+        filter: ImageFilter.blur(
+          sigmaX: beuiBlurSigma(24), // backdrop-blur-xl
+          sigmaY: beuiBlurSigma(24),
+        ),
         child: Container(
           padding: const EdgeInsets.all(12), // p-3
           decoration: BoxDecoration(
@@ -740,7 +744,9 @@ class _IconSlot extends StatelessWidget {
         overrideIcon ??
         toast.icon ??
         (spin
-            ? _Spinner(size: 14, color: scheme.foreground)
+            ? RepaintBoundary(
+                child: BeuiSpinner(size: 14, color: scheme.foreground),
+              )
             : Icon(status.icon, size: 14, color: scheme.foreground));
 
     return AnimatedContainer(
@@ -974,75 +980,4 @@ class _CloseButton extends StatelessWidget {
       ),
     );
   }
-}
-
-/// The default loading spinner — a centre-painted 3/4 arc spun in place
-/// (Lucide `loader-circle` + the source's spin), same approach as the badge's.
-class _Spinner extends StatefulWidget {
-  const _Spinner({required this.size, required this.color});
-
-  final double size;
-  final Color color;
-
-  @override
-  State<_Spinner> createState() => _SpinnerState();
-}
-
-class _SpinnerState extends State<_Spinner>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1000),
-  )..repeat();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: RotationTransition(
-        turns: _controller,
-        child: CustomPaint(
-          size: Size.square(widget.size),
-          painter: _SpinnerPainter(
-            color: widget.color,
-            stroke: widget.size * 0.12,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SpinnerPainter extends CustomPainter {
-  _SpinnerPainter({required this.color, required this.stroke});
-
-  final Color color;
-  final double stroke;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.shortestSide - stroke) / 2;
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke
-      ..strokeCap = StrokeCap.round;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
-      math.pi * 1.5,
-      false,
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_SpinnerPainter old) =>
-      old.color != color || old.stroke != stroke;
 }

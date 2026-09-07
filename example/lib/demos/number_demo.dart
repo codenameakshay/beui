@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
+import '../explorer/widgets.dart';
+
 /// Gallery entry for the `number` component — the slot-machine [BeuiNumberTicker]
 /// and the in-view count-up [BeuiAnimatedNumber]. Ports the two preview bands on
 /// beui.dev/components/motion/number: `NumberTickerPreview` and
@@ -81,22 +83,12 @@ class _NumberDemoState extends State<_NumberDemo> {
         const SizedBox(height: 12),
         BeuiAnimatedNumber(
           value: 129480,
-          format: (n) => '\$${_grouped(n.round())}',
+          format: (n) => '\$${groupThousands(n.round())}',
           style: bigStyle,
         ),
         const SizedBox(height: 12),
         caption('+12.4% vs last month', color: colors.success),
       ],
     );
-  }
-
-  static String _grouped(int value) {
-    final digits = value.abs().toString();
-    final buf = StringBuffer();
-    for (var i = 0; i < digits.length; i++) {
-      if (i > 0 && (digits.length - i) % 3 == 0) buf.write(',');
-      buf.write(digits[i]);
-    }
-    return value < 0 ? '-$buf' : buf.toString();
   }
 }

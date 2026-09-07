@@ -241,7 +241,7 @@ class BeuiAgentStrings {
   /// `BeuiToolApproval` badge for an approved/complete card whose
   /// [BeuiToolApprovalGrant] is [BeuiToolApprovalGrant.always] — says *which*
   /// grant was used, so a standing permission is never silently
-  /// indistinguishable from a one-off (the audit's A43).
+  /// indistinguishable from a one-off.
   final String statusAlwaysAllowed;
 
   // ── Approval card ─────────────────────────────────────────────────────────

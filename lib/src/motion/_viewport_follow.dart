@@ -2,22 +2,17 @@
 ///
 /// Package-internal. Not exported from `lib/beui.dart`.
 ///
-/// The audit (`R7`, and `C5` in the conversation cluster) found every streaming
-/// viewport in the library yanking itself to `maxScrollExtent` on *every*
-/// content change, with no way for a reader who has scrolled up to stay where
-/// they put themselves. Scrolling back to re-read the line the agent just
-/// changed is the single most likely thing a reader does while a diff streams,
-/// and the widget fought them for it.
-///
-/// [BeuiLiveEdgeFollower] adds the missing state: once the reader is more than
-/// [beuiLiveEdgeSlack] away from the bottom they are *pinned*, and following
-/// stops until they come back. [BeuiJumpToLatest] is the affordance that lets
-/// them come back in one tap, in the library's own visual language.
+/// A streaming viewport that yanks itself to `maxScrollExtent` on every
+/// content change gives a reader who has scrolled up no way to stay where
+/// they put themselves. [BeuiLiveEdgeFollower] adds the missing state: once
+/// the reader is more than [beuiLiveEdgeSlack] away from the bottom they are
+/// *pinned*, and following stops until they come back. [BeuiJumpToLatest] is
+/// the affordance that lets them come back in one tap.
 ///
 /// Also here because it belongs with the follower: [BeuiHiddenContentFooter],
-/// the "N more lines" + bottom-fade pair for capped viewports (`R12`). Those
-/// viewports disable scrollbars for fidelity, so without a cue a 400-line file
-/// reads as 14 lines that stop mid-statement.
+/// the "N more lines" + bottom-fade pair for viewports that cap their height
+/// and disable scrollbars for fidelity — without a cue a long file reads as a
+/// short one that stops mid-statement.
 library;
 
 import 'package:flutter/foundation.dart' show ValueListenable;
@@ -61,16 +56,10 @@ const Duration beuiLiveEdgeFollowDuration = Duration(milliseconds: 220);
 class BeuiLiveEdgeFollower {
   /// Creates a follower. [onPinnedChanged] fires whenever [pinned] flips, and
   /// is normally a `setState`.
-  BeuiLiveEdgeFollower({
-    required this.onPinnedChanged,
-    this.slack = beuiLiveEdgeSlack,
-  });
+  BeuiLiveEdgeFollower({required this.onPinnedChanged});
 
   /// Fires whenever [pinned] flips. Normally a `setState`.
   final VoidCallback onPinnedChanged;
-
-  /// Drift tolerance in logical pixels. Defaults to [beuiLiveEdgeSlack].
-  final double slack;
 
   /// The controller to hand to the viewport's scroll view.
   final ScrollController controller = ScrollController();
@@ -120,7 +109,7 @@ class BeuiLiveEdgeFollower {
     // "far from the edge" on the way. Without this guard the follower would
     // pin itself on the first frame of every follow it started.
     if (_programmatic) return;
-    _setPinned(position.maxScrollExtent - position.pixels > slack);
+    _setPinned(position.maxScrollExtent - position.pixels > beuiLiveEdgeSlack);
   }
 
   /// Recomputes [extentBelow] after a content change, which moves
@@ -195,17 +184,13 @@ class BeuiLiveEdgeFollower {
 /// The "jump to latest" pill shown while the reader is pinned away from a
 /// streaming live edge.
 ///
-/// One affordance, one contract, in [BeuiCodeBlock], [BeuiFileDiff] and
-/// [BeuiToolResult] — the audit's `R7` asks for the language to be consistent
-/// across the code viewports, and `C4` asks for the same thing one cluster
-/// over in the transcript.
-///
-/// `BeuiMessageScroller` keeps its own richer pill (it carries an unread
-/// badge), but the *contract* is the same one and F9/F10 pulled this one up to
-/// meet it: keyboard activation, a visible focus ring, a tooltip, semantics
-/// that go quiet on exit, and theme-driven shape and type. What deliberately
-/// differs is size — a code viewport is a fraction of a transcript's height, so
-/// this pill stays compact and corner-anchored.
+/// One affordance, one contract, shared by [BeuiCodeBlock], [BeuiFileDiff]
+/// and [BeuiToolResult]. `BeuiMessageScroller` keeps its own richer pill (it
+/// carries an unread badge), but the *contract* is the same one: keyboard
+/// activation, a visible focus ring, a tooltip, semantics that go quiet on
+/// exit, and theme-driven shape and type. What deliberately differs is size —
+/// a code viewport is a fraction of a transcript's height, so this pill stays
+/// compact and corner-anchored.
 ///
 /// Entrance 180ms / exit 120ms (exit faster, per the repo motion rules); the
 /// 4px rise is the movement channel and drops under reduced motion while the
@@ -216,7 +201,6 @@ class BeuiJumpToLatest extends StatefulWidget {
   const BeuiJumpToLatest({
     required this.visible,
     required this.onTap,
-    this.label,
     super.key,
   });
 
@@ -225,11 +209,6 @@ class BeuiJumpToLatest extends StatefulWidget {
 
   /// Activation handler — normally `follower.follow(force: true)`.
   final VoidCallback onTap;
-
-  /// Accessible name and visible text. Defaults to
-  /// [BeuiAgentStrings.jumpToLatest] — the same field the transcript's pill
-  /// reads, so one override relabels every one of them.
-  final String? label;
 
   @override
   State<BeuiJumpToLatest> createState() => _BeuiJumpToLatestState();
@@ -242,13 +221,10 @@ class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final label = widget.label ?? agent.strings.jumpToLatest;
+    final label = agent.strings.jumpToLatest;
 
     // The slop wrapper is outermost, and that placement is load-bearing: an
     // ancestor RenderBox rejects a pointer outside its own box before any
@@ -386,9 +362,9 @@ class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
 ///
 /// The code block and the file diff both switch scrollbars off to match the
 /// source, which leaves a capped viewport with *no* signal that content
-/// continues past the fold (`R12`). This is the pattern `agent_activity`
-/// already uses one file over, generalised: a short gradient wash so the last
-/// row visibly continues, plus an honest count.
+/// continues past the fold. This is the same pattern `agent_activity` uses
+/// one file over: a short gradient wash so the last row visibly continues,
+/// plus an honest count.
 ///
 /// Purely decorative — [ExcludeSemantics]'d and non-interactive, because the
 /// scroll view underneath is the real affordance and a screen reader already
@@ -400,12 +376,9 @@ class _BeuiJumpToLatestState extends State<BeuiJumpToLatest> {
 ///
 /// ## The count rides *inside* the fade
 ///
-/// F13: this used to paint the gradient and then an **opaque** strip beneath
-/// it, which sat over a still-legible last row and hid it outright — the cue
-/// destroyed a line to announce that lines were missing. The count now sits in
-/// the bottom of the gradient itself, where the wash has already resolved to
-/// [surface], so the overlay occludes nothing the reader could otherwise have
-/// read and the footprint stays a flat [fadeHeight].
+/// The count sits in the bottom of the gradient itself, where the wash has
+/// already resolved to [surface], so the overlay occludes nothing the reader
+/// could otherwise have read and the footprint stays a flat 32px.
 class BeuiHiddenContentFooter extends StatelessWidget {
   /// Creates a hidden-content cue driven by [extentBelow]
   /// (`BeuiLiveEdgeFollower.extentBelow`).
@@ -413,8 +386,6 @@ class BeuiHiddenContentFooter extends StatelessWidget {
     required this.extentBelow,
     required this.rowExtent,
     required this.surface,
-    this.label,
-    this.fadeHeight = 32,
     super.key,
   });
 
@@ -429,22 +400,11 @@ class BeuiHiddenContentFooter extends StatelessWidget {
   /// The viewport's own background, which the fade resolves to.
   final Color surface;
 
-  /// Builds the count copy. Defaults to [BeuiAgentStrings.hiddenLines], which
-  /// is also what `BeuiToolResult`'s own overflow cue reads — one override
-  /// relocalizes every capped viewport in the library.
-  final String Function(int count)? label;
-
-  /// Height of the gradient wash in logical pixels. The count is laid into the
-  /// bottom of this band, so it also bounds the whole cue.
-  final double fadeHeight;
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
-    final resolve = label ?? BeuiAgentTheme.of(context).strings.hiddenLines;
+    final colors = BeuiColors.resolve(context);
+    final agent = BeuiAgentTheme.of(context);
+    final resolve = agent.strings.hiddenLines;
 
     return ExcludeSemantics(
       child: IgnorePointer(
@@ -454,7 +414,7 @@ class BeuiHiddenContentFooter extends StatelessWidget {
             if (below <= 0.5) return const SizedBox.shrink();
             final hidden = rowExtent > 0 ? (below / rowExtent).ceil() : 0;
             return SizedBox(
-              height: fadeHeight,
+              height: 32,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -475,14 +435,12 @@ class BeuiHiddenContentFooter extends StatelessWidget {
                       child: Text(
                         resolve(hidden),
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 10,
+                        // The metadata role, not decorative alpha-muted text:
+                        // this is information (the hidden-row count).
+                        style: agent.typography.metadata.copyWith(
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0,
                           height: 1.2,
-                          // Full-strength muted foreground: this is
-                          // information, not decoration (the audit's
-                          // alpha-multiplication theme, T3).
                           color: colors.mutedForeground,
                         ),
                       ),

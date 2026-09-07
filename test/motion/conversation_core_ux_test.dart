@@ -15,10 +15,7 @@ Widget _app(
   bool reduce = false,
   Brightness brightness = Brightness.light,
   TextDirection direction = TextDirection.ltr,
-  Size? size,
-  double keyboardInset = 0,
 }) {
-  Widget body = child;
   return MaterialApp(
     theme: BeuiTextTheme.trackingNormal(
       (brightness == Brightness.light ? ThemeData.light() : ThemeData.dark())
@@ -34,14 +31,10 @@ Widget _app(
       builder: (context) {
         final base = MediaQuery.of(context);
         return MediaQuery(
-          data: base.copyWith(
-            disableAnimations: reduce,
-            size: size ?? base.size,
-            viewInsets: EdgeInsets.only(bottom: keyboardInset),
-          ),
+          data: base.copyWith(disableAnimations: reduce),
           child: Directionality(
             textDirection: direction,
-            child: Scaffold(body: body),
+            child: Scaffold(body: child),
           ),
         );
       },
@@ -1393,25 +1386,19 @@ void main() {
 
   // -------------------------------------------------------------------------
   group('C21 — reduced motion stops tickers, it does not just hide them', () {
-    testWidgets('typing dots stop scheduling frames', (tester) async {
-      await tester.pumpWidget(
-        _app(reduce: true, const Center(child: BeuiMessageTyping())),
-      );
-      // If the controller were still repeating this would time out, exactly as
-      // it does (by design) without reduced motion.
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('the agent progress grid stops pulsing', (tester) async {
-      await tester.pumpWidget(
-        _app(
-          reduce: true,
-          const Center(child: BeuiAgentProgress(running: false)),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
+    testWidgets('the typing dots and the agent progress grid stop ticking', (
+      tester,
+    ) async {
+      for (final ticker in [
+        const BeuiMessageTyping(),
+        const BeuiAgentProgress(running: false),
+      ]) {
+        await tester.pumpWidget(_app(reduce: true, Center(child: ticker)));
+        // If the controller were still repeating this would time out, exactly
+        // as it does (by design) without reduced motion.
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+      }
     });
   });
 

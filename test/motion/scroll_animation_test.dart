@@ -4,6 +4,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = child;
@@ -23,14 +24,6 @@ Widget _wrap(Widget child, {bool reduce = false}) {
     home: Scaffold(body: body),
   );
 }
-
-double _maxBlurSigma(WidgetTester tester) => tester
-    .widgetList<ImageFiltered>(find.byType(ImageFiltered))
-    .map((f) {
-      final m = RegExp(r'blur\(([\d.]+)').firstMatch(f.imageFilter.toString());
-      return m == null ? 0.0 : double.parse(m.group(1)!);
-    })
-    .fold<double>(0, math.max);
 
 /// A tall scrollable page with [child] embedded far below the fold.
 Widget _page({
@@ -691,7 +684,7 @@ void main() {
       await tester.pump();
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 40));
-        expect(_maxBlurSigma(tester), lessThan(0.5));
+        expect(maxBlurSigma(tester), lessThan(0.5));
       }
       await tester.pumpAndSettle();
       expect(find.text('Reveal me'), findsOneWidget);

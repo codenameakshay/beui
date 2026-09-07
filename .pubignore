@@ -39,3 +39,13 @@ CLAUDE.md
 # Dev-only: the test suite + goldens and the build-time color generator.
 test/
 tool/
+
+# Example app's generated platform runners and bundled fonts — not part of
+# the published library, and the platform folders alone add several MB.
+example/android/
+example/ios/
+example/macos/
+example/linux/
+example/windows/
+example/web/
+example/assets/fonts/

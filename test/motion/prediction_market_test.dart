@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../support.dart';
 
 Widget _wrap(Widget child, {bool reduce = false}) {
   Widget body = SingleChildScrollView(
@@ -46,14 +47,6 @@ Widget _market({
   ),
   reduce: reduce,
 );
-
-double _maxBlurSigma(WidgetTester tester) => tester
-    .widgetList<ImageFiltered>(find.byType(ImageFiltered))
-    .map((f) {
-      final m = RegExp(r'blur\(([\d.]+)').firstMatch(f.imageFilter.toString());
-      return m == null ? 0.0 : double.parse(m.group(1)!);
-    })
-    .fold<double>(0, math.max);
 
 void main() {
   group('BeuiPredictionMarket', () {
@@ -168,10 +161,13 @@ void main() {
       await tester.pump();
       // The stateful button cascades letters (540ms for 'Trading'); assert
       // once settled but before the 650ms fill timer.
-      await tester.pump(const Duration(milliseconds: 600));
+      const afterCascadeSettles = Duration(milliseconds: 600);
+      const pastFillTimer = Duration(milliseconds: 100); // fill at 650ms
+      const filledCascadeSettles = Duration(milliseconds: 800);
+      await tester.pump(afterCascadeSettles);
       expect(find.text('Trading'), findsOneWidget);
-      await tester.pump(const Duration(milliseconds: 100)); // fill at 650ms
-      await tester.pump(const Duration(milliseconds: 800)); // cascade settles
+      await tester.pump(pastFillTimer);
+      await tester.pump(filledCascadeSettles);
       expect(find.text('Trade filled'), findsOneWidget);
       expect(tradedOrder?.amount, '50');
       expect(tradedQuote?.payout, moreOrLessEquals(100, epsilon: 0.01));
@@ -249,7 +245,7 @@ void main() {
       await tester.enterText(find.byType(EditableText).first, '7');
       for (var i = 0; i < 4; i++) {
         await tester.pump(const Duration(milliseconds: 50));
-        expect(_maxBlurSigma(tester), lessThan(0.5));
+        expect(maxBlurSigma(tester), lessThan(0.5));
       }
     });
   });

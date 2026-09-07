@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
@@ -46,7 +47,7 @@ const _itemSpring = SpringMotion(
 
 const _triggerSize = Size(144, 44); // source `h-11 w-36`
 const _panelMaxWidth = 420.0; // min(86vw, 420px)
-const _enterMs = 800.0; // hosts the 0.08s + 0.45s iris + item staggers
+const _enterMs = 800; // hosts the 0.08s + 0.45s iris + item staggers
 
 /// A "Create" pill that blooms open into a grid menu — the Flutter port of
 /// beUI's `bloom-menu` block.
@@ -116,16 +117,21 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
   /// lookup.
   late final AnimationController _clock;
 
+  /// Unhides the in-tree trigger once the shrink morph has landed; cancelled
+  /// on dispose and whenever the menu reopens before it fires.
+  Timer? _unhideTimer;
+
   @override
   void initState() {
     super.initState();
     _clock = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: _enterMs ~/ 1),
+      duration: const Duration(milliseconds: _enterMs),
     );
   }
 
   void _setOpen(bool value) {
+    _unhideTimer?.cancel();
     setState(() {
       _open = value;
       if (value) _overlayVisible = true;
@@ -134,8 +140,10 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
       _clock.forward(from: 0);
     } else {
       _clock.stop();
-      // Unhide the in-tree trigger once the shrink morph has landed.
-      Future<void>.delayed(const Duration(milliseconds: 480), () {
+      // 420ms exit (see `exitDuration` below) plus ~60ms settle before the
+      // in-tree trigger — hidden while the overlay's own copy morphs — comes
+      // back.
+      _unhideTimer = Timer(const Duration(milliseconds: 480), () {
         if (mounted && !_open) setState(() => _overlayVisible = false);
       });
     }
@@ -143,6 +151,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
 
   @override
   void dispose() {
+    _unhideTimer?.cancel();
     _clock.dispose();
     super.dispose();
   }
@@ -169,7 +178,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     _scheduleMeasure();
 
     return Stack(
@@ -213,7 +222,7 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
     Animation<double> animation,
     LayerLink link,
   ) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final panelSize = _panelSize ?? Size(_panelWidth(context), 300);
     final triggerSize = _triggerMeasured ?? _triggerSize;
@@ -523,7 +532,7 @@ class _PanelContent extends StatelessWidget {
 
 /// Tailwind `transition-colors` — 150ms on its default ease.
 const _hoverFade = Duration(milliseconds: 150);
-const _hoverCurve = Cubic(0.4, 0, 0.2, 1);
+const _hoverCurve = Curves.fastOutSlowIn;
 
 /// The header dismiss glyph (source `hover:text-foreground`).
 class _CloseButton extends StatefulWidget {

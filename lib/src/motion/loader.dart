@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
+import '_scramble.dart';
 
 /// Which looping animation [BeuiLoader] renders. One value per source
 /// `LoaderVariant` (`loader.tsx`), names matching the source slugs.
@@ -133,10 +134,7 @@ class BeuiLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final color = this.color ?? colors.foreground;
     final reduce = MediaQuery.disableAnimationsOf(context);
 
@@ -211,7 +209,7 @@ class _LoaderViewState extends State<_LoaderView>
   bool get _isStaticUnderReduce =>
       widget.reduce && widget.variant == BeuiLoaderVariant.newton;
 
-  Duration _ms(double seconds) =>
+  Duration _seconds(double seconds) =>
       Duration(microseconds: (seconds * 1e6).round());
 
   /// Per-variant cycle length, mirroring each source `duration`.
@@ -224,27 +222,25 @@ class _LoaderViewState extends State<_LoaderView>
         case BeuiLoaderVariant.asciiBraille:
         case BeuiLoaderVariant.asciiBlocks:
         case BeuiLoaderVariant.asciiBounce:
-          return _ms(s * 2.5); // source: cycle slows, doesn't stop
+          return _seconds(s * 2.5); // source: cycle slows, doesn't stop
         case BeuiLoaderVariant.percent:
-          return _ms(s * 2); // source: half-speed count
-        case BeuiLoaderVariant.newton:
-          return _ms(1); // unused (static)
+          return _seconds(s * 2); // source: half-speed count
         default:
-          return _ms(1.4); // opacity pulse
+          return _seconds(1.4); // opacity pulse
       }
     }
     switch (widget.variant) {
       case BeuiLoaderVariant.morph:
-        return _ms(s * 5); // source: speed * 5
+        return _seconds(s * 5); // source: speed * 5
       case BeuiLoaderVariant.metaballs:
-        return _ms(s * 1.6); // source: speed * 1.6
+        return _seconds(s * 1.6); // source: speed * 1.6
       case BeuiLoaderVariant.newton:
-        return _ms(s * 1.5); // source: speed * 1.5
+        return _seconds(s * 1.5); // source: speed * 1.5
       case BeuiLoaderVariant.scramble:
         // 11 ticks × (speed/7 × 0.55)s per tick — the source interval.
-        return _ms(_scrambleTotal * (s / _scrambleTarget.length) * 0.55);
+        return _seconds(_scrambleTotal * (s / _scrambleTarget.length) * 0.55);
       default:
-        return _ms(s); // source: speed
+        return _seconds(s); // source: speed
     }
   }
 
@@ -340,20 +336,26 @@ class _LoaderViewState extends State<_LoaderView>
       children: [
         for (var i = 0; i < 3; i++) ...[
           if (i > 0) SizedBox(width: gap),
-          Builder(
-            builder: (_) {
-              // source: y [0,-0.3size,0], opacity [0.5,1,0.5], delay i*0.16.
-              final lt = statik ? 0.5 : _wrap(t - i * 0.16);
-              final y = statik ? 0.0 : _kf(const [0, 1, 0], lt) * -size * 0.3;
-              final o = statik ? 1.0 : _kf(const [0.5, 1, 0.5], lt);
-              return Transform.translate(
-                offset: Offset(0, y),
-                child: Opacity(opacity: o, child: _circle(dot)),
-              );
-            },
-          ),
+          _dotItem(i, t, statik: statik, size: size, dot: dot),
         ],
       ],
+    );
+  }
+
+  // source: y [0,-0.3size,0], opacity [0.5,1,0.5], delay i*0.16.
+  Widget _dotItem(
+    int i,
+    double t, {
+    required bool statik,
+    required double size,
+    required double dot,
+  }) {
+    final lt = statik ? 0.5 : _wrap(t - i * 0.16);
+    final y = statik ? 0.0 : _kf(const [0, 1, 0], lt) * -size * 0.3;
+    final o = statik ? 1.0 : _kf(const [0.5, 1, 0.5], lt);
+    return Transform.translate(
+      offset: Offset(0, y),
+      child: Opacity(opacity: o, child: _circle(dot)),
     );
   }
 
@@ -368,26 +370,32 @@ class _LoaderViewState extends State<_LoaderView>
       children: [
         for (var i = 0; i < 4; i++) ...[
           if (i > 0) SizedBox(width: gap),
-          Builder(
-            builder: (_) {
-              // source: scaleY [0.3,1,0.3], originY:1 (bottom), delay i*0.12.
-              final lt = statik ? 0.5 : _wrap(t - i * 0.12);
-              final sy = statik ? 0.7 : _kf(const [0.3, 1, 0.3], lt);
-              return Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: bar,
-                  height: size * sy,
-                  decoration: BoxDecoration(
-                    color: widget.color,
-                    borderRadius: BorderRadius.circular(bar / 2),
-                  ),
-                ),
-              );
-            },
-          ),
+          _barItem(i, t, statik: statik, size: size, bar: bar),
         ],
       ],
+    );
+  }
+
+  // source: scaleY [0.3,1,0.3], originY:1 (bottom), delay i*0.12.
+  Widget _barItem(
+    int i,
+    double t, {
+    required bool statik,
+    required double size,
+    required double bar,
+  }) {
+    final lt = statik ? 0.5 : _wrap(t - i * 0.12);
+    final sy = statik ? 0.7 : _kf(const [0.3, 1, 0.3], lt);
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: bar,
+        height: size * sy,
+        decoration: BoxDecoration(
+          color: widget.color,
+          borderRadius: BorderRadius.circular(bar / 2),
+        ),
+      ),
     );
   }
 
@@ -407,25 +415,30 @@ class _LoaderViewState extends State<_LoaderView>
             children: [
               for (var x = 0; x < n; x++) ...[
                 if (x > 0) SizedBox(width: gap),
-                Builder(
-                  builder: (_) {
-                    // source: diagonal wave, delay (x+y)/4; opacity+scale pulse.
-                    final lt = statik
-                        ? 0.5
-                        : _wrap(t - (x + y) / (2 * (n - 1)));
-                    final o = statik ? 1.0 : _kf(const [0.2, 1, 0.2], lt);
-                    final sc = statik ? 1.0 : _kf(const [0.7, 1, 0.7], lt);
-                    return Opacity(
-                      opacity: o,
-                      child: Transform.scale(scale: sc, child: _circle(dot)),
-                    );
-                  },
-                ),
+                _matrixCell(x, y, t, statik: statik, n: n, dot: dot),
               ],
             ],
           ),
         ],
       ],
+    );
+  }
+
+  // source: diagonal wave, delay (x+y)/4; opacity+scale pulse.
+  Widget _matrixCell(
+    int x,
+    int y,
+    double t, {
+    required bool statik,
+    required int n,
+    required double dot,
+  }) {
+    final lt = statik ? 0.5 : _wrap(t - (x + y) / (2 * (n - 1)));
+    final o = statik ? 1.0 : _kf(const [0.2, 1, 0.2], lt);
+    final sc = statik ? 1.0 : _kf(const [0.7, 1, 0.7], lt);
+    return Opacity(
+      opacity: o,
+      child: Transform.scale(scale: sc, child: _circle(dot)),
     );
   }
 
@@ -445,28 +458,35 @@ class _LoaderViewState extends State<_LoaderView>
             children: [
               for (var col = 0; col < n; col++) ...[
                 if (col > 0) SizedBox(width: gap),
-                Builder(
-                  builder: (_) {
-                    final idx = row * n + col;
-                    final order = _bayer4[idx];
-                    // source: delay order/16, opacity [0.1,1,0.1].
-                    final lt = statik ? 0.5 : _wrap(t - order / _bayer4.length);
-                    final o = statik ? 1.0 : _kf(const [0.1, 1, 0.1], lt);
-                    return Opacity(
-                      opacity: o,
-                      child: SizedBox(
-                        width: cell,
-                        height: cell,
-                        child: ColoredBox(color: widget.color),
-                      ),
-                    );
-                  },
-                ),
+                _ditherCell(row, col, t, statik: statik, n: n, cell: cell),
               ],
             ],
           ),
         ],
       ],
+    );
+  }
+
+  Widget _ditherCell(
+    int row,
+    int col,
+    double t, {
+    required bool statik,
+    required int n,
+    required double cell,
+  }) {
+    final idx = row * n + col;
+    final order = _bayer4[idx];
+    // source: delay order/16, opacity [0.1,1,0.1].
+    final lt = statik ? 0.5 : _wrap(t - order / _bayer4.length);
+    final o = statik ? 1.0 : _kf(const [0.1, 1, 0.1], lt);
+    return Opacity(
+      opacity: o,
+      child: SizedBox(
+        width: cell,
+        height: cell,
+        child: ColoredBox(color: widget.color),
+      ),
     );
   }
 
@@ -544,15 +564,12 @@ class _LoaderViewState extends State<_LoaderView>
       if (tick != _scrambleTick) {
         _scrambleTick = tick;
         final reveal = tick % _scrambleTotal;
-        final sb = StringBuffer();
-        for (var i = 0; i < _scrambleTarget.length; i++) {
-          sb.write(
-            i < reveal
-                ? _scrambleTarget[i]
-                : _scrambleGlyphs[_rng.nextInt(_scrambleGlyphs.length)],
-          );
-        }
-        _scrambleText = sb.toString();
+        _scrambleText = beuiScramble(
+          _scrambleTarget,
+          reveal,
+          _rng,
+          _scrambleGlyphs,
+        );
       }
       text = _scrambleText;
     }
@@ -724,8 +741,8 @@ double _kf(
   if (n == 1) return values.first;
   final ts =
       times ?? List<double>.generate(n, (i) => i / (n - 1), growable: false);
-  if (t <= ts.first) return values.first.toDouble();
-  if (t >= ts.last) return values.last.toDouble();
+  if (t <= ts.first) return values.first;
+  if (t >= ts.last) return values.last;
   var i = 0;
   while (i < n - 1 && t > ts[i + 1]) {
     i++;
@@ -733,8 +750,8 @@ double _kf(
   final span = ts[i + 1] - ts[i];
   final local = span <= 0 ? 0.0 : (t - ts[i]) / span;
   return lerpDouble(
-    values[i].toDouble(),
-    values[i + 1].toDouble(),
+    values[i],
+    values[i + 1],
     curve.transform(local.clamp(0.0, 1.0)),
   )!;
 }
@@ -825,9 +842,9 @@ class _SpinnerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size s) {
     // source: stroke max(2, size*0.09), r = (size-stroke)/2.
-    final stroke = math.max(2.0, size * 0.09);
-    final r = (size - stroke) / 2;
-    final center = Offset(size / 2, size / 2);
+    final stroke = math.max(2.0, s.width * 0.09);
+    final r = (s.width - stroke) / 2;
+    final center = Offset(s.width / 2, s.width / 2);
 
     // Faint track ring (strokeOpacity 0.2).
     canvas.drawCircle(
@@ -874,9 +891,9 @@ class _CometPainter extends CustomPainter {
   void paint(Canvas canvas, Size s) {
     // source: 6 trail dots, head = size*0.2, r = size/2 - head/2, each dot
     // scaled 1-0.13i, opacity 1-0.16i, at rotate(-15i°) translateY(-r).
-    final head = size * 0.2;
-    final r = size / 2 - head / 2;
-    final center = Offset(size / 2, size / 2);
+    final head = s.width * 0.2;
+    final r = s.width / 2 - head / 2;
+    final center = Offset(s.width / 2, s.width / 2);
     final groupRad = turns * 2 * math.pi;
     for (var i = 0; i < 6; i++) {
       final scale = 1 - i * 0.13;
@@ -910,7 +927,7 @@ class _MorphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size s) {
-    final sf = size / 100.0; // shapes are in a 100-unit space
+    final sf = s.width / 100.0; // shapes are in a 100-unit space
     canvas.save();
     canvas.scale(sf);
     // Rotate/scale about the shape centre (50,50) — source transformOrigin.
@@ -981,11 +998,11 @@ class _HelixPainter extends CustomPainter {
     // source: 7 rows, dot = size*0.14, amp = size*0.32, two crossing dots per
     // row, per-row delay r/7.
     const rows = 7;
-    final dot = size * 0.14;
-    final amp = size * 0.32;
-    final cx = size / 2;
+    final dot = s.width * 0.14;
+    final amp = s.width * 0.32;
+    final cx = s.width / 2;
     for (var r = 0; r < rows; r++) {
-      final top = (r / (rows - 1)) * (size - dot);
+      final top = (r / (rows - 1)) * (s.width - dot);
       final cy = top + dot / 2;
       if (statik) {
         // Static double-helix cross: dots parked at ±amp, dimmed.

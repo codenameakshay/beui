@@ -19,7 +19,7 @@ Widget _host({
   VoidCallback? onAlwaysAllow,
   VoidCallback? onDeny,
   VoidCallback? onRevoke,
-  // A pending card with no handlers now trips a debug assert (A5), so the
+  // A pending card with no handlers now trips a debug assert, so the
   // harness supplies no-ops by default. Tests that need the real null pass
   // `defaultHandlers: false`.
   bool defaultHandlers = true,
@@ -165,7 +165,7 @@ void main() {
       expect(find.text('Deny'), findsOneWidget);
     });
 
-    // A5. The old behaviour was to render a live-looking button that silently
+    // The old behaviour was to render a live-looking button that silently
     // did nothing — codified by the test this replaces.
     testWidgets('a null handler renders a disabled action, not an inert one', (
       tester,
@@ -422,19 +422,21 @@ void main() {
       expect(denied, greaterThan(0), reason: 'Deny never activated');
     });
 
-    testWidgets('Space activates an action as well as Enter', (tester) async {
-      var denied = 0;
-      await tester.pumpWidget(_host(onDeny: () => denied++));
-      await tester.pumpAndSettle();
+    for (final key in [LogicalKeyboardKey.enter, LogicalKeyboardKey.space]) {
+      testWidgets('${key.debugName} activates an action', (tester) async {
+        var denied = 0;
+        await tester.pumpWidget(_host(onDeny: () => denied++));
+        await tester.pumpAndSettle();
 
-      for (var i = 0; i < 12 && denied == 0; i++) {
-        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-        await tester.pumpAndSettle();
-        await tester.sendKeyEvent(LogicalKeyboardKey.space);
-        await tester.pumpAndSettle();
-      }
-      expect(denied, greaterThan(0));
-    });
+        for (var i = 0; i < 12 && denied == 0; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pumpAndSettle();
+          await tester.sendKeyEvent(key);
+          await tester.pumpAndSettle();
+        }
+        expect(denied, greaterThan(0));
+      });
+    }
 
     testWidgets('every action carries a label for assistive technology', (
       tester,
@@ -449,7 +451,7 @@ void main() {
       handle.dispose();
     });
 
-    // A31. `androidTapTargetGuideline` measures the *semantics* rect, which
+    // `androidTapTargetGuideline` measures the *semantics* rect, which
     // `BeuiMinHitTarget` deliberately does not grow — the whole point is to
     // widen the touch area without inflating the layout and pushing the
     // buttons apart. So the honest assertion is behavioural: a press that
@@ -525,10 +527,8 @@ void main() {
     ) async {
       await tester.pumpWidget(_host(onApprove: () {}, onDeny: () {}));
       await tester.pumpAndSettle();
-      final normalIcons = tester
-          .widgetList<Icon>(find.byType(Icon))
-          .map((i) => i.icon)
-          .toList();
+      expect(find.byIcon(LucideIcons.shield_check), findsOneWidget);
+      expect(find.byIcon(LucideIcons.circle_alert), findsNothing);
 
       await tester.pumpWidget(
         _host(
@@ -538,18 +538,14 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      final destructiveIcons = tester
-          .widgetList<Icon>(find.byType(Icon))
-          .map((i) => i.icon)
-          .toList();
-
-      expect(destructiveIcons, isNot(equals(normalIcons)));
+      expect(find.byIcon(LucideIcons.shield_check), findsNothing);
+      expect(find.byIcon(LucideIcons.circle_alert), findsOneWidget);
     });
 
     testWidgets('severity tiers render distinct card borders', (tester) async {
-      Future<BoxDecoration> decorationFor(
-        BeuiToolApprovalSeverity severity,
-      ) async {
+      // The card's own DecoratedBox is the first descendant of the widget —
+      // outer, unambiguous, no need to search past it.
+      Future<Color> borderColorFor(BeuiToolApprovalSeverity severity) async {
         await tester.pumpWidget(
           _host(severity: severity, onApprove: () {}, onDeny: () {}),
         );
@@ -562,17 +558,28 @@ void main() {
               )
               .first,
         );
-        return box.decoration as BoxDecoration;
+        final decoration = box.decoration as BoxDecoration;
+        return decoration.border!.top.color;
       }
 
-      final normal = await decorationFor(BeuiToolApprovalSeverity.normal);
-      final elevated = await decorationFor(BeuiToolApprovalSeverity.elevated);
-      final destructive = await decorationFor(
-        BeuiToolApprovalSeverity.destructive,
+      const statusColors = BeuiAgentStatusColors.light;
+      final colors = BeuiColors.light();
+      final defaultBorder = colors.border.withValues(
+        alpha: colors.border.a * 0.60,
       );
 
-      expect(normal.border, isNot(equals(elevated.border)));
-      expect(elevated.border, isNot(equals(destructive.border)));
+      expect(
+        await borderColorFor(BeuiToolApprovalSeverity.normal),
+        defaultBorder,
+      );
+      expect(
+        await borderColorFor(BeuiToolApprovalSeverity.elevated),
+        statusColors.pending.border,
+      );
+      expect(
+        await borderColorFor(BeuiToolApprovalSeverity.destructive),
+        statusColors.destructive.border,
+      );
     });
 
     // ---------------------------------------------------------------------
@@ -674,7 +681,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      // A43: a standing permission must never be silently indistinguishable
+      // A standing permission must never be silently indistinguishable
       // from a one-off.
       expect(find.text('Always allowed'), findsWidgets);
     });

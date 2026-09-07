@@ -196,7 +196,7 @@ class BeuiWheelPicker extends StatefulWidget {
 }
 
 class _BeuiWheelPickerState extends State<BeuiWheelPicker> {
-  late FixedExtentScrollController _controller;
+  late final FixedExtentScrollController _controller;
   late int _selected;
   late final FocusNode _focusNode = FocusNode();
   bool _focusVisible = false;
@@ -275,10 +275,7 @@ class _BeuiWheelPickerState extends State<BeuiWheelPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final style = widget.style;
     final reduce = _reduce;
     final enabled = widget.enabled;

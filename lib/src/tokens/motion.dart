@@ -2,14 +2,17 @@
 ///
 /// A one-to-one port of the source's `lib/ease.ts`. Framer Motion springs are
 /// parameterized by `stiffness`, `damping`, and `mass` — the exact same physical
-/// parameters as Flutter's [SpringDescription] — so the tokens carry over with
-/// zero fidelity loss. Do **not** approximate these springs with
+/// parameters as Flutter's [SpringDescription] — so the tokens carry over
+/// unchanged (trajectories are validated within tolerance, not pixel-matched
+/// to Framer). Do **not** approximate these springs with
 /// `Curves.elasticOut`/`bounceOut`; use the values verbatim.
 ///
-/// This is the ONLY place `motor` types appear directly. Components consume the
+/// The spring/easing tokens are defined here; `lib/src/motion/_engine.dart` is
+/// the sole re-export of `motor`'s builder/controller types, so together the
+/// two files are where `motor` appears directly. Components consume the
 /// `beui*` constants and the [motionFor] resolver defined here — never scatter
 /// `SpringMotion(...)`/`CurvedMotion(...)` literals across widgets. If `motor`
-/// is ever dropped, you rewrite these ~8 constants, not every component.
+/// is ever dropped, these tokens and the `_engine.dart` facade are the seam.
 ///
 /// See `docs/PORTING_SPEC.md` §1.
 library;
@@ -104,6 +107,19 @@ const beuiEaseInOut = Cubic(0.77, 0, 0.175, 1);
 ///
 /// The source's dedicated curve for edge-drawer slides.
 const beuiEaseDrawer = Cubic(0.32, 0.72, 0, 1);
+
+/// Near-instant settle used when a movement spring is replaced under reduced
+/// motion but the surface still needs to reach its end state through the
+/// same builder: mass 1 · stiffness 700 · damping 60.
+const beuiSpringSnap = SpringMotion(
+  SpringDescription(mass: 1, stiffness: 700, damping: 60),
+);
+
+/// Scroll-linked follow spring shared by `scroll-progress.tsx` and
+/// `parallax.tsx`: mass 0.6 · stiffness 120 · damping 30.
+const beuiSpringScroll = SpringMotion(
+  SpringDescription(mass: 0.6, stiffness: 120, damping: 30),
+);
 
 // ---------------------------------------------------------------------------
 // Blur convention

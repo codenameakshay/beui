@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+import '_scramble.dart';
 import 'magnetic.dart';
 import 'text_reveal.dart';
 
@@ -47,7 +48,7 @@ class _Copy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       spacing: 8, // gap-2
@@ -91,7 +92,7 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     return Wrap(
       spacing: 12, // gap-3
       runSpacing: 12,
@@ -305,17 +306,12 @@ class _GlitchCodeState extends State<_GlitchCode>
     final elapsed = (_clock.value * _scrambleMs).round();
     if (elapsed - _lastTickMs < _tickMs && _clock.value < 1) return;
     _lastTickMs = elapsed;
-    final chars = widget.code.split('');
+    final length = widget.code.length;
     final settled = _clock.value >= 1
-        ? chars.length
-        : (_clock.value * chars.length).floor();
+        ? length
+        : (_clock.value * length).floor();
     setState(() {
-      _display = [
-        for (var i = 0; i < chars.length; i++)
-          i < settled || chars[i] == ' '
-              ? chars[i]
-              : _glyphs[_random.nextInt(_glyphs.length)],
-      ].join();
+      _display = beuiScramble(widget.code, settled, _random, _glyphs);
     });
   }
 
@@ -327,7 +323,7 @@ class _GlitchCodeState extends State<_GlitchCode>
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final style = TextStyle(
       fontSize: widget.fontSize,
@@ -411,7 +407,7 @@ class BeuiNotFoundMagnetic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final fontSize = _bigCode(context, max: 192);
     return _Stage(
       children: [
@@ -502,7 +498,7 @@ class _BeuiNotFoundSpotlightState extends State<BeuiNotFoundSpotlight> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final fontSize = _bigCode(context, vw: 0.16, max: 160);
     final codeStyle = TextStyle(
@@ -637,7 +633,7 @@ class _BeuiNotFoundStackedState extends State<BeuiNotFoundStacked> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     BoxDecoration card([List<BoxShadow>? shadow]) => BoxDecoration(

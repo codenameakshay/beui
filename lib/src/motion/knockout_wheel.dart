@@ -120,19 +120,6 @@ String _wheelMatchLabel(BeuiMatch match) {
   return '$teams · $home–$away$pens';
 }
 
-/// Two-letter stand-in when a team has no artwork — "Real Madrid" → RM. Takes
-/// the first *rune*, not the first code unit: an emoji or astral first character
-/// is a surrogate pair and indexing it renders a replacement glyph.
-String _initials(String name) => name
-    .trim()
-    .split(RegExp(r'\s+'))
-    .take(2)
-    .map(
-      (word) => word.runes.isEmpty ? '' : String.fromCharCode(word.runes.first),
-    )
-    .join()
-    .toUpperCase();
-
 // ── Wheel model ──────────────────────────────────────────────────────────────
 
 @immutable
@@ -589,10 +576,7 @@ class _BeuiKnockoutWheelState extends State<BeuiKnockoutWheel> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     final nodes = _wheel.nodes;
@@ -894,16 +878,24 @@ class _TrophyPainter extends CustomPainter {
 
 /// Fades a child in after [delayMs] over [durationMs]. Opacity only, so it
 /// survives reduced motion untouched — only the stagger is dropped there.
+///
+/// [builder], when set, replaces the default `AnimatedOpacity` wrap and is
+/// handed whether the delay has elapsed — so a caller that also wants to
+/// drive a scale spring off the same "has it entered yet" bool (the wheel
+/// mark and its caption both do) can share this one timer instead of
+/// keeping a duplicate `Timer` + `_shown` field of their own.
 class _DelayedFade extends StatefulWidget {
   const _DelayedFade({
     required this.delayMs,
-    required this.durationMs,
-    required this.child,
-  });
+    this.durationMs,
+    this.child,
+    this.builder,
+  }) : assert(builder != null || (durationMs != null && child != null));
 
   final int delayMs;
-  final int durationMs;
-  final Widget child;
+  final int? durationMs;
+  final Widget? child;
+  final Widget Function(BuildContext context, bool shown)? builder;
 
   @override
   State<_DelayedFade> createState() => _DelayedFadeState();
@@ -928,18 +920,22 @@ class _DelayedFadeState extends State<_DelayedFade> {
   }
 
   @override
-  Widget build(BuildContext context) => AnimatedOpacity(
-    opacity: _shown ? 1 : 0,
-    duration: Duration(milliseconds: widget.durationMs),
-    curve: beuiEaseOut,
-    child: widget.child,
-  );
+  Widget build(BuildContext context) {
+    final builder = widget.builder;
+    if (builder != null) return builder(context, _shown);
+    return AnimatedOpacity(
+      opacity: _shown ? 1 : 0,
+      duration: Duration(milliseconds: widget.durationMs!),
+      curve: beuiEaseOut,
+      child: widget.child,
+    );
+  }
 }
 
 /// One node of the wheel: an opaque disc, the team's crest (or initials, or a
 /// TBD shield), and the ring. Springs in on [beuiSpringPanel] after its ring's
 /// stagger and recedes to [_dimmedOpacity] while another mark is isolated.
-class _WheelMark extends StatefulWidget {
+class _WheelMark extends StatelessWidget {
   const _WheelMark({
     required this.node,
     required this.colors,
@@ -961,31 +957,7 @@ class _WheelMark extends StatefulWidget {
   final bool reduce;
   final Widget Function(BuildContext, BeuiTeam)? flagBuilder;
 
-  @override
-  State<_WheelMark> createState() => _WheelMarkState();
-}
-
-class _WheelMarkState extends State<_WheelMark> {
-  bool _entered = false;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer(Duration(milliseconds: widget.delayMs), () {
-      if (mounted) setState(() => _entered = true);
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
   Widget _crest(BuildContext context) {
-    final node = widget.node;
-    final colors = widget.colors;
     final team = node.team;
     if (team == null) {
       // The same shield the knockout bracket uses for a TBD slot, so an
@@ -998,14 +970,14 @@ class _WheelMarkState extends State<_WheelMark> {
         ),
       );
     }
-    final builder = widget.flagBuilder;
+    final builder = flagBuilder;
     if (builder != null) {
       return ClipOval(child: builder(context, team));
     }
     // No artwork on this team — initials keep the ring readable.
     return Center(
       child: Text(
-        _initials(team.name),
+        beuiKnockoutInitials(team.name),
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: math.max(node.r * 0.8, _initialsMin),
@@ -1019,14 +991,12 @@ class _WheelMarkState extends State<_WheelMark> {
 
   @override
   Widget build(BuildContext context) {
-    final node = widget.node;
-    final colors = widget.colors;
     final diameter = node.r * 2;
 
     Widget mark = Stack(
       clipBehavior: Clip.none,
       children: [
-        if (widget.showTrophy)
+        if (showTrophy)
           Positioned(
             left: (diameter - _trophySize) / 2,
             top: -(_trophyGap + _trophySize),
@@ -1048,7 +1018,7 @@ class _WheelMarkState extends State<_WheelMark> {
         // page background, so the wheel recedes correctly on any surface.
         Positioned.fill(
           child: AnimatedOpacity(
-            opacity: widget.dimmed ? _dimmedOpacity : 1,
+            opacity: dimmed ? _dimmedOpacity : 1,
             duration: const Duration(milliseconds: _dimMs),
             curve: beuiEaseOut,
             child: _crest(context),
@@ -1057,34 +1027,40 @@ class _WheelMarkState extends State<_WheelMark> {
         Positioned.fill(
           child: CustomPaint(
             painter: _RingPainter(
-              color: widget.lit ? colors.foreground : colors.border,
-              width: widget.lit ? 2 : 1,
+              color: lit ? colors.foreground : colors.border,
+              width: lit ? 2 : 1,
             ),
           ),
         ),
       ],
     );
 
-    mark = AnimatedOpacity(
-      opacity: _entered ? 1 : 0,
-      duration: const Duration(milliseconds: _enterOpacityMs),
-      curve: beuiEaseOut,
-      child: mark,
-    );
+    return _DelayedFade(
+      delayMs: delayMs,
+      builder: (context, entered) {
+        var faded = AnimatedOpacity(
+          opacity: entered ? 1 : 0,
+          duration: const Duration(milliseconds: _enterOpacityMs),
+          curve: beuiEaseOut,
+          child: mark,
+        );
 
-    if (widget.reduce) return SizedBox.expand(child: mark);
+        if (reduce) return SizedBox.expand(child: faded);
 
-    // Scale is movement, so it is the half that reduced motion drops. The
-    // origin is the box centre, i.e. the node centre (source
-    // `transformOrigin: node.x node.y`), which carries the trophy with the hub.
-    return SizedBox.expand(
-      child: SingleMotionBuilder(
-        value: _entered ? 1.0 : 0.6,
-        motion: beuiSpringPanel,
-        builder: (context, scale, child) =>
-            Transform.scale(scale: scale, child: child),
-        child: mark,
-      ),
+        // Scale is movement, so it is the half that reduced motion drops. The
+        // origin is the box centre, i.e. the node centre (source
+        // `transformOrigin: node.x node.y`), which carries the trophy with
+        // the hub.
+        return SizedBox.expand(
+          child: SingleMotionBuilder(
+            value: entered ? 1.0 : 0.6,
+            motion: beuiSpringPanel,
+            builder: (context, scale, child) =>
+                Transform.scale(scale: scale, child: child),
+            child: faded,
+          ),
+        );
+      },
     );
   }
 }
@@ -1124,6 +1100,25 @@ class _WheelAnchorState extends State<_WheelAnchor> {
   bool _focusVisible = false;
   PointerDeviceKind? _lastKind;
 
+  @override
+  void initState() {
+    super.initState();
+    _syncTabStop();
+  }
+
+  @override
+  void didUpdateWidget(_WheelAnchor old) {
+    super.didUpdateWidget(old);
+    if (widget.focusNode != old.focusNode ||
+        widget.isTabStop != old.isTabStop) {
+      _syncTabStop();
+    }
+  }
+
+  // Roving tab stop: only the active mark is reachable with Tab, so the wheel
+  // is one stop in the page's tab order rather than 63.
+  void _syncTabStop() => widget.focusNode.skipTraversal = !widget.isTabStop;
+
   void _handleTap() {
     // Click, not pointer-down: a tap pins the mark, and unpinning has to also
     // drop focus or it stays lit. Mice never take this path — they already
@@ -1134,10 +1129,6 @@ class _WheelAnchorState extends State<_WheelAnchor> {
 
   @override
   Widget build(BuildContext context) {
-    // Roving tab stop: only the active mark is reachable with Tab, so the wheel
-    // is one stop in the page's tab order rather than 63.
-    widget.focusNode.skipTraversal = !widget.isTabStop;
-
     return Semantics(
       button: true,
       label: widget.caption,
@@ -1219,7 +1210,7 @@ class _WheelAnchorState extends State<_WheelAnchor> {
 /// back to this in-stage caption on touch. The port draws the caption for every
 /// input path — hover, focus and tap — rather than mounting one `BeuiOverlay`
 /// per mark (63 on a 32-team draw) for the same string in the same place.
-class _Caption extends StatefulWidget {
+class _Caption extends StatelessWidget {
   const _Caption({
     required this.node,
     required this.text,
@@ -1238,39 +1229,13 @@ class _Caption extends StatefulWidget {
   final bool reduce;
 
   @override
-  State<_Caption> createState() => _CaptionState();
-}
-
-class _CaptionState extends State<_Caption> {
-  bool _shown = false;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer(Duration.zero, () {
-      if (mounted) setState(() => _shown = true);
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final node = widget.node;
-    final colors = widget.colors;
     // Lower half → the caption goes above the mark, so it never runs off stage.
     final above = node.center.dy > _center;
-    final k = widget.scale;
+    final k = scale;
 
-    Widget bubble = ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: math.min(288, widget.stageWidth * 0.8),
-      ),
+    final bubble = ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: math.min(288, stageWidth * 0.8)),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
@@ -1287,7 +1252,7 @@ class _CaptionState extends State<_Caption> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           child: Text(
-            widget.text,
+            text,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12,
@@ -1300,23 +1265,6 @@ class _CaptionState extends State<_Caption> {
       ),
     );
 
-    bubble = AnimatedOpacity(
-      opacity: _shown ? 1 : 0,
-      duration: const Duration(milliseconds: _dimMs),
-      curve: beuiEaseOut,
-      child: bubble,
-    );
-
-    if (!widget.reduce) {
-      bubble = SingleMotionBuilder(
-        value: _shown ? 1.0 : 0.94,
-        motion: const CurvedMotion(Duration(milliseconds: _dimMs), beuiEaseOut),
-        builder: (context, scale, child) =>
-            Transform.scale(scale: scale, child: child),
-        child: bubble,
-      );
-    }
-
     return Positioned(
       left: node.center.dx * k,
       top: (node.center.dy + (above ? -node.r : node.r)) * k,
@@ -1325,7 +1273,28 @@ class _CaptionState extends State<_Caption> {
           offset: Offset(0, above ? -8 : 8),
           child: FractionalTranslation(
             translation: Offset(-0.5, above ? -1 : 0),
-            child: bubble,
+            child: _DelayedFade(
+              delayMs: 0,
+              builder: (context, shown) {
+                var faded = AnimatedOpacity(
+                  opacity: shown ? 1 : 0,
+                  duration: const Duration(milliseconds: _dimMs),
+                  curve: beuiEaseOut,
+                  child: bubble,
+                );
+                if (reduce) return faded;
+                return SingleMotionBuilder(
+                  value: shown ? 1.0 : 0.94,
+                  motion: const CurvedMotion(
+                    Duration(milliseconds: _dimMs),
+                    beuiEaseOut,
+                  ),
+                  builder: (context, scale, child) =>
+                      Transform.scale(scale: scale, child: child),
+                  child: faded,
+                );
+              },
+            ),
           ),
         ),
       ),

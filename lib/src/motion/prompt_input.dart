@@ -304,10 +304,9 @@ class BeuiPromptInput extends StatefulWidget {
 
   /// Called when a submit attempt was refused, with the reason.
   ///
-  /// Enter during generation or on an empty composer used to vanish silently —
-  /// no send, no newline, no feedback. It now inserts a newline (so the user
-  /// can keep drafting), flashes the stop button while streaming, and reports
-  /// here.
+  /// A blocked Enter (during generation, or on an empty composer) inserts a
+  /// newline so the user can keep drafting, flashes the stop button while
+  /// streaming, and reports here.
   final ValueChanged<BeuiPromptBlockedReason>? onSubmitBlocked;
 
   /// Attachments riding along with the prompt, shown as a chip rail above the
@@ -390,6 +389,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
   double? _measuredWidth;
   double? _measuredFontSize;
   double? _measuredLineHeight;
+  int? _measuredMaxRows;
   int _measuredRows = 0;
 
   // First-line leading cache — see [_firstLineLeading].
@@ -544,11 +544,9 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
     }
     if (!widget.enabled) return KeyEventResult.ignored;
 
-    // Enter used to be consumed unconditionally while `_submit` quietly
-    // early-returned, so pressing it mid-stream or on an empty composer did
-    // nothing at all: no send, no newline, no sign anything had happened.
-    // Returning `ignored` hands the key back to the field, so the keystroke at
-    // least becomes the newline the user can keep drafting with.
+    // Blocked sends return `ignored` rather than swallowing the keystroke, so
+    // Enter on an empty or mid-stream composer becomes the newline the user
+    // can keep drafting with instead of doing nothing at all.
     if (widget.loading) {
       // Plus a visible answer to "why didn't that send?": draw the eye to the
       // control that can actually act right now.
@@ -564,17 +562,26 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
     return KeyEventResult.handled;
   }
 
+  /// The composer's font size and line-height multiplier, resolved once from
+  /// [BeuiAgentTheme.typography.assistantBody] with the source's `text-sm
+  /// leading-6` fallback — every composer style and metric derives from this.
+  ({double fontSize, double height}) _composerMetrics(BeuiAgentTheme agent) {
+    final body = agent.typography.assistantBody;
+    return (
+      fontSize: body.fontSize ?? _fontSize,
+      height: body.height ?? _lineHeight / _fontSize,
+    );
+  }
+
   /// Composer text style — source `text-sm leading-6` with default tracking.
   ///
   /// [TextLeadingDistribution.even] is CSS's line-box model: the extra leading
   /// splits evenly above and below the glyphs.
   TextStyle _composerStyle(BeuiColors colors, BeuiAgentTheme agent) {
-    final body = agent.typography.assistantBody;
-    final fontSize = body.fontSize ?? _fontSize;
-    final height = body.height ?? _lineHeight / _fontSize;
+    final m = _composerMetrics(agent);
     return TextStyle(
-      fontSize: fontSize,
-      height: height,
+      fontSize: m.fontSize,
+      height: m.height,
       leadingDistribution: TextLeadingDistribution.even,
       // An unset letterSpacing inherits the host theme's body style (0.25–0.5
       // under Material) and widens the line by ~0.5px per character.
@@ -584,43 +591,38 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
   }
 
   TextStyle _hiddenComposerStyle(BeuiAgentTheme agent) {
-    final body = agent.typography.assistantBody;
-    final fontSize = body.fontSize ?? _fontSize;
-    final height = body.height ?? _lineHeight / _fontSize;
+    final m = _composerMetrics(agent);
     return TextStyle(
-      fontSize: fontSize,
-      height: height,
+      fontSize: m.fontSize,
+      height: m.height,
       leadingDistribution: TextLeadingDistribution.even,
       letterSpacing: 0,
     );
   }
 
   StrutStyle _composerStrut(BeuiAgentTheme agent) {
-    final body = agent.typography.assistantBody;
-    final fontSize = body.fontSize ?? _fontSize;
-    final height = body.height ?? _lineHeight / _fontSize;
+    final m = _composerMetrics(agent);
     return StrutStyle(
-      fontSize: fontSize,
-      height: height,
+      fontSize: m.fontSize,
+      height: m.height,
       leadingDistribution: TextLeadingDistribution.even,
     );
   }
 
   double _resolvedLineHeight(BeuiAgentTheme agent) {
-    final body = agent.typography.assistantBody;
-    return (body.height ?? _lineHeight / _fontSize) *
-        (body.fontSize ?? _fontSize);
+    final m = _composerMetrics(agent);
+    return m.height * m.fontSize;
   }
 
   double _resolvedFontSize(BeuiAgentTheme agent) =>
-      agent.typography.assistantBody.fontSize ?? _fontSize;
+      _composerMetrics(agent).fontSize;
 
   /// The source's `resizeTextarea`: measure the wrapped text in a mirror of the
   /// field's content box, then clamp the row count to [minRows]…[maxRows].
   ///
-  /// This runs in `build`, so it used to lay out the *entire* prompt on every
-  /// keystroke — paste a long document into the composer and the field janks on
-  /// every character after it, permanently. Two fixes, both invisible:
+  /// This runs in `build`, so laying out the *entire* prompt on every keystroke
+  /// would jank on every character after pasting a long document. Two guards
+  /// keep it cheap:
   ///
   ///  * The result is memoised on everything it depends on (text, available
   ///    width, resolved font size and line height), so a rebuild that changes
@@ -640,7 +642,8 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
         _measuredText == text &&
         _measuredWidth == textWidth &&
         _measuredFontSize == fontSize &&
-        _measuredLineHeight == lineHeight;
+        _measuredLineHeight == lineHeight &&
+        _measuredMaxRows == widget.maxRows;
 
     if (!cacheHit) {
       var rows = widget.minRows;
@@ -659,6 +662,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
       _measuredWidth = textWidth;
       _measuredFontSize = fontSize;
       _measuredLineHeight = lineHeight;
+      _measuredMaxRows = widget.maxRows;
       _measuredRows = rows;
     }
 
@@ -698,10 +702,7 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final swapMotion = motionFor(context, beuiSpringSwap, isMovement: true);
@@ -742,63 +743,68 @@ class _BeuiPromptInputState extends State<BeuiPromptInput> {
                 onRemove: widget.onAttachmentRemoved,
                 onRetry: widget.onAttachmentRetry,
               ),
-            _ComposerSemantics(
-              label: widget.semanticLabel ?? agent.strings.promptSemanticLabel,
-              child: DefaultTextHeightBehavior(
-                // CSS puts half of `leading-6`'s extra leading above the first
-                // line; Flutter's paragraph default leaves the first ascent at
-                // the font's natural value, parking the text ~4px high.
-                textHeightBehavior: const TextHeightBehavior(
-                  leadingDistribution: TextLeadingDistribution.even,
-                ),
-                child: LayoutBuilder(
-                  builder: (context, constraints) => SizedBox(
-                    // The source sizes the textarea's *border box* to
-                    // `clamp(scrollHeight, minRows*24, maxRows*24)` off an
-                    // invisible mirror div, so the `pt-1.5` lives inside that
-                    // height. Flutter's minLines/maxLines would add the padding
-                    // on top and make the shell 6px taller than the site's.
-                    height: _composerHeight(context, constraints.maxWidth),
-                    child: TextField(
-                      controller: _controller,
-                      focusNode: _focusNode,
-                      enabled: widget.enabled,
-                      autofocus: widget.autofocus,
-                      expands: true,
-                      maxLines: null,
-                      minLines: null,
-                      textAlignVertical: TextAlignVertical.top,
-                      keyboardType: TextInputType.multiline,
-                      textInputAction: TextInputAction.newline,
-                      style: _composerStyle(colors, agent),
-                      strutStyle: _composerStrut(agent),
-                      cursorColor: colors.foreground,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        border: InputBorder.none,
-                        // source `px-2 pt-1.5`, plus the half-leading CSS puts
-                        // above the first line and Flutter's field does not.
-                        contentPadding: EdgeInsets.fromLTRB(
-                          8,
-                          6 + _firstLineLeading(context),
-                          8,
-                          0,
+            // Names the composer without nesting a second edit box inside the
+            // first — MergeSemantics folds the field's own textField node
+            // into this one instead of declaring a sibling that duplicates
+            // it, so a screen reader announces the composer once.
+            MergeSemantics(
+              child: Semantics(
+                label:
+                    widget.semanticLabel ?? agent.strings.promptSemanticLabel,
+                child: DefaultTextHeightBehavior(
+                  // CSS puts half of `leading-6`'s extra leading above the first
+                  // line; Flutter's paragraph default leaves the first ascent at
+                  // the font's natural value, parking the text ~4px high.
+                  textHeightBehavior: const TextHeightBehavior(
+                    leadingDistribution: TextLeadingDistribution.even,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => SizedBox(
+                      // The source sizes the textarea's *border box* to
+                      // `clamp(scrollHeight, minRows*24, maxRows*24)` off an
+                      // invisible mirror div, so the `pt-1.5` lives inside that
+                      // height. Flutter's minLines/maxLines would add the padding
+                      // on top and make the shell 6px taller than the site's.
+                      height: _composerHeight(context, constraints.maxWidth),
+                      child: TextField(
+                        controller: _controller,
+                        focusNode: _focusNode,
+                        enabled: widget.enabled,
+                        autofocus: widget.autofocus,
+                        expands: true,
+                        maxLines: null,
+                        minLines: null,
+                        textAlignVertical: TextAlignVertical.top,
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.newline,
+                        style: _composerStyle(colors, agent),
+                        strutStyle: _composerStrut(agent),
+                        cursorColor: colors.foreground,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          border: InputBorder.none,
+                          // source `px-2 pt-1.5`, plus the half-leading CSS puts
+                          // above the first line and Flutter's field does not.
+                          contentPadding: EdgeInsets.fromLTRB(
+                            8,
+                            6 + _firstLineLeading(context),
+                            8,
+                            0,
+                          ),
+                          hintText:
+                              widget.placeholder ??
+                              agent.strings.promptPlaceholder,
+                          hintStyle: _composerStyle(colors, agent).copyWith(
+                            // Full-strength `mutedForeground` (5.9:1) keeps the
+                            // composer's only label above the AA floor.
+                            color: colors.mutedForeground,
+                          ),
                         ),
-                        hintText:
-                            widget.placeholder ??
-                            agent.strings.promptPlaceholder,
-                        hintStyle: _composerStyle(colors, agent).copyWith(
-                          // Full-strength `mutedForeground` (5.9:1). The 0.55
-                          // multiplier that used to sit here dropped it to
-                          // 2.32:1 — the worst contrast in the library, on the
-                          // composer's only label.
-                          color: colors.mutedForeground,
-                        ),
+                        onChanged: (v) {
+                          widget.onValueChange?.call(v);
+                          if (widget.value == null) setState(() {});
+                        },
                       ),
-                      onChanged: (v) {
-                        widget.onValueChange?.call(v);
-                        if (widget.value == null) setState(() {});
-                      },
                     ),
                   ),
                 ),
@@ -894,7 +900,6 @@ class _Footer extends StatelessWidget {
               // stakes, and so is lining up the next model. Neither has
               // anything to do with the stream, so neither goes dead for it.
               enabled: enabled,
-              composerEnabled: enabled,
               open: actionsOpen,
               onOpenChange: onActionsOpenChange,
               actions: actions,
@@ -946,7 +951,6 @@ class _ActionsButton extends StatefulWidget {
     required this.reduce,
     required this.swapMotion,
     required this.enabled,
-    required this.composerEnabled,
     required this.open,
     required this.onOpenChange,
     required this.actions,
@@ -957,11 +961,6 @@ class _ActionsButton extends StatefulWidget {
   final bool reduce;
   final Motion swapMotion;
   final bool enabled;
-
-  /// Whether the composer as a whole is enabled. The shell already dims itself
-  /// to 0.6 when it is not, so this control must not dim *again* — the two
-  /// multiplied to 0.30, well past unreadable.
-  final bool composerEnabled;
   final bool open;
   final ValueChanged<bool> onOpenChange;
   final List<BeuiPromptAction> actions;
@@ -1083,18 +1082,15 @@ class _ActionsButtonState extends State<_ActionsButton> {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: enabled ? _toggle : null,
-              child: Opacity(
-                opacity: (widget.composerEnabled && !enabled) ? 0.5 : 1,
-                child: BeuiFocusRing(
-                  focused: _focusVisible,
-                  borderRadius: BorderRadius.circular(10),
-                  child: KeyedSubtree(
-                    key: _triggerKey,
-                    child: SizedBox(
-                      width: 32,
-                      height: 32,
-                      child: Center(child: plus),
-                    ),
+              child: BeuiFocusRing(
+                focused: _focusVisible,
+                borderRadius: BorderRadius.circular(10),
+                child: KeyedSubtree(
+                  key: _triggerKey,
+                  child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: Center(child: plus),
                   ),
                 ),
               ),
@@ -1556,12 +1552,10 @@ class _ActionRowState extends State<_ActionRow> {
 // ---------------------------------------------------------------------------
 // Model picker
 //
-// One implementation, always. This used to fork: models without icons got the
-// gooey [BeuiSelect] — keyboard-navigable, bordered, 14px — and the moment any
-// one model carried an icon the whole picker silently swapped to a bespoke
-// overlay that was 12px, borderless, and reachable only with a pointer. Adding
-// a glyph to a list entry is not a reason to take the keyboard away from it, so
-// [BeuiSelectOption] grew an `icon` slot and the fork is gone.
+// One implementation, always: the gooey, keyboard-navigable [BeuiSelect],
+// whether or not a model carries an icon — [BeuiSelectOption]'s `icon` slot
+// covers that case, so a glyph is never a reason to swap to a different,
+// pointer-only picker.
 // ---------------------------------------------------------------------------
 
 class _ModelPicker extends StatelessWidget {
@@ -1640,7 +1634,9 @@ class _SendStopButton extends StatelessWidget {
         button: true,
         enabled: enabled,
         label: loading
-            ? (stoppable ? 'Stop generating' : 'Generating')
+            ? (stoppable
+                  ? BeuiAgentTheme.of(context).strings.stopGenerating
+                  : 'Generating')
             : 'Send prompt',
         child: _StopPulse(
           pulse: pulse,
@@ -1925,29 +1921,6 @@ class _StopSquarePainter extends CustomPainter {
   @override
   bool shouldRepaint(_StopSquarePainter oldDelegate) =>
       oldDelegate.color != color;
-}
-
-// ---------------------------------------------------------------------------
-// Composer semantics
-// ---------------------------------------------------------------------------
-
-/// Names the composer without nesting a second edit box inside the first.
-///
-/// The wrapper here used to declare `textField: true` over a [TextField] that
-/// already declares it, so the tree carried two edit-box nodes and a screen
-/// reader announced the composer twice. Merging instead gives one node that
-/// carries both the name and the field's own value, actions and state — the
-/// association a `<label for>` provides on the web.
-class _ComposerSemantics extends StatelessWidget {
-  const _ComposerSemantics({required this.label, required this.child});
-
-  final String label;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) => MergeSemantics(
-    child: Semantics(label: label, child: child),
-  );
 }
 
 // ---------------------------------------------------------------------------

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -288,7 +290,7 @@ class BeuiAnimatedSidebarTrigger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = BeuiAnimatedSidebarScope.maybeOf(context);
-    final colors = _colorsOf(context);
+    final colors = BeuiColors.resolve(context);
     final open = scope == null
         ? true
         : (scope.isMobile ? scope.openMobile : scope.expanded);
@@ -483,7 +485,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
 
   bool get _expanded {
     if (widget.collapsible == BeuiAnimatedSidebarCollapsible.none) return true;
-    return _controlledExpanded ? widget.expanded! : _internalExpanded;
+    return widget.expanded ?? _internalExpanded;
   }
 
   /// Mirrors `openMobile ?? internalOpenMobile` in the source provider.
@@ -699,7 +701,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = _colorsOf(context);
+    final colors = BeuiColors.resolve(context);
     final screenW = MediaQuery.sizeOf(context).width;
     final isMobile = screenW < widget.mobileBreakpoint;
     final expanded = _expanded;
@@ -756,7 +758,6 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
       semanticLabel: widget.semanticLabel,
       onSelect: (id) => _select(id, isMobile: isMobile),
       onCloseMobile: isMobile ? () => _setOpenMobile(false) : null,
-      showMobileClose: isMobile,
     );
 
     if (isMobile) {
@@ -787,6 +788,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
 
     final rail = _DesktopRail(
       targetWidth: targetWidth,
+      configuredWidth: widget.width,
       expanded: expanded,
       collapsible: widget.collapsible,
       side: widget.side,
@@ -829,6 +831,7 @@ class _BeuiAnimatedSidebarState extends State<BeuiAnimatedSidebar> {
 class _DesktopRail extends StatelessWidget {
   const _DesktopRail({
     required this.targetWidth,
+    required this.configuredWidth,
     required this.expanded,
     required this.collapsible,
     required this.side,
@@ -840,6 +843,11 @@ class _DesktopRail extends StatelessWidget {
   });
 
   final double targetWidth;
+
+  /// The consumer's configured [BeuiAnimatedSidebar.width] — the fallback
+  /// used while the spring-animated width is transiently near zero (e.g.
+  /// mid-offcanvas-open), instead of the library default.
+  final double configuredWidth;
   final bool expanded;
   final BeuiAnimatedSidebarCollapsible collapsible;
   final BeuiAnimatedSidebarSide side;
@@ -888,11 +896,12 @@ class _DesktopRail extends StatelessWidget {
       reducedFallback: const NoMotion(),
     );
 
-    Widget rail = SingleMotionBuilder(
+    return SingleMotionBuilder(
       value: targetWidth,
       motion: motion,
       builder: (context, w, _) {
-        final width = w.clamp(0.0, double.infinity);
+        // NoMotion holds its value; reduced motion snaps directly to the target.
+        final width = reduce ? targetWidth : w.clamp(0.0, double.infinity);
         final offcanvasHidden =
             collapsible == BeuiAnimatedSidebarCollapsible.offcanvas &&
             !expanded;
@@ -902,7 +911,7 @@ class _DesktopRail extends StatelessWidget {
         final margin = _detached
             ? const EdgeInsets.all(_detachedMargin)
             : EdgeInsets.zero;
-        final outer = width < 1 ? kBeuiAnimatedSidebarWidth : width;
+        final outer = width < 1 ? configuredWidth : width;
         final inner = (outer - margin.horizontal).clamp(0.0, double.infinity);
         final radius = _detached
             ? BorderRadius.circular(_detachedRadius)
@@ -917,8 +926,8 @@ class _DesktopRail extends StatelessWidget {
                   : Alignment.centerRight,
               minWidth: 0,
               maxWidth: targetWidth == 0
-                  ? kBeuiAnimatedSidebarWidth
-                  : (width < 1 ? kBeuiAnimatedSidebarWidth : null),
+                  ? configuredWidth
+                  : (width < 1 ? configuredWidth : null),
               child: AnimatedOpacity(
                 duration: reduce
                     ? const Duration(milliseconds: 160)
@@ -969,8 +978,6 @@ class _DesktopRail extends StatelessWidget {
         );
       },
     );
-
-    return rail;
   }
 }
 
@@ -1055,11 +1062,6 @@ class _MobileSheet extends StatelessWidget {
     final panelW = width.clamp(0.0, maxW);
     final isLeft = side == BeuiAnimatedSidebarSide.left;
 
-    final barrierMotion = motionFor(
-      context,
-      _panelSlide,
-      isMovement: false, // opacity preserved
-    );
     final slideMotion = motionFor(
       context,
       _panelSlide,
@@ -1076,9 +1078,7 @@ class _MobileSheet extends StatelessWidget {
             ignoring: !open,
             child: SingleMotionBuilder(
               value: open ? 1.0 : 0.0,
-              motion: barrierMotion is NoMotion
-                  ? _reducedMotion
-                  : (reduce ? _reducedMotion : _panelSlide),
+              motion: reduce ? _reducedMotion : _panelSlide,
               builder: (context, t, _) {
                 if (t <= 0.001) return const SizedBox.shrink();
                 return GestureDetector(
@@ -1172,7 +1172,6 @@ class _SidebarPanel extends StatelessWidget {
     this.footer,
     this.panelContent,
     this.onCloseMobile,
-    this.showMobileClose = false,
     super.key,
   });
 
@@ -1191,7 +1190,6 @@ class _SidebarPanel extends StatelessWidget {
   final Widget? footer;
   final Widget? panelContent;
   final VoidCallback? onCloseMobile;
-  final bool showMobileClose;
 
   @override
   Widget build(BuildContext context) {
@@ -1201,13 +1199,13 @@ class _SidebarPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (header != null || showMobileClose)
+          if (header != null || onCloseMobile != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
               child: Row(
                 children: [
                   if (header != null) Expanded(child: header!),
-                  if (showMobileClose)
+                  if (onCloseMobile != null)
                     IconButton(
                       tooltip: 'Close sidebar',
                       onPressed: onCloseMobile,
@@ -1345,38 +1343,28 @@ class _ActivePill extends StatelessWidget {
     );
 
     if (reduce || motion is NoMotion) {
-      return Stack(
-        children: [
-          Positioned(
-            left: rect.left,
-            top: rect.top,
-            width: rect.width,
-            height: rect.height,
-            child: pill,
-          ),
-        ],
-      );
+      return _positioned(rect, pill);
     }
 
     return MotionBuilder<Rect>(
       value: rect,
       motion: motion,
       converter: const RectMotionConverter(),
-      builder: (context, r, _) {
-        return Stack(
-          children: [
-            Positioned(
-              left: r.left,
-              top: r.top,
-              width: r.width,
-              height: r.height,
-              child: pill,
-            ),
-          ],
-        );
-      },
+      builder: (context, r, _) => _positioned(r, pill),
     );
   }
+
+  Widget _positioned(Rect r, Widget pill) => Stack(
+    children: [
+      Positioned(
+        left: r.left,
+        top: r.top,
+        width: r.width,
+        height: r.height,
+        child: pill,
+      ),
+    ],
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -1522,9 +1510,9 @@ class _MenuButtonState extends State<_MenuButton> {
   Widget build(BuildContext context) {
     final item = widget.item;
     final colors = widget.colors;
-    final fg = widget.isActive
+    final fg = (widget.isActive || _hovered)
         ? colors.foreground
-        : (_hovered ? colors.foreground : colors.mutedForeground);
+        : colors.mutedForeground;
 
     // Source: a `size-5` (20) grid cell holding a `size-4` (16) glyph.
     final icon = SizedBox(
@@ -1639,7 +1627,7 @@ class _MenuButtonState extends State<_MenuButton> {
                                     height: 16,
                                     child: Center(
                                       child: Transform.rotate(
-                                        angle: t * 1.57079632679, // 90°
+                                        angle: t * math.pi / 2,
                                         child: Icon(
                                           LucideIcons.chevron_right,
                                           size: 14,
@@ -1804,10 +1792,12 @@ class _Submenu extends StatelessWidget {
     );
 
     if (reduce) {
+      // Movement (the height collapse below) drops under reduced motion;
+      // opacity stays, so the list stays mounted and only fades.
       return AnimatedOpacity(
         duration: const Duration(milliseconds: 120),
         opacity: open ? 1 : 0,
-        child: open ? list : const SizedBox.shrink(),
+        child: list,
       );
     }
 
@@ -1816,14 +1806,7 @@ class _Submenu extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         curve: beuiEaseOut,
         alignment: Alignment.topCenter,
-        child: open
-            ? AnimatedOpacity(
-                duration: const Duration(milliseconds: 180),
-                curve: beuiEaseOut,
-                opacity: 1,
-                child: list,
-              )
-            : const SizedBox(width: double.infinity, height: 0),
+        child: open ? list : const SizedBox(width: double.infinity, height: 0),
       ),
     );
   }
@@ -1948,10 +1931,3 @@ class _SubButtonState extends State<_SubButton> {
 
 // ---------------------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------------------
-
-BeuiColors _colorsOf(BuildContext context) {
-  final theme = Theme.of(context);
-  return theme.extension<BeuiColors>() ??
-      BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
-}

@@ -11,6 +11,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_chevron.dart';
 import '_disclosure.dart';
 import '_engine.dart';
 import '_hit_target.dart';
@@ -59,7 +60,7 @@ enum BeuiToolResultKind {
 const _spinPeriod = Duration(milliseconds: 900);
 
 /// Hover-in for the action-button chip. Its exit is [_hoverOut] — deliberately
-/// shorter, per the repo rule that exits beat entrances (the audit's A19).
+/// shorter, per the repo rule that exits beat entrances.
 const _hoverIn = Duration(milliseconds: 150);
 
 /// Hover-out for the action-button chip.
@@ -68,11 +69,11 @@ const _hoverOut = Duration(milliseconds: 110);
 /// How long the "Copied" confirmation is held.
 const _copiedHold = Duration(milliseconds: 1600);
 
-/// Width below which the seven-element header wraps onto two lines (A15).
+/// Width below which the seven-element header wraps onto two lines.
 const double _twoLineBreakpoint = 400;
 
 /// The output line box, in logical pixels — `text-xs` (12px) on `leading-5`
-/// (20px). Used to translate a scroll extent into a line count (A22).
+/// (20px). Used to translate a scroll extent into a line count.
 const double _outputLineHeight = 20;
 
 /// Inner padding of the output viewport (source `p-3`).
@@ -81,7 +82,7 @@ const double _outputLineHeight = 20;
 /// `p-4` card role, and this is a nested panel — so the source value stands.
 const EdgeInsets _outputPadding = EdgeInsets.all(12);
 
-/// Height of the bottom fade over a capped, overflowing viewport (A22).
+/// Height of the bottom fade over a capped, overflowing viewport.
 const double _fadeExtent = 24;
 
 // ---------------------------------------------------------------------------
@@ -89,7 +90,7 @@ const double _fadeExtent = 24;
 // ---------------------------------------------------------------------------
 
 /// Maps a tool-result lifecycle onto the shared agent status tier, so one
-/// [BeuiAgentTheme] override retints every agent surface at once (A36).
+/// [BeuiAgentTheme] override retints every agent surface at once.
 ///
 /// `cancelled` maps to [BeuiAgentStatus.neutral] rather than
 /// [BeuiAgentStatus.denied]: a cancelled run is not a refusal, it simply did
@@ -136,10 +137,9 @@ IconData _statusIcon(BeuiToolResultStatus status, BeuiAgentIcons icons) =>
 /// `github-*-high-contrast` themes the source builds its highlighter with. It
 /// is a deliberately **reduced** port: a small scanner, not a lexer.
 ///
-/// The body text is painted at full [BeuiColors.foreground]. It used to be
-/// alpha-multiplied to 0.8, which dimmed the one thing on the card the reader
-/// actually came for (the audit's A8 — never alpha-multiply
-/// information-bearing text).
+/// The body text is painted at full [BeuiColors.foreground] — never
+/// alpha-multiplied, since it is the one thing on the card the reader
+/// actually came for.
 class BeuiToolResultOutput extends StatelessWidget {
   /// Creates a soft-wrapped mono output block.
   const BeuiToolResultOutput({
@@ -157,9 +157,7 @@ class BeuiToolResultOutput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final palette = BeuiSyntaxPalette.of(theme.brightness);
     final lines = code.split('\n');
@@ -167,7 +165,7 @@ class BeuiToolResultOutput extends StatelessWidget {
     return DefaultTextStyle(
       // Source `AgentCode`: `font-mono text-xs leading-5` — a 20px line box at
       // 12px, not a relative leading. The family/size come from the theme's
-      // mono role so a consumer can restyle every code surface at once (A37).
+      // mono role so a consumer can restyle every code surface at once.
       style: agent.typography.mono.copyWith(
         height: _outputLineHeight / (agent.typography.mono.fontSize ?? 12),
         color: colors.foreground,
@@ -208,7 +206,7 @@ class BeuiToolResultOutput extends StatelessWidget {
 ///
 /// Under [_twoLineBreakpoint] (400px) the header **wraps onto two lines** —
 /// title and status on the first, metadata and tool slug on the second. Seven
-/// elements in one row collapsed badly on a phone bubble (the audit's A15).
+/// elements in one row collapsed badly on a phone bubble.
 ///
 /// **Actions stay reachable.** Copy result / Run again render *outside* the
 /// collapsible panel by default, so a completed-and-collapsed result can still
@@ -218,7 +216,7 @@ class BeuiToolResultOutput extends StatelessWidget {
 /// **Open state.** Controlled when [open] is non-null (drive via [onOpenChange]);
 /// otherwise internal state seeded by [defaultOpen].
 ///
-/// **`defaultOpen` policy (the audit's A42).** The rule across the agent family
+/// **`defaultOpen` policy.** The rule across the agent family
 /// is: *a surface that is still asking or still running opens; a historical
 /// record collapses.* A tool result is a live process while it runs, so
 /// entering `running` force-opens the panel; on completion it becomes a
@@ -227,7 +225,7 @@ class BeuiToolResultOutput extends StatelessWidget {
 /// mounted while it is still streaming. Mounting a finished result into a
 /// scrollback should pass `defaultOpen: false`.
 ///
-/// **Concurrent tool calls (the audit's A25).** There is no separate
+/// **Concurrent tool calls.** There is no separate
 /// "tool group" component, and there should not be: several tools running at
 /// once is a [Column] of [BeuiToolResult]s inside one message, each with its
 /// own [status], [tool], and body. They collapse and expand independently, and
@@ -257,7 +255,7 @@ class BeuiToolResultOutput extends StatelessWidget {
 /// labels roll via [BeuiActionSwapText]; action buttons press-scale to
 /// [beuiAgentPressScale] on [beuiSpringPress]; the disclosure opens in 220ms /
 /// closes in 140ms [beuiEaseOut] via [BeuiAgentDisclosureInternal]. Every exit
-/// is shorter than its entrance (A19). Reduced motion drops movement (scale,
+/// is shorter than its entrance. Reduced motion drops movement (scale,
 /// translate, spin, chevron rotate) while keeping opacity / colour.
 ///
 /// **API mapping** (source → Flutter):
@@ -325,7 +323,7 @@ class BeuiToolResult extends StatefulWidget {
   ///
   /// This is the string that says *what ran*, so it is painted at full
   /// [BeuiColors.mutedForeground] rather than alpha-multiplied down to a
-  /// decoration (the audit's A8 / A14). For a non-text slug use [toolWidget].
+  /// decoration. For a non-text slug use [toolWidget].
   final String? tool;
 
   /// Widget form of [tool], for callers that need more than a string.
@@ -368,11 +366,9 @@ class BeuiToolResult extends StatefulWidget {
   final bool collapseOnComplete;
 
   /// Keep Copy result / Run again mounted outside the collapsible panel, so
-  /// they survive [collapseOnComplete] (default true).
-  ///
-  /// The actions used to live *inside* the disclosure, which meant a run that
-  /// auto-collapsed on completion took its own copy button away at exactly the
-  /// moment the reader wanted it. Pass false to restore that layout.
+  /// they survive [collapseOnComplete] (default true) instead of vanishing
+  /// with the panel at the exact moment the reader wants them. Pass false to
+  /// nest the actions inside the panel instead.
   final bool keepActionsVisibleWhenCollapsed;
 
   /// Max viewport height in logical pixels (source `maxHeight`, default 220).
@@ -384,7 +380,7 @@ class BeuiToolResult extends StatefulWidget {
   /// Null (the default) derives the count from the output text — the [code] of
   /// a [BeuiToolResultOutput] child, else [copyText] — against the measured
   /// viewport. Either way the cue only appears while the content actually
-  /// overflows (the audit's A22).
+  /// overflows.
   final int? hiddenLineCount;
 
   /// Text written to the clipboard by the copy action (source `copyText`).
@@ -415,11 +411,10 @@ class BeuiToolResult extends StatefulWidget {
 
 class _BeuiToolResultState extends State<BeuiToolResult>
     with SingleTickerProviderStateMixin {
-  /// F12: this viewport used to yank itself to the bottom on every streamed
-  /// chunk with no notion of a reader who had scrolled up — the last unpinned
-  /// streaming surface in the library. It now shares the code block's and the
-  /// diff's follower, so scrolling away pins the viewport and raises the same
-  /// "jump to latest" pill.
+  /// Shares the code block's and the diff's follower: scrolling away from the
+  /// bottom pins the viewport and raises the same "jump to latest" pill,
+  /// rather than yanking a reader who has scrolled up back down on every
+  /// streamed chunk.
   late final BeuiLiveEdgeFollower _follow;
 
   /// Keeps the scroll view's element (and therefore its [ScrollPosition])
@@ -448,7 +443,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
   bool get _hasActions => _canCopy || widget.onRetry != null;
 
   /// The output text, when the widget can see it — the source of the hidden
-  /// line count (A22).
+  /// line count.
   String? get _outputText {
     final child = widget.child;
     if (child is BeuiToolResultOutput) return child.code;
@@ -591,7 +586,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       await Clipboard.setData(ClipboardData(text: widget.copyText!));
     }
     if (!mounted) return;
-    // A30: the copy confirmation was visual only. Flipping `_copied` swaps the
+    // The copy confirmation was visual only. Flipping `_copied` swaps the
     // button's semantic label *and* turns it into a live region for the length
     // of the confirmation, so the label change is announced. The revert is not
     // announced, because `liveRegion` goes back to false with it.
@@ -605,14 +600,12 @@ class _BeuiToolResultState extends State<BeuiToolResult>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final strings = agent.strings;
     final reduce = MediaQuery.disableAnimationsOf(context);
 
-    // A36/A7: every status colour comes from the themeable role set. The
+    // Every status colour comes from the themeable role set. The
     // light-mode foregrounds there are the 700 tier, which clears 4.5:1.
     final statusPalette = agent
         .statusColorsFor(theme.brightness)
@@ -734,7 +727,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       ],
     );
 
-    final chevron = _Chevron(
+    final chevron = BeuiDisclosureChevron(
       open: _currentOpen,
       reduce: reduce,
       color: colors.mutedForeground,
@@ -742,7 +735,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
 
     final Widget content;
     if (narrow) {
-      // A15: seven elements do not fit under 400px. Title + status lead; the
+      // Seven elements do not fit under 400px. Title + status lead; the
       // metadata and the slug drop to a second line, indented under the title.
       content = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -802,11 +795,10 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       );
     }
 
-    // A30 + A31 + keyboard: one merged node carrying the label, the button
-    // role, the expanded state, the tap action — and `liveRegion`, so a
-    // terminal outcome ("Failed", "Cancelled") is announced. The old code put
-    // `liveRegion` on the card and gated it on `running`, switching it off
-    // exactly when the outcome arrived.
+    // One merged node carrying the label, the button role, the expanded
+    // state, the tap action, and `liveRegion`, so a terminal outcome
+    // ("Failed", "Cancelled") is announced unconditionally rather than only
+    // while `running`.
     return MergeSemantics(
       child: Semantics(
         liveRegion: true,
@@ -819,7 +811,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
               onTap: _toggle,
               borderRadius: agent.shapes.chip,
               child: ConstrainedBox(
-                // A31: the whole header is the toggle, and it is a real
+                // The whole header is the toggle, and it is a real
                 // 48px-tall target rather than 36px plus hit slop, so the
                 // semantics rect passes the tap-target guidelines too.
                 constraints: const BoxConstraints(
@@ -837,6 +829,21 @@ class _BeuiToolResultState extends State<BeuiToolResult>
     );
   }
 
+  /// A swap-animated label: [text] wins over [custom] when both are given
+  /// (matching each caller's own field-pair contract), styled with [style].
+  Widget? _swapLabel(String? text, Widget? custom, TextStyle style) {
+    if (text != null) {
+      return BeuiActionSwapText(
+        value: text,
+        text: text,
+        variant: BeuiActionSwapVariant.roll,
+        style: style,
+      );
+    }
+    if (custom == null) return null;
+    return DefaultTextStyle.merge(style: style, child: custom);
+  }
+
   Widget _titleLabel(BeuiColors colors, BeuiAgentTheme agent) {
     // 14 / w500 — the assistant body role plus medium weight. Full foreground:
     // the title is the primary string on the header.
@@ -844,53 +851,23 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       fontWeight: FontWeight.w500,
       color: colors.foreground,
     );
-    final text = widget.title;
-    if (text != null) {
-      return BeuiActionSwapText(
-        value: text,
-        text: text,
-        variant: BeuiActionSwapVariant.roll,
-        style: style,
-      );
-    }
-    return DefaultTextStyle.merge(style: style, child: widget.titleWidget!);
+    // A widget always provides one of title / titleWidget.
+    return _swapLabel(widget.title, widget.titleWidget, style)!;
   }
 
   Widget? _metaLabel(BeuiColors colors, BeuiAgentTheme agent) {
-    // A8: un-multiplied mutedForeground. It was `@0.6`.
+    // Un-multiplied mutedForeground. It was `@0.6`.
     final style = agent.typography.status.copyWith(
       color: colors.mutedForeground,
     );
-    final text = widget.meta;
-    if (text != null) {
-      return BeuiActionSwapText(
-        value: text,
-        text: text,
-        variant: BeuiActionSwapVariant.roll,
-        style: style,
-      );
-    }
-    final custom = widget.metaWidget;
-    if (custom == null) return null;
-    return DefaultTextStyle.merge(style: style, child: custom);
+    return _swapLabel(widget.meta, widget.metaWidget, style);
   }
 
   Widget? _toolLabel(BeuiColors colors, BeuiAgentTheme agent) {
-    // A8 / A14: the slug identifies *what ran*, so it gets the mono role at
+    // The slug identifies *what ran*, so it gets the mono role at
     // full mutedForeground rather than 11px at `@0.55` (2.29:1).
     final style = agent.typography.mono.copyWith(color: colors.mutedForeground);
-    final text = widget.tool;
-    if (text != null) {
-      return BeuiActionSwapText(
-        value: text,
-        text: text,
-        variant: BeuiActionSwapVariant.roll,
-        style: style,
-      );
-    }
-    final custom = widget.toolWidget;
-    if (custom == null) return null;
-    return DefaultTextStyle.merge(style: style, child: custom);
+    return _swapLabel(widget.tool, widget.toolWidget, style);
   }
 
   // -------------------------------------------------------------------------
@@ -916,7 +893,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
             return false;
           },
           child: SingleChildScrollView(
-            // F12: the ShaderMask below is mounted and unmounted as the
+            // The ShaderMask below is mounted and unmounted as the
             // viewport starts and stops overflowing, which *re-parents* this
             // scroll view. Without a stable identity Flutter rebuilds the
             // element, and with it a fresh ScrollPosition at offset 0 — which
@@ -931,10 +908,10 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       ),
     );
 
-    // A22 (a): a bottom fade over content that continues below the fold. Ported
+    // A bottom fade over content that continues below the fold. Ported
     // from `agent_activity.dart`'s mask. Only mounted while the viewport
     // actually overflows, so it costs a saveLayer only when it earns one —
-    // never over a fully visible, syntax-highlighted body (A18).
+    // never over a fully visible, syntax-highlighted body.
     if (_overflowing) {
       viewport = ShaderMask(
         blendMode: BlendMode.dstIn,
@@ -956,7 +933,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       );
     }
 
-    // F12: the way back to the live edge, stacked *outside* the ShaderMask so
+    // The way back to the live edge, stacked *outside* the ShaderMask so
     // the pill is not itself faded out by the overflow wash.
     viewport = Stack(
       children: [
@@ -978,7 +955,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
       decoration: BoxDecoration(
         color: colors.muted.withValues(alpha: 0.8),
         borderRadius: agent.shapes.nested,
-        // A38: `structure.borderWidth` was dead in this cluster. One hairline
+        // `structure.borderWidth` was dead in this cluster. One hairline
         // gives the nested panel the same edge treatment as its siblings.
         border: Border.all(
           color: colors.border,
@@ -990,7 +967,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
         mainAxisSize: MainAxisSize.min,
         children: [
           viewport,
-          // A22 (b): say how much is hidden. A fade alone reads as a styling
+          // Say how much is hidden. A fade alone reads as a styling
           // choice; a count reads as content.
           if (_overflowing && hidden != null)
             Padding(
@@ -1001,7 +978,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
                 6,
               ),
               child: Text(
-                // F13: the same copy the code block and the diff use for the
+                // The same copy the code block and the diff use for the
                 // same fact, through the same field.
                 strings.hiddenLines(hidden),
                 style: agent.typography.metadata.copyWith(
@@ -1047,7 +1024,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
         if (_canCopy)
           _ActionButton(
             label: _copied ? copiedLabel : copyLabel,
-            // A30: announce the confirmation, not the idle label.
+            // Announce the confirmation, not the idle label.
             liveRegion: _copied,
             pressed: _copyPressed,
             hovered: _copyHovered,
@@ -1063,7 +1040,7 @@ class _BeuiToolResultState extends State<BeuiToolResult>
               color: _copyHovered ? colors.foreground : colors.mutedForeground,
             ),
           ),
-        // A31: real spacing between the buttons, so the 48px slop of one does
+        // Real spacing between the buttons, so the 48px slop of one does
         // not overhang the other and steal its taps.
         if (_canCopy && widget.onRetry != null)
           SizedBox(width: agent.layout.actionSpacing),
@@ -1132,41 +1109,10 @@ class _StatusGlyph extends StatelessWidget {
   }
 }
 
-class _Chevron extends StatelessWidget {
-  const _Chevron({
-    required this.open,
-    required this.reduce,
-    required this.color,
-  });
-
-  final bool open;
-  final bool reduce;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      BeuiAgentTheme.of(context).icons.expand,
-      size: 14,
-      color: color,
-    );
-    if (reduce) {
-      return Transform.rotate(angle: open ? math.pi : 0, child: icon);
-    }
-    return SingleMotionBuilder(
-      value: open ? 180.0 : 0.0,
-      motion: motionFor(context, beuiSpringSwap, isMovement: true),
-      builder: (context, deg, child) =>
-          Transform.rotate(angle: deg * math.pi / 180.0, child: child),
-      child: icon,
-    );
-  }
-}
-
 /// A 48px icon action with a 28px painted chip.
 ///
 /// The visual is unchanged from the source; the *box* is a full tap target so
-/// the semantics rect clears the platform guidelines (A31). Hit slop alone
+/// the semantics rect clears the platform guidelines. Hit slop alone
 /// would not — `BeuiMinHitTarget` widens hit testing, not the semantics node —
 /// so the target is real and the chip is centred inside it.
 class _ActionButton extends StatelessWidget {
@@ -1208,7 +1154,7 @@ class _ActionButton extends StatelessWidget {
       builder: (context, scale, child) =>
           Transform.scale(scale: scale, child: child),
       child: AnimatedContainer(
-        // Exit shorter than entrance (A19).
+        // Exit shorter than entrance.
         duration: hovered ? _hoverIn : _hoverOut,
         width: 28,
         height: 28,

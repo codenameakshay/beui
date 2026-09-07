@@ -322,30 +322,6 @@ void main() {
       expect(find.text('Completed 2 steps'), findsOneWidget);
     });
 
-    testWidgets('reduced motion keeps content and summary', (tester) async {
-      await tester.pumpWidget(
-        _app(
-          const BeuiAgentActivity(
-            items: [
-              BeuiAgentActivityStep(
-                id: '1',
-                label: 'Done step',
-                status: BeuiAgentStepStatus.complete,
-              ),
-            ],
-            status: BeuiAgentActivityStatus.complete,
-            duration: 1,
-            defaultOpen: true,
-            collapseOnComplete: false,
-          ),
-          reduce: true,
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('Done step'), findsOneWidget);
-      expect(find.textContaining('Thought for'), findsOneWidget);
-    });
-
     // Regression: Tailwind tracking is `normal`. Material's bodyMedium
     // letterSpacing (0.25 by default) was leaking into every row and widening
     // the stream by ~4% against beui.dev.
@@ -870,7 +846,7 @@ void main() {
       handle.dispose();
     });
 
-    // A31. The visual stays at the source's 28px `h-7`; BeuiMinHitTarget grows
+    // The visual stays at the source's 28px `h-7`; BeuiMinHitTarget grows
     // only the hit area, so this is asserted by tapping outside the paint.
     // `androidTapTargetGuideline` measures the *semantics* rect, which follows
     // the paint, so it cannot see hit slop and is not the instrument here.
@@ -1008,7 +984,7 @@ void main() {
     );
   });
 
-  // F1. While `working`, `canScroll` is false — the stream is an OverflowBox
+  // While `working`, `canScroll` is false — the stream is an OverflowBox
   // inside a ClipRect, and the `streamOffset` translate is the ONLY thing that
   // brings newly appended rows up into view. That translate was driven by a
   // `SingleMotionBuilder` handed `const NoMotion()` under reduced motion, and

@@ -2,12 +2,11 @@
 //
 // Mirrors the section/order of beui.dev's component explorer: Components
 // ("motion"), AI Agents, and Blocks — each in the same order as the site's
-// sidebar, wired to the Flutter demo builders. Entries that are not yet ported
-// still have a builder (a stub demo that shows "not yet ported") so the gallery
-// route resolves; the real widget lives under lib/src/motion/ as a scaffold.
+// sidebar, wired to the Flutter demo builders.
 import 'package:flutter/widgets.dart';
 
 import '../demos/action_rails_demo.dart';
+import '../demos/action_swap_demo.dart';
 import '../demos/agent_activity_demo.dart';
 import '../demos/agent_theme_demo.dart';
 import '../demos/ai_sidebar_demo.dart';
@@ -20,14 +19,17 @@ import '../demos/bloom_menu_demo.dart';
 import '../demos/bounce_sidebar_demo.dart';
 import '../demos/bottom_sheet_demo.dart';
 import '../demos/bouncy_accordion_demo.dart';
+import '../demos/button_demo.dart';
 import '../demos/center_morph_modal_demo.dart';
 import '../demos/chat_app_demo.dart';
+import '../demos/checkbox_demo.dart';
 import '../demos/citations_demo.dart';
 import '../demos/code_block_demo.dart';
 import '../demos/command_palette_demo.dart';
 import '../demos/context_menu_demo.dart';
-import '../demos/core_demos.dart';
 import '../demos/cylinder_carousel_demo.dart';
+import '../demos/dock_demo.dart';
+import '../demos/drawer_demo.dart';
 import '../demos/dynamic_island_demo.dart';
 import '../demos/expandable_tabs_demo.dart';
 import '../demos/expanding_arrow_button_demo.dart';
@@ -40,9 +42,11 @@ import '../demos/input_demo.dart';
 import '../demos/knockout_bracket_demo.dart';
 import '../demos/loader_demo.dart';
 import '../demos/loading_states_demo.dart';
+import '../demos/marquee_demo.dart';
 import '../demos/message_bubble_demo.dart';
 import '../demos/message_demo.dart';
 import '../demos/message_scroller_demo.dart';
+import '../demos/morphing_modal_demo.dart';
 import '../demos/not_found_demo.dart';
 import '../demos/notification_stack_demo.dart';
 import '../demos/number_demo.dart';
@@ -53,18 +57,25 @@ import '../demos/prediction_market_demo.dart';
 import '../demos/preview_rail_demo.dart';
 import '../demos/prompt_input_demo.dart';
 import '../demos/pull_to_refresh_demo.dart';
+import '../demos/radio_demo.dart';
 import '../demos/range_slider_demo.dart';
 import '../demos/scroll_animation_demo.dart';
 import '../demos/select_demo.dart';
 import '../demos/shader_background_demo.dart';
+import '../demos/shared_layout_bg_demo.dart';
 import '../demos/streaming_response_demo.dart';
 import '../demos/swap_demo.dart';
 import '../demos/swipeable_list_demo.dart';
+import '../demos/switch_demo.dart';
 import '../demos/table_demo.dart';
+import '../demos/tabs_demo.dart';
+import '../demos/text_animation_demo.dart';
 import '../demos/theme_toggle_demo.dart';
+import '../demos/tilt_card_demo.dart';
 import '../demos/todo_list_demo.dart';
 import '../demos/tool_approval_demo.dart';
 import '../demos/tool_result_demo.dart';
+import '../demos/tooltip_demo.dart';
 import '../demos/wallet_card_demo.dart';
 import '../demos/wheel_picker_demo.dart';
 
@@ -98,8 +109,9 @@ class ExploreEntry {
     required this.slug,
     required this.section,
     required this.blurb,
+    required this.builder,
     this.isNew = false,
-    this.builder,
+    this.sourceFile,
   });
 
   /// Display title, e.g. "Switch".
@@ -117,11 +129,12 @@ class ExploreEntry {
   /// Whether to show the teal "NEW" badge, matching the source.
   final bool isNew;
 
-  /// Builds the live demo. Null means the component isn't ported yet.
-  final WidgetBuilder? builder;
+  /// Builds the live demo.
+  final WidgetBuilder builder;
 
-  /// Whether a runnable demo exists.
-  bool get ported => builder != null;
+  /// Overrides the demo file path shown on the Code tab, for entries whose
+  /// demo lives in a shared file rather than `<slug>_demo.dart`.
+  final String? sourceFile;
 }
 
 /// Composes the gooey Popover and its Morph variant onto one page, mirroring the
@@ -139,9 +152,9 @@ class _StackedDemos extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (var i = 0; i < builders.length; i++) ...[
+        for (final (i, builder) in builders.indexed) ...[
           if (i > 0) const SizedBox(height: 56),
-          builders[i](context),
+          builder(context),
         ],
       ],
     );
@@ -477,6 +490,7 @@ const List<ExploreEntry> kBlocks = [
     section: ExploreSection.blocks,
     blurb: 'Icon rail whose segments expand to reveal a label on hover.',
     builder: expandableActionBarDemo,
+    sourceFile: 'example/lib/demos/action_rails_demo.dart',
   ),
   ExploreEntry(
     title: 'Overflow Actions',
@@ -484,6 +498,7 @@ const List<ExploreEntry> kBlocks = [
     section: ExploreSection.blocks,
     blurb: 'Primary actions with an overflow that fans out from a ⋯ toggle.',
     builder: overflowActionsDemo,
+    sourceFile: 'example/lib/demos/action_rails_demo.dart',
   ),
   ExploreEntry(
     title: 'Expandable Tabs',
@@ -514,6 +529,7 @@ const List<ExploreEntry> kBlocks = [
     blurb:
         'Mixed attachment workspace — image previews, seekable audio, retry.',
     builder: attachmentUploadDemo,
+    sourceFile: 'example/lib/demos/file_upload_demo.dart',
   ),
   ExploreEntry(
     title: 'Prediction Market',

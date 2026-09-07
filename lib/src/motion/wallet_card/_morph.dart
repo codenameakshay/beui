@@ -1,11 +1,12 @@
-import 'dart:ui' show ImageFilter;
+import 'dart:async';
+import 'dart:ui' show ImageFilter, lerpDouble;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
+import '../../overlay/beui_overlay.dart';
 import '../../theme/beui_colors.dart';
 import '../../tokens/motion.dart';
-import '../_engine.dart' show SingleMotionBuilder, SpringMotion;
+import '../_engine.dart' show SingleMotionBuilder;
 import '_constants.dart';
 
 /// Shared geometry passed to a morph panel body so it can react to the growth.
@@ -41,20 +42,21 @@ class WalletMorphInfo {
 }
 
 /// Inherited handle to the wallet header row, shared by the account switcher and
-/// the search bar so their morph panels can anchor to (and span) the full header
+/// the search bar so their morph panels can measure (and span) the full header
 /// row — the Flutter stand-in for the source's shared `layoutId` living on the
 /// `relative` header container.
+///
+/// Each panel anchors its own [CompositedTransformFollower] to its own
+/// trigger (via [BeuiOverlay]'s anchor link) rather than to this header, so
+/// this scope only needs to expose [headerKey] for the width measurement —
+/// see [MorphPanel]'s trigger-relative geometry.
 class WalletHeaderScope extends InheritedWidget {
   /// Creates the scope.
   const WalletHeaderScope({
-    required this.headerLink,
     required this.headerKey,
     required super.child,
     super.key,
   });
-
-  /// Link the panels follow with a [CompositedTransformFollower].
-  final LayerLink headerLink;
 
   /// Key on the header row's render box, used to measure its width.
   final GlobalKey headerKey;
@@ -68,8 +70,7 @@ class WalletHeaderScope extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(WalletHeaderScope old) =>
-      old.headerLink != headerLink || old.headerKey != headerKey;
+  bool updateShouldNotify(WalletHeaderScope old) => old.headerKey != headerKey;
 }
 
 /// A trigger that morphs into a full-header-width panel and back — the Flutter
@@ -77,12 +78,16 @@ class WalletHeaderScope extends InheritedWidget {
 ///
 /// Framer animates the FLIP between the small trigger and the wide panel for us;
 /// here the two rects are measured at runtime and the box is lerped between them
-/// on [kWalletMorph] (spring, `duration 0.5 · bounce 0.22`). The panel renders
-/// through an [OverlayPortal] anchored to the header row (via the shared
-/// [LayerLink]) so it can span the row and cover the header icons while still
-/// receiving pointer input — the DOM version relied on absolute `-left-2
-/// -right-2` positioning inside the `relative` header. Dismisses on Escape or a
-/// tap outside.
+/// on [kWalletMorph] (spring, `duration 0.5 · bounce 0.22`). Built on
+/// [BeuiOverlay] — the trigger is its `child` (so the overlay's own anchor
+/// [LayerLink] tracks the trigger's position), and the panel is built by
+/// [BeuiOverlay.overlayBuilder], lerping from the trigger's own rect out to
+/// the header's full width, positioned relative to that same anchor.
+/// [BeuiOverlay] supplies the transparent tap-outside barrier and Esc
+/// handling; its enter/exit durations are set generously past
+/// [kWalletMorph]'s settle time purely so the overlay's own duration-based
+/// unmount never cuts the spring off mid-flight — the spring, not that
+/// clock, is what the eye actually tracks.
 class MorphPanel extends StatefulWidget {
   /// Creates a morph panel.
   const MorphPanel({
@@ -117,30 +122,29 @@ class MorphPanel extends StatefulWidget {
   State<MorphPanel> createState() => _MorphPanelState();
 }
 
+// The morph spring (`kWalletMorph`) settles in ~500-550ms even with its
+// bounce overshoot; both durations sit comfortably past that so BeuiOverlay
+// never unmounts the panel mid-spring.
+const _kMorphOverlayDuration = Duration(milliseconds: 650);
+
 class _MorphPanelState extends State<MorphPanel> {
-  final OverlayPortalController _portal = OverlayPortalController();
   final GlobalKey _triggerKey = GlobalKey();
   final GlobalKey _measureKey = GlobalKey();
-  final FocusScopeNode _focusNode = FocusScopeNode();
 
   double _headerWidth = 300;
   Rect _triggerRect = const Rect.fromLTWH(0, 0, 40, 40);
   double _panelHeight = 44;
   bool _armed = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _portal.show();
-  }
+  Timer? _armTimer;
 
   @override
   void didUpdateWidget(MorphPanel old) {
     super.didUpdateWidget(old);
     if (widget.open && !old.open) {
+      _armTimer?.cancel();
       _armed = false;
       final reduce = MediaQuery.disableAnimationsOf(context);
-      Future<void>.delayed(
+      _armTimer = Timer(
         Duration(milliseconds: reduce ? 0 : widget.armDelayMs),
         () {
           if (mounted && widget.open) setState(() => _armed = true);
@@ -151,7 +155,7 @@ class _MorphPanelState extends State<MorphPanel> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    _armTimer?.cancel();
     super.dispose();
   }
 
@@ -196,54 +200,68 @@ class _MorphPanelState extends State<MorphPanel> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
-    final scope = WalletHeaderScope.of(context);
-    final reduce = MediaQuery.disableAnimationsOf(context);
     final panelWidth = _headerWidth + 16;
 
-    return OverlayPortal(
-      controller: _portal,
-      overlayChildBuilder: (overlayContext) =>
-          _buildOverlay(overlayContext, scope.headerLink, panelWidth, reduce),
-      // In-flow trigger. Kept in layout (maintainSize) but hidden + inert while
-      // open, so the header row width never shifts.
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // Off-stage measure of the panel body at its final width/height.
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Offstage(
-              child: SizedBox(
-                key: _measureKey,
-                width: panelWidth,
-                child: widget.panelBuilder(
-                  context,
-                  WalletMorphInfo(
-                    progress: 1,
-                    armed: false,
-                    open: true,
-                    width: panelWidth,
-                    triggerLeft: _triggerRect.left,
-                    triggerWidth: _triggerRect.width,
-                  ),
+    // In-flow trigger. Kept in layout (maintainSize) but hidden + inert while
+    // open, so the header row width never shifts. This whole Stack is
+    // BeuiOverlay's `child`, so its anchor LayerLink tracks the trigger's own
+    // top-left (the Positioned off-stage measurement doesn't affect the
+    // Stack's size/origin).
+    final trigger = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        // Off-stage measure of the panel body at its final width/height.
+        Positioned(
+          left: 0,
+          top: 0,
+          child: Offstage(
+            child: SizedBox(
+              key: _measureKey,
+              width: panelWidth,
+              child: widget.panelBuilder(
+                context,
+                WalletMorphInfo(
+                  progress: 1,
+                  armed: false,
+                  open: true,
+                  width: panelWidth,
+                  triggerLeft: _triggerRect.left,
+                  triggerWidth: _triggerRect.width,
                 ),
               ),
             ),
           ),
-          Visibility(
-            visible: !widget.open,
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: widget.open ? null : widget.onOpen,
-              child: KeyedSubtree(key: _triggerKey, child: widget.trigger),
-            ),
+        ),
+        Visibility(
+          visible: !widget.open,
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.open ? null : widget.onOpen,
+            child: KeyedSubtree(key: _triggerKey, child: widget.trigger),
           ),
-        ],
+        ),
+      ],
+    );
+
+    return BeuiOverlay(
+      open: widget.open,
+      onDismiss: widget.onDismiss,
+      barrier: true,
+      barrierColor: const Color(0x00000000), // no dark scrim — matches source
+      barrierDismissible: true,
+      trapFocus: false,
+      enterDuration: _kMorphOverlayDuration,
+      exitDuration: _kMorphOverlayDuration,
+      overlayBuilder: (context, _, link) => _buildOverlay(
+        context,
+        link,
+        panelWidth,
+        MediaQuery.disableAnimationsOf(context),
       ),
+      child: trigger,
     );
   }
 
@@ -253,32 +271,28 @@ class _MorphPanelState extends State<MorphPanel> {
     double panelWidth,
     bool reduce,
   ) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
-
-    // Under reduced motion the box snaps (stiff spring) rather than animating a
-    // movement; the content still cross-fades.
-    const snap = SpringMotion(
-      SpringDescription(mass: 1, stiffness: 700, damping: 60),
-    );
+    final colors = BeuiColors.resolve(context);
 
     return SingleMotionBuilder(
       value: widget.open ? 1.0 : 0.0,
-      motion: reduce ? snap : kWalletMorph,
+      // The lazy overlay starts at the trigger geometry on each opening.
+      from: reduce ? 1.0 : 0.0,
+      motion: reduce ? beuiSpringSnap : kWalletMorph,
       builder: (context, p, _) {
         if (p < 0.001 && !widget.open) return const SizedBox.shrink();
 
+        // The follower is shifted back to the header-relative origin, so the
+        // full target rect remains inside its hit-test box.
+        final triggerRect = _triggerRect;
         final target = Rect.fromLTWH(0, 0, panelWidth, _panelHeight);
-        final rect = Rect.lerp(_triggerRect, target, p)!;
-        final radius = _lerpDouble(
+        final rect = Rect.lerp(triggerRect, target, p)!;
+        final radius = lerpDouble(
           _triggerRect.height / 2 < kPanelRadius
               ? _triggerRect.height / 2
               : kPanelRadius,
           kPanelRadius,
           p,
-        );
+        )!;
 
         final info = WalletMorphInfo(
           progress: p,
@@ -289,68 +303,48 @@ class _MorphPanelState extends State<MorphPanel> {
           triggerWidth: _triggerRect.width,
         );
 
-        return Stack(
-          children: [
-            // Transparent tap-outside barrier (source dismiss on pointerdown
-            // outside). No dark scrim — matches the source.
-            if (widget.open)
-              Positioned.fill(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: widget.onDismiss,
-                ),
-              ),
-            CompositedTransformFollower(
-              link: link,
-              targetAnchor: Alignment.topLeft,
-              followerAnchor: Alignment.topLeft,
-              offset: const Offset(-8, 0),
-              child: FocusScope(
-                node: _focusNode,
-                child: CallbackShortcuts(
-                  bindings: {
-                    const SingleActivator(LogicalKeyboardKey.escape):
-                        widget.onDismiss,
-                  },
-                  child: SizedBox(
-                    width: panelWidth,
-                    height: _panelHeight,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Positioned(
-                          left: rect.left,
-                          top: rect.top,
-                          width: rect.width,
-                          height: rect.height,
-                          child: _MorphBox(
-                            radius: radius,
-                            colors: colors,
-                            reduce: reduce,
-                            child: OverflowBox(
-                              alignment: Alignment.topLeft,
-                              minWidth: panelWidth,
-                              maxWidth: panelWidth,
-                              minHeight: _panelHeight,
-                              maxHeight: _panelHeight,
-                              child: widget.panelBuilder(context, info),
-                            ),
-                          ),
-                        ),
-                      ],
+        // BeuiOverlay already supplies the transparent tap-outside barrier
+        // and Esc handling (this widget's `trapFocus: false`, so Esc is
+        // caught globally rather than requiring focus inside the panel).
+        return CompositedTransformFollower(
+          link: link,
+          targetAnchor: Alignment.topLeft,
+          followerAnchor: Alignment.topLeft,
+          offset: Offset(-_triggerRect.left, -_triggerRect.top),
+          showWhenUnlinked: false,
+          child: SizedBox(
+            width: panelWidth,
+            height: _panelHeight,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  left: rect.left,
+                  top: rect.top,
+                  width: rect.width,
+                  height: rect.height,
+                  child: _MorphBox(
+                    radius: radius,
+                    colors: colors,
+                    reduce: reduce,
+                    child: OverflowBox(
+                      alignment: Alignment.topLeft,
+                      minWidth: panelWidth,
+                      maxWidth: panelWidth,
+                      minHeight: _panelHeight,
+                      maxHeight: _panelHeight,
+                      child: widget.panelBuilder(context, info),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
   }
 }
-
-double _lerpDouble(double a, double b, double t) => a + (b - a) * t;
 
 /// The morphing surface chrome: bordered, background-filled, backdrop-blurred
 /// rounded rect that clips its content as it grows (source `border
@@ -387,7 +381,10 @@ class _MorphBox extends StatelessWidget {
     return ClipRRect(
       borderRadius: rrect,
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+        filter: ImageFilter.blur(
+          sigmaX: beuiBlurSigma(12),
+          sigmaY: beuiBlurSigma(12),
+        ),
         child: content,
       ),
     );

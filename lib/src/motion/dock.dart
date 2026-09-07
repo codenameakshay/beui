@@ -19,6 +19,7 @@ import '_engine.dart';
 /// port folds it into this model as a named constructor. That keeps [BeuiDock]'s
 /// item list homogeneous ([List] of non-nullable [BeuiDockItem]) and keeps the
 /// grouping visible at the call site.
+@immutable
 class BeuiDockItem {
   /// Creates a dock item.
   const BeuiDockItem({
@@ -230,10 +231,7 @@ class _BeuiDockState extends State<BeuiDock> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
 
     // Magnification is opt-in, hover-only, and off under reduced motion.
@@ -327,8 +325,10 @@ class _BeuiDockState extends State<BeuiDock> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16), // rounded-2xl = 16px radius
           child: BackdropFilter(
-            // backdrop-blur-xl = 24px CSS blur → sigma 24/2 = 12.
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            filter: ImageFilter.blur(
+              sigmaX: beuiBlurSigma(24), // backdrop-blur-xl
+              sigmaY: beuiBlurSigma(24),
+            ),
             child: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: _barPaddingH, // px-2

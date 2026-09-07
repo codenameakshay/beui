@@ -115,15 +115,12 @@ class _BeuiButtonState extends State<BeuiButton> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final spec = _SizeSpec.of(widget.size);
     final isIcon = widget.size == BeuiButtonSize.icon;
 
-    final palette = _palette(widget.variant, colors, _hovered && _enabled);
+    final palette = buttonPalette(widget.variant, colors, _hovered && _enabled);
 
     final scaleTarget = !_enabled || reduce
         ? 1.0
@@ -289,31 +286,55 @@ class _BeuiButtonState extends State<BeuiButton> {
   }
 }
 
-class _Palette {
-  const _Palette({required this.background, required this.text, this.border});
+/// Variant colours for a [BeuiButton]-family surface — the port of the
+/// source's `VARIANT_CLASS`. Package-internal (not exported from
+/// `lib/beui.dart`); shared by [BeuiButton] and `BeuiActionSwapButton`.
+class ButtonPalette {
+  /// Creates a palette.
+  const ButtonPalette({
+    required this.background,
+    required this.text,
+    this.border,
+  });
+
+  /// Surface fill colour.
   final Color background;
+
+  /// Label/icon colour.
   final Color text;
+
+  /// Border colour, or null for no border.
   final Color? border;
 }
 
-_Palette _palette(BeuiButtonVariant variant, BeuiColors c, bool hovered) {
+/// Resolves the [ButtonPalette] for [variant] at the ambient [c], tinted for
+/// [hovered].
+ButtonPalette buttonPalette(
+  BeuiButtonVariant variant,
+  BeuiColors c,
+  bool hovered,
+) {
   switch (variant) {
     case BeuiButtonVariant.primary:
-      return _Palette(
+      return ButtonPalette(
         background: hovered ? c.primary.withValues(alpha: 0.9) : c.primary,
         text: c.primaryForeground,
       );
     case BeuiButtonVariant.secondary:
-      return _Palette(background: c.card, text: c.foreground, border: c.border);
+      return ButtonPalette(
+        background: c.card,
+        text: c.foreground,
+        border: c.border,
+      );
     case BeuiButtonVariant.ghost:
-      return _Palette(
+      return ButtonPalette(
         background: hovered
             ? c.primary.withValues(alpha: 0.05)
             : Colors.transparent,
         text: hovered ? c.foreground : c.mutedForeground,
       );
     case BeuiButtonVariant.outline:
-      return _Palette(
+      return ButtonPalette(
         background: hovered
             ? c.primary.withValues(alpha: 0.05)
             : Colors.transparent,

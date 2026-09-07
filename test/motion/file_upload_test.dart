@@ -187,7 +187,7 @@ void main() {
     });
   });
 
-  group('keyboard & semantics', () {
+  group('BeuiFileUpload keyboard', () {
     testWidgets('dropzone is focusable and Enter activates onBrowse', (
       tester,
     ) async {
@@ -252,7 +252,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
       expect(removed, ['solo']);
     });
+  });
 
+  group('BeuiFileUpload semantics', () {
     testWidgets('progress semantics value ends with %', (tester) async {
       await tester.pumpWidget(_wrap(const BeuiFileUpload(value: _items)));
       await tester.pump(const Duration(milliseconds: 400));
@@ -282,6 +284,42 @@ void main() {
       expect(errorSpan.style?.fontWeight, FontWeight.w500);
     });
 
+    testWidgets('dark mode uses colors.success, not a hardcoded hex', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.dark().copyWith(extensions: [BeuiColors.dark()]),
+          ),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: const BeuiFileUpload(value: _items),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 400));
+      final expectedSuccess = BeuiColors.dark().success;
+
+      final icon = tester.widget<Icon>(find.byIcon(LucideIcons.circle_check));
+      expect(icon.color, expectedSuccess);
+
+      final fill = tester.widget<FractionallySizedBox>(
+        find.descendant(
+          of: find.bySemanticsLabel('logo.png upload progress'),
+          matching: find.byType(FractionallySizedBox),
+        ),
+      );
+      final decoratedBox = fill.child! as DecoratedBox;
+      expect((decoratedBox.decoration as BoxDecoration).color, expectedSuccess);
+    });
+  });
+
+  group('BeuiFileUpload rejection and cancel', () {
     testWidgets('maxFileSize rejects an oversized item', (tester) async {
       final rejected = <BeuiFileUploadItem>[];
       const big = BeuiFileUploadItem(
@@ -330,40 +368,6 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
       expect(cancelled, ['a']);
       expect(removed, isEmpty);
-    });
-
-    testWidgets('dark mode uses colors.success, not a hardcoded hex', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.dark().copyWith(extensions: [BeuiColors.dark()]),
-          ),
-          home: Scaffold(
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: const BeuiFileUpload(value: _items),
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 400));
-      final expectedSuccess = BeuiColors.dark().success;
-
-      final icon = tester.widget<Icon>(find.byIcon(LucideIcons.circle_check));
-      expect(icon.color, expectedSuccess);
-
-      final fill = tester.widget<FractionallySizedBox>(
-        find.descendant(
-          of: find.bySemanticsLabel('logo.png upload progress'),
-          matching: find.byType(FractionallySizedBox),
-        ),
-      );
-      final decoratedBox = fill.child! as DecoratedBox;
-      expect((decoratedBox.decoration as BoxDecoration).color, expectedSuccess);
     });
   });
 }

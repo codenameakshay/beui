@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -91,7 +92,7 @@ class BeuiSidebarResource {
         other.label == label &&
         other.kind == kind &&
         other.disabled == disabled &&
-        _listEq(other.children, children);
+        listEquals(other.children, children);
   }
 
   @override
@@ -102,15 +103,6 @@ class BeuiSidebarResource {
     disabled,
     children == null ? null : Object.hashAll(children!),
   );
-}
-
-bool _listEq(List<BeuiSidebarResource>? a, List<BeuiSidebarResource>? b) {
-  if (identical(a, b)) return true;
-  if (a == null || b == null || a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
 }
 
 /// Where a moved item lands relative to a drop target — source
@@ -181,9 +173,12 @@ class BeuiSidebarResourceMenuControls {
 // ---------------------------------------------------------------------------
 
 /// Whether [kind] can contain children.
+@Deprecated(
+  'Duplicates BeuiSidebarResource.canContain; construct a resource of this '
+  'kind and read .canContain instead. Removed in 2.0.',
+)
 bool beuiSidebarCanContain(BeuiSidebarResourceKind kind) =>
-    kind == BeuiSidebarResourceKind.folder ||
-    kind == BeuiSidebarResourceKind.project;
+    BeuiSidebarResource(id: '', label: '', kind: kind).canContain;
 
 /// Flatten [items] respecting [expanded] folder ids.
 List<_FlatResource> _flatten(
@@ -443,6 +438,7 @@ class BeuiAiSidebar extends StatefulWidget {
     this.onMove,
     this.onMoveError,
     this.onRename,
+    this.onRenameError,
     this.activeId,
     this.defaultActiveId,
     this.onActiveChange,
@@ -473,6 +469,12 @@ class BeuiAiSidebar extends StatefulWidget {
   /// Called after an optimistic rename. Throw / reject to roll back.
   final FutureOr<void> Function(BeuiSidebarResource item, String label)?
   onRename;
+
+  /// Called when [onRename] fails (after the tree is restored). When null,
+  /// the error is reported via [FlutterError.reportError] instead of being
+  /// silently dropped.
+  final void Function(Object error, BeuiSidebarResource item, String label)?
+  onRenameError;
 
   /// Controlled selection id (leaves).
   final String? activeId;
@@ -638,11 +640,22 @@ class _BeuiAiSidebarState extends State<BeuiAiSidebar> {
     _updateItems(beuiSidebarRename(before, row.item.id, trimmed));
     try {
       await widget.onRename?.call(row.item, trimmed);
-    } catch (_) {
+    } catch (error) {
       _updateItems(before);
       setState(() {
         _announcement = 'Rename failed. ${row.item.label} was restored.';
       });
+      if (widget.onRenameError != null) {
+        widget.onRenameError!(error, row.item, trimmed);
+      } else {
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: error,
+            library: 'beui',
+            context: ErrorDescription('while committing a sidebar rename'),
+          ),
+        );
+      }
     }
   }
 
@@ -789,10 +802,7 @@ class _BeuiAiSidebarState extends State<BeuiAiSidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final flat = _flat;
 
     // Keep focus on a live row.
@@ -864,13 +874,10 @@ class _BeuiAiSidebarState extends State<BeuiAiSidebar> {
             },
           ),
         // Live region for move / rename announcements (a11y).
-        ExcludeSemantics(
-          excluding: false,
-          child: Semantics(
-            liveRegion: true,
-            label: _announcement,
-            child: const SizedBox.shrink(),
-          ),
+        Semantics(
+          liveRegion: true,
+          label: _announcement,
+          child: const SizedBox.shrink(),
         ),
       ],
     );
@@ -1157,7 +1164,7 @@ class _ResourceRowState extends State<_ResourceRow> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
                   // focusRing, not ring: `ring` is the 6-12% hairline token
-                  // for borders and composites to 1.3:1 (audit R6).
+                  // for borders and composites to 1.3:1.
                   borderSide: BorderSide(color: colors.focusRing, width: 1.5),
                 ),
               ),
@@ -1168,7 +1175,6 @@ class _ResourceRowState extends State<_ResourceRow> {
               onTapOutside: (_) {
                 if (!_skipRenameBlur) widget.onRenameCommit(_renameCtrl.text);
               },
-              onEditingComplete: () {},
             ),
           ),
         ),
@@ -1349,7 +1355,7 @@ class _ResourceRowState extends State<_ResourceRow> {
                 },
           // The row's focus ring — `focused` was threaded all the way down here
           // and then never rendered, so the whole keyboard tree model was
-          // invisible to the person using it (audit R4).
+          // invisible to the person using it.
           child: BeuiFocusRing(
             focused: widget.focused && !widget.renaming,
             borderRadius: BorderRadius.circular(12),

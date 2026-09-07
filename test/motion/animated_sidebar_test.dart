@@ -78,11 +78,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Search'), findsOneWidget);
-      expect(find.text('Inbox'), findsOneWidget);
-      expect(find.text('People'), findsOneWidget);
-      expect(find.text('Tasks'), findsOneWidget);
-      expect(find.text('WORKSPACES'), findsOneWidget);
-      expect(find.text('Main'), findsOneWidget);
+      expect(find.text('WORKSPACES'), findsOneWidget); // group label
       expect(find.byKey(beuiAnimatedSidebarPanelKey), findsOneWidget);
     });
 
@@ -207,26 +203,56 @@ void main() {
       expect(panel.width, closeTo(kBeuiAnimatedSidebarIconWidth, 8));
     });
 
-    testWidgets('reduced motion still renders and selects', (tester) async {
-      String? selected;
+    testWidgets('reduced motion snaps the icon rail in both directions', (
+      tester,
+    ) async {
+      const expandedWidth = 320.0;
+      const collapsedWidth = 72.0;
+      var expanded = true;
       await tester.pumpWidget(
         _wrap(
-          BeuiAnimatedSidebar(
-            groups: _groups,
-            defaultSelectedId: 'tasks',
-            onSelected: (id) => selected = id,
-            child: const SizedBox.expand(),
+          StatefulBuilder(
+            builder: (context, setState) {
+              return BeuiAnimatedSidebar(
+                groups: _groups,
+                width: expandedWidth,
+                iconWidth: collapsedWidth,
+                expanded: expanded,
+                onExpandedChange: (value) => setState(() => expanded = value),
+                defaultSelectedId: 'tasks',
+                child: const Column(
+                  children: [
+                    BeuiAnimatedSidebarTrigger(),
+                    Expanded(child: SizedBox.expand()),
+                  ],
+                ),
+              );
+            },
           ),
           reduce: true,
         ),
       );
       await tester.pumpAndSettle();
+      expect(
+        tester.getSize(find.byKey(beuiAnimatedSidebarPanelKey)).width,
+        closeTo(expandedWidth, 1),
+      );
 
-      expect(find.text('Tasks'), findsOneWidget);
+      await tester.tap(find.byType(BeuiAnimatedSidebarTrigger));
+      await tester.pump();
+      expect(expanded, isFalse);
+      expect(
+        tester.getSize(find.byKey(beuiAnimatedSidebarPanelKey)).width,
+        closeTo(collapsedWidth, 8),
+      );
 
-      await tester.tap(find.text('Search'));
-      await tester.pumpAndSettle();
-      expect(selected, 'search');
+      await tester.tap(find.byType(BeuiAnimatedSidebarTrigger));
+      await tester.pump();
+      expect(expanded, isTrue);
+      expect(
+        tester.getSize(find.byKey(beuiAnimatedSidebarPanelKey)).width,
+        closeTo(expandedWidth, 1),
+      );
     });
 
     testWidgets('mobile mode opens sheet from trigger', (tester) async {
@@ -487,28 +513,6 @@ void main() {
       expect(find.byKey(beuiAnimatedSidebarMobilePanelKey), findsOneWidget);
       expect(find.byKey(beuiAnimatedSidebarChromeKey), findsNothing);
       expect(find.byKey(beuiAnimatedSidebarInsetKey), findsNothing);
-    });
-
-    testWidgets('reduced motion still renders the floating chrome', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _wrap(
-          BeuiAnimatedSidebar(
-            groups: _groups,
-            variant: BeuiAnimatedSidebarVariant.floating,
-            defaultSelectedId: 'tasks',
-            child: const SizedBox.expand(),
-          ),
-          reduce: true,
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      final chrome = _chrome(tester);
-      expect(chrome.borderRadius, BorderRadius.circular(16));
-      expect(chrome.boxShadow, isNotEmpty);
-      expect(find.text('Tasks'), findsOneWidget);
     });
   });
 

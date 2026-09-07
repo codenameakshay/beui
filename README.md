@@ -22,7 +22,7 @@ Spring-physics UI primitives and composed blocks, built on the [`motor`](https:/
 
 beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React motion library. It covers all **72 catalog entries** across the source's three groups — expressive **Components** (motion primitives with composable APIs), product-ready **Blocks** (composed patterns like a command palette, wallet card, or availability scheduler), and **AI Agents** (conversational and agent-reasoning surfaces).
 
-The port's defining goal is **motion fidelity**. Framer Motion springs are parameterized by `stiffness`, `damping`, and `mass` — the exact same physical parameters as Flutter's `SpringDescription` — so the source's spring tokens carry over with no fidelity loss. Components don't approximate the feel with `Curves.elasticOut`; they use the real physics through [`motor`](https://pub.dev/packages/motor).
+The port's defining goal is **motion fidelity**. Framer Motion springs are parameterized by `stiffness`, `damping`, and `mass` — the exact same physical parameters as Flutter's `SpringDescription` — so the source's spring tokens carry over unchanged (trajectories validated within tolerance, not pixel-matched to Framer). Components don't approximate the feel with `Curves.elasticOut`; they use the real physics through [`motor`](https://pub.dev/packages/motor).
 
 - 🎬 **Spring-accurate motion** — five spring tokens + three easings ported verbatim from the source's `ease.ts`.
 - 🎨 **Themeable** — `BeuiColors` for palette, `BeuiAgentTheme` for AI-agent typography/shape/layout/icons, and `ThemeData.fontFamily` for the typeface.
@@ -267,7 +267,7 @@ Three layers, installed once on [ThemeData](https://api.flutter.dev/flutter/mate
 | --- | --- | --- |
 | `ThemeData.fontFamily` / `BeuiTextTheme` | Global sans/mono **family names** and Material letter-spacing normalisation. The package ships no font files. | `ThemeData(fontFamily: 'General Sans')` plus `BeuiTextTheme.trackingNormal(...)` |
 | `BeuiColors` | Palette: core tokens, brand themes, `BeuiGlass`, and `focusRing` (WCAG 2.2 3:1 non-text contrast). Not typography, radii, or spacing. | `extensions: [BeuiColors.of(theme, brightness)]` |
-| `BeuiAgentTheme` | AI-agent **semantics**: type roles, bubble/card radii, conversation spacing, density, borders, optional glass cards, default icons, status palettes, and localizable `BeuiAgentStrings`. | `extensions: [BeuiAgentTheme(...)]` — omit it and widgets use source-fidelity defaults identical to 1.0.0 |
+| `BeuiAgentTheme` | AI-agent **semantics**: type roles, bubble/card radii, conversation spacing, borders, optional glass cards, default icons, status palettes, and localizable `BeuiAgentStrings`. | `extensions: [BeuiAgentTheme(...)]` — omit it and widgets use source-fidelity defaults |
 
 ```dart
 ThemeData(
@@ -283,7 +283,6 @@ ThemeData(
         card: BorderRadius.circular(18),
       ),
       layout: BeuiAgentLayout(
-        density: BeuiAgentDensity.compact,
         turnSpacing: 12,
         bubblePadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
       ),

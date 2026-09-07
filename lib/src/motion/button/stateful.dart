@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../../tokens/icons.dart';
 import '../../tokens/motion.dart';
+import '../_cascade_text.dart';
 import '../_engine.dart';
+import '../_spinner.dart';
 import 'base.dart';
 
 /// Lifecycle state of a [BeuiStatefulButton].
@@ -94,8 +96,6 @@ class BeuiStatefulButton extends StatelessWidget {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final isBusy = state == BeuiButtonState.loading;
 
-    final textSlot = _CascadeText(_text);
-
     return Semantics(
       liveRegion: true,
       child: BeuiButton(
@@ -117,7 +117,7 @@ class BeuiStatefulButton extends StatelessWidget {
                 side: _IconSide.leading,
                 reduce: reduce,
               ),
-              textSlot,
+              BeuiCascadeText(_text),
               _IconSlot(
                 icon: _trailingIcon,
                 spinner: false,
@@ -241,7 +241,9 @@ class _IconSlotState extends State<_IconSlot>
 
   Widget _content(IconData icon, bool spinner) => Padding(
     padding: _pad,
-    child: spinner ? const _Spinner(size: 16) : Icon(icon, size: 16),
+    child: spinner
+        ? BeuiSpinner(size: 16, color: IconTheme.of(context).color!)
+        : Icon(icon, size: 16),
   );
 
   Widget _buildEnter(IconData icon, bool spinner) {
@@ -300,11 +302,7 @@ class _IconSlotState extends State<_IconSlot>
     g = Transform.scale(scale: 0.7 + 0.3 * p, child: g);
     g = Opacity(opacity: p.clamp(0.0, 1.0), child: g);
     return ClipRect(
-      child: Align(
-        alignment: _clipAlign,
-        widthFactor: p < 0 ? 0.0 : p,
-        child: g,
-      ),
+      child: Align(alignment: _clipAlign, widthFactor: p, child: g),
     );
   }
 
@@ -321,246 +319,6 @@ class _IconSlotState extends State<_IconSlot>
         if (kids.isEmpty) return const SizedBox.shrink();
         return Row(mainAxisSize: MainAxisSize.min, children: kids);
       },
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Cascade text (per-letter slot roll — source CASCADE_LETTER_VARIANTS)
-// ---------------------------------------------------------------------------
-
-/// Per-letter slot cascade with blur — the Flutter port of the source's
-/// StatefulButton text roll (`CASCADE_LETTER_VARIANTS`). On a text change the
-/// old letters roll up and out (blurring) while the new letters roll up from
-/// below into place, staggered left-to-right and clipped to one line.
-///
-/// The enter rides the [beuiSpringSwap] token (source `SPRING_SWAP`), released
-/// staggered left-to-right; the exit is a ~160ms [beuiEaseOut] tween at half the
-/// stagger (source `delay * 0.5`). Same mechanic as `action_swap.dart`.
-class _CascadeText extends StatefulWidget {
-  const _CascadeText(this.text);
-
-  final String text;
-
-  @override
-  State<_CascadeText> createState() => _CascadeTextState();
-}
-
-class _CascadeTextState extends State<_CascadeText>
-    with SingleTickerProviderStateMixin {
-  static const int _staggerMs = 25; // source CASCADE_STAGGER 0.025s
-  static const int _enterMs = 360; // covers the SPRING_SWAP settle
-  static const int _exitMs = 160; // source exit 0.16s
-  static const double _blur = 3; // source ROLL_BLUR blur(6px) → sigma 3
-
-  late final AnimationController _controller;
-  late String _current = widget.text;
-  String? _previous;
-
-  int _durationMs(String t) =>
-      _enterMs + _staggerMs * (t.length - 1).clamp(0, 80);
-
-  @override
-  void initState() {
-    super.initState();
-    _controller =
-        AnimationController(
-          vsync: this,
-          duration: Duration(milliseconds: _durationMs(_current)),
-          value: 1,
-        )..addStatusListener((status) {
-          if (status == AnimationStatus.completed && _previous != null) {
-            setState(() => _previous = null);
-          }
-        });
-  }
-
-  @override
-  void didUpdateWidget(_CascadeText old) {
-    super.didUpdateWidget(old);
-    if (widget.text != _current) {
-      _previous = _current;
-      _current = widget.text;
-      _controller
-        ..duration = Duration(milliseconds: _durationMs(_current))
-        ..forward(from: 0);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final style = DefaultTextStyle.of(context).style;
-    final reduce = MediaQuery.disableAnimationsOf(context);
-
-    // At rest (or reduced motion): plain crisp text, no per-letter overhead.
-    if (reduce || _previous == null) {
-      return Text(_current, style: style, maxLines: 1, softWrap: false);
-    }
-
-    return ClipRect(
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) {
-          final t = _controller.value;
-          final totalMs = _controller.duration!.inMilliseconds;
-          final roll = (style.fontSize ?? 14) * 1.15; // ~105% of a line
-          return Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.centerLeft,
-            children: [
-              // Exiting text — positioned, so it doesn't drive the slot width.
-              Positioned(
-                left: 0,
-                top: 0,
-                bottom: 0,
-                child: _letters(
-                  _previous!,
-                  t,
-                  totalMs,
-                  roll,
-                  style,
-                  exiting: true,
-                ),
-              ),
-              // Entering text — sizes the slot to the new label immediately.
-              _letters(_current, t, totalMs, roll, style, exiting: false),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _letters(
-    String text,
-    double t,
-    int totalMs,
-    double roll,
-    TextStyle style, {
-    required bool exiting,
-  }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var i = 0; i < text.length; i++)
-          _letter(text[i], i, t, totalMs, roll, style, exiting: exiting),
-      ],
-    );
-  }
-
-  Widget _letter(
-    String char,
-    int i,
-    double t,
-    int totalMs,
-    double roll,
-    TextStyle style, {
-    required bool exiting,
-  }) {
-    if (exiting) {
-      // Exit: 160ms EASE_OUT tween at half the enter stagger (source
-      // `delay * 0.5`) — rolls up and out, fading and blurring.
-      final start = (i * _staggerMs * 0.5) / totalMs;
-      final p = ((t - start) / (_exitMs / totalMs)).clamp(0.0, 1.0);
-      final e = beuiEaseOut.transform(p);
-      return _glyph(
-        char,
-        style,
-        dy: -e * roll, // roll up and out
-        opacity: 1 - e,
-        blur: e * _blur,
-      );
-    }
-
-    // Enter: the SPRING_SWAP token (source CASCADE_LETTER_VARIANTS), released
-    // once the shared clock crosses the letter's `index × 25ms` stagger —
-    // opacity and blur ride the spring's own progress.
-    final released = t * totalMs >= i * _staggerMs;
-    return SingleMotionBuilder(
-      value: released ? 0.0 : roll,
-      from: roll,
-      motion: beuiSpringSwap,
-      builder: (context, dy, child) {
-        final p = (1 - dy / roll).clamp(0.0, 1.0);
-        Widget glyph = child!;
-        final sigma = (1 - p) * _blur;
-        if (sigma > 0.05) {
-          glyph = ImageFiltered(
-            imageFilter: ImageFilter.blur(
-              sigmaX: sigma,
-              sigmaY: sigma,
-              tileMode: TileMode.decal,
-            ),
-            child: glyph,
-          );
-        }
-        return Opacity(
-          opacity: p,
-          child: Transform.translate(offset: Offset(0, dy), child: glyph),
-        );
-      },
-      child: Text(char, style: style, maxLines: 1, softWrap: false),
-    );
-  }
-
-  Widget _glyph(
-    String char,
-    TextStyle style, {
-    required double dy,
-    required double opacity,
-    required double blur,
-  }) {
-    Widget glyph = Text(char, style: style, maxLines: 1, softWrap: false);
-    if (blur > 0.05) {
-      glyph = ImageFiltered(
-        imageFilter: ImageFilter.blur(
-          sigmaX: blur,
-          sigmaY: blur,
-          tileMode: TileMode.decal,
-        ),
-        child: glyph,
-      );
-    }
-    return Opacity(
-      opacity: opacity.clamp(0.0, 1.0),
-      child: Transform.translate(offset: Offset(0, dy), child: glyph),
-    );
-  }
-}
-
-/// A continuously spinning loader icon.
-class _Spinner extends StatefulWidget {
-  const _Spinner({required this.size});
-  final double size;
-
-  @override
-  State<_Spinner> createState() => _SpinnerState();
-}
-
-class _SpinnerState extends State<_Spinner>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 900),
-  )..repeat();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RotationTransition(
-      turns: _controller,
-      child: Icon(LucideIcons.loader_circle, size: widget.size),
     );
   }
 }

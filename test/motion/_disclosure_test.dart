@@ -12,6 +12,7 @@ const _body = SizedBox(
 Widget _app({
   required bool open,
   bool reduce = false,
+  bool disclosureReduce = false,
   double? openHeight,
   Widget child = _body,
 }) {
@@ -19,7 +20,7 @@ Widget _app({
     child: BeuiAgentDisclosureInternal(
       key: const ValueKey('disclosure'),
       open: open,
-      reduce: false,
+      reduce: disclosureReduce,
       openHeight: openHeight,
       child: child,
     ),
@@ -194,6 +195,20 @@ void main() {
         expect(find.text('body'), findsNothing);
       },
     );
+
+    testWidgets(
+      "the widget's own reduce: true also takes the reduced path, with no "
+      'MediaQuery override',
+      (tester) async {
+        await tester.pumpWidget(_app(open: false, disclosureReduce: true));
+        await tester.pump();
+        expect(_outerHeight(tester), closeTo(0, 0.5));
+
+        await tester.pumpWidget(_app(open: true, disclosureReduce: true));
+        await tester.pump(); // one frame is enough for the height snap
+        expect(_outerHeight(tester), closeTo(100, 0.5));
+      },
+    );
   });
 
   group('BeuiAgentDisclosureInternal openHeight', () {
@@ -225,8 +240,10 @@ void main() {
       await tester.pump();
 
       // Sample the child across the whole 220ms reveal: it must never move.
-      for (final elapsed in [40, 90, 150, 220]) {
-        await tester.pump(const Duration(milliseconds: 40));
+      var elapsed = 0;
+      for (final step in [40, 50, 60, 70]) {
+        elapsed += step;
+        await tester.pump(Duration(milliseconds: step));
         expect(
           tester.getSize(find.byKey(tallKey)).height,
           closeTo(100, 0.5),

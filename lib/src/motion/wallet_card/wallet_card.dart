@@ -4,6 +4,7 @@ import '../../theme/beui_colors.dart';
 import '../../tokens/icons.dart';
 import '../../tokens/motion.dart';
 import '../_engine.dart' show SingleMotionBuilder;
+import '../_format.dart';
 import '../action_swap.dart';
 import '_morph.dart';
 import '_types.dart';
@@ -114,7 +115,6 @@ class BeuiWalletCard extends StatefulWidget {
 
 class _BeuiWalletCardState extends State<BeuiWalletCard> {
   final GlobalKey _headerKey = GlobalKey();
-  final LayerLink _headerLink = LayerLink();
 
   late String? _internalAccountId =
       widget.defaultAccountId ??
@@ -142,21 +142,13 @@ class _BeuiWalletCardState extends State<BeuiWalletCard> {
       2,
       '0',
     );
-    final digits = whole.toString();
-    final buf = StringBuffer();
-    for (var i = 0; i < digits.length; i++) {
-      if (i > 0 && (digits.length - i) % 3 == 0) buf.write(',');
-      buf.write(digits[i]);
-    }
-    return '${widget.balancePrefix}$buf.$cents';
+    final grouped = beuiGroupThousands(whole.toString());
+    return '${widget.balancePrefix}$grouped.$cents';
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     final shown = _formatBalance();
     const masked = '*******'; // 7 dots, source `"*".repeat(7)`
@@ -173,40 +165,38 @@ class _BeuiWalletCardState extends State<BeuiWalletCard> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header row: account switcher + search + bell. Shared morph anchor.
+          // Header row: account switcher + search + bell. Shared morph anchor
+          // (each panel follows its own trigger; this scope only exposes the
+          // header's width for measurement — see WalletHeaderScope).
           WalletHeaderScope(
-            headerLink: _headerLink,
             headerKey: _headerKey,
-            child: CompositedTransformTarget(
-              link: _headerLink,
-              child: SizedBox(
-                key: _headerKey,
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: WalletAccountSwitcher(
-                          accounts: widget.accounts,
-                          activeAccount: _active,
-                          onSelect: _handleAccountChange,
-                        ),
+            child: SizedBox(
+              key: _headerKey,
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: WalletAccountSwitcher(
+                        accounts: widget.accounts,
+                        activeAccount: _active,
+                        onSelect: _handleAccountChange,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    WalletSearchBar(
-                      placeholder: widget.searchPlaceholder,
-                      recent: widget.searchRecent,
-                      onChanged: widget.onSearchChange,
-                      onSubmitted: widget.onSearchSubmit,
-                    ),
-                    const SizedBox(width: 4),
-                    _BellButton(
-                      hasNotifications: widget.hasNotifications,
-                      onTap: widget.onNotifications,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 8),
+                  WalletSearchBar(
+                    placeholder: widget.searchPlaceholder,
+                    recent: widget.searchRecent,
+                    onChanged: widget.onSearchChange,
+                    onSubmitted: widget.onSearchSubmit,
+                  ),
+                  const SizedBox(width: 4),
+                  _BellButton(
+                    hasNotifications: widget.hasNotifications,
+                    onTap: widget.onNotifications,
+                  ),
+                ],
               ),
             ),
           ),
@@ -303,10 +293,7 @@ class _EyeToggleState extends State<_EyeToggle> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
 
     return Semantics(
       button: true,
@@ -366,10 +353,7 @@ class _BellButtonState extends State<_BellButton>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final target = (_pressed && !reduce) ? 0.9 : 1.0;
 

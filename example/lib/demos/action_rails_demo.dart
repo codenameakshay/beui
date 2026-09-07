@@ -98,19 +98,7 @@ class _ExpandableActionBarDemoState extends State<_ExpandableActionBarDemo> {
             constraints: const BoxConstraints(minHeight: 96), // min-h-24
             child: Center(
               child: BeuiExpandableActionBar(
-                items: [
-                  for (final a in _actions)
-                    a.id == _activeId
-                        ? BeuiExpandableActionBarItem(
-                            id: a.id,
-                            label: a.label,
-                            icon: a.icon,
-                            shortcut: a.shortcut,
-                            badge: a.badge,
-                            active: true,
-                          )
-                        : a,
-                ],
+                items: _actions,
                 expanded: _expanded,
                 onExpandedChange: (v) => setState(() => _expanded = v),
                 activeId: _activeId,

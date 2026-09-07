@@ -20,7 +20,7 @@ class _PopoverMorphDemoState extends State<_PopoverMorphDemo> {
     (LucideIcons.pencil, 'Edit'),
     (LucideIcons.copy, 'Duplicate'),
     (LucideIcons.share_2, 'Share'),
-    (LucideIcons.trash_2, 'Delete'),
+    (LucideIcons.trash, 'Delete'),
   ];
 
   @override

@@ -10,6 +10,7 @@ import '../theme/beui_agent_theme.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
+import '_chevron.dart';
 import '_disclosure.dart';
 import '_engine.dart';
 import '_focus_ring.dart';
@@ -308,13 +309,19 @@ class BeuiAgentActivityTrace extends BeuiAgentActivityItem {
 // Helpers
 // ---------------------------------------------------------------------------
 
+/// Splits a duration into whole seconds, minutes, and the leftover seconds
+/// once minutes are taken out — the shared arithmetic behind
+/// [beuiFormatAgentActivityDuration] and [_formatDuration].
+(int seconds, int minutes, int remainder) _durationParts(num durationSeconds) {
+  final seconds = math.max(0, durationSeconds.round());
+  return (seconds, seconds ~/ 60, seconds % 60);
+}
+
 /// Formats elapsed run time for the completed summary
 /// (source `formatDuration` — whole seconds, `5s` / `2m` / `2m 5s`).
 String beuiFormatAgentActivityDuration(num durationSeconds) {
-  final seconds = math.max(0, durationSeconds.round());
+  final (seconds, minutes, remainder) = _durationParts(durationSeconds);
   if (seconds < 60) return '${seconds}s';
-  final minutes = seconds ~/ 60;
-  final remainder = seconds % 60;
   return remainder == 0 ? '${minutes}m' : '${minutes}m ${remainder}s';
 }
 
@@ -350,10 +357,8 @@ String _activeLabelFor(
 /// English strings; this variant exists so a localized [BeuiAgentStrings] can
 /// re-spell `5s` / `2m` / `2m 5s` without the widget hardcoding the units.
 String _formatDuration(num duration, BeuiAgentStrings strings) {
-  final seconds = math.max(0, duration.round());
+  final (seconds, minutes, remainder) = _durationParts(duration);
   if (seconds < 60) return strings.durationSeconds(seconds);
-  final minutes = seconds ~/ 60;
-  final remainder = seconds % 60;
   return remainder == 0
       ? strings.durationMinutes(minutes)
       : strings.durationMinutesSeconds(minutes, remainder);
@@ -420,12 +425,10 @@ const _itemOpacityMotion = CurvedMotion(
   beuiEaseOut,
 );
 
-// The disclosure's 220ms open / 140ms close now live once, in
-// `_disclosure.dart` (beuiDisclosureOpenMotion / beuiDisclosureCloseMotion),
-// shared by every collapsible agent surface.
-//
-// The diff-count colors that used to be Tailwind literals here now resolve
-// from BeuiAgentStatusColors: `+N` is the success tier, `−N` the failed tier.
+// The disclosure's open/close motion lives in `_disclosure.dart`
+// (beuiDisclosureOpenMotion / beuiDisclosureCloseMotion), shared by every
+// collapsible agent surface. Diff-count colors resolve from
+// BeuiAgentStatusColors: `+N` is the success tier, `−N` the failed tier.
 
 // ---------------------------------------------------------------------------
 // BeuiAgentActivity
@@ -554,7 +557,6 @@ class BeuiAgentActivity extends StatefulWidget {
 
 class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
   late bool _internalOpen = widget.defaultOpen;
-  BeuiAgentActivityStatus _previousStatus = BeuiAgentActivityStatus.working;
   final GlobalKey _contentKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
   double _contentHeight = 0;
@@ -567,7 +569,6 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
   @override
   void initState() {
     super.initState();
-    _previousStatus = widget.status;
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
   }
 
@@ -577,11 +578,10 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
     // working → terminal: seed open from collapseOnComplete (source useEffect).
     // A failure ignores collapseOnComplete and forces the panel open — see
     // [BeuiAgentActivity.collapseOnComplete].
-    if (_previousStatus == BeuiAgentActivityStatus.working &&
+    if (old.status == BeuiAgentActivityStatus.working &&
         widget.status.isTerminal) {
       _setOpen(widget.status.isFailure || !widget.collapseOnComplete);
     }
-    _previousStatus = widget.status;
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
   }
 
@@ -621,9 +621,7 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final strings = agent.strings;
     final statusColors = agent.statusColorsFor(theme.brightness);
@@ -648,7 +646,7 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
       cancelledOverride: widget.cancelledSummary,
     );
 
-    // A24: reserve only what the stream actually occupies. The panel used to
+    // Reserve only what the stream actually occupies. The panel used to
     // hold the full `maxHeight` open for the whole run, so a single-item run
     // showed one row over ~180px of blank. `min` keeps the cap as a *ceiling*
     // rather than a floor; once the content outgrows it the viewport pins at
@@ -730,7 +728,7 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
       ],
     );
 
-    // A37/A38: a failure earns a card. `decorateCard` carries the theme's
+    // A failure earns a card. `decorateCard` carries the theme's
     // surface decision (muted fill, or glass + backdrop blur when
     // `useGlassSurfaces` is on); the ring on top is drawn in the status tier at
     // `emphasisBorderWidth` for a crash and the ordinary `borderWidth` for a
@@ -761,7 +759,7 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
       style: baseStyle,
       child: Semantics(
         container: true,
-        // A30: the old `liveRegion: _working` switched the announcement off at
+        // The old `liveRegion: _working` switched the announcement off at
         // exactly the moment the outcome arrived, so "Failed" was never spoken.
         // The region is now always live and its label carries the phase, so it
         // announces once per transition — including the terminal one — and
@@ -792,7 +790,7 @@ class _BeuiAgentActivityState extends State<BeuiAgentActivity> {
 
 /// The completed-run summary line: a real disclosure button.
 ///
-/// A32: this used to be focusable and nothing else — no role, no name, no
+/// This used to be focusable and nothing else — no role, no name, no
 /// expanded state, no keyboard activation, and a focus "ring" drawn as a
 /// border inside the box model (which shifted the summary 2px on focus). It is
 /// now a labelled `button` carrying its `expanded` state, activated by Enter
@@ -892,8 +890,8 @@ class _SummaryTriggerState extends State<_SummaryTrigger> {
             child: DefaultTextStyle.merge(style: label, child: summary),
           ),
           const SizedBox(width: 6), // gap-1.5
-          _Chevron(
-            expanded: widget.expanded,
+          BeuiDisclosureChevron(
+            open: widget.expanded,
             color: chevronColor,
             reduce: widget.reduce,
           ),
@@ -908,7 +906,7 @@ class _SummaryTriggerState extends State<_SummaryTrigger> {
       child: row,
     );
 
-    // A31. The 28px visual keeps its source geometry (`h-7`); only the hit
+    // The 28px visual keeps its source geometry (`h-7`); only the hit
     // area grows, and the 8px of bottom slop lands in the stream's own `py-2`
     // padding where nothing else is interactive.
     //
@@ -959,44 +957,10 @@ class _SummaryTriggerState extends State<_SummaryTrigger> {
   }
 }
 
-class _Chevron extends StatelessWidget {
-  const _Chevron({
-    required this.expanded,
-    required this.color,
-    required this.reduce,
-  });
-
-  final bool expanded;
-  final Color color;
-  final bool reduce;
-
-  @override
-  Widget build(BuildContext context) {
-    final target = expanded ? math.pi : 0.0;
-    final icon = Icon(
-      BeuiAgentTheme.of(context).icons.expand,
-      size: 14, // size-3.5
-      color: color,
-    );
-    if (reduce) {
-      return Transform.rotate(angle: target, child: icon);
-    }
-    return SingleMotionBuilder(
-      value: target,
-      motion: motionFor(context, beuiSpringSwap, isMovement: true),
-      builder: (context, angle, child) =>
-          Transform.rotate(angle: angle, child: child),
-      child: icon,
-    );
-  }
-}
-
-// The private `_AgentDisclosure` that used to live here — one of eight
-// near-identical copies across the agent family, and the one that hard-cut
-// under reduced motion — is gone. `BeuiAgentDisclosureInternal`
-// (`_disclosure.dart`) replaces it, taking this component's fixed viewport
+// The disclosure here is `BeuiAgentDisclosureInternal` (`_disclosure.dart`),
+// shared across the agent family: it takes this component's fixed viewport
 // height through its `openHeight` parameter so the stream cannot reflow
-// mid-reveal, and keeping a ~120ms opacity cross-fade when movement is off.
+// mid-reveal, and keeps a ~120ms opacity cross-fade when movement is off.
 
 // ---------------------------------------------------------------------------
 // Stream viewport + list
@@ -1006,7 +970,7 @@ class _Chevron extends StatelessWidget {
 ///
 /// One bundle instead of three parallel parameters on every row: the palette
 /// ([BeuiColors]), the semantic agent contract ([BeuiAgentTheme] — type,
-/// shape, layout, strings, icons), and the status tiers. A37: before this,
+/// shape, layout, strings, icons), and the status tiers. Before this,
 /// `agent_activity` read *zero* theme roles; every size, radius, gap, and
 /// status color was a literal.
 @immutable
@@ -1137,7 +1101,7 @@ class _StreamViewport extends StatelessWidget {
 
     // Fade masks (source maskImage). Working: top only. Complete capped: both.
     // This is the reference scroll affordance for the whole agent family (the
-    // audit's R12/A22 point at it) — behaviour preserved verbatim.
+    // the audit points at it) — behaviour preserved verbatim.
     if (capped && expanded) {
       final h = height <= 0 ? 1.0 : height;
       final topStop = (12 / h).clamp(0.0, 0.5);
@@ -1173,7 +1137,7 @@ class _StreamViewport extends StatelessWidget {
 
 /// Item entrance: an 180ms opacity ease and a 6→0px spring rise.
 ///
-/// A18: this used to nest two [SingleMotionBuilder]s and rebuild an [Opacity]
+/// This used to nest two [SingleMotionBuilder]s and rebuild an [Opacity]
 /// widget every frame. The two channels genuinely need different motions (a
 /// curve for the fade, a spring for the rise), so they are driven by two
 /// controllers instead — the fade through [FadeTransition], which updates an
@@ -1289,7 +1253,7 @@ class _StepRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = rowTheme.colors;
     final state = item.status;
-    // A8: the step label and its timing are the content of this row, not
+    // The step label and its timing are the content of this row, not
     // chrome. They used to be `mutedForeground` at 55% alpha — ~2.3:1. The
     // pending/complete distinction is carried by the mark, which is where a
     // status difference belongs.
@@ -1385,7 +1349,7 @@ class _StepMarkState extends State<_StepMark>
   Widget build(BuildContext context) {
     final colors = widget.rowTheme.colors;
     // Decorative chrome: the mark repeats what the label already says, so the
-    // alpha stays (A8 is about information-bearing text).
+    // alpha stays (the alpha rule is about information-bearing text).
     final muted = colors.mutedForeground.withValues(alpha: 0.7);
     final iconSize = widget.rowTheme.layout.iconSize;
     return switch (widget.status) {
@@ -1409,24 +1373,10 @@ class _StepMarkState extends State<_StepMark>
             if (_pulse != null)
               FadeTransition(
                 opacity: _pulse!.drive(Tween<double>(begin: 0.35, end: 0.8)),
-                child: Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colors.foreground.withValues(alpha: 0.1),
-                  ),
-                ),
+                child: _halo(colors),
               )
             else
-              Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colors.foreground.withValues(alpha: 0.1),
-                ),
-              ),
+              _halo(colors),
             Container(
               width: 6, // size-1.5
               height: 6,
@@ -1440,6 +1390,16 @@ class _StepMarkState extends State<_StepMark>
       ),
     };
   }
+
+  /// The 12×12 halo circle behind the active step's dot, static or pulsing.
+  Widget _halo(BeuiColors colors) => Container(
+    width: 12,
+    height: 12,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: colors.foreground.withValues(alpha: 0.1),
+    ),
+  );
 }
 
 class _TextRow extends StatelessWidget {
@@ -1471,7 +1431,7 @@ class _SearchRow extends StatelessWidget {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final colors = rowTheme.colors;
     final results = item.results ?? const <BeuiAgentSearchResult>[];
-    // A31: a tappable result row is ~28px tall against a 44px floor, and the
+    // A tappable result row is ~28px tall against a 44px floor, and the
     // slop that fixes that overhangs its neighbours. Where the rows are
     // actually interactive the visual gap opens up to match, because hit slop
     // is not a substitute for spacing controls apart.
@@ -1538,7 +1498,7 @@ class _SearchRow extends StatelessWidget {
                 4,
               ), // pl-8 px-1.5 py-1
               child: Text(
-                // A8: "+5 more" is a count, not decoration — full muted
+                // "+5 more" is a count, not decoration — full muted
                 // contrast, no alpha multiplier.
                 rowTheme.strings.activityMoreResults(item.moreCount!),
                 style: rowTheme.body.copyWith(color: colors.mutedForeground),
@@ -1596,7 +1556,7 @@ class _SearchResultRow extends StatelessWidget {
                 result.domain!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                // A8: the domain is what makes a source verifiable. It was the
+                // The domain is what makes a source verifiable. It was the
                 // least legible string in the row at 55% muted.
                 style: rowTheme.body.copyWith(color: colors.mutedForeground),
               ),
@@ -1646,7 +1606,7 @@ class _ToolRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = rowTheme.colors;
-    // A36: the diff counters were Tailwind emerald-500 / rose-500 literals.
+    // The diff counters were Tailwind emerald-500 / rose-500 literals.
     // They are the success and failed tiers — retintable, and in light mode
     // now the 700 tier, which clears AA where the 500s did not.
     final additions = rowTheme.palette(BeuiAgentStatus.success).foreground;
@@ -1699,7 +1659,7 @@ class _ToolRow extends StatelessWidget {
                   item.target,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  // A8: this string names *what ran*. It was 70% muted.
+                  // This string names *what ran*. It was 70% muted.
                   style: rowTheme.type.mono.copyWith(
                     height: 16 / 12,
                     color: colors.mutedForeground,
@@ -1794,7 +1754,7 @@ class _TraceRow extends StatelessWidget {
                     item.detail!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    // A8: the detail *is* the command that ran.
+                    // The detail *is* the command that ran.
                     style: rowTheme.type.mono.copyWith(
                       height: 16 / 12,
                       color: colors.mutedForeground,

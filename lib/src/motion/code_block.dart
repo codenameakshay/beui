@@ -10,6 +10,7 @@ import '../tokens/motion.dart';
 import '_engine.dart';
 import '_focus_ring.dart';
 import '_hit_target.dart';
+import '_status_icon.dart';
 import '_syntax.dart';
 import '_viewport_follow.dart';
 
@@ -245,16 +246,13 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colors =
-        theme.extension<BeuiColors>() ??
-        BeuiColors.of(BeuiColorTheme.defaultMono, theme.brightness);
+    final colors = BeuiColors.resolve(context);
     final agent = BeuiAgentTheme.of(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final palette = BeuiSyntaxPalette.of(theme.brightness);
     final highlight = widget.highlightLines.toSet();
 
     final lines = widget.code.split('\n');
-    // Preserve trailing empty line behaviour of split — matches source.
 
     // Keep the hidden-content cue honest as the content grows.
     _follow.syncMetrics();
@@ -270,7 +268,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
         : (isLight ? readyGreen : readyGreenDark);
 
     // 0.97, the library press token. This widget used to press to 0.9, which
-    // read as a different component on the same screen (audit T8).
+    // read as a different component on the same screen.
     final pressTarget = (_copyPressed && !reduce) ? 0.97 : 1.0;
     final filename = _resolveFilename();
     final surface = Color.alphaBlend(
@@ -343,7 +341,11 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                       ),
                     ),
                     const Spacer(),
-                    _StatusIcon(
+                    BeuiStreamingStatusIcon(
+                      icon: _streaming
+                          ? LucideIcons.loader_circle
+                          : LucideIcons.check,
+                      size: 12,
                       streaming: _streaming,
                       reduce: reduce,
                       color: statusColor,
@@ -369,7 +371,7 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                           button: true,
                           // Live only while the confirmation is up, so the
                           // swap to "Copied" is announced instead of just
-                          // relabelling a silent node (audit R28 / T7).
+                          // relabelling a silent node.
                           liveRegion: _copied,
                           label: _copied
                               ? agent.strings.copied
@@ -524,20 +526,20 @@ class _BeuiCodeBlockState extends State<BeuiCodeBlock>
                           ),
                           // Hidden-content cue: the viewport turns scrollbars
                           // off for fidelity, so without this a long file reads
-                          // as a short one that stops mid-statement (R12).
+                          // as a short one that stops mid-statement.
                           Positioned(
                             left: 0,
                             right: 0,
                             bottom: 0,
                             child: BeuiHiddenContentFooter(
                               extentBelow: _follow.extentBelow,
-                              rowExtent: _CodeLines.lineHeight,
+                              rowExtent: _CodeLines._lineHeight,
                               surface: surface,
                             ),
                           ),
                           // The reader owns the viewport: once they scroll off
                           // the live edge, following stops and this is how they
-                          // opt back in (R7).
+                          // opt back in.
                           Positioned(
                             right: 10,
                             bottom: 8,
@@ -584,31 +586,6 @@ class _EmptyCode extends StatelessWidget {
   }
 }
 
-class _StatusIcon extends StatelessWidget {
-  const _StatusIcon({
-    required this.streaming,
-    required this.reduce,
-    required this.color,
-    required this.spin,
-  });
-
-  final bool streaming;
-  final bool reduce;
-  final Color color;
-  final AnimationController spin;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(
-      streaming ? LucideIcons.loader_circle : LucideIcons.check,
-      size: 12,
-      color: color,
-    );
-    if (!streaming || reduce) return icon;
-    return RotationTransition(turns: spin, child: icon);
-  }
-}
-
 // ---------------------------------------------------------------------------
 // Line list
 // ---------------------------------------------------------------------------
@@ -634,13 +611,13 @@ class _CodeLines extends StatelessWidget {
 
   static const _gutterWidth = 44.0; // ~2.75rem
 
-  /// One rendered row, `leading-5`. Public to the library so the hidden-content
-  /// footer can turn scroll extent into a line count.
-  static const lineHeight = 20.0;
+  /// One rendered row, `leading-5`. Read by the hidden-content footer to turn
+  /// scroll extent into a line count.
+  static const _lineHeight = 20.0;
   static const _fontSize = 12.0; // text-xs
 
   /// Blue-500 focus wash (source `highlightLines`).
-  static const highlightHue = Color(0xFF2B7FFF);
+  static const _highlightHue = Color(0xFF2B7FFF);
 
   @override
   Widget build(BuildContext context) {
@@ -656,7 +633,7 @@ class _CodeLines extends StatelessWidget {
       fontSize: _fontSize,
       // Tailwind `tracking-normal`; see the filename style for why.
       letterSpacing: 0,
-      height: lineHeight / _fontSize,
+      height: _lineHeight / _fontSize,
       color: palette.base,
     );
 
@@ -676,8 +653,8 @@ class _CodeLines extends StatelessWidget {
             baseStyle: baseStyle,
             // 0.10 fill (was 0.07 → a 1.08:1 wash) plus a 2px leading bar at
             // 0.6, so the highlight survives as more than a rounding error.
-            highlightFill: highlightHue.withValues(alpha: 0.10),
-            highlightBar: highlightHue.withValues(alpha: 0.6),
+            highlightFill: _highlightHue.withValues(alpha: 0.10),
+            highlightBar: _highlightHue.withValues(alpha: 0.6),
           ),
       ],
     );
@@ -727,6 +704,11 @@ class _CodeLineRow extends StatelessWidget {
       overflow: wrap ? TextOverflow.visible : TextOverflow.clip,
     );
 
+    final paddedCode = Padding(
+      padding: EdgeInsets.only(left: showLineNumbers ? 4 : 16, right: 16),
+      child: code,
+    );
+
     final row = IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -743,31 +725,14 @@ class _CodeLineRow extends StatelessWidget {
                   style: baseStyle.copyWith(
                     // 0.75, not 0.35. The gutter is the cross-reference channel
                     // for "I changed line 19"; at 0.35 it measured 1.63:1 and
-                    // could not be read at all (audit R8).
+                    // could not be read at all.
                     color: colors.mutedForeground.withValues(alpha: 0.75),
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),
               ),
             ),
-          if (wrap)
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: showLineNumbers ? 4 : 16,
-                  right: 16,
-                ),
-                child: code,
-              ),
-            )
-          else
-            Padding(
-              padding: EdgeInsets.only(
-                left: showLineNumbers ? 4 : 16,
-                right: 16,
-              ),
-              child: code,
-            ),
+          if (wrap) Expanded(child: paddedCode) else paddedCode,
         ],
       ),
     );

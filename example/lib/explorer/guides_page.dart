@@ -105,9 +105,19 @@ class GuidesPage extends StatelessWidget {
                   'Objects already on screen accelerating and decelerating.',
                 ),
                 (
+                  'beuiEaseDrawer',
+                  'cubic-bezier(0.32, 0.72, 0, 1)',
+                  'Edge-drawer slides — the source\'s dedicated curve.',
+                ),
+                (
                   'beuiSpringPress',
                   'stiffness 500 · damping 30 · mass 0.6',
                   'Fast, weighted feedback for buttons and pressable surfaces.',
+                ),
+                (
+                  'beuiSpringSwap',
+                  'stiffness 460 · damping 30 · mass 0.55',
+                  'Content swaps — label/icon slots trading places.',
                 ),
                 (
                   'beuiSpringLayout',
@@ -123,6 +133,16 @@ class GuidesPage extends StatelessWidget {
                   'beuiSpringMouse',
                   'stiffness 200 · damping 15 · mass 0.3',
                   'Loose cursor-follow physics for magnetic pull and tilt.',
+                ),
+                (
+                  'beuiSpringScroll',
+                  'stiffness 120 · damping 30 · mass 0.6',
+                  'Scroll-linked follow for progress indicators and parallax.',
+                ),
+                (
+                  'beuiSpringSnap',
+                  'stiffness 700 · damping 60 · mass 1',
+                  'Near-instant settle that stands in for a movement spring under reduced motion.',
                 ),
               ],
             ),

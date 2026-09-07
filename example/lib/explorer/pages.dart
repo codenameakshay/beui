@@ -264,58 +264,16 @@ class _TabBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (tab) {
       _DetailTab.preview => PreviewSurface(
-        child: entry.ported
-            ? Builder(builder: entry.builder!)
-            : _NotPorted(entry: entry),
+        child: Builder(builder: entry.builder),
       ),
-      _DetailTab.usage => _UsageBlock(entry: entry),
+      _DetailTab.usage => const _UsageBlock(),
       _DetailTab.code => _CodeTab(entry: entry),
     };
   }
 }
 
-class _NotPorted extends StatelessWidget {
-  const _NotPorted({required this.entry});
-  final ExploreEntry entry;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(LucideIcons.hammer, size: 28, color: colors.mutedForeground),
-        const SizedBox(height: 16),
-        Text(
-          'Not yet ported',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: colors.foreground,
-          ),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: 320,
-          child: Text(
-            'This component exists on beui.dev but hasn\'t been ported to the '
-            'Flutter package yet, so there\'s no live demo to show.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              height: 1.5,
-              color: colors.mutedForeground,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _UsageBlock extends StatelessWidget {
-  const _UsageBlock({required this.entry});
-  final ExploreEntry entry;
+  const _UsageBlock();
 
   @override
   Widget build(BuildContext context) {
@@ -372,6 +330,7 @@ class _CodeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     final demoFile =
+        entry.sourceFile ??
         'example/lib/demos/${entry.slug.replaceAll('-', '_')}_demo.dart';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,44 +454,6 @@ class _OnThisPage extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Simple prose doc page
-// ---------------------------------------------------------------------------
-
-/// A minimal prose page (used for the AI Agents entry).
-class DocPage extends StatelessWidget {
-  const DocPage({super.key, required this.title, required this.body});
-  final String title;
-  final String body;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<BeuiColors>()!;
-    final width = MediaQuery.sizeOf(context).width;
-    return Padding(
-      padding: _pagePadding(width),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 720),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PageHeading(title),
-            const SizedBox(height: 20),
-            Text(
-              body,
-              style: TextStyle(
-                fontSize: 15,
-                height: 1.6,
-                color: colors.mutedForeground,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
