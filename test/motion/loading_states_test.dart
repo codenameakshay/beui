@@ -230,7 +230,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _app(
+        beuiTestApp(
           const BeuiReasoningText(
             phrases: ['Alpha', 'Bravo'],
             variant: BeuiReasoningTextVariant.scramble,
