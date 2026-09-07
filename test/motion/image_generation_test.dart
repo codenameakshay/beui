@@ -22,42 +22,23 @@ Widget _host({
   bool reserveErrorSlot = true,
   bool reduce = false,
 }) {
-  Widget body = Center(
-    child: SizedBox(
-      width: 320,
-      child: BeuiImageGeneration(
-        status: status,
-        label: label,
-        prompt: prompt,
-        resolution: resolution,
-        aspectRatio: aspectRatio,
-        size: size,
-        interactive: interactive,
-        statusText: statusText,
-        showStatus: showStatus,
-        progress: progress,
-        onCancel: onCancel,
-        onRetry: onRetry,
-        reserveErrorSlot: reserveErrorSlot,
-        child: child,
-      ),
-    ),
+  final generation = BeuiImageGeneration(
+    status: status,
+    label: label,
+    prompt: prompt,
+    resolution: resolution,
+    aspectRatio: aspectRatio,
+    size: size,
+    interactive: interactive,
+    statusText: statusText,
+    showStatus: showStatus,
+    progress: progress,
+    onCancel: onCancel,
+    onRetry: onRetry,
+    reserveErrorSlot: reserveErrorSlot,
+    child: child,
   );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
+  return beuiTestApp(generation, width: 320, reduce: reduce);
 }
 
 void main() {

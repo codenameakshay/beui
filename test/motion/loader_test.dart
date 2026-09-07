@@ -2,25 +2,11 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 /// Wraps a [BeuiLoader] in a themed app. [reduce] forces reduced motion.
-Widget _app(BeuiLoaderVariant variant, {bool reduce = false}) {
-  Widget child = Center(child: BeuiLoader(variant: variant, size: 40));
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
-  );
-}
+Widget _app(BeuiLoaderVariant variant, {bool reduce = false}) =>
+    beuiTestApp(BeuiLoader(variant: variant, size: 40), reduce: reduce);
 
 void main() {
   // Loaders loop forever — never pumpAndSettle (it would time out); pump a
