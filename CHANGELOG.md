@@ -81,6 +81,16 @@ because the dead and deprecated API below is deleted rather than kept.
   (which fixes the Code tab's source paths), with one shared replay
   button, section label and pressable control.
 * `.pubignore` excludes the example's platform folders and fonts.
+* Reduced-motion token swaps route through `motionFor` (95 call sites);
+  the bare `MediaQuery.disableAnimationsOf` reads that remain gate
+  non-motion decisions (whether to mount a transform, blur or ticker).
+  `BeuiAgentDisclosureInternal.reduce` is optional and defaults to the
+  ambient value.
+* A table-driven test guards every field of the eleven theme value types
+  against a wrong `??` in `copyWith`, a field missing from `==`, or a
+  swapped pair in `lerp`.
+* Fifty test files build their app through `beuiTestApp` instead of a
+  private copy of the themed `MaterialApp`.
 
 ## 1.2.0
 
