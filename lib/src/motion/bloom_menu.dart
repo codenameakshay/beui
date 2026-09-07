@@ -237,9 +237,15 @@ class _BeuiBloomMenuState extends State<BeuiBloomMenu>
         value: _open ? panelSize : triggerSize,
         from: triggerSize,
         converter: const SizeMotionConverter(),
-        motion: reduce
-            ? const CurvedMotion(Duration(milliseconds: 150), beuiEaseOut)
-            : _folderSpring,
+        motion: motionFor(
+          context,
+          _folderSpring,
+          isMovement: true,
+          reducedFallback: const CurvedMotion(
+            Duration(milliseconds: 150),
+            beuiEaseOut,
+          ),
+        ),
         builder: (context, size, child) => Container(
           width: size.width,
           height: size.height,

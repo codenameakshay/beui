@@ -361,7 +361,11 @@ class _BeuiCommandPaletteState extends State<BeuiCommandPalette> {
                             if (_pillRect != null)
                               MotionBuilder<Rect>(
                                 value: _pillRect!,
-                                motion: reduce ? const NoMotion() : _rowSpring,
+                                motion: motionFor(
+                                  context,
+                                  _rowSpring,
+                                  isMovement: true,
+                                ),
                                 converter: const RectMotionConverter(),
                                 builder: (context, rect, _) {
                                   // NoMotion holds the rect it was seeded with,
