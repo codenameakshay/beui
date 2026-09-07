@@ -3,39 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 Widget _app({
   bool? open,
   ValueChanged<bool>? onOpenChange,
   bool reduce = false,
-}) {
-  Widget body = Center(
-    child: BeuiPopover(
-      open: open,
-      onOpenChange: onOpenChange,
-      content: const Text('Panel body'),
-      child: const SizedBox(
-        width: 120,
-        height: 44,
-        child: Center(child: Text('Trigger')),
-      ),
+}) => beuiTestApp(
+  BeuiPopover(
+    open: open,
+    onOpenChange: onOpenChange,
+    content: const Text('Panel body'),
+    child: const SizedBox(
+      width: 120,
+      height: 44,
+      child: Center(child: Text('Trigger')),
     ),
-  );
-  if (reduce) {
-    final inner = body;
-    body = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: body),
-  );
-}
+  ),
+  reduce: reduce,
+);
 
 /// A controlled host whose `open` can be toggled from the test body, so a
 /// single widget lifetime covers both the enter and the exit.

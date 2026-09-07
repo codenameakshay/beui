@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support.dart';
+
 const _items = <BeuiPreviewRailItem>[
   BeuiPreviewRailItem(
     id: 'a',
@@ -41,40 +43,23 @@ Widget _app({
   BeuiPreviewRailStyle? style,
   bool reduce = false,
 }) {
-  Widget child = Center(
-    child: SizedBox(
-      width: 480,
-      height: 320,
-      child: BeuiPreviewRail(
-        items: items,
-        label: label ?? 'Section navigation',
-        orientation: orientation,
-        activeId: activeId,
-        defaultActiveId: defaultActiveId,
-        onActiveChange: onActiveChange,
-        onItemSelect: onItemSelect,
-        showPreview: showPreview,
-        previewSide: previewSide,
-        highlightActive: highlightActive,
-        style: style,
-      ),
+  final rail = SizedBox(
+    height: 320,
+    child: BeuiPreviewRail(
+      items: items,
+      label: label ?? 'Section navigation',
+      orientation: orientation,
+      activeId: activeId,
+      defaultActiveId: defaultActiveId,
+      onActiveChange: onActiveChange,
+      onItemSelect: onItemSelect,
+      showPreview: showPreview,
+      previewSide: previewSide,
+      highlightActive: highlightActive,
+      style: style,
     ),
   );
-  if (reduce) {
-    final inner = child;
-    child = Builder(
-      builder: (context) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: true),
-        child: inner,
-      ),
-    );
-  }
-  return MaterialApp(
-    theme: BeuiTextTheme.trackingNormal(
-      ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-    ),
-    home: Scaffold(body: child),
-  );
+  return beuiTestApp(rail, width: 480, reduce: reduce);
 }
 
 /// The tick button for [label]. Not `bySemanticsLabel`: once a preview card is
@@ -202,22 +187,12 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+        beuiTestApp(
+          const SizedBox(
+            height: 320,
+            child: BeuiPreviewRail(items: _items, child: Text('PANEL CONTENT')),
           ),
-          home: const Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 480,
-                height: 320,
-                child: BeuiPreviewRail(
-                  items: _items,
-                  child: Text('PANEL CONTENT'),
-                ),
-              ),
-            ),
-          ),
+          width: 480,
         ),
       );
       await tester.pumpAndSettle();
@@ -232,23 +207,16 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: const Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 480,
-                height: 320,
-                child: BeuiPreviewRail(
-                  items: _items,
-                  orientation: BeuiPreviewRailOrientation.horizontal,
-                  child: Text('PANEL CONTENT'),
-                ),
-              ),
+        beuiTestApp(
+          const SizedBox(
+            height: 320,
+            child: BeuiPreviewRail(
+              items: _items,
+              orientation: BeuiPreviewRailOrientation.horizontal,
+              child: Text('PANEL CONTENT'),
             ),
           ),
+          width: 480,
         ),
       );
       await tester.pumpAndSettle();
@@ -472,19 +440,12 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: BeuiTextTheme.trackingNormal(
-          ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+      beuiTestApp(
+        const SizedBox(
+          height: 320,
+          child: BeuiPreviewRail(items: _items, defaultActiveId: 'b'),
         ),
-        home: const Scaffold(
-          body: Center(
-            child: SizedBox(
-              width: 480,
-              height: 320,
-              child: BeuiPreviewRail(items: _items, defaultActiveId: 'b'),
-            ),
-          ),
-        ),
+        width: 480,
       ),
     );
     await tester.pumpAndSettle();
@@ -628,19 +589,9 @@ void main() {
 
     testWidgets('30 items in 300px do not overflow (vertical)', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 480,
-                height: 300,
-                child: BeuiPreviewRail(items: many(30)),
-              ),
-            ),
-          ),
+        beuiTestApp(
+          SizedBox(height: 300, child: BeuiPreviewRail(items: many(30))),
+          width: 480,
         ),
       );
       await tester.pumpAndSettle();
@@ -655,22 +606,15 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 320,
-                height: 200,
-                child: BeuiPreviewRail(
-                  items: many(20),
-                  orientation: BeuiPreviewRailOrientation.horizontal,
-                ),
-              ),
+        beuiTestApp(
+          SizedBox(
+            height: 200,
+            child: BeuiPreviewRail(
+              items: many(20),
+              orientation: BeuiPreviewRailOrientation.horizontal,
             ),
           ),
+          width: 320,
         ),
       );
       await tester.pumpAndSettle();
@@ -682,19 +626,9 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 480,
-                height: 200,
-                child: BeuiPreviewRail(items: many(20)),
-              ),
-            ),
-          ),
+        beuiTestApp(
+          SizedBox(height: 200, child: BeuiPreviewRail(items: many(20))),
+          width: 480,
         ),
       );
       await tester.pumpAndSettle();
@@ -806,30 +740,23 @@ void main() {
     ) async {
       var taps = 0;
       await tester.pumpWidget(
-        MaterialApp(
-          theme: BeuiTextTheme.trackingNormal(
-            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
-          ),
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 480,
-                height: 320,
-                child: BeuiPreviewRail(
-                  items: _items,
-                  renderPreview: (item) => GestureDetector(
-                    onTap: () => taps++,
-                    child: Container(
-                      height: 80,
-                      color: const Color(0xFFEEEEEE),
-                      alignment: Alignment.center,
-                      child: Text('Open ${item.label}'),
-                    ),
-                  ),
+        beuiTestApp(
+          SizedBox(
+            height: 320,
+            child: BeuiPreviewRail(
+              items: _items,
+              renderPreview: (item) => GestureDetector(
+                onTap: () => taps++,
+                child: Container(
+                  height: 80,
+                  color: const Color(0xFFEEEEEE),
+                  alignment: Alignment.center,
+                  child: Text('Open ${item.label}'),
                 ),
               ),
             ),
           ),
+          width: 480,
         ),
       );
       await tester.pumpAndSettle();
