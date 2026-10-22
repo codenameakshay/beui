@@ -18,6 +18,7 @@ class _RangeSliderDemo extends StatefulWidget {
 
 class _RangeSliderDemoState extends State<_RangeSliderDemo> {
   // Each preview's own seed value, from the source's usage snippets.
+  double _iconSize = 48; // range-slider-inline
   double _value = 40; // range-slider
   double _brightness = 35; // range-slider-fluid
   double _gain = 45; // range-slider-wave
@@ -61,6 +62,20 @@ class _RangeSliderDemoState extends State<_RangeSliderDemo> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        SizedBox(
+          width: _sm,
+          child: BeuiInlineSlider(
+            label: 'Icon size',
+            value: _iconSize,
+            min: 8,
+            max: 128,
+            step: 8,
+            formatValueText: (v) => '${v.round()} pixels',
+            onChanged: (v) => setState(() => _iconSize = v),
+          ),
+        ),
+        const SizedBox(height: _bandGap),
+
         // ── Range Slider — `max-w-sm flex-col gap-3` ──────────────────────
         SizedBox(
           width: _sm,

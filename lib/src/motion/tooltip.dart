@@ -39,6 +39,18 @@ enum BeuiTooltipSide {
   left,
 }
 
+/// Alignment of the tooltip along the cross axis of [BeuiTooltipSide].
+enum BeuiTooltipAlign {
+  /// Start edge (left for top/bottom, top for left/right).
+  start,
+
+  /// Centered on the trigger (default).
+  center,
+
+  /// End edge (right for top/bottom, bottom for left/right).
+  end,
+}
+
 /// A hover/focus tooltip with a spring spawn and blur enter/exit — the Flutter
 /// port of beUI's `tooltip`, built on [BeuiOverlay].
 ///
@@ -59,6 +71,9 @@ class BeuiTooltip extends StatefulWidget {
     required this.content,
     required this.child,
     this.side = BeuiTooltipSide.top,
+    this.align = BeuiTooltipAlign.center,
+    this.arrow = false,
+    this.disabled = false,
     this.delay = const Duration(milliseconds: 120),
     super.key,
   });
@@ -71,6 +86,15 @@ class BeuiTooltip extends StatefulWidget {
 
   /// Which side to show on.
   final BeuiTooltipSide side;
+
+  /// Cross-axis alignment against the trigger.
+  final BeuiTooltipAlign align;
+
+  /// Draw a pointer toward the trigger (source `arrow`).
+  final bool arrow;
+
+  /// Never show, e.g. while the label it carries is already visible.
+  final bool disabled;
 
   /// Delay before opening on hover/focus (skipped within the warm window).
   final Duration delay;
@@ -93,12 +117,13 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   }
 
   void _show({bool immediate = false}) {
+    if (widget.disabled) return;
     _timer?.cancel();
     final warm =
         clock.now().millisecondsSinceEpoch - _lastHiddenAtMs < _warmWindowMs;
     final delay = immediate || warm ? Duration.zero : widget.delay;
     _timer = Timer(delay, () {
-      if (mounted) setState(() => _open = true);
+      if (mounted && !widget.disabled) setState(() => _open = true);
     });
   }
 
@@ -146,7 +171,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   ) {
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final spec = _spec(widget.side);
+    final spec = _spec(widget.side, widget.align);
 
     return CompositedTransformFollower(
       link: link,
@@ -251,7 +276,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     // Source surface: `rounded-lg border border-border bg-background px-2.5 py-1
     // text-xs font-medium text-foreground shadow-lg` — a SOLID OPAQUE pill, no
     // backdrop blur.
-    return DecoratedBox(
+    final bubble = DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background, // bg-background (opaque)
         border: Border.all(color: colors.border), // border-border
@@ -285,38 +310,104 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
         ),
       ),
     );
+    if (!widget.arrow) return bubble;
+    final pointer = CustomPaint(
+      size: switch (widget.side) {
+        BeuiTooltipSide.left || BeuiTooltipSide.right => const Size(6, 10),
+        _ => const Size(10, 6),
+      },
+      painter: _TooltipArrowPainter(
+        fill: colors.background,
+        border: colors.border,
+        side: widget.side,
+      ),
+    );
+    return switch (widget.side) {
+      BeuiTooltipSide.top => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [bubble, pointer],
+      ),
+      BeuiTooltipSide.bottom => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [pointer, bubble],
+      ),
+      BeuiTooltipSide.left => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [bubble, pointer],
+      ),
+      BeuiTooltipSide.right => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [pointer, bubble],
+      ),
+    };
   }
 
-  _TooltipSpec _spec(BeuiTooltipSide side) => switch (side) {
-    BeuiTooltipSide.top => const _TooltipSpec(
-      targetAnchor: Alignment.topCenter,
-      followerAnchor: Alignment.bottomCenter,
-      gap: Offset(0, -8),
-      away: Offset(0, 8),
-      origin: Alignment.bottomCenter,
-    ),
-    BeuiTooltipSide.bottom => const _TooltipSpec(
-      targetAnchor: Alignment.bottomCenter,
-      followerAnchor: Alignment.topCenter,
-      gap: Offset(0, 8),
-      away: Offset(0, -8),
-      origin: Alignment.topCenter,
-    ),
-    BeuiTooltipSide.left => const _TooltipSpec(
-      targetAnchor: Alignment.centerLeft,
-      followerAnchor: Alignment.centerRight,
-      gap: Offset(-8, 0),
-      away: Offset(8, 0),
-      origin: Alignment.centerRight,
-    ),
-    BeuiTooltipSide.right => const _TooltipSpec(
-      targetAnchor: Alignment.centerRight,
-      followerAnchor: Alignment.centerLeft,
-      gap: Offset(8, 0),
-      away: Offset(-8, 0),
-      origin: Alignment.centerLeft,
-    ),
-  };
+  _TooltipSpec _spec(BeuiTooltipSide side, BeuiTooltipAlign align) {
+    final start = align == BeuiTooltipAlign.start;
+    final end = align == BeuiTooltipAlign.end;
+    return switch (side) {
+      BeuiTooltipSide.top => _TooltipSpec(
+        targetAnchor: start
+            ? Alignment.topLeft
+            : end
+            ? Alignment.topRight
+            : Alignment.topCenter,
+        followerAnchor: start
+            ? Alignment.bottomLeft
+            : end
+            ? Alignment.bottomRight
+            : Alignment.bottomCenter,
+        gap: const Offset(0, -8),
+        away: const Offset(0, 8),
+        origin: Alignment.bottomCenter,
+      ),
+      BeuiTooltipSide.bottom => _TooltipSpec(
+        targetAnchor: start
+            ? Alignment.bottomLeft
+            : end
+            ? Alignment.bottomRight
+            : Alignment.bottomCenter,
+        followerAnchor: start
+            ? Alignment.topLeft
+            : end
+            ? Alignment.topRight
+            : Alignment.topCenter,
+        gap: const Offset(0, 8),
+        away: const Offset(0, -8),
+        origin: Alignment.topCenter,
+      ),
+      BeuiTooltipSide.left => _TooltipSpec(
+        targetAnchor: start
+            ? Alignment.topLeft
+            : end
+            ? Alignment.bottomLeft
+            : Alignment.centerLeft,
+        followerAnchor: start
+            ? Alignment.topRight
+            : end
+            ? Alignment.bottomRight
+            : Alignment.centerRight,
+        gap: const Offset(-8, 0),
+        away: const Offset(8, 0),
+        origin: Alignment.centerRight,
+      ),
+      BeuiTooltipSide.right => _TooltipSpec(
+        targetAnchor: start
+            ? Alignment.topRight
+            : end
+            ? Alignment.bottomRight
+            : Alignment.centerRight,
+        followerAnchor: start
+            ? Alignment.topLeft
+            : end
+            ? Alignment.bottomLeft
+            : Alignment.centerLeft,
+        gap: const Offset(8, 0),
+        away: const Offset(-8, 0),
+        origin: Alignment.centerLeft,
+      ),
+    };
+  }
 }
 
 class _TooltipSpec {
@@ -332,4 +423,63 @@ class _TooltipSpec {
   final Offset gap;
   final Offset away;
   final Alignment origin;
+}
+
+class _TooltipArrowPainter extends CustomPainter {
+  const _TooltipArrowPainter({
+    required this.fill,
+    required this.border,
+    required this.side,
+  });
+
+  final Color fill;
+  final Color border;
+  final BeuiTooltipSide side;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path();
+    switch (side) {
+      case BeuiTooltipSide.top:
+        path
+          ..moveTo(0, 0)
+          ..lineTo(size.width / 2, size.height)
+          ..lineTo(size.width, 0);
+      case BeuiTooltipSide.bottom:
+        path
+          ..moveTo(0, size.height)
+          ..lineTo(size.width / 2, 0)
+          ..lineTo(size.width, size.height);
+      case BeuiTooltipSide.left:
+        path
+          ..moveTo(0, 0)
+          ..lineTo(size.width, size.height / 2)
+          ..lineTo(0, size.height);
+      case BeuiTooltipSide.right:
+        path
+          ..moveTo(size.width, 0)
+          ..lineTo(0, size.height / 2)
+          ..lineTo(size.width, size.height);
+    }
+    path.close();
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = fill
+        ..style = PaintingStyle.fill,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = border
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _TooltipArrowPainter oldDelegate) =>
+      fill != oldDelegate.fill ||
+      border != oldDelegate.border ||
+      side != oldDelegate.side;
 }

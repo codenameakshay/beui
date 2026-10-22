@@ -90,6 +90,7 @@ class BeuiInput extends StatefulWidget {
     this.onSubmitted,
     this.placeholder,
     this.error,
+    this.reserveErrorLine = false,
     this.success = false,
     this.leftIcon,
     this.rightIcon,
@@ -139,6 +140,10 @@ class BeuiInput extends StatefulWidget {
   /// Truthy error triggers the shake + red border/ring. A [String] also shows
   /// an alert message below the field; `true` shakes without a message.
   final Object? error;
+
+  /// Reserve one 16px message line so validation does not shift nearby content
+  /// (source `reserveErrorLine`, `min-h-4`).
+  final bool reserveErrorLine;
 
   /// Shows the success check at the right edge (replaces [rightIcon]).
   final bool success;
@@ -521,6 +526,7 @@ class _BeuiInputState extends State<BeuiInput>
           message: _errorMessage,
           color: errorColor,
           reduce: reduce,
+          reserveErrorLine: widget.reserveErrorLine,
         ),
       ],
     );
@@ -627,76 +633,85 @@ class _ErrorMessage extends StatelessWidget {
     required this.message,
     required this.color,
     required this.reduce,
+    required this.reserveErrorLine,
   });
   final String? message;
   final Color color;
   final bool reduce;
+  final bool reserveErrorLine;
 
   @override
   Widget build(BuildContext context) {
+    Widget body = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      switchInCurve: beuiEaseOut,
+      switchOutCurve: beuiEaseOut,
+      // Left-aligns the message under the field (AnimatedSwitcher's default
+      // layout builder centres children); directional so RTL still starts
+      // at the correct edge.
+      layoutBuilder: (currentChild, previousChildren) => Stack(
+        alignment: AlignmentDirectional.topStart,
+        children: [...previousChildren, ?currentChild],
+      ),
+      transitionBuilder: (child, animation) {
+        if (reduce) return FadeTransition(opacity: animation, child: child);
+        // y: -4 → 0, blur(4px) → 0 (σ2 → 0).
+        return FadeTransition(
+          opacity: animation,
+          child: AnimatedBuilder(
+            animation: animation,
+            builder: (context, inner) {
+              final t = animation.value;
+              final blur = beuiBlurSigma(4) * (1 - t);
+              Widget body = Transform.translate(
+                offset: Offset(0, -4 * (1 - t)),
+                child: inner,
+              );
+              if (blur > 0.05) {
+                body = ImageFiltered(
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: blur,
+                    sigmaY: blur,
+                    tileMode: TileMode.decal,
+                  ),
+                  child: body,
+                );
+              }
+              return body;
+            },
+            child: child,
+          ),
+        );
+      },
+      child: message == null
+          ? const SizedBox(width: double.infinity)
+          : Semantics(
+              key: ValueKey(message),
+              // Announced the moment validation fails, without stealing
+              // focus — the error is otherwise invisible to a screen-reader
+              // user until they happen to tab back into the field.
+              liveRegion: true,
+              container: true,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(start: 4, top: 6),
+                child: Text(
+                  message!,
+                  style: TextStyle(fontSize: 12, color: color),
+                ),
+              ),
+            ),
+    );
+    if (reserveErrorLine) {
+      return ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 16),
+        child: body,
+      );
+    }
     return AnimatedSize(
       duration: const Duration(milliseconds: 200),
       curve: beuiEaseOut,
       alignment: Alignment.topCenter,
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        switchInCurve: beuiEaseOut,
-        switchOutCurve: beuiEaseOut,
-        // Left-aligns the message under the field (AnimatedSwitcher's default
-        // layout builder centres children); directional so RTL still starts
-        // at the correct edge.
-        layoutBuilder: (currentChild, previousChildren) => Stack(
-          alignment: AlignmentDirectional.topStart,
-          children: [...previousChildren, ?currentChild],
-        ),
-        transitionBuilder: (child, animation) {
-          if (reduce) return FadeTransition(opacity: animation, child: child);
-          // y: -4 → 0, blur(4px) → 0 (σ2 → 0).
-          return FadeTransition(
-            opacity: animation,
-            child: AnimatedBuilder(
-              animation: animation,
-              builder: (context, inner) {
-                final t = animation.value;
-                final blur = beuiBlurSigma(4) * (1 - t);
-                Widget body = Transform.translate(
-                  offset: Offset(0, -4 * (1 - t)),
-                  child: inner,
-                );
-                if (blur > 0.05) {
-                  body = ImageFiltered(
-                    imageFilter: ImageFilter.blur(
-                      sigmaX: blur,
-                      sigmaY: blur,
-                      tileMode: TileMode.decal,
-                    ),
-                    child: body,
-                  );
-                }
-                return body;
-              },
-              child: child,
-            ),
-          );
-        },
-        child: message == null
-            ? const SizedBox(width: double.infinity)
-            : Semantics(
-                key: ValueKey(message),
-                // Announced the moment validation fails, without stealing
-                // focus — the error is otherwise invisible to a screen-reader
-                // user until they happen to tab back into the field.
-                liveRegion: true,
-                container: true,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 4, top: 6),
-                  child: Text(
-                    message!,
-                    style: TextStyle(fontSize: 12, color: color),
-                  ),
-                ),
-              ),
-      ),
+      child: body,
     );
   }
 }

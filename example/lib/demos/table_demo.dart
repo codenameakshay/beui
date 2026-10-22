@@ -76,9 +76,46 @@ class _TableDemo extends StatefulWidget {
   State<_TableDemo> createState() => _TableDemoState();
 }
 
+class _EditRow {
+  _EditRow(this.id, this.fields);
+  final String id;
+  final Map<String, String> fields;
+}
+
 class _TableDemoState extends State<_TableDemo> {
   final List<_Person> _data = _buildPeople(10000);
   List<String> _selected = const [];
+
+  final List<_EditRow> _editRows = [
+    _EditRow('r1', {'name': 'Ava Cole', 'role': 'Owner', 'team': 'Design'}),
+    _EditRow('r2', {'name': 'Leo Frost', 'role': 'Admin', 'team': 'Growth'}),
+    _EditRow('r3', {'name': 'Mia Vale', 'role': 'Member', 'team': 'Design'}),
+    _EditRow('r4', {'name': 'Kai Reyes', 'role': 'Member', 'team': 'Platform'}),
+  ];
+  List<String> _editKeys = ['name', 'role', 'team'];
+  final Map<String, String> _editLabels = {
+    'name': 'Name',
+    'role': 'Role',
+    'team': 'Team',
+  };
+  int _nextRow = 5;
+  int _nextCol = 1;
+  bool _editable = true;
+
+  List<_Person> _asyncRows = const [];
+  bool _asyncLoading = true;
+  int _asyncPage = 0;
+  bool _asyncLoadingLock = false;
+  static const int _pageSize = 20;
+  static const int _maxPages = 8;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _loadMoreAsync();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,8 +242,161 @@ class _TableDemoState extends State<_TableDemo> {
             height: 420,
             rowHeight: 52,
           ),
+          const SizedBox(height: 32),
+          _sectionLabel(colors, 'Editable Table'),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  _editable
+                      ? 'Click a cell to edit. Use the column and row handles to insert or delete.'
+                      : 'Read-only.',
+                  style: captionStyle,
+                ),
+              ),
+              BeuiSwitch(
+                value: _editable,
+                onChanged: (v) => setState(() => _editable = v),
+                label: 'Editable',
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          BeuiTable<_EditRow>(
+            data: _editRows,
+            columns: [
+              for (var i = 0; i < _editKeys.length; i++)
+                BeuiTableColumn<_EditRow>(
+                  key: _editKeys[i],
+                  header: _editLabels[_editKeys[i]] ?? _editKeys[i],
+                  editable: _editable,
+                  width: i == 0 ? null : 180,
+                  value: (r) => r.fields[_editKeys[i]] ?? '',
+                ),
+            ],
+            getRowId: (r, _) => r.id,
+            rowHeight: 48,
+            height: (_editRows.length.clamp(1, 6) * 48) + 48,
+            onCellEdit: _editable
+                ? (rowId, key, value) {
+                    setState(() {
+                      for (final row in _editRows) {
+                        if (row.id == rowId) row.fields[key] = value;
+                      }
+                    });
+                  }
+                : null,
+            onColumnRename: _editable
+                ? (key, value) => setState(() => _editLabels[key] = value)
+                : null,
+            onInsertRow: _editable ? _insertEditRow : null,
+            onDeleteRow: _editable
+                ? (rowId, _) => setState(
+                    () => _editRows.removeWhere((r) => r.id == rowId),
+                  )
+                : null,
+            onInsertColumn: _editable ? _insertEditColumn : null,
+            onDeleteColumn: _editable
+                ? (key, _) => setState(() {
+                    _editKeys = _editKeys.where((k) => k != key).toList();
+                    for (final row in _editRows) {
+                      row.fields.remove(key);
+                    }
+                  })
+                : null,
+            emptyState: TextButton(
+              onPressed: () =>
+                  _insertEditRow(0, BeuiTableInsertPosition.before),
+              child: const Text('Insert first row'),
+            ),
+          ),
+          const SizedBox(height: 32),
+          _sectionLabel(colors, 'Async Table'),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${groupThousands(_asyncRows.length)} loaded',
+                  style: captionStyle,
+                ),
+                Text(
+                  _asyncLoading
+                      ? 'Loading…'
+                      : _asyncPage >= _maxPages
+                      ? 'All loaded'
+                      : 'Scroll for more',
+                  style: captionStyle,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          BeuiTable<_Person>(
+            data: _asyncRows,
+            columns: columns,
+            getRowId: (r, _) => r.id,
+            height: 420,
+            rowHeight: 52,
+            onEndReached: _loadMoreAsync,
+            loading: _asyncLoading,
+          ),
         ],
       ),
     );
   }
+
+  void _insertEditRow(int index, BeuiTableInsertPosition position) {
+    final at = position == BeuiTableInsertPosition.after ? index + 1 : index;
+    setState(() {
+      _editRows.insert(at, _EditRow('r$_nextRow', {}));
+      _nextRow += 1;
+    });
+  }
+
+  void _insertEditColumn(int index, BeuiTableInsertPosition position) {
+    final key = 'field$_nextCol';
+    final at = position == BeuiTableInsertPosition.after ? index + 1 : index;
+    setState(() {
+      _editLabels[key] = 'Field $_nextCol';
+      _editKeys = [..._editKeys]..insert(at, key);
+      for (final row in _editRows) {
+        row.fields[key] = '';
+      }
+      _nextCol += 1;
+    });
+  }
+
+  void _loadMoreAsync() {
+    if (_asyncLoadingLock || _asyncPage >= _maxPages) return;
+    _asyncLoadingLock = true;
+    setState(() => _asyncLoading = true);
+    Future<void>.delayed(const Duration(milliseconds: 700), () {
+      if (!mounted) return;
+      final page = _asyncPage;
+      final start = page * _pageSize;
+      final slice = _buildPeople(start + _pageSize).sublist(start);
+      setState(() {
+        _asyncRows = [..._asyncRows, ...slice];
+        _asyncPage = page + 1;
+        _asyncLoadingLock = false;
+        _asyncLoading = false;
+      });
+    });
+  }
+
+  Widget _sectionLabel(BeuiColors colors, String title) => Text(
+    title.toUpperCase(),
+    style: TextStyle(
+      fontSize: 10,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.5,
+      height: 1.5,
+      color: colors.mutedForeground,
+    ),
+  );
 }

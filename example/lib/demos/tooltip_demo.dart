@@ -17,22 +17,27 @@ Widget tooltipDemo(BuildContext context) {
         spacing: 16, // gap-4
         runSpacing: 16,
         children: [
-          for (final (side, content, icon) in const [
-            (BeuiTooltipSide.top, 'Like this post', LucideIcons.heart),
-            (BeuiTooltipSide.bottom, 'Share', LucideIcons.share),
-            (BeuiTooltipSide.left, 'Open settings', LucideIcons.settings),
-            (BeuiTooltipSide.right, 'Move to trash', LucideIcons.trash),
+          for (final (side, label, icon) in const [
+            (BeuiTooltipSide.top, 'Top', LucideIcons.arrow_up),
+            (BeuiTooltipSide.left, 'Left', LucideIcons.arrow_left),
+            (BeuiTooltipSide.right, 'Right', LucideIcons.arrow_right),
+            (BeuiTooltipSide.bottom, 'Bottom', LucideIcons.arrow_down),
           ])
             BeuiTooltip(
               side: side,
-              content: Text(content),
-              child: _TooltipTrigger(icon: icon, semanticLabel: content),
+              arrow: true,
+              content: const Text('More context'),
+              child: _TooltipTrigger(
+                icon: icon,
+                semanticLabel: label,
+                label: label,
+              ),
             ),
         ],
       ),
       const SizedBox(height: 48), // gap-12
       Text(
-        'Hover or focus each button. Content fades and un-blurs in.',
+        'Hover or focus. Press Esc to dismiss.',
         style: TextStyle(
           fontSize: 12, // text-xs
           color: colors.mutedForeground,
@@ -46,10 +51,15 @@ Widget tooltipDemo(BuildContext context) {
 /// `h-10 w-10 rounded-full border border-border bg-card` around an `h-4 w-4`
 /// icon.
 class _TooltipTrigger extends StatelessWidget {
-  const _TooltipTrigger({required this.icon, required this.semanticLabel});
+  const _TooltipTrigger({
+    required this.icon,
+    required this.semanticLabel,
+    required this.label,
+  });
 
   final IconData icon;
   final String semanticLabel;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -60,15 +70,29 @@ class _TooltipTrigger extends StatelessWidget {
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Container(
-          width: 40, // w-10
-          height: 40, // h-10
+          width: 80,
+          height: 40,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: colors.card,
             border: Border.all(color: colors.border),
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 16, color: colors.foreground), // h-4 w-4
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 14, color: colors.mutedForeground),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: colors.foreground,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

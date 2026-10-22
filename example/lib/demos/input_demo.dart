@@ -57,6 +57,7 @@ class _InputDemoState extends State<_InputDemo> {
               value: _email,
               error: emailError,
               errorNonce: _submits,
+              reserveErrorLine: true,
               onChanged: (v) => setState(() => _email = v),
             ),
             const SizedBox(height: 12),
@@ -77,6 +78,7 @@ class _InputDemoState extends State<_InputDemo> {
               autofillHints: const [AutofillHints.password],
               // The soft keyboard's suggestion bar has no business here.
               enableSuggestions: false,
+              reserveErrorLine: true,
               onChanged: (v) => setState(() => _pass = v),
               rightIcon: _RevealToggle(
                 revealed: _show,
@@ -90,6 +92,7 @@ class _InputDemoState extends State<_InputDemo> {
               value: _query,
               textInputAction: TextInputAction.search,
               success: _query.length > 1,
+              reserveErrorLine: true,
               onChanged: (v) => setState(() => _query = v),
             ),
           ],

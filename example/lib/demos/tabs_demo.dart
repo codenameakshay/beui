@@ -16,7 +16,9 @@ class _TabsDemoState extends State<_TabsDemo> {
   // Mirrors TabsPreview: three independently-stated groups, one per variant,
   // each under an uppercase section label.
   String _pill = 'overview';
+  String _overflow = 'Overview';
   String _segment = 'day';
+  String _icons = 'home';
   String _underline = 'all';
 
   @override
@@ -71,6 +73,27 @@ class _TabsDemoState extends State<_TabsDemo> {
             const SizedBox(height: 32),
             _tabsSection(
               colors,
+              'Overflow',
+              SizedBox(
+                width: 320,
+                child: BeuiTabs<String>(
+                  variant: BeuiTabsVariant.pill,
+                  value: _overflow,
+                  onChanged: (v) => setState(() => _overflow = v),
+                  tabs: const [
+                    BeuiTab(value: 'Overview', label: Text('Overview')),
+                    BeuiTab(value: 'Activity', label: Text('Activity')),
+                    BeuiTab(value: 'Analytics', label: Text('Analytics')),
+                    BeuiTab(value: 'Members', label: Text('Members')),
+                    BeuiTab(value: 'Billing', label: Text('Billing')),
+                    BeuiTab(value: 'Settings', label: Text('Settings')),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            _tabsSection(
+              colors,
               'Segment',
               BeuiTabs<String>(
                 variant: BeuiTabsVariant.segment,
@@ -80,6 +103,34 @@ class _TabsDemoState extends State<_TabsDemo> {
                   BeuiTab(value: 'day', label: Text('Day')),
                   BeuiTab(value: 'week', label: Text('Week')),
                   BeuiTab(value: 'month', label: Text('Month')),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
+            _tabsSection(
+              colors,
+              'Icon on selected',
+              BeuiTabs<String>(
+                variant: BeuiTabsVariant.pill,
+                icons: BeuiTabsIcons.selected,
+                value: _icons,
+                onChanged: (v) => setState(() => _icons = v),
+                tabs: const [
+                  BeuiTab(
+                    value: 'home',
+                    icon: Icon(LucideIcons.house),
+                    label: Text('Home'),
+                  ),
+                  BeuiTab(
+                    value: 'stats',
+                    icon: Icon(LucideIcons.chart_column),
+                    label: Text('Stats'),
+                  ),
+                  BeuiTab(
+                    value: 'alerts',
+                    icon: Icon(LucideIcons.bell),
+                    label: Text('Alerts'),
+                  ),
                 ],
               ),
             ),

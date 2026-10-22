@@ -55,7 +55,7 @@ class _AnimatedSidebarDemoState extends State<_AnimatedSidebarDemo> {
       BeuiAnimatedSidebarItem(
         id: 'companies',
         label: 'Companies',
-        icon: LucideIcons.building_2,
+        icon: LucideIcons.building,
       ),
       BeuiAnimatedSidebarItem(
         id: 'opportunities',
