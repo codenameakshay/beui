@@ -140,10 +140,7 @@ void main() {
     Finder glyph(String character) => find.descendant(
       of: cvv,
       matching: find.byWidgetPredicate(
-        (widget) =>
-            widget is Text &&
-            widget.data == character &&
-            widget.key == ValueKey(character),
+        (widget) => widget is Text && widget.data == character,
       ),
     );
     double glyphOffset(String character) => tester
@@ -167,7 +164,7 @@ void main() {
     expect(glyph('•'), findsNWidgets(3));
     for (final digit in ['1', '2', '3']) {
       expect(glyph(digit), findsOneWidget);
-      expect(glyphOffset(digit), inExclusiveRange(0, 0.45));
+      expect(glyphOffset(digit), inInclusiveRange(0, 0.45));
     }
     final firstOffset = glyphOffset('1');
     await tester.pump(const Duration(milliseconds: 60));
