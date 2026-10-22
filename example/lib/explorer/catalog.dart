@@ -20,6 +20,7 @@ import '../demos/bounce_sidebar_demo.dart';
 import '../demos/bottom_sheet_demo.dart';
 import '../demos/bouncy_accordion_demo.dart';
 import '../demos/button_demo.dart';
+import '../demos/card_folder_demo.dart';
 import '../demos/center_morph_modal_demo.dart';
 import '../demos/chat_app_demo.dart';
 import '../demos/checkbox_demo.dart';
@@ -47,14 +48,18 @@ import '../demos/message_bubble_demo.dart';
 import '../demos/message_demo.dart';
 import '../demos/message_scroller_demo.dart';
 import '../demos/morphing_modal_demo.dart';
+import '../demos/morphing_search_demo.dart';
+import '../demos/morphing_tabs_demo.dart';
 import '../demos/not_found_demo.dart';
 import '../demos/notification_stack_demo.dart';
 import '../demos/number_demo.dart';
 import '../demos/otp_input_demo.dart';
 import '../demos/popover_demo.dart';
 import '../demos/popover_morph_demo.dart';
+import '../demos/prediction_market_card_demo.dart';
 import '../demos/prediction_market_demo.dart';
 import '../demos/preview_rail_demo.dart';
+import '../demos/project_folder_demo.dart';
 import '../demos/prompt_input_demo.dart';
 import '../demos/pull_to_refresh_demo.dart';
 import '../demos/radio_demo.dart';
@@ -63,6 +68,7 @@ import '../demos/scroll_animation_demo.dart';
 import '../demos/select_demo.dart';
 import '../demos/shader_background_demo.dart';
 import '../demos/shared_layout_bg_demo.dart';
+import '../demos/signup_form_demo.dart';
 import '../demos/streaming_response_demo.dart';
 import '../demos/swap_demo.dart';
 import '../demos/swipeable_list_demo.dart';
@@ -141,6 +147,10 @@ class ExploreEntry {
 /// source's single "Popover" entry that documents both.
 Widget _popoverCombined(BuildContext context) =>
     _StackedDemos(builders: const [popoverDemo, popoverMorphDemo]);
+
+Widget _predictionMarketCombined(BuildContext context) => _StackedDemos(
+  builders: const [predictionMarketCardDemo, predictionMarketDemo],
+);
 
 class _StackedDemos extends StatelessWidget {
   const _StackedDemos({required this.builders});
@@ -453,8 +463,51 @@ const List<ExploreEntry> kComponents = [
   ),
 ];
 
-/// Blocks — same order as the source sidebar (18 entries).
+/// Blocks — same order as the source sidebar (23 entries).
 const List<ExploreEntry> kBlocks = [
+  ExploreEntry(
+    title: 'Infinite Masonry',
+    slug: 'infinite-masonry',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb: 'Masonry grid that lazily appends tiles as you scroll.',
+    builder: infiniteMasonryDemo,
+  ),
+  ExploreEntry(
+    title: 'Notification Stack',
+    slug: 'notification-stack',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb:
+        'Collapsed notification stack that expands with layout-aware motion.',
+    builder: notificationStackDemo,
+  ),
+  ExploreEntry(
+    title: 'Project Folder',
+    slug: 'project-folder',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb:
+        'Folder that fans file previews on hover or focus, then morphs into an overlay.',
+    builder: projectFolderDemo,
+  ),
+  ExploreEntry(
+    title: 'Card Folder',
+    slug: 'card-folder',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb: 'Landscape card tucked in a stitched purse pocket.',
+    builder: cardFolderDemo,
+  ),
+  ExploreEntry(
+    title: 'Fixtures',
+    slug: 'knockout-bracket',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb:
+        'Tournament fixtures: a paging knockout bracket and a wheel around the champion.',
+    builder: knockoutBracketDemo,
+  ),
   ExploreEntry(
     title: 'Availability Scheduler',
     slug: 'availability-scheduler',
@@ -485,6 +538,15 @@ const List<ExploreEntry> kBlocks = [
     builder: commandPaletteDemo,
   ),
   ExploreEntry(
+    title: 'Morphing Search',
+    slug: 'morphing-search',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb:
+        'Search field or icon that morphs into results, plus a chip search bar.',
+    builder: morphingSearchDemo,
+  ),
+  ExploreEntry(
     title: 'Expandable Action Bar',
     slug: 'expandable-action-bar',
     section: ExploreSection.blocks,
@@ -508,6 +570,15 @@ const List<ExploreEntry> kBlocks = [
     builder: expandableTabsDemo,
   ),
   ExploreEntry(
+    title: 'Morphing Tabs',
+    slug: 'morphing-tabs',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb:
+        'Reorderable tabs whose selected item grows into a shared content surface.',
+    builder: morphingTabsDemo,
+  ),
+  ExploreEntry(
     title: 'Swipeable List',
     slug: 'swipeable-list',
     section: ExploreSection.blocks,
@@ -518,25 +589,16 @@ const List<ExploreEntry> kBlocks = [
     title: 'File Upload',
     slug: 'file-upload',
     section: ExploreSection.blocks,
-    blurb:
-        'Drop zone with real progress, cancel-in-flight and size-limit notices.',
+    blurb: 'Attachment workspace plus a progress queue with retry and removal.',
     builder: fileUploadDemo,
-  ),
-  ExploreEntry(
-    title: 'Attachment Upload',
-    slug: 'attachment-upload',
-    section: ExploreSection.blocks,
-    blurb:
-        'Mixed attachment workspace — image previews, seekable audio, retry.',
-    builder: attachmentUploadDemo,
-    sourceFile: 'example/lib/demos/file_upload_demo.dart',
   ),
   ExploreEntry(
     title: 'Prediction Market',
     slug: 'prediction-market',
     section: ExploreSection.blocks,
-    blurb: 'Market card with a gliding outcome pill and animated odds.',
-    builder: predictionMarketDemo,
+    blurb: 'Listing cards with odds CTAs and bookmarks, plus a trade ticket.',
+    builder: _predictionMarketCombined,
+    sourceFile: 'example/lib/demos/prediction_market_demo.dart',
   ),
   ExploreEntry(
     title: 'Wallet Card',
@@ -552,6 +614,15 @@ const List<ExploreEntry> kBlocks = [
     section: ExploreSection.blocks,
     blurb: 'One-time-code field with per-cell focus and a success check.',
     builder: otpInputDemo,
+  ),
+  ExploreEntry(
+    title: 'Sign Up Form',
+    slug: 'signup-form',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb:
+        'Registration form with punish-late errors, a strength meter, and stateful submit.',
+    builder: signupFormDemo,
   ),
   ExploreEntry(
     title: 'Bloom Menu',
@@ -577,31 +648,6 @@ const List<ExploreEntry> kBlocks = [
     blurb:
         'Five expressive 404 treatments: glitch, magnetic, spotlight and more.',
     builder: notFoundDemo,
-  ),
-  ExploreEntry(
-    title: 'Infinite Masonry',
-    slug: 'infinite-masonry',
-    section: ExploreSection.blocks,
-    isNew: true,
-    blurb: 'Masonry grid that lazily appends tiles as you scroll.',
-    builder: infiniteMasonryDemo,
-  ),
-  ExploreEntry(
-    title: 'Notification Stack',
-    slug: 'notification-stack',
-    section: ExploreSection.blocks,
-    isNew: true,
-    blurb:
-        'Collapsed notification stack that expands with layout-aware motion.',
-    builder: notificationStackDemo,
-  ),
-  ExploreEntry(
-    title: 'Knockout Bracket',
-    slug: 'knockout-bracket',
-    section: ExploreSection.blocks,
-    isNew: true,
-    blurb: 'Tournament bracket with connectors that animate as rounds fill.',
-    builder: knockoutBracketDemo,
   ),
 ];
 
