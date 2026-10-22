@@ -17,7 +17,7 @@ import 'theme_scope.dart';
 /// screenshot captures):
 ///   `page=guides` — Motion Guides
 ///   `slug=<catalog-slug>` — a detail page (e.g. `chat-app`)
-///   `section=components|blocks|agents` — a section index
+///   `section=components|blocks|agents|charts` — a section index
 ExplorerRoute explorerRouteFromUri(Uri uri) {
   final page = uri.queryParameters['page'];
   if (page == 'guides') return const GuidesRoute();
@@ -32,6 +32,7 @@ ExplorerRoute explorerRouteFromUri(Uri uri) {
   return IndexRoute(switch (uri.queryParameters['section']) {
     'blocks' => ExploreSection.blocks,
     'agents' => ExploreSection.agents,
+    'charts' => ExploreSection.charts,
     _ => ExploreSection.components,
   });
 }

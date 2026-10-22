@@ -387,3 +387,37 @@ export 'src/motion/tool_result.dart'
         BeuiToolResultKind,
         BeuiToolResultOutput,
         BeuiToolResultStatus;
+
+// v3-charts exports
+export 'src/charts/_shared.dart'
+    show
+        BeuiChartFade,
+        BeuiChartFrame,
+        BeuiChartLegend,
+        BeuiChartLegendItem,
+        BeuiChartSpring,
+        BeuiChartSpringRect,
+        BeuiChartSwatch,
+        BeuiChartTooltip,
+        BeuiChartTooltipCard,
+        BeuiChartTooltipSide,
+        beuiBumpPalette,
+        beuiChartColor,
+        beuiChartFormatNumber,
+        beuiChartPalette,
+        beuiChartPercent,
+        beuiChartSignedPercent,
+        beuiChartToTooltipSide;
+export 'src/charts/treemap.dart';
+export 'src/charts/candlestick_chart.dart';
+export 'src/charts/donut_chart.dart';
+export 'src/charts/volume_profile.dart';
+export 'src/charts/status_bar.dart';
+export 'src/charts/composition_chart.dart';
+export 'src/charts/funnel_chart.dart';
+export 'src/charts/liquidity_heatmap.dart';
+export 'src/charts/bump_chart.dart';
+export 'src/charts/order_book.dart';
+export 'src/charts/heat_calendar.dart';
+export 'src/charts/returns_calendar.dart';
+export 'src/charts/price_target_fan.dart';
