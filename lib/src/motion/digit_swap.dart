@@ -169,7 +169,11 @@ class _GlyphSlot extends StatelessWidget {
       child: ClipRect(
         child: delay == Duration.zero
             ? switcher
-            : _Delayed(delay: delay, child: switcher),
+            : _Delayed(
+                delay: delay,
+                token: '${replayKey ?? ''}-$character',
+                child: switcher,
+              ),
       ),
     );
   }
@@ -177,8 +181,13 @@ class _GlyphSlot extends StatelessWidget {
 
 /// Holds the previous glyph until [delay] elapses, matching source stagger.
 class _Delayed extends StatefulWidget {
-  const _Delayed({required this.delay, required this.child});
+  const _Delayed({
+    required this.delay,
+    required this.token,
+    required this.child,
+  });
   final Duration delay;
+  final Object token;
   final Widget child;
 
   @override
@@ -197,7 +206,7 @@ class _DelayedState extends State<_Delayed> {
   @override
   void didUpdateWidget(_Delayed old) {
     super.didUpdateWidget(old);
-    if (old.child.key != widget.child.key) {
+    if (old.token != widget.token) {
       Future<void>.delayed(widget.delay, () {
         if (mounted) setState(() => _shown = widget.child);
       });

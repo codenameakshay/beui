@@ -20,7 +20,7 @@ Spring-physics UI primitives and composed blocks, built on the [`motor`](https:/
 
 ## What this is
 
-beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React motion library. It covers all **72 catalog entries** across the source's three groups — expressive **Components** (motion primitives with composable APIs), product-ready **Blocks** (composed patterns like a command palette, wallet card, or availability scheduler), and **AI Agents** (conversational and agent-reasoning surfaces).
+beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React motion library. Version **3.0.0** covers four families — expressive **[Components](https://beui.dev/components/motion)** (motion primitives with composable APIs), product-ready **[Blocks](https://beui.dev/components/blocks)**, **[AI Agents](https://beui.dev/components/agents)** (conversational and agent-reasoning surfaces), and **[Charts](https://beui.dev/components/charts)** (animated data visualizations).
 
 The port's defining goal is **motion fidelity**. Framer Motion springs are parameterized by `stiffness`, `damping`, and `mass` — the exact same physical parameters as Flutter's `SpringDescription` — so the source's spring tokens carry over unchanged (trajectories validated within tolerance, not pixel-matched to Framer). Components don't approximate the feel with `Curves.elasticOut`; they use the real physics through [`motor`](https://pub.dev/packages/motor).
 
@@ -30,7 +30,7 @@ The port's defining goal is **motion fidelity**. Framer Motion springs are param
 - 🧩 **Native APIs** — controlled/uncontrolled `value` + `onChanged` pairs, framework-native `IconData`/`Widget` icon props, variants as Dart enums.
 - 🪟 **One overlay foundation** — every floating surface (tooltip, drawer, sheet, modal, command palette) builds on a shared `BeuiOverlay`.
 
-> **Status:** actively developed. All 72 beui.dev catalog entries are ported. 1.2.0 remediates the chat/agent UX audit — honest failure states, keyboard and screen-reader contracts, AA contrast, composer attachments — and adds `BeuiColors.focusRing` plus localizable `BeuiAgentStrings`.
+> **Status:** 3.0.0. Remaining motion widgets, six catalog blocks, Voice Orb, and the charts family ship in this release. 1.2.0 remediates the chat/agent UX audit — honest failure states, keyboard and screen-reader contracts, AA contrast, composer attachments — and adds `BeuiColors.focusRing` plus localizable `BeuiAgentStrings`.
 
 ## What's new in 1.2.0
 

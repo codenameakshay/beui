@@ -1,8 +1,8 @@
 // The explorer catalog — the single source of truth for what the gallery shows.
 //
 // Mirrors the section/order of beui.dev's component explorer: Components
-// ("motion"), AI Agents, and Blocks — each in the same order as the site's
-// sidebar, wired to the Flutter demo builders.
+// ("motion"), AI Agents, Blocks, and Charts — each in the same order as the
+// site's sidebar, wired to the Flutter demo builders.
 import 'package:flutter/widgets.dart';
 
 import '../demos/action_rails_demo.dart';
@@ -121,10 +121,10 @@ enum ExploreSection {
 
   const ExploreSection(this.title, this.slug, this.subtitle);
 
-  /// Display title ("Components" / "AI Agents" / "Blocks").
+  /// Display title ("Components" / "AI Agents" / "Blocks" / "Charts").
   final String title;
 
-  /// URL-ish slug used in breadcrumbs ("motion" / "agents" / "blocks").
+  /// URL-ish slug used in breadcrumbs ("motion" / "agents" / "blocks" / "charts").
   final String slug;
 
   /// One-line subtitle shown under the index heading.

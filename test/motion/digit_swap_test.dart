@@ -39,6 +39,32 @@ void main() {
     expect(find.bySemanticsLabel('4242 0806'), findsOneWidget);
   });
 
+  testWidgets('staggered slots paint the new glyph after settle', (
+    tester,
+  ) async {
+    var value = '1111';
+    await tester.pumpWidget(
+      beuiTestApp(
+        StatefulBuilder(
+          builder: (context, setState) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BeuiDigitSwap(value: value, animationKey: value),
+              TextButton(
+                onPressed: () => setState(() => value = '1414'),
+                child: const Text('Swap'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    expect(find.text('4'), findsNothing);
+    await tester.tap(find.text('Swap'));
+    await tester.pumpAndSettle();
+    expect(find.text('4'), findsWidgets);
+  });
+
   testWidgets('reduced motion still shows the value', (tester) async {
     await tester.pumpWidget(
       beuiTestApp(const BeuiDigitSwap(value: 42), reduce: true),

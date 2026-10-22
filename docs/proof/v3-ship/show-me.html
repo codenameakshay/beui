@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>beUI 3.0.0 family ship</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; background: transparent; color: var(--text, #e8e8e8); }
+  body { font: 13px/1.45 ui-sans-serif, system-ui, sans-serif; }
+  .wrap { width: 100%; }
+  h2 { font-size: 20px; font-weight: 600; letter-spacing: 0; margin: 0 0 10px; }
+  h3 { font-size: 13px; font-weight: 600; margin: 18px 0 8px; }
+  p, figcaption, li { font-size: 13px; color: var(--muted, #9aa0a6); }
+  .counts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0 0 16px; }
+  .count { background: #141414; border-radius: var(--radius, 12px); padding: 16px; }
+  .count b { display: block; font-size: 20px; color: var(--text, #e8e8e8); line-height: 1.2; }
+  .count span { font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted, #9aa0a6); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  figure { margin: 0; background: #111; border-radius: var(--radius, 12px); overflow: hidden; padding: 16px; }
+  figure img, figure video { width: 100%; height: auto; display: block; border-radius: 8px; }
+  figcaption { padding: 8px 0 0; font-size: 10px; }
+  pre { background: #141414; border-radius: var(--radius, 12px); padding: 16px; overflow: auto; font-size: 10px; line-height: 1.45; color: var(--text, #e8e8e8); }
+  .flow { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin: 0 0 16px; }
+  .fam { background: #141414; border-radius: var(--radius, 12px); padding: 16px; }
+  .fam b { display: block; font-size: 13px; }
+  .fam span { font-size: 10px; color: var(--muted, #9aa0a6); }
+  .arrow { font-size: 20px; color: var(--muted, #9aa0a6); text-align: center; }
+  .ship { background: #1a1f18; border-radius: var(--radius, 12px); padding: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Four family PRs → beUI 3.0.0</h2>
+  <div class="flow">
+    <div class="fam">
+      <b>#25 Components</b><span>6718b7ac · 54 gallery entries</span>
+      <b style="margin-top:8px">#22 Blocks</b><span>2e8117e · 23 gallery entries</span>
+      <b style="margin-top:8px">#24 Agents</b><span>4b87e1b · 19 gallery entries</span>
+      <b style="margin-top:8px">#23 Charts</b><span>c13194a · 13 gallery entries</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="ship">
+      <b>akshay/v3-ship</b>
+      <span>109 explorer entries · version 3.0.0</span>
+    </div>
+  </div>
+
+  <div class="counts">
+    <div class="count"><span>Components</span><b>54</b></div>
+    <div class="count"><span>Blocks</span><b>23</b></div>
+    <div class="count"><span>Agents</span><b>19</b></div>
+    <div class="count"><span>Charts</span><b>13</b></div>
+  </div>
+
+  <h3>Components · Tabs / Card / Collapsible</h3>
+  <div class="grid">
+    <figure>
+      <img src="../../proof/v3-components/ref-tabs.png" alt="beui.dev Tabs">
+      <figcaption>Reference · Tabs</figcaption>
+    </figure>
+    <figure>
+      <img src="../../proof/v3-components/cand-tabs.png" alt="Flutter Tabs">
+      <figcaption>Candidate · Tabs</figcaption>
+    </figure>
+    <figure>
+      <img src="../../proof/v3-components/ref-card.png" alt="beui.dev Card">
+      <figcaption>Reference · Card</figcaption>
+    </figure>
+    <figure>
+      <img src="../../proof/v3-components/cand-card.png" alt="Flutter Card">
+      <figcaption>Candidate · Card</figcaption>
+    </figure>
+  </div>
+
+  <h3>Blocks · Card Folder / Morphing Tabs</h3>
+  <div class="grid">
+    <figure>
+      <img src="../../../.github/screenshots/v3-blocks/flutter-card-folder.png" alt="Card Folder">
+      <figcaption>Candidate · Card Folder</figcaption>
+    </figure>
+    <figure>
+      <img src="../../../.github/screenshots/v3-blocks/flutter-morphing-tabs.png" alt="Morphing Tabs">
+      <figcaption>Candidate · Morphing Tabs</figcaption>
+    </figure>
+  </div>
+
+  <h3>Agents · Voice Orb</h3>
+  <div class="grid">
+    <figure>
+      <img src="../../../example/proof/voice-orb/reference-orb.png" alt="beui.dev Voice Orb">
+      <figcaption>Reference · Voice Orb</figcaption>
+    </figure>
+    <figure>
+      <img src="../../../example/proof/voice-orb/candidate-orb.png" alt="Flutter Voice Orb">
+      <figcaption>Candidate · Voice Orb</figcaption>
+    </figure>
+  </div>
+
+  <h3>Charts · Treemap / Candlestick</h3>
+  <div class="grid">
+    <figure>
+      <img src="../../../.github/screenshots/charts/ref-treemap.png" alt="beui.dev Treemap">
+      <figcaption>Reference · Treemap</figcaption>
+    </figure>
+    <figure>
+      <img src="../../../.github/screenshots/charts/golden-treemap.png" alt="Flutter Treemap">
+      <figcaption>Candidate · Treemap</figcaption>
+    </figure>
+    <figure>
+      <img src="../../../.github/screenshots/charts/ref-candlestick.png" alt="beui.dev Candlestick">
+      <figcaption>Reference · Candlestick</figcaption>
+    </figure>
+    <figure>
+      <img src="../../../.github/screenshots/charts/golden-candlestick.png" alt="Flutter Candlestick">
+      <figcaption>Candidate · Candlestick</figcaption>
+    </figure>
+  </div>
+
+  <h3>New widgets this release</h3>
+  <pre>lib/src/motion/          # components + blocks + Voice Orb
+├── timeline.dart  alert.dart  collapsible.dart
+├── aspect_ratio.dart  arc_picker.dart  sortable_list.dart
+├── image_viewer.dart  date_range_picker.dart  card.dart
+├── color_picker.dart  color_selector.dart  breadcrumb.dart
+├── button/metallic.dart  expandable_control.dart
+├── adaptive_stepper.dart  combobox.dart  multi_select.dart
+├── file_tree.dart  digit_swap.dart  text_scramble.dart
+├── range_slider_inline.dart
+├── card_folder.dart  project_folder.dart  signup_form.dart
+├── morphing_search.dart  morphing_search_chips.dart
+├── morphing_tabs.dart  prediction_market_card.dart
+└── voice_orb.dart
+lib/src/charts/          # charts family
+├── treemap.dart  candlestick_chart.dart  donut_chart.dart
+├── volume_profile.dart  status_bar.dart  composition_chart.dart
+├── funnel_chart.dart  liquidity_heatmap.dart  bump_chart.dart
+├── order_book.dart  heat_calendar.dart  returns_calendar.dart
+└── price_target_fan.dart
+shaders/beui_voice_orb.frag</pre>
+</div>
+</body>
+</html>

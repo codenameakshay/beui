@@ -1,4 +1,7 @@
-## Unreleased
+## 3.0.0
+
+beUI 3.0.0 integrates the remaining v3 catalog families into one package:
+motion components, blocks, agents, and charts.
 
 ### Components
 

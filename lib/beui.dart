@@ -542,8 +542,7 @@ export 'src/motion/text_scramble.dart'
 export 'src/motion/timeline.dart' show BeuiTimeline, BeuiTimelineEvent;
 
 // v3-blocks exports
-export 'src/motion/card_folder.dart'
-    show BeuiCardFolder, BeuiDigitSwap, BeuiDigitSwapDirection;
+export 'src/motion/card_folder.dart' show BeuiCardFolder;
 export 'src/motion/morphing_search.dart'
     show BeuiMorphingSearch, BeuiMorphingSearchItem;
 export 'src/motion/morphing_search_chips.dart'
