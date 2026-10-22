@@ -255,7 +255,7 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
                                     else
                                       const Text('No data'),
                                     if (columns[col].snapshot.price
-                                        case final p?)
+                                        case final p? when p.isFinite)
                                       Text('Market ${scope.formatPrice(p)}'),
                                   ],
                                 ),
@@ -453,12 +453,15 @@ bool _priceInDomain(double price, List<double> prices) =>
     price >= prices.last;
 
 double _yForPrice(double price, Size size, List<double> prices) {
-  final maxPrice = prices.first;
-  final minPrice = prices.last;
-  final span = maxPrice - minPrice;
-  if (span == 0) return size.height / 2;
-  final row = (maxPrice - price) / span * (prices.length - 1);
-  return size.height * (row + .5) / prices.length;
+  for (var row = 0; row < prices.length - 1; row++) {
+    final upper = prices[row];
+    final lower = prices[row + 1];
+    if (price >= lower) {
+      final fraction = (upper - price) / (upper - lower);
+      return size.height * (row + .5 + fraction) / prices.length;
+    }
+  }
+  return size.height * (prices.length - .5) / prices.length;
 }
 
 /// Color scale for resting liquidity.
