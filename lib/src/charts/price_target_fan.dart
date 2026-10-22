@@ -413,10 +413,12 @@ class BeuiPriceTargetPlot extends StatelessWidget {
   final Widget? child;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: 520,
-    height: 236,
-    child: child ?? const BeuiPriceTargetSvg(),
+  Widget build(BuildContext context) => Center(
+    child: SizedBox(
+      width: 520,
+      height: 236,
+      child: child ?? const BeuiPriceTargetSvg(),
+    ),
   );
 }
 
