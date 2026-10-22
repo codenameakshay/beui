@@ -42,7 +42,12 @@ class _DonutChartDemo extends StatelessWidget {
               height: 200,
               child: Row(
                 children: [
-                  SizedBox(width: 200, child: BeuiDonutPlot()),
+                  SizedBox(
+                    width: 200,
+                    child: BeuiDonutPlot(
+                      child: BeuiDonutCenter(totalLabel: 'Monthly revenue'),
+                    ),
+                  ),
                   SizedBox(width: 16),
                   Expanded(child: BeuiDonutLegend()),
                 ],

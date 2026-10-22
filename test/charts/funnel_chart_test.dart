@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,6 +58,28 @@ void main() {
       semantics.dispose();
     },
   );
+
+  testWidgets('hovering a stage reveals its animated value and unit', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiFunnelChart(stages: _stages, unit: 'visits')),
+    );
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    await gesture.moveTo(tester.getCenter(find.text('Visitors')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pumpAndSettle();
+    expect(find.byType(BeuiChartTicker), findsOneWidget);
+    expect(
+      tester
+          .widget<BeuiChartTicker>(find.byType(BeuiChartTicker))
+          .format(24000),
+      '24,000 visits',
+    );
+    await gesture.removePointer();
+  });
 
   testWidgets(
     'horizontal funnel and reduced motion render the same conversion',

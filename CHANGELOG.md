@@ -35,6 +35,7 @@ motion components, blocks, agents, and charts.
 
 ### Charts
 
+* Chart tooltip numeric labels use `BeuiChartTicker` for digit animation.
 * `BeuiTreemap` — order-preserving binary tiles that spring to new sizes, with path tooltips and a group legend.
 * `BeuiCandlestickChart` — OHLC candles with a live last price, volume, and keyboard inspection.
 * `BeuiDonutChart` — round-capped ring with a live center, legend, and sweep-in motion.
@@ -42,11 +43,11 @@ motion components, blocks, agents, and charts.
 * `BeuiStatusBar` — proportional incident bar with operational / degraded / outage statuses.
 * `BeuiCompositionChart` — 100% stacked bar or area composition across periods.
 * `BeuiFunnelChart` — conversion funnel with curved morphs and drop-off tooltips.
-* `BeuiLiquidityHeatmap` — order-book liquidity bands over time with a price trace.
+* `BeuiLiquidityHeatmap` — order-book liquidity bands over time with a cubic price trace through adjacent row centers.
 * `BeuiBumpChart` — ranking bump chart with curved series that break on missing periods.
-* `BeuiOrderBook` — live bid/ask depth tables, spread, and a balance bar.
-* `BeuiHeatCalendar` — GitHub-style contribution heatmap with range selection.
-* `BeuiReturnsCalendar` — monthly returns grid with gain/loss tint and compounded totals.
+* `BeuiOrderBook` — live bid/ask depth tables, spread, and a balance bar; rest depth bars fill the row height.
+* `BeuiHeatCalendar` — GitHub-style contribution heatmap with range selection; filtered cells fade; 16-week legends place the date range opposite less/more.
+* `BeuiReturnsCalendar` — monthly returns grid with gain/loss tint and compounded totals; month labels use JS `Math.round`.
 * `BeuiPriceTargetFan` — high/mean/low target fan over a history path.
 
 ## 2.0.0

@@ -73,8 +73,16 @@ List<BeuiTreemapNode> _dataFor(String quarter) {
 
 String _formatValue(double value) {
   final abs = value.abs();
-  if (abs >= 1e6) return '\$${(value / 1e6).toStringAsFixed(1)}M';
-  if (abs >= 1e3) return '\$${(value / 1e3).toStringAsFixed(1)}K';
+  String compact(double scaled, String suffix) {
+    final rounded = scaled.roundToDouble();
+    if ((scaled - rounded).abs() < 1e-9) {
+      return '\$${rounded.toInt()}$suffix';
+    }
+    return '\$${scaled.toStringAsFixed(1)}$suffix';
+  }
+
+  if (abs >= 1e6) return compact(value / 1e6, 'M');
+  if (abs >= 1e3) return compact(value / 1e3, 'K');
   return '\$${value.round()}';
 }
 

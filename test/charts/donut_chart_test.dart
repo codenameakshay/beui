@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -31,7 +32,10 @@ void main() {
     await tester.pump();
     expect(find.byType(BeuiDonutPlot), findsOneWidget);
     expect(find.byType(BeuiDonutLegend), findsOneWidget);
-    expect(find.text('96'), findsOneWidget);
+    expect(
+      tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker)).value,
+      96,
+    );
     expect(
       find.byWidgetPredicate(
         (widget) =>
@@ -58,15 +62,22 @@ void main() {
       ),
     );
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 220));
+    final centerTicker = find.descendant(
+      of: find.byType(BeuiDonutCenter),
+      matching: find.byType(BeuiChartTicker),
+    );
+    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 42);
     expect(
       find.descendant(
         of: find.byType(BeuiDonutCenter),
-        matching: find.text('Team'),
+        matching: find.text('Team · 43.8%'),
       ),
       findsOneWidget,
     );
     await tester.tap(find.text('Business'));
     await tester.pump();
+    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 31);
     expect(changed, 'business');
     expect(selected, 'business');
     await tester.pumpWidget(
@@ -75,10 +86,11 @@ void main() {
       ),
     );
     await tester.pump();
+    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 23);
     expect(
       find.descendant(
         of: find.byType(BeuiDonutCenter),
-        matching: find.text('Enterprise'),
+        matching: find.text('Enterprise · 24.0%'),
       ),
       findsOneWidget,
     );
@@ -100,6 +112,96 @@ void main() {
     expect(changed, 'team');
   });
 
+  testWidgets('hovering legend rows updates the center ticker and caption', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiDonutChart(segments: _segments)),
+    );
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    final team = tester.getCenter(find.text('Team'));
+    await mouse.addPointer(location: team);
+    await mouse.moveTo(team);
+    await tester.pump();
+    expect(find.byType(BeuiChartTicker), findsOneWidget);
+    final centerTicker = find.descendant(
+      of: find.byType(BeuiDonutCenter),
+      matching: find.byType(BeuiChartTicker),
+    );
+    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 42);
+    await tester.pump(const Duration(milliseconds: 220));
+    expect(find.text('Team · 43.8%'), findsOneWidget);
+
+    final business = tester.getCenter(find.text('Business'));
+    await mouse.moveTo(business);
+    await tester.pump();
+    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 31);
+    await tester.pump(const Duration(milliseconds: 220));
+    expect(find.text('Business · 32.3%'), findsOneWidget);
+    await mouse.removePointer();
+    semantics.dispose();
+  });
+
+  testWidgets('outgoing center caption exits upward without jumping', (
+    tester,
+  ) async {
+    const chartKey = ValueKey('donut');
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiDonutChart(
+          key: chartKey,
+          segments: _segments,
+          activeId: 'team',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 220));
+    final outgoingCaption = find.text('Team · 43.8%');
+    final originalPosition = tester.getTopLeft(outgoingCaption);
+
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiDonutChart(
+          key: chartKey,
+          segments: _segments,
+          activeId: 'business',
+        ),
+      ),
+    );
+    final startPosition = tester.getTopLeft(outgoingCaption);
+    expect(startPosition.dy, closeTo(originalPosition.dy, 1));
+
+    await tester.pump(const Duration(milliseconds: 110));
+    final middlePosition = tester.getTopLeft(outgoingCaption);
+    expect(middlePosition.dy, lessThan(startPosition.dy));
+
+    await tester.pump(const Duration(milliseconds: 111));
+    expect(outgoingCaption, findsNothing);
+  });
+
+  testWidgets('reduced motion snaps center ticker to active value', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiDonutChart(segments: _segments, activeId: 'team'),
+        reduce: true,
+      ),
+    );
+    await tester.pump();
+    final centerTicker = find.descendant(
+      of: find.byType(BeuiDonutCenter),
+      matching: find.byType(BeuiChartTicker),
+    );
+    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 42);
+    await tester.pump(const Duration(milliseconds: 120));
+    expect(find.text('Team · 43.8%'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    semantics.dispose();
+  });
+
   testWidgets('reduced motion keeps the ring in its final state', (
     tester,
   ) async {
@@ -107,7 +209,10 @@ void main() {
       beuiTestApp(const BeuiDonutChart(segments: _segments), reduce: true),
     );
     await tester.pump();
-    expect(find.text('96'), findsOneWidget);
+    expect(
+      tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker)).value,
+      96,
+    );
     expect(tester.takeException(), isNull);
   });
 

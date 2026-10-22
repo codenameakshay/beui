@@ -504,21 +504,43 @@ class BeuiOrderBookSide extends StatelessWidget {
                         child: Stack(
                           children: [
                             Positioned.fill(
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: BeuiChartSpring(
-                                  value: s.maxTotal <= 0
-                                      ? 0
-                                      : row.total / s.maxTotal,
-                                  builder: (_, fraction) =>
-                                      FractionallySizedBox(
-                                        widthFactor: fraction.clamp(0, 1),
-                                        child: ColoredBox(
-                                          color: tint.withValues(
-                                            alpha: inRange ? .22 : .12,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: isActive
+                                      ? tint.withValues(alpha: .10)
+                                      : null,
+                                  border: isActive
+                                      ? Border(
+                                          left: BorderSide(
+                                            color: tint,
+                                            width: 2,
                                           ),
+                                        )
+                                      : null,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: BeuiChartSpring(
+                                    value: s.maxTotal <= 0
+                                        ? 0
+                                        : row.total / s.maxTotal,
+                                    builder: (_, fraction) => FractionallySizedBox(
+                                      widthFactor: fraction.clamp(0, 1),
+                                      heightFactor: 1,
+                                      child: ColoredBox(
+                                        key: ValueKey(
+                                          'beui-order-bar-${side.name}-${row.price}',
+                                        ),
+                                        color: tint.withValues(
+                                          alpha: isActive
+                                              ? .55
+                                              : inRange
+                                              ? .45
+                                              : .38,
                                         ),
                                       ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -619,10 +641,16 @@ class BeuiOrderBookSpread extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              s.price == null ? '—' : s.formatPrice(s.price!),
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-            ),
+            child: s.price == null
+                ? const Text('—')
+                : BeuiChartTicker(
+                    value: s.price!,
+                    format: (value) => s.formatPrice(value.toDouble()),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
           ),
           Text(
             message,
@@ -723,6 +751,7 @@ class BeuiOrderBookBalance extends StatelessWidget {
                       value: ratio,
                       builder: (_, value) => FractionallySizedBox(
                         widthFactor: value,
+                        heightFactor: 1,
                         child: ColoredBox(
                           color: colors.success.withValues(alpha: .75),
                         ),

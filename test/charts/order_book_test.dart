@@ -1,3 +1,5 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,7 +68,11 @@ void main() {
           ),
         ),
       );
-      expect(find.text('100.00'), findsOneWidget);
+      final priceTicker = tester.widget<BeuiChartTicker>(
+        find.byType(BeuiChartTicker),
+      );
+      expect(priceTicker.value, 100);
+      expect(priceTicker.format(priceTicker.value), '100.00');
       expect(find.textContaining('Spread 2.00'), findsOneWidget);
       expect(find.textContaining('Avg 98.40'), findsOneWidget);
       expect(
@@ -105,6 +111,32 @@ void main() {
       expect(find.textContaining('Avg 101.60'), findsOneWidget);
     },
   );
+
+  testWidgets('hover highlights the price and cumulative depth range', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_surface());
+    expect(find.text('Hover a level to inspect depth'), findsOneWidget);
+
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer();
+    await gesture.moveTo(tester.getCenter(find.text('98.00')));
+    await tester.pump();
+
+    expect(find.textContaining('Avg 98.40'), findsOneWidget);
+    expect(find.text('5 BTC · 492.00 USD'), findsOneWidget);
+    await gesture.removePointer();
+  });
+
+  testWidgets('rest depth bars fill the row height', (tester) async {
+    await tester.pumpWidget(_surface(reduce: true));
+    await tester.pump();
+    final bar = tester.getSize(
+      find.byKey(const ValueKey('beui-order-bar-ask-102.0')),
+    );
+    expect(bar.height, closeTo(29, 0.5));
+    expect(bar.width, greaterThan(80));
+  });
 
   testWidgets('reduced-motion bars render and rest state matches golden', (
     tester,

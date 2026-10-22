@@ -219,86 +219,145 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var row = 0; row < prices.length; row++)
-            Row(
-              children: [
-                SizedBox(
-                  width: 54,
-                  child: Text(
-                    scope.formatPrice(prices[row]),
-                    style: TextStyle(
-                      fontSize: 9,
-                      color: colors.mutedForeground,
-                    ),
-                  ),
-                ),
-                for (var col = 0; col < columns.length; col++)
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(1),
-                      child: BeuiChartTooltip(
-                        enabled: row == activeRow && col == activeCol,
-                        content: BeuiChartTooltipCard(
-                          title:
-                              '${columns[col].snapshot.label} · ${scope.formatPrice(prices[row])}',
-                          lines: [
-                            '${columns[col].levels[prices[row]] == null ? 'No data' : scope.formatSize(columns[col].levels[prices[row]]!)} ${scope.unit}',
-                            if (columns[col].snapshot.price case final p?)
-                              'Market ${scope.formatPrice(p)}',
-                          ],
-                        ),
-                        child: Semantics(
-                          button: true,
-                          selected: row == activeRow && col == activeCol,
-                          label:
-                              '${columns[col].snapshot.label}, ${scope.formatPrice(prices[row])}: '
-                              '${columns[col].levels[prices[row]] == null ? 'No data' : '${scope.formatSize(columns[col].levels[prices[row]]!)} ${scope.unit}'}',
-                          child: InkWell(
-                            onFocusChange: (focused) => setActiveId(
-                              focused ? _ids[row * columns.length + col] : null,
-                            ),
-                            onTap: () =>
-                                setActiveId(_ids[row * columns.length + col]),
-                            child: SizedBox(
-                              height: 18,
-                              child: BeuiChartFade(
-                                opacity:
-                                    columns[col].levels.containsKey(prices[row])
-                                    ? 1
-                                    : 0,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color:
-                                        palette[(maximum <= 0
-                                                ? 0
-                                                : ((columns[col].levels[prices[row]] ??
-                                                              0) /
-                                                          maximum *
-                                                          palette.length)
-                                                      .floor())
-                                            .clamp(0, palette.length - 1)],
-                                    border: row == activeRow && col == activeCol
-                                        ? Border.all(
-                                            color: colors.foreground,
-                                            width: 1.5,
-                                          )
-                                        : null,
-                                    borderRadius: BorderRadius.circular(2),
+          Stack(
+            children: [
+              Column(
+                children: [
+                  for (var row = 0; row < prices.length; row++)
+                    Row(
+                      children: [
+                        for (var col = 0; col < columns.length; col++)
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(1),
+                              child: BeuiChartTooltip(
+                                content: BeuiChartTooltipCard(
+                                  title:
+                                      '${columns[col].snapshot.label} · ${scope.formatPrice(prices[row])}',
+                                  titleWidget: Text(
+                                    '${columns[col].snapshot.label} · ${scope.formatPrice(prices[row])}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: colors.mutedForeground,
+                                    ),
+                                  ),
+                                  details: [
+                                    if (columns[col].levels[prices[row]]
+                                        case final size?)
+                                      BeuiChartTicker(
+                                        value: size,
+                                        duration: const Duration(
+                                          milliseconds: 350,
+                                        ),
+                                        format: (value) =>
+                                            '${scope.formatSize(value.toDouble())} ${scope.unit}',
+                                      )
+                                    else
+                                      const Text('No data'),
+                                    if (columns[col].snapshot.price
+                                        case final p? when p.isFinite)
+                                      Text('Market ${scope.formatPrice(p)}'),
+                                  ],
+                                ),
+                                child: Semantics(
+                                  button: true,
+                                  selected:
+                                      row == activeRow && col == activeCol,
+                                  label:
+                                      '${columns[col].snapshot.label}, ${scope.formatPrice(prices[row])}: '
+                                      '${columns[col].levels[prices[row]] == null ? 'No data' : '${scope.formatSize(columns[col].levels[prices[row]]!)} ${scope.unit}'}',
+                                  child: InkWell(
+                                    onHover: (hovering) => setActiveId(
+                                      hovering
+                                          ? _ids[row * columns.length + col]
+                                          : null,
+                                    ),
+                                    onFocusChange: (focused) => setActiveId(
+                                      focused
+                                          ? _ids[row * columns.length + col]
+                                          : null,
+                                    ),
+                                    onTap: () => setActiveId(
+                                      _ids[row * columns.length + col],
+                                    ),
+                                    child: SizedBox(
+                                      height: 18,
+                                      child: BeuiChartFade(
+                                        opacity:
+                                            columns[col].levels.containsKey(
+                                              prices[row],
+                                            )
+                                            ? 1
+                                            : 0,
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            color:
+                                                palette[(maximum <= 0
+                                                        ? 0
+                                                        : ((columns[col].levels[prices[row]] ??
+                                                                      0) /
+                                                                  maximum *
+                                                                  palette
+                                                                      .length)
+                                                              .floor())
+                                                    .clamp(
+                                                      0,
+                                                      palette.length - 1,
+                                                    )],
+                                            border:
+                                                row == activeRow &&
+                                                    col == activeCol
+                                                ? Border.all(
+                                                    color: colors.foreground,
+                                                    width: 1.5,
+                                                  )
+                                                : null,
+                                            borderRadius: BorderRadius.circular(
+                                              2,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
+                        SizedBox(
+                          width: 54,
+                          child: Text(
+                            scope.formatPrice(prices[row]),
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 9,
+                              color: colors.mutedForeground,
+                            ),
+                          ),
                         ),
+                      ],
+                    ),
+                ],
+              ),
+              Positioned.fill(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 54),
+                  child: IgnorePointer(
+                    child: CustomPaint(
+                      painter: _LiquidityTracePainter(
+                        columns: columns,
+                        prices: prices,
+                        color: colors.foreground,
                       ),
                     ),
                   ),
-              ],
-            ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 4),
           Row(
             children: [
-              const SizedBox(width: 54),
               for (final c in columns)
                 Expanded(
                   child: Text(
@@ -311,6 +370,7 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
                     ),
                   ),
                 ),
+              const SizedBox(width: 54),
             ],
           ),
           if (activeColumn != null && activePrice != null)
@@ -326,17 +386,6 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
                 ),
               ),
             ),
-          const SizedBox(height: 4),
-          SizedBox(
-            height: 10,
-            child: CustomPaint(
-              painter: _LiquidityTracePainter(
-                columns: columns,
-                prices: prices,
-                color: colors.foreground,
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -363,30 +412,31 @@ class _LiquidityTracePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (columns.length < 2 || prices.length < 2) return;
     final path = Path();
-    var connected = false;
+    Offset? previous;
     for (var i = 0; i < columns.length; i++) {
       final price = columns[i].snapshot.price;
-      final row = price == null ? -1 : _pricePosition(price, prices);
-      if (row < 0) {
-        connected = false;
+      if (price == null || !_priceInDomain(price, prices)) {
+        previous = null;
         continue;
       }
       final point = Offset(
         size.width * (i + .5) / columns.length,
-        size.height * (row + .5) / prices.length,
+        _yForPrice(price, size, prices),
       );
-      if (!connected) {
+      if (previous == null) {
         path.moveTo(point.dx, point.dy);
-        connected = true;
       } else {
-        path.lineTo(point.dx, point.dy);
+        final middle = (previous.dx + point.dx) / 2;
+        path.cubicTo(middle, previous.dy, middle, point.dy, point.dx, point.dy);
       }
+      previous = point;
     }
     canvas.drawPath(
       path,
       Paint()
         ..color = color.withValues(alpha: .9)
         ..strokeWidth = 1.5
+        ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke,
     );
   }
@@ -396,17 +446,22 @@ class _LiquidityTracePainter extends CustomPainter {
       columns != old.columns || prices != old.prices || color != old.color;
 }
 
-int _pricePosition(double price, List<double> prices) {
-  if (!price.isFinite ||
-      prices.isEmpty ||
-      price > prices.first ||
-      price < prices.last) {
-    return -1;
+bool _priceInDomain(double price, List<double> prices) =>
+    price.isFinite &&
+    prices.isNotEmpty &&
+    price <= prices.first &&
+    price >= prices.last;
+
+double _yForPrice(double price, Size size, List<double> prices) {
+  for (var row = 0; row < prices.length - 1; row++) {
+    final upper = prices[row];
+    final lower = prices[row + 1];
+    if (price >= lower) {
+      final fraction = (upper - price) / (upper - lower);
+      return size.height * (row + .5 + fraction) / prices.length;
+    }
   }
-  for (var i = 0; i < prices.length - 1; i++) {
-    if (price <= prices[i] && price >= prices[i + 1]) return i;
-  }
-  return prices.length - 1;
+  return size.height * (prices.length - .5) / prices.length;
 }
 
 /// Color scale for resting liquidity.

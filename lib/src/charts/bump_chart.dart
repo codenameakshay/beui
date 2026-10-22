@@ -73,6 +73,9 @@ class BeuiBumpChart extends StatefulWidget {
 
 class _BeuiBumpChartState extends State<BeuiBumpChart>
     with BeuiChartActiveState<BeuiBumpChart>, BeuiChartInspectorKeys {
+  String? _hoveredId;
+  String? _focusedId;
+
   @override
   String? get widgetActiveId => widget.active;
   @override
@@ -89,6 +92,29 @@ class _BeuiBumpChartState extends State<BeuiBumpChart>
   void initState() {
     super.initState();
     initActive();
+  }
+
+  @override
+  void didUpdateWidget(covariant BeuiBumpChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_hoveredId != null &&
+        !widget.series.any((row) => row.id == _hoveredId)) {
+      _hoveredId = null;
+    }
+    if (_focusedId != null &&
+        !widget.series.any((row) => row.id == _focusedId)) {
+      _focusedId = null;
+    }
+  }
+
+  void _setHoveredId(String? id) {
+    if (id != null && !widget.series.any((row) => row.id == id)) return;
+    if (_hoveredId != id) setState(() => _hoveredId = id);
+  }
+
+  void _setFocusedId(String? id) {
+    if (id != null && !widget.series.any((row) => row.id == id)) return;
+    if (_focusedId != id) setState(() => _focusedId = id);
   }
 
   @override
@@ -125,7 +151,11 @@ class _BeuiBumpChartState extends State<BeuiBumpChart>
       rows: rows,
       periods: widget.periods,
       activeId: activeId,
+      hoveredId: _hoveredId,
+      focusedId: _focusedId,
       onActive: setActiveId,
+      onHover: _setHoveredId,
+      onFocus: _setFocusedId,
       label: widget.label,
       maxRank: maxRank,
       height: height,
@@ -168,7 +198,11 @@ class _BumpScope extends InheritedWidget {
     required this.rows,
     required this.periods,
     required this.activeId,
+    required this.hoveredId,
+    required this.focusedId,
     required this.onActive,
+    required this.onHover,
+    required this.onFocus,
     required this.label,
     required this.maxRank,
     required this.height,
@@ -177,7 +211,11 @@ class _BumpScope extends InheritedWidget {
   final List<_BumpRow> rows;
   final List<String> periods;
   final String? activeId;
+  final String? hoveredId;
+  final String? focusedId;
   final ValueChanged<String?> onActive;
+  final ValueChanged<String?> onHover;
+  final ValueChanged<String?> onFocus;
   final String label;
   final int maxRank;
   final double height;
@@ -187,7 +225,13 @@ class _BumpScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_BumpScope old) =>
-      rows != old.rows || periods != old.periods || activeId != old.activeId;
+      rows != old.rows ||
+      periods != old.periods ||
+      activeId != old.activeId ||
+      hoveredId != old.hoveredId ||
+      focusedId != old.focusedId;
+
+  String? get highlightedId => hoveredId ?? focusedId ?? activeId;
 }
 
 /// Curved rank paths and a dot for each observed rank.
@@ -228,7 +272,7 @@ class BeuiBumpPlot extends StatelessWidget {
                 painter: _BumpPainter(
                   rows: scope.rows,
                   maxRank: scope.maxRank,
-                  activeId: scope.activeId,
+                  activeId: scope.highlightedId,
                   left: left,
                   right: right,
                   top: top,
@@ -246,34 +290,72 @@ class BeuiBumpPlot extends StatelessWidget {
                       height: 34,
                       child: Semantics(
                         button: true,
-                        selected: scope.activeId == scope.rows[i].series.id,
+                        selected:
+                            scope.highlightedId == scope.rows[i].series.id,
                         label:
                             '${scope.rows[i].series.name}, ${scope.periods[j]}, rank $rank',
-                        child: Tooltip(
-                          message:
-                              '${scope.rows[i].series.name} · ${scope.periods[j]} · #$rank',
-                          child: InkWell(
-                            customBorder: const CircleBorder(),
-                            onTap: () => scope.onActive(
-                              scope.activeId == scope.rows[i].series.id
-                                  ? null
-                                  : scope.rows[i].series.id,
+                        child: MouseRegion(
+                          onEnter: (_) =>
+                              scope.onHover(scope.rows[i].series.id),
+                          onExit: (_) {
+                            if (scope.hoveredId == scope.rows[i].series.id) {
+                              scope.onHover(null);
+                            }
+                          },
+                          child: BeuiChartTooltip(
+                            content: BeuiChartTooltipCard(
+                              title:
+                                  '${scope.rows[i].series.name} · ${scope.periods[j]}',
+                              details: [
+                                BeuiChartTicker(
+                                  value: rank,
+                                  duration: const Duration(milliseconds: 350),
+                                  format: (value) => '#${value.round()}',
+                                ),
+                              ],
                             ),
-                            child: Center(
-                              child: Container(
-                                width: scope.activeId == scope.rows[i].series.id
-                                    ? 14
-                                    : 9,
-                                height:
-                                    scope.activeId == scope.rows[i].series.id
-                                    ? 14
-                                    : 9,
-                                decoration: BoxDecoration(
-                                  color: scope.rows[i].color,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: colors.background,
-                                    width: 2,
+                            child: InkWell(
+                              key: ValueKey(
+                                'bump-node-${scope.rows[i].series.id}-$j',
+                              ),
+                              onFocusChange: (focused) => scope.onFocus(
+                                focused ? scope.rows[i].series.id : null,
+                              ),
+                              customBorder: const CircleBorder(),
+                              onTap: () => scope.onActive(
+                                scope.activeId == scope.rows[i].series.id
+                                    ? null
+                                    : scope.rows[i].series.id,
+                              ),
+                              child: Semantics(
+                                button: true,
+                                selected:
+                                    scope.highlightedId ==
+                                    scope.rows[i].series.id,
+                                label:
+                                    '${scope.rows[i].series.name}, ${scope.periods[j]}, rank $rank',
+                                child: Center(
+                                  child: Container(
+                                    width: 22,
+                                    height: 22,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: scope.rows[i].color,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: colors.background,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '$rank',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                        height: 1,
+                                        color: colors.background,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -436,8 +518,17 @@ class BeuiBumpLegend extends StatelessWidget {
           BeuiChartLegendItem(
             color: row.color,
             label: row.series.name,
-            selected: scope.activeId == row.series.id,
-            dimmed: scope.activeId != null && scope.activeId != row.series.id,
+            selected: scope.highlightedId == row.series.id,
+            dimmed:
+                scope.highlightedId != null &&
+                scope.highlightedId != row.series.id,
+            onHover: (hovering) {
+              if (hovering) {
+                scope.onHover(row.series.id);
+              } else if (scope.hoveredId == row.series.id) {
+                scope.onHover(null);
+              }
+            },
             onPressed: () => scope.onActive(
               scope.activeId == row.series.id ? null : row.series.id,
             ),

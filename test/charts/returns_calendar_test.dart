@@ -1,3 +1,5 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,15 +25,48 @@ void main() {
     'renders month labels, gain/loss cells, and compounded year totals',
     (tester) async {
       await tester.pumpWidget(beuiTestApp(_chart()));
-      expect(find.text('Jan'), findsOneWidget);
+      expect(find.text('J'), findsWidgets);
       expect(find.text('Year'), findsWidgets);
       expect(find.text('+214%'), findsOneWidget);
+      expect(find.text('10'), findsWidgets);
       expect(
         find.byKey(const ValueKey('beui-returns-cell-0-12')),
         findsOneWidget,
       );
     },
   );
+
+  testWidgets('half-away month labels follow JS Math.round', (tester) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiReturnsCalendar(
+          years: [2022],
+          returns: [
+            [0, 0, -4.5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          ],
+        ),
+      ),
+    );
+    expect(find.text('−4'), findsOneWidget);
+    expect(find.text('−5'), findsNothing);
+  });
+
+  testWidgets('formats short numeric years with a two-digit label', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiReturnsCalendar(
+          years: [99],
+          returns: [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          ],
+        ),
+      ),
+    );
+    expect(find.text("'99"), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('uncontrolled range selection toggles cells', (tester) async {
     await tester.pumpWidget(beuiTestApp(_chart()));
@@ -46,6 +81,48 @@ void main() {
           .length,
       2,
     );
+  });
+
+  testWidgets('hovering a month reveals and settles its signed ticker', (
+    tester,
+  ) async {
+    await tester.pumpWidget(beuiTestApp(_chart()));
+    final cell = find.byKey(const ValueKey('beui-returns-cell-1-0'));
+    await tester.ensureVisible(cell);
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    await gesture.moveTo(tester.getCenter(cell));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BeuiChartTicker), findsOneWidget);
+    final ticker = tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker));
+    expect(ticker.value, 4);
+    expect(ticker.format(ticker.value), '−4.0%');
+    await gesture.removePointer();
+  });
+
+  testWidgets('month tooltips use unambiguous month names', (tester) async {
+    await tester.pumpWidget(beuiTestApp(_chart()));
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+
+    for (final (month, name) in [(0, 'January'), (5, 'June'), (6, 'July')]) {
+      final cell = find.byKey(ValueKey('beui-returns-cell-0-$month'));
+      await tester.ensureVisible(cell);
+      await gesture.moveTo(tester.getCenter(cell));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pumpAndSettle();
+      final tooltip = tester.widget<BeuiChartTooltip>(
+        find.ancestor(of: cell, matching: find.byType(BeuiChartTooltip)),
+      );
+      expect((tooltip.content as BeuiChartTooltipCard).title, '2024 $name');
+      expect(find.byType(BeuiChartTicker), findsOneWidget);
+    }
+
+    await gesture.removePointer();
   });
 
   testWidgets(

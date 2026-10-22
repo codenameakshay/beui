@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,7 +45,221 @@ Widget _surface({bool reduce = false}) => beuiTestApp(
   reduce: reduce,
 );
 
+Future<Path> _paintIrregularTrace(
+  WidgetTester tester,
+  List<double?> marketPrices,
+) async {
+  await tester.pumpWidget(
+    beuiTestApp(
+      SizedBox(
+        width: marketPrices.length * 100.0 + 54,
+        child: BeuiLiquidityHeatmap(
+          formatPrice: (price) => price.toStringAsFixed(2),
+          snapshots: [
+            for (var i = 0; i < marketPrices.length; i++)
+              BeuiLiquiditySnapshot(
+                id: 't$i',
+                label: 't$i',
+                price: marketPrices[i],
+                levels: const [
+                  BeuiLiquidityLevel(price: 110, size: 20),
+                  BeuiLiquidityLevel(price: 100, size: 40),
+                  BeuiLiquidityLevel(price: 99, size: 10),
+                ],
+              ),
+          ],
+          child: const BeuiLiquidityPlot(),
+        ),
+      ),
+      reduce: true,
+    ),
+  );
+  final trace = find.descendant(
+    of: find.byType(BeuiLiquidityPlot),
+    matching: find.byType(CustomPaint),
+  );
+  expect(trace, findsOneWidget);
+  final size = tester.getSize(trace);
+  expect(size, Size(marketPrices.length * 100.0, 60));
+  final canvas = TestRecordingCanvas();
+  tester.widget<CustomPaint>(trace).painter!.paint(canvas, size);
+  final draws = canvas.invocations.where(
+    (record) => record.invocation.memberName == #drawPath,
+  );
+  expect(draws, hasLength(1));
+  return draws.single.invocation.positionalArguments.first as Path;
+}
+
+void _expectTraceGeometry(Path actual, Path expected) {
+  final actualContours = actual.computeMetrics().toList();
+  final expectedContours = expected.computeMetrics().toList();
+  expect(actualContours, hasLength(expectedContours.length));
+  for (var i = 0; i < expectedContours.length; i++) {
+    final actualContour = actualContours[i];
+    final expectedContour = expectedContours[i];
+    expect(actualContour.length, closeTo(expectedContour.length, .001));
+    for (var sample = 0; sample <= 8; sample++) {
+      final actualTangent = actualContour.getTangentForOffset(
+        actualContour.length * sample / 8,
+      )!;
+      final expectedTangent = expectedContour.getTangentForOffset(
+        expectedContour.length * sample / 8,
+      )!;
+      expect(
+        actualTangent.position.dx,
+        closeTo(expectedTangent.position.dx, .001),
+      );
+      expect(
+        actualTangent.position.dy,
+        closeTo(expectedTangent.position.dy, .001),
+      );
+      expect(actualTangent.angle, closeTo(expectedTangent.angle, .001));
+    }
+  }
+}
+
 void main() {
+  for (final band in [(110.0, 10.0), (100.0, 30.0), (99.0, 50.0)]) {
+    testWidgets('market price ${band.$1} aligns with its actual band center', (
+      tester,
+    ) async {
+      final path = await _paintIrregularTrace(tester, [band.$1, band.$1]);
+      _expectTraceGeometry(
+        path,
+        Path()
+          ..moveTo(50, band.$2)
+          ..cubicTo(100, band.$2, 100, band.$2, 150, band.$2),
+      );
+    });
+  }
+
+  for (final point in [
+    (107.5, 15.0),
+    (102.5, 25.0),
+    (99.75, 35.0),
+    (99.25, 45.0),
+  ]) {
+    testWidgets(
+      'market price ${point.$1} interpolates between adjacent band centers',
+      (tester) async {
+        final path = await _paintIrregularTrace(tester, [point.$1, point.$1]);
+        _expectTraceGeometry(
+          path,
+          Path()
+            ..moveTo(50, point.$2)
+            ..cubicTo(100, point.$2, 100, point.$2, 150, point.$2),
+        );
+      },
+    );
+  }
+
+  testWidgets('trace draws cubic segments between snapshot column centers', (
+    tester,
+  ) async {
+    final path = await _paintIrregularTrace(tester, [110, 99, 110]);
+    _expectTraceGeometry(
+      path,
+      Path()
+        ..moveTo(50, 10)
+        ..cubicTo(100, 10, 100, 50, 150, 50)
+        ..cubicTo(200, 50, 200, 10, 250, 10),
+    );
+  });
+
+  for (final gap in <(String, double?)>[
+    ('missing', null),
+    ('above the highest band', 111),
+    ('below the lowest band', 98),
+    ('NaN', double.nan),
+    ('positive infinity', double.infinity),
+    ('negative infinity', double.negativeInfinity),
+  ]) {
+    testWidgets('trace leaves a gap when market price is ${gap.$1}', (
+      tester,
+    ) async {
+      final path = await _paintIrregularTrace(tester, [
+        110,
+        99,
+        gap.$2,
+        99,
+        110,
+      ]);
+      _expectTraceGeometry(
+        path,
+        Path()
+          ..moveTo(50, 10)
+          ..cubicTo(100, 10, 100, 50, 150, 50)
+          ..moveTo(350, 50)
+          ..cubicTo(400, 50, 400, 10, 450, 10),
+      );
+    });
+  }
+
+  for (final invalidPrice in [
+    ('NaN', double.nan),
+    ('positive infinity', double.infinity),
+    ('negative infinity', double.negativeInfinity),
+  ]) {
+    testWidgets(
+      'default price formatter keeps cells inspectable with ${invalidPrice.$1} market price',
+      (tester) async {
+        final semantics = tester.ensureSemantics();
+        await tester.pumpWidget(
+          beuiTestApp(
+            SizedBox(
+              width: 640,
+              child: BeuiLiquidityHeatmap(
+                snapshots: [
+                  BeuiLiquiditySnapshot(
+                    id: 'invalid',
+                    label: '14:00',
+                    price: invalidPrice.$2,
+                    levels: const [
+                      BeuiLiquidityLevel(price: 101, size: 20),
+                      BeuiLiquidityLevel(price: 100, size: 40),
+                    ],
+                  ),
+                  _snapshots.first,
+                ],
+                unit: 'SOL',
+                child: const BeuiLiquidityPlot(),
+              ),
+            ),
+            reduce: true,
+          ),
+        );
+        expect(tester.takeException(), isNull);
+        final invalidCell = find.bySemanticsLabel('14:00, 100.00: 40 SOL');
+        expect(invalidCell, findsNWidgets(2));
+        await tester.tap(invalidCell.first);
+        await tester.pump();
+        expect(find.text('14:00 · 100.00 · 40 SOL'), findsOneWidget);
+
+        final gesture = await tester.createGesture(
+          kind: PointerDeviceKind.mouse,
+        );
+        await gesture.addPointer(location: Offset.zero);
+        await gesture.moveTo(tester.getCenter(invalidCell.first));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 250));
+        await tester.pumpAndSettle();
+        expect(find.text('14:00 · 100.00'), findsOneWidget);
+        expect(find.text('14:00 · 100.00 · 40 SOL'), findsOneWidget);
+        expect(find.textContaining('Market '), findsNothing);
+
+        await gesture.moveTo(tester.getCenter(invalidCell.last));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 250));
+        await tester.pumpAndSettle();
+        expect(find.text('14:00 · 100.00'), findsOneWidget);
+        expect(find.text('14:00 · 100.00 · 40 SOL'), findsOneWidget);
+        expect(find.text('Market 100.50'), findsOneWidget);
+        await gesture.removePointer();
+        semantics.dispose();
+      },
+    );
+  }
+
   testWidgets('renders labeled discrete bands and missing-data semantics', (
     tester,
   ) async {
@@ -75,6 +290,25 @@ void main() {
     await tester.pump();
     expect(find.text('14:02 · 99.00 · 10 SOL'), findsNothing);
     semantics.dispose();
+  });
+
+  testWidgets('hovering a cell activates it and reveals its size ticker', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_surface());
+    final cell = find.bySemanticsLabel('14:00, 101.00: 20 SOL');
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    await gesture.moveTo(tester.getCenter(cell));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pumpAndSettle();
+    expect(find.byType(BeuiChartTicker), findsOneWidget);
+    expect(
+      tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker)).format(20),
+      contains('SOL'),
+    );
+    await gesture.removePointer();
   });
 
   testWidgets('renders under reduced motion and matches rest-state golden', (

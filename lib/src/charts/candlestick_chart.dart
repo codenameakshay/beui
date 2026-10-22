@@ -6,7 +6,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../motion/animated_number.dart';
 import '../theme/beui_colors.dart';
 import '_shared.dart';
 
@@ -206,12 +205,6 @@ class BeuiCandlestickLegend extends StatelessWidget {
             'Vol ${state.volume(candle.volume)}',
             style: TextStyle(color: colors.mutedForeground, fontSize: 12),
           ),
-          if (state.widget.lastPrice != null)
-            BeuiAnimatedNumber(
-              value: state.widget.lastPrice!,
-              format: (v) => 'Last ${state.price(v.toDouble())}',
-              style: TextStyle(color: colors.foreground, fontSize: 12),
-            ),
           Text(
             beuiChartSignedPercent(change),
             style: TextStyle(color: tone, fontSize: 12),
@@ -295,9 +288,8 @@ class BeuiCandlestickPlot extends StatelessWidget {
               value: candle == null
                   ? null
                   : '${candle.time}: open ${state.price(candle.open)}, high ${state.price(candle.high)}, low ${state.price(candle.low)}, close ${state.price(candle.close)}',
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTapDown: (event) {
+              child: MouseRegion(
+                onHover: (event) {
                   if (candles.isNotEmpty && plotWidth > 0) {
                     final i =
                         (event.localPosition.dx / plotWidth * candles.length)
@@ -306,42 +298,108 @@ class BeuiCandlestickPlot extends StatelessWidget {
                     state.setActiveId(candles[i].id);
                   }
                 },
-                child: BeuiChartSpring(
-                  value: candles.isEmpty ? 0 : candles.last.close,
-                  builder: (context, animatedClose) {
-                    final animatedCandles = candles.isEmpty
-                        ? candles
-                        : [
-                            ...candles.take(candles.length - 1),
-                            BeuiCandle(
-                              id: candles.last.id,
-                              time: candles.last.time,
-                              open: candles.last.open,
-                              high: math.max(candles.last.high, animatedClose),
-                              low: math.min(candles.last.low, animatedClose),
-                              close: animatedClose,
-                              volume: candles.last.volume,
-                            ),
-                          ];
-                    return CustomPaint(
-                      painter: _CandlePainter(
-                        candles: animatedCandles,
-                        width: plotWidth,
-                        height: height,
-                        priceHeight: priceHeight,
-                        min: minPrice - pad,
-                        range: range,
-                        maxVolume: candles.fold<double>(
-                          1,
-                          (m, c) => math.max(m, c.volume),
-                        ),
-                        lastPrice: state.widget.lastPrice,
-                        activeIndex: activeIndex,
-                        colors: colors,
-                      ),
-                      child: const SizedBox.expand(),
-                    );
+                onExit: (_) => state.setActiveId(null),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown: (event) {
+                    if (candles.isNotEmpty && plotWidth > 0) {
+                      final i =
+                          (event.localPosition.dx / plotWidth * candles.length)
+                              .floor()
+                              .clamp(0, candles.length - 1);
+                      state.setActiveId(candles[i].id);
+                    }
                   },
+                  child: BeuiChartSpring(
+                    value: candles.isEmpty ? 0 : candles.last.close,
+                    builder: (context, animatedClose) {
+                      final animatedCandles = candles.isEmpty
+                          ? candles
+                          : [
+                              ...candles.take(candles.length - 1),
+                              BeuiCandle(
+                                id: candles.last.id,
+                                time: candles.last.time,
+                                open: candles.last.open,
+                                high: math.max(
+                                  candles.last.high,
+                                  animatedClose,
+                                ),
+                                low: math.min(candles.last.low, animatedClose),
+                                close: animatedClose,
+                                volume: candles.last.volume,
+                              ),
+                            ];
+                      return BeuiChartSpring(
+                        key: ValueKey(state.widget.lastPrice == null),
+                        value: state.widget.lastPrice ?? 0,
+                        builder: (context, animatedLastPrice) {
+                          final priceY =
+                              state.widget.lastPrice == null || range == 0
+                              ? 0.0
+                              : (1 -
+                                        (animatedLastPrice - (minPrice - pad)) /
+                                            range) *
+                                    priceHeight;
+                          return Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              CustomPaint(
+                                size: Size(plotWidth, height),
+                                painter: _CandlePainter(
+                                  candles: animatedCandles,
+                                  width: plotWidth,
+                                  height: height,
+                                  priceHeight: priceHeight,
+                                  min: minPrice - pad,
+                                  range: range,
+                                  maxVolume: candles.fold<double>(
+                                    1,
+                                    (m, c) => math.max(m, c.volume),
+                                  ),
+                                  lastPrice: state.widget.lastPrice == null
+                                      ? null
+                                      : animatedLastPrice,
+                                  activeIndex: activeIndex,
+                                  colors: colors,
+                                ),
+                              ),
+                              if (state.widget.lastPrice != null)
+                                Positioned(
+                                  left: plotWidth + 4,
+                                  top: priceY - 11,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: colors.foreground,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 3,
+                                      ),
+                                      child: BeuiChartTicker(
+                                        value: state.widget.lastPrice!,
+                                        format: (v) =>
+                                            state.price(v.toDouble()),
+                                        style: TextStyle(
+                                          color: colors.background,
+                                          fontSize: 11,
+                                          fontFamily: 'monospace',
+                                          fontFeatures: const [
+                                            FontFeature.tabularFigures(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -428,11 +486,10 @@ class _CandlePainter extends CustomPainter {
       final p = Paint()
         ..color = colors.foreground.withValues(alpha: .5)
         ..strokeWidth = 1;
-      canvas.drawLine(
-        Offset(0, y(lastPrice!)),
-        Offset(plotW, y(lastPrice!)),
-        p,
-      );
+      final yy = y(lastPrice!);
+      for (var x = 0.0; x < plotW; x += 8) {
+        canvas.drawLine(Offset(x, yy), Offset(math.min(x + 4, plotW), yy), p);
+      }
     }
   }
 

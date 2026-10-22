@@ -221,6 +221,7 @@ class BeuiFunnelPlot extends StatelessWidget {
                         onPressed: () {},
                         style: TextButton.styleFrom(
                           foregroundColor: colors.foreground,
+                          overlayColor: colors.accent.withValues(alpha: .12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -265,16 +266,23 @@ Widget _funnelTooltip(
   final row = rows[index];
   return BeuiChartTooltipCard(
     title: row.stage.label,
+    details: [
+      BeuiChartTicker(
+        value: row.stage.value,
+        duration: const Duration(milliseconds: 350),
+        format: (value) => '${chart.format(value)} ${chart.unit}',
+      ),
+      if (index > 0)
+        Text('${_percent(row.stepConversion)} from previous stage'),
+      if (row.change != null)
+        Text(
+          '${chart.format(row.change!.abs())} ${row.change! >= 0 ? 'gained' : 'dropped'}',
+        ),
+      Text('${_percent(row.conversion)} of starting total'),
+    ],
     swatch: row.stage.color == null
         ? palette[index % palette.length]
         : beuiChartColor(row.stage.color, colors),
-    lines: [
-      '${chart.format(row.stage.value)} ${chart.unit}',
-      if (index > 0) '${_percent(row.stepConversion)} from previous stage',
-      if (row.change != null)
-        '${chart.format(row.change!.abs())} ${row.change! >= 0 ? 'gained' : 'dropped'}',
-      '${_percent(row.conversion)} of starting total',
-    ],
   );
 }
 

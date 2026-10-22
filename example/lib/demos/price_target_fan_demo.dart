@@ -37,7 +37,11 @@ class _PriceTargetFanDemo extends StatelessWidget {
         current: 178.52,
         history: _history,
         targets: _targets,
-        dates: BeuiPriceTargetDates(horizon: 'Sep 2027'),
+        dates: BeuiPriceTargetDates(
+          start: 'Sep 2025',
+          mid: 'Mar 2026',
+          horizon: 'Sep 2027',
+        ),
       ),
     ),
   );

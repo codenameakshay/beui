@@ -281,18 +281,33 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
         ? -1
         : (startIndex > endIndex ? startIndex : endIndex);
     const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
+      'J',
+      'F',
+      'M',
+      'A',
+      'M',
+      'J',
+      'J',
+      'A',
+      'S',
+      'O',
+      'N',
+      'D',
+      'Year',
+    ];
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
       'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
       'Year',
     ];
     return SingleChildScrollView(
@@ -307,16 +322,7 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
           children: [
             Row(
               children: [
-                SizedBox(
-                  width: 48,
-                  child: Text(
-                    'Year',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: colors.mutedForeground,
-                    ),
-                  ),
-                ),
+                const SizedBox(width: 36),
                 for (final month in months)
                   SizedBox(
                     width: cellWidth,
@@ -338,9 +344,9 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
               Row(
                 children: [
                   SizedBox(
-                    width: 48,
+                    width: 36,
                     child: Text(
-                      '${state.widget.years[y]}',
+                      _returnsYearLabel(state.widget.years[y]),
                       style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -352,8 +358,8 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
                       width: cellWidth,
                       cellKey: 'beui-returns-cell-$y-$m',
                       semanticLabel:
-                          '${state.widget.years[y]} ${months[m]} return ${beuiChartSignedPercent(state._value(state._cell(y, m)))}',
-                      label: months[m],
+                          '${state.widget.years[y]} ${monthNames[m]} return ${beuiChartSignedPercent(state._value(state._cell(y, m)))}',
+                      label: monthNames[m],
                       value: state._value(state._cell(y, m)),
                       background: colors.background,
                       positive: colors.success,
@@ -372,14 +378,27 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
                       onTap: () => state._select(state._cell(y, m)),
                       tooltip: BeuiChartTooltipCard(
                         title: state._spanNote(state._cell(y, m)) == null
-                            ? '${state.widget.years[y]} ${months[m]}'
-                            : '${state.widget.years[y]} ${months[m]} span',
-                        lines: [
-                          beuiChartSignedPercent(
-                            state._spanValue(state._cell(y, m)) ??
-                                state._value(state._cell(y, m)),
+                            ? '${state.widget.years[y]} ${monthNames[m]}'
+                            : '${state.widget.years[y]} ${monthNames[m]} span',
+                        details: [
+                          BeuiChartTicker(
+                            value:
+                                (state._spanValue(state._cell(y, m)) ??
+                                        state._value(state._cell(y, m)))
+                                    .abs() *
+                                10 /
+                                10,
+                            duration: const Duration(milliseconds: 350),
+                            format: (value) {
+                              final signed =
+                                  state._spanValue(state._cell(y, m)) ??
+                                  state._value(state._cell(y, m));
+                              return '${signed < 0 ? '−' : '+'}${value.toStringAsFixed(1)}%';
+                            },
                           ),
-                          ?state._spanNote(state._cell(y, m)),
+                          if (state._spanNote(state._cell(y, m))
+                              case final note?)
+                            Text(note),
                         ],
                       ),
                     ),
@@ -464,7 +483,7 @@ class _ReturnsCell extends StatelessWidget {
                         ),
                         child: Center(
                           child: Text(
-                            beuiChartSignedPercent(value, digits: 0),
+                            _returnsCellLabel(label, value),
                             maxLines: 1,
                             style: TextStyle(
                               fontSize: 9,
@@ -485,6 +504,19 @@ class _ReturnsCell extends StatelessWidget {
     );
   }
 }
+
+String _returnsCellLabel(String label, double value) {
+  if (label == 'Year') {
+    return beuiChartSignedPercent(value, digits: 0);
+  }
+  if (value.abs() < 4) return '';
+  final rounded = (value + 0.5).floor();
+  if (rounded < 0) return '−${rounded.abs()}';
+  return '$rounded';
+}
+
+String _returnsYearLabel(int year) =>
+    "'${year.toString().padLeft(4, '0').substring(2)}";
 
 /// Tooltip composition slot. Tooltips are hosted by individual month cells.
 class BeuiReturnsCalendarTooltip extends StatelessWidget {

@@ -120,6 +120,9 @@ class BeuiStatusBar extends StatefulWidget {
 
 class _BeuiStatusBarState extends State<BeuiStatusBar>
     with BeuiChartActiveState<BeuiStatusBar>, BeuiChartInspectorKeys {
+  final FocusNode _inspectorFocusNode = FocusNode();
+  bool _tooltipOpen = false;
+
   @override
   String? get widgetActiveId => widget.activeId;
   @override
@@ -139,10 +142,20 @@ class _BeuiStatusBarState extends State<BeuiStatusBar>
   }
 
   @override
+  void dispose() {
+    _inspectorFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   void setActiveId(String? id) {
     final previous = activeId;
     super.setActiveId(id);
     if (previous != id) widget.onActiveChange?.call(id);
+  }
+
+  void setTooltipOpen(bool open) {
+    if (_tooltipOpen != open) setState(() => _tooltipOpen = open);
   }
 
   @override
@@ -231,6 +244,8 @@ class BeuiStatusBarPlot extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Focus(
+          focusNode: state._inspectorFocusNode,
+          onFocusChange: state.setTooltipOpen,
           onKeyEvent: (node, event) {
             return state.handleInspectorKey(event)
                 ? KeyEventResult.handled
@@ -241,50 +256,111 @@ class BeuiStatusBarPlot extends StatelessWidget {
             label: '${active.label}, ${statusMap[active.status]!.label}',
             child: SizedBox(
               height: 44,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  for (var i = 0; i < data.length; i++)
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 1.5),
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () => state.setActiveId(data[i].id),
-                          child: Semantics(
-                            button: true,
-                            selected: data[i].id == state.activeId,
-                            label:
-                                '${data[i].label}, ${statusMap[data[i].status]!.label}${data[i].description == null ? '' : ', ${data[i].description}'}',
-                            child: Center(
-                              child: TweenAnimationBuilder<double>(
-                                key: ValueKey(data[i].id),
-                                tween: Tween(begin: 0.72, end: 1),
-                                duration: Duration(milliseconds: 180 + i * 8),
-                                curve: Curves.easeOutCubic,
-                                builder: (context, t, _) => Transform.translate(
-                                  offset: Offset(0, 3 * (1 - t)),
-                                  child: BeuiChartFade(
-                                    opacity: t,
-                                    child: AnimatedContainer(
-                                      duration: const Duration(
-                                        milliseconds: 180,
+                  Semantics(
+                    container: true,
+                    slider: true,
+                    label: 'Status history period',
+                    value:
+                        '${active.label}, ${statusMap[active.status]!.label}',
+                    increasedValue:
+                        '${data[(activeIndex + 1).clamp(0, data.length - 1)].label}, ${statusMap[data[(activeIndex + 1).clamp(0, data.length - 1)].status]!.label}',
+                    decreasedValue:
+                        '${data[(activeIndex - 1).clamp(0, data.length - 1)].label}, ${statusMap[data[(activeIndex - 1).clamp(0, data.length - 1)].status]!.label}',
+                    onIncrease: () => state.setActiveId(
+                      data[(activeIndex + 1).clamp(0, data.length - 1)].id,
+                    ),
+                    onDecrease: () => state.setActiveId(
+                      data[(activeIndex - 1).clamp(0, data.length - 1)].id,
+                    ),
+                    child: Opacity(
+                      opacity: 0,
+                      alwaysIncludeSemantics: true,
+                      child: Slider(
+                        value: activeIndex.toDouble(),
+                        min: 0,
+                        max: (data.length - 1).toDouble().clamp(
+                          1,
+                          double.infinity,
+                        ),
+                        divisions: data.length > 1 ? data.length - 1 : null,
+                        semanticFormatterCallback: (_) =>
+                            '${active.label}, ${statusMap[active.status]!.label}',
+                        onChanged: data.length < 2
+                            ? null
+                            : (value) =>
+                                  state.setActiveId(data[value.round()].id),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      for (var i = 0; i < data.length; i++)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 1.5,
+                            ),
+                            child: MouseRegion(
+                              onEnter: (_) {
+                                state.setActiveId(data[i].id);
+                                state.setTooltipOpen(true);
+                              },
+                              onExit: (_) => state.setTooltipOpen(false),
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  state._inspectorFocusNode.requestFocus();
+                                  state.setActiveId(data[i].id);
+                                },
+                                child: Semantics(
+                                  button: true,
+                                  selected: data[i].id == state.activeId,
+                                  label:
+                                      '${data[i].label}, ${statusMap[data[i].status]!.label}${data[i].description == null ? '' : ', ${data[i].description}'}',
+                                  child: Center(
+                                    child: TweenAnimationBuilder<double>(
+                                      key: ValueKey(data[i].id),
+                                      tween: Tween(begin: 0.72, end: 1),
+                                      duration: Duration(
+                                        milliseconds: 180 + i * 8,
                                       ),
-                                      curve: Curves.easeOut,
-                                      height: barHeight,
-                                      decoration: BoxDecoration(
-                                        color: beuiChartColor(
-                                          statusMap[data[i].status]!.color,
-                                          colors,
-                                        ),
-                                        borderRadius: BorderRadius.circular(99),
-                                        border: data[i].id == state.activeId
-                                            ? Border.all(
-                                                color: colors.foreground,
-                                                width: 1.5,
-                                              )
-                                            : null,
-                                      ),
+                                      curve: Curves.easeOutCubic,
+                                      builder: (context, t, _) =>
+                                          Transform.translate(
+                                            offset: Offset(0, 3 * (1 - t)),
+                                            child: BeuiChartFade(
+                                              opacity: t,
+                                              child: AnimatedContainer(
+                                                duration: const Duration(
+                                                  milliseconds: 180,
+                                                ),
+                                                curve: Curves.easeOut,
+                                                height: barHeight,
+                                                decoration: BoxDecoration(
+                                                  color: beuiChartColor(
+                                                    statusMap[data[i].status]!
+                                                        .color,
+                                                    colors,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(99),
+                                                  border:
+                                                      data[i].id ==
+                                                          state.activeId
+                                                      ? Border.all(
+                                                          color:
+                                                              colors.foreground,
+                                                          width: 1.5,
+                                                        )
+                                                      : null,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                     ),
                                   ),
                                 ),
@@ -292,8 +368,8 @@ class BeuiStatusBarPlot extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ),
-                    ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -313,17 +389,6 @@ class BeuiStatusBarPlot extends StatelessWidget {
               ),
             ],
           ),
-        Slider(
-          value: activeIndex.toDouble(),
-          min: 0,
-          max: (data.length - 1).toDouble().clamp(1, double.infinity),
-          divisions: data.length > 1 ? data.length - 1 : null,
-          semanticFormatterCallback: (_) =>
-              '${active.label}, ${statusMap[active.status]!.label}',
-          onChanged: data.length < 2
-              ? null
-              : (value) => state.setActiveId(data[value.round()].id),
-        ),
       ],
     );
   }
@@ -367,6 +432,7 @@ class BeuiStatusBarTooltip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = _StatusScope.of(context);
+    if (!state._tooltipOpen) return const SizedBox.shrink();
     final datum = state.widget.data
         .where((item) => item.id == state.activeId)
         .firstOrNull;
@@ -375,8 +441,9 @@ class BeuiStatusBarTooltip extends StatelessWidget {
       (item) => item.id == datum.status,
     );
     return BeuiChartTooltipCard(
-      title: '${datum.label} · ${status.label}',
+      title: datum.label,
       lines: [
+        status.label,
         if (datum.duration != null)
           'Duration: ${datum.duration!.inMinutes} minutes',
         if (datum.description != null) datum.description!,

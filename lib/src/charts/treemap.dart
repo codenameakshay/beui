@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import '../motion/_focus_ring.dart';
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
 import '_shared.dart';
 
 /// A treemap node: a leaf with a value, or a group of children.
@@ -501,6 +502,10 @@ class BeuiTreemapPlot extends StatelessWidget {
                         height: math.max(0, rect.height),
                         child: _Tile(
                           tile: tile,
+                          size: Size(
+                            math.max(0, rect.width),
+                            math.max(0, rect.height),
+                          ),
                           format: state._format,
                           active: state.activeId == tile.id,
                           onActive: state.setActiveId,
@@ -596,6 +601,7 @@ bool _handleTileKeys(
 class _Tile extends StatelessWidget {
   const _Tile({
     required this.tile,
+    required this.size,
     required this.format,
     required this.active,
     required this.onActive,
@@ -603,6 +609,7 @@ class _Tile extends StatelessWidget {
   });
 
   final BeuiTreemapTile tile;
+  final Size size;
   final String Function(double) format;
   final bool active;
   final ValueChanged<String?> onActive;
@@ -613,33 +620,74 @@ class _Tile extends StatelessWidget {
     final name =
         '${tile.path.join(' / ')}, ${format(tile.value)}, ${beuiChartPercent(tile.share)}'
         '${tile.description == null ? '' : ', ${tile.description}'}';
+    final showLabel = size.width >= 52 && size.height >= 32;
+    final showValue = size.width >= 70 && size.height >= 56;
     final body =
         renderTile?.call(tile) ??
         Padding(
-          padding: const EdgeInsets.all(8),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              tile.label,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: tile.textColor,
-              ),
-            ),
-          ),
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+          child: showLabel
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tile.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: tile.textColor,
+                      ),
+                    ),
+                    if (showValue) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        format(tile.value),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontFamily: 'monospace',
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                          color: tile.textColor.withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
+                  ],
+                )
+              : const SizedBox.shrink(),
         );
     return BeuiChartTooltip(
-      enabled: active,
       content: BeuiChartTooltipCard(
-        title: tile.path.join(' / '),
+        title: tile.label,
+        titleWidget: Text.rich(
+          TextSpan(
+            children: [
+              if (tile.path.length > 1)
+                TextSpan(
+                  text:
+                      '${tile.path.sublist(0, tile.path.length - 1).join(' / ')} / ',
+                  style: TextStyle(
+                    color: BeuiColors.resolve(context).mutedForeground,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              TextSpan(text: tile.label),
+            ],
+          ),
+        ),
         swatch: tile.color,
-        lines: [
-          format(tile.value),
-          beuiChartPercent(tile.share),
-          if (tile.description != null) tile.description!,
+        details: [
+          BeuiChartTicker(
+            value: tile.value,
+            format: (v) => format(v.toDouble()),
+          ),
+          BeuiChartTicker(
+            value: tile.share * 100,
+            format: (v) => '${v.toStringAsFixed(1)}%',
+          ),
+          if (tile.description != null) Text(tile.description!),
         ],
       ),
       child: BeuiFocusRing(
@@ -655,12 +703,22 @@ class _Tile extends StatelessWidget {
               onTap: () => onActive(active ? null : tile.id),
               child: Padding(
                 padding: const EdgeInsets.all(1.5),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: tile.color,
-                    borderRadius: BorderRadius.circular(6),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ColoredBox(color: tile.color, child: body),
+                      IgnorePointer(
+                        child: AnimatedOpacity(
+                          opacity: active ? 1 : 0,
+                          duration: const Duration(milliseconds: 100),
+                          curve: beuiEaseOut,
+                          child: const ColoredBox(color: Color(0x1AFFFFFF)),
+                        ),
+                      ),
+                    ],
                   ),
-                  child: body,
                 ),
               ),
             ),
@@ -695,13 +753,25 @@ class BeuiTreemapLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = _TreemapScope.of(context);
-    return BeuiChartLegend(
+    final colors = BeuiColors.resolve(context);
+    return Wrap(
+      spacing: 16,
+      runSpacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         for (final node in state._layout.nodes)
-          BeuiChartLegendItem(
-            color: node.color,
-            label: node.label,
-            value: showValues ? state._format(node.value) : null,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BeuiChartSwatch(color: node.color),
+              const SizedBox(width: 6),
+              Text(
+                showValues
+                    ? '${node.label} ${state._format(node.value)}'
+                    : node.label,
+                style: TextStyle(fontSize: 12, color: colors.mutedForeground),
+              ),
+            ],
           ),
       ],
     );
