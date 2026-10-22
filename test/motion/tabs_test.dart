@@ -98,6 +98,97 @@ void main() {
       await tester.pump();
       expect(changed, 'three');
     });
+
+    testWidgets('Home jumps to the first tab and End to the last', (
+      tester,
+    ) async {
+      String? changed;
+      await tester.pumpWidget(
+        _app(value: 'two', onChanged: (v) => changed = v),
+      );
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.home);
+      await tester.pump();
+      expect(changed, 'one');
+      await tester.sendKeyEvent(LogicalKeyboardKey.end);
+      await tester.pump();
+      expect(changed, 'three');
+    });
+  });
+
+  group('BeuiTabs icons', () {
+    testWidgets('selected mode shows the icon only on the active tab', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiTabs<String>(
+            value: 'home',
+            icons: BeuiTabsIcons.selected,
+            tabs: const [
+              BeuiTab(
+                value: 'home',
+                icon: Icon(LucideIcons.house),
+                label: Text('Home'),
+              ),
+              BeuiTab(
+                value: 'stats',
+                icon: Icon(LucideIcons.chart_column),
+                label: Text('Stats'),
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byIcon(LucideIcons.house), findsOneWidget);
+      final homeWidth = tester
+          .getSize(
+            find.ancestor(
+              of: find.text('Home'),
+              matching: find.byType(FocusableActionDetector),
+            ),
+          )
+          .width;
+      final statsWidth = tester
+          .getSize(
+            find.ancestor(
+              of: find.text('Stats'),
+              matching: find.byType(FocusableActionDetector),
+            ),
+          )
+          .width;
+      expect(homeWidth, greaterThan(statsWidth));
+    });
+  });
+
+  group('BeuiTabs overflow', () {
+    testWidgets('narrow host clips the list in a horizontal scroller', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiTabs<String>(
+            value: 'Overview',
+            tabs: const [
+              BeuiTab(value: 'Overview', label: Text('Overview')),
+              BeuiTab(value: 'Activity', label: Text('Activity')),
+              BeuiTab(value: 'Analytics', label: Text('Analytics')),
+              BeuiTab(value: 'Members', label: Text('Members')),
+              BeuiTab(value: 'Billing', label: Text('Billing')),
+              BeuiTab(value: 'Settings', label: Text('Settings')),
+            ],
+          ),
+          width: 220,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(find.byType(ClipRect), findsWidgets);
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
+    });
   });
 
   group('BeuiTabs content', () {

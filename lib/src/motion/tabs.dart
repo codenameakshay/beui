@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
+import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 
@@ -29,17 +30,38 @@ enum BeuiTabsVariant {
   underline,
 }
 
-/// A single tab: a [value], its [label], and optional [content] panel.
+/// When a trigger's [BeuiTab.icon] is shown.
+enum BeuiTabsIcons {
+  /// Icon is visible on every trigger (source `"always"`).
+  always,
+
+  /// Icon springs open only on the selected tab (source `"selected"`).
+  selected,
+}
+
+/// Space between a selected-only icon and its label, in logical pixels.
+const double _iconGap = 6;
+
+/// A single tab: a [value], its [label], optional [icon], and optional
+/// [content] panel.
 @immutable
 class BeuiTab<T> {
   /// Creates a tab.
-  const BeuiTab({required this.value, required this.label, this.content});
+  const BeuiTab({
+    required this.value,
+    required this.label,
+    this.icon,
+    this.content,
+  });
 
   /// This tab's value.
   final T value;
 
   /// The trigger label (usually a [Text]).
   final Widget label;
+
+  /// Optional icon before the label. Size-3.5 (14px) in the source preview.
+  final Widget? icon;
 
   /// Optional panel shown below the bar when this tab is active.
   final Widget? content;
@@ -68,6 +90,7 @@ class BeuiTabs<T> extends StatefulWidget {
     this.defaultValue,
     this.onChanged,
     this.variant = BeuiTabsVariant.pill,
+    this.icons = BeuiTabsIcons.always,
     this.wrap = false,
     this.gap,
     this.listBorderRadius,
@@ -89,6 +112,10 @@ class BeuiTabs<T> extends StatefulWidget {
 
   /// Which look to render.
   final BeuiTabsVariant variant;
+
+  /// When a trigger [BeuiTab.icon] is shown. `"selected"` springs the icon
+  /// open only on the active tab.
+  final BeuiTabsIcons icons;
 
   /// Flows the triggers onto multiple centred runs instead of one row — the
   /// source's `TabsList className="flex-wrap justify-center"`. The indicator
@@ -168,6 +195,15 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
     _focusNodes[next]?.requestFocus();
   }
 
+  void _jump(int index) {
+    final values = widget.tabs.map((t) => t.value).toList();
+    if (values.isEmpty) return;
+    final i = index < 0 ? values.length - 1 : index.clamp(0, values.length - 1);
+    final next = values[i];
+    _select(next);
+    _focusNodes[next]?.requestFocus();
+  }
+
   void _measure() {
     if (!mounted) return;
     final stackBox = _stackKey.currentContext?.findRenderObject() as RenderBox?;
@@ -211,11 +247,14 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
           measureKey: _triggerKeys[tab.value]!,
           focusNode: _focusNodes[tab.value]!,
           label: tab.label,
+          icon: tab.icon,
+          icons: widget.icons,
           variant: variant,
           padding: widget.triggerPadding,
           active: tab.value == _current,
           onSelect: () => _select(tab.value),
           onMove: (delta) => _move(tab.value, delta),
+          onJump: _jump,
         ),
       );
     }
@@ -270,17 +309,34 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       ),
     );
 
+    final hosted = widget.wrap
+        ? list
+        : LayoutBuilder(
+            builder: (context, constraints) {
+              if (!constraints.hasBoundedWidth ||
+                  !constraints.maxWidth.isFinite) {
+                return list;
+              }
+              return _TabsOverflowHost(
+                maxWidth: constraints.maxWidth,
+                variant: variant,
+                colors: colors,
+                child: list,
+              );
+            },
+          );
+
     // The list (TabsList) is `inline-flex` in the source — content-sized and
     // left-aligned within its block. Keep the widget content-sized; the parent
     // decides placement (don't be greedy).
     final activeContent = _activeContent();
-    if (activeContent == null) return list;
+    if (activeContent == null) return hosted;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        list,
+        hosted,
         const SizedBox(height: 16), // mt-4
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 180),
@@ -395,22 +451,28 @@ class _TabTrigger extends StatefulWidget {
     required this.measureKey,
     required this.focusNode,
     required this.label,
+    required this.icon,
+    required this.icons,
     required this.variant,
     required this.padding,
     required this.active,
     required this.onSelect,
     required this.onMove,
+    required this.onJump,
     super.key,
   });
 
   final GlobalKey measureKey;
   final FocusNode focusNode;
   final Widget label;
+  final Widget? icon;
+  final BeuiTabsIcons icons;
   final BeuiTabsVariant variant;
   final EdgeInsetsGeometry? padding;
   final bool active;
   final VoidCallback onSelect;
   final ValueChanged<int> onMove;
+  final ValueChanged<int> onJump;
 
   @override
   State<_TabTrigger> createState() => _TabTriggerState();
@@ -474,7 +536,21 @@ class _TabTriggerState extends State<_TabTrigger> {
             letterSpacing: 0, // tracking-normal
             color: _textColor(colors),
           ),
-          child: widget.label,
+          child: IconTheme.merge(
+            data: IconThemeData(size: 14, color: _textColor(colors)),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (widget.icon != null)
+                  _TriggerIcon(
+                    icon: widget.icon!,
+                    active: widget.active,
+                    mode: widget.icons,
+                  ),
+                widget.label,
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -489,6 +565,8 @@ class _TabTriggerState extends State<_TabTrigger> {
         SingleActivator(LogicalKeyboardKey.arrowDown): _MoveIntent(1),
         SingleActivator(LogicalKeyboardKey.arrowLeft): _MoveIntent(-1),
         SingleActivator(LogicalKeyboardKey.arrowUp): _MoveIntent(-1),
+        SingleActivator(LogicalKeyboardKey.home): _JumpIntent(0),
+        SingleActivator(LogicalKeyboardKey.end): _JumpIntent(-1),
       },
       actions: <Type, Action<Intent>>{
         ActivateIntent: CallbackAction<ActivateIntent>(
@@ -500,6 +578,12 @@ class _TabTriggerState extends State<_TabTrigger> {
         _MoveIntent: CallbackAction<_MoveIntent>(
           onInvoke: (intent) {
             widget.onMove(intent.delta);
+            return null;
+          },
+        ),
+        _JumpIntent: CallbackAction<_JumpIntent>(
+          onInvoke: (intent) {
+            widget.onJump(intent.index);
             return null;
           },
         ),
@@ -522,4 +606,235 @@ class _TabTriggerState extends State<_TabTrigger> {
 class _MoveIntent extends Intent {
   const _MoveIntent(this.delta);
   final int delta;
+}
+
+class _JumpIntent extends Intent {
+  const _JumpIntent(this.index);
+  final int index;
+}
+
+/// Icon before a trigger label. Always visible, or springing open only when
+/// the tab is selected (source `TriggerIcon` + `SPRING_SWAP`).
+class _TriggerIcon extends StatelessWidget {
+  const _TriggerIcon({
+    required this.icon,
+    required this.active,
+    required this.mode,
+  });
+
+  final Widget icon;
+  final bool active;
+  final BeuiTabsIcons mode;
+
+  @override
+  Widget build(BuildContext context) {
+    if (mode == BeuiTabsIcons.always) {
+      return Padding(
+        padding: const EdgeInsets.only(right: _iconGap),
+        child: ExcludeSemantics(child: icon),
+      );
+    }
+    final motion = motionFor(context, beuiSpringSwap, isMovement: true);
+    return SingleMotionBuilder(
+      value: active ? 1.0 : 0.0,
+      motion: motion,
+      builder: (context, t, _) {
+        return ClipRect(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            widthFactor: t.clamp(0.0, 1.0),
+            child: Opacity(
+              opacity: t.clamp(0.0, 1.0),
+              child: Transform.scale(
+                scale: 0.6 + 0.4 * t.clamp(0.0, 1.0),
+                child: Padding(
+                  padding: EdgeInsets.only(right: _iconGap * t.clamp(0.0, 1.0)),
+                  child: ExcludeSemantics(child: icon),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Horizontal overflow host: edge fades + arrow buttons when the tab list is
+/// wider than its parent (source `TabsList` overflow chrome).
+class _TabsOverflowHost extends StatefulWidget {
+  const _TabsOverflowHost({
+    required this.maxWidth,
+    required this.variant,
+    required this.colors,
+    required this.child,
+  });
+
+  final double maxWidth;
+  final BeuiTabsVariant variant;
+  final BeuiColors colors;
+  final Widget child;
+
+  @override
+  State<_TabsOverflowHost> createState() => _TabsOverflowHostState();
+}
+
+class _TabsOverflowHostState extends State<_TabsOverflowHost> {
+  final ScrollController _controller = ScrollController();
+  bool _overflow = false;
+  bool _left = false;
+  bool _right = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_syncEdges);
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_syncEdges);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _syncEdges() {
+    if (!_controller.hasClients) return;
+    final pos = _controller.position;
+    final overflow = pos.maxScrollExtent > 1;
+    final left = overflow && pos.pixels > 1;
+    final right = overflow && pos.pixels < pos.maxScrollExtent - 1;
+    if (overflow != _overflow || left != _left || right != _right) {
+      setState(() {
+        _overflow = overflow;
+        _left = left;
+        _right = right;
+      });
+    }
+  }
+
+  void _scroll(double direction) {
+    if (!_controller.hasClients) return;
+    final delta = direction * _controller.position.viewportDimension * 0.8;
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    _controller.animateTo(
+      (_controller.offset + delta).clamp(
+        0.0,
+        _controller.position.maxScrollExtent,
+      ),
+      duration: reduce ? Duration.zero : const Duration(milliseconds: 280),
+      curve: beuiEaseOut,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _syncEdges();
+    });
+
+    final radius = switch (widget.variant) {
+      BeuiTabsVariant.pill => BorderRadius.circular(9999),
+      BeuiTabsVariant.segment => BorderRadius.circular(8),
+      BeuiTabsVariant.underline => BorderRadius.zero,
+    };
+
+    final scroller = NotificationListener<ScrollNotification>(
+      onNotification: (_) {
+        _syncEdges();
+        return false;
+      },
+      child: SingleChildScrollView(
+        controller: _controller,
+        scrollDirection: Axis.horizontal,
+        child: widget.child,
+      ),
+    );
+
+    Widget fade({required bool left}) {
+      return IgnorePointer(
+        child: Container(
+          width: 40,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: left ? Alignment.centerLeft : Alignment.centerRight,
+              end: left ? Alignment.centerRight : Alignment.centerLeft,
+              colors: [
+                widget.colors.card,
+                widget.colors.card.withValues(alpha: 0),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget arrow({required bool left, required bool enabled}) {
+      return SizedBox(
+        width: 36,
+        child: IconButton(
+          padding: EdgeInsets.zero,
+          visualDensity: VisualDensity.compact,
+          onPressed: enabled ? () => _scroll(left ? -1 : 1) : null,
+          icon: Icon(
+            left ? LucideIcons.chevron_left : LucideIcons.chevron_right,
+            size: 20,
+            color: widget.colors.foreground,
+          ),
+          tooltip: left ? 'Scroll tabs left' : 'Scroll tabs right',
+        ),
+      );
+    }
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: widget.maxWidth),
+      child: ClipRect(
+        child: !_overflow
+            ? scroller
+            : DecoratedBox(
+                decoration: BoxDecoration(
+                  color: widget.variant == BeuiTabsVariant.underline
+                      ? null
+                      : widget.colors.card,
+                  borderRadius: radius,
+                ),
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 36),
+                      child: scroller,
+                    ),
+                    if (_left)
+                      Positioned(
+                        left: 36,
+                        top: 0,
+                        bottom: 0,
+                        child: fade(left: true),
+                      ),
+                    if (_right)
+                      Positioned(
+                        right: 36,
+                        top: 0,
+                        bottom: 0,
+                        child: fade(left: false),
+                      ),
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: arrow(left: true, enabled: _left),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: arrow(left: false, enabled: _right),
+                    ),
+                  ],
+                ),
+              ),
+      ),
+    );
+  }
 }

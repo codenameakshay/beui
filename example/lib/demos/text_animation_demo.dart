@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import '../explorer/widgets.dart';
 
-/// Gallery route for [BeuiChromaticTextReveal], [BeuiTextReveal],
-/// [BeuiTextShimmer] and [BeuiTextCascade].
+/// Gallery route for [BeuiTextScramble], [BeuiChromaticTextReveal],
+/// [BeuiTextReveal], [BeuiTextShimmer] and [BeuiTextCascade].
 Widget textAnimationDemo(BuildContext context) => const _TextAnimationDemo();
 
 /// The text-animation showcase — the four previews
@@ -27,8 +27,14 @@ class _TextAnimationDemo extends StatefulWidget {
 
 class _TextAnimationDemoState extends State<_TextAnimationDemo> {
   static const _phrases = ['Install skills', 'Open settings', 'Ship updates'];
+  static const _scramble = [
+    'Inspecting the repository',
+    'Running the checks',
+    'Preparing the update',
+  ];
 
   int _phrase = 0;
+  int _scrambleIndex = 0;
   int _replay = 0;
   Timer? _cascadeTimer;
 
@@ -59,6 +65,29 @@ class _TextAnimationDemoState extends State<_TextAnimationDemo> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        caption('Scramble — random glyphs settle into the next phrase'),
+        Center(
+          child: BeuiTextScramble(
+            _scramble[_scrambleIndex],
+            style: TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              color: colors.foreground,
+            ),
+          ),
+        ),
+        const SizedBox(height: 32),
+        Center(
+          child: OutlinedButton(
+            onPressed: () => setState(
+              () => _scrambleIndex = (_scrambleIndex + 1) % _scramble.length,
+            ),
+            child: const Text('Next phrase'),
+          ),
+        ),
+        const SizedBox(height: 48),
+
         // ChromaticTextRevealPreview: prefix + cycling words, `text-5xl
         // font-medium tracking-[-0.04em]`, started on mount (startOnView false).
         caption('Dia text animation — a colour edge paints each word in'),

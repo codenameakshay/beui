@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../explorer/widgets.dart';
 
-/// Gallery route for [BeuiButton], [BeuiStatefulButton] and
-/// [BeuiMagneticButton].
+/// Gallery route for [BeuiMetallicButton], [BeuiButton], [BeuiStatefulButton]
+/// and [BeuiMagneticButton].
 Widget buttonDemo(BuildContext context) => const _ButtonDemo();
 
 /// The button showcase — the three preview sections
@@ -45,7 +45,35 @@ class _ButtonDemoState extends State<_ButtonDemo> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Section 1 — Button (base.tsx).
+        caption('Metallic — chrome rim with a traveling reflection'),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 12,
+          runSpacing: 12,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            BeuiMetallicButton(
+              onPressed: () {},
+              child: _row(const [
+                Text('Continue'),
+                Icon(LucideIcons.arrow_up_right),
+              ]),
+            ),
+            BeuiMetallicButton(
+              size: BeuiButtonSize.sm,
+              onPressed: () {},
+              child: _row(const [Icon(LucideIcons.sparkles), Text('Generate')]),
+            ),
+            BeuiMetallicButton(
+              size: BeuiButtonSize.icon,
+              onPressed: () {},
+              child: const Icon(LucideIcons.sparkles),
+            ),
+          ],
+        ),
+        const SizedBox(height: 40),
+
+        // Section 2 — Button (base.tsx).
         caption('Button — press scale, hover lift, variants and sizes'),
         Wrap(
           alignment: WrapAlignment.center,

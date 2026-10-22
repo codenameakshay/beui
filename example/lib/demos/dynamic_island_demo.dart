@@ -176,7 +176,7 @@ class _IslandDemoState extends State<_IslandDemo> {
                             color: onShell.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(LucideIcons.music, size: 14),
+                          child: const Icon(LucideIcons.list_music, size: 14),
                         ),
                         // Same flex-item shrink as the call view: the site
                         // wraps this to "Midnight / City".

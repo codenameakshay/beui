@@ -484,4 +484,47 @@ void main() {
       );
     },
   );
+
+  group('BeuiMetallicButton', () {
+    testWidgets('tap fires onPressed', (tester) async {
+      var taps = 0;
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiMetallicButton(onPressed: () => taps++, child: const Text('Go')),
+        ),
+      );
+      await tester.tap(find.byType(BeuiMetallicButton));
+      await tester.pump();
+      expect(taps, 1);
+    });
+
+    testWidgets('paused still paints the chrome rim', (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(const BeuiMetallicButton(paused: true, child: Text('Go'))),
+      );
+      await tester.pump();
+      expect(find.text('Go'), findsOneWidget);
+      expect(find.byType(BeuiMetallicButton), findsOneWidget);
+    });
+
+    testWidgets('rest-state golden', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: BeuiTextTheme.trackingNormal(
+            ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          ),
+          home: const Scaffold(
+            body: Center(
+              child: BeuiMetallicButton(paused: true, child: Text('Continue')),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await expectLater(
+        find.byType(BeuiMetallicButton),
+        matchesGoldenFile('goldens/beui_metallic_button.png'),
+      );
+    });
+  });
 }

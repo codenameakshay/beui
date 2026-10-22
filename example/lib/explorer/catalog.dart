@@ -7,36 +7,50 @@ import 'package:flutter/widgets.dart';
 
 import '../demos/action_rails_demo.dart';
 import '../demos/action_swap_demo.dart';
+import '../demos/adaptive_stepper_demo.dart';
 import '../demos/agent_activity_demo.dart';
 import '../demos/agent_theme_demo.dart';
 import '../demos/ai_sidebar_demo.dart';
+import '../demos/alert_demo.dart';
 import '../demos/animated_badge_demo.dart';
 import '../demos/animated_sidebar_demo.dart';
 import '../demos/animated_toast_stack_demo.dart';
 import '../demos/approval_card_demo.dart';
+import '../demos/arc_picker_demo.dart';
+import '../demos/aspect_ratio_demo.dart';
 import '../demos/availability_scheduler_demo.dart';
 import '../demos/bloom_menu_demo.dart';
 import '../demos/bounce_sidebar_demo.dart';
 import '../demos/bottom_sheet_demo.dart';
+import '../demos/breadcrumb_demo.dart';
 import '../demos/bouncy_accordion_demo.dart';
 import '../demos/button_demo.dart';
+import '../demos/card_demo.dart';
 import '../demos/center_morph_modal_demo.dart';
 import '../demos/chat_app_demo.dart';
 import '../demos/checkbox_demo.dart';
 import '../demos/citations_demo.dart';
 import '../demos/code_block_demo.dart';
+import '../demos/collapsible_demo.dart';
+import '../demos/color_picker_demo.dart';
+import '../demos/color_selector_demo.dart';
+import '../demos/combobox_demo.dart';
 import '../demos/command_palette_demo.dart';
 import '../demos/context_menu_demo.dart';
 import '../demos/cylinder_carousel_demo.dart';
+import '../demos/date_range_picker_demo.dart';
 import '../demos/dock_demo.dart';
 import '../demos/drawer_demo.dart';
 import '../demos/dynamic_island_demo.dart';
+import '../demos/expandable_control_demo.dart';
 import '../demos/expandable_tabs_demo.dart';
 import '../demos/expanding_arrow_button_demo.dart';
 import '../demos/feedback_widget_demo.dart';
 import '../demos/file_diff_demo.dart';
+import '../demos/file_tree_demo.dart';
 import '../demos/file_upload_demo.dart';
 import '../demos/image_generation_demo.dart';
+import '../demos/image_viewer_demo.dart';
 import '../demos/infinite_masonry_demo.dart';
 import '../demos/input_demo.dart';
 import '../demos/knockout_bracket_demo.dart';
@@ -47,6 +61,7 @@ import '../demos/message_bubble_demo.dart';
 import '../demos/message_demo.dart';
 import '../demos/message_scroller_demo.dart';
 import '../demos/morphing_modal_demo.dart';
+import '../demos/multi_select_demo.dart';
 import '../demos/not_found_demo.dart';
 import '../demos/notification_stack_demo.dart';
 import '../demos/number_demo.dart';
@@ -63,6 +78,7 @@ import '../demos/scroll_animation_demo.dart';
 import '../demos/select_demo.dart';
 import '../demos/shader_background_demo.dart';
 import '../demos/shared_layout_bg_demo.dart';
+import '../demos/sortable_stack_demo.dart';
 import '../demos/streaming_response_demo.dart';
 import '../demos/swap_demo.dart';
 import '../demos/swipeable_list_demo.dart';
@@ -72,6 +88,7 @@ import '../demos/tabs_demo.dart';
 import '../demos/text_animation_demo.dart';
 import '../demos/theme_toggle_demo.dart';
 import '../demos/tilt_card_demo.dart';
+import '../demos/timeline_demo.dart';
 import '../demos/todo_list_demo.dart';
 import '../demos/tool_approval_demo.dart';
 import '../demos/tool_result_demo.dart';
@@ -161,8 +178,151 @@ class _StackedDemos extends StatelessWidget {
   }
 }
 
-/// Components ("motion") — same order as the source sidebar (37 entries).
+/// Components ("motion") — same order as beui.dev/components/motion (All).
 const List<ExploreEntry> kComponents = [
+  ExploreEntry(
+    title: 'Timeline',
+    slug: 'timeline',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'A draggable timeline of dated events around a focused card.',
+    builder: timelineDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated Alert',
+    slug: 'alert',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'Composable feedback with smooth transitions.',
+    builder: alertDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated Collapsible',
+    slug: 'collapsible',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'Expandable content with a smooth reveal.',
+    builder: collapsibleDemo,
+  ),
+  ExploreEntry(
+    title: 'Aspect Ratio',
+    slug: 'aspect-ratio',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'Responsive media with smooth aspect ratio transitions.',
+    builder: aspectRatioDemo,
+  ),
+  ExploreEntry(
+    title: 'Arc Picker',
+    slug: 'arc-picker',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Radial text picker with top, bottom, left or right curves and a growing selection bracket.',
+    builder: arcPickerDemo,
+  ),
+  ExploreEntry(
+    title: 'Sortable List',
+    slug: 'sortable-stack',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Composable sortable list with group, item, handle, content and undo.',
+    builder: sortableStackDemo,
+  ),
+  ExploreEntry(
+    title: 'Image Viewer',
+    slug: 'image-viewer',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Composable gallery viewer with lightbox, zoom, pan and keyboard navigation.',
+    builder: imageViewerDemo,
+  ),
+  ExploreEntry(
+    title: 'Date Range Picker',
+    slug: 'date-range-picker',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Composable date range picker with calendar, presets and keyboard navigation.',
+    builder: dateRangePickerDemo,
+  ),
+  ExploreEntry(
+    title: 'Card',
+    slug: 'card',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Composable card with header, title, description, action, content and footer.',
+    builder: cardDemo,
+  ),
+  ExploreEntry(
+    title: 'Color Picker',
+    slug: 'color-picker',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Composable color picker with area, hue, alpha, hex, channels and presets.',
+    builder: colorPickerDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated Color Selector',
+    slug: 'color-selector',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'Color swatches with a spring-gliding selection ring.',
+    builder: colorSelectorDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated Breadcrumb',
+    slug: 'breadcrumb',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Composable breadcrumb with path transitions and an overflow ellipsis.',
+    builder: breadcrumbDemo,
+  ),
+  ExploreEntry(
+    title: 'Tilt Card',
+    slug: 'tilt-card',
+    section: ExploreSection.components,
+    blurb: '3D perspective tilt on hover with a cursor-tracked glare.',
+    builder: tiltCardDemo,
+  ),
+  ExploreEntry(
+    title: 'Button',
+    slug: 'button',
+    section: ExploreSection.components,
+    blurb:
+        'Spring-pressed Button plus Stateful, Magnetic and Metallic variants.',
+    builder: buttonDemo,
+  ),
+  ExploreEntry(
+    title: 'Animated CTA Buttons',
+    slug: 'expanding-arrow-button',
+    section: ExploreSection.components,
+    blurb:
+        'Call-to-action buttons with expanding, hold and slide interactions.',
+    builder: expandingArrowButtonDemo,
+  ),
+  ExploreEntry(
+    title: 'Expandable Control',
+    slug: 'expandable-control',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb: 'Click-to-expand button and chip controls with spring layout.',
+    builder: expandableControlDemo,
+  ),
+  ExploreEntry(
+    title: 'Adaptive Stepper',
+    slug: 'adaptive-stepper',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Numeric stepper whose footprint adapts at min/max while the value rolls.',
+    builder: adaptiveStepperDemo,
+  ),
   ExploreEntry(
     title: 'Marquee',
     slug: 'marquee',
@@ -174,7 +334,8 @@ const List<ExploreEntry> kComponents = [
     title: 'Tabs',
     slug: 'tabs',
     section: ExploreSection.components,
-    blurb: 'Pill, segment or underline tabs with a spring layout indicator.',
+    blurb:
+        'Pill, segment or underline tabs with a spring indicator and optional icons.',
     builder: tabsDemo,
   ),
   ExploreEntry(
@@ -189,23 +350,39 @@ const List<ExploreEntry> kComponents = [
     slug: 'input',
     section: ExploreSection.components,
     blurb:
-        'Text field with icons, left-aligned announced errors and a success check.',
+        'Text field with icons, optional stable error row, error shake and a success check.',
     builder: inputDemo,
   ),
   ExploreEntry(
     title: 'Select',
     slug: 'select',
     section: ExploreSection.components,
-    isNew: true,
     blurb:
         'Panel that bouncily unfolds from the trigger, plus a Morph variant.',
     builder: selectDemo,
   ),
   ExploreEntry(
+    title: 'Combobox',
+    slug: 'combobox',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Searchable combobox with grouped filtering and keyboard navigation.',
+    builder: comboboxDemo,
+  ),
+  ExploreEntry(
+    title: 'Multi Select',
+    slug: 'multi-select',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Searchable multi-select with removable tokens and a morphing panel.',
+    builder: multiSelectDemo,
+  ),
+  ExploreEntry(
     title: 'Checkbox',
     slug: 'checkbox',
     section: ExploreSection.components,
-    isNew: true,
     blurb: 'Draw-on checkmark with spring press feedback and indeterminate.',
     builder: checkboxDemo,
   ),
@@ -213,7 +390,6 @@ const List<ExploreEntry> kComponents = [
     title: 'Radio Group',
     slug: 'radio',
     section: ExploreSection.components,
-    isNew: true,
     blurb: 'Single-select with a gliding indicator dot and spring feedback.',
     builder: radioDemo,
   ),
@@ -228,7 +404,6 @@ const List<ExploreEntry> kComponents = [
     title: 'Pull to Refresh',
     slug: 'pull-to-refresh',
     section: ExploreSection.components,
-    isNew: true,
     blurb: 'Pull-to-refresh with drag resistance and async refresh handling.',
     builder: pullToRefreshDemo,
   ),
@@ -243,7 +418,6 @@ const List<ExploreEntry> kComponents = [
     title: 'Bounce Sidebar',
     slug: 'bounce-sidebar',
     section: ExploreSection.components,
-    isNew: true,
     blurb: 'A vertical sidebar whose active dot springs along a curved path.',
     builder: bounceSidebarDemo,
   ),
@@ -251,16 +425,23 @@ const List<ExploreEntry> kComponents = [
     title: 'Animated Sidebar',
     slug: 'animated-sidebar',
     section: ExploreSection.components,
-    isNew: true,
     blurb:
         'App sidebar that folds to an icon rail on desktop, sheet on mobile.',
     builder: animatedSidebarDemo,
   ),
   ExploreEntry(
+    title: 'File Tree',
+    slug: 'file-tree',
+    section: ExploreSection.components,
+    isNew: true,
+    blurb:
+        'Composable file and folder tree with springing branches and keyboard navigation.',
+    builder: fileTreeDemo,
+  ),
+  ExploreEntry(
     title: 'Preview Rail',
     slug: 'preview-rail',
     section: ExploreSection.components,
-    isNew: true,
     blurb:
         'Navigation rail of ticks that preview a destination — hover or tap.',
     builder: previewRailDemo,
@@ -276,14 +457,14 @@ const List<ExploreEntry> kComponents = [
     title: 'Tooltip',
     slug: 'tooltip',
     section: ExploreSection.components,
-    blurb: 'Hover or focus tooltip with a blur enter/exit and spring spawn.',
+    blurb:
+        'Hover or focus tooltip with an optional arrow, alignment and spring spawn.',
     builder: tooltipDemo,
   ),
   ExploreEntry(
     title: 'Context Menu',
     slug: 'context-menu',
     section: ExploreSection.components,
-    isNew: true,
     blurb:
         'Context-menu primitives with a pointer-origin clip morph and typeahead.',
     builder: contextMenuDemo,
@@ -292,7 +473,6 @@ const List<ExploreEntry> kComponents = [
     title: 'Popover',
     slug: 'popover',
     section: ExploreSection.components,
-    isNew: true,
     blurb: 'Gooey popover that oozes from the trigger, plus a Morph variant.',
     builder: _popoverCombined,
   ),
@@ -308,7 +488,6 @@ const List<ExploreEntry> kComponents = [
     title: 'Center Morph Modal',
     slug: 'center-morph-modal',
     section: ExploreSection.components,
-    isNew: true,
     blurb:
         'A full-size surface that unfolds from its exact center and folds back.',
     builder: centerMorphModalDemo,
@@ -317,14 +496,15 @@ const List<ExploreEntry> kComponents = [
     title: 'Text Animation',
     slug: 'text-animation',
     section: ExploreSection.components,
-    blurb: 'Reveal sequences, shimmer loading states and letter-cascade swaps.',
+    blurb:
+        'Scramble, chromatic sweep, reveal, shimmer and letter-cascade swaps.',
     builder: textAnimationDemo,
   ),
   ExploreEntry(
     title: 'Number Animation',
     slug: 'number',
     section: ExploreSection.components,
-    blurb: 'Count-up values and rolling digit tickers.',
+    blurb: 'Digit swap, count-up values and rolling digit tickers.',
     builder: numberDemo,
   ),
   ExploreEntry(
@@ -380,16 +560,13 @@ const List<ExploreEntry> kComponents = [
     title: 'Range Slider',
     slug: 'range-slider',
     section: ExploreSection.components,
-    isNew: true,
-    blurb:
-        'Tick dots and a bouncy vertical-bar thumb that snaps between steps.',
+    blurb: 'Inline, ticked bar, liquid fill, wave, bubble and ruler sliders.',
     builder: rangeSliderDemo,
   ),
   ExploreEntry(
     title: 'Wheel Picker',
     slug: 'wheel-picker',
     section: ExploreSection.components,
-    isNew: true,
     blurb:
         'iOS-style 3D picker drum with momentum snap; composes into pickers.',
     builder: wheelPickerDemo,
@@ -398,16 +575,14 @@ const List<ExploreEntry> kComponents = [
     title: 'Table',
     slug: 'table',
     section: ExploreSection.components,
-    isNew: true,
     blurb:
-        'Virtualized table smooth at 10k+ rows: sort, select, resize, reorder.',
+        'Virtualized table smooth at 10k+ rows: sort, select, resize, reorder, edit, async.',
     builder: tableDemo,
   ),
   ExploreEntry(
     title: 'Shader Background',
     slug: 'shader-background',
     section: ExploreSection.components,
-    isNew: true,
     blurb: 'Canvas shader backgrounds (mesh, grain, warp, waves, voronoi…).',
     builder: shaderBackgroundDemo,
   ),
@@ -415,7 +590,6 @@ const List<ExploreEntry> kComponents = [
     title: 'Cylinder Carousel',
     slug: 'cylinder-carousel',
     section: ExploreSection.components,
-    isNew: true,
     blurb:
         'Items line the inside of a cylinder; drag or scroll with springy snap.',
     builder: cylinderCarouselDemo,
@@ -424,32 +598,8 @@ const List<ExploreEntry> kComponents = [
     title: 'Loader',
     slug: 'loader',
     section: ExploreSection.components,
-    isNew: true,
     blurb: 'Loading indicator with seventeen variants from one size prop.',
     builder: loaderDemo,
-  ),
-  ExploreEntry(
-    title: 'Tilt Card',
-    slug: 'tilt-card',
-    section: ExploreSection.components,
-    blurb: '3D perspective tilt on hover with a cursor-tracked glare.',
-    builder: tiltCardDemo,
-  ),
-  ExploreEntry(
-    title: 'Button',
-    slug: 'button',
-    section: ExploreSection.components,
-    blurb: 'Spring-pressed Button, StatefulButton and MagneticButton.',
-    builder: buttonDemo,
-  ),
-  ExploreEntry(
-    title: 'Animated CTA Buttons',
-    slug: 'expanding-arrow-button',
-    section: ExploreSection.components,
-    isNew: true,
-    blurb:
-        'Call-to-action buttons with expanding, hold and slide interactions.',
-    builder: expandingArrowButtonDemo,
   ),
 ];
 

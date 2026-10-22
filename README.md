@@ -172,27 +172,47 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 
 | Component | Widget(s) | What it does |
 | --- | --- | --- |
+| Timeline ✨ | `BeuiTimeline` | Draggable dated-event track around a focused card |
+| Animated Alert ✨ | `BeuiAlert` | Composable dismissible feedback with five variants |
+| Animated Collapsible ✨ | `BeuiCollapsible` | Height-spring disclosure with a rotating chevron |
+| Aspect Ratio ✨ | `BeuiAspectRatio`, `BeuiAspectRatioImage` | Media frame that morphs between ratios |
+| Arc Picker ✨ | `BeuiArcPicker` | Radial text picker with a growing selection bracket |
+| Sortable List ✨ | `BeuiSortableList` | Composable sortable list with group, item, handle and undo |
+| Image Viewer ✨ | `BeuiImageViewer` | Gallery lightbox with zoom, pan and keyboard navigation |
+| Date Range Picker ✨ | `BeuiDateRangePicker` | Composable calendar with presets and keyboard navigation |
+| Card ✨ | `BeuiCard` | Outlined or muted composable card with optional press |
+| Color Picker ✨ | `BeuiColorPicker` | Saturation area, hue, alpha, hex, channels and presets |
+| Animated Color Selector ✨ | `BeuiColorSelector` | Swatches with a spring-gliding selection ring |
+| Animated Breadcrumb ✨ | `BeuiBreadcrumb` | Path trail with overflow ellipsis and custom separators |
+| Tilt Card | `BeuiTiltCard` | 3D perspective tilt on hover with a cursor-tracked glare |
+| Button | `BeuiButton`, `BeuiStatefulButton`, `BeuiMagneticButton`, `BeuiMetallicButton` | Spring-pressed Button plus Stateful, Magnetic and Metallic variants |
+| Animated CTA Buttons | `BeuiExpandingArrowButton`, `BeuiHoldActionButton`, `BeuiSlideActionButton` | CTA buttons with expanding, hold-to-confirm and slide-to-confirm interactions |
+| Expandable Control ✨ | `BeuiExpandableButton`, `BeuiExpandableChip` | Icon button and chip that expand with layout continuity |
+| Adaptive Stepper ✨ | `BeuiAdaptiveStepper` | Quantity stepper whose footprint adapts at min/max |
 | Marquee | `BeuiMarquee` | Infinite horizontal/vertical scroll with pause-on-hover |
-| Tabs | `BeuiTabs` | Pill, segment or underline tabs with a spring layout indicator |
+| Tabs | `BeuiTabs` | Pill, segment or underline tabs with a spring indicator and optional icons |
 | Switch | `BeuiSwitch` | Toggle with a spring-driven thumb and press feedback |
-| Input | `BeuiInput` | Text field with icons, left-aligned announced errors, error-shake replay and a success check draw |
-| Select ✨ | `BeuiSelect`, `BeuiMorphSelect` | Panel that bouncily unfolds from the trigger, plus a Morph variant |
-| Checkbox ✨ | `BeuiCheckbox` | Draw-on checkmark with spring press feedback and indeterminate |
-| Radio Group ✨ | `BeuiRadioGroup` | Single-select with a gliding indicator dot and spring feedback |
+| Input | `BeuiInput` | Text field with icons, optional stable error row, error-shake replay and a success check draw |
+| Select | `BeuiSelect`, `BeuiMorphSelect` | Panel that bouncily unfolds from the trigger, plus a Morph variant |
+| Combobox ✨ | `BeuiCombobox` | Searchable grouped picker with a morphing panel |
+| Multi Select ✨ | `BeuiMultiSelect` | Searchable options that become removable tokens |
+| Checkbox | `BeuiCheckbox` | Draw-on checkmark with spring press feedback and indeterminate |
+| Radio Group | `BeuiRadioGroup` | Single-select with a gliding indicator dot and spring feedback |
 | Bottom Sheet | `BeuiBottomSheet` | Draggable sheet with snap points, inertia and a glass surface |
-| Pull to Refresh ✨ | `BeuiPullToRefresh` | Pull-to-refresh with drag resistance and async handling |
+| Pull to Refresh | `BeuiPullToRefresh` | Pull-to-refresh with drag resistance and async handling |
 | Shared Layout Background | `BeuiSharedLayoutBg` | A pill that glides between hovered items with a blur enter/exit |
-| Bounce Sidebar ✨ | `BeuiBounceSidebar` | Vertical rail whose active dot jumps between destinations on a curved path |
-| Animated Sidebar ✨ | `BeuiAnimatedSidebar` | App sidebar that folds to an icon rail, in sidebar, floating or inset chrome |
-| Preview Rail ✨ | `BeuiPreviewRail` | Navigation rail of ticks that reveal a destination preview — hover on pointer, tap-to-preview on touch |
+| Bounce Sidebar | `BeuiBounceSidebar` | Vertical rail whose active dot jumps between destinations on a curved path |
+| Animated Sidebar | `BeuiAnimatedSidebar` | App sidebar that folds to an icon rail, in sidebar, floating or inset chrome |
+| File Tree ✨ | `BeuiFileTree` | File and folder tree with springing branches and keyboard navigation |
+| Preview Rail | `BeuiPreviewRail` | Navigation rail of ticks that reveal a destination preview — hover on pointer, tap-to-preview on touch |
 | Dock | `BeuiDock` | macOS-style dock with separator-grouped actions and a gliding active pill |
-| Tooltip | `BeuiTooltip` | Hover or focus tooltip with a blur enter/exit and spring spawn |
-| Context Menu ✨ | `BeuiContextMenu` | Pointer-origin clip morph with checkbox/radio rows, keyboard nav and typeahead |
-| Popover ✨ | `BeuiPopover`, `BeuiMorphPopover` | Gooey popover that oozes from the trigger, plus a Morph variant |
+| Tooltip | `BeuiTooltip` | Hover or focus tooltip with an optional arrow, alignment and spring spawn |
+| Context Menu | `BeuiContextMenu` | Pointer-origin clip morph with checkbox/radio rows, keyboard nav and typeahead |
+| Popover | `BeuiPopover`, `BeuiMorphPopover` | Gooey popover that oozes from the trigger, plus a Morph variant |
 | Morphing Modal | `BeuiMorphingModal` | A panel that morphs its height between inner views, blur cross-fade |
-| Center Morph Modal ✨ | `BeuiCenterMorphModal` | A surface that unfolds from its exact center toward every edge |
-| Text Animation | `BeuiTextReveal`, `BeuiTextShimmer`, `BeuiTextCascade`, `BeuiChromaticTextReveal` | Reveal sequences, shimmer loading states, letter-cascade swaps and a chromatic sweep over cycling words |
-| Number Animation | `BeuiAnimatedNumber`, `BeuiNumberTicker` | Count-up values and rolling digit tickers |
+| Center Morph Modal | `BeuiCenterMorphModal` | A surface that unfolds from its exact center toward every edge |
+| Text Animation | `BeuiTextScramble`, `BeuiTextReveal`, `BeuiTextShimmer`, `BeuiTextCascade`, `BeuiChromaticTextReveal` | Scramble, reveal, shimmer, letter-cascade and a chromatic sweep over cycling words |
+| Number Animation | `BeuiDigitSwap`, `BeuiAnimatedNumber`, `BeuiNumberTicker` | Fixed-slot digit swap, count-up values and rolling digit tickers |
 | Animated Badge | `BeuiAnimatedBadge` | Status badge with animated state icons and pulse feedback |
 | Action Swap | `BeuiActionSwapButton` | Swap a button's text and icons with blur, roll or cascade motion |
 | Animated Toast Stack | `BeuiAnimatedToastStack` | Stacked toasts with status morphs, swipe dismissal and actions |
@@ -200,15 +220,13 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Bouncy Accordion | `BeuiBouncyAccordion` | Single-open accordion with a weighted spring layout |
 | Drawer | `BeuiDrawer` | Side panel that springs in with a backdrop blur and esc-to-close |
 | Scroll Animation | `BeuiSmoothScroll`, `BeuiScrollProgress`, `BeuiScrollReveal`, `BeuiScrollTo`, `BeuiParallax` | Smooth-scroll provider (vertical or horizontal), reading-progress indicator, reveal, scroll-to and parallax |
-| Range Slider ✨ | `BeuiRangeSlider`, `BeuiFluidSlider`, `BeuiWaveSlider`, `BeuiBubbleSlider`, `BeuiRulerSlider` | Five sliders: ticked bar thumb, thumbless liquid fill, equalizer wave, velocity-leaning bubble, and a scale that scrolls under a fixed needle |
-| Wheel Picker ✨ | `BeuiWheelPicker` | iOS-style 3D picker drum with momentum snap |
-| Table ✨ | `BeuiTable` | Virtualized table smooth at 10k+ rows: sort, select, resize, reorder |
-| Shader Background ✨ | `BeuiShaderBackground` | 21 GPU shader backgrounds (mesh, grain, warp, waves, voronoi…) |
-| Cylinder Carousel ✨ | `BeuiCylinderCarousel` | Items line the inside of a cylinder; drag or scroll with springy snap |
-| Loader ✨ | `BeuiLoader` | Loading indicator with seventeen variants from one size prop |
-| Tilt Card | `BeuiTiltCard` | 3D perspective tilt on hover with a cursor-tracked glare |
-| Button | `BeuiButton`, `BeuiStatefulButton`, `BeuiMagneticButton` | Spring-pressed Button, StatefulButton and MagneticButton |
-| Animated CTA Buttons ✨ | `BeuiExpandingArrowButton`, `BeuiHoldActionButton`, `BeuiSlideActionButton` | CTA buttons with expanding, hold-to-confirm and slide-to-confirm interactions |
+| Range Slider | `BeuiInlineSlider`, `BeuiRangeSlider`, `BeuiFluidSlider`, `BeuiWaveSlider`, `BeuiBubbleSlider`, `BeuiRulerSlider` | Six sliders: inline label/value, ticked bar thumb, thumbless liquid fill, equalizer wave, velocity-leaning bubble, and a scale that scrolls under a fixed needle |
+| Wheel Picker | `BeuiWheelPicker` | iOS-style 3D picker drum with momentum snap |
+| Table | `BeuiTable` | Virtualized table smooth at 10k+ rows: sort, select, resize, reorder, edit, async |
+| Shader Background | `BeuiShaderBackground` | 21 GPU shader backgrounds (mesh, grain, warp, waves, voronoi…) |
+| Cylinder Carousel | `BeuiCylinderCarousel` | Items line the inside of a cylinder; drag or scroll with springy snap |
+| Loader | `BeuiLoader` | Loading indicator with seventeen variants from one size prop |
+
 
 ### Blocks — composed patterns
 

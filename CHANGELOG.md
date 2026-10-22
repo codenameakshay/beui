@@ -1,3 +1,14 @@
+## Unreleased
+
+### Components
+
+* Port Timeline, Animated Alert, Collapsible, Aspect Ratio, Arc Picker, Sortable List, Image Viewer, Date Range Picker, Card, Color Picker, Color Selector, Breadcrumb, Expandable Control, Adaptive Stepper, Combobox, Multi Select and File Tree.
+* Add `BeuiMetallicButton`, `BeuiTextScramble`, `BeuiDigitSwap` and `BeuiInlineSlider`.
+* Tabs gain optional icons (`always` / `selected`) plus overflow chevrons; tooltip gains arrow, align and disabled.
+* Input gains `reserveErrorLine` so validation does not shift nearby content.
+* Table gallery adds editable and async bands (`onCellEdit`, `onEndReached`).
+* Reorder the motion gallery to match beui.dev (New first, then All).
+
 ## 2.0.0
 
 Codebase slop audit. No component was redesigned; this release removes
