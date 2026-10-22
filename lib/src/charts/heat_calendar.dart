@@ -422,27 +422,29 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
                                     builder: (context, scale) =>
                                         Transform.scale(
                                           scale: scale,
-                                          child: DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              color: bucket == 0
-                                                  ? colors.foreground
-                                                        .withValues(alpha: .06)
-                                                  : color.withValues(
-                                                      alpha: opacity,
-                                                    ),
-                                              borderRadius:
-                                                  BorderRadius.circular(3),
-                                              border: inRange
-                                                  ? Border.all(
-                                                      color: colors.foreground
+                                          child: BeuiChartFade(
+                                            opacity: filtered ? .25 : 1,
+                                            child: DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                color: bucket == 0
+                                                    ? colors.foreground
                                                           .withValues(
-                                                            alpha: .25,
-                                                          ),
-                                                    )
-                                                  : null,
-                                            ),
-                                            child: BeuiChartFade(
-                                              opacity: filtered ? .25 : 1,
+                                                            alpha: .06,
+                                                          )
+                                                    : color.withValues(
+                                                        alpha: opacity,
+                                                      ),
+                                                borderRadius:
+                                                    BorderRadius.circular(3),
+                                                border: inRange
+                                                    ? Border.all(
+                                                        color: colors.foreground
+                                                            .withValues(
+                                                              alpha: .25,
+                                                            ),
+                                                      )
+                                                    : null,
+                                              ),
                                               child: const SizedBox.expand(),
                                             ),
                                           ),
@@ -557,10 +559,7 @@ class BeuiHeatCalendarLegend extends StatelessWidget {
     );
     final rangeLabel = Text(range, style: labelStyle);
     if (gridWidth < 280) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [rangeLabel, const SizedBox(width: 16), scale],
-      );
+      return Wrap(spacing: 16, children: [rangeLabel, scale]);
     }
     return SizedBox(
       width: gridWidth,
