@@ -540,3 +540,28 @@ export 'src/motion/sortable_list.dart'
 export 'src/motion/text_scramble.dart'
     show BeuiTextScramble, beuiTextScrambleGlyphs;
 export 'src/motion/timeline.dart' show BeuiTimeline, BeuiTimelineEvent;
+
+// v3-blocks exports
+export 'src/motion/card_folder.dart'
+    show BeuiCardFolder, BeuiDigitSwap, BeuiDigitSwapDirection;
+export 'src/motion/morphing_search.dart'
+    show BeuiMorphingSearch, BeuiMorphingSearchItem;
+export 'src/motion/morphing_search_chips.dart'
+    show BeuiMorphingSearchChips, BeuiMorphingSearchChipsSide;
+export 'src/motion/morphing_tabs.dart'
+    show BeuiMorphingTabs, BeuiMorphingTabsItem;
+export 'src/motion/prediction_market_card.dart'
+    show
+        BeuiPredictionMarketCard,
+        BeuiPredictionMarketCardOutcome,
+        BeuiPredictionMarketCardSelection,
+        BeuiPredictionMarketCardSide;
+export 'src/motion/project_folder.dart'
+    show BeuiProjectFolder, BeuiProjectFolderPreview;
+export 'src/motion/signup_form.dart'
+    show
+        BeuiSignUpErrors,
+        BeuiSignUpForm,
+        BeuiSignUpStatus,
+        BeuiSignUpValues,
+        beuiPasswordStrength;

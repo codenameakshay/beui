@@ -232,25 +232,29 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 
 | Block | Widget | What it does |
 | --- | --- | --- |
+| Infinite Masonry ✨ | `BeuiInfiniteMasonry` | Masonry grid that lazily appends tiles as you scroll |
+| Notification Stack ✨ | `BeuiNotificationStack` | Collapsed notification stack that expands with layout-aware motion |
+| Project Folder ✨ | `BeuiProjectFolder` | Folder that fans file previews on hover or focus, then morphs into an overlay grid |
+| Card Folder ✨ | `BeuiCardFolder` | Landscape card tucked in a stitched purse pocket, with DigitSwap details |
+| Fixtures ✨ | `BeuiKnockoutBracket`, `BeuiKnockoutWheel` | Tournament fixtures: a paging knockout bracket and a wheel around the champion |
 | Availability Scheduler ✨ | `BeuiAvailabilityScheduler` | Weekly availability grid with per-day time ranges |
 | Multi-chain Swap | `BeuiMultiChainSwap` | Token swap card with chain switching and an animated quote |
 | Dynamic Island | `BeuiDynamicIsland` | iOS-style island that morphs between compact and expanded views |
 | Command Palette | `BeuiCommandPalette` | ⌘K palette with fuzzy search and spring-animated results |
+| Morphing Search ✨ | `BeuiMorphingSearch`, `BeuiMorphingSearchChips` | Search field or icon that morphs into results, plus a chip search bar |
 | Expandable Action Bar | `BeuiExpandableActionBar` | Icon rail whose segments expand to reveal a label on hover |
 | Overflow Actions | `BeuiOverflowActions` | Primary actions with an overflow that fans out from a ⋯ toggle |
 | Expandable Tabs | `BeuiExpandableTabs` | Icon tabs where the active tab expands to show its label |
+| Morphing Tabs ✨ | `BeuiMorphingTabs` | Reorderable tabs whose selected item grows into a shared content surface |
 | Swipeable List | `BeuiSwipeableList` | List rows with spring-backed swipe-to-reveal actions |
-| File Upload | `BeuiFileUpload` | Drop zone with real progress, cancel-in-flight, size limits and inline rejection |
-| Attachment Upload | `BeuiAttachmentUpload` | Mixed attachment workspace — image previews, seekable audio, retry and cancel |
-| Prediction Market | `BeuiPredictionMarket` | Market card with a gliding outcome pill and animated odds |
+| File Upload | `BeuiAttachmentUpload`, `BeuiFileUpload` | Attachment workspace plus a progress queue with retry and removal |
+| Prediction Market | `BeuiPredictionMarketCard`, `BeuiPredictionMarket` | Listing cards with odds CTAs and bookmarks, plus a trade ticket |
 | Wallet Card ✨ | `BeuiWalletCard` | Wallet card with an account switcher and morphing search |
 | OTP Input | `BeuiOtpInput` | One-time-code field with per-cell focus and a success check |
+| Sign Up Form ✨ | `BeuiSignUpForm` | Registration form with punish-late errors, strength meter, and stateful submit |
 | Bloom Menu ✨ | `BeuiBloomMenu` | Radial action menu that blooms open from a floating trigger |
 | Feedback Widget ✨ | `BeuiFeedbackWidget` | Feedback popover that keeps drafts, validates inline and morphs to a success state |
 | 404 / Not Found | `BeuiNotFoundGlitch`, `…Magnetic`, `…Spotlight`, `…Stacked`, `…Terminal` | Five expressive 404 treatments |
-| Infinite Masonry ✨ | `BeuiInfiniteMasonry` | Masonry grid that lazily appends tiles as you scroll |
-| Notification Stack ✨ | `BeuiNotificationStack` | Collapsed notification stack that expands with layout-aware motion |
-| Knockout Bracket ✨ | `BeuiKnockoutBracket`, `BeuiKnockoutWheel` | Tournament fixtures in two styles: a paging bracket with a third-place playoff, and a wheel wrapping the same tree around the champion |
 
 ### AI Agents — conversational and agent-reasoning interfaces
 
