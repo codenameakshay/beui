@@ -309,9 +309,11 @@ void main() {
       _chart(onActiveChange: (value) => changed = value),
     );
     final point = find.byKey(const ValueKey('price-target-history-2025-11-14'));
-    final focus = tester.state(
-      find.ancestor(of: point, matching: find.byType(Focus)).first,
-    ) as dynamic;
+    final focus =
+        tester.state(
+              find.ancestor(of: point, matching: find.byType(Focus)).first,
+            )
+            as dynamic;
     focus.focusNode.requestFocus();
     await tester.pump();
     expect(changed, const BeuiPriceTargetFanActive.history('2025-11-14'));

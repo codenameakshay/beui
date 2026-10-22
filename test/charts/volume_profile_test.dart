@@ -177,7 +177,7 @@ void main() {
     await tester.pump();
     updateData!([
       for (var index = 0; index < 4; index++)
-      BeuiVolumeProfileBin(price: 30.0 + index, volume: 1.0 + index),
+        BeuiVolumeProfileBin(price: 30.0 + index, volume: 1.0 + index),
     ]);
     await tester.pump();
     expect(find.byType(BeuiChartTooltipCard), findsNothing);

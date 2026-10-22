@@ -125,16 +125,16 @@ void main() {
     await tester.pump();
 
     final plotTop = tester.getTopLeft(find.byType(BeuiCandlestickPlot)).dy;
-    final firstBadgeCenter =
-        tester.getCenter(find.byType(BeuiChartTicker)).dy;
+    final firstBadgeCenter = tester.getCenter(find.byType(BeuiChartTicker)).dy;
     expect(firstBadgeCenter, closeTo(plotTop + 124.8, 2));
 
     await tester.pumpWidget(
       beuiTestApp(_chart(candles: candles, lastPrice: 107)),
     );
     await tester.pump(const Duration(milliseconds: 16));
-    final animatedBadgeCenter =
-        tester.getCenter(find.byType(BeuiChartTicker)).dy;
+    final animatedBadgeCenter = tester
+        .getCenter(find.byType(BeuiChartTicker))
+        .dy;
     expect(animatedBadgeCenter, lessThan(firstBadgeCenter));
     expect(animatedBadgeCenter, greaterThan(plotTop + 82));
   });

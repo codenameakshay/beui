@@ -465,8 +465,7 @@ class BeuiPriceTargetSvg extends StatelessWidget {
         label:
             '${state.widget.label}, current ${state.widget.current}, mean target ${state.widget.targets[1].price}',
         child: GestureDetector(
-          onHorizontalDragUpdate: (event) =>
-              state._moveTo(event.localPosition),
+          onHorizontalDragUpdate: (event) => state._moveTo(event.localPosition),
           child: Stack(
             clipBehavior: Clip.none,
             children: [

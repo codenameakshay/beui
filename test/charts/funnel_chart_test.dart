@@ -73,7 +73,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(BeuiChartTicker), findsOneWidget);
     expect(
-      tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker)).format(24000),
+      tester
+          .widget<BeuiChartTicker>(find.byType(BeuiChartTicker))
+          .format(24000),
       '24,000 visits',
     );
     await gesture.removePointer();
