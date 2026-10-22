@@ -1,10 +1,13 @@
-import 'dart:ui' show SemanticsRole;
+import 'dart:ui' show PointerDeviceKind, SemanticsRole;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 
 import 'package:beui/src/motion/file_tree.dart';
+import 'package:beui/src/motion/_engine.dart'
+    show SingleMotionBuilder, SpringMotion;
 import 'package:beui/src/theme/beui_colors.dart';
 
 void main() {
@@ -89,6 +92,104 @@ void main() {
       await tester.pumpAndSettle();
       expect(changed, isFalse);
       expect(find.text('secret'), findsNothing);
+    });
+
+    testWidgets('hovering a row uses foreground text color', (tester) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiFileTree(
+            children: [BeuiFileTreeFile(value: 'file', name: 'file.txt')],
+          ),
+        ),
+      );
+      final label = find.text('file.txt');
+      expect(
+        tester.widget<Text>(label).style!.color,
+        BeuiColors.light().mutedForeground,
+      );
+
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer();
+      await mouse.moveTo(tester.getCenter(label));
+      await tester.pump();
+
+      expect(
+        tester.widget<Text>(label).style!.color,
+        BeuiColors.light().foreground,
+      );
+    });
+
+    testWidgets('folder chevron uses the spring motion builder', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(
+          const BeuiFileTree(
+            children: [
+              BeuiFileTreeFolder(
+                value: 'folder',
+                name: 'folder',
+                children: [BeuiFileTreeFile(value: 'child', name: 'child.txt')],
+              ),
+            ],
+          ),
+        ),
+      );
+      expect(find.byType(SingleMotionBuilder), findsOneWidget);
+      expect(
+        tester
+            .widget<SingleMotionBuilder>(find.byType(SingleMotionBuilder))
+            .motion,
+        isA<SpringMotion>(),
+      );
+
+      await tester.tap(find.text('folder'));
+      await tester.pump();
+
+      expect(find.text('child.txt'), findsOneWidget);
+      expect(find.byType(SingleMotionBuilder), findsOneWidget);
+    });
+
+    testWidgets('reduced motion snaps the folder chevron to expanded', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+          home: MediaQuery(
+            data: const MediaQueryData(disableAnimations: true),
+            child: const Scaffold(
+              body: BeuiFileTree(
+                children: [
+                  BeuiFileTreeFolder(
+                    value: 'folder',
+                    name: 'folder',
+                    children: [
+                      BeuiFileTreeFile(value: 'child', name: 'child.txt'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(SingleMotionBuilder), findsNothing);
+      await tester.tap(find.text('folder'));
+      await tester.pump();
+
+      final rotation = tester.widget<Transform>(
+        find
+            .ancestor(
+              of: find.byIcon(LucideIcons.chevron_right),
+              matching: find.byType(Transform),
+            )
+            .first,
+      );
+      expect(rotation.transform.storage[0], closeTo(0, 0.001));
+      expect(rotation.transform.storage[1], closeTo(1, 0.001));
+      expect(find.text('child.txt'), findsOneWidget);
     });
 
     testWidgets('keyboard navigation follows visible tree rows', (

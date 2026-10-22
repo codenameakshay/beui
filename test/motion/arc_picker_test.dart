@@ -63,6 +63,94 @@ void main() {
       );
     });
 
+    testWidgets('bracket width springs between labels of different widths', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(defaultValue: 'two'));
+      final bracketRow = find.ancestor(
+        of: find.text('['),
+        matching: find.byType(Row),
+      );
+      final initialWidth = tester.getSize(bracketRow).width;
+
+      await tester.tap(find.text('Daybreak'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 40));
+
+      final transitioningWidth = tester.getSize(bracketRow).width;
+      await tester.pumpAndSettle();
+      final settledWidth = tester.getSize(bracketRow).width;
+
+      expect(settledWidth, greaterThan(initialWidth));
+      expect(transitioningWidth, greaterThan(initialWidth));
+      expect(transitioningWidth, lessThan(settledWidth));
+    });
+
+    testWidgets('reduced motion snaps bracket geometry for controlled labels', (
+      tester,
+    ) async {
+      Widget app(String value) => beuiTestApp(
+        BeuiArcPicker(
+          options: _options,
+          value: value,
+          side: BeuiArcPickerSide.left,
+          visibleCount: 5,
+          itemHeight: 40,
+        ),
+        reduce: true,
+        width: 320,
+        fontFamily: 'Ahem',
+      );
+      await tester.pumpWidget(app('two'));
+      final bracket = find.ancestor(
+        of: find.text('['),
+        matching: find.byType(Row),
+      );
+      final stack = find.descendant(
+        of: find.byType(BeuiArcPicker),
+        matching: find.byType(Stack),
+      );
+      double bracketLeft() =>
+          tester.getTopLeft(bracket).dx - tester.getTopLeft(stack).dx;
+      expect(tester.getSize(bracket).width, closeTo(152, 0.01));
+      expect(bracketLeft(), closeTo(23.2, 0.001));
+
+      await tester.pumpWidget(app('three'));
+      expect(tester.getSize(bracket).width, closeTo(248, 0.01));
+      expect(bracketLeft(), closeTo(-72.8, 0.001));
+      expect(find.text('Daybreak'), findsOneWidget);
+      expect(
+        find.ancestor(
+          of: find.text('Daybreak'),
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Semantics && widget.properties.checked == true,
+          ),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.pumpWidget(app('three'));
+      expect(tester.getSize(bracket).width, closeTo(248, 0.01));
+      expect(bracketLeft(), closeTo(-72.8, 0.001));
+      await tester.pumpWidget(app('two'));
+      expect(tester.getSize(bracket).width, closeTo(152, 0.01));
+      expect(bracketLeft(), closeTo(23.2, 0.001));
+    });
+
+    testWidgets('empty options render the empty state under reduced motion', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiArcPicker(options: [], value: 'missing'),
+          reduce: true,
+          width: 320,
+        ),
+      );
+      expect(find.text('No options'), findsOneWidget);
+    });
+
     testWidgets('controlled selection reports without taking ownership', (
       tester,
     ) async {

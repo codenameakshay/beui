@@ -32,8 +32,11 @@ class _BeuiColorSelectorState extends State<BeuiColorSelector> {
   final _stackKey = GlobalKey();
   final Map<String, GlobalKey> _itemKeys = {};
   final Map<String, FocusNode> _focusNodes = {};
+  final Map<String, Color> _itemColors = {};
+  final List<String> _itemOrder = [];
   String? _internal;
   Rect? _target;
+  Color? _builtSelectedColor;
 
   bool get _controlled => widget.value != null;
   String? get _selected => _controlled ? widget.value : _internal;
@@ -44,9 +47,24 @@ class _BeuiColorSelectorState extends State<BeuiColorSelector> {
     _internal = widget.defaultValue;
   }
 
-  void _register(String value, GlobalKey key, FocusNode focusNode) {
+  void _register(
+    String value,
+    GlobalKey key,
+    FocusNode focusNode,
+    Color color,
+  ) {
+    // Unkeyed items can keep their state while changing their value.
+    _itemKeys.removeWhere((registeredValue, registeredKey) {
+      if (registeredValue == value || registeredKey != key) return false;
+      _focusNodes.remove(registeredValue);
+      _itemColors.remove(registeredValue);
+      _itemOrder.remove(registeredValue);
+      return true;
+    });
     _itemKeys[value] = key;
     _focusNodes[value] = focusNode;
+    _itemColors[value] = color;
+    if (!_itemOrder.contains(value)) _itemOrder.add(value);
   }
 
   void _select(String value) {
@@ -57,6 +75,32 @@ class _BeuiColorSelectorState extends State<BeuiColorSelector> {
 
   void _measure() {
     if (!mounted) return;
+    final liveItems = <({String value, Offset position})>[];
+    for (final entry in _itemKeys.entries.toList(growable: false)) {
+      final box = entry.value.currentContext?.findRenderObject() as RenderBox?;
+      if (box == null || !box.hasSize) {
+        final value = entry.key;
+        _itemKeys.remove(value);
+        _focusNodes.remove(value);
+        _itemColors.remove(value);
+        continue;
+      }
+      liveItems.add((
+        value: entry.key,
+        position: box.localToGlobal(Offset.zero),
+      ));
+    }
+    liveItems.sort((a, b) {
+      final row = a.position.dy.compareTo(b.position.dy);
+      return row == 0 ? a.position.dx.compareTo(b.position.dx) : row;
+    });
+    final order = liveItems.map((item) => item.value).toList();
+    final orderChanged = !_sameOrder(order, _itemOrder);
+    if (orderChanged) {
+      _itemOrder
+        ..clear()
+        ..addAll(order);
+    }
     final parent = _stackKey.currentContext?.findRenderObject() as RenderBox?;
     final item = _selected == null
         ? null
@@ -67,7 +111,20 @@ class _BeuiColorSelectorState extends State<BeuiColorSelector> {
       final topLeft = parent.globalToLocal(item.localToGlobal(Offset.zero));
       next = topLeft & item.size;
     }
-    if (next != _target) setState(() => _target = next);
+    final selectedColor = _itemColors[_selected];
+    if (next != _target ||
+        orderChanged ||
+        selectedColor != _builtSelectedColor) {
+      setState(() => _target = next);
+    }
+  }
+
+  bool _sameOrder(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (var index = 0; index < a.length; index++) {
+      if (a[index] != b[index]) return false;
+    }
+    return true;
   }
 
   @override
@@ -75,6 +132,7 @@ class _BeuiColorSelectorState extends State<BeuiColorSelector> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _measure());
     final reduce = MediaQuery.disableAnimationsOf(context);
     final colors = BeuiColors.resolve(context);
+    _builtSelectedColor = _itemColors[_selected];
     return _ColorSelectorScope(
       state: this,
       selected: _selected,
@@ -86,20 +144,19 @@ class _BeuiColorSelectorState extends State<BeuiColorSelector> {
           key: _stackKey,
           clipBehavior: Clip.none,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: widget.children,
             ),
-            if (_target != null)
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: _SelectionRing(
-                    target: _target!,
-                    color: colors.primary,
-                    reduce: reduce,
-                  ),
+            if (_target != null && _itemOrder.contains(_selected))
+              _SelectionRing(
+                target: _target!.inflate(4),
+                color: (_itemColors[_selected] ?? colors.primary).withValues(
+                  alpha: 0.65,
                 ),
+                reduce: reduce,
               ),
           ],
         ),
@@ -131,7 +188,7 @@ class BeuiColorSelectorLabel extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 12),
+    padding: const EdgeInsets.only(right: 12),
     child: Semantics(
       header: true,
       child: DefaultTextStyle(
@@ -197,7 +254,7 @@ class _BeuiColorSelectorItemState extends State<BeuiColorSelectorItem> {
     final scope = _ColorSelectorScope.of(context);
     final selected = scope.selected == widget.value;
     final state = scope.state;
-    state._register(widget.value, _itemKey, _focus);
+    state._register(widget.value, _itemKey, _focus, widget.color);
     final scale = _pressed && !scope.reduce ? 0.94 : 1.0;
     return Semantics(
       key: _itemKey,
@@ -214,7 +271,7 @@ class _BeuiColorSelectorItemState extends State<BeuiColorSelectorItem> {
             _ => 0,
           };
           if (delta == 0) return KeyEventResult.ignored;
-          final all = state._itemKeys.keys.toList(growable: false);
+          final all = state._itemOrder;
           if (all.isEmpty) return KeyEventResult.ignored;
           final index = all.indexOf(widget.value);
           final next = all[(index + delta + all.length) % all.length];
@@ -297,18 +354,23 @@ class _SelectionRing extends StatelessWidget {
   final Rect target;
   final Color color;
   final bool reduce;
-  Widget at(Rect rect) => Transform.translate(
-    offset: rect.topLeft,
-    child: Container(
-      key: const ValueKey('beui_color_selector_ring'),
-      width: rect.width,
-      height: rect.height,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: color.withValues(alpha: 0.65), width: 2),
+
+  Widget at(Rect rect) => Positioned(
+    left: rect.left,
+    top: rect.top,
+    width: rect.width,
+    height: rect.height,
+    child: IgnorePointer(
+      child: DecoratedBox(
+        key: const ValueKey('beui_color_selector_ring'),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: color, width: 2),
+        ),
       ),
     ),
   );
+
   @override
   Widget build(BuildContext context) {
     if (reduce) return at(target);

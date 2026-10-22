@@ -396,12 +396,26 @@ class BeuiSortableListHandle extends StatelessWidget {
                 tooltip: 'Reorder ${item.label}',
                 onPressed: active ? (onPressed ?? () {}) : null,
                 icon: child ?? const Icon(LucideIcons.grip_vertical, size: 18),
-                color: colors.mutedForeground,
                 focusColor: colors.accent,
-                style: IconButton.styleFrom(
-                  minimumSize: const Size(36, 36),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
+                style:
+                    IconButton.styleFrom(
+                      minimumSize: const Size(36, 36),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ).copyWith(
+                      foregroundColor: WidgetStateProperty.resolveWith(
+                        (states) => states.contains(WidgetState.hovered)
+                            ? colors.foreground
+                            : colors.mutedForeground,
+                      ),
+                      backgroundColor: WidgetStateProperty.resolveWith(
+                        (states) => states.contains(WidgetState.hovered)
+                            ? colors.muted
+                            : Colors.transparent,
+                      ),
+                    ),
                 autofocus: focused && scope.focusedId == item.id,
               ),
             );
@@ -446,7 +460,14 @@ class BeuiSortableListUndo extends StatelessWidget {
         onPressed: scope.canUndo && !scope.disabled ? scope.undo : null,
         icon: const Icon(LucideIcons.undo_2, size: 14),
         label: child ?? const Text('Undo reorder'),
-        style: TextButton.styleFrom(foregroundColor: colors.mutedForeground),
+        style: TextButton.styleFrom(foregroundColor: colors.mutedForeground)
+            .copyWith(
+              foregroundColor: WidgetStateProperty.resolveWith(
+                (states) => states.contains(WidgetState.hovered)
+                    ? colors.foreground
+                    : colors.mutedForeground,
+              ),
+            ),
       ),
     );
   }

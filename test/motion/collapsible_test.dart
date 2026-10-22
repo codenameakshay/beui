@@ -1,8 +1,11 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:beui/src/motion/collapsible.dart';
+import 'package:beui/src/theme/beui_colors.dart';
 import '../support.dart';
 
 Widget _app({
@@ -40,6 +43,31 @@ Widget _app({
 
 void main() {
   group('BeuiCollapsible interaction', () {
+    testWidgets('hovering the trigger paints muted at 60% opacity', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app());
+      final trigger = find.byType(BeuiCollapsibleTrigger);
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(trigger));
+      await tester.pump();
+      await mouse.moveTo(tester.getCenter(trigger));
+      await tester.pump();
+
+      final decoration = tester.widget<DecoratedBox>(
+        find.descendant(of: trigger, matching: find.byType(DecoratedBox)),
+      );
+      final colors = BeuiColors.resolve(tester.element(trigger));
+      expect(
+        (decoration.decoration as BoxDecoration).color,
+        colors.muted.withValues(alpha: 0.6),
+      );
+      expect(
+        (decoration.decoration as BoxDecoration).borderRadius,
+        BorderRadius.circular(12),
+      );
+    });
+
     testWidgets('tap toggles open and closed', (tester) async {
       bool? changed;
       await tester.pumpWidget(_app(onOpenChange: (value) => changed = value));

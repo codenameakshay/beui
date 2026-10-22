@@ -7,7 +7,8 @@ import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
-import '_engine.dart' show NoMotion, SingleMotionController, SpringMotion;
+import '_engine.dart'
+    show NoMotion, SingleMotionBuilder, SingleMotionController, SpringMotion;
 
 // The source's SPRING_GLIDE (700 / 50 / 0.5) follows wheel and pointer input
 // without lag; SPRING_LAYOUT settles the final detent and bracket frame.
@@ -626,45 +627,65 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
                                           : height - 36)
                                     : height / 2)
                                 .toDouble();
-                        final x = _horizontal
-                            ? 0.0
-                            : widget.side == BeuiArcPickerSide.right
-                            ? width! * anchor - 16 - _bracketGap
-                            : width! * anchor - textWidth - 16 - _bracketGap;
-                        return Positioned(
-                          left: _horizontal ? 0 : x,
-                          right: _horizontal ? 0 : null,
-                          top: verticalCenter - 12,
-                          child: IgnorePointer(
-                            child: Opacity(
-                              opacity: text == null ? 0 : 0.85,
-                              child: Align(
-                                alignment: _horizontal
-                                    ? Alignment.center
-                                    : Alignment.centerLeft,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      '[',
-                                      style: textStyle.copyWith(
-                                        color: colors.primary,
+                        final bracketMotion = motionFor(
+                          context,
+                          beuiSpringLayout,
+                          isMovement: true,
+                        );
+                        Widget buildBracket(double animatedTextWidth) {
+                          final x = _horizontal
+                              ? 0.0
+                              : widget.side == BeuiArcPickerSide.right
+                              ? width! * anchor - 16 - _bracketGap
+                              : width! * anchor -
+                                    animatedTextWidth -
+                                    16 -
+                                    _bracketGap;
+                          return Positioned(
+                            left: _horizontal ? 0 : x,
+                            right: _horizontal ? 0 : null,
+                            top: verticalCenter - 12,
+                            child: IgnorePointer(
+                              child: Opacity(
+                                opacity: text == null ? 0 : 0.85,
+                                child: Align(
+                                  alignment: _horizontal
+                                      ? Alignment.center
+                                      : Alignment.centerLeft,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        '[',
+                                        style: textStyle.copyWith(
+                                          color: colors.primary,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(width: _bracketGap),
-                                    SizedBox(width: textWidth),
-                                    const SizedBox(width: _bracketGap),
-                                    Text(
-                                      ']',
-                                      style: textStyle.copyWith(
-                                        color: colors.primary,
+                                      const SizedBox(width: _bracketGap),
+                                      SizedBox(width: animatedTextWidth),
+                                      const SizedBox(width: _bracketGap),
+                                      Text(
+                                        ']',
+                                        style: textStyle.copyWith(
+                                          color: colors.primary,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          );
+                        }
+
+                        if (bracketMotion is NoMotion) {
+                          return buildBracket(textWidth);
+                        }
+                        return SingleMotionBuilder(
+                          value: textWidth,
+                          motion: bracketMotion,
+                          builder: (context, animatedTextWidth, _) =>
+                              buildBracket(animatedTextWidth),
                         );
                       },
                     ),

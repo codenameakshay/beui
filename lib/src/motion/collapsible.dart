@@ -105,12 +105,20 @@ class _CollapsibleScope extends InheritedWidget {
 }
 
 /// An accessible button that toggles its enclosing [BeuiCollapsible].
-class BeuiCollapsibleTrigger extends StatelessWidget {
+class BeuiCollapsibleTrigger extends StatefulWidget {
   /// Creates a collapsible trigger.
   const BeuiCollapsibleTrigger({required this.child, super.key});
 
   /// Trigger content, commonly a label and [BeuiCollapsibleIndicator].
   final Widget child;
+
+  @override
+  State<BeuiCollapsibleTrigger> createState() => _BeuiCollapsibleTriggerState();
+}
+
+class _BeuiCollapsibleTriggerState extends State<BeuiCollapsibleTrigger> {
+  bool _hovered = false;
+  bool _focusVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -124,45 +132,60 @@ class BeuiCollapsibleTrigger extends StatelessWidget {
       },
     );
 
-    return Shortcuts(
-      shortcuts: const <ShortcutActivator, Intent>{
-        SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
-        SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
-      },
-      child: Actions(
-        actions: <Type, Action<Intent>>{ActivateIntent: action},
-        child: MergeSemantics(
-          child: Semantics(
-            container: true,
-            identifier: state._triggerIdentifier,
-            controlsNodes: <String>{state._contentIdentifier},
-            button: true,
-            enabled: enabled,
-            expanded: state.isOpen,
-            onTap: enabled ? state.toggle : null,
-            child: FocusableActionDetector(
-              enabled: enabled,
-              focusNode: state._triggerFocusNode,
-              mouseCursor: enabled
-                  ? SystemMouseCursors.click
-                  : SystemMouseCursors.basic,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+    return MouseRegion(
+      onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
+      onExit: enabled ? (_) => setState(() => _hovered = false) : null,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: _hovered ? colors.muted.withValues(alpha: 0.6) : null,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: _focusVisible
+              ? [BoxShadow(color: colors.ring, spreadRadius: 2)]
+              : null,
+        ),
+        child: Shortcuts(
+          shortcuts: const <ShortcutActivator, Intent>{
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          child: Actions(
+            actions: <Type, Action<Intent>>{ActivateIntent: action},
+            child: MergeSemantics(
+              child: Semantics(
+                container: true,
+                identifier: state._triggerIdentifier,
+                controlsNodes: <String>{state._contentIdentifier},
+                button: true,
+                enabled: enabled,
+                expanded: state.isOpen,
                 onTap: enabled ? state.toggle : null,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 40),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    child: DefaultTextStyle.merge(
-                      style: TextStyle(
-                        color: colors.foreground,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                child: FocusableActionDetector(
+                  enabled: enabled,
+                  focusNode: state._triggerFocusNode,
+                  mouseCursor: enabled
+                      ? SystemMouseCursors.click
+                      : SystemMouseCursors.basic,
+                  onShowFocusHighlight: (value) =>
+                      setState(() => _focusVisible = value),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: enabled ? state.toggle : null,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 40),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        child: DefaultTextStyle.merge(
+                          style: TextStyle(
+                            color: colors.foreground,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          child: widget.child,
+                        ),
                       ),
-                      child: child,
                     ),
                   ),
                 ),

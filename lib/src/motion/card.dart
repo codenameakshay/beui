@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
+import '_focus_ring.dart';
 import '_engine.dart';
 
 /// Surface treatment for [BeuiCard].
@@ -52,6 +53,7 @@ class BeuiCard extends StatefulWidget {
 class _BeuiCardState extends State<BeuiCard> {
   bool _pressed = false;
   bool _hovered = false;
+  bool _descendantFocused = false;
   double _scaleFrom = 1;
 
   void _setPressed(BuildContext context, bool value) {
@@ -129,6 +131,18 @@ class _BeuiCardState extends State<BeuiCard> {
       );
     }
 
+    surface = Focus(
+      canRequestFocus: false,
+      descendantsAreFocusable: true,
+      onFocusChange: (focused) => setState(() => _descendantFocused = focused),
+      child: BeuiFocusRing(
+        focused: _descendantFocused,
+        borderRadius: BorderRadius.circular(16),
+        color: colors.focusRing.withValues(alpha: 0.2),
+        child: surface,
+      ),
+    );
+
     return Semantics(container: true, explicitChildNodes: true, child: surface);
   }
 }
@@ -189,8 +203,7 @@ class BeuiCardAction extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) =>
-      Align(alignment: Alignment.topRight, child: child);
+  Widget build(BuildContext context) => child;
 }
 
 /// Main content area, inset to align with the card header and footer.

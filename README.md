@@ -206,7 +206,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | File Tree ✨ | `BeuiFileTree` | File and folder tree with springing branches and keyboard navigation |
 | Preview Rail | `BeuiPreviewRail` | Navigation rail of ticks that reveal a destination preview — hover on pointer, tap-to-preview on touch |
 | Dock | `BeuiDock` | macOS-style dock with separator-grouped actions and a gliding active pill |
-| Tooltip | `BeuiTooltip` | Hover or focus tooltip with an optional arrow, alignment and spring spawn |
+| Tooltip | `BeuiTooltip`, `BeuiTooltipProvider` | Hover or focus tooltip with arrow, `followCursor`, collision flip and a shared warm window |
 | Context Menu | `BeuiContextMenu` | Pointer-origin clip morph with checkbox/radio rows, keyboard nav and typeahead |
 | Popover | `BeuiPopover`, `BeuiMorphPopover` | Gooey popover that oozes from the trigger, plus a Morph variant |
 | Morphing Modal | `BeuiMorphingModal` | A panel that morphs its height between inner views, blur cross-fade |

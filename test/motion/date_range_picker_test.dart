@@ -1,6 +1,7 @@
 import 'package:beui/src/motion/date_range_picker.dart';
 import 'package:beui/src/theme/beui_colors.dart';
 import 'package:beui/src/theme/beui_text_theme.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +24,29 @@ Widget _app(Widget child, {bool reduce = false}) => MaterialApp(
 
 void main() {
   group('BeuiDateRangePicker selection', () {
+    testWidgets('hovering an idle day paints the muted background', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(const BeuiDateRangePicker(defaultMonth: '2026-01-01')),
+      );
+
+      final day = find.text('13');
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(day));
+      await mouse.moveTo(tester.getCenter(day));
+      await tester.pumpAndSettle();
+
+      final dayContainer = tester.widget<AnimatedContainer>(
+        find.ancestor(of: day, matching: find.byType(AnimatedContainer)).first,
+      );
+      expect(
+        (dayContainer.decoration! as BoxDecoration).color,
+        BeuiColors.light().muted,
+      );
+      await mouse.removePointer();
+    });
+
     testWidgets('uncontrolled picker completes an inclusive range', (
       tester,
     ) async {

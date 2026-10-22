@@ -57,6 +57,7 @@ class BeuiExpandableButton extends StatefulWidget {
 
 class _BeuiExpandableButtonState extends State<BeuiExpandableButton> {
   late bool _internalExpanded = widget.defaultExpanded;
+  bool _hovered = false;
   bool get _isExpanded => widget.expanded ?? _internalExpanded;
 
   void _setExpanded(bool value) {
@@ -78,6 +79,9 @@ class _BeuiExpandableButtonState extends State<BeuiExpandableButton> {
     final colors = BeuiColors.resolve(context);
     final expanded = _isExpanded;
     final reduce = MediaQuery.disableAnimationsOf(context);
+    final foreground = _hovered && !widget.disabled
+        ? colors.foreground
+        : colors.mutedForeground;
     final label = widget.label;
     final labelText = label is Text ? label.data : null;
     return _ExpandableSurface(
@@ -85,52 +89,56 @@ class _BeuiExpandableButtonState extends State<BeuiExpandableButton> {
       reduce: reduce,
       height: 44,
       borderColor: colors.border,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: widget.disabled
-              ? null
-              : () {
-                  widget.onPressed?.call();
-                  _setExpanded(!expanded);
-                },
-          customBorder: const StadiumBorder(),
-          child: Semantics(
-            button: true,
-            enabled: !widget.disabled,
-            expanded: expanded,
-            label: widget.semanticLabel ?? labelText,
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: 36,
-                    height: 36,
-                    child: Center(
-                      child: IconTheme.merge(
-                        data: IconThemeData(color: colors.foreground, size: 18),
-                        child: ExcludeSemantics(child: widget.icon),
-                      ),
-                    ),
-                  ),
-                  if (expanded)
-                    _Reveal(
-                      reduce: reduce,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 4, right: 12),
-                        child: DefaultTextStyle.merge(
-                          style: TextStyle(
-                            color: colors.foreground,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          child: ExcludeSemantics(child: label),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: widget.disabled
+                ? null
+                : () {
+                    widget.onPressed?.call();
+                    _setExpanded(!expanded);
+                  },
+            customBorder: const StadiumBorder(),
+            child: Semantics(
+              button: true,
+              enabled: !widget.disabled,
+              expanded: expanded,
+              label: widget.semanticLabel ?? labelText,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: Center(
+                        child: IconTheme.merge(
+                          data: IconThemeData(color: foreground, size: 18),
+                          child: ExcludeSemantics(child: widget.icon),
                         ),
                       ),
                     ),
-                ],
+                    if (expanded)
+                      _Reveal(
+                        reduce: reduce,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4, right: 12),
+                          child: DefaultTextStyle.merge(
+                            style: TextStyle(
+                              color: foreground,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            child: ExcludeSemantics(child: label),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -190,6 +198,7 @@ class BeuiExpandableChip extends StatefulWidget {
 class _BeuiExpandableChipState extends State<BeuiExpandableChip> {
   late bool _internalExpanded = widget.defaultExpanded;
   final FocusNode _triggerFocus = FocusNode();
+  bool _hovered = false;
 
   bool get _isExpanded => widget.expanded ?? _internalExpanded;
 
@@ -218,77 +227,92 @@ class _BeuiExpandableChipState extends State<BeuiExpandableChip> {
     final colors = BeuiColors.resolve(context);
     final expanded = _isExpanded;
     final reduce = MediaQuery.disableAnimationsOf(context);
+    final foreground = _hovered && !widget.disabled
+        ? colors.foreground
+        : colors.mutedForeground;
     return _ExpandableSurface(
       expanded: expanded,
       reduce: reduce,
       height: 40,
       borderColor: colors.border,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Semantics(
-            button: true,
-            enabled: !widget.disabled,
-            expanded: expanded,
-            child: TextButton(
-              focusNode: _triggerFocus,
-              onPressed: widget.disabled ? null : () => _setExpanded(!expanded),
-              style: TextButton.styleFrom(
-                foregroundColor: colors.foreground,
-                padding: EdgeInsets.only(left: 12, right: expanded ? 4 : 12),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: const StadiumBorder(),
-              ),
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: colors.foreground,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+      child: MouseRegion(
+        onEnter: widget.disabled
+            ? null
+            : (_) => setState(() => _hovered = true),
+        onHover: widget.disabled
+            ? null
+            : (_) {
+                if (!_hovered) setState(() => _hovered = true);
+              },
+        onExit: widget.disabled
+            ? null
+            : (_) => setState(() => _hovered = false),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Semantics(
+              button: true,
+              enabled: !widget.disabled,
+              expanded: expanded,
+              child: TextButton(
+                focusNode: _triggerFocus,
+                onPressed: widget.disabled
+                    ? null
+                    : () => _setExpanded(!expanded),
+                style: TextButton.styleFrom(
+                  foregroundColor: foreground,
+                  padding: EdgeInsets.only(left: 12, right: expanded ? 4 : 12),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: const StadiumBorder(),
                 ),
-                child: widget.label,
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    color: foreground,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  child: widget.label,
+                ),
               ),
             ),
-          ),
-          if (expanded)
-            _Reveal(
-              reduce: reduce,
-              child: SizedBox(
-                width: 32,
-                height: 40,
-                child: Semantics(
-                  button: true,
-                  enabled: !widget.disabled,
-                  label: widget.actionLabel,
-                  child: IconButton(
-                    onPressed: widget.disabled
-                        ? null
-                        : () {
-                            widget.onAction?.call();
-                            if (widget.collapseOnAction) {
-                              _setExpanded(false);
-                              _triggerFocus.requestFocus();
-                            }
-                          },
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints.tightFor(
-                      width: 32,
-                      height: 40,
-                    ),
-                    icon: IconTheme.merge(
-                      data: IconThemeData(
-                        color: colors.mutedForeground,
-                        size: 14,
+            if (expanded)
+              _Reveal(
+                reduce: reduce,
+                child: SizedBox(
+                  width: 32,
+                  height: 40,
+                  child: Semantics(
+                    button: true,
+                    enabled: !widget.disabled,
+                    label: widget.actionLabel,
+                    child: IconButton(
+                      onPressed: widget.disabled
+                          ? null
+                          : () {
+                              widget.onAction?.call();
+                              if (widget.collapseOnAction) {
+                                _setExpanded(false);
+                                _triggerFocus.requestFocus();
+                              }
+                            },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints.tightFor(
+                        width: 32,
+                        height: 40,
                       ),
-                      child: ExcludeSemantics(child: widget.actionIcon),
+                      icon: IconTheme.merge(
+                        data: IconThemeData(color: foreground, size: 14),
+                        child: ExcludeSemantics(child: widget.actionIcon),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            )
-          else
-            const ExcludeSemantics(child: SizedBox.shrink()),
-        ],
+              )
+            else
+              const ExcludeSemantics(child: SizedBox.shrink()),
+          ],
+        ),
       ),
     );
   }
@@ -340,9 +364,27 @@ class _ExpandableSurfaceState extends State<_ExpandableSurface> {
 
   @override
   Widget build(BuildContext context) {
+    final measured = _contentSize;
+    if (measured == null) {
+      return Container(
+        height: widget.height,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          border: Border.all(color: widget.borderColor),
+          borderRadius: BorderRadius.circular(widget.height / 2),
+        ),
+        child: IntrinsicWidth(
+          child: SizedBox(
+            key: _contentKey,
+            height: widget.height,
+            child: widget.child,
+          ),
+        ),
+      );
+    }
     final target = widget.expanded
-        ? (_contentSize ?? Size(widget.height, widget.height))
-        : Size(_contentSize?.width ?? widget.height, widget.height);
+        ? measured
+        : Size(measured.width, widget.height);
     final motion = motionFor(context, _continuitySpring, isMovement: true);
     return MotionBuilder<Size>(
       value: target,

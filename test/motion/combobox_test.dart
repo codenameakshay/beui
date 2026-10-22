@@ -1,3 +1,5 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -188,6 +190,49 @@ void main() {
       await tester.tap(find.byType(BeuiComboboxInput));
       await tester.pumpAndSettle();
       expect(find.text('Apple'), findsOneWidget);
+    });
+
+    testWidgets('trigger border strengthens on pointer hover', (tester) async {
+      await tester.pumpWidget(_combobox());
+      await tester.pumpAndSettle();
+      final trigger = find.byType(BeuiComboboxTrigger);
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(trigger));
+      await mouse.moveTo(tester.getCenter(trigger));
+      await tester.pumpAndSettle();
+
+      final container = tester.widget<Container>(
+        find.descendant(of: trigger, matching: find.byType(Container)).first,
+      );
+      final decoration = container.decoration! as BoxDecoration;
+      expect(decoration.border!.top.color, BeuiColors.light().borderStrong);
+    });
+
+    testWidgets('pointer hover highlights an inactive option', (tester) async {
+      await tester.pumpWidget(_combobox());
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(BeuiComboboxInput));
+      await tester.pumpAndSettle();
+      final banana = find.ancestor(
+        of: find.text('Banana'),
+        matching: find.byType(AnimatedContainer),
+      );
+      expect(
+        (tester.widget<AnimatedContainer>(banana).decoration! as BoxDecoration)
+            .color,
+        Colors.transparent,
+      );
+
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(find.text('Banana')));
+      await mouse.moveTo(tester.getCenter(find.text('Banana')));
+      await tester.pumpAndSettle();
+
+      expect(
+        (tester.widget<AnimatedContainer>(banana).decoration! as BoxDecoration)
+            .color,
+        BeuiColors.light().muted,
+      );
     });
   });
 

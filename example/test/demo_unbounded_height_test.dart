@@ -27,6 +27,15 @@ bool _isTeardownNoise(Object e) {
       s.contains('was used after being disposed');
 }
 
+/// Remote Unsplash 400s from Image.network demos are not a blank pane.
+bool _isNetworkNoise(Object e) {
+  final s = e.toString();
+  return s.contains('NetworkImageLoadException') ||
+      s.contains('HTTP request failed') ||
+      s.contains('HttpException') ||
+      s.contains('Multiple exceptions');
+}
+
 bool _isBlankMaking(Object e) {
   final s = e.toString();
   return s.contains('requires bounded constraints') ||
@@ -89,6 +98,7 @@ void main() {
       // otherwise be blamed on this slug (bounce-sidebar was blamed this way,
       // yet is clean when pumped on its own).
       errs.removeWhere(_isTeardownNoise);
+      errs.removeWhere(_isNetworkNoise);
 
       if (errs.any(_isBlankMaking)) {
         blank.add(entry.slug);

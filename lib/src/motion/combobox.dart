@@ -526,7 +526,7 @@ class _ComboboxScopeProvider extends InheritedWidget {
 }
 
 /// Trigger layout for a combobox. Tapping it opens and focuses the input.
-class BeuiComboboxTrigger extends StatelessWidget {
+class BeuiComboboxTrigger extends StatefulWidget {
   /// Creates a trigger around [child].
   const BeuiComboboxTrigger({required this.child, this.placeholder, super.key});
 
@@ -537,31 +537,48 @@ class BeuiComboboxTrigger extends StatelessWidget {
   final Widget? placeholder;
 
   @override
+  State<BeuiComboboxTrigger> createState() => _BeuiComboboxTriggerState();
+}
+
+class _BeuiComboboxTriggerState extends State<BeuiComboboxTrigger> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
     final scope = _ComboboxScopeProvider.of(context);
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: scope.state.widget.disabled
+    return MouseRegion(
+      onEnter: scope.state.widget.disabled
           ? null
-          : () => scope.state._setOpen(true),
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 44, minWidth: 208),
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          color: scope.colors.background,
-          border: Border.all(color: scope.colors.border),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          children: <Widget>[
-            Expanded(child: child),
-            placeholder ??
-                Icon(
-                  Icons.unfold_more,
-                  size: 18,
-                  color: scope.colors.mutedForeground,
-                ),
-          ],
+          : (_) => setState(() => _hovered = true),
+      onExit: scope.state.widget.disabled
+          ? null
+          : (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: scope.state.widget.disabled
+            ? null
+            : () => scope.state._setOpen(true),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 44, minWidth: 208),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: scope.colors.background,
+            border: Border.all(
+              color: _hovered ? scope.colors.borderStrong : scope.colors.border,
+            ),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            children: <Widget>[
+              Expanded(child: widget.child),
+              widget.placeholder ??
+                  Icon(
+                    Icons.unfold_more,
+                    size: 18,
+                    color: scope.colors.mutedForeground,
+                  ),
+            ],
+          ),
         ),
       ),
     );
@@ -743,6 +760,8 @@ class BeuiComboboxItem extends StatefulWidget {
 
 class _BeuiComboboxItemState extends State<BeuiComboboxItem> {
   late _BeuiComboboxState _owner;
+  bool _hovered = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -805,42 +824,51 @@ class _BeuiComboboxItemState extends State<BeuiComboboxItem> {
     if (!visible) return const SizedBox.shrink();
     final active = scope.activeValue == widget.value;
     final selected = scope.value == widget.value;
+    final highlighted = active || _hovered;
     return Semantics(
       button: true,
       inMutuallyExclusiveGroup: true,
       selected: selected,
       enabled: !widget.disabled,
       label: widget.textValue ?? widget.value,
-      child: InkWell(
-        canRequestFocus: false,
-        onTap: widget.disabled
+      child: MouseRegion(
+        onEnter: widget.disabled
             ? null
-            : () {
-                widget.onSelect?.call(widget.value);
-                scope.state._select(widget.value);
-              },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-          decoration: BoxDecoration(
-            color: active ? scope.colors.muted : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: DefaultTextStyle(
-                  style: TextStyle(
-                    color: scope.colors.foreground,
-                    fontSize: 14,
+            : (_) => setState(() => _hovered = true),
+        onExit: widget.disabled
+            ? null
+            : (_) => setState(() => _hovered = false),
+        child: InkWell(
+          canRequestFocus: false,
+          onTap: widget.disabled
+              ? null
+              : () {
+                  widget.onSelect?.call(widget.value);
+                  scope.state._select(widget.value);
+                },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+            decoration: BoxDecoration(
+              color: highlighted ? scope.colors.muted : Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: DefaultTextStyle(
+                    style: TextStyle(
+                      color: scope.colors.foreground,
+                      fontSize: 14,
+                    ),
+                    child: widget.child,
                   ),
-                  child: widget.child,
                 ),
-              ),
-              if (selected)
-                Icon(Icons.check, size: 16, color: scope.colors.foreground),
-            ],
+                if (selected)
+                  Icon(Icons.check, size: 16, color: scope.colors.foreground),
+              ],
+            ),
           ),
         ),
       ),

@@ -74,20 +74,23 @@ class _TabsDemoState extends State<_TabsDemo> {
             _tabsSection(
               colors,
               'Overflow',
-              SizedBox(
-                width: 320,
-                child: BeuiTabs<String>(
-                  variant: BeuiTabsVariant.pill,
-                  value: _overflow,
-                  onChanged: (v) => setState(() => _overflow = v),
-                  tabs: const [
-                    BeuiTab(value: 'Overview', label: Text('Overview')),
-                    BeuiTab(value: 'Activity', label: Text('Activity')),
-                    BeuiTab(value: 'Analytics', label: Text('Analytics')),
-                    BeuiTab(value: 'Members', label: Text('Members')),
-                    BeuiTab(value: 'Billing', label: Text('Billing')),
-                    BeuiTab(value: 'Settings', label: Text('Settings')),
-                  ],
+              Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: 320,
+                  child: BeuiTabs<String>(
+                    variant: BeuiTabsVariant.pill,
+                    value: _overflow,
+                    onChanged: (v) => setState(() => _overflow = v),
+                    tabs: const [
+                      BeuiTab(value: 'Overview', label: Text('Overview')),
+                      BeuiTab(value: 'Activity', label: Text('Activity')),
+                      BeuiTab(value: 'Analytics', label: Text('Analytics')),
+                      BeuiTab(value: 'Members', label: Text('Members')),
+                      BeuiTab(value: 'Billing', label: Text('Billing')),
+                      BeuiTab(value: 'Settings', label: Text('Settings')),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -42,7 +42,7 @@ Gallery rule: **New first, then All**, matching `IndexPage` (`isNew` cards, then
 | 32 | File Tree | `file-tree` | `file-tree` | ported |
 | 33 | Preview Rail | `preview-rail` | `preview-rail` | shipped |
 | 34 | Dock | `dock` | `dock` | shipped |
-| 35 | Tooltip | `tooltip` | `tooltip` | shipped; arrow / align / disabled. **gap** composable Provider/Trigger/Content, followCursor, collision |
+| 35 | Tooltip | `tooltip` | `tooltip` | shipped; arrow / align / disabled / Provider / followCursor / collision. **gap** Trigger/Content are identity wrappers |
 | 36 | Animated Context Menu | `context-menu` | `context-menu` | shipped |
 | 37 | Popover | `popover` | `popover`, `popover-morph` | shipped |
 | 38 | Morphing Modal | `morphing-modal` | `morphing-modal` | shipped |
@@ -103,10 +103,17 @@ Public `Beui*` names (Install target → widget):
 
 ## Remaining gaps (named, not blocking this PR)
 
-- Tooltip: composable `Provider` / `Trigger` / `Content`, `followCursor`, collision-aware flip.
-- Alert: enter/exit still uses `AnimatedSwitcher` / `AnimatedSize` rather than motor via `_engine.dart`.
-- Timeline demo tiles are placeholder cards; source uses chart imagery.
+- Tooltip: `BeuiTooltipTrigger` / `BeuiTooltipContent` are identity wrappers; the shorthand `BeuiTooltip` owns hover, arrow, `followCursor` and collision-aware flip. Source hover inside the beui.dev preview iframe often misses the widget (capture_frames lands on chrome).
+- Alert: enter/exit uses motor via `_engine.dart` (`SingleMotionBuilder`); variant icon morph is a fade/slide, not a shared-layout glyph swap.
+- Timeline demo tiles are `CustomPaint` placeholders; source uses chart/photo imagery.
 - Arc Picker: expanding bracket morph is simplified.
-- Image Viewer: thumbnail shared-layout morph is a scale/fade, not a FLIP morph.
-- Color Picker: trigger-to-area morph and loupe are not ported.
+- Image Viewer: the local thumbnail-to-viewer transition morphs an actual source `Rect` with `MotionBuilder<Rect>`; no cross-route FLIP/shared-layout equivalent is ported.
+- Color Picker: loupe is ported; trigger-to-area morph is not.
+- Adaptive Stepper: rest +/- are circular outlined actions with a `foreground` border at alpha `0.18` and a `muted` hover fill. No SVG `Liquid` gooey filter or connected liquid blob is ported.
+- Color Selector: selection ring hops with `beuiSpringLayout` (linear spring) rather than the source `arc()` path.
 - Tabs overflow host always uses `ClipRect` + horizontal `SingleChildScrollView`. Chevrons come from `ScrollController` metrics after the first frame. A first-frame yellow overflow stripe can appear in debug paint; it is a Flutter debug artifact and does not show in profile/release.
+- Harness `defaultMono` paints selected/primary as white; beui.dev uses a blue primary. Color-score drops against the site are theme, not widget bugs.
+
+## Review status
+
+[Review record](proof/v3-components/REVIEW.md) records the repaired lifecycle, reduced-motion, accessibility, and demo-caller findings with RED evidence and exact central commands. The parent verified 212 local tests passing across 20 affected files and clean analysis of 48 touched Dart files. Goldens were skipped; no app, simulator, or device proof was produced. Existing screenshots and scores predate the repairs and do not certify their visuals. Named parity gaps above remain.

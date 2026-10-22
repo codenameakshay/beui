@@ -318,7 +318,7 @@ class _BeuiMultiSelectState extends State<BeuiMultiSelect> {
 }
 
 /// Trigger surface for a [BeuiMultiSelect].
-class BeuiMultiSelectTrigger extends StatelessWidget {
+class BeuiMultiSelectTrigger extends StatefulWidget {
   /// Creates a trigger around [child].
   const BeuiMultiSelectTrigger({required this.child, this.link, super.key});
 
@@ -329,39 +329,56 @@ class BeuiMultiSelectTrigger extends StatelessWidget {
   final LayerLink? link;
 
   @override
+  State<BeuiMultiSelectTrigger> createState() => _BeuiMultiSelectTriggerState();
+}
+
+class _BeuiMultiSelectTriggerState extends State<BeuiMultiSelectTrigger> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
     final scope = _MultiSelectScope.of(context);
     final colors = BeuiColors.resolve(context);
     return CompositedTransformTarget(
-      link: link ?? scope.state._link,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: scope.state.widget.disabled
+      link: widget.link ?? scope.state._link,
+      child: MouseRegion(
+        onEnter: scope.state.widget.disabled
             ? null
-            : () {
-                scope.state._setOpen(true);
-                scope.state._inputFocus.requestFocus();
-              },
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 44, minWidth: 208),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            border: Border.all(color: colors.border),
-            color: colors.background,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: scope.state._inputFocus.hasFocus
-                ? [
-                    BoxShadow(
-                      color: colors.ring.withValues(alpha: .2),
-                      blurRadius: 0,
-                      spreadRadius: 3,
-                    ),
-                  ]
-                : null,
-          ),
-          child: Opacity(
-            opacity: scope.state.widget.disabled ? .5 : 1,
-            child: child,
+            : (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: scope.state.widget.disabled
+              ? null
+              : () {
+                  scope.state._setOpen(true);
+                  scope.state._inputFocus.requestFocus();
+                },
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 44, minWidth: 208),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: _hovered && !scope.state.widget.disabled
+                    ? colors.borderStrong
+                    : colors.border,
+              ),
+              color: colors.background,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: scope.state._inputFocus.hasFocus
+                  ? [
+                      BoxShadow(
+                        color: colors.ring.withValues(alpha: .2),
+                        blurRadius: 0,
+                        spreadRadius: 3,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Opacity(
+              opacity: scope.state.widget.disabled ? .5 : 1,
+              child: widget.child,
+            ),
           ),
         ),
       ),
@@ -657,7 +674,7 @@ class BeuiMultiSelectList extends StatelessWidget {
 }
 
 /// Selectable row used by [BeuiMultiSelectList].
-class BeuiMultiSelectItem extends StatelessWidget {
+class BeuiMultiSelectItem extends StatefulWidget {
   /// Creates an item row.
   const BeuiMultiSelectItem({
     required this.option,
@@ -680,9 +697,18 @@ class BeuiMultiSelectItem extends StatelessWidget {
   final ValueChanged<String>? onSelect;
 
   @override
+  State<BeuiMultiSelectItem> createState() => _BeuiMultiSelectItemState();
+}
+
+class _BeuiMultiSelectItemState extends State<BeuiMultiSelectItem> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
     final state = _MultiSelectScope.of(context).state;
     final colors = BeuiColors.resolve(context);
+    final option = widget.option;
+    final selected = widget.selected;
     return Semantics(
       button: true,
       selected: selected,
@@ -691,45 +717,56 @@ class BeuiMultiSelectItem extends StatelessWidget {
       child: InkWell(
         onTap: option.disabled
             ? null
-            : () => (onSelect ?? state._toggleValue)(option.value),
+            : () => (widget.onSelect ?? state._toggleValue)(option.value),
         borderRadius: BorderRadius.circular(8),
-        child: AnimatedContainer(
-          duration: state._reduceMotion
-              ? Duration.zero
-              : const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
-          decoration: BoxDecoration(
-            color: active || selected ? colors.muted : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              if (option.leading != null) ...[
-                option.leading!,
-                const SizedBox(width: 10),
-              ],
-              Expanded(
-                child: Text(
-                  option.label,
-                  style: TextStyle(
-                    color: option.disabled
-                        ? colors.mutedForeground.withValues(alpha: .45)
-                        : colors.foreground,
-                    fontSize: 13,
+        child: MouseRegion(
+          onEnter: option.disabled
+              ? null
+              : (_) => setState(() => _hovered = true),
+          onExit: (_) => setState(() => _hovered = false),
+          cursor: option.disabled
+              ? SystemMouseCursors.basic
+              : SystemMouseCursors.click,
+          child: AnimatedContainer(
+            duration: state._reduceMotion
+                ? Duration.zero
+                : const Duration(milliseconds: 150),
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
+            decoration: BoxDecoration(
+              color: widget.active || selected || _hovered
+                  ? colors.muted
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                if (option.leading != null) ...[
+                  option.leading!,
+                  const SizedBox(width: 10),
+                ],
+                Expanded(
+                  child: Text(
+                    option.label,
+                    style: TextStyle(
+                      color: option.disabled
+                          ? colors.mutedForeground.withValues(alpha: .45)
+                          : colors.foreground,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 20,
-                child: selected
-                    ? Icon(
-                        LucideIcons.check,
-                        size: 16,
-                        color: colors.foreground,
-                      )
-                    : null,
-              ),
-            ],
+                SizedBox(
+                  width: 20,
+                  child: selected
+                      ? Icon(
+                          LucideIcons.check,
+                          size: 16,
+                          color: colors.foreground,
+                        )
+                      : null,
+                ),
+              ],
+            ),
           ),
         ),
       ),

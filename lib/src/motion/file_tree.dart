@@ -6,7 +6,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
-import '_engine.dart' show NoMotion;
+import '_engine.dart' show NoMotion, SingleMotionBuilder;
 import 'shared_layout_bg.dart';
 
 /// A declarative folder in a [BeuiFileTree]. It is rendered by its parent tree.
@@ -299,8 +299,6 @@ class _BeuiFileTreeState extends State<BeuiFileTree> {
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
-    final reduce =
-        motionFor(context, beuiSpringLayout, isMovement: true) is NoMotion;
     final expanded = _expandedIds.toSet();
     final rows = _flatten(widget.children, expanded);
     final focused = rows.any((row) => row.value == _focusedId)
@@ -351,7 +349,6 @@ class _BeuiFileTreeState extends State<BeuiFileTree> {
                 selected: selected,
                 indent: widget.indent,
                 colors: colors,
-                reduce: reduce,
               ),
             ),
           ),
@@ -381,8 +378,7 @@ class _BeuiFileTreeState extends State<BeuiFileTree> {
   }
 }
 
-/// One tree row. Chevron rotation is driven by a State-owned controller so
-/// dispose never looks up [TickerMode] through an implicit animation.
+/// One tree row.
 class _FileTreeRow extends StatefulWidget {
   const _FileTreeRow({
     required this.row,
@@ -390,7 +386,6 @@ class _FileTreeRow extends StatefulWidget {
     required this.selected,
     required this.indent,
     required this.colors,
-    required this.reduce,
   });
 
   final _FileTreeItem row;
@@ -398,48 +393,13 @@ class _FileTreeRow extends StatefulWidget {
   final bool selected;
   final double indent;
   final BeuiColors colors;
-  final bool reduce;
 
   @override
   State<_FileTreeRow> createState() => _FileTreeRowState();
 }
 
-class _FileTreeRowState extends State<_FileTreeRow>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _chevron;
-
-  @override
-  void initState() {
-    super.initState();
-    _chevron = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 220),
-      value: widget.isOpen ? 1 : 0,
-    );
-  }
-
-  @override
-  void didUpdateWidget(covariant _FileTreeRow oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _chevron.duration = widget.reduce
-        ? Duration.zero
-        : const Duration(milliseconds: 220);
-    if (widget.reduce) {
-      _chevron.value = widget.isOpen ? 1 : 0;
-    } else if (widget.isOpen != oldWidget.isOpen) {
-      if (widget.isOpen) {
-        _chevron.forward();
-      } else {
-        _chevron.reverse();
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _chevron.dispose();
-    super.dispose();
-  }
+class _FileTreeRowState extends State<_FileTreeRow> {
+  bool _hovered = false;
 
   @override
   Widget build(BuildContext context) {
@@ -447,83 +407,105 @@ class _FileTreeRowState extends State<_FileTreeRow>
     final colors = widget.colors;
     final isOpen = widget.isOpen;
     final selected = widget.selected;
+    final emphasized = selected || _hovered;
+    final motion = motionFor(context, beuiSpringSwap, isMovement: true);
     return Opacity(
       opacity: row.disabled ? 0.42 : 1,
-      child: Container(
-        height: 36,
-        padding: EdgeInsets.only(left: 8 + row.depth * widget.indent),
-        decoration: BoxDecoration(
-          color: selected ? colors.muted : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Stack(
-          children: [
-            if (row.depth > 0)
-              Positioned(
-                left: 16 + (row.depth - 1) * widget.indent,
-                top: 0,
-                bottom: 0,
-                child: ColoredBox(
-                  color: colors.border.withValues(alpha: 0.7),
-                  child: const SizedBox(width: 1),
-                ),
-              ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 16,
-                  child: row.isFolder
-                      ? RotationTransition(
-                          turns: Tween<double>(
-                            begin: 0,
-                            end: 0.25,
-                          ).animate(_chevron),
-                          child: Icon(
-                            LucideIcons.chevron_right,
-                            size: 14,
-                            color: colors.mutedForeground,
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                ),
-                const SizedBox(width: 8),
-                SizedBox(
-                  width: 16,
-                  height: 16,
-                  child:
-                      row.icon ??
-                      Icon(
-                        row.isFolder
-                            ? (isOpen
-                                  ? LucideIcons.folder_open
-                                  : LucideIcons.folder)
-                            : LucideIcons.file,
-                        size: 16,
-                        color: isOpen
-                            ? colors.foreground
-                            : colors.mutedForeground,
-                      ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    row.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: selected
-                          ? colors.foreground
-                          : colors.mutedForeground,
-                      fontSize: 14,
-                      fontWeight: selected
-                          ? FontWeight.w500
-                          : FontWeight.normal,
-                    ),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: Container(
+          height: 36,
+          padding: EdgeInsets.only(left: 8 + row.depth * widget.indent),
+          decoration: BoxDecoration(
+            color: selected ? colors.muted : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Stack(
+            children: [
+              if (row.depth > 0)
+                Positioned(
+                  left: 16 + (row.depth - 1) * widget.indent,
+                  top: 0,
+                  bottom: 0,
+                  child: ColoredBox(
+                    color: colors.border.withValues(alpha: 0.7),
+                    child: const SizedBox(width: 1),
                   ),
                 ),
-              ],
-            ),
-          ],
+              Row(
+                children: [
+                  SizedBox(
+                    width: 16,
+                    child: row.isFolder
+                        ? motion is NoMotion
+                              ? Transform.rotate(
+                                  angle: isOpen ? 1.5707963267948966 : 0,
+                                  child: Icon(
+                                    LucideIcons.chevron_right,
+                                    size: 14,
+                                    color: emphasized
+                                        ? colors.foreground
+                                        : colors.mutedForeground,
+                                  ),
+                                )
+                              : SingleMotionBuilder(
+                                  value: isOpen ? 1.0 : 0.0,
+                                  motion: motion,
+                                  builder: (context, progress, child) =>
+                                      Transform.rotate(
+                                        angle: progress * 1.5707963267948966,
+                                        child: child,
+                                      ),
+                                  child: Icon(
+                                    LucideIcons.chevron_right,
+                                    size: 14,
+                                    color: emphasized
+                                        ? colors.foreground
+                                        : colors.mutedForeground,
+                                  ),
+                                )
+                        : const SizedBox.shrink(),
+                  ),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 16,
+                    height: 16,
+                    child:
+                        row.icon ??
+                        Icon(
+                          row.isFolder
+                              ? (isOpen
+                                    ? LucideIcons.folder_open
+                                    : LucideIcons.folder)
+                              : LucideIcons.file,
+                          size: 16,
+                          color: emphasized || isOpen
+                              ? colors.foreground
+                              : colors.mutedForeground,
+                        ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      row.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: emphasized
+                            ? colors.foreground
+                            : colors.mutedForeground,
+                        fontSize: 14,
+                        fontWeight: selected
+                            ? FontWeight.w500
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

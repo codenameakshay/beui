@@ -1,8 +1,11 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:beui/src/motion/timeline.dart';
+import 'package:beui/src/theme/beui_colors.dart';
 import '../support.dart';
 
 const _events = [
@@ -44,6 +47,20 @@ Widget _app({
 
 void main() {
   group('BeuiTimeline selection', () {
+    testWidgets('defaultValue selects the signup milestone', (tester) async {
+      await tester.pumpWidget(_app(defaultValue: 'signups'));
+      expect(
+        find.ancestor(
+          of: find.text('Weekly signups double'),
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Semantics && widget.properties.selected == true,
+          ),
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('controlled selection reports the requested id', (
       tester,
     ) async {
@@ -100,6 +117,71 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.end);
       await tester.pumpAndSettle();
       expect(changed, 'signups');
+    });
+
+    testWidgets('hover lifts and highlights a timeline card', (tester) async {
+      await tester.pumpWidget(_app(defaultValue: 'beta'));
+      final title = find.text('Private beta opens');
+      final card = find
+          .ancestor(of: title, matching: find.byType(AnimatedContainer))
+          .first;
+      final transform = find
+          .descendant(of: card, matching: find.byType(Transform))
+          .first;
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer();
+      await mouse.moveTo(tester.getCenter(title));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 180));
+      final matrix = tester.widget<Transform>(transform).transform;
+      expect(matrix.getTranslation().y, lessThan(0));
+      expect(matrix.storage[0], greaterThan(1));
+      expect(matrix.storage[5], greaterThan(1));
+      final content = tester.widget<Container>(
+        find.ancestor(of: title, matching: find.byType(Container)).first,
+      );
+      expect(
+        (content.decoration! as BoxDecoration).border!.top.color,
+        BeuiColors.light().ring,
+      );
+    });
+
+    testWidgets('reduced motion keeps hover highlight without card movement', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(defaultValue: 'beta', reduce: true));
+      final title = find.text('Private beta opens');
+      final card = find
+          .ancestor(of: title, matching: find.byType(AnimatedContainer))
+          .first;
+      final transform = find
+          .descendant(of: card, matching: find.byType(Transform))
+          .first;
+      final initialTransform = tester
+          .widget<Transform>(transform)
+          .transform
+          .clone();
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer();
+      await mouse.moveTo(tester.getCenter(title));
+      for (final duration in [
+        Duration.zero,
+        const Duration(milliseconds: 75),
+        const Duration(milliseconds: 105),
+      ]) {
+        await tester.pump(duration);
+        expect(
+          tester.widget<Transform>(transform).transform.storage,
+          orderedEquals(initialTransform.storage),
+        );
+      }
+      final content = tester.widget<Container>(
+        find.ancestor(of: title, matching: find.byType(Container)).first,
+      );
+      expect(
+        (content.decoration! as BoxDecoration).border!.top.color,
+        BeuiColors.light().ring,
+      );
     });
 
     testWidgets('reduced motion snaps directly to the chosen event', (

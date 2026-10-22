@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -111,6 +112,25 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(changed?.map((item) => item.id), ['beta', 'gamma', 'alpha']);
+  });
+
+  testWidgets('hovering the handle paints the muted background', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    final handle = find.byTooltip('Reorder Collect references');
+    final handleRect = tester.getRect(handle);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(handleRect.center);
+    await tester.pump(const Duration(milliseconds: 300));
+
+    final button = tester.widget<IconButton>(find.byType(IconButton).first);
+    expect(
+      button.style!.backgroundColor!.resolve({WidgetState.hovered}),
+      BeuiColors.light().muted,
+    );
+    await mouse.removePointer();
   });
 
   testWidgets('controlled list reports order without mutating its input', (
