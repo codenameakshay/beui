@@ -73,11 +73,12 @@
   <main>
     <h1>Voice Orb parity</h1>
     <p class="lead">beui.dev reference (left) vs Flutter <code>BeuiVoiceOrb</code> (right). Dark, live shader. design-compare widget / dark-ui.</p>
+    <p>Scores are recorded in <a href="round3/SCORES.md">round3/SCORES.md</a>. Parent revalidated the committed 288 crops with compare_designs (widget / dark-ui) and compare_motion.</p>
     <div class="scores">
-      <div class="score"><b>74.86</b><span>still overall</span></div>
-      <div class="score"><b>85.94</b><span>color · ΔE 2.88</span></div>
-      <div class="score"><b>90.5</b><span>motion score</span></div>
-      <div class="score"><b>0.91</b><span>energy ratio</span></div>
+      <div class="score"><b>89.05</b><span>still overall</span></div>
+      <div class="score"><b>89.56</b><span>color · ΔE 2.1</span></div>
+      <div class="score"><b>94.8</b><span>motion score</span></div>
+      <div class="score"><b>0.95</b><span>energy ratio</span></div>
     </div>
     <div class="grid">
       <figure>
@@ -86,20 +87,20 @@
       </figure>
       <figure>
         <img src="candidate-orb.png" alt="Flutter Voice Orb" />
-        <figcaption>Flutter web · voice_orb_preview.dart?theme=dark</figcaption>
+        <figcaption>Flutter web · gallery ?slug=voice-orb&amp;theme=dark · size 288</figcaption>
       </figure>
       <figure class="span">
         <img src="side-by-side.png" alt="design-compare side by side" />
-        <figcaption>compare_designs overlay (widget, dark-ui)</figcaption>
+        <figcaption>Historical comparison, not round-3 evidence. compare_designs overlay (widget, dark-ui)</figcaption>
       </figure>
       <figure class="span">
         <video src="voice-orb-vs-beui.dev.mp4" poster="side-by-side.png" autoplay loop muted playsinline controls></video>
-        <figcaption>Left beui.dev · right Flutter · 12 frames @ 130ms</figcaption>
+        <figcaption>Historical comparison, not round-3 evidence. Left beui.dev · right Flutter · 12 frames @ 130ms</figcaption>
       </figure>
     </div>
     <pre><span class="dot">BeuiVoiceOrb</span>
   activity | activityListenable | analyser
-  colors, speed, active, onError, semanticLabel
+  colors, size (default 256, preview 288), speed, active, onError, semanticLabel
   Semantics(image, excludeSemantics)
     SingleMotionBuilder(SPRING_GLIDE 700/50/0.5)
       CustomPaint → shaders/beui_voice_orb.frag

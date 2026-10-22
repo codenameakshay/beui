@@ -28,7 +28,8 @@ motion components, blocks, agents, and charts.
 
 * `BeuiVoiceOrb` — breathing liquid voice visualization with flowing
   highlights, custom pigments, a voice-reactive silhouette, a caller-owned
-  analyser, offscreen pause, and a reduced-motion freeze.
+  analyser, offscreen pause, a reduced-motion freeze, and a `size` override
+  (default `w-64` / 256; the live preview uses `sm:w-72` / 288).
 * Gallery order now matches the source agents page clusters, then extras
   (AI Sidebar, Chat App, Voice Orb, Agent Theme).
 
