@@ -99,6 +99,7 @@ import '../demos/todo_list_demo.dart';
 import '../demos/tool_approval_demo.dart';
 import '../demos/tool_result_demo.dart';
 import '../demos/tooltip_demo.dart';
+import '../demos/voice_orb_demo.dart';
 import '../demos/wallet_card_demo.dart';
 import '../demos/wheel_picker_demo.dart';
 
@@ -801,33 +802,9 @@ const List<ExploreEntry> kBlocks = [
   ),
 ];
 
-/// AI Agents — same order as the source sidebar (17 entries).
+/// AI Agents — source page clusters, then extras (19 entries).
 const List<ExploreEntry> kAgents = [
-  ExploreEntry(
-    title: 'Message Bubble',
-    slug: 'message-bubble',
-    section: ExploreSection.agents,
-    isNew: true,
-    blurb: 'Conversational surface with tones, alignment and grouped messages.',
-    builder: messageBubbleDemo,
-  ),
-  ExploreEntry(
-    title: 'Message',
-    slug: 'message',
-    section: ExploreSection.agents,
-    isNew: true,
-    blurb: 'Primitives for rows, grouped bubbles, avatars and live markers.',
-    builder: messageDemo,
-  ),
-  ExploreEntry(
-    title: 'Message Scroller',
-    slug: 'message-scroller',
-    section: ExploreSection.agents,
-    isNew: true,
-    blurb:
-        'Conversation viewport that follows the live edge and jumps back with an unread count.',
-    builder: messageScrollerDemo,
-  ),
+  // Conversation (beui.dev/components/agents clusters).
   ExploreEntry(
     title: 'Prompt Input',
     slug: 'prompt-input',
@@ -838,47 +815,31 @@ const List<ExploreEntry> kAgents = [
     builder: promptInputDemo,
   ),
   ExploreEntry(
-    title: 'Todo List',
-    slug: 'todo-list',
+    title: 'Message',
+    slug: 'message',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Collapsible task plan with morphing status marks and a count.',
-    builder: todoListDemo,
+    blurb: 'Primitives for rows, grouped bubbles, avatars and live markers.',
+    builder: messageDemo,
   ),
   ExploreEntry(
-    title: 'Code Block',
-    slug: 'code-block',
+    title: 'Message Bubble',
+    slug: 'message-bubble',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Syntax-highlighted code with stable streaming and line numbers.',
-    builder: codeBlockDemo,
+    blurb: 'Conversational surface with tones, alignment and grouped messages.',
+    builder: messageBubbleDemo,
   ),
   ExploreEntry(
-    title: 'Approval Card',
-    slug: 'approval-card',
+    title: 'Message Scroller',
+    slug: 'message-scroller',
     section: ExploreSection.agents,
     isNew: true,
     blurb:
-        'Decision surface for approvals and single or multi-choice questions.',
-    builder: approvalCardDemo,
+        'Conversation viewport that follows the live edge and jumps back with an unread count.',
+    builder: messageScrollerDemo,
   ),
-  ExploreEntry(
-    title: 'File Diff',
-    slug: 'file-diff',
-    section: ExploreSection.agents,
-    isNew: true,
-    blurb:
-        'Change disclosure with wrap or scroll, hunk-gap markers and live counts.',
-    builder: fileDiffDemo,
-  ),
-  ExploreEntry(
-    title: 'Tool Result',
-    slug: 'tool-result',
-    section: ExploreSection.agents,
-    isNew: true,
-    blurb: 'Execution disclosure for terminal output that collapses when done.',
-    builder: toolResultDemo,
-  ),
+  // Response and evidence.
   ExploreEntry(
     title: 'Streaming Response',
     slug: 'streaming-response',
@@ -898,21 +859,29 @@ const List<ExploreEntry> kAgents = [
     builder: imageGenerationDemo,
   ),
   ExploreEntry(
-    title: 'Tool Approval',
-    slug: 'tool-approval',
-    section: ExploreSection.agents,
-    isNew: true,
-    blurb:
-        'Permission card: allow once, remember access, or deny — with a destructive tier.',
-    builder: toolApprovalDemo,
-  ),
-  ExploreEntry(
     title: 'Citations',
     slug: 'citations',
     section: ExploreSection.agents,
     isNew: true,
     blurb: 'Inline markers paired with a collapsible reference collection.',
     builder: citationsDemo,
+  ),
+  // Progress and planning.
+  ExploreEntry(
+    title: 'Loading States',
+    slug: 'loading-states',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Shimmering reasoning text, progress and cycling phrases.',
+    builder: loadingStatesDemo,
+  ),
+  ExploreEntry(
+    title: 'Todo List',
+    slug: 'todo-list',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Collapsible task plan with morphing status marks and a count.',
+    builder: todoListDemo,
   ),
   ExploreEntry(
     title: 'Agent Activity',
@@ -923,14 +892,52 @@ const List<ExploreEntry> kAgents = [
         'A single stream for reasoning, searches, tool calls — including failed and cancelled runs.',
     builder: agentActivityDemo,
   ),
+  // Tool and code.
   ExploreEntry(
-    title: 'Loading States',
-    slug: 'loading-states',
+    title: 'Tool Result',
+    slug: 'tool-result',
     section: ExploreSection.agents,
     isNew: true,
-    blurb: 'Shimmering reasoning text, progress and cycling phrases.',
-    builder: loadingStatesDemo,
+    blurb: 'Execution disclosure for terminal output that collapses when done.',
+    builder: toolResultDemo,
   ),
+  ExploreEntry(
+    title: 'Code Block',
+    slug: 'code-block',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb: 'Syntax-highlighted code with stable streaming and line numbers.',
+    builder: codeBlockDemo,
+  ),
+  ExploreEntry(
+    title: 'File Diff',
+    slug: 'file-diff',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb:
+        'Change disclosure with wrap or scroll, hunk-gap markers and live counts.',
+    builder: fileDiffDemo,
+  ),
+  // Human-in-the-loop.
+  ExploreEntry(
+    title: 'Tool Approval',
+    slug: 'tool-approval',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb:
+        'Permission card: allow once, remember access, or deny — with a destructive tier.',
+    builder: toolApprovalDemo,
+  ),
+  ExploreEntry(
+    title: 'Approval Card',
+    slug: 'approval-card',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb:
+        'Decision surface for approvals and single or multi-choice questions.',
+    builder: approvalCardDemo,
+  ),
+  // Extras (AI Sidebar, Chat App, Voice Orb, Agent Theme).
   ExploreEntry(
     title: 'AI Sidebar',
     slug: 'ai-sidebar',
@@ -947,6 +954,15 @@ const List<ExploreEntry> kAgents = [
     blurb:
         'Complete agent workspace composing the conversation surfaces, with a responsive sidebar.',
     builder: chatAppDemo,
+  ),
+  ExploreEntry(
+    title: 'Voice Orb',
+    slug: 'voice-orb',
+    section: ExploreSection.agents,
+    isNew: true,
+    blurb:
+        'Breathing liquid voice visualization with custom pigments and a voice-reactive silhouette.',
+    builder: voiceOrbDemo,
   ),
   ExploreEntry(
     title: 'Agent Theme',

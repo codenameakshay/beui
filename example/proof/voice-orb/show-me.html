@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voice Orb — beui.dev vs Flutter</title>
+  <style>
+    :root {
+      --bg: #0d0d0c;
+      --card: #161615;
+      --ink: #f4efe7;
+      --mute: #9a958b;
+      --line: #2a2926;
+      --coral: #e8754d;
+      --sage: #346b52;
+      --gold: #ffe0ac;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "General Sans", ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    main { max-width: 920px; margin: 0 auto; padding: 32px 20px 64px; }
+    h1 { font-size: 32px; font-weight: 560; letter-spacing: -0.03em; margin: 0 0 8px; }
+    p.lead { color: var(--mute); margin: 0 0 28px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    figure {
+      margin: 0;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    figure img, figure video { display: block; width: 100%; height: auto; background: #000; }
+    figcaption {
+      padding: 10px 14px 12px;
+      color: var(--mute);
+      font-size: 12px;
+    }
+    .span { grid-column: 1 / -1; }
+    .scores {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 22px 0 28px;
+    }
+    .score {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .score b { display: block; font-size: 32px; letter-spacing: -0.03em; }
+    .score span { color: var(--mute); font-size: 12px; }
+    pre {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+      overflow: auto;
+      font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--gold);
+    }
+    .dot { color: var(--coral); }
+    @media (max-width: 640px) {
+      .grid, .scores { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Voice Orb parity</h1>
+    <p class="lead">beui.dev reference (left) vs Flutter <code>BeuiVoiceOrb</code> (right). Dark, live shader. design-compare widget / dark-ui.</p>
+    <div class="scores">
+      <div class="score"><b>74.86</b><span>still overall</span></div>
+      <div class="score"><b>85.94</b><span>color · ΔE 2.88</span></div>
+      <div class="score"><b>90.5</b><span>motion score</span></div>
+      <div class="score"><b>0.91</b><span>energy ratio</span></div>
+    </div>
+    <div class="grid">
+      <figure>
+        <img src="reference-orb.png" alt="beui.dev Voice Orb" />
+        <figcaption>beui.dev /components/agents/voice-orb</figcaption>
+      </figure>
+      <figure>
+        <img src="candidate-orb.png" alt="Flutter Voice Orb" />
+        <figcaption>Flutter web · voice_orb_preview.dart?theme=dark</figcaption>
+      </figure>
+      <figure class="span">
+        <img src="side-by-side.png" alt="design-compare side by side" />
+        <figcaption>compare_designs overlay (widget, dark-ui)</figcaption>
+      </figure>
+      <figure class="span">
+        <video src="voice-orb-vs-beui.dev.mp4" poster="side-by-side.png" autoplay loop muted playsinline controls></video>
+        <figcaption>Left beui.dev · right Flutter · 12 frames @ 130ms</figcaption>
+      </figure>
+    </div>
+    <pre><span class="dot">BeuiVoiceOrb</span>
+  activity | activityListenable | analyser
+  colors, speed, active, onError, semanticLabel
+  Semantics(image, excludeSemantics)
+    SingleMotionBuilder(SPRING_GLIDE 700/50/0.5)
+      CustomPaint → shaders/beui_voice_orb.frag
+      | fallback BeuiAgentStrings.orbUnavailable</pre>
+  </main>
+</body>
+</html>

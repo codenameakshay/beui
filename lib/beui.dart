@@ -565,3 +565,11 @@ export 'src/motion/signup_form.dart'
         BeuiSignUpStatus,
         BeuiSignUpValues,
         beuiPasswordStrength;
+
+// v3-agents exports
+export 'src/motion/voice_orb.dart'
+    show
+        BeuiVoiceAnalyser,
+        BeuiVoiceOrb,
+        kBeuiVoiceOrbColors,
+        kBeuiVoiceOrbSize;

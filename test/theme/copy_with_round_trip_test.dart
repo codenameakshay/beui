@@ -1563,6 +1563,12 @@ final _agentStringsTable = <FieldProbe<BeuiAgentStrings>>[
     set: (s, v) => s.copyWith(promptSemanticLabel: v),
     get: (s) => s.promptSemanticLabel,
   ),
+  field<BeuiAgentStrings, String>(
+    name: 'orbUnavailable',
+    sample: _sampleString,
+    set: (s, v) => s.copyWith(orbUnavailable: v),
+    get: (s) => s.orbUnavailable,
+  ),
 ];
 
 // ── main ─────────────────────────────────────────────────────────────────
@@ -1718,7 +1724,7 @@ void main() {
     className: 'BeuiAgentStrings',
     base: const BeuiAgentStrings(),
     table: _agentStringsTable,
-    expectedFieldCount: 90,
+    expectedFieldCount: 91,
     sourceFile: 'lib/src/theme/beui_agent_strings.dart',
   );
   runLerpTable(

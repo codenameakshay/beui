@@ -19,6 +19,14 @@
 * Prediction Market cards (`BeuiPredictionMarketCard`) — listing cards with odds CTAs, volume sparkline, and bookmarks, stacked with the existing trade ticket.
 * Gallery order now matches beui.dev/components/blocks (Fixtures title; File Upload and Prediction Market stack their install targets).
 
+### Agents
+
+* `BeuiVoiceOrb` — breathing liquid voice visualization with flowing
+  highlights, custom pigments, a voice-reactive silhouette, a caller-owned
+  analyser, offscreen pause, and a reduced-motion freeze.
+* Gallery order now matches the source agents page clusters, then extras
+  (AI Sidebar, Chat App, Voice Orb, Agent Theme).
+
 ## 2.0.0
 
 Codebase slop audit. No component was redesigned; this release removes
