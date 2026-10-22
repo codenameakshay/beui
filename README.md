@@ -20,7 +20,7 @@ Spring-physics UI primitives and composed blocks, built on the [`motor`](https:/
 
 ## What this is
 
-beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React motion library. Version **3.0.0** covers four families — expressive **[Components](https://beui.dev/components/motion)** (motion primitives with composable APIs), product-ready **[Blocks](https://beui.dev/components/blocks)**, **[AI Agents](https://beui.dev/components/agents)** (conversational and agent-reasoning surfaces), and **[Charts](https://beui.dev/components/charts)** (animated data visualizations).
+beUI is a Flutter widget library that ports the [beUI](https://beui.dev) React motion library. Version **3.0.0** covers four families — expressive **[Components](https://beui.dev/components/motion)** (motion primitives with composable APIs), product-ready **[Blocks](https://beui.dev/components/blocks)**, **[AI Agents](https://beui.dev/components/agents)** (conversational and agent-reasoning surfaces), and **[Charts](https://beui.dev/charts)** (animated data visualizations).
 
 The port's defining goal is **motion fidelity**. Framer Motion springs are parameterized by `stiffness`, `damping`, and `mass` — the exact same physical parameters as Flutter's `SpringDescription` — so the source's spring tokens carry over unchanged (trajectories validated within tolerance, not pixel-matched to Framer). Components don't approximate the feel with `Curves.elasticOut`; they use the real physics through [`motor`](https://pub.dev/packages/motor).
 
