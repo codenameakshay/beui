@@ -95,7 +95,7 @@ The two remaining findings above prevent a complete parity verdict.
 
 ## Remainder layout (post-review)
 
-Coordinator follow-up after `c08b427`. Local gates: `fvm flutter analyze` clean; `BEUI_SKIP_GOLDENS=1 fvm flutter test test/charts/` **120 passed**.
+Coordinator follow-up after `c08b427`. Local gates after Codex remainder: `fvm flutter analyze` clean; `BEUI_SKIP_GOLDENS=1 fvm flutter test test/charts/` **139 passed**.
 
 | Slug | Rest score (widget/dark-ui) | Layout | Hover |
 | --- | --- | --- | --- |
@@ -106,10 +106,10 @@ Coordinator follow-up after `c08b427`. Local gates: `fvm flutter analyze` clean;
 | status-bar | 78.66 | 85.07 | ring + inline period; one series vs source two |
 | composition-chart | 44.53 | 39.49 | hover tickers; crop-aspect + extra area region |
 | funnel-chart | 74.65 | 73.03 | hover tooltip; extra Subscribed demo stage |
-| liquidity-heatmap | 53.88 | 42.91 | cubic price trace; source Resimulate + clipped axis |
+| liquidity-heatmap | 59.36 | 50.96 | cubic price trace; hover ticker 419 SOL; source Resimulate + clipped axis |
 | bump-chart | 75.47 | 76.33 | node ticker; rest legend always-on vs source hover-only |
 | order-book | 72.15 | 72.57 | rest bars fill row height; hover range + Avg |
-| heat-calendar | 76.47 | 69.2 | cell tooltip; legend space-between Jul 6 – Oct 22 |
+| heat-calendar | 79.99 | 73.62 | cell tooltip; legend Jul 6 – Oct 22; hover motion 76.8 |
 | returns-calendar | 45.22 | 65.71 | JS matrix + JS round (Mar '22 −4); typography OCR false-low |
 | price-target-fan | 77.51 | 84.45 | point inspect; Center 520×236 cap kept |
 
@@ -123,3 +123,14 @@ Coordinator follow-up after `c08b427`. Local gates: `fvm flutter analyze` clean;
 - Bump rest always shows the color legend; source shows a rank legend on hover.
 - Liquidity source page includes Resimulate and clips the price axis; live sine path still differs slightly.
 - Order source crop is asks-only with Pause/Step chrome; Flutter demo is the full book.
+
+## Codex remainder review (`8eedf62`, `4d30d67`)
+
+Coordinator re-ran `fvm flutter analyze` (clean) and `BEUI_SKIP_GOLDENS=1 fvm flutter test test/charts/` → **139 passed**.
+
+| Finding | Fix | Tests |
+| --- | --- | --- |
+| Uneven liquidity buckets mapped the price line through the total span | `_yForPrice` interpolates between adjacent row centers | irregular-band path geometry + interpolation samples |
+| NaN/∞ market price crashed default `formatPrice` | omit Market readout unless `p.isFinite` | inspect NaN/∞ cells; no `Market ` text |
+| 8-week legend overflowed 200px by 126px | `Wrap` when `gridWidth < 280` | 200px wrap + 640px packed |
+| Heat filter faded an empty child | `BeuiChartFade` wraps the painted `DecoratedBox` | painted opacity 1 → 0.25 → 1 |

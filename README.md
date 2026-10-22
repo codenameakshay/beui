@@ -271,7 +271,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Liquidity Heatmap | `BeuiLiquidityHeatmap`, `BeuiLiquidityPlot`, `BeuiLiquidityLegend` | Order-book liquidity bands over time with a price trace |
 | Bump Chart | `BeuiBumpChart`, `BeuiBumpPlot`, `BeuiBumpLegend` | Ranking bump chart with curved series that break on missing periods |
 | Order Book | `BeuiOrderBook`, `BeuiOrderBookSide`, `BeuiOrderBookSpread` | Live bid/ask depth tables, spread, and a balance bar |
-| Heat Calendar | `BeuiHeatCalendar`, `BeuiHeatCalendarGrid`, `BeuiHeatCalendarLegend` | GitHub-style contribution heatmap with range selection |
+| Heat Calendar | `BeuiHeatCalendar`, `BeuiHeatCalendarGrid`, `BeuiHeatCalendarLegend` | GitHub-style contribution heatmap with range selection and filter fade |
 | Returns Calendar | `BeuiReturnsCalendar`, `BeuiReturnsCalendarGrid` | Monthly returns grid with gain/loss tint and compounded totals |
 | Price Target Fan | `BeuiPriceTargetFan`, `BeuiPriceTargetPlot`, `BeuiPriceTargetTooltip` | High/mean/low target fan over a history path |
 
