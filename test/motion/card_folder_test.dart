@@ -93,6 +93,93 @@ void main() {
     expect(find.byTooltip('Hide card details'), findsOneWidget);
   });
 
+  testWidgets('closed eye toggle reveals CVV and keeps expiry static', (
+    tester,
+  ) async {
+    final changes = <bool>[];
+    await tester.pumpWidget(_app(onDetailsVisibleChange: changes.add));
+    await tester.pumpAndSettle();
+
+    expect(find.text('08/29'), findsOneWidget);
+    expect(find.text('123'), findsNothing);
+    await tester.tap(find.byTooltip('Show card details'));
+    await tester.pumpAndSettle();
+
+    expect(changes, [true]);
+    expect(find.text('08/29'), findsOneWidget);
+    expect(find.text('1'), findsWidgets);
+    expect(find.text('2'), findsWidgets);
+    expect(find.text('3'), findsWidgets);
+  });
+
+  testWidgets('details toggle is active while the folder is closed', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Show card details'));
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Hide card details'), findsOneWidget);
+    expect(find.text('1'), findsWidgets);
+    expect(find.text('2'), findsWidgets);
+    expect(find.text('3'), findsWidgets);
+  });
+
+  testWidgets('CVV reveal retains outgoing glyphs and rolls incoming glyphs', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+    final cvv = find.byWidgetPredicate(
+      (widget) =>
+          widget is BeuiDigitSwap &&
+          (widget.value == '•••' || widget.value == '123'),
+    );
+    Finder glyph(String character) => find.descendant(
+      of: cvv,
+      matching: find.byWidgetPredicate(
+        (widget) =>
+            widget is Text &&
+            widget.data == character &&
+            widget.key == ValueKey(character),
+      ),
+    );
+    double glyphOffset(String character) => tester
+        .widget<SlideTransition>(
+          find
+              .ancestor(
+                of: glyph(character).first,
+                matching: find.byType(SlideTransition),
+              )
+              .first,
+        )
+        .position
+        .value
+        .dy;
+
+    expect(glyph('•'), findsNWidgets(3));
+    await tester.tap(find.byTooltip('Show card details'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 60));
+
+    expect(glyph('•'), findsNWidgets(3));
+    for (final digit in ['1', '2', '3']) {
+      expect(glyph(digit), findsOneWidget);
+      expect(glyphOffset(digit), inExclusiveRange(0, 0.45));
+    }
+    final firstOffset = glyphOffset('1');
+    await tester.pump(const Duration(milliseconds: 60));
+    expect(glyphOffset('1'), inExclusiveRange(0, firstOffset));
+    expect(find.text('08/29'), findsOneWidget);
+
+    await tester.pumpAndSettle();
+    expect(glyph('•'), findsNothing);
+    expect(glyphOffset('1'), 0);
+    expect(glyph('1'), findsOneWidget);
+  });
+
   testWidgets('action fires without toggling the folder', (tester) async {
     var actions = 0;
     var opens = 0;

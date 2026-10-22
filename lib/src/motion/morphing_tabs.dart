@@ -4,7 +4,6 @@ import 'dart:ui' show ImageFilter, SemanticsRole;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
@@ -35,13 +34,22 @@ const _springPress = SpringMotion(
 );
 
 const _maxTabWidth = 176.0;
-const _minTabWidth = 96.0;
+const _minTabWidth = 88.0;
+const _tabGap = 4.0;
 const _tabHeight = 56.0;
 const _railHeight = 80.0;
 const _panelInset = 16.0;
 const _panelRadius = 28.0;
 const _tabRadius = 24.0;
 const _liquidJoin = 24.0;
+
+// Source hardcodes these regardless of page theme.
+const _chrome = Color(0xFF292929);
+const _cream = Color(0xFFFAFAF8);
+const _creamText = Color(0xFF181818);
+const _inactiveFg = Color(0xB3FFFFFF);
+const _inactiveHover = Color(0x0FFFFFFF);
+const _draggingFill = Color(0x14FFFFFF);
 
 /// Reorderable tabs whose selected item joins the panel below it.
 class BeuiMorphingTabs extends StatefulWidget {
@@ -81,6 +89,7 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
   double _dragDelta = 0;
   List<String>? _dragInitialOrder;
   String? _pressedId;
+  String? _hoveredId;
   final Map<String, FocusNode> _focusNodes = {};
 
   String? get _value => widget._controlled ? widget.value : _internalValue;
@@ -229,20 +238,28 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
       a.length == b.length &&
       a.indexed.every((entry) => entry.$2 == b[entry.$1]);
 
+  double _widthForTab(BeuiMorphingTabsItem item, bool active) {
+    final close = widget.onClose != null ? 28.0 : 0.0;
+    final icon = item.icon != null ? 26.0 : 0.0;
+    final compact = 20 + icon + item.label.length * 8.0 + close;
+    final width = active
+        ? math.max(compact + 28, 132.0)
+        : math.max(compact, _minTabWidth);
+    return math.min(_maxTabWidth, width);
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = _orderedItems;
     if (items.isEmpty) return const SizedBox.shrink();
-    final colors = BeuiColors.resolve(context);
     final reduce =
         motionFor(context, _springGlide, isMovement: true) is NoMotion;
     final glideMotion = motionFor(context, _springGlide, isMovement: true);
     final active = _activeItem;
     final activeIndex = active == null ? 0 : items.indexOf(active);
-    final panelColor = colors.card;
-    final darkSurface = colors.brightness == Brightness.light;
-    final rootColor = darkSurface ? colors.foreground : colors.background;
-    final panelText = colors.cardForeground;
+    const panelColor = _cream;
+    const rootColor = _chrome;
+    const panelText = _creamText;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -250,22 +267,35 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
             ? constraints.maxWidth
             : 600.0;
         final innerWidth = math.max(0.0, width - _panelInset * 2);
-        final availableTabWidth = innerWidth / items.length;
-        final tabWidth = availableTabWidth >= _minTabWidth
-            ? math.min(_maxTabWidth, availableTabWidth)
-            : availableTabWidth;
-        final slotGap = items.length <= 1
-            ? 0.0
-            : math.max(
-                0.0,
-                (innerWidth - tabWidth * items.length) / (items.length - 1),
-              );
-        final slotWidth = tabWidth + slotGap;
-        final targetLeft = _panelInset + activeIndex * slotWidth;
+        final tabWidths = [
+          for (final item in items) _widthForTab(item, item.id == active?.id),
+        ];
+        var packed =
+            tabWidths.fold<double>(0, (sum, item) => sum + item) +
+            _tabGap * math.max(0, items.length - 1);
+        var tabGap = _tabGap;
+        if (packed > innerWidth && packed > 0) {
+          final scale = innerWidth / packed;
+          tabGap *= scale;
+          for (var i = 0; i < tabWidths.length; i++) {
+            tabWidths[i] *= scale;
+          }
+        }
+        final tabLefts = <double>[];
+        var cursor = _panelInset;
+        for (final tabWidth in tabWidths) {
+          tabLefts.add(cursor);
+          cursor += tabWidth + tabGap;
+        }
+        final safeIndex = activeIndex < 0
+            ? 0
+            : math.min(activeIndex, tabWidths.length - 1);
+        final tabWidth = tabWidths[safeIndex];
         final pathWidth = math.max(0.0, width - _panelInset * 2);
-        final tabLocalLeft = (targetLeft - _panelInset).clamp(
+        final maxLeft = math.max(0.0, pathWidth - tabWidth);
+        final tabLocalLeft = (tabLefts[safeIndex] - _panelInset).clamp(
           0.0,
-          pathWidth - tabWidth,
+          maxLeft,
         );
 
         return Container(
@@ -376,16 +406,15 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
                     children: [
                       for (var index = 0; index < items.length; index++)
                         Positioned(
-                          left: _panelInset + index * slotWidth,
+                          left: tabLefts[index],
                           top: 24,
-                          width: tabWidth,
+                          width: tabWidths[index],
                           height: _tabHeight,
                           child: _buildTab(
                             context,
                             item: items[index],
                             active: items[index].id == active?.id,
-                            slotWidth: slotWidth,
-                            colors: colors,
+                            slotWidth: tabWidths[index] + tabGap,
                             reduce: reduce,
                           ),
                         ),
@@ -405,17 +434,12 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
     required BeuiMorphingTabsItem item,
     required bool active,
     required double slotWidth,
-    required BeuiColors colors,
     required bool reduce,
   }) {
     final focus = _focusNodes.putIfAbsent(item.id, () => FocusNode());
-    final fg = active
-        ? colors.cardForeground
-        : (colors.brightness == Brightness.light
-                  ? colors.background
-                  : colors.foreground)
-              .withValues(alpha: 0.72);
+    final fg = active ? _creamText : _inactiveFg;
     final isDragging = _draggedId == item.id;
+    final hovered = _hoveredId == item.id;
     return Semantics(
       container: true,
       role: SemanticsRole.tab,
@@ -456,6 +480,17 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(_tabRadius),
                 ),
+                onHover: item.disabled
+                    ? null
+                    : (hovering) {
+                        setState(() {
+                          if (hovering) {
+                            _hoveredId = item.id;
+                          } else if (_hoveredId == item.id) {
+                            _hoveredId = null;
+                          }
+                        });
+                      },
                 onTap: item.disabled
                     ? null
                     : () {
@@ -466,7 +501,7 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
                   setState(() => _pressedId = highlighted ? item.id : null);
                 },
                 child: reduce
-                    ? _tabSurface(item, active, isDragging, colors, fg, reduce)
+                    ? _tabSurface(item, active, isDragging, hovered, fg, reduce)
                     : SingleMotionBuilder(
                         value: _pressedId == item.id ? 0.97 : 1,
                         motion: motionFor(
@@ -480,7 +515,7 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
                           item,
                           active,
                           isDragging,
-                          colors,
+                          hovered,
                           fg,
                           reduce,
                         ),
@@ -497,7 +532,7 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
     BeuiMorphingTabsItem item,
     bool active,
     bool isDragging,
-    BeuiColors colors,
+    bool hovered,
     Color foreground,
     bool reduce,
   ) => AnimatedContainer(
@@ -505,9 +540,11 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
     curve: Curves.easeOut,
     decoration: BoxDecoration(
       color: active
-          ? colors.card
+          ? _cream
           : isDragging
-          ? colors.muted
+          ? _draggingFill
+          : hovered
+          ? _inactiveHover
           : Colors.transparent,
       borderRadius: const BorderRadius.vertical(
         top: Radius.circular(_tabRadius),

@@ -1,3 +1,5 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -99,7 +101,7 @@ void main() {
           ),
         ),
       );
-      await tester.drag(find.text('One'), const Offset(320, 0));
+      await tester.drag(find.text('One'), const Offset(140, 0));
       await tester.pumpAndSettle();
       expect(orders, [
         <String>['two', 'one', 'three'],
@@ -156,6 +158,113 @@ void main() {
       await tester.pump(const Duration(milliseconds: 40));
       expect(find.text('Two panel'), findsOneWidget);
       expect(maxBlurSigma(tester), lessThan(0.5));
+    });
+
+    testWidgets('chrome is charcoal and the selected surface is cream', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(width: 640, child: BeuiMorphingTabs(items: _items())),
+          width: 680,
+        ),
+      );
+      await tester.pumpAndSettle();
+      final boxes = tester.widgetList<Container>(find.byType(Container));
+      expect(
+        boxes.any(
+          (box) =>
+              box.decoration is BoxDecoration &&
+              (box.decoration as BoxDecoration).color ==
+                  const Color(0xFF292929),
+        ),
+        isTrue,
+      );
+      expect(
+        boxes.any(
+          (box) =>
+              box.decoration is BoxDecoration &&
+              (box.decoration as BoxDecoration).color ==
+                  const Color(0xFFFAFAF8),
+        ),
+        isTrue,
+      );
+    });
+
+    testWidgets('selected tab grows and inactive tabs pack to the left', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(width: 640, child: BeuiMorphingTabs(items: _items())),
+          width: 680,
+        ),
+      );
+      await tester.pumpAndSettle();
+      final one = tester.getTopLeft(find.text('One'));
+      final two = tester.getTopLeft(find.text('Two'));
+      final three = tester.getTopLeft(find.text('Three'));
+      expect(two.dx - one.dx, lessThan(180));
+      expect(three.dx - two.dx, lessThan(180));
+      expect(one.dx, lessThan(160));
+      Size tabSize(String label) => tester.getSize(
+        find
+            .ancestor(of: find.text(label), matching: find.byType(MouseRegion))
+            .first,
+      );
+      expect(tabSize('One').width, greaterThan(tabSize('Two').width));
+    });
+
+    testWidgets('shrunk tabs stay inside the rail in a narrow parent', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(width: 170, child: BeuiMorphingTabs(items: _items())),
+          width: 210,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final rail = tester.getRect(find.byType(BeuiMorphingTabs));
+      final tabRects = [
+        for (final label in ['One', 'Two', 'Three'])
+          tester.getRect(
+            find
+                .ancestor(
+                  of: find.text(label),
+                  matching: find.byType(MouseRegion),
+                )
+                .first,
+          ),
+      ];
+      expect(tabRects.last.right, lessThanOrEqualTo(rail.right - 16));
+    });
+
+    testWidgets('inactive tab paints a hover fill', (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(width: 640, child: BeuiMorphingTabs(items: _items())),
+          width: 680,
+        ),
+      );
+      await tester.pumpAndSettle();
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(location: tester.getCenter(find.text('Two')));
+      await gesture.moveTo(tester.getCenter(find.text('Two')));
+      await tester.pump();
+      final fills = tester.widgetList<AnimatedContainer>(
+        find.byType(AnimatedContainer),
+      );
+      expect(
+        fills.any((box) {
+          final decoration = box.decoration;
+          return decoration is BoxDecoration &&
+              decoration.color == const Color(0x0FFFFFFF);
+        }),
+        isTrue,
+      );
+      await gesture.removePointer();
     });
 
     testWidgets('rest state matches the reference golden', (tester) async {

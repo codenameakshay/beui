@@ -269,38 +269,49 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
       TextInputType? keyboardType,
       Iterable<String>? autofillHints,
       Widget? rightIcon,
-    }) => BeuiInput(
-      key: ValueKey(keyName),
-      label: label,
-      value: value,
-      onChanged: onChanged,
-      onSubmitted: (_) {
-        const next = {
-          'name': 'email',
-          'email': 'password',
-          'password': 'confirmPassword',
-        };
-        final nextField = next[keyName];
-        if (nextField == null) {
-          _submit();
-        } else {
-          FocusScope.of(context).requestFocus(_focusNodes[nextField]);
-        }
-      },
-      focusNode: _focusNodes[keyName],
-      placeholder: placeholder,
-      error: shown(keyName, error),
-      success: success,
-      enabled: !busy,
-      obscureText: obscure,
-      keyboardType: keyboardType,
-      autofillHints: autofillHints?.toList(),
-      textInputAction: keyName == 'confirmPassword'
-          ? TextInputAction.done
-          : TextInputAction.next,
-      leftIcon: Icon(icon, size: 16),
-      rightIcon: rightIcon,
-    );
+    }) {
+      final input = BeuiInput(
+        key: ValueKey(keyName),
+        label: label,
+        value: value,
+        onChanged: onChanged,
+        onSubmitted: (_) {
+          const next = {
+            'name': 'email',
+            'email': 'password',
+            'password': 'confirmPassword',
+          };
+          final nextField = next[keyName];
+          if (nextField == null) {
+            _submit();
+          } else {
+            FocusScope.of(context).requestFocus(_focusNodes[nextField]);
+          }
+        },
+        focusNode: _focusNodes[keyName],
+        placeholder: placeholder,
+        error: shown(keyName, error),
+        success: success,
+        enabled: !busy,
+        obscureText: obscure,
+        keyboardType: keyboardType,
+        autofillHints: autofillHints?.toList(),
+        textInputAction: keyName == 'confirmPassword'
+            ? TextInputAction.done
+            : TextInputAction.next,
+        leftIcon: Icon(icon, size: 16),
+        rightIcon: rightIcon,
+      );
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 90),
+            child: Align(alignment: Alignment.topCenter, child: input),
+          ),
+        ],
+      );
+    }
 
     final strength = beuiPasswordStrength(values.password);
     return SingleChildScrollView(
@@ -398,22 +409,21 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
                               children: List.generate(
                                 4,
                                 (index) => Expanded(
-                                  child: Container(
-                                    height: 4,
-                                    margin: EdgeInsets.only(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
                                       right: index == 3 ? 0 : 6,
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: index < strength
-                                          ? (strength <= 1
-                                                ? colors.destructive
-                                                : strength == 2
-                                                ? colors.warning
-                                                : colors.success)
-                                          : colors.mutedForeground.withValues(
-                                              alpha: 0.2,
-                                            ),
-                                      borderRadius: BorderRadius.circular(4),
+                                    child: _StrengthSegment(
+                                      index: index,
+                                      filled: index < strength,
+                                      color: strength <= 1
+                                          ? colors.destructive
+                                          : strength == 2
+                                          ? colors.warning
+                                          : colors.success,
+                                      track: colors.mutedForeground.withValues(
+                                        alpha: 0.2,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -557,6 +567,59 @@ class _AnimatedMessage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _StrengthSegment extends StatelessWidget {
+  const _StrengthSegment({
+    required this.index,
+    required this.filled,
+    required this.color,
+    required this.track,
+  });
+
+  final int index;
+  final bool filled;
+  final Color color;
+  final Color track;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget segment(double progress) => SizedBox(
+      height: 4,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: track,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          Transform.scale(
+            key: ValueKey('strength-segment-$index-fill'),
+            alignment: Alignment.centerLeft,
+            scaleX: progress,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    final target = filled ? 1.0 : 0.0;
+    final motion = motionFor(context, beuiSpringLayout, isMovement: true);
+    if (motion is NoMotion) return segment(target);
+    return SingleMotionBuilder(
+      value: target,
+      from: 0,
+      motion: motion,
+      builder: (context, progress, _) => segment(progress),
     );
   }
 }

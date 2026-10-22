@@ -102,6 +102,9 @@ class _BeuiMorphingSearchState extends State<BeuiMorphingSearch> {
   final _query = TextEditingController();
   late final _focus = FocusNode(onKeyEvent: _handleInputKey);
   final _triggerFocus = FocusNode();
+  final _triggerKey = GlobalKey();
+  final _resultKeys = <int, GlobalKey>{};
+  final _resultsScroll = ScrollController();
   int _active = 0;
   bool _wasOpen = false;
 
@@ -126,15 +129,12 @@ class _BeuiMorphingSearchState extends State<BeuiMorphingSearch> {
     _query.dispose();
     _focus.dispose();
     _triggerFocus.dispose();
+    _resultsScroll.dispose();
     super.dispose();
   }
 
   bool _handleGlobalKey(KeyEvent event) {
     if (event is! KeyDownEvent) return false;
-    if (_open && event.logicalKey == LogicalKeyboardKey.escape) {
-      _setOpen(false);
-      return true;
-    }
     final shortcut = widget.shortcut.toLowerCase();
     if (_open ||
         shortcut.isEmpty ||
@@ -146,7 +146,11 @@ class _BeuiMorphingSearchState extends State<BeuiMorphingSearch> {
       return false;
     }
     final focused = FocusManager.instance.primaryFocus?.context;
-    if (focused != null && focused.widget is EditableText) return false;
+    if (focused != null &&
+        (focused.widget is EditableText ||
+            focused.findAncestorWidgetOfExactType<EditableText>() != null)) {
+      return false;
+    }
     _setOpen(true);
     return true;
   }
@@ -165,6 +169,7 @@ class _BeuiMorphingSearchState extends State<BeuiMorphingSearch> {
                           : -1))
                   .clamp(0, results.length - 1),
         );
+        _revealActiveResult();
       }
       return KeyEventResult.handled;
     }
@@ -176,6 +181,37 @@ class _BeuiMorphingSearchState extends State<BeuiMorphingSearch> {
       return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;
+  }
+
+  void _revealActiveResult() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_open || !_resultsScroll.hasClients) return;
+      final activeContext = _resultKeys[_active]?.currentContext;
+      if (activeContext != null) {
+        final row = activeContext.findRenderObject()!;
+        _resultsScroll.position
+          ..ensureVisible(
+            row,
+            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          )
+          ..ensureVisible(
+            row,
+            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
+          );
+        return;
+      }
+      final mountedIndices = _resultKeys.entries
+          .where((entry) => entry.value.currentContext != null)
+          .map((entry) => entry.key);
+      if (mountedIndices.isEmpty) return;
+      final position = _resultsScroll.position;
+      final direction = _active > mountedIndices.reduce(math.max) ? 1 : -1;
+      final offset = (position.pixels + direction * position.viewportDimension)
+          .clamp(position.minScrollExtent, position.maxScrollExtent);
+      if (offset == position.pixels) return;
+      _resultsScroll.jumpTo(offset);
+      _revealActiveResult();
+    });
   }
 
   void _setOpen(bool value) {
@@ -222,14 +258,17 @@ class _BeuiMorphingSearchState extends State<BeuiMorphingSearch> {
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
-    final reduce = MediaQuery.disableAnimationsOf(context);
+    final morphMotion = motionFor(context, _searchMorph, isMovement: true);
+    final reduce = morphMotion is NoMotion;
     final results = _results;
     if (_active >= results.length) _active = math.max(0, results.length - 1);
     final trigger = Semantics(
+      key: _triggerKey,
       button: true,
       label: widget.placeholder,
       expanded: _open,
       child: SizedBox(
+        key: const ValueKey('beui-morphing-search-trigger'),
         width: widget.iconOnly ? 48 : 288,
         height: 48,
         child: OutlinedButton(
@@ -269,6 +308,7 @@ class _BeuiMorphingSearchState extends State<BeuiMorphingSearch> {
         ),
       ),
     );
+    final triggerSize = Size(widget.iconOnly ? 48 : 288, 48);
     _wasOpen = _open;
     return BeuiOverlay(
       open: _open,
@@ -278,170 +318,254 @@ class _BeuiMorphingSearchState extends State<BeuiMorphingSearch> {
       enterDuration: const Duration(milliseconds: 580),
       exitDuration: const Duration(milliseconds: 320),
       overlayBuilder: (context, animation, link) {
-        final media = MediaQuery.sizeOf(context);
-        final width = math.min(448.0, media.width - 32);
-        final maxHeight = math.max(96.0, math.min(288.0, media.height - 80));
-        Widget panel = Material(
-          color: colors.background.withValues(alpha: .9),
-          clipBehavior: Clip.antiAlias,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: colors.border),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 48,
-                child: Row(
-                  children: [
-                    const SizedBox(width: 14),
-                    Icon(
-                      LucideIcons.search,
-                      size: 16,
-                      color: colors.mutedForeground,
+        final media = MediaQuery.of(context);
+        final viewport =
+            Overlay.of(context, rootOverlay: true).context.findRenderObject()
+                as RenderBox;
+        final origin =
+            (_triggerKey.currentContext!.findRenderObject() as RenderBox)
+                .localToGlobal(Offset.zero, ancestor: viewport);
+        final width = math.min(448.0, math.max(0.0, viewport.size.width - 32));
+        final bottom = viewport.size.height - media.viewInsets.bottom - 16;
+        final maxHeight = math.max(0.0, math.min(288.0, bottom - 65));
+        final resultsHeight = math.min(
+          maxHeight,
+          results.isEmpty
+              ? 64.0
+              : 16.0 +
+                    results.fold<double>(
+                      0,
+                      (height, item) =>
+                          height + (item.description == null ? 40 : 54),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        controller: _query,
-                        focusNode: _focus,
-                        autofocus: true,
-                        onChanged: (value) {
-                          _active = 0;
-                          widget.onQueryChange?.call(value);
-                          setState(() {});
-                        },
-                        onSubmitted: (_) {
-                          if (results.isNotEmpty) _select(results[_active]);
-                        },
-                        onEditingComplete: () {},
-                        decoration: InputDecoration.collapsed(
-                          hintText: widget.placeholder,
-                        ),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: colors.foreground,
-                        ),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(right: 14),
-                      child: Text('Esc'),
-                    ),
-                  ],
-                ),
-              ),
-              Divider(height: 1, color: colors.border),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: maxHeight),
-                child: results.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Text(
-                          widget.emptyMessage,
-                          style: TextStyle(color: colors.mutedForeground),
-                        ),
-                      )
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.all(8),
-                        itemCount: results.length,
-                        itemBuilder: (context, index) {
-                          final item = results[index];
-                          return Semantics(
-                            selected: index == _active,
-                            child: Material(
-                              color: index == _active
-                                  ? colors.foreground.withValues(alpha: .06)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(8),
-                              child: InkWell(
-                                onHover: (hover) {
-                                  if (hover) setState(() => _active = index);
-                                },
-                                onTap: () => _select(item),
-                                borderRadius: BorderRadius.circular(8),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 10,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      if (item.icon != null) ...[
-                                        Icon(
-                                          item.icon,
-                                          size: 16,
-                                          color: colors.mutedForeground,
-                                        ),
-                                        const SizedBox(width: 10),
-                                      ],
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              item.title,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                                color: colors.foreground,
-                                              ),
-                                            ),
-                                            if (item.description
-                                                case final description?)
-                                              Text(
-                                                description,
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: colors.mutedForeground,
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-              ),
-            ],
-          ),
         );
-        panel = Semantics(
-          scopesRoute: true,
-          namesRoute: true,
-          explicitChildNodes: true,
-          label: 'Search',
-          child: panel,
+        final panelSize = Size(width, 49 + resultsHeight);
+        final panelOrigin = Offset(
+          origin.dx.clamp(
+            16.0,
+            math.max(16.0, viewport.size.width - width - 16),
+          ),
+          origin.dy.clamp(16.0, math.max(16.0, bottom - panelSize.height)),
         );
-        if (!reduce) {
-          panel = SingleMotionBuilder(
-            value: _open ? 1.0 : 0.0,
-            from: 0,
-            motion: motionFor(context, _searchMorph, isMovement: true),
-            builder: (context, progress, child) => Transform.scale(
-              scale: .96 + progress.clamp(0, 1) * .04,
-              child: child,
-            ),
-            child: panel,
-          );
-        }
         return CompositedTransformFollower(
           link: link,
           targetAnchor: Alignment.topLeft,
           followerAnchor: Alignment.topLeft,
           showWhenUnlinked: false,
-          child: SizedBox(width: width, child: panel),
+          offset: panelOrigin - origin,
+          child: MotionBuilder<Size>(
+            value: _open ? panelSize : triggerSize,
+            from: reduce ? panelSize : triggerSize,
+            active: !reduce,
+            converter: const SizeMotionConverter(),
+            motion: morphMotion,
+            builder: (context, size, child) => SizedBox(
+              key: const ValueKey('beui-morphing-search-panel'),
+              width: size.width,
+              height: size.height,
+              child: ClipRect(
+                child: OverflowBox(
+                  alignment: Alignment.topLeft,
+                  minWidth: panelSize.width,
+                  maxWidth: panelSize.width,
+                  minHeight: panelSize.height,
+                  maxHeight: panelSize.height,
+                  child: child,
+                ),
+              ),
+            ),
+            child: Semantics(
+              scopesRoute: true,
+              namesRoute: true,
+              explicitChildNodes: true,
+              label: 'Search',
+              child: Material(
+                color: colors.background.withValues(alpha: .9),
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: colors.border),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 48,
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 14),
+                          Icon(
+                            LucideIcons.search,
+                            size: 16,
+                            color: colors.mutedForeground,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _query,
+                              focusNode: _focus,
+                              autofocus: true,
+                              onChanged: (value) {
+                                _active = 0;
+                                widget.onQueryChange?.call(value);
+                                setState(() {});
+                                _revealActiveResult();
+                              },
+                              onSubmitted: (_) {
+                                if (results.isNotEmpty) {
+                                  _select(results[_active]);
+                                }
+                              },
+                              onEditingComplete: () {},
+                              decoration: InputDecoration.collapsed(
+                                hintText: widget.placeholder,
+                              ),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: colors.foreground,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 14),
+                            child: Text('Esc'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(height: 1, color: colors.border),
+                    ClipRect(
+                      child: TweenAnimationBuilder<double>(
+                        tween: Tween<double>(end: _open ? 1 : 0),
+                        duration: reduce
+                            ? Duration.zero
+                            : const Duration(milliseconds: 320),
+                        curve: beuiEaseOut,
+                        builder: (context, progress, child) => Align(
+                          alignment: Alignment.topCenter,
+                          heightFactor: progress,
+                          child: child,
+                        ),
+                        child: SizedBox(
+                          width: width,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight: resultsHeight,
+                            ),
+                            child: results.isEmpty
+                                ? Padding(
+                                    padding: const EdgeInsets.all(24),
+                                    child: Text(
+                                      widget.emptyMessage,
+                                      style: TextStyle(
+                                        color: colors.mutedForeground,
+                                      ),
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    controller: _resultsScroll,
+                                    shrinkWrap: true,
+                                    padding: const EdgeInsets.all(8),
+                                    itemCount: results.length,
+                                    itemBuilder: (context, index) {
+                                      final item = results[index];
+                                      return Semantics(
+                                        key: _resultKeys.putIfAbsent(
+                                          index,
+                                          GlobalKey.new,
+                                        ),
+                                        selected: index == _active,
+                                        child: Material(
+                                          color: index == _active
+                                              ? colors.foreground.withValues(
+                                                  alpha: .06,
+                                                )
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          child: InkWell(
+                                            onHover: (hover) {
+                                              if (hover) {
+                                                setState(() => _active = index);
+                                              }
+                                            },
+                                            onTap: () => _select(item),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 10,
+                                                  ),
+                                              child: Row(
+                                                children: [
+                                                  if (item.icon != null) ...[
+                                                    Icon(
+                                                      item.icon,
+                                                      size: 16,
+                                                      color: colors
+                                                          .mutedForeground,
+                                                    ),
+                                                    const SizedBox(width: 10),
+                                                  ],
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          item.title,
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: colors
+                                                                .foreground,
+                                                          ),
+                                                        ),
+                                                        if (item.description
+                                                            case final description?)
+                                                          Text(
+                                                            description,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: colors
+                                                                  .mutedForeground,
+                                                            ),
+                                                          ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         );
       },
-      child: trigger,
+      child: ExcludeSemantics(
+        excluding: _open,
+        child: IgnorePointer(
+          ignoring: _open,
+          child: Opacity(opacity: _open ? 0 : 1, child: trigger),
+        ),
+      ),
     );
   }
 }

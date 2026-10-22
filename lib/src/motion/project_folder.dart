@@ -494,13 +494,16 @@ class _BeuiProjectFolderState extends State<BeuiProjectFolder> {
                     clipBehavior: Clip.none,
                     children: [
                       Positioned.fill(
-                        child: Transform(
-                          alignment: Alignment.bottomCenter,
-                          transform: Matrix4.identity()
-                            ..setEntry(3, 2, 0.001)
-                            ..rotateX(
-                              isOpen && !reduce ? 15 * math.pi / 180 : 0,
-                            ),
+                        child: SingleMotionBuilder(
+                          value: isOpen && !reduce ? 15.0 : 0.0,
+                          motion: layoutMotion,
+                          builder: (context, angle, child) => Transform(
+                            alignment: Alignment.bottomCenter,
+                            transform: Matrix4.identity()
+                              ..setEntry(3, 2, 0.001)
+                              ..rotateX((reduce ? 0 : angle) * math.pi / 180),
+                            child: child,
+                          ),
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                               color: colors.background.withValues(alpha: 0.25),
@@ -526,13 +529,16 @@ class _BeuiProjectFolderState extends State<BeuiProjectFolder> {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        child: Transform(
-                          alignment: Alignment.bottomCenter,
-                          transform: Matrix4.identity()
-                            ..setEntry(3, 2, 0.001)
-                            ..rotateX(
-                              isOpen && !reduce ? -25 * math.pi / 180 : 0,
-                            ),
+                        child: SingleMotionBuilder(
+                          value: isOpen && !reduce ? -25.0 : 0.0,
+                          motion: layoutMotion,
+                          builder: (context, angle, child) => Transform(
+                            alignment: Alignment.bottomCenter,
+                            transform: Matrix4.identity()
+                              ..setEntry(3, 2, 0.001)
+                              ..rotateX((reduce ? 0 : angle) * math.pi / 180),
+                            child: child,
+                          ),
                           child: _FolderFront(
                             title: widget.title,
                             countText: _countText,
