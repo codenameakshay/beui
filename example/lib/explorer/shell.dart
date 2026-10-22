@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'catalog.dart';
+import 'catalog_charts.dart';
 import 'guides_page.dart';
 import 'pages.dart';
 import 'search.dart';
@@ -265,6 +266,11 @@ class ExplorerTopBar extends StatelessWidget {
                 label: 'Blocks',
                 active: _activeSection == ExploreSection.blocks,
                 onTap: () => controller.openIndex(ExploreSection.blocks),
+              ),
+              _NavTab(
+                label: 'Charts',
+                active: _activeSection == ExploreSection.charts,
+                onTap: () => controller.openIndex(ExploreSection.charts),
               ),
               _NavTab(
                 label: 'Guides',
@@ -649,6 +655,15 @@ class ExplorerSidebar extends StatelessWidget {
         const SizedBox(height: 20),
         _SidebarHeader(label: 'Blocks', count: kBlocks.length),
         for (final e in kBlocks)
+          _SidebarItem(
+            label: e.title,
+            isNew: e.isNew,
+            active: _activeSlug == e.slug,
+            onTap: () => controller.openEntry(e),
+          ),
+        const SizedBox(height: 20),
+        _SidebarHeader(label: 'Charts', count: kCharts.length),
+        for (final e in kCharts)
           _SidebarItem(
             label: e.title,
             isNew: e.isNew,

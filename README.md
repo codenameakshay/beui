@@ -280,6 +280,24 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Voice Orb | `BeuiVoiceOrb` | Breathing liquid voice visualization with custom pigments and a voice-reactive silhouette |
 | Agent Theme | — | Gallery route that installs a custom `BeuiAgentTheme` on the real widgets |
 
+### Charts — animated data visualizations
+
+| Chart | Widget(s) | What it does |
+| --- | --- | --- |
+| Treemap | `BeuiTreemap`, `BeuiTreemapPlot`, `BeuiTreemapTooltip`, `BeuiTreemapLegend` | Proportional tiles that morph with the data, with value and share tooltips |
+| Candlestick Chart | `BeuiCandlestickChart`, `BeuiCandlestickPlot`, `BeuiCandlestickLegend` | OHLC candles with a live last price and volume |
+| Donut Chart | `BeuiDonutChart`, `BeuiDonutPlot`, `BeuiDonutCenter`, `BeuiDonutLegend` | Round-capped ring with a live center and sweep-in motion |
+| Volume Profile | `BeuiVolumeProfile`, `BeuiVolumeProfilePlot`, `BeuiVolumeProfileSummary` | Volume-by-price with POC and a value-area highlight |
+| Status Bar | `BeuiStatusBar`, `BeuiStatusBarPlot`, `BeuiStatusBarLegend` | Proportional incident bar with operational / degraded / outage statuses |
+| Composition Chart | `BeuiCompositionChart`, `BeuiCompositionPlot`, `BeuiCompositionLegend` | 100% stacked bar or area composition across periods |
+| Funnel Chart | `BeuiFunnelChart`, `BeuiFunnelPlot`, `BeuiFunnelSummary` | Conversion funnel with curved morphs and drop-off |
+| Liquidity Heatmap | `BeuiLiquidityHeatmap`, `BeuiLiquidityPlot`, `BeuiLiquidityLegend` | Order-book liquidity bands over time with a price trace |
+| Bump Chart | `BeuiBumpChart`, `BeuiBumpPlot`, `BeuiBumpLegend` | Ranking bump chart with curved series that break on missing periods |
+| Order Book | `BeuiOrderBook`, `BeuiOrderBookSide`, `BeuiOrderBookSpread` | Live bid/ask depth tables, spread, and a balance bar |
+| Heat Calendar | `BeuiHeatCalendar`, `BeuiHeatCalendarGrid`, `BeuiHeatCalendarLegend` | GitHub-style contribution heatmap with range selection |
+| Returns Calendar | `BeuiReturnsCalendar`, `BeuiReturnsCalendarGrid` | Monthly returns grid with gain/loss tint and compounded totals |
+| Price Target Fan | `BeuiPriceTargetFan`, `BeuiPriceTargetPlot`, `BeuiPriceTargetTooltip` | High/mean/low target fan over a history path |
+
 Also exported as standalone primitives: `BeuiMagnetic` (cursor-follow pull) and the `BeuiOverlay` foundation.
 
 ## Theming

@@ -102,8 +102,9 @@ import '../demos/tooltip_demo.dart';
 import '../demos/voice_orb_demo.dart';
 import '../demos/wallet_card_demo.dart';
 import '../demos/wheel_picker_demo.dart';
+import 'catalog_charts.dart';
 
-/// The three top-level groups in the explorer, mirroring the site's sidebar.
+/// The top-level groups in the explorer, mirroring the site's sidebar.
 enum ExploreSection {
   components('Components', 'motion', 'Motion primitives with composable APIs.'),
   agents(
@@ -111,7 +112,12 @@ enum ExploreSection {
     'agents',
     'Conversational and agent-reasoning interfaces.',
   ),
-  blocks('Blocks', 'blocks', 'Composed, product-ready motion patterns.');
+  blocks('Blocks', 'blocks', 'Composed, product-ready motion patterns.'),
+  charts(
+    'Charts',
+    'charts',
+    'Animated data visualizations with spring motion.',
+  );
 
   const ExploreSection(this.title, this.slug, this.subtitle);
 
@@ -975,11 +981,17 @@ const List<ExploreEntry> kAgents = [
 ];
 
 /// All entries across every section, in display order.
-const List<ExploreEntry> kAllEntries = [...kComponents, ...kAgents, ...kBlocks];
+const List<ExploreEntry> kAllEntries = [
+  ...kComponents,
+  ...kAgents,
+  ...kBlocks,
+  ...kCharts,
+];
 
 /// The entries for [section].
 List<ExploreEntry> entriesFor(ExploreSection section) => switch (section) {
   ExploreSection.components => kComponents,
   ExploreSection.agents => kAgents,
   ExploreSection.blocks => kBlocks,
+  ExploreSection.charts => kCharts,
 };

@@ -19,6 +19,14 @@ void main() {
         ExploreSection.agents,
       ),
     );
+    expect(
+      explorerRouteFromUri(Uri.parse('https://example/?section=charts')),
+      isA<IndexRoute>().having(
+        (r) => r.section,
+        'section',
+        ExploreSection.charts,
+      ),
+    );
     final detail = explorerRouteFromUri(
       Uri.parse('https://example/?slug=chat-app'),
     );
