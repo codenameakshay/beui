@@ -7,14 +7,17 @@ Widget imageViewerDemo(BuildContext context) => const _ImageViewerDemo();
 class _ImageViewerDemo extends StatelessWidget {
   const _ImageViewerDemo();
 
-  static const _photos = [
+  static final _photos = [
     BeuiImageViewerImage(
       id: 'architecture',
       alt: 'Sculptural architecture',
       caption: '01 / Form and light',
       width: 4,
       height: 5,
-      content: _PhotoPlaceholder(color: Color(0xffc7a88c), label: 'FORM'),
+      content: Image.network(
+        'https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=900&q=85',
+        fit: BoxFit.cover,
+      ),
     ),
     BeuiImageViewerImage(
       id: 'landscape',
@@ -22,7 +25,10 @@ class _ImageViewerDemo extends StatelessWidget {
       caption: '02 / A little room to breathe',
       width: 4,
       height: 5,
-      content: _PhotoPlaceholder(color: Color(0xff788d79), label: 'OPEN'),
+      content: Image.network(
+        'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85',
+        fit: BoxFit.cover,
+      ),
     ),
     BeuiImageViewerImage(
       id: 'workspace',
@@ -30,7 +36,10 @@ class _ImageViewerDemo extends StatelessWidget {
       caption: '03 / Places to make things',
       width: 4,
       height: 5,
-      content: _PhotoPlaceholder(color: Color(0xffb9a969), label: 'MAKE'),
+      content: Image.network(
+        'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85',
+        fit: BoxFit.cover,
+      ),
     ),
   ];
 
@@ -39,8 +48,6 @@ class _ImageViewerDemo extends StatelessWidget {
     mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('Collected moments', style: Theme.of(context).textTheme.labelSmall),
-      const SizedBox(height: 4),
       Text(
         'Look a little closer.',
         style: Theme.of(context).textTheme.titleMedium,
@@ -49,41 +56,22 @@ class _ImageViewerDemo extends StatelessWidget {
       BeuiImageViewer(
         images: _photos,
         label: 'Collected photographs',
-        children: const BeuiImageViewerGallery(
+        children: const Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            BeuiImageViewerThumbnail(imageId: 'architecture'),
-            BeuiImageViewerThumbnail(imageId: 'landscape'),
-            BeuiImageViewerThumbnail(imageId: 'workspace'),
+            BeuiImageViewerGallery(
+              children: [
+                BeuiImageViewerThumbnail(imageId: 'architecture'),
+                BeuiImageViewerThumbnail(imageId: 'landscape'),
+                BeuiImageViewerThumbnail(imageId: 'workspace'),
+              ],
+            ),
+            BeuiImageViewerContent(),
           ],
         ),
       ),
       const SizedBox(height: 14),
-      Text(
-        'Open a photograph. Use the arrows to explore.',
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
+      Text('3 photographs', style: Theme.of(context).textTheme.bodySmall),
     ],
-  );
-}
-
-class _PhotoPlaceholder extends StatelessWidget {
-  const _PhotoPlaceholder({required this.color, required this.label});
-
-  final Color color;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => ColoredBox(
-    color: color,
-    child: Center(
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          color: Colors.white.withValues(alpha: 0.85),
-          fontWeight: FontWeight.w600,
-          letterSpacing: 3,
-        ),
-      ),
-    ),
   );
 }

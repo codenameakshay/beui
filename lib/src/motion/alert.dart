@@ -4,6 +4,7 @@ import 'package:flutter/semantics.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart' show LucideIcons;
 import '../tokens/motion.dart';
+import '_engine.dart';
 
 /// Visual tone of a [BeuiAlert].
 enum BeuiAlertVariant { default_, info, success, warning, destructive }
@@ -113,7 +114,7 @@ class _BeuiAlertState extends State<BeuiAlert> {
 
   @override
   Widget build(BuildContext context) {
-    final reduce = MediaQuery.disableAnimationsOf(context);
+    final movement = motionFor(context, beuiSpringLayout, isMovement: true);
     final colors = BeuiColors.resolve(context);
     final color = switch (widget.variant) {
       BeuiAlertVariant.default_ => colors.foreground,
@@ -131,83 +132,89 @@ class _BeuiAlertState extends State<BeuiAlert> {
     final state = _AlertState(
       open: _open,
       variant: widget.variant,
-      reduce: reduce,
+      reduce: movement is NoMotion,
       setOpen: _setOpen,
       dismiss: _dismiss,
     );
-    final surface = _open
-        ? Semantics(
-            key: _surfaceKey,
-            container: true,
-            role: role == 'alert' ? SemanticsRole.alert : SemanticsRole.status,
-            child: AnimatedSize(
-              duration: reduce
-                  ? Duration.zero
-                  : const Duration(milliseconds: 240),
-              curve: reduce ? Curves.linear : beuiEaseOut,
-              alignment: Alignment.topCenter,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.06),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(color: color, fontSize: 14),
-                    child: IconTheme.merge(
-                      data: IconThemeData(color: color, size: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [for (final child in widget.children) child],
-                      ),
-                    ),
-                  ),
-                ),
+    final surface = Semantics(
+      key: _surfaceKey,
+      container: true,
+      role: role == 'alert' ? SemanticsRole.alert : SemanticsRole.status,
+      child: _AlertScope(
+        state: state,
+        child: IgnorePointer(
+          ignoring: !_open,
+          child: ExcludeSemantics(
+            excluding: !_open,
+            child: _buildAlertSurface(color, movement),
+          ),
+        ),
+      ),
+    );
+
+    return _AlertScope(state: state, child: surface);
+  }
+
+  Widget _buildAlertSurface(Color color, Motion movement) {
+    final fade = SingleMotionBuilder(
+      value: _open ? 1 : 0,
+      from: 0,
+      motion: CurvedMotion(
+        Duration(milliseconds: _open ? 180 : 120),
+        beuiEaseOut,
+      ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: DefaultTextStyle.merge(
+            style: TextStyle(color: color, fontSize: 14),
+            child: IconTheme.merge(
+              data: IconThemeData(color: color, size: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [for (final child in widget.children) child],
               ),
             ),
-          )
-        : const SizedBox.shrink();
-
-    return _AlertScope(
-      state: state,
-      child: AnimatedSwitcher(
-        duration: reduce
-            ? const Duration(milliseconds: 180)
-            : const Duration(milliseconds: 200),
-        reverseDuration: const Duration(milliseconds: 120),
-        switchInCurve: beuiEaseOut,
-        switchOutCurve: beuiEaseOut,
-        transitionBuilder: (child, animation) {
-          final fade = FadeTransition(opacity: animation, child: child);
-          final movement = reduce
-              ? fade
-              : SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, -0.04),
-                    end: Offset.zero,
-                  ).animate(animation),
-                  child: fade,
-                );
-          return AnimatedBuilder(
-            animation: animation,
-            builder: (context, _) {
-              final exiting =
-                  animation.status == AnimationStatus.reverse ||
-                  animation.status == AnimationStatus.dismissed;
-              return IgnorePointer(
-                ignoring: exiting,
-                child: ExcludeSemantics(excluding: exiting, child: movement),
-              );
-            },
-          );
-        },
-        child: _open
-            ? KeyedSubtree(
-                key: const ValueKey('beui_alert_open'),
-                child: _AlertScope(state: state, child: surface),
-              )
-            : const SizedBox(key: ValueKey('beui_alert_closed')),
+          ),
+        ),
+      ),
+      builder: (context, opacity, child) => !_open && opacity <= 0
+          ? const SizedBox.shrink()
+          : Opacity(opacity: opacity.clamp(0.0, 1.0), child: child),
+    );
+    if (movement is NoMotion) {
+      return ClipRect(
+        child: Align(
+          alignment: Alignment.topCenter,
+          heightFactor: _open ? 1 : 0,
+          child: fade,
+        ),
+      );
+    }
+    return SingleMotionBuilder(
+      value: _open ? 1 : 0,
+      from: 0,
+      motion: movement,
+      child: SingleMotionBuilder(
+        value: _open ? 1 : 0,
+        from: 0,
+        motion: CurvedMotion(const Duration(milliseconds: 200), beuiEaseOut),
+        child: fade,
+        builder: (context, progress, child) => Transform.translate(
+          offset: Offset(0, 4 * (1 - progress)),
+          child: Transform.scale(scale: 0.98 + 0.02 * progress, child: child),
+        ),
+      ),
+      builder: (context, height, child) => ClipRect(
+        child: Align(
+          alignment: Alignment.topCenter,
+          heightFactor: height.clamp(0.0, 1.0),
+          child: child,
+        ),
       ),
     );
   }
@@ -241,13 +248,23 @@ class BeuiAlertIcon extends StatelessWidget {
       padding: const EdgeInsets.only(top: 2, right: 12),
       child: IconTheme.merge(
         data: IconThemeData(color: color, size: 16),
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 160),
-          transitionBuilder: (child, animation) =>
-              FadeTransition(opacity: animation, child: child),
-          child: KeyedSubtree(
-            key: ValueKey(state.variant),
-            child: ExcludeSemantics(child: icon),
+        child: SingleMotionBuilder(
+          key: ValueKey(state.variant),
+          value: 1,
+          from: 0,
+          motion: CurvedMotion(const Duration(milliseconds: 180), beuiEaseOut),
+          child: ExcludeSemantics(child: icon),
+          builder: (context, progress, child) => Opacity(
+            opacity: progress.clamp(0.0, 1.0),
+            child: state.reduce
+                ? child
+                : Transform.translate(
+                    offset: Offset(0, 4 * (1 - progress)),
+                    child: Transform.scale(
+                      scale: 0.9 + 0.1 * progress,
+                      child: child,
+                    ),
+                  ),
           ),
         ),
       ),
@@ -314,18 +331,38 @@ class BeuiAlertAction extends StatelessWidget {
 
 /// Dismisses the enclosing alert; the default button is labelled for assistive
 /// technology and returns focus to [BeuiAlert.returnFocus] when supplied.
-class BeuiAlertClose extends StatelessWidget {
+class BeuiAlertClose extends StatefulWidget {
   const BeuiAlertClose({super.key, this.child});
   final Widget? child;
 
   @override
+  State<BeuiAlertClose> createState() => _BeuiAlertCloseState();
+}
+
+class _BeuiAlertCloseState extends State<BeuiAlertClose> {
+  bool _hovered = false;
+
+  @override
   Widget build(BuildContext context) {
     final state = _AlertScope.of(context, 'BeuiAlertClose');
-    return IconButton(
-      tooltip: 'Dismiss alert',
-      visualDensity: VisualDensity.compact,
-      onPressed: state.dismiss,
-      icon: child ?? const Icon(LucideIcons.x, size: 16),
+    final foreground = BeuiColors.resolve(context).foreground;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: _hovered
+              ? foreground.withValues(alpha: 0.05)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: IconButton(
+          tooltip: 'Dismiss alert',
+          visualDensity: VisualDensity.compact,
+          onPressed: state.dismiss,
+          icon: widget.child ?? const Icon(LucideIcons.x, size: 16),
+        ),
+      ),
     );
   }
 }

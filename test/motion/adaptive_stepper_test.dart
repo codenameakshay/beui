@@ -1,8 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:beui/src/motion/adaptive_stepper.dart';
+import 'package:beui/beui.dart';
 import '../support.dart';
 
 Widget _stepper({
@@ -134,6 +135,103 @@ void main() {
     await expectLater(
       find.byType(BeuiAdaptiveStepper),
       matchesGoldenFile('goldens/beui_adaptive_stepper.png'),
+    );
+  });
+
+  testWidgets('rest actions paint a circular outline', (tester) async {
+    await tester.pumpWidget(_stepper(defaultValue: 2, min: 0, max: 3));
+    await tester.pumpAndSettle();
+    final container = tester.widget<AnimatedContainer>(
+      find.descendant(
+        of: find.bySemanticsLabel('Increase value'),
+        matching: find.byType(AnimatedContainer),
+      ),
+    );
+    final box = container.decoration! as BoxDecoration;
+    expect(box.color, Colors.transparent);
+    expect(box.borderRadius, BorderRadius.circular(24));
+    expect(
+      box.border,
+      Border.all(color: BeuiColors.light().foreground.withValues(alpha: 0.18)),
+    );
+  });
+
+  for (final increase in [false, true]) {
+    testWidgets('hovered action clears its fill at ${increase ? 'max' : 'min'}', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _stepper(defaultValue: increase ? 2 : 1, min: 0, max: 3),
+      );
+      await tester.pumpAndSettle();
+      final label = increase ? 'Increase value' : 'Decrease value';
+      final part = find.byType(
+        increase ? BeuiAdaptiveStepperIncrement : BeuiAdaptiveStepperDecrement,
+      );
+      final container = find.descendant(
+        of: part,
+        matching: find.byType(AnimatedContainer),
+      );
+      BoxDecoration decoration() =>
+          tester.widget<AnimatedContainer>(container).decoration!
+              as BoxDecoration;
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      addTearDown(mouse.removePointer);
+      await tester.pump();
+      final hoverPoint =
+          tester.getTopLeft(find.bySemanticsLabel(label)) +
+          Offset(increase ? 8 : 40, 24);
+      await mouse.moveTo(hoverPoint);
+      await tester.pumpAndSettle();
+      expect(decoration().color, BeuiColors.light().muted);
+
+      await tester.tapAt(hoverPoint);
+      await tester.pump();
+      expect(find.text(increase ? '3' : '0'), findsOneWidget);
+      expect(find.bySemanticsLabel(label), findsNothing);
+      expect(decoration().color, Colors.transparent);
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<AnimatedOpacity>(
+              find.descendant(of: part, matching: find.byType(AnimatedOpacity)),
+            )
+            .opacity,
+        0,
+      );
+      // Hidden actions stay mounted; entering their bounds must not refill them.
+      await mouse.moveTo(Offset.zero);
+      await tester.pump();
+      await mouse.moveTo(tester.getCenter(container));
+      await tester.pumpAndSettle();
+      expect(decoration().color, Colors.transparent);
+      expect(
+        find.bySemanticsLabel(increase ? 'Decrease value' : 'Increase value'),
+        findsOneWidget,
+      );
+    });
+  }
+
+  testWidgets('hover fills the action with muted', (tester) async {
+    await tester.pumpWidget(_stepper(defaultValue: 2, min: 0, max: 3));
+    await tester.pumpAndSettle();
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    addTearDown(gesture.removePointer);
+    await tester.pump();
+    await gesture.moveTo(tester.getCenter(find.byIcon(LucideIcons.plus)));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    final container = tester.widget<AnimatedContainer>(
+      find.descendant(
+        of: find.bySemanticsLabel('Increase value'),
+        matching: find.byType(AnimatedContainer),
+      ),
+    );
+    expect(
+      (container.decoration! as BoxDecoration).color,
+      BeuiColors.light().muted,
     );
   });
 }

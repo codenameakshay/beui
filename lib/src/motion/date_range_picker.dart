@@ -789,12 +789,14 @@ class BeuiDateRangePickerHeader extends StatelessWidget {
           label: 'Previous month',
           enabled: state.canPrevious,
           onPressed: () => state.moveMonth(-1),
+          hoverColor: colors.muted,
         ),
         _HeaderIcon(
           label: 'Next month',
           enabled: state.canNext,
           onPressed: () => state.moveMonth(1),
           icon: LucideIcons.chevron_right,
+          hoverColor: colors.muted,
         ),
         IconTheme(
           data: IconThemeData(color: colors.mutedForeground),
@@ -895,11 +897,13 @@ class _HeaderIcon extends StatelessWidget {
     required this.label,
     required this.enabled,
     required this.onPressed,
+    required this.hoverColor,
     this.icon = LucideIcons.chevron_left,
   });
   final String label;
   final bool enabled;
   final VoidCallback onPressed;
+  final Color hoverColor;
   final IconData icon;
   @override
   Widget build(BuildContext context) => IconButton(
@@ -908,6 +912,7 @@ class _HeaderIcon extends StatelessWidget {
     icon: Icon(icon, size: 17),
     visualDensity: VisualDensity.compact,
     constraints: const BoxConstraints.tightFor(width: 34, height: 34),
+    style: IconButton.styleFrom(hoverColor: hoverColor),
   );
 }
 
@@ -1022,6 +1027,7 @@ class _DateGrid extends StatelessWidget {
                                     child: _CalendarDay(
                                       day: '$index',
                                       selected: endpoint,
+                                      inRange: inRange,
                                       today: today,
                                       enabled: !disabled,
                                       focused: state.cursor == date,
@@ -1056,6 +1062,7 @@ class _CalendarDay extends StatefulWidget {
   const _CalendarDay({
     required this.day,
     required this.selected,
+    required this.inRange,
     required this.today,
     required this.enabled,
     required this.focused,
@@ -1065,6 +1072,7 @@ class _CalendarDay extends StatefulWidget {
   });
   final String day;
   final bool selected;
+  final bool inRange;
   final bool today;
   final bool enabled;
   final bool focused;
@@ -1077,6 +1085,7 @@ class _CalendarDay extends StatefulWidget {
 
 class _CalendarDayState extends State<_CalendarDay> {
   bool _pressed = false;
+  bool _hovered = false;
   @override
   Widget build(BuildContext context) {
     final reduce = MediaQuery.disableAnimationsOf(context);
@@ -1084,7 +1093,13 @@ class _CalendarDayState extends State<_CalendarDay> {
     return Semantics(
       excludeSemantics: true,
       child: MouseRegion(
-        onEnter: widget.enabled ? (_) => widget.onPreview() : null,
+        onEnter: widget.enabled
+            ? (_) {
+                setState(() => _hovered = true);
+                widget.onPreview();
+              }
+            : null,
+        onExit: widget.enabled ? (_) => setState(() => _hovered = false) : null,
         child: GestureDetector(
           onTap: widget.enabled ? widget.onPressed : null,
           onTapDown: widget.enabled
@@ -1105,6 +1120,8 @@ class _CalendarDayState extends State<_CalendarDay> {
               decoration: BoxDecoration(
                 color: widget.selected
                     ? widget.colors.foreground
+                    : _hovered && !widget.inRange
+                    ? widget.colors.muted
                     : Colors.transparent,
                 shape: BoxShape.circle,
                 border: widget.focused
@@ -1231,10 +1248,18 @@ class BeuiDateRangePickerClear extends StatelessWidget {
     final state = _DateRangePickerScope.of(context, 'BeuiDateRangePickerClear');
     return TextButton(
       onPressed: state.value == null ? null : state.clear,
-      style: TextButton.styleFrom(
-        minimumSize: const Size(40, 30),
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-      ),
+      style:
+          TextButton.styleFrom(
+            minimumSize: const Size(40, 30),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+          ).copyWith(
+            overlayColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.hovered)) {
+                return BeuiColors.resolve(context).muted;
+              }
+              return null;
+            }),
+          ),
       child: child ?? const Text('Clear'),
     );
   }
@@ -1272,16 +1297,22 @@ class BeuiDateRangePickerPreset extends StatelessWidget {
                 (preset.value.to != null && state.isDisabled(preset.value.to!))
             ? null
             : () => state.selectPreset(preset),
-        style: TextButton.styleFrom(
-          backgroundColor: selected
-              ? colors.foreground
-              : colors.muted.withValues(alpha: 0.55),
-          foregroundColor: selected
-              ? colors.background
-              : colors.mutedForeground,
-          minimumSize: const Size(0, 30),
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-        ),
+        style:
+            TextButton.styleFrom(
+              backgroundColor: selected
+                  ? colors.foreground
+                  : colors.muted.withValues(alpha: 0.55),
+              foregroundColor: selected
+                  ? colors.background
+                  : colors.mutedForeground,
+              minimumSize: const Size(0, 30),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+            ).copyWith(
+              overlayColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.hovered)) return colors.muted;
+                return null;
+              }),
+            ),
         child: child ?? Text(preset.label),
       ),
     );

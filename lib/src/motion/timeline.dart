@@ -484,7 +484,7 @@ class _BeuiTimelineState extends State<BeuiTimeline> {
   }
 }
 
-class _TimelineCard extends StatelessWidget {
+class _TimelineCard extends StatefulWidget {
   const _TimelineCard({
     required this.event,
     required this.dateLabel,
@@ -506,8 +506,50 @@ class _TimelineCard extends StatelessWidget {
   final KeyEventResult Function(FocusNode, KeyEvent) onKeyEvent;
 
   @override
+  State<_TimelineCard> createState() => _TimelineCardState();
+}
+
+class _TimelineCardState extends State<_TimelineCard> {
+  bool _hovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.focusNode.addListener(_onFocusChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant _TimelineCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.focusNode != widget.focusNode) {
+      oldWidget.focusNode.removeListener(_onFocusChanged);
+      widget.focusNode.addListener(_onFocusChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.focusNode.removeListener(_onFocusChanged);
+    super.dispose();
+  }
+
+  void _onFocusChanged() => setState(() {});
+
+  @override
   Widget build(BuildContext context) {
+    final event = widget.event;
+    final dateLabel = widget.dateLabel;
+    final width = widget.width;
+    final active = widget.active;
+    final colors = widget.colors;
+    final focusNode = widget.focusNode;
+    final onTap = widget.onTap;
+    final onKeyEvent = widget.onKeyEvent;
     final radius = BorderRadius.circular(24);
+    final highlighted = _hovered || focusNode.hasFocus;
+    final movement =
+        highlighted &&
+        motionFor(context, beuiSpringLayout, isMovement: true) is! NoMotion;
     return Semantics(
       container: true,
       explicitChildNodes: true,
@@ -516,110 +558,146 @@ class _TimelineCard extends StatelessWidget {
       selected: active,
       inMutuallyExclusiveGroup: true,
       label: '$dateLabel, ${event.title}',
-      child: SizedBox(
-        width: width,
-        child: Focus(
-          focusNode: focusNode,
-          skipTraversal: !active,
-          onKeyEvent: onKeyEvent,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: onTap,
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: colors.card,
-                    border: Border.all(color: colors.border),
-                    borderRadius: radius,
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              dateLabel,
-                              style: TextStyle(
-                                color: colors.mutedForeground,
-                                fontSize: 12,
-                                fontFeatures: const [
-                                  FontFeature.tabularFigures(),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              event.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: colors.foreground,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: -0.3,
-                              ),
-                            ),
-                          ],
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOut,
+          transform: Matrix4.translationValues(0, movement ? -7 : 0, 0)
+            ..scaleByDouble(
+              movement ? 1.025 : 1.0,
+              movement ? 1.025 : 1.0,
+              1,
+              1,
+            ),
+          transformAlignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: radius,
+            boxShadow: highlighted
+                ? [
+                    BoxShadow(
+                      color: colors.foreground.withValues(alpha: 0.12),
+                      blurRadius: 24,
+                      offset: const Offset(0, 12),
+                    ),
+                  ]
+                : const [],
+          ),
+          child: SizedBox(
+            width: width,
+            child: Focus(
+              focusNode: focusNode,
+              skipTraversal: !active,
+              onKeyEvent: onKeyEvent,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onTap,
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: colors.card,
+                        border: Border.all(
+                          color: highlighted ? colors.ring : colors.border,
+                          width: highlighted ? 1.5 : 1,
                         ),
+                        borderRadius: radius,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: SizedBox(
-                          height: width * 10 / 16,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: colors.background,
-                                border: Border.all(color: colors.border),
+                      clipBehavior: Clip.antiAlias,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  dateLabel,
+                                  style: TextStyle(
+                                    color: colors.mutedForeground,
+                                    fontSize: 12,
+                                    fontFeatures: const [
+                                      FontFeature.tabularFigures(),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 3),
+                                Text(
+                                  event.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: colors.foreground,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: -0.3,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: SizedBox(
+                              height: width * 10 / 16,
+                              child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: event.media ?? const SizedBox.expand(),
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (event.meta case final meta?)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
-                          child: DefaultTextStyle(
-                            style: TextStyle(
-                              color: colors.mutedForeground,
-                              fontSize: 14,
-                            ),
-                            child: meta,
-                          ),
-                        )
-                      else
-                        const SizedBox(height: 8),
-                    ],
-                  ),
-                ),
-                AnimatedBuilder(
-                  animation: focusNode,
-                  builder: (context, child) => focusNode.hasFocus
-                      ? Positioned.fill(
-                          child: IgnorePointer(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                borderRadius: radius,
-                                border: Border.all(
-                                  color: colors.ring,
-                                  width: 2,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: colors.background,
+                                    border: Border.all(color: colors.border),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: event.media ?? const SizedBox.expand(),
                                 ),
                               ),
                             ),
                           ),
-                        )
-                      : const SizedBox.shrink(),
+                          if (event.meta case final meta?)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                14,
+                                10,
+                                14,
+                                12,
+                              ),
+                              child: DefaultTextStyle(
+                                style: TextStyle(
+                                  color: colors.mutedForeground,
+                                  fontSize: 14,
+                                ),
+                                child: meta,
+                              ),
+                            )
+                          else
+                            const SizedBox(height: 8),
+                        ],
+                      ),
+                    ),
+                    AnimatedBuilder(
+                      animation: focusNode,
+                      builder: (context, child) => focusNode.hasFocus
+                          ? Positioned.fill(
+                              child: IgnorePointer(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    borderRadius: radius,
+                                    border: Border.all(
+                                      color: colors.ring,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

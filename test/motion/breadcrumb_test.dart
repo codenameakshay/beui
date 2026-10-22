@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -46,6 +47,32 @@ void main() {
 
     await tester.tap(find.text('Workspace'));
     expect(activated, isTrue);
+  });
+
+  testWidgets('hovered ancestor link paints muted at 60 percent', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(const BeuiBreadcrumbLink(child: Text('Workspace'))),
+    );
+
+    final link = find.byType(TextButton);
+
+    final pointer = tester.getCenter(find.text('Workspace'));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: pointer);
+    await mouse.moveTo(pointer);
+    await tester.pump();
+
+    final style = tester.widget<TextButton>(link).style!;
+    expect(
+      style.backgroundColor!.resolve({WidgetState.hovered}),
+      BeuiColors.light().muted.withValues(alpha: 0.6),
+    );
+    expect(
+      style.foregroundColor!.resolve({WidgetState.hovered}),
+      BeuiColors.light().foreground,
+    );
   });
 
   testWidgets('breadcrumb exposes a navigation landmark and current page', (

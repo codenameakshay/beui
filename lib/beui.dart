@@ -540,3 +540,5 @@ export 'src/motion/sortable_list.dart'
 export 'src/motion/text_scramble.dart'
     show BeuiTextScramble, beuiTextScrambleGlyphs;
 export 'src/motion/timeline.dart' show BeuiTimeline, BeuiTimelineEvent;
+export 'src/motion/tooltip.dart'
+    show BeuiTooltipContent, BeuiTooltipProvider, BeuiTooltipTrigger;

@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,6 +36,18 @@ Widget _alert({
 );
 
 void main() {
+  testWidgets('initially closed alert has no visible body before opening', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_alert(open: false));
+    expect(tester.getSize(find.byType(BeuiAlert)).height, 0);
+    expect(find.text('A little heads up'), findsNothing);
+    await tester.pumpWidget(_alert(open: true));
+    await tester.pumpAndSettle();
+    expect(find.text('A little heads up'), findsOneWidget);
+    expect(tester.getSize(find.byType(BeuiAlert)).height, greaterThan(32));
+  });
+
   testWidgets('dismiss calls onOpenChange(false) and exits', (tester) async {
     bool? next;
     var open = true;
@@ -58,6 +71,58 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('A little heads up'), findsNothing);
   });
+
+  testWidgets(
+    'controlled close fades and collapses before unmounting on repeat',
+    (tester) async {
+      final requests = <bool>[];
+      Widget build(bool open) => _alert(open: open, onOpenChange: requests.add);
+
+      await tester.pumpWidget(build(true));
+      await tester.pumpAndSettle();
+      final alert = find.byType(BeuiAlert);
+      final body = find.text('A little heads up');
+      final fade = find.ancestor(of: body, matching: find.byType(Opacity));
+      final openHeight = tester.getSize(alert).height;
+
+      for (var i = 0; i < 2; i++) {
+        await tester.tap(find.byTooltip('Dismiss alert'));
+        await tester.pumpWidget(build(true));
+        await tester.pump(const Duration(milliseconds: 40));
+        expect(body, findsOneWidget);
+        expect(tester.getSize(alert).height, closeTo(openHeight, 0.01));
+        expect(tester.widget<Opacity>(fade).opacity, 1);
+
+        await tester.pumpWidget(build(false));
+        expect(body, findsOneWidget);
+        await tester.pump(const Duration(milliseconds: 40));
+        expect(body, findsOneWidget);
+        expect(tester.widget<Opacity>(fade).opacity, inExclusiveRange(0, 1));
+        expect(tester.getSize(alert).height, inExclusiveRange(0, openHeight));
+        await tester.pumpAndSettle();
+        expect(body, findsNothing);
+        expect(tester.getSize(alert).height, 0);
+
+        await tester.pumpWidget(build(true));
+        await tester.pump(const Duration(milliseconds: 40));
+        expect(body, findsOneWidget);
+        expect(tester.widget<Opacity>(fade).opacity, inExclusiveRange(0, 1));
+        expect(tester.getSize(alert).height, inExclusiveRange(0, openHeight));
+        final translation = tester
+            .widget<Transform>(
+              find
+                  .descendant(of: alert, matching: find.byType(Transform))
+                  .first,
+            )
+            .transform
+            .storage[13];
+        expect(translation, inExclusiveRange(0, 4));
+        await tester.pumpAndSettle();
+        expect(tester.getSize(alert).height, closeTo(openHeight, 0.01));
+      }
+      expect(requests, [false, false]);
+    },
+  );
 
   testWidgets('warning/destructive use alert role; others use status', (
     tester,
@@ -90,9 +155,152 @@ void main() {
       findsNothing,
     );
     expect(
-      find.descendant(of: alert, matching: find.byType(FadeTransition)),
+      find.descendant(of: alert, matching: find.byType(Opacity)),
       findsWidgets,
     );
+  });
+
+  testWidgets('reduced motion snaps height on initial open and reopen', (
+    tester,
+  ) async {
+    var open = true;
+    late StateSetter update;
+    await tester.pumpWidget(
+      beuiTestApp(
+        StatefulBuilder(
+          builder: (context, setState) {
+            update = setState;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BeuiAlert(
+                  open: open,
+                  children: const [SizedBox(width: 80, height: 24)],
+                ),
+              ],
+            );
+          },
+        ),
+        reduce: true,
+      ),
+    );
+    final alert = find.byType(BeuiAlert);
+    void expectOpenGeometry() {
+      expect(tester.getSize(alert).height, 56);
+      for (final transform in tester.widgetList<Transform>(
+        find.descendant(of: alert, matching: find.byType(Transform)),
+      )) {
+        expect(transform.transform, Matrix4.identity());
+      }
+    }
+
+    expectOpenGeometry();
+    await tester.pump(const Duration(milliseconds: 40));
+    final opacity = tester
+        .widget<Opacity>(
+          find.descendant(of: alert, matching: find.byType(Opacity)),
+        )
+        .opacity;
+    expect(opacity, inExclusiveRange(0, 1));
+    await tester.pumpAndSettle();
+    for (var i = 0; i < 2; i++) {
+      update(() => open = false);
+      await tester.pump();
+      expect(tester.getSize(alert).height, 0);
+      await tester.pumpAndSettle();
+      update(() => open = true);
+      await tester.pump();
+      expectOpenGeometry();
+      await tester.pumpAndSettle();
+      expectOpenGeometry();
+    }
+  });
+
+  testWidgets('reduced motion variant icon fades without a transform', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_alert(open: true, reduce: true));
+    await tester.pumpAndSettle();
+    final icon = find.byType(BeuiAlertIcon);
+    final before = tester.getRect(icon);
+    await tester.pumpWidget(
+      _alert(variant: BeuiAlertVariant.success, open: true, reduce: true),
+    );
+    await tester.pump(const Duration(milliseconds: 40));
+    expect(tester.getRect(icon), before);
+    for (final transform in tester.widgetList<Transform>(
+      find.descendant(of: icon, matching: find.byType(Transform)),
+    )) {
+      expect(transform.transform, Matrix4.identity());
+    }
+    final opacity = tester
+        .widget<Opacity>(
+          find.descendant(of: icon, matching: find.byType(Opacity)),
+        )
+        .opacity;
+    expect(opacity, inExclusiveRange(0, 1));
+    expect(find.byIcon(LucideIcons.circle_check), findsOneWidget);
+  });
+
+  testWidgets('open surface uses motor motion without AnimatedSwitcher', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_alert(open: true));
+    final alert = find.byType(BeuiAlert);
+    expect(tester.getSize(alert).height, 0);
+    await tester.pump(const Duration(milliseconds: 40));
+    final enteringHeight = tester.getSize(alert).height;
+    await tester.pumpAndSettle();
+    expect(enteringHeight, inExclusiveRange(0, tester.getSize(alert).height));
+    expect(
+      find.descendant(of: alert, matching: find.byType(AnimatedSwitcher)),
+      findsNothing,
+    );
+  });
+
+  testWidgets('variant icon swap uses a motor motion builder', (tester) async {
+    await tester.pumpWidget(_alert(variant: BeuiAlertVariant.info, open: true));
+    await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      _alert(variant: BeuiAlertVariant.success, open: true),
+    );
+    await tester.pump(const Duration(milliseconds: 40));
+    final icon = find.byType(BeuiAlertIcon);
+    final translation = tester
+        .widget<Transform>(
+          find.descendant(of: icon, matching: find.byType(Transform)).first,
+        )
+        .transform
+        .storage[13];
+    expect(translation, inExclusiveRange(0, 4));
+    expect(find.byIcon(LucideIcons.circle_check), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<Transform>(
+            find.descendant(of: icon, matching: find.byType(Transform)).first,
+          )
+          .transform,
+      Matrix4.identity(),
+    );
+    expect(
+      find.descendant(of: icon, matching: find.byType(AnimatedSwitcher)),
+      findsNothing,
+    );
+  });
+
+  testWidgets('close hover fills its background', (tester) async {
+    await tester.pumpWidget(_alert(open: true, reduce: true));
+    final close = find.byType(BeuiAlertClose);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(close));
+    await tester.pump();
+    final decoration = tester.widget<DecoratedBox>(
+      find.descendant(of: close, matching: find.byType(DecoratedBox)).first,
+    );
+    expect((decoration.decoration as BoxDecoration).color!.a, greaterThan(0));
   });
 
   testWidgets('rest-state info alert golden', (tester) async {

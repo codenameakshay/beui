@@ -10,6 +10,27 @@ const _colors = [
   BeuiColorSelectorItem(value: 'red', color: Color(0xffe55656), label: 'Red'),
 ];
 
+const _keyedColors = [
+  BeuiColorSelectorItem(
+    key: ValueKey('blue'),
+    value: 'blue',
+    color: Color(0xff3478f6),
+    label: 'Blue',
+  ),
+  BeuiColorSelectorItem(
+    key: ValueKey('red'),
+    value: 'red',
+    color: Color(0xffe55656),
+    label: 'Red',
+  ),
+  BeuiColorSelectorItem(
+    key: ValueKey('green'),
+    value: 'green',
+    color: Color(0xff36a269),
+    label: 'Green',
+  ),
+];
+
 Widget _selector({
   String? value,
   String? defaultValue = 'blue',
@@ -50,6 +71,382 @@ void main() {
     expect(selected, 'red');
   });
 
+  testWidgets('keyboard navigation uses only live children in child order', (
+    tester,
+  ) async {
+    final changes = <String>[];
+    final choices = ValueNotifier<List<Widget>>([_colors[0], _keyedColors[1]]);
+    addTearDown(choices.dispose);
+
+    await tester.pumpWidget(
+      beuiTestApp(
+        ValueListenableBuilder<List<Widget>>(
+          valueListenable: choices,
+          builder: (context, children, _) => BeuiColorSelector(
+            defaultValue: 'red',
+            onChanged: changes.add,
+            children: children,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Red'));
+    await tester.pumpAndSettle();
+    final retainedFocus = FocusManager.instance.primaryFocus!;
+    choices.value = [
+      const BeuiColorSelectorItem(
+        value: 'green',
+        color: Color(0xff36a269),
+        label: 'Green',
+      ),
+      _keyedColors[1],
+    ];
+    await tester.pumpAndSettle();
+    expect(retainedFocus.context?.mounted, isTrue);
+    expect(FocusManager.instance.primaryFocus, same(retainedFocus));
+    expect(find.bySemanticsLabel('Blue'), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(changes, ['green']);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Green')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Red')),
+      isSemantics(hasCheckedState: true, isChecked: false),
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(changes, ['green', 'red']);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Red')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('controlled selection can transition to null', (tester) async {
+    final changes = <String>[];
+    Widget buildSelector(String? value) => beuiTestApp(
+      BeuiColorSelector(
+        value: value,
+        onChanged: changes.add,
+        children: _colors,
+      ),
+    );
+
+    await tester.pumpWidget(buildSelector('red'));
+    await tester.pumpAndSettle();
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Red')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+    await tester.pumpWidget(buildSelector(null));
+    expect(tester.takeException(), isNull);
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('beui_color_selector_ring')),
+      findsNothing,
+    );
+    for (final label in ['Blue', 'Red']) {
+      expect(
+        tester.getSemantics(find.bySemanticsLabel(label)),
+        isSemantics(hasCheckedState: true, isChecked: false),
+      );
+    }
+    await tester.tap(find.bySemanticsLabel('Blue'));
+    await tester.pumpAndSettle();
+    expect(changes, ['blue']);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Blue')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+  });
+
+  testWidgets('controlled selection can clear while children become empty', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiColorSelector(value: 'red', children: _colors)),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('beui_color_selector_ring')),
+      findsOneWidget,
+    );
+    await tester.pumpWidget(beuiTestApp(const BeuiColorSelector(children: [])));
+    expect(tester.takeException(), isNull);
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('beui_color_selector_ring')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('empty choices can repopulate and select again', (tester) async {
+    final changes = <String>[];
+    final choices = ValueNotifier<List<Widget>>(_keyedColors);
+    addTearDown(choices.dispose);
+    await tester.pumpWidget(
+      beuiTestApp(
+        ValueListenableBuilder<List<Widget>>(
+          valueListenable: choices,
+          builder: (context, children, _) => BeuiColorSelector(
+            defaultValue: 'blue',
+            onChanged: changes.add,
+            children: children,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final ring = find.byKey(const ValueKey('beui_color_selector_ring'));
+    expect(ring, findsOneWidget);
+    choices.value = const [];
+    await tester.pumpAndSettle();
+    expect(ring, findsNothing);
+    choices.value = _keyedColors;
+    await tester.pumpAndSettle();
+    expect(tester.getSize(ring), const Size(52, 52));
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Blue')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+    await tester.tap(find.bySemanticsLabel('Red'));
+    await tester.pumpAndSettle();
+    expect(changes, ['red']);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Red')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+  });
+
+  testWidgets('controlled rejection keeps checked state and permits retry', (
+    tester,
+  ) async {
+    final changes = <String>[];
+    final selected = ValueNotifier('blue');
+    addTearDown(selected.dispose);
+    await tester.pumpWidget(
+      beuiTestApp(
+        ValueListenableBuilder<String>(
+          valueListenable: selected,
+          builder: (context, value, _) => BeuiColorSelector(
+            value: value,
+            onChanged: changes.add,
+            children: _keyedColors,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final ring = find.byKey(const ValueKey('beui_color_selector_ring'));
+    final originalRect = tester.getRect(ring);
+    for (var attempt = 0; attempt < 2; attempt++) {
+      await tester.tap(find.bySemanticsLabel('Red'));
+      await tester.pumpAndSettle();
+      expect(tester.getRect(ring), originalRect);
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Blue')),
+        isSemantics(hasCheckedState: true, isChecked: true),
+      );
+      expect(
+        tester.getSemantics(find.bySemanticsLabel('Red')),
+        isSemantics(hasCheckedState: true, isChecked: false),
+      );
+    }
+    expect(changes, ['red', 'red']);
+    selected.value = 'red';
+    await tester.pumpAndSettle();
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Red')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+    expect(
+      (tester.getRect(ring).center -
+              tester.getRect(find.bySemanticsLabel('Red')).center)
+          .distance,
+      lessThan(0.001),
+    );
+    expect(tester.getSize(ring), const Size(52, 52));
+    final border =
+        (tester.widget<DecoratedBox>(ring).decoration as BoxDecoration).border!
+            as Border;
+    expect(border.top.color, const Color(0xffe55656).withValues(alpha: 0.65));
+  });
+
+  testWidgets('removing the selected child removes its ring', (tester) async {
+    final changes = <String>[];
+    final choices = ValueNotifier<List<Widget>>(_keyedColors);
+    addTearDown(choices.dispose);
+    await tester.pumpWidget(
+      beuiTestApp(
+        ValueListenableBuilder<List<Widget>>(
+          valueListenable: choices,
+          builder: (context, children, _) => BeuiColorSelector(
+            value: 'red',
+            onChanged: changes.add,
+            children: children,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('beui_color_selector_ring')),
+      findsOneWidget,
+    );
+
+    choices.value = [_keyedColors[0], _keyedColors[2]];
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('beui_color_selector_ring')),
+      findsNothing,
+    );
+    for (final label in ['Blue', 'Green']) {
+      expect(
+        tester.getSemantics(find.bySemanticsLabel(label)),
+        isSemantics(hasCheckedState: true, isChecked: false),
+      );
+    }
+    expect(changes, isEmpty);
+    choices.value = _keyedColors;
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .getRect(find.byKey(const ValueKey('beui_color_selector_ring')))
+          .center,
+      tester.getRect(find.bySemanticsLabel('Red')).center,
+    );
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Red')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+  });
+
+  testWidgets('reordering retained const children updates keyboard order', (
+    tester,
+  ) async {
+    final changes = <String>[];
+    final choices = ValueNotifier<List<Widget>>(_keyedColors);
+    addTearDown(choices.dispose);
+    await tester.pumpWidget(
+      beuiTestApp(
+        ValueListenableBuilder<List<Widget>>(
+          valueListenable: choices,
+          builder: (context, children, _) => BeuiColorSelector(
+            defaultValue: 'red',
+            onChanged: changes.add,
+            children: children,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Red'));
+    await tester.pumpAndSettle();
+    final retainedFocus = FocusManager.instance.primaryFocus;
+    choices.value = [_keyedColors[0], _keyedColors[2], _keyedColors[1]];
+    await tester.pumpAndSettle();
+    expect(FocusManager.instance.primaryFocus, same(retainedFocus));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(changes, ['blue']);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Blue')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+  });
+
+  testWidgets('changing a selected item value drops its stale ring', (
+    tester,
+  ) async {
+    final choices = ValueNotifier<List<Widget>>(_colors);
+    addTearDown(choices.dispose);
+    await tester.pumpWidget(
+      beuiTestApp(
+        ValueListenableBuilder<List<Widget>>(
+          valueListenable: choices,
+          builder: (context, children, _) =>
+              BeuiColorSelector(value: 'blue', children: children),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final ring = find.byKey(const ValueKey('beui_color_selector_ring'));
+    expect(ring, findsOneWidget);
+    choices.value = [
+      const BeuiColorSelectorItem(
+        value: 'green',
+        color: Color(0xff36a269),
+        label: 'Green',
+      ),
+      _colors[1],
+    ];
+    await tester.pumpAndSettle();
+    expect(ring, findsNothing);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Green')),
+      isSemantics(hasCheckedState: true, isChecked: false),
+    );
+    choices.value = _colors;
+    await tester.pumpAndSettle();
+    expect(ring, findsOneWidget);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Blue')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+  });
+
+  testWidgets('changing selected swatch color updates ring without moving it', (
+    tester,
+  ) async {
+    final choices = ValueNotifier<List<Widget>>([
+      const BeuiColorSelectorItem(
+        value: 'blue',
+        color: Color(0xff3478f6),
+        label: 'Blue',
+      ),
+      _colors[1],
+    ]);
+    addTearDown(choices.dispose);
+    await tester.pumpWidget(
+      beuiTestApp(
+        ValueListenableBuilder<List<Widget>>(
+          valueListenable: choices,
+          builder: (context, children, _) =>
+              BeuiColorSelector(value: 'blue', children: children),
+        ),
+        reduce: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+    final ring = find.byKey(const ValueKey('beui_color_selector_ring'));
+    final originalRect = tester.getRect(ring);
+    final originalBorder =
+        (tester.widget<DecoratedBox>(ring).decoration as BoxDecoration).border!
+            as Border;
+    expect(
+      originalBorder.top.color,
+      const Color(0xff3478f6).withValues(alpha: 0.65),
+    );
+    choices.value = [
+      const BeuiColorSelectorItem(
+        value: 'blue',
+        color: Color(0xff36a269),
+        label: 'Blue',
+      ),
+      _colors[1],
+    ];
+    await tester.pumpAndSettle();
+    expect(tester.getRect(ring), originalRect);
+    final box = tester.widget<DecoratedBox>(ring);
+    final border = (box.decoration as BoxDecoration).border! as Border;
+    expect(border.top.color, const Color(0xff36a269).withValues(alpha: 0.65));
+  });
+
   testWidgets(
     'reduced motion positions ring directly and drops motion builder',
     (tester) async {
@@ -67,6 +464,36 @@ void main() {
       );
     },
   );
+
+  for (final reduce in [false, true]) {
+    testWidgets('selection ring is 52px in swatch color, reduced: $reduce', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_selector(value: 'blue', reduce: reduce));
+      await tester.pumpAndSettle();
+      final ring = find.byKey(const ValueKey('beui_color_selector_ring'));
+      expect(ring, findsOneWidget);
+      final size = tester.getSize(ring);
+      expect(size, const Size(52, 52));
+      final selector = tester.getSize(find.byType(BeuiColorSelector));
+      expect(size.width, lessThan(selector.width / 2));
+      final blue = tester.getRect(find.bySemanticsLabel('Blue'));
+      final ringRect = tester.getRect(ring);
+      expect(blue.size, const Size(44, 44));
+      expect(ringRect, blue.inflate(4));
+      final positioned = tester.widget<Positioned>(
+        find.ancestor(of: ring, matching: find.byType(Positioned)).first,
+      );
+      expect(positioned.width, 52);
+      expect(positioned.height, 52);
+      expect(positioned.right, isNull);
+      expect(positioned.bottom, isNull);
+      final box = tester.widget<DecoratedBox>(ring);
+      final border = (box.decoration as BoxDecoration).border! as Border;
+      expect(border.top.color, const Color(0xff3478f6).withValues(alpha: 0.65));
+      expect(border.top.width, 2);
+    });
+  }
 
   testWidgets('rest-state golden', (tester) async {
     await tester.pumpWidget(_selector());

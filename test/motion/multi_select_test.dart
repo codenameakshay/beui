@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -48,6 +49,58 @@ Widget _app({
 
 void main() {
   group('BeuiMultiSelect selection', () {
+    testWidgets('trigger hover uses the strong border color', (tester) async {
+      await tester.pumpWidget(_app(reduce: true));
+      final trigger = find.byType(BeuiMultiSelectTrigger);
+      final surface = find
+          .descendant(of: trigger, matching: find.byType(Container))
+          .first;
+      Color borderColor() =>
+          (tester.widget<Container>(surface).decoration! as BoxDecoration)
+              .border!
+              .top
+              .color;
+
+      expect(borderColor(), BeuiColors.light().border);
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(trigger));
+      await tester.pump();
+      await mouse.moveTo(tester.getCenter(trigger));
+      await tester.pump();
+      expect(borderColor(), BeuiColors.light().borderStrong);
+    });
+
+    testWidgets('hovering an unselected item highlights its background', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(reduce: true));
+      await tester.tap(find.byType(BeuiMultiSelectTrigger));
+      await tester.pumpAndSettle();
+      final item = find.ancestor(
+        of: find.text('Engineering'),
+        matching: find.byType(AnimatedContainer),
+      );
+      expect(item, findsOneWidget);
+      expect(
+        (tester.widget<AnimatedContainer>(item).decoration! as BoxDecoration)
+            .color,
+        Colors.transparent,
+      );
+
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(
+        location: tester.getCenter(find.text('Engineering')),
+      );
+      await tester.pump();
+      await mouse.moveTo(tester.getCenter(find.text('Engineering')));
+      await tester.pump();
+      expect(
+        (tester.widget<AnimatedContainer>(item).decoration! as BoxDecoration)
+            .color,
+        BeuiColors.light().muted,
+      );
+    });
+
     testWidgets('opens, picks multiple values, and keeps panel open', (
       tester,
     ) async {

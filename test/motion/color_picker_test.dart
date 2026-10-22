@@ -1,4 +1,5 @@
 import 'package:beui/src/motion/color_picker.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:beui/src/theme/beui_colors.dart';
@@ -43,6 +44,40 @@ void main() {
     expect(changed, '#e55656');
   });
 
+  testWidgets('area loupe appears on pointer down and hides on pointer up', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(const BeuiColorPicker(child: BeuiColorPickerArea())),
+    );
+    final center = tester.getCenter(find.byType(BeuiColorPickerArea));
+    final pointer = await tester.startGesture(center);
+    await tester.pump();
+    expect(find.byKey(const ValueKey('color-picker-loupe')), findsOneWidget);
+
+    await pointer.up();
+    await tester.pump();
+    expect(find.byKey(const ValueKey('color-picker-loupe')), findsNothing);
+  });
+
+  testWidgets('area loupe also appears on hover and hides on exit', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(const BeuiColorPicker(child: BeuiColorPickerArea())),
+    );
+    final center = tester.getCenter(find.byType(BeuiColorPickerArea));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: center);
+    await mouse.moveTo(center);
+    await tester.pump();
+    expect(find.byKey(const ValueKey('color-picker-loupe')), findsOneWidget);
+
+    await mouse.moveTo(const Offset(-20, -20));
+    await tester.pump();
+    expect(find.byKey(const ValueKey('color-picker-loupe')), findsNothing);
+  });
+
   testWidgets('controlled color reports changes without changing its value', (
     tester,
   ) async {
@@ -70,6 +105,374 @@ void main() {
     expect(
       tester.widget<EditableText>(find.byType(EditableText)).controller.text,
       '3478F6',
+    );
+  });
+
+  testWidgets('reduced motion snaps the controlled area thumb to its color', (
+    tester,
+  ) async {
+    var color = '#ffffff';
+    late StateSetter updateColor;
+    await tester.pumpWidget(
+      _app(
+        MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: SizedBox(
+            width: 200,
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                updateColor = setState;
+                return BeuiColorPicker(
+                  value: color,
+                  child: const BeuiColorPickerArea(),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+    final area = find.byType(BeuiColorPickerArea);
+    final thumb = find.descendant(
+      of: area,
+      matching: find.byWidgetPredicate(
+        (widget) => widget is Positioned && widget.child is Container,
+      ),
+    );
+    Offset thumbOffset() => tester.getTopLeft(thumb) - tester.getTopLeft(area);
+    expect(tester.getSize(thumb), const Size(16, 16));
+    expect(thumbOffset(), const Offset(-8, -8));
+
+    updateColor(() => color = '#ff0000');
+    await tester.pump();
+    expect(thumbOffset(), const Offset(192, -8));
+
+    updateColor(() => color = '#000000');
+    await tester.pump();
+    expect(thumbOffset(), const Offset(-8, 136));
+  });
+
+  testWidgets('uncontrolled area tap retains and commits the requested color', (
+    tester,
+  ) async {
+    final changes = <String>[];
+    final commits = <String>[];
+    await tester.pumpWidget(
+      _app(
+        MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: SizedBox(
+            width: 200,
+            child: BeuiColorPicker(
+              defaultValue: '#ff0000',
+              onChanged: changes.add,
+              onCommit: commits.add,
+              child: const BeuiColorPickerArea(),
+            ),
+          ),
+        ),
+      ),
+    );
+    final area = find.byType(BeuiColorPickerArea);
+    final thumb = find.descendant(
+      of: area,
+      matching: find.byWidgetPredicate(
+        (widget) => widget is Positioned && widget.child is Container,
+      ),
+    );
+    await tester.tapAt(tester.getTopLeft(area) + const Offset(100, 72));
+    await tester.pump();
+
+    expect(changes, ['#804040', '#804040']);
+    expect(commits, ['#804040']);
+    expect(tester.getSize(area), const Size(200, 144));
+    final offset = tester.getTopLeft(thumb) - tester.getTopLeft(area);
+    expect(offset.dx, 92);
+    expect(offset.dy, closeTo(63.717647, 0.001));
+    final container = tester.widget<Positioned>(thumb).child as Container;
+    final decoration = container.decoration! as BoxDecoration;
+    expect(beuiColorToHex(decoration.color!), '#804040');
+  });
+
+  testWidgets('stale controlled area commits requested color on retry', (
+    tester,
+  ) async {
+    final changes = <String>[];
+    final commits = <String>[];
+    await tester.pumpWidget(
+      _app(
+        MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: SizedBox(
+            width: 200,
+            child: BeuiColorPicker(
+              value: '#ff0000',
+              onChanged: changes.add,
+              onCommit: commits.add,
+              child: const BeuiColorPickerArea(),
+            ),
+          ),
+        ),
+      ),
+    );
+    final area = find.byType(BeuiColorPickerArea);
+    final thumb = find.descendant(
+      of: area,
+      matching: find.byWidgetPredicate(
+        (widget) => widget is Positioned && widget.child is Container,
+      ),
+    );
+    for (var attempt = 0; attempt < 2; attempt++) {
+      final position = tester.getTopLeft(area) + const Offset(100, 72);
+      if (attempt == 0) {
+        await tester.tapAt(position);
+      } else {
+        final pointer = await tester.startGesture(position);
+        await tester.pump();
+        await pointer.up();
+      }
+      await tester.pump();
+      expect(tester.getSize(area), const Size(200, 144));
+      expect(tester.getSize(thumb), const Size(16, 16));
+      expect(
+        tester.getTopLeft(thumb) - tester.getTopLeft(area),
+        const Offset(192, -8),
+      );
+    }
+    expect(changes, ['#804040', '#804040', '#804040', '#804040']);
+    expect(commits, ['#804040', '#804040']);
+  });
+
+  for (final alpha in [false, true]) {
+    final sliderName = alpha ? 'alpha' : 'hue';
+    final requestedColor = alpha ? '#ff000080' : '#00ffff';
+
+    testWidgets('uncontrolled $sliderName release retains requested color', (
+      tester,
+    ) async {
+      final changes = <String>[];
+      final commits = <String>[];
+      await tester.pumpWidget(
+        _app(
+          MediaQuery(
+            data: const MediaQueryData(disableAnimations: true),
+            child: SizedBox(
+              width: 200,
+              child: BeuiColorPicker(
+                defaultValue: '#ff0000',
+                onChanged: changes.add,
+                onCommit: commits.add,
+                child: alpha
+                    ? const BeuiColorPickerAlpha()
+                    : const BeuiColorPickerHue(),
+              ),
+            ),
+          ),
+        ),
+      );
+      final slider = find.byType(
+        alpha ? BeuiColorPickerAlpha : BeuiColorPickerHue,
+      );
+      final thumb = find.descendant(
+        of: slider,
+        matching: find.byWidgetPredicate(
+          (widget) =>
+              widget is Container &&
+              widget.constraints ==
+                  const BoxConstraints.tightFor(width: 16, height: 16),
+        ),
+      );
+      expect(tester.getSize(slider), const Size(200, 24));
+      expect(tester.getSize(thumb), const Size(16, 16));
+      expect(
+        tester.getTopLeft(thumb) - tester.getTopLeft(slider),
+        alpha ? const Offset(184, 4) : const Offset(0, 4),
+      );
+      for (var attempt = 0; attempt < 2; attempt++) {
+        final origin = tester.getTopLeft(slider);
+        final pointer = await tester.startGesture(
+          origin + const Offset(50, 12),
+        );
+        await pointer.moveTo(origin + const Offset(75, 12));
+        await pointer.moveTo(origin + const Offset(100, 12));
+        expect(changes.last, requestedColor);
+        if (attempt == 1) await tester.pump();
+        await pointer.up();
+        await tester.pump();
+        expect(changes.last, requestedColor);
+        expect(
+          tester.getTopLeft(thumb) - tester.getTopLeft(slider),
+          const Offset(92, 4),
+        );
+      }
+      expect(commits, [requestedColor, requestedColor]);
+    });
+
+    testWidgets(
+      'stale controlled $sliderName commits requested color on retry',
+      (tester) async {
+        final changes = <String>[];
+        final commits = <String>[];
+        late StateSetter rebuild;
+        await tester.pumpWidget(
+          _app(
+            MediaQuery(
+              data: const MediaQueryData(disableAnimations: true),
+              child: SizedBox(
+                width: 200,
+                child: StatefulBuilder(
+                  builder: (context, setState) {
+                    rebuild = setState;
+                    return BeuiColorPicker(
+                      value: '#ff0000',
+                      onChanged: changes.add,
+                      onCommit: commits.add,
+                      child: alpha
+                          ? BeuiColorPickerAlpha(label: sliderName)
+                          : BeuiColorPickerHue(label: sliderName),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+        final slider = find.byType(
+          alpha ? BeuiColorPickerAlpha : BeuiColorPickerHue,
+        );
+        final thumb = find.descendant(
+          of: slider,
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Container &&
+                widget.constraints ==
+                    const BoxConstraints.tightFor(width: 16, height: 16),
+          ),
+        );
+        for (var attempt = 0; attempt < 2; attempt++) {
+          final origin = tester.getTopLeft(slider);
+          final pointer = await tester.startGesture(
+            origin + const Offset(50, 12),
+          );
+          await pointer.moveTo(origin + const Offset(75, 12));
+          await pointer.moveTo(origin + const Offset(100, 12));
+          expect(changes.last, requestedColor);
+          rebuild(() {});
+          await tester.pump();
+          await pointer.up();
+          await tester.pump();
+          expect(changes.last, requestedColor);
+          expect(tester.getSize(slider), const Size(200, 24));
+          expect(tester.getSize(thumb), const Size(16, 16));
+          expect(
+            tester.getTopLeft(thumb) - tester.getTopLeft(slider),
+            alpha ? const Offset(184, 4) : const Offset(0, 4),
+          );
+        }
+        expect(commits, [requestedColor, requestedColor]);
+      },
+    );
+  }
+
+  testWidgets('floating Material fits the picker body and dismisses outside', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        const BeuiColorPicker(
+          trigger: SizedBox(width: 40, height: 32, child: Text('Open')),
+          child: BeuiColorPickerContent(child: BeuiColorPickerArea()),
+        ),
+      ),
+    );
+    for (var attempt = 0; attempt < 2; attempt++) {
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      final material = find
+          .ancestor(
+            of: find.byType(BeuiColorPickerContent),
+            matching: find.byType(Material),
+          )
+          .first;
+      expect(tester.getSize(material), const Size(288, 168));
+      expect(
+        (tester.getTopLeft(material) -
+                (tester.getBottomLeft(find.text('Open')) + const Offset(0, 8)))
+            .distance,
+        lessThan(0.01),
+      );
+      await tester.tapAt(const Offset(20, 20));
+      await tester.pumpAndSettle();
+      expect(find.byType(BeuiColorPickerContent), findsNothing);
+    }
+  });
+
+  testWidgets('empty floating content still shrinkwraps its Material', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        const BeuiColorPicker(
+          trigger: Text('Open'),
+          child: BeuiColorPickerContent(child: SizedBox.shrink()),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+    final material = find
+        .ancestor(
+          of: find.byType(BeuiColorPickerContent),
+          matching: find.byType(Material),
+        )
+        .first;
+    expect(tester.getSize(material), const Size(288, 24));
+  });
+
+  testWidgets('reduced motion panel keeps final geometry while fading', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: const BeuiColorPicker(
+            trigger: SizedBox(width: 40, height: 32, child: Text('Open')),
+            child: BeuiColorPickerContent(child: BeuiColorPickerArea()),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    final material = find
+        .ancestor(
+          of: find.byType(BeuiColorPickerContent),
+          matching: find.byType(Material),
+        )
+        .first;
+    final fade = find
+        .ancestor(of: material, matching: find.byType(FadeTransition))
+        .first;
+    final expectedTopLeft =
+        tester.getBottomLeft(find.text('Open')) + const Offset(0, 8);
+    expect(
+      tester.widget<FadeTransition>(fade).opacity.value,
+      inExclusiveRange(0, 1),
+    );
+    expect(tester.getTopLeft(material), expectedTopLeft);
+    expect(
+      tester.getBottomRight(material),
+      expectedTopLeft + const Offset(288, 168),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.widget<FadeTransition>(fade).opacity.value, 1);
+    expect(tester.getTopLeft(material), expectedTopLeft);
+    expect(
+      tester.getBottomRight(material),
+      expectedTopLeft + const Offset(288, 168),
     );
   });
 

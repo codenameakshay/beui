@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +24,7 @@ final _images = [
 ];
 
 Widget _app({
+  List<BeuiImageViewerImage>? images,
   String? value,
   bool isControlled = false,
   String? defaultValue,
@@ -32,7 +34,7 @@ Widget _app({
   final child = SizedBox(
     width: 360,
     child: BeuiImageViewer(
-      images: _images,
+      images: images ?? _images,
       value: value,
       isControlled: isControlled,
       defaultValue: defaultValue,
@@ -60,6 +62,14 @@ Widget _app({
   );
 }
 
+Rect _imageRect(WidgetTester tester, Color color) => tester.getRect(
+  find
+      .byWidgetPredicate(
+        (widget) => widget is ColoredBox && widget.color == color,
+      )
+      .last,
+);
+
 void main() {
   group('BeuiImageViewer interaction', () {
     testWidgets('thumbnail opens and close dismisses', (tester) async {
@@ -69,8 +79,40 @@ void main() {
       expect(find.bySemanticsLabel('Image gallery'), findsWidgets);
       expect(find.text('01 / Red study'), findsOneWidget);
 
+      final expanded = _imageRect(tester, const Color(0xffc54d4d));
+      await tester.tap(find.byTooltip('Close viewer'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 80));
+      final closing = _imageRect(tester, const Color(0xffc54d4d));
+      expect(closing.width, lessThan(expanded.width * 0.8));
+      expect(closing.width, greaterThan(0));
+      await tester.pumpAndSettle();
+      expect(find.text('01 / Red study'), findsNothing);
+    });
+
+    testWidgets('open mounts a morph overlay and close clears selection', (
+      tester,
+    ) async {
+      final selections = <String?>[];
+      await tester.pumpWidget(_app(onChanged: selections.add));
+      await tester.tap(find.bySemanticsLabel('Open Red study'));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      expect(
+        _imageRect(tester, const Color(0xffc54d4d)).width,
+        inExclusiveRange(100, 150),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        _imageRect(tester, const Color(0xffc54d4d)).width,
+        greaterThan(500),
+      );
+      expect(find.text('01 / Red study'), findsOneWidget);
+
       await tester.tap(find.byTooltip('Close viewer'));
       await tester.pumpAndSettle();
+      expect(selections, ['one', null]);
       expect(find.text('01 / Red study'), findsNothing);
     });
 
@@ -105,6 +147,174 @@ void main() {
       },
     );
 
+    testWidgets(
+      'rejected controlled request cannot supply a later morph source',
+      (tester) async {
+        String? selected;
+        final requests = <String?>[];
+        late StateSetter update;
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: BeuiTextTheme.trackingNormal(
+              ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+            ),
+            home: StatefulBuilder(
+              builder: (context, setState) {
+                update = setState;
+                return Scaffold(
+                  body: Center(
+                    child: SizedBox(
+                      width: 360,
+                      child: BeuiImageViewer(
+                        images: _images,
+                        value: selected,
+                        isControlled: true,
+                        onChanged: requests.add,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+
+        await tester.tap(find.bySemanticsLabel('Open Blue study'));
+        await tester.pumpAndSettle();
+        expect(requests, ['two']);
+        expect(find.byTooltip('Close viewer'), findsNothing);
+        update(() => selected = 'one');
+        await tester.pump();
+        await tester.pump();
+        await tester.pump();
+        expect(find.text('01 / Red study'), findsOneWidget);
+        expect(
+          _imageRect(tester, const Color(0xffc54d4d)).width,
+          greaterThan(500),
+        );
+        await tester.pumpAndSettle();
+        update(() => selected = null);
+        await tester.pumpAndSettle();
+        // Even a later programmatic open of the rejected id is not acceptance
+        // of that old request.
+        update(() => selected = 'two');
+        await tester.pump();
+        await tester.pump();
+        await tester.pump();
+        expect(find.text('02 / Blue study'), findsOneWidget);
+        expect(
+          _imageRect(tester, const Color(0xff4d76c5)).width,
+          greaterThan(300),
+        );
+      },
+    );
+
+    testWidgets(
+      'accepted controlled thumbnail source survives the close morph',
+      (tester) async {
+        String? selected;
+        final requests = <String?>[];
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData.light().copyWith(extensions: [BeuiColors.light()]),
+            home: Scaffold(
+              body: Center(
+                child: StatefulBuilder(
+                  builder: (context, setState) => SizedBox(
+                    width: 360,
+                    child: BeuiImageViewer(
+                      images: _images,
+                      value: selected,
+                      isControlled: true,
+                      onChanged: (value) {
+                        requests.add(value);
+                        setState(() => selected = value);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        final thumbnail = tester.getRect(
+          find.bySemanticsLabel('Open Red study'),
+        );
+        await tester.tap(find.bySemanticsLabel('Open Red study'));
+        await tester.pumpAndSettle();
+        final expanded = _imageRect(tester, const Color(0xffc54d4d));
+        expect(expanded.width, greaterThan(500));
+        await tester.tap(find.byTooltip('Close viewer'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 80));
+        final closing = _imageRect(tester, const Color(0xffc54d4d));
+        expect(closing.width, lessThan(expanded.width * 0.8));
+        expect(
+          (closing.center - thumbnail.center).distance,
+          lessThan((expanded.center - thumbnail.center).distance),
+        );
+        expect(requests, ['one', null]);
+        await tester.pumpAndSettle();
+        expect(find.text('01 / Red study'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'reduced motion thumbnail hover keeps brightness without movement',
+      (tester) async {
+        await tester.pumpWidget(_app(reduce: true));
+        final thumbnail = find.bySemanticsLabel('Open Red study');
+        final before = _imageRect(tester, const Color(0xffc54d4d));
+        final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+        addTearDown(mouse.removePointer);
+        await mouse.addPointer(location: Offset.zero);
+        await mouse.moveTo(tester.getCenter(thumbnail));
+        await tester.pump();
+        for (var frame = 0; frame < 10; frame++) {
+          await tester.pump(const Duration(milliseconds: 20));
+          expect(_imageRect(tester, const Color(0xffc54d4d)), before);
+          for (final transform in tester.widgetList<Transform>(
+            find.descendant(of: thumbnail, matching: find.byType(Transform)),
+          )) {
+            expect(transform.transform, Matrix4.identity());
+          }
+        }
+        final filter = tester
+            .widget<ColorFiltered>(
+              find.descendant(
+                of: thumbnail,
+                matching: find.byType(ColorFiltered),
+              ),
+            )
+            .colorFilter;
+        expect(
+          filter,
+          const ColorFilter.matrix([
+            1.04,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1.04,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1.04,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+          ]),
+        );
+      },
+    );
+
     testWidgets('controlled null stays closed until its owner changes value', (
       tester,
     ) async {
@@ -116,6 +326,25 @@ void main() {
       await tester.pumpAndSettle();
       expect(requested, 'one');
       expect(find.byTooltip('Close viewer'), findsNothing);
+    });
+
+    testWidgets('empty gallery can receive images and retry opening', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(images: const []));
+      expect(find.byType(BeuiImageViewerThumbnail), findsNothing);
+      expect(find.byTooltip('Close viewer'), findsNothing);
+      await tester.pumpWidget(_app());
+      await tester.tap(find.bySemanticsLabel('Open Red study'));
+      await tester.pumpAndSettle();
+      expect(find.text('01 / Red study'), findsOneWidget);
+      await tester.pumpWidget(_app(images: const []));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Close viewer'), findsNothing);
+      await tester.pumpWidget(_app());
+      await tester.tap(find.bySemanticsLabel('Open Blue study'));
+      await tester.pumpAndSettle();
+      expect(find.text('02 / Blue study'), findsOneWidget);
     });
 
     testWidgets('reduced motion keeps modal usable', (tester) async {

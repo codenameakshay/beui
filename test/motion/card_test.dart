@@ -1,7 +1,9 @@
-import 'dart:ui' show Tristate;
+import 'dart:ui' show PointerDeviceKind, Tristate;
 
 import 'package:beui/beui.dart';
+import 'package:beui/src/motion/_focus_ring.dart' show BeuiFocusRing;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support.dart';
@@ -51,13 +53,13 @@ void main() {
       );
       final card = tester.widget<BeuiCard>(find.byType(BeuiCard));
       expect(card.selected, isTrue);
-      expect(
+      final focus = tester.widget<Focus>(
         find.descendant(
           of: find.byType(BeuiCard),
           matching: find.byType(Focus),
         ),
-        findsNothing,
       );
+      expect(focus.canRequestFocus, isFalse);
       final box = tester.widget<AnimatedContainer>(
         find.descendant(
           of: find.byType(BeuiCard),
@@ -74,6 +76,88 @@ void main() {
   });
 
   group('BeuiCard interaction', () {
+    testWidgets('hover changes an interactive card border to borderStrong', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiCard(
+            interactive: true,
+            child: SizedBox(width: 180, height: 100),
+          ),
+        ),
+      );
+      final colors = BeuiColors.resolve(tester.element(find.byType(BeuiCard)));
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(find.byType(BeuiCard)));
+      await mouse.moveTo(tester.getCenter(find.byType(BeuiCard)));
+      await tester.pumpAndSettle();
+
+      final surface = tester.widget<AnimatedContainer>(
+        find.descendant(
+          of: find.byType(BeuiCard),
+          matching: find.byType(AnimatedContainer),
+        ),
+      );
+      expect(
+        (surface.decoration! as BoxDecoration).border!.top.color,
+        colors.borderStrong,
+      );
+      await mouse.removePointer();
+    });
+
+    testWidgets('descendant checkbox focus shows the card focus ring', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          FocusTraversalGroup(
+            child: BeuiCard(
+              interactive: true,
+              child: BeuiCheckbox(value: false, onChanged: _ignoreValue),
+            ),
+          ),
+        ),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.widget<BeuiFocusRing>(find.byType(BeuiFocusRing)).focused,
+        isTrue,
+      );
+    });
+
+    testWidgets('card action occupies the header trailing slot', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiCard(
+            child: BeuiCardHeader(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: BeuiCardTitle(child: Text('Heading'))),
+                  BeuiCardAction(child: Text('Edit')),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      final actionRect = tester.getRect(find.byType(BeuiCardAction));
+      final titleRect = tester.getRect(find.byType(BeuiCardTitle));
+      expect(actionRect.center.dx, greaterThan(titleRect.center.dx));
+      expect(
+        find.ancestor(
+          of: find.byType(BeuiCardAction),
+          matching: find.byType(Row),
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('plain card does not scale on pointer press', (tester) async {
       await tester.pumpWidget(
         beuiTestApp(const BeuiCard(child: SizedBox(width: 180, height: 100))),
@@ -192,3 +276,5 @@ void main() {
     );
   });
 }
+
+void _ignoreValue(bool value) {}

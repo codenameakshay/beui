@@ -5,30 +5,34 @@ import 'package:flutter/material.dart';
 Widget comboboxDemo(BuildContext context) => const _ComboboxDemo();
 
 const _workspaces =
-    <({String value, String label, String detail, String group})>[
+    <({String value, String label, String detail, String group, Color mark})>[
       (
         value: 'studio',
         label: 'Design studio',
         detail: '12 projects',
         group: 'Recent',
+        mark: Color(0xFF8B5CF6),
       ),
       (
         value: 'product',
         label: 'Product team',
         detail: '8 projects',
         group: 'Recent',
+        mark: Color(0xFF0EA5E9),
       ),
       (
         value: 'playground',
         label: 'Playground',
         detail: '24 experiments',
         group: 'Workspaces',
+        mark: Color(0xFFF59E0B),
       ),
       (
         value: 'archive',
         label: 'Component archive',
         detail: '41 components',
         group: 'Workspaces',
+        mark: Color(0xFF10B981),
       ),
     ];
 
@@ -69,18 +73,33 @@ class _ComboboxDemoState extends State<_ComboboxDemo> {
                         value: workspace.value,
                         textValue: workspace.label,
                         keywords: <String>[workspace.detail, workspace.group],
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: <Widget>[
-                            Text(
-                              workspace.label,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: workspace.mark,
+                                borderRadius: BorderRadius.circular(3),
                               ),
                             ),
-                            Text(
-                              workspace.detail,
-                              style: const TextStyle(fontSize: 11),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    workspace.label,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    workspace.detail,
+                                    style: const TextStyle(fontSize: 11),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

@@ -400,41 +400,50 @@ class _AdaptiveStepperActionState extends State<_AdaptiveStepperAction> {
                   : () => (widget.increase ? scope.increment : scope.decrement)(
                       false,
                     ),
-              child: AnimatedOpacity(
-                opacity: hidden ? 0 : 1,
-                duration: Duration(milliseconds: reduce ? 0 : 140),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 120),
-                  decoration: BoxDecoration(
-                    color: _hovered && !hidden
-                        ? colors.accent
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(24),
-                    border: _focused
-                        ? Border.all(color: colors.ring, width: 2)
-                        : null,
-                  ),
-                  child: Center(
-                    child: SingleMotionBuilder(
-                      value: _pressed && !reduce && !hidden ? 0.94 : 1.0,
-                      motion: motionFor(
-                        context,
-                        beuiSpringPress,
-                        isMovement: true,
+              child: MouseRegion(
+                onEnter: (_) => setState(() => _hovered = true),
+                onExit: (_) => setState(() => _hovered = false),
+                child: AnimatedOpacity(
+                  opacity: hidden ? 0 : 1,
+                  duration: Duration(milliseconds: reduce ? 0 : 140),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 120),
+                    decoration: BoxDecoration(
+                      color: !hidden && _hovered
+                          ? colors.muted
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: _focused
+                            ? colors.ring
+                            : colors.foreground.withValues(alpha: 0.18),
+                        width: _focused ? 2 : 1,
                       ),
-                      builder: (context, scale, child) => Transform.scale(
-                        scale: scale,
-                        child: IconTheme(
-                          data: IconThemeData(
-                            color: scope.disabled
-                                ? colors.mutedForeground.withValues(alpha: 0.5)
-                                : colors.foreground,
-                            size: 20,
-                          ),
-                          child: child ?? widget.child,
+                    ),
+                    child: Center(
+                      child: SingleMotionBuilder(
+                        value: _pressed && !reduce && !hidden ? 0.94 : 1.0,
+                        motion: motionFor(
+                          context,
+                          beuiSpringPress,
+                          isMovement: true,
                         ),
+                        builder: (context, scale, child) => Transform.scale(
+                          scale: scale,
+                          child: IconTheme(
+                            data: IconThemeData(
+                              color: scope.disabled
+                                  ? colors.mutedForeground.withValues(
+                                      alpha: 0.5,
+                                    )
+                                  : colors.foreground,
+                              size: 20,
+                            ),
+                            child: child ?? widget.child,
+                          ),
+                        ),
+                        child: widget.child,
                       ),
-                      child: widget.child,
                     ),
                   ),
                 ),

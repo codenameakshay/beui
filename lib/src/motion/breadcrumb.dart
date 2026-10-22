@@ -146,14 +146,28 @@ class BeuiBreadcrumbLink extends StatelessWidget {
       label: semanticLabel,
       child: TextButton(
         onPressed: onPressed,
-        style: TextButton.styleFrom(
-          foregroundColor: colors.mutedForeground,
-          minimumSize: const Size(0, 32),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.compact,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-        ),
+        style:
+            TextButton.styleFrom(
+              foregroundColor: colors.mutedForeground,
+              minimumSize: const Size(0, 32),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.compact,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ).copyWith(
+              backgroundColor: WidgetStateProperty.resolveWith((states) {
+                return states.contains(WidgetState.hovered)
+                    ? colors.muted.withValues(alpha: 0.6)
+                    : Colors.transparent;
+              }),
+              foregroundColor: WidgetStateColor.resolveWith((states) {
+                return states.contains(WidgetState.hovered)
+                    ? colors.foreground
+                    : colors.mutedForeground;
+              }),
+            ),
         child: DefaultTextStyle.merge(
           style: const TextStyle(fontWeight: FontWeight.w500),
           child: child,
@@ -346,11 +360,20 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
             visualDensity: VisualDensity.compact,
             constraints: const BoxConstraints.tightFor(width: 32, height: 32),
             onPressed: () => setState(() => _open = !_open),
-            icon: Icon(
-              LucideIcons.ellipsis,
-              size: 16,
-              color: colors.mutedForeground,
-            ),
+            style: IconButton.styleFrom(foregroundColor: colors.mutedForeground)
+                .copyWith(
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
+                    return states.contains(WidgetState.hovered)
+                        ? colors.muted.withValues(alpha: 0.6)
+                        : Colors.transparent;
+                  }),
+                  foregroundColor: WidgetStateColor.resolveWith((states) {
+                    return states.contains(WidgetState.hovered)
+                        ? colors.foreground
+                        : colors.mutedForeground;
+                  }),
+                ),
+            icon: const Icon(LucideIcons.ellipsis, size: 16),
           ),
         ),
       ),

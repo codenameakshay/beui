@@ -313,12 +313,11 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
         ? list
         : LayoutBuilder(
             builder: (context, constraints) {
-              if (!constraints.hasBoundedWidth ||
-                  !constraints.maxWidth.isFinite) {
-                return list;
-              }
               return _TabsOverflowHost(
-                maxWidth: constraints.maxWidth,
+                maxWidth:
+                    constraints.hasBoundedWidth && constraints.maxWidth.isFinite
+                    ? constraints.maxWidth
+                    : 448,
                 variant: variant,
                 colors: colors,
                 child: list,
@@ -786,54 +785,57 @@ class _TabsOverflowHostState extends State<_TabsOverflowHost> {
       );
     }
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: widget.maxWidth),
-      child: ClipRect(
-        child: !_overflow
-            ? scroller
-            : DecoratedBox(
-                decoration: BoxDecoration(
-                  color: widget.variant == BeuiTabsVariant.underline
-                      ? null
-                      : widget.colors.card,
-                  borderRadius: radius,
-                ),
-                child: Stack(
-                  alignment: Alignment.centerLeft,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 36),
-                      child: scroller,
-                    ),
-                    if (_left)
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: SizedBox(
+        width: widget.maxWidth,
+        child: ClipRect(
+          child: !_overflow
+              ? scroller
+              : DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: widget.variant == BeuiTabsVariant.underline
+                        ? null
+                        : widget.colors.card,
+                    borderRadius: radius,
+                  ),
+                  child: Stack(
+                    alignment: Alignment.centerLeft,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 36),
+                        child: scroller,
+                      ),
+                      if (_left)
+                        Positioned(
+                          left: 36,
+                          top: 0,
+                          bottom: 0,
+                          child: fade(left: true),
+                        ),
+                      if (_right)
+                        Positioned(
+                          right: 36,
+                          top: 0,
+                          bottom: 0,
+                          child: fade(left: false),
+                        ),
                       Positioned(
-                        left: 36,
+                        left: 0,
                         top: 0,
                         bottom: 0,
-                        child: fade(left: true),
+                        child: arrow(left: true, enabled: _left),
                       ),
-                    if (_right)
                       Positioned(
-                        right: 36,
+                        right: 0,
                         top: 0,
                         bottom: 0,
-                        child: fade(left: false),
+                        child: arrow(left: false, enabled: _right),
                       ),
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      child: arrow(left: true, enabled: _left),
-                    ),
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      bottom: 0,
-                      child: arrow(left: false, enabled: _right),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

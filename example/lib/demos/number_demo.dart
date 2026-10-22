@@ -73,35 +73,45 @@ class _NumberDemoState extends State<_NumberDemo> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        caption('Card number'),
-        const SizedBox(height: 8),
-        BeuiDigitSwap(
-          value: _revealed ? _card : _masked,
-          animationKey: _revealed ? 'revealed' : 'masked',
-          direction: _revealed
-              ? BeuiDigitSwapDirection.up
-              : BeuiDigitSwapDirection.down,
-          suffixLength: 4,
-          style: TextStyle(
-            fontFamily: 'monospace',
-            fontSize: 18,
-            letterSpacing: 1.4,
-            fontFeatures: const [FontFeature.tabularFigures()],
-            color: colors.foreground,
-          ),
-          glyphStyle: TextStyle(
-            color: _revealed ? colors.foreground : colors.mutedForeground,
-          ),
-          suffixStyle: TextStyle(color: colors.foreground),
-        ),
-        const SizedBox(height: 20),
-        Align(
-          alignment: Alignment.centerLeft,
+        Center(
           child: SizedBox(
             width: 320,
-            child: OutlinedButton(
-              onPressed: () => setState(() => _revealed = !_revealed),
-              child: Text(_revealed ? 'Mask' : 'Animate'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                caption('Card number'),
+                const SizedBox(height: 8),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: BeuiDigitSwap(
+                    value: _revealed ? _card : _masked,
+                    animationKey: _revealed ? 'revealed' : 'masked',
+                    direction: _revealed
+                        ? BeuiDigitSwapDirection.up
+                        : BeuiDigitSwapDirection.down,
+                    suffixLength: 4,
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 18,
+                      letterSpacing: 1.4,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                      color: colors.foreground,
+                    ),
+                    glyphStyle: TextStyle(
+                      color: _revealed
+                          ? colors.foreground
+                          : colors.mutedForeground,
+                    ),
+                    suffixStyle: TextStyle(color: colors.foreground),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                OutlinedButton(
+                  onPressed: () => setState(() => _revealed = !_revealed),
+                  child: const Text('Animate'),
+                ),
+              ],
             ),
           ),
         ),

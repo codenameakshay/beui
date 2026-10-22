@@ -1,9 +1,13 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
+import '../tokens/motion.dart';
+import '_engine.dart' show MotionBuilder, NoMotion, RectMotionConverter;
 
 /// A gallery image and the content rendered for it in both gallery and viewer.
 @immutable
@@ -84,6 +88,10 @@ class BeuiImageViewer extends StatefulWidget {
 
 class _BeuiImageViewerState extends State<BeuiImageViewer> {
   String? _internalValue;
+  late Map<String, GlobalKey> _thumbnailKeys;
+  Rect? _sourceRect;
+  Rect? _pendingSourceRect;
+  String? _pendingSourceImageId;
 
   bool get _controlled => widget.isControlled || widget.value != null;
   String? get _selected => _controlled ? widget.value : _internalValue;
@@ -92,6 +100,7 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
   void initState() {
     super.initState();
     _internalValue = widget.defaultValue;
+    _thumbnailKeys = {for (final image in widget.images) image.id: GlobalKey()};
     _validateImages();
   }
 
@@ -99,6 +108,21 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
   void didUpdateWidget(covariant BeuiImageViewer oldWidget) {
     super.didUpdateWidget(oldWidget);
     _validateImages();
+    if (_controlled && widget.value != oldWidget.value) {
+      if (widget.value != null) {
+        _sourceRect = widget.value == _pendingSourceImageId
+            ? _pendingSourceRect
+            : null;
+      }
+      _pendingSourceRect = null;
+      _pendingSourceImageId = null;
+    }
+    if (oldWidget.images.map((image) => image.id).join('|') !=
+        widget.images.map((image) => image.id).join('|')) {
+      _thumbnailKeys = {
+        for (final image in widget.images) image.id: GlobalKey(),
+      };
+    }
     if (!_controlled &&
         _selected != null &&
         !widget.images.any((image) => image.id == _selected)) {
@@ -114,6 +138,21 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
   }
 
   void _select(String? id) {
+    if (id != null && id != _selected) {
+      final key = _thumbnailKeys[id];
+      final box = key?.currentContext?.findRenderObject() as RenderBox?;
+      final rect = box != null && box.hasSize
+          ? box.localToGlobal(Offset.zero) & box.size
+          : null;
+      if (_controlled) {
+        // Keep request geometry separate until the controlled owner accepts
+        // that id. An unrelated owner selection discards it.
+        _pendingSourceRect = rect;
+        _pendingSourceImageId = id;
+      } else {
+        _sourceRect = rect;
+      }
+    }
     if (!_controlled) setState(() => _internalValue = id);
     widget.onChanged?.call(id);
   }
@@ -134,6 +173,8 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
       label: widget.label,
       select: _select,
       move: _move,
+      thumbnailKeys: _thumbnailKeys,
+      sourceRect: _sourceRect,
       child: Align(
         alignment: Alignment.topCenter,
         child:
@@ -162,6 +203,8 @@ class _ImageViewerScope extends InheritedWidget {
     required this.label,
     required this.select,
     required this.move,
+    required this.thumbnailKeys,
+    required this.sourceRect,
     required super.child,
   });
 
@@ -170,6 +213,8 @@ class _ImageViewerScope extends InheritedWidget {
   final String label;
   final ValueChanged<String?> select;
   final ValueChanged<int> move;
+  final Map<String, GlobalKey> thumbnailKeys;
+  final Rect? sourceRect;
 
   static _ImageViewerScope of(BuildContext context) {
     final scope = context
@@ -184,7 +229,8 @@ class _ImageViewerScope extends InheritedWidget {
   bool updateShouldNotify(_ImageViewerScope oldWidget) =>
       images != oldWidget.images ||
       selectedId != oldWidget.selectedId ||
-      label != oldWidget.label;
+      label != oldWidget.label ||
+      sourceRect != oldWidget.sourceRect;
 }
 
 /// Gallery layout for [BeuiImageViewerThumbnail] children.
@@ -221,21 +267,83 @@ class BeuiImageViewerThumbnail extends StatelessWidget {
     );
     final selected = scope.selectedId == imageId;
     final colors = BeuiColors.resolve(context);
+    return _ImageViewerThumbnailButton(
+      key: scope.thumbnailKeys[imageId],
+      image: image,
+      selected: selected,
+      color: colors.muted,
+      onTap: () => scope.select(imageId),
+    );
+  }
+}
+
+class _ImageViewerThumbnailButton extends StatefulWidget {
+  const _ImageViewerThumbnailButton({
+    required this.image,
+    required this.selected,
+    required this.color,
+    required this.onTap,
+    super.key,
+  });
+
+  final BeuiImageViewerImage image;
+  final bool selected;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  State<_ImageViewerThumbnailButton> createState() =>
+      _ImageViewerThumbnailButtonState();
+}
+
+class _ImageViewerThumbnailButtonState
+    extends State<_ImageViewerThumbnailButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final movement = motionFor(context, beuiSpringLayout, isMovement: true);
     return Semantics(
       button: true,
-      expanded: selected,
-      label: 'Open ${image.alt}',
-      child: SizedBox(
-        width: 120,
-        child: Material(
-          color: colors.muted,
-          borderRadius: BorderRadius.circular(16),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: () => scope.select(imageId),
-            child: AspectRatio(
-              aspectRatio: image.width / image.height,
-              child: image.content,
+      expanded: widget.selected,
+      label: 'Open ${widget.image.alt}',
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          curve: Curves.easeOut,
+          transform: movement is NoMotion
+              ? null
+              : Matrix4.translationValues(0, _hovered ? -3 : 0, 0),
+          width: 120,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: _hovered
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.16),
+                      blurRadius: 14,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
+                : const [],
+          ),
+          child: Material(
+            color: widget.color,
+            borderRadius: BorderRadius.circular(16),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: widget.onTap,
+              child: AspectRatio(
+                aspectRatio: widget.image.width / widget.image.height,
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.matrix(
+                    _hovered ? _hoverBrightness : _normalBrightness,
+                  ),
+                  child: widget.image.content,
+                ),
+              ),
             ),
           ),
         ),
@@ -243,6 +351,51 @@ class BeuiImageViewerThumbnail extends StatelessWidget {
     );
   }
 }
+
+const _normalBrightness = <double>[
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+];
+const _hoverBrightness = <double>[
+  1.04,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1.04,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1.04,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+];
 
 /// Counter showing the selected image index and total.
 class BeuiImageViewerCounter extends StatelessWidget {
@@ -378,7 +531,7 @@ class _ViewerControl extends StatelessWidget {
 }
 
 /// Modal image surface, rendered through [BeuiOverlay].
-class BeuiImageViewerContent extends StatelessWidget {
+class BeuiImageViewerContent extends StatefulWidget {
   /// Creates the viewer surface. [header] and [footer] replace default controls.
   const BeuiImageViewerContent({this.header, this.footer, super.key});
 
@@ -389,11 +542,20 @@ class BeuiImageViewerContent extends StatelessWidget {
   final Widget? footer;
 
   @override
+  State<BeuiImageViewerContent> createState() => _BeuiImageViewerContentState();
+}
+
+class _BeuiImageViewerContentState extends State<BeuiImageViewerContent> {
+  BeuiImageViewerImage? _lastImage;
+
+  @override
   Widget build(BuildContext context) {
     final scope = _ImageViewerScope.of(context);
     final selected = scope.images
         .where((image) => image.id == scope.selectedId)
         .firstOrNull;
+    if (selected != null) _lastImage = selected;
+    final displayed = selected ?? _lastImage;
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     return BeuiOverlay(
@@ -405,7 +567,7 @@ class BeuiImageViewerContent extends StatelessWidget {
       enterDuration: const Duration(milliseconds: 260),
       exitDuration: const Duration(milliseconds: 160),
       overlayBuilder: (context, animation, _) {
-        if (selected == null) return const SizedBox.shrink();
+        if (displayed == null) return const SizedBox.shrink();
         return AnimatedBuilder(
           animation: animation,
           builder: (context, _) {
@@ -443,27 +605,31 @@ class BeuiImageViewerContent extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                header ?? const BeuiImageViewerCounter(),
-                                if (header == null)
+                                widget.header ?? const BeuiImageViewerCounter(),
+                                if (widget.header == null)
                                   const BeuiImageViewerClose(),
                               ],
                             ),
                             Expanded(
-                              child: _ZoomableImage(
-                                image: selected,
+                              child: _MorphingViewerImage(
+                                image: displayed,
+                                sourceRect: scope.sourceRect,
+                                opening: selected != null,
                                 reduce: reduce,
                                 colors: colors,
                               ),
                             ),
                             Row(
                               children: [
-                                if (footer == null)
+                                if (widget.footer == null)
                                   const BeuiImageViewerPrevious(),
                                 Expanded(
                                   child:
-                                      footer ?? const BeuiImageViewerCaption(),
+                                      widget.footer ??
+                                      const BeuiImageViewerCaption(),
                                 ),
-                                if (footer == null) const BeuiImageViewerNext(),
+                                if (widget.footer == null)
+                                  const BeuiImageViewerNext(),
                               ],
                             ),
                           ],
@@ -480,6 +646,109 @@ class BeuiImageViewerContent extends StatelessWidget {
       child: const SizedBox.shrink(),
     );
   }
+}
+
+class _MorphingViewerImage extends StatefulWidget {
+  const _MorphingViewerImage({
+    required this.image,
+    required this.sourceRect,
+    required this.opening,
+    required this.reduce,
+    required this.colors,
+  });
+
+  final BeuiImageViewerImage image;
+  final Rect? sourceRect;
+  final bool opening;
+  final bool reduce;
+  final BeuiColors colors;
+
+  @override
+  State<_MorphingViewerImage> createState() => _MorphingViewerImageState();
+}
+
+class _MorphingViewerImageState extends State<_MorphingViewerImage> {
+  final GlobalKey _stackKey = GlobalKey();
+  Rect? _sourceLocal;
+  bool _measureScheduled = false;
+
+  @override
+  void didUpdateWidget(covariant _MorphingViewerImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.image.id != widget.image.id ||
+        oldWidget.sourceRect != widget.sourceRect) {
+      _sourceLocal = null;
+    }
+  }
+
+  void _scheduleMeasure() {
+    if (_measureScheduled || widget.sourceRect == null || widget.reduce) return;
+    _measureScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _measureScheduled = false;
+      if (!mounted) return;
+      final box = _stackKey.currentContext?.findRenderObject() as RenderBox?;
+      final source = widget.sourceRect;
+      if (box == null || !box.hasSize || source == null) return;
+      final sourceLocal = box.globalToLocal(source.topLeft) & source.size;
+      if (_sourceLocal != sourceLocal) {
+        setState(() => _sourceLocal = sourceLocal);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      final height = constraints.maxHeight;
+      final aspect = widget.image.width / widget.image.height;
+      final fittedWidth = math.min(width, height * aspect);
+      final fittedHeight = fittedWidth / aspect;
+      final destination = Rect.fromLTWH(
+        (width - fittedWidth) / 2,
+        (height - fittedHeight) / 2,
+        fittedWidth,
+        fittedHeight,
+      );
+      _scheduleMeasure();
+      final sourceLocal = _sourceLocal;
+      final target = widget.opening ? destination : sourceLocal ?? destination;
+      Widget positioned(Rect rect) => Positioned.fromRect(
+        rect: rect,
+        child: _ZoomableImage(
+          image: widget.image,
+          reduce: widget.reduce,
+          colors: widget.colors,
+        ),
+      );
+
+      return Stack(
+        key: _stackKey,
+        clipBehavior: Clip.none,
+        children: [
+          if (widget.reduce || widget.sourceRect == null || sourceLocal == null)
+            Positioned.fromRect(
+              rect: destination,
+              child: _ZoomableImage(
+                image: widget.image,
+                reduce: widget.reduce,
+                colors: widget.colors,
+              ),
+            )
+          else
+            MotionBuilder<Rect>(
+              key: ValueKey('image-viewer-morph-${widget.image.id}'),
+              value: target,
+              from: widget.opening ? sourceLocal : null,
+              motion: beuiSpringLayout,
+              converter: const RectMotionConverter(),
+              builder: (context, rect, _) => positioned(rect),
+            ),
+        ],
+      );
+    },
+  );
 }
 
 class _ZoomableImage extends StatefulWidget {

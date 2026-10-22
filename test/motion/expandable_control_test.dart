@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart' show BeuiColors, BeuiTextTheme, LucideIcons;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -47,9 +48,64 @@ void main() {
       expect(requested, isTrue);
       expect(find.text('Notifications'), findsNothing);
     });
+
+    testWidgets('icon changes from muted to foreground on hover', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiExpandableButton(
+            icon: Icon(LucideIcons.bell),
+            label: Text('Notifications'),
+          ),
+        ),
+      );
+      final icon = find.byIcon(LucideIcons.bell);
+      expect(
+        IconTheme.of(tester.element(icon)).color,
+        BeuiColors.light().mutedForeground,
+      );
+
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(icon));
+      await mouse.moveTo(tester.getCenter(icon));
+      await tester.pump();
+      expect(
+        IconTheme.of(tester.element(icon)).color,
+        BeuiColors.light().foreground,
+      );
+    });
   });
 
   group('BeuiExpandableChip', () {
+    testWidgets('label changes from muted to foreground on hover', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiExpandableChip(
+            label: Text('React'),
+            actionIcon: Icon(LucideIcons.x),
+            actionLabel: 'Remove React',
+          ),
+        ),
+      );
+      final label = find.text('React');
+      expect(
+        DefaultTextStyle.of(tester.element(label)).style.color,
+        BeuiColors.light().mutedForeground,
+      );
+
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: tester.getCenter(label));
+      await mouse.moveTo(tester.getCenter(label));
+      await tester.pump();
+      expect(
+        DefaultTextStyle.of(tester.element(label)).style.color,
+        BeuiColors.light().foreground,
+      );
+    });
+
     testWidgets('reveals action, invokes it, collapses, and returns focus', (
       tester,
     ) async {
