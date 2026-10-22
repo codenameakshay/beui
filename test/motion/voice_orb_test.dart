@@ -82,11 +82,12 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test('proof captions mark comparison media as historical', () {
-    final html = File('example/proof/voice-orb/show-me.html').readAsStringSync();
-    final figures = RegExp(r'<figure\b[^>]*>[\s\S]*?</figure>')
-        .allMatches(html)
-        .map((match) => match.group(0)!)
-        .toList();
+    final html = File(
+      'example/proof/voice-orb/show-me.html',
+    ).readAsStringSync();
+    final figures = RegExp(
+      r'<figure\b[^>]*>[\s\S]*?</figure>',
+    ).allMatches(html).map((match) => match.group(0)!).toList();
     for (final media in ['side-by-side.png', 'voice-orb-vs-beui.dev.mp4']) {
       final figure = figures.firstWhere(
         (figure) => figure.contains('src="$media"'),
