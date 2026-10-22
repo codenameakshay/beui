@@ -29,3 +29,5 @@ Interior ridge vs cloudy cream is animation-phase, not a shader miss. Voice Orb 
 | temporal_corr | -0.21 (unsynced living fields) |
 
 Source WebGL captured via Puppeteer + SwiftShader (headless capture_frames cannot draw the source orb).
+
+Parent revalidation (same committed crops): overall 89.05, layout 88.97, color 89.56 ΔE 2.1, content 100, spacing 97.4, typography n/a, cv_findings none. Motion 94.8, energy_ratio 0.948, both moving, temporal_corr −0.21.
