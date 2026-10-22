@@ -387,3 +387,11 @@ export 'src/motion/tool_result.dart'
         BeuiToolResultKind,
         BeuiToolResultOutput,
         BeuiToolResultStatus;
+
+// v3-agents exports
+export 'src/motion/voice_orb.dart'
+    show
+        BeuiVoiceAnalyser,
+        BeuiVoiceOrb,
+        kBeuiVoiceOrbColors,
+        kBeuiVoiceOrbSize;

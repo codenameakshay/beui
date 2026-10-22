@@ -238,23 +238,24 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 
 | Component | Widget(s) | What it does |
 | --- | --- | --- |
-| Message Bubble | `BeuiMessageBubble` | Conversational surface with tones, alignment, grouping and expandable content |
-| Message | `BeuiMessage` | Primitives for rows, avatars, metadata, live markers and a mount-only pop-up |
-| Message Scroller | `BeuiMessageScroller` | Viewport that follows streamed output, releases when the reader scrolls away, and offers a jump-to-latest pill |
 | Prompt Input | `BeuiPromptInput` | Auto-growing composer with attachment chips, a keyboarded model picker and animated send/stop |
-| Todo List | `BeuiTodoList` | Collapsible task plan with morphing status marks and a completion count |
-| Code Block | `BeuiCodeBlock` | Highlighted code that stays stable while streaming, with copy feedback |
-| Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals, questions, and compact-to-expanded proposals |
-| File Diff | `BeuiFileDiff` | Change disclosure with wrap or horizontal scroll, hunk-gap markers and live counts |
-| Tool Result | `BeuiToolResult` | Execution disclosure for terminal or request output that collapses when done |
+| Message | `BeuiMessage` | Primitives for rows, avatars, metadata, live markers and a mount-only pop-up |
+| Message Bubble | `BeuiMessageBubble` | Conversational surface with tones, alignment, grouping and expandable content |
+| Message Scroller | `BeuiMessageScroller` | Viewport that follows streamed output, releases when the reader scrolls away, and offers a jump-to-latest pill |
 | Streaming Response | `BeuiStreamingResponse` | Response surface with completion actions, a visible failed state and a stopped/continue path |
 | Image Generation | `BeuiImageGeneration` | Queued → refining → complete image surface with determinate progress and cancel |
-| Tool Approval | `BeuiToolApproval` | Permission card: allow once, remember access, or deny — with a destructive severity tier |
 | Citations | `BeuiCitations` | Inline markers plus a collapsible, progressively rendered reference list |
-| Agent Activity | `BeuiAgentActivity` | One adaptive stream for reasoning, searches, tool calls and traces — including failed and cancelled runs |
 | Agent Loading States | `BeuiThinkingShimmer`, `BeuiAgentProgress`, `BeuiReasoningText` | Shimmering status text, live progress and cycling reasoning phrases |
+| Todo List | `BeuiTodoList` | Collapsible task plan with morphing status marks and a completion count |
+| Agent Activity | `BeuiAgentActivity` | One adaptive stream for reasoning, searches, tool calls and traces — including failed and cancelled runs |
+| Tool Result | `BeuiToolResult` | Execution disclosure for terminal or request output that collapses when done |
+| Code Block | `BeuiCodeBlock` | Highlighted code that stays stable while streaming, with copy feedback |
+| File Diff | `BeuiFileDiff` | Change disclosure with wrap or horizontal scroll, hunk-gap markers and live counts |
+| Tool Approval | `BeuiToolApproval` | Permission card: allow once, remember access, or deny — with a destructive severity tier |
+| Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals, questions, and compact-to-expanded proposals |
 | AI Sidebar | `BeuiAiSidebar` | Workspace sidebar for folders, projects, files and bookmarks with inline rename |
 | Chat App | `BeuiChatApp` | A complete conversation workspace composing the widgets above, with a responsive sidebar |
+| Voice Orb | `BeuiVoiceOrb` | Breathing liquid voice visualization with custom pigments and a voice-reactive silhouette |
 | Agent Theme | — | Gallery route that installs a custom `BeuiAgentTheme` on the real widgets |
 
 Also exported as standalone primitives: `BeuiMagnetic` (cursor-follow pull) and the `BeuiOverlay` foundation.
