@@ -2,6 +2,7 @@
 
 ### Charts
 
+* Chart tooltip numeric labels use `BeuiChartTicker` for digit animation.
 * `BeuiTreemap` — order-preserving binary tiles that spring to new sizes, with path tooltips and a group legend.
 * `BeuiCandlestickChart` — OHLC candles with a live last price, volume, and keyboard inspection.
 * `BeuiDonutChart` — round-capped ring with a live center, legend, and sweep-in motion.

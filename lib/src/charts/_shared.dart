@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../motion/_engine.dart';
+import '../motion/number_ticker.dart';
 import '../motion/tooltip.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
@@ -150,14 +151,22 @@ BeuiTooltipSide beuiChartToTooltipSide(BeuiChartTooltipSide side) =>
 
 /// A compact color swatch used by chart legends.
 class BeuiChartSwatch extends StatelessWidget {
-  /// Creates a 8×8 rounded swatch.
-  const BeuiChartSwatch({required this.color, super.key, this.size = 8});
+  /// Creates a 6×6 circular swatch (source `size-1.5 rounded-full`).
+  const BeuiChartSwatch({
+    required this.color,
+    super.key,
+    this.size = 6,
+    this.circular = true,
+  });
 
   /// Fill color.
   final Color color;
 
   /// Square size.
   final double size;
+
+  /// When true, paints a circle; otherwise a 2px-radius square.
+  final bool circular;
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +175,8 @@ class BeuiChartSwatch extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(2),
+        shape: circular ? BoxShape.circle : BoxShape.rectangle,
+        borderRadius: circular ? null : BorderRadius.circular(2),
       ),
     );
   }
@@ -358,6 +368,46 @@ class BeuiChartFade extends StatelessWidget {
   }
 }
 
+/// Chart tooltip / readout number — source `NumberTicker` with
+/// `startOnView={false}`, `duration={0.2}`, `stagger={0}`.
+///
+/// [format] receives the live [value]. Its formatted digits animate, while
+/// separators and other non-digit characters stay static.
+class BeuiChartTicker extends StatelessWidget {
+  /// Creates a short digit roll toward [value].
+  const BeuiChartTicker({
+    required this.value,
+    required this.format,
+    super.key,
+    this.duration = const Duration(milliseconds: 200),
+    this.style,
+  });
+
+  /// Numeric input. [format] receives this value without rounding.
+  final num value;
+
+  /// Display string. Its digits animate; other characters stay static.
+  final String Function(num value) format;
+
+  /// Roll duration (source tooltip default 0.2s).
+  final Duration duration;
+
+  /// Text style. Falls back to the ambient [DefaultTextStyle].
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return BeuiNumberTicker(
+      value: value,
+      format: (_) => format(value),
+      startOnView: false,
+      duration: duration,
+      stagger: Duration.zero,
+      style: style,
+    );
+  }
+}
+
 /// Tooltip surface used by charts that need a custom body. Built on
 /// [BeuiTooltip] so it shares the overlay, spring, and reduced-motion path.
 class BeuiChartTooltip extends StatelessWidget {
@@ -399,15 +449,24 @@ class BeuiChartTooltipCard extends StatelessWidget {
   const BeuiChartTooltipCard({
     required this.title,
     super.key,
+    this.titleWidget,
     this.lines = const [],
+    this.details,
     this.swatch,
   });
 
   /// Headline.
   final String title;
 
-  /// Extra rows.
+  /// Optional headline widget (e.g. a [BeuiChartTicker]). Overrides [title]
+  /// visually; [title] stays the accessible name.
+  final Widget? titleWidget;
+
+  /// Extra rows as static text.
   final List<String> lines;
+
+  /// Extra rows as widgets. When non-null, [lines] are not painted.
+  final List<Widget>? details;
 
   /// Optional leading swatch.
   final Color? swatch;
@@ -415,6 +474,13 @@ class BeuiChartTooltipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
+    final muted = TextStyle(
+      fontSize: 11,
+      height: 16 / 11,
+      color: colors.mutedForeground,
+    );
+    final rows =
+        details ?? [for (final line in lines) Text(line, style: muted)];
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 240),
       child: Column(
@@ -429,28 +495,34 @@ class BeuiChartTooltipCard extends StatelessWidget {
                 const SizedBox(width: 6),
               ],
               Flexible(
-                child: Text(
-                  title,
+                child: DefaultTextStyle.merge(
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: colors.popoverForeground,
                   ),
+                  child: Semantics(
+                    label: title,
+                    excludeSemantics: true,
+                    child:
+                        titleWidget ??
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: colors.popoverForeground,
+                          ),
+                        ),
+                  ),
                 ),
               ),
             ],
           ),
-          for (final line in lines)
+          for (final row in rows)
             Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: Text(
-                line,
-                style: TextStyle(
-                  fontSize: 11,
-                  height: 16 / 11,
-                  color: colors.mutedForeground,
-                ),
-              ),
+              child: DefaultTextStyle.merge(style: muted, child: row),
             ),
         ],
       ),

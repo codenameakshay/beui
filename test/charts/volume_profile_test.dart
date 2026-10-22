@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,6 +53,135 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pump();
     expect(changed, '2');
+  });
+
+  testWidgets('hovering a bin shows formatted animated tooltip values', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiVolumeProfile(data: _bins, unit: 'BTC')),
+    );
+    final plot = tester.getRect(find.byType(BeuiVolumeProfilePlot));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    final position = Offset(
+      plot.left + plot.width * 0.35,
+      plot.top + plot.height / 3,
+    );
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(position);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BeuiChartTicker), findsWidgets);
+    expect(find.byType(BeuiNumberTicker), findsWidgets);
+    expect(find.textContaining('BTC'), findsWidgets);
+    await mouse.removePointer();
+  });
+
+  testWidgets('tapping the top row selects the highest-price bin', (
+    tester,
+  ) async {
+    String? selected;
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiVolumeProfile(data: _bins, onActiveChange: (id) => selected = id),
+      ),
+    );
+    final plot = tester.getRect(find.byType(BeuiVolumeProfilePlot));
+    await tester.tapAt(Offset(plot.center.dx, plot.top + 1));
+    await tester.pump();
+    expect(selected, '3');
+  });
+
+  testWidgets('tapping a clamped uneven-price bar selects its visible bin', (
+    tester,
+  ) async {
+    String? selected;
+    const data = [
+      BeuiVolumeProfileBin(price: 10, volume: 1),
+      BeuiVolumeProfileBin(price: 11, volume: 1),
+      BeuiVolumeProfileBin(price: 12, volume: 1),
+      BeuiVolumeProfileBin(price: 100, volume: 1),
+    ];
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiVolumeProfile(
+          data: data,
+          onActiveChange: (id) => selected = id,
+          child: const BeuiVolumeProfilePlot(height: 300),
+        ),
+      ),
+    );
+    final plot = tester.getRect(find.byType(BeuiVolumeProfilePlot));
+    await tester.tapAt(Offset(plot.left + 100, plot.top + 262.5));
+    await tester.pump();
+    expect(selected, '2');
+  });
+
+  testWidgets('hovering a clamped uneven-price bar inspects its visible bin', (
+    tester,
+  ) async {
+    const data = [
+      BeuiVolumeProfileBin(price: 10, volume: 1),
+      BeuiVolumeProfileBin(price: 11, volume: 1),
+      BeuiVolumeProfileBin(price: 12, volume: 1),
+      BeuiVolumeProfileBin(price: 100, volume: 1),
+    ];
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiVolumeProfile(
+          data: data,
+          formatPrice: (price) => 'P${price.toStringAsFixed(0)}',
+          child: const Column(
+            children: [
+              BeuiVolumeProfilePlot(height: 300),
+              BeuiVolumeProfileSummary(),
+            ],
+          ),
+        ),
+      ),
+    );
+    final plot = tester.getRect(find.byType(BeuiVolumeProfilePlot));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset(plot.left + 100, plot.top + 262.5));
+    await mouse.moveTo(Offset(plot.left + 100, plot.top + 262.5));
+    await tester.pump();
+    expect(find.textContaining('P12 · 1'), findsOneWidget);
+    await mouse.removePointer();
+  });
+
+  testWidgets('emptying and restoring data clears the hovered bin', (
+    tester,
+  ) async {
+    var data = _bins;
+    void Function(List<BeuiVolumeProfileBin>)? updateData;
+    await tester.pumpWidget(
+      beuiTestApp(
+        StatefulBuilder(
+          builder: (context, setState) {
+            updateData = (next) => setState(() => data = next);
+            return BeuiVolumeProfile(data: data);
+          },
+        ),
+      ),
+    );
+    final plot = tester.getRect(find.byType(BeuiVolumeProfilePlot));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset(plot.center.dx, plot.top + 1));
+    await mouse.moveTo(Offset(plot.center.dx, plot.top + 1));
+    await tester.pump();
+    expect(find.byType(BeuiChartTooltipCard), findsOneWidget);
+
+    updateData!([]);
+    await tester.pump();
+    updateData!([
+      for (var index = 0; index < 4; index++)
+      BeuiVolumeProfileBin(price: 30.0 + index, volume: 1.0 + index),
+    ]);
+    await tester.pump();
+    expect(find.byType(BeuiChartTooltipCard), findsNothing);
+    await mouse.removePointer();
   });
 
   testWidgets('reduced motion snaps profile bars to their target widths', (

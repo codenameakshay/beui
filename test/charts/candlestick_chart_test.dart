@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,13 +35,18 @@ const _candles = [
   ),
 ];
 
-Widget _chart({String? activeId, ValueChanged<String?>? onActiveIdChange}) =>
-    BeuiCandlestickChart(
-      candles: _candles,
-      activeId: activeId,
-      onActiveIdChange: onActiveIdChange,
-      label: 'Test OHLC chart',
-    );
+Widget _chart({
+  List<BeuiCandle> candles = _candles,
+  String? activeId,
+  ValueChanged<String?>? onActiveIdChange,
+  double? lastPrice,
+}) => BeuiCandlestickChart(
+  candles: candles,
+  activeId: activeId,
+  onActiveIdChange: onActiveIdChange,
+  lastPrice: lastPrice,
+  label: 'Test OHLC chart',
+);
 
 void main() {
   testWidgets('renders plot, live OHLC readout and accessible slider', (
@@ -80,6 +86,91 @@ void main() {
     );
     await tester.pump();
     expect(find.text('12:10'), findsOneWidget);
+  });
+
+  testWidgets('last price is an animated badge on the plot', (tester) async {
+    await tester.pumpWidget(beuiTestApp(_chart(lastPrice: 12.75)));
+    await tester.pump();
+    expect(find.byType(BeuiChartTicker), findsOneWidget);
+    expect(find.byType(BeuiNumberTicker), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 220));
+    final ticker = tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker));
+    expect(ticker.format(ticker.value), '12.75');
+    expect(
+      tester.getTopLeft(find.byType(BeuiChartTicker)).dx,
+      greaterThan(tester.getRect(find.byType(BeuiCandlestickPlot)).left),
+    );
+    expect(find.textContaining('Last '), findsNothing);
+  });
+
+  testWidgets('first live price appears at its value without flying in', (
+    tester,
+  ) async {
+    const candles = [
+      BeuiCandle(
+        id: 'only',
+        time: '12:00',
+        open: 104,
+        high: 110,
+        low: 100,
+        close: 106,
+        volume: 40,
+      ),
+    ];
+    await tester.pumpWidget(beuiTestApp(_chart(candles: candles)));
+    await tester.pump();
+    await tester.pumpWidget(
+      beuiTestApp(_chart(candles: candles, lastPrice: 105)),
+    );
+    await tester.pump();
+
+    final plotTop = tester.getTopLeft(find.byType(BeuiCandlestickPlot)).dy;
+    final firstBadgeCenter =
+        tester.getCenter(find.byType(BeuiChartTicker)).dy;
+    expect(firstBadgeCenter, closeTo(plotTop + 124.8, 2));
+
+    await tester.pumpWidget(
+      beuiTestApp(_chart(candles: candles, lastPrice: 107)),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    final animatedBadgeCenter =
+        tester.getCenter(find.byType(BeuiChartTicker)).dy;
+    expect(animatedBadgeCenter, lessThan(firstBadgeCenter));
+    expect(animatedBadgeCenter, greaterThan(plotTop + 82));
+  });
+
+  testWidgets('tooltip card retains its 240px width cap', (tester) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiChartTooltipCard(
+          title: 'Price details',
+          lines: [List.filled(80, 'long').join(' ')],
+        ),
+      ),
+    );
+    expect(
+      tester.getSize(find.byType(BeuiChartTooltipCard)).width,
+      lessThanOrEqualTo(240),
+    );
+  });
+
+  testWidgets('mouse hover across the plot activates the candle under it', (
+    tester,
+  ) async {
+    String? changed;
+    await tester.pumpWidget(
+      beuiTestApp(_chart(onActiveIdChange: (id) => changed = id)),
+    );
+    final plot = tester.getRect(find.byType(BeuiCandlestickPlot));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset(plot.left + 20, plot.center.dy));
+    await mouse.moveTo(Offset(plot.left + plot.width * .2, plot.center.dy));
+    await tester.pump();
+    expect(changed, 'a');
+    await mouse.moveTo(Offset(plot.left + plot.width * .7, plot.center.dy));
+    await tester.pump();
+    expect(changed, 'c');
+    await mouse.removePointer();
   });
 
   testWidgets('reduced motion renders the current candle state immediately', (

@@ -5,6 +5,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../motion/number_ticker.dart';
 import '../theme/beui_colors.dart';
 import '_shared.dart';
 
@@ -146,9 +147,10 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
   static const double width = 520;
   static const double height = 236;
   static const double left = 36;
-  static const double right = 108;
+  static const double right = 52;
   static const double top = 16;
   static const double bottom = 28;
+  final Set<String> _hoveredHistoryDates = {};
 
   @override
   String? get widgetActiveId => _id(widget.active);
@@ -198,7 +200,9 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
   }
 
   void _validate(BeuiPriceTargetFan input) {
-    if (input.targets.length != 3 ||
+    if (!input.current.isFinite ||
+        input.current <= 0 ||
+        input.targets.length != 3 ||
         input.targets.any(
           (target) => !target.price.isFinite || target.price <= 0,
         ) ||
@@ -241,6 +245,26 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
     super.setActiveId(id);
   }
 
+  void _setHistoryHover(String date, bool hovered) {
+    final id = 'h:$date';
+    if (hovered) {
+      _hoveredHistoryDates.add(date);
+      setActiveId(id);
+    } else {
+      _hoveredHistoryDates.remove(date);
+      if (activeId == id) setActiveId(null);
+    }
+  }
+
+  void _setHistoryFocus(String date, bool focused) {
+    final id = 'h:$date';
+    if (focused) {
+      setActiveId(id);
+    } else if (!_hoveredHistoryDates.contains(date) && activeId == id) {
+      setActiveId(null);
+    }
+  }
+
   BeuiPriceTargetFanActive? get _resolvedActive =>
       inspectableIds.contains(activeId) ? _active(activeId) : null;
   BeuiPriceHistoryPoint? get _activeHistory {
@@ -260,7 +284,7 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
     ];
     final minValue = prices.reduce(math.min);
     final maxValue = prices.reduce(math.max);
-    final pad = math.max((maxValue - minValue) * .16, maxValue * .06);
+    final pad = math.max((maxValue - minValue) * .08, 8);
     return [math.max(0, minValue - pad), maxValue + pad];
   }
 
@@ -270,32 +294,21 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
         (domain[1] - price) / (domain[1] - domain[0]) * (height - top - bottom);
   }
 
-  double _historyX(int index) => widget.history.length <= 1
-      ? left
-      : left +
-            index / (widget.history.length - 1) * (width - left - right - 10);
-  double get _nowX => widget.history.isEmpty
-      ? width * .56
-      : _historyX(widget.history.length - 1) + 12;
+  double get _nowX => left + (width - left - right) * 0.52;
+  double _historyX(int index) {
+    if (widget.history.length <= 1) return left;
+    return left + index / (widget.history.length - 1) * (_nowX - left);
+  }
+
   void _moveTo(Offset local) {
     if (widget.history.isEmpty) return;
-    final index = ((local.dx / width) * widget.history.length).round().clamp(
+    final span = _nowX - left;
+    if (span <= 0) return;
+    final t = ((local.dx - left) / span).clamp(0.0, 1.0);
+    final index = (t * (widget.history.length - 1)).round().clamp(
       0,
       widget.history.length - 1,
     );
-    setActiveId('h:${widget.history[index].date}');
-  }
-
-  void _stepHistory(int direction) {
-    if (widget.history.isEmpty) return;
-    final current = widget.history.indexWhere(
-      (p) => p.date == _resolvedActive?.date,
-    );
-    final index =
-        (current < 0 ? widget.history.length - 1 : current + direction).clamp(
-          0,
-          widget.history.length - 1,
-        );
     setActiveId('h:${widget.history[index].date}');
   }
 
@@ -312,8 +325,18 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
             mainAxisSize: MainAxisSize.min,
             children: [
               BeuiPriceTargetHeader(),
-              BeuiPriceTargetPlot(),
-              BeuiPriceTargetTooltip(),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  BeuiPriceTargetPlot(),
+                  Positioned(
+                    top: 242,
+                    left: 0,
+                    right: 0,
+                    child: BeuiPriceTargetTooltip(),
+                  ),
+                ],
+              ),
             ],
           ),
     ),
@@ -337,7 +360,7 @@ class _PriceTargetScope extends InheritedWidget {
   bool updateShouldNotify(_PriceTargetScope oldWidget) => true;
 }
 
-/// Current price and active projection summary, with history step controls.
+/// Active projection price, signed change, and target caption.
 class BeuiPriceTargetHeader extends StatelessWidget {
   /// Creates the fan header.
   const BeuiPriceTargetHeader({super.key});
@@ -354,49 +377,46 @@ class BeuiPriceTargetHeader extends StatelessWidget {
           )
         : state.widget.targets[1];
     final change = (target.price / state.widget.current - 1) * 100;
+    const tickerDuration = Duration(milliseconds: 500);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 8,
+        runSpacing: 4,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '\$${state.widget.current.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    fontFeatures: [FontFeature.tabularFigures()],
-                  ),
-                ),
-                Text(
-                  active?.type == 'history'
-                      ? active!.date!
-                      : '${target.key} target  ${beuiChartSignedPercent(change)}',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: active?.type == 'history'
-                        ? colors.mutedForeground
-                        : change >= 0
-                        ? colors.success
-                        : colors.destructive,
-                  ),
-                ),
-              ],
+          BeuiNumberTicker(
+            value: target.price * 100,
+            duration: tickerDuration,
+            stagger: Duration.zero,
+            prefix: r'$',
+            format: (value) => (value / 100).toStringAsFixed(2),
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'monospace',
+              letterSpacing: -0.4,
+              fontFeatures: [FontFeature.tabularFigures()],
             ),
           ),
-          IconButton(
-            tooltip: 'Previous history point',
-            onPressed: () => state._stepHistory(-1),
-            icon: const Icon(Icons.chevron_left),
-            visualDensity: VisualDensity.compact,
+          BeuiNumberTicker(
+            value: change.abs() * 10,
+            duration: tickerDuration,
+            stagger: Duration.zero,
+            prefix: change >= 0 ? '+' : '−',
+            suffix: '%',
+            format: (value) => (value / 10).toStringAsFixed(1),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'monospace',
+              fontFeatures: const [FontFeature.tabularFigures()],
+              color: change >= 0 ? colors.success : colors.destructive,
+            ),
           ),
-          IconButton(
-            tooltip: 'Next history point',
-            onPressed: () => state._stepHistory(1),
-            icon: const Icon(Icons.chevron_right),
-            visualDensity: VisualDensity.compact,
+          Text(
+            '${target.key} target',
+            style: TextStyle(fontSize: 12, color: colors.mutedForeground),
           ),
         ],
       ),
@@ -427,7 +447,8 @@ class BeuiPriceTargetSvg extends StatelessWidget {
   /// Creates the SVG-like layered plot surface.
   const BeuiPriceTargetSvg({super.key, this.children});
 
-  /// Plot layers; defaults to axes, history, targets, now, cursor.
+  /// Plot layers; defaults to axes, history, now, cursor, history-point hit
+  /// targets, and target buttons.
   final List<Widget>? children;
 
   @override
@@ -443,26 +464,31 @@ class BeuiPriceTargetSvg extends StatelessWidget {
         explicitChildNodes: true,
         label:
             '${state.widget.label}, current ${state.widget.current}, mean target ${state.widget.targets[1].price}',
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTapDown: (event) => state._moveTo(event.localPosition),
-                onHorizontalDragUpdate: (event) =>
-                    state._moveTo(event.localPosition),
+        child: GestureDetector(
+          onHorizontalDragUpdate: (event) =>
+              state._moveTo(event.localPosition),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown: (event) => state._moveTo(event.localPosition),
+                  onHorizontalDragUpdate: (event) =>
+                      state._moveTo(event.localPosition),
+                ),
               ),
-            ),
-            ...(children ??
-                const [
-                  IgnorePointer(child: BeuiPriceTargetAxes()),
-                  IgnorePointer(child: BeuiPriceTargetHistory()),
-                  IgnorePointer(child: BeuiPriceTargetNow()),
-                  IgnorePointer(child: BeuiPriceTargetCursor()),
-                  BeuiPriceTargetTargets(),
-                ]),
-          ],
+              ...(children ??
+                  const [
+                    IgnorePointer(child: BeuiPriceTargetAxes()),
+                    IgnorePointer(child: BeuiPriceTargetHistory()),
+                    IgnorePointer(child: BeuiPriceTargetNow()),
+                    IgnorePointer(child: BeuiPriceTargetCursor()),
+                    BeuiPriceTargetHistoryPoints(),
+                    BeuiPriceTargetTargets(),
+                  ]),
+            ],
+          ),
         ),
       ),
     );
@@ -475,7 +501,10 @@ class BeuiPriceTargetAxes extends StatelessWidget {
   const BeuiPriceTargetAxes({super.key});
   @override
   Widget build(BuildContext context) => CustomPaint(
-    painter: _PriceAxesPainter(_PriceTargetScope.of(context)),
+    painter: _PriceAxesPainter(
+      _PriceTargetScope.of(context),
+      BeuiColors.resolve(context),
+    ),
     size: const Size(520, 236),
   );
 }
@@ -486,7 +515,10 @@ class BeuiPriceTargetHistory extends StatelessWidget {
   const BeuiPriceTargetHistory({super.key});
   @override
   Widget build(BuildContext context) => CustomPaint(
-    painter: _PriceHistoryPainter(_PriceTargetScope.of(context)),
+    painter: _PriceHistoryPainter(
+      _PriceTargetScope.of(context),
+      BeuiColors.resolve(context),
+    ),
     size: const Size(520, 236),
   );
 }
@@ -501,34 +533,65 @@ class BeuiPriceTargetTargets extends StatelessWidget {
     final colors = BeuiColors.resolve(context);
     return Stack(
       children: [
-        CustomPaint(
-          painter: _PriceTargetsPainter(state, colors),
-          size: const Size(520, 236),
+        IgnorePointer(
+          child: CustomPaint(
+            painter: _PriceTargetsPainter(state, colors),
+            size: const Size(520, 236),
+          ),
         ),
         for (final target in state.widget.targets)
           Positioned(
-            right: 0,
-            top: (state._y(target.price) - 15).clamp(0.0, 204.0),
-            width: 104,
-            height: 30,
-            child: Semantics(
-              button: true,
-              selected: state._resolvedActive?.key == target.key,
-              label:
-                  '${target.key} target ${target.price}, ${target.analysts} analysts',
-              child: TextButton(
-                onPressed: () => state.setActiveId('t:${target.key}'),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  alignment: Alignment.centerLeft,
+            left:
+                (_BeuiPriceTargetFanState.width -
+                        _BeuiPriceTargetFanState.right -
+                        6)
+                    .clamp(0.0, 480.0),
+            top: (state._y(target.price) - 11).clamp(0.0, 214.0),
+            width: 50,
+            height: 22,
+            child: BeuiChartTooltip(
+              side: BeuiChartTooltipSide.left,
+              content: BeuiChartTooltipCard(
+                title: '${target.key} target',
+                titleWidget: _mutedTooltipTitle(
+                  context,
+                  '${target.key} target',
                 ),
-                child: Text(
-                  '${target.key}  \$${target.price.toStringAsFixed(0)}',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: _targetColor(state, target, colors),
+                details: [
+                  _priceMetric(context, target.price),
+                  _metricRow(context, 'Analysts', '${target.analysts}'),
+                ],
+              ),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onEnter: (_) => state.setActiveId('t:${target.key}'),
+                onExit: (_) {
+                  if (state.activeId == 't:${target.key}') {
+                    state.setActiveId(null);
+                  }
+                },
+                child: Semantics(
+                  button: true,
+                  selected: state._resolvedActive?.key == target.key,
+                  label:
+                      '${target.key} target ${target.price}, ${target.analysts} analysts',
+                  child: TextButton(
+                    key: ValueKey('price-target-target-${target.key}'),
+                    onPressed: () => state.setActiveId('t:${target.key}'),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.centerLeft,
+                    ),
+                    child: Text(
+                      target.price.toStringAsFixed(0),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: _targetColor(state, target, colors),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -539,13 +602,105 @@ class BeuiPriceTargetTargets extends StatelessWidget {
   }
 }
 
+/// Hoverable and keyboard-focusable history point hit targets.
+class BeuiPriceTargetHistoryPoints extends StatelessWidget {
+  /// Creates history point hit targets.
+  const BeuiPriceTargetHistoryPoints({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final state = _PriceTargetScope.of(context);
+    final colors = BeuiColors.resolve(context);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        for (var index = 0; index < state.widget.history.length; index++)
+          _PriceTargetHistoryHitTarget(
+            state: state,
+            index: index,
+            colors: colors,
+          ),
+      ],
+    );
+  }
+}
+
+class _PriceTargetHistoryHitTarget extends StatelessWidget {
+  const _PriceTargetHistoryHitTarget({
+    required this.state,
+    required this.index,
+    required this.colors,
+  });
+
+  final _BeuiPriceTargetFanState state;
+  final int index;
+  final BeuiColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    final point = state.widget.history[index];
+    final selected = state._resolvedActive?.date == point.date;
+    final x = state._historyX(index);
+    final y = state._y(point.price);
+    return Positioned(
+      left: x - 12,
+      top: y - 12,
+      width: 24,
+      height: 24,
+      child: BeuiChartTooltip(
+        content: BeuiChartTooltipCard(
+          title: point.date,
+          titleWidget: _mutedTooltipTitle(context, point.date),
+          details: [_priceMetric(context, point.price)],
+        ),
+        child: Focus(
+          onFocusChange: (focused) {
+            state._setHistoryFocus(point.date, focused);
+          },
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            onEnter: (_) => state._setHistoryHover(point.date, true),
+            onExit: (_) => state._setHistoryHover(point.date, false),
+            child: Semantics(
+              button: true,
+              selected: selected,
+              label: '${point.date}, ${point.price.toStringAsFixed(2)}',
+              child: GestureDetector(
+                key: ValueKey('price-target-history-${point.date}'),
+                behavior: HitTestBehavior.opaque,
+                onTap: () => state.setActiveId('h:${point.date}'),
+                child: Center(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: selected ? colors.primary : Colors.transparent,
+                      border: Border.all(
+                        color: selected ? colors.primary : Colors.transparent,
+                        width: 2,
+                      ),
+                    ),
+                    child: const SizedBox(width: 8, height: 8),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Current-price guide.
 class BeuiPriceTargetNow extends StatelessWidget {
   /// Creates the current price marker.
   const BeuiPriceTargetNow({super.key});
   @override
   Widget build(BuildContext context) => CustomPaint(
-    painter: _PriceNowPainter(_PriceTargetScope.of(context)),
+    painter: _PriceNowPainter(
+      _PriceTargetScope.of(context),
+      BeuiColors.resolve(context),
+    ),
     size: const Size(520, 236),
   );
 }
@@ -565,7 +720,12 @@ class BeuiPriceTargetCursor extends StatelessWidget {
       builder: (context, y) => BeuiChartFade(
         opacity: 1,
         child: CustomPaint(
-          painter: _PriceCursorPainter(state, index, y),
+          painter: _PriceCursorPainter(
+            state,
+            index,
+            y,
+            BeuiColors.resolve(context),
+          ),
           size: const Size(520, 236),
         ),
       ),
@@ -590,9 +750,10 @@ class BeuiPriceTargetTooltip extends StatelessWidget {
         padding: const EdgeInsets.only(top: 6),
         child: BeuiChartTooltipCard(
           title: '${target.key} target',
-          lines: [
-            '\$${target.price.toStringAsFixed(2)}',
-            '${target.analysts} analysts',
+          titleWidget: _mutedTooltipTitle(context, '${target.key} target'),
+          details: [
+            _priceMetric(context, target.price),
+            _metricRow(context, 'Analysts', '${target.analysts}'),
           ],
         ),
       );
@@ -602,10 +763,48 @@ class BeuiPriceTargetTooltip extends StatelessWidget {
       padding: const EdgeInsets.only(top: 6),
       child: BeuiChartTooltipCard(
         title: point.date,
-        lines: ['\$${point.price.toStringAsFixed(2)}'],
+        titleWidget: _mutedTooltipTitle(context, point.date),
+        details: [_priceMetric(context, point.price)],
       ),
     );
   }
+}
+
+Widget _priceMetric(BuildContext context, double price) =>
+    _metricRow(context, 'Price', null, tickerValue: price);
+
+Widget _mutedTooltipTitle(BuildContext context, String title) => Text(
+  title,
+  style: TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+    color: BeuiColors.resolve(context).mutedForeground,
+  ),
+);
+
+Widget _metricRow(
+  BuildContext context,
+  String label,
+  String? value, {
+  double? tickerValue,
+}) {
+  final muted = BeuiColors.resolve(context).mutedForeground;
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(label, style: TextStyle(color: muted)),
+      const SizedBox(width: 12),
+      if (tickerValue != null)
+        BeuiChartTicker(
+          value: tickerValue,
+          duration: const Duration(milliseconds: 500),
+          format: (number) => '\$${number.toStringAsFixed(2)}',
+          style: TextStyle(color: muted),
+        )
+      else
+        Text(value ?? '', style: TextStyle(color: muted)),
+    ],
+  );
 }
 
 Color _targetColor(
@@ -623,11 +822,12 @@ Color _targetColor(
 );
 
 class _PriceAxesPainter extends CustomPainter {
-  _PriceAxesPainter(this.state);
+  _PriceAxesPainter(this.state, this.colors) : widget = state.widget;
   final _BeuiPriceTargetFanState state;
+  final BeuiColors colors;
+  final BeuiPriceTargetFan widget;
   @override
   void paint(Canvas canvas, Size size) {
-    final colors = BeuiColors.resolve(state.context);
     final grid = Paint()
       ..color = colors.border.withValues(alpha: .65)
       ..strokeWidth = 1;
@@ -662,11 +862,13 @@ class _PriceAxesPainter extends CustomPainter {
     final labels = [
       date.start ??
           (state.widget.history.isEmpty ? '' : state.widget.history.first.date),
+      if (date.mid != null) date.mid!,
       'Now',
       date.horizon ?? 'Target',
     ];
     final xs = [
       _BeuiPriceTargetFanState.left,
+      if (date.mid != null) (_BeuiPriceTargetFanState.left + state._nowX) / 2,
       state._nowX,
       _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right,
     ];
@@ -685,16 +887,17 @@ class _PriceAxesPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_PriceAxesPainter oldDelegate) =>
-      oldDelegate.state.widget != state.widget;
+      oldDelegate.widget != widget || oldDelegate.colors != colors;
 }
 
 class _PriceHistoryPainter extends CustomPainter {
-  _PriceHistoryPainter(this.state);
+  _PriceHistoryPainter(this.state, this.colors) : widget = state.widget;
   final _BeuiPriceTargetFanState state;
+  final BeuiColors colors;
+  final BeuiPriceTargetFan widget;
   @override
   void paint(Canvas canvas, Size size) {
     if (state.widget.history.isEmpty) return;
-    final colors = BeuiColors.resolve(state.context);
     final path = Path();
     for (var i = 0; i < state.widget.history.length; i++) {
       final p = state.widget.history[i];
@@ -708,127 +911,128 @@ class _PriceHistoryPainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = colors.accent
-        ..strokeWidth = 2.2
+        ..color = colors.foreground
+        ..strokeWidth = 1.6
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round,
     );
-    for (var i = 0; i < state.widget.history.length; i++) {
-      final point = state.widget.history[i];
-      canvas.drawCircle(
-        Offset(state._historyX(i), state._y(point.price)),
-        2.3,
-        Paint()..color = colors.accent,
-      );
-    }
   }
 
   @override
   bool shouldRepaint(_PriceHistoryPainter oldDelegate) =>
-      oldDelegate.state.widget != state.widget;
+      oldDelegate.widget != widget || oldDelegate.colors != colors;
 }
 
 class _PriceTargetsPainter extends CustomPainter {
-  _PriceTargetsPainter(this.state, this.colors);
+  _PriceTargetsPainter(this.state, this.colors) : widget = state.widget;
   final _BeuiPriceTargetFanState state;
   final BeuiColors colors;
+  final BeuiPriceTargetFan widget;
   @override
   void paint(Canvas canvas, Size size) {
     final currentY = state._y(state.widget.current);
-    final band = Path();
     final ordered = state.widget.targets;
-    band.moveTo(state._nowX, state._y(ordered[0].price));
-    band.lineTo(
-      _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right,
-      state._y(ordered[0].price),
-    );
-    band.lineTo(
-      _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right,
-      state._y(ordered[2].price),
-    );
-    band.lineTo(state._nowX, currentY);
-    band.close();
-    canvas.drawPath(
-      band,
-      Paint()..color = colors.accent.withValues(alpha: .08),
-    );
+    final start = Offset(state._nowX, currentY);
+    final endX =
+        _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right;
+    if (ordered.length >= 3) {
+      final high = Offset(endX, state._y(ordered[0].price));
+      final low = Offset(endX, state._y(ordered[2].price));
+      final band = Path()
+        ..moveTo(start.dx, start.dy)
+        ..cubicTo(
+          start.dx + (high.dx - start.dx) * 0.5,
+          start.dy,
+          start.dx + (high.dx - start.dx) * 0.55,
+          high.dy,
+          high.dx,
+          high.dy,
+        )
+        ..lineTo(low.dx, low.dy)
+        ..cubicTo(
+          start.dx + (low.dx - start.dx) * 0.55,
+          low.dy,
+          start.dx + (low.dx - start.dx) * 0.5,
+          start.dy,
+          start.dx,
+          start.dy,
+        )
+        ..close();
+      canvas.drawPath(
+        band,
+        Paint()..color = colors.accent.withValues(alpha: .08),
+      );
+    }
     for (final target in ordered) {
-      final y = state._y(target.price);
+      final end = Offset(endX, state._y(target.price));
       final color = _targetColor(state, target, colors);
-      canvas.drawLine(
-        Offset(state._nowX, currentY),
-        Offset(
-          _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right,
-          y,
-        ),
+      _drawDashedCubic(
+        canvas,
+        start,
+        end,
         Paint()
-          ..color = color.withValues(alpha: .65)
-          ..strokeWidth = 1.4
-          ..style = PaintingStyle.stroke,
+          ..color = color.withValues(alpha: .85)
+          ..strokeWidth = 1.5
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round,
+      );
+      canvas.drawCircle(end, 5, Paint()..color = colors.background);
+      canvas.drawCircle(
+        end,
+        5,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.6,
       );
     }
   }
 
   @override
   bool shouldRepaint(_PriceTargetsPainter oldDelegate) =>
-      oldDelegate.state.widget != state.widget;
+      oldDelegate.widget != widget || oldDelegate.colors != colors;
 }
 
 class _PriceNowPainter extends CustomPainter {
-  _PriceNowPainter(this.state);
+  _PriceNowPainter(this.state, this.colors) : widget = state.widget;
   final _BeuiPriceTargetFanState state;
+  final BeuiColors colors;
+  final BeuiPriceTargetFan widget;
   @override
   void paint(Canvas canvas, Size size) {
-    final colors = BeuiColors.resolve(state.context);
     final y = state._y(state.widget.current);
+    final x = state._nowX;
     final line = Paint()
-      ..color = colors.foreground.withValues(alpha: .45)
+      ..color = colors.foreground.withValues(alpha: .35)
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
-    for (
-      var x = state._nowX;
-      x < _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right;
-      x += 6
-    ) {
-      canvas.drawLine(
-        Offset(x, y),
-        Offset(
-          math.min(
-            x + 3,
-            _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right,
-          ),
-          y,
-        ),
-        line,
-      );
+    final top = _BeuiPriceTargetFanState.top;
+    final bottom =
+        _BeuiPriceTargetFanState.height - _BeuiPriceTargetFanState.bottom;
+    for (var yy = top; yy < bottom; yy += 6) {
+      canvas.drawLine(Offset(x, yy), Offset(x, math.min(yy + 3, bottom)), line);
     }
-    canvas.drawCircle(
-      Offset(state._nowX, y),
-      4,
-      Paint()..color = colors.background,
-    );
-    canvas.drawCircle(
-      Offset(state._nowX, y),
-      2.5,
-      Paint()..color = colors.foreground,
-    );
+    canvas.drawCircle(Offset(x, y), 4.5, Paint()..color = colors.background);
+    canvas.drawCircle(Offset(x, y), 3, Paint()..color = colors.foreground);
   }
 
   @override
   bool shouldRepaint(_PriceNowPainter oldDelegate) =>
-      oldDelegate.state.widget != state.widget;
+      oldDelegate.widget != widget || oldDelegate.colors != colors;
 }
 
 class _PriceCursorPainter extends CustomPainter {
-  _PriceCursorPainter(this.state, this.index, this.cursorY);
+  _PriceCursorPainter(this.state, this.index, this.cursorY, this.colors)
+    : widget = state.widget;
   final _BeuiPriceTargetFanState state;
   final int index;
   final double cursorY;
+  final BeuiColors colors;
+  final BeuiPriceTargetFan widget;
   @override
   void paint(Canvas canvas, Size size) {
     if (index < 0 || index >= state.widget.history.length) return;
-    final colors = BeuiColors.resolve(state.context);
     final point = state.widget.history[index];
     final x = state._historyX(index);
     final y = cursorY;
@@ -859,7 +1063,31 @@ class _PriceCursorPainter extends CustomPainter {
   bool shouldRepaint(_PriceCursorPainter oldDelegate) =>
       oldDelegate.index != index ||
       oldDelegate.cursorY != cursorY ||
-      oldDelegate.state.widget != state.widget;
+      oldDelegate.widget != widget ||
+      oldDelegate.colors != colors;
+}
+
+void _drawDashedCubic(Canvas canvas, Offset start, Offset end, Paint paint) {
+  final path = Path()
+    ..moveTo(start.dx, start.dy)
+    ..cubicTo(
+      start.dx + (end.dx - start.dx) * 0.5,
+      start.dy,
+      start.dx + (end.dx - start.dx) * 0.55,
+      end.dy,
+      end.dx,
+      end.dy,
+    );
+  for (final metric in path.computeMetrics()) {
+    var distance = 0.0;
+    const dash = 5.0;
+    const gap = 3.5;
+    while (distance < metric.length) {
+      final next = math.min(distance + dash, metric.length);
+      canvas.drawPath(metric.extractPath(distance, next), paint);
+      distance = next + gap;
+    }
+  }
 }
 
 void _drawText(

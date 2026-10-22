@@ -93,6 +93,16 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
   late List<_ProfileBin> bins;
   late int pocIndex, lowArea, highArea;
   late double total, maxVolume;
+  String? _hoveredId;
+  String? get inspectedId => _hoveredId ?? activeId;
+  void hoverBin(String id) {
+    if (_hoveredId != id) setState(() => _hoveredId = id);
+  }
+
+  void clearHoveredBin() {
+    if (_hoveredId != null) setState(() => _hoveredId = null);
+  }
+
   @override
   String? get widgetActiveId => widget.activeId;
   @override
@@ -119,6 +129,7 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
   void didUpdateWidget(BeuiVolumeProfile old) {
     super.didUpdateWidget(old);
     if (old.data != widget.data || old.valueArea != widget.valueArea) {
+      if (old.data != widget.data) _hoveredId = null;
       _rebuild();
     }
   }
@@ -231,7 +242,31 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
     final lo = prices.reduce(math.min);
     final hi = prices.reduce(math.max);
     final span = math.max(hi - lo, 1.0);
-    final active = state.bins.indexWhere((b) => b.id == state.activeId);
+    final barHeight = math.max(2.0, height / state.bins.length);
+    double barTop(int index) {
+      final top = state.bins.length == 1
+          ? 0.0
+          : ((hi - prices[index]) / span).clamp(0.0, 1.0) * height;
+      return top.clamp(0, math.max(0, height - barHeight));
+    }
+
+    int binIndexAt(double y) {
+      var closestIndex = 0;
+      var closestDistance = double.infinity;
+      var visibleIndex = -1;
+      for (var i = 0; i < state.bins.length; i++) {
+        final top = barTop(i);
+        if (y >= top && y <= top + barHeight) visibleIndex = i;
+        final distance = (y - top - barHeight / 2).abs();
+        if (distance <= closestDistance) {
+          closestIndex = i;
+          closestDistance = distance;
+        }
+      }
+      return visibleIndex < 0 ? closestIndex : visibleIndex;
+    }
+
+    final active = state.bins.indexWhere((b) => b.id == state.inspectedId);
     final index = active < 0
         ? state.pocIndex.clamp(0, state.bins.length - 1)
         : active;
@@ -276,11 +311,8 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                     Builder(
                       builder: (context) {
                         final bin = state.bins[i].bin;
-                        final top = state.bins.length == 1
-                            ? 0.0
-                            : ((hi - bin.price) / span).clamp(0.0, 1.0) *
-                                  height;
-                        final h = math.max(2.0, height / state.bins.length);
+                        final top = barTop(i);
+                        final h = barHeight;
                         final isPoc = i == state.pocIndex;
                         final inArea =
                             i >= state.lowArea && i <= state.highArea;
@@ -288,7 +320,7 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                             ? 0.0
                             : (bin.volume / state.maxVolume).clamp(0, 1);
                         return Positioned(
-                          top: top.clamp(0, math.max(0, height - h)),
+                          top: top,
                           left: 0,
                           right: 0,
                           height: h,
@@ -310,6 +342,12 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                                   borderRadius: const BorderRadius.horizontal(
                                     right: Radius.circular(3),
                                   ),
+                                  border: state.bins[i].id == state.inspectedId
+                                      ? Border.all(
+                                          color: colors.foreground,
+                                          width: 1.5,
+                                        )
+                                      : null,
                                 ),
                               ),
                             ),
@@ -318,28 +356,33 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                       },
                     ),
                   Positioned.fill(
-                    child: Focus(
-                      autofocus: true,
-                      onKeyEvent: (_, event) => state.handleInspectorKey(event)
-                          ? KeyEventResult.handled
-                          : KeyEventResult.ignored,
-                      child: Semantics(
-                        slider: true,
-                        focusable: true,
-                        label: '${state.widget.label}: inspect price level',
-                        value: state.price(state.bins[index].bin.price),
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTapDown: (e) {
-                            final i =
-                                (e.localPosition.dy /
-                                        height *
-                                        state.bins.length)
-                                    .floor()
-                                    .clamp(0, state.bins.length - 1);
-                            state.setActiveId(state.bins[i].id);
-                          },
-                          child: const SizedBox.expand(),
+                    child: MouseRegion(
+                      onHover: (event) {
+                        state.hoverBin(
+                          state.bins[binIndexAt(event.localPosition.dy)].id,
+                        );
+                      },
+                      onExit: (_) => state.clearHoveredBin(),
+                      child: Focus(
+                        autofocus: true,
+                        onKeyEvent: (_, event) =>
+                            state.handleInspectorKey(event)
+                            ? KeyEventResult.handled
+                            : KeyEventResult.ignored,
+                        child: Semantics(
+                          slider: true,
+                          focusable: true,
+                          label: '${state.widget.label}: inspect price level',
+                          value: state.price(state.bins[index].bin.price),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTapDown: (e) {
+                              state.setActiveId(
+                                state.bins[binIndexAt(e.localPosition.dy)].id,
+                              );
+                            },
+                            child: const SizedBox.expand(),
+                          ),
                         ),
                       ),
                     ),
@@ -381,7 +424,7 @@ class BeuiVolumeProfileSummary extends StatelessWidget {
     final s = _ProfileScope.of(context);
     final colors = BeuiColors.resolve(context);
     if (s.bins.isEmpty) return const SizedBox.shrink();
-    final selected = s.bins.where((b) => b.id == s.activeId).firstOrNull;
+    final selected = s.bins.where((b) => b.id == s.inspectedId).firstOrNull;
     final bin =
         selected?.bin ??
         (s.pocIndex < 0 ? s.bins.first.bin : s.bins[s.pocIndex].bin);
@@ -428,26 +471,73 @@ class BeuiVolumeProfileTooltip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = _ProfileScope.of(context);
-    final found = s.bins.where((b) => b.id == s.activeId).firstOrNull;
+    final found = s.bins.where((b) => b.id == s.inspectedId).firstOrNull;
     if (found == null) return const SizedBox.shrink();
     final bin = found.bin;
     final index = s.bins.indexOf(found);
-    return BeuiChartTooltip(
-      side: side,
-      content: BeuiChartTooltipCard(
-        title: s.price(bin.price),
-        lines: [
-          'Volume ${s.volume(bin.volume)} ${s.widget.unit}',
-          if (bin.buy != null) 'Buy ${s.volume(bin.buy!)}',
-          if (bin.sell != null) 'Sell ${s.volume(bin.sell!)}',
-          if (index == s.pocIndex) 'Point of control',
+    final low = index == 0
+        ? bin.price -
+              (s.bins.length > 1 ? (s.bins[1].bin.price - bin.price) / 2 : 0)
+        : (s.bins[index - 1].bin.price + bin.price) / 2;
+    final high = index == s.bins.length - 1
+        ? bin.price +
+              (s.bins.length > 1
+                  ? (bin.price - s.bins[index - 1].bin.price) / 2
+                  : 0)
+        : (bin.price + s.bins[index + 1].bin.price) / 2;
+    final share = s.total > 0 ? bin.volume / s.total : 0.0;
+    const tickerStyle = TextStyle(fontSize: 11);
+    return Semantics(
+      liveRegion: true,
+      label: '${s.price(bin.price)}, volume ${s.volume(bin.volume)}',
+      child: BeuiChartTooltipCard(
+        title: '${s.price(low)} – ${s.price(high)}',
+        titleWidget: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BeuiChartTicker(
+              value: low,
+              format: (value) => s.price(value.toDouble()),
+              style: tickerStyle,
+            ),
+            const Text(' – '),
+            BeuiChartTicker(
+              value: high,
+              format: (value) => s.price(value.toDouble()),
+              style: tickerStyle,
+            ),
+          ],
+        ),
+        details: [
+          _profileTickerRow(
+            'Volume',
+            bin.volume,
+            (value) => '${s.volume(value.toDouble())} ${s.widget.unit}',
+          ),
+          if (bin.buy != null) Text('Buy ${s.volume(bin.buy!)}'),
+          if (bin.sell != null) Text('Sell ${s.volume(bin.sell!)}'),
+          _profileTickerRow(
+            'Share',
+            share * 100,
+            (value) => '${value.toStringAsFixed(1)}%',
+          ),
+          if (index == s.pocIndex) const Text('Point of control'),
+          if (s.lowArea >= 0 && index >= s.lowArea && index <= s.highArea)
+            const Text('Value area'),
         ],
-      ),
-      child: Semantics(
-        liveRegion: true,
-        label: '${s.price(bin.price)}, volume ${s.volume(bin.volume)}',
-        child: const SizedBox(width: 1, height: 1),
       ),
     );
   }
 }
+
+Widget _profileTickerRow(
+  String label,
+  num value,
+  String Function(num) format,
+) => Row(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    Text('$label '),
+    BeuiChartTicker(value: value, format: format),
+  ],
+);

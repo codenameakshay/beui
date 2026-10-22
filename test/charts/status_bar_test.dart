@@ -1,6 +1,8 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support.dart';
@@ -40,6 +42,11 @@ void main() {
     expect(find.text('Aug 23'), findsOneWidget);
     expect(find.text('Operational'), findsOneWidget);
     expect(find.byType(Slider), findsOneWidget);
+    expect(
+      tester.getSize(find.byType(BeuiStatusBarPlot)).height,
+      lessThan(80),
+      reason: 'source range input is opacity-0 over the 44px bar',
+    );
     await tester.pumpWidget(
       beuiTestApp(
         const BeuiStatusBar(
@@ -66,11 +73,234 @@ void main() {
         ),
       ),
     );
-    await tester.tap(find.byType(Slider));
+    final plot = tester.getRect(find.byType(BeuiStatusBarPlot));
+    await tester.tapAt(Offset(plot.left + plot.width / 6, plot.center.dy));
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
     expect(changed, 'b');
     expect(tester.getSemantics(find.byType(BeuiStatusBarPlot)), isNotNull);
+  });
+
+  testWidgets('keyboard navigation advances from the tapped first period', (
+    tester,
+  ) async {
+    final changed = <String>[];
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiStatusBar(
+          data: _data,
+          statuses: _statuses,
+          defaultActiveId: 'a',
+          onActiveChange: (id) {
+            if (id != null) changed.add(id);
+          },
+        ),
+      ),
+    );
+
+    final plot = tester.getRect(find.byType(BeuiStatusBarPlot));
+    await tester.tapAt(Offset(plot.left + plot.width / 6, plot.center.dy));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(changed, ['b']);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(changed, ['b', 'c']);
+  });
+
+  testWidgets('tapping the periods takes keyboard focus from another control', (
+    tester,
+  ) async {
+    final changed = <String>[];
+    final otherFocus = FocusNode();
+    addTearDown(otherFocus.dispose);
+    await tester.pumpWidget(
+      beuiTestApp(
+        Column(
+          children: [
+            TextField(focusNode: otherFocus),
+            BeuiStatusBar(
+              data: _data,
+              statuses: _statuses,
+              defaultActiveId: 'a',
+              onActiveChange: (id) {
+                if (id != null) changed.add(id);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+    otherFocus.requestFocus();
+    await tester.pump();
+    expect(otherFocus.hasFocus, isTrue);
+
+    final plot = tester.getRect(find.byType(BeuiStatusBarPlot));
+    await tester.tapAt(Offset(plot.left + plot.width / 6, plot.center.dy));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(changed, ['b']);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(changed, ['b', 'c']);
+  });
+
+  testWidgets('Tab enters the status periods keyboard controls', (
+    tester,
+  ) async {
+    final changed = <String>[];
+    final otherFocus = FocusNode();
+    addTearDown(otherFocus.dispose);
+    await tester.pumpWidget(
+      beuiTestApp(
+        Column(
+          children: [
+            TextField(focusNode: otherFocus),
+            BeuiStatusBar(
+              data: _data,
+              statuses: _statuses,
+              defaultActiveId: 'a',
+              onActiveChange: (id) {
+                if (id != null) changed.add(id);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+    otherFocus.requestFocus();
+    await tester.pump();
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+
+    expect(changed, ['b']);
+  });
+
+  testWidgets('hovering a period shows its static status tooltip', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiStatusBar(data: _data, statuses: _statuses)),
+    );
+    final plot = tester.getRect(find.byType(BeuiStatusBarPlot));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    final position = Offset(plot.left + plot.width * .5, plot.top + 22);
+    await mouse.addPointer(location: position);
+    await mouse.moveTo(position);
+    await tester.pump();
+
+    expect(find.text('Aug 22'), findsWidgets);
+    expect(find.text('Degraded'), findsWidgets);
+    expect(find.text('Duration: 12 minutes'), findsOneWidget);
+    expect(find.byType(BeuiNumberTicker), findsNothing);
+    await mouse.removePointer();
+  });
+
+  testWidgets('leaving the status periods clears the hover tooltip', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiStatusBar(data: _data, statuses: _statuses)),
+    );
+    final plot = tester.getRect(find.byType(BeuiStatusBarPlot));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(Offset(plot.left + plot.width * .1, plot.top + 22));
+    await tester.pump();
+    expect(find.text('Aug 21'), findsWidgets);
+
+    await mouse.moveTo(Offset(plot.left + plot.width * .5, plot.top + 22));
+    await tester.pump();
+    expect(find.text('Aug 22'), findsWidgets);
+    expect(find.text('Duration: 12 minutes'), findsOneWidget);
+
+    await mouse.moveTo(Offset(plot.right + 20, plot.bottom + 20));
+    await tester.pump();
+
+    expect(find.text('Duration: 12 minutes'), findsNothing);
+    await mouse.removePointer();
+  });
+
+  testWidgets('leaving status periods hides tooltip but retains selection', (
+    tester,
+  ) async {
+    final changes = <String?>[];
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiStatusBar(
+          data: _data,
+          statuses: _statuses,
+          defaultActiveId: 'a',
+          onActiveChange: changes.add,
+        ),
+      ),
+    );
+    final plot = tester.getRect(find.byType(BeuiStatusBarPlot));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(Offset(plot.left + plot.width * .5, plot.top + 22));
+    await tester.pump();
+    expect(find.text('Duration: 12 minutes'), findsOneWidget);
+
+    await mouse.moveTo(Offset(plot.right + 20, plot.bottom + 20));
+    await tester.pump();
+
+    expect(find.text('Duration: 12 minutes'), findsNothing);
+    expect(changes, ['b']);
+    expect(
+      tester
+          .getSemantics(
+            find
+                .byWidgetPredicate(
+                  (widget) =>
+                      widget is Semantics &&
+                      widget.properties.label?.startsWith('Aug 22, Degraded') ==
+                          true,
+                )
+                .first,
+          )
+          .label,
+      'Aug 22, Degraded',
+    );
+    await mouse.removePointer();
+  });
+
+  testWidgets('transparent status range remains adjustable to semantics', (
+    tester,
+  ) async {
+    final changed = <String?>[];
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiStatusBar(
+          data: _data,
+          statuses: _statuses,
+          defaultActiveId: 'a',
+          onActiveChange: changed.add,
+        ),
+      ),
+    );
+    final semantics = tester.getSemantics(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.properties.label == 'Status history period',
+      ),
+    );
+
+    expect(semantics.value, 'Aug 21, Operational');
+    expect(
+      semantics.getSemanticsData().hasAction(SemanticsAction.increase),
+      isTrue,
+    );
+    expect(
+      semantics.getSemanticsData().hasAction(SemanticsAction.decrease),
+      isTrue,
+    );
+    semantics.owner!.performAction(semantics.id, SemanticsAction.increase);
+    await tester.pump();
+    expect(changed, ['b']);
   });
 
   testWidgets('controlled selection does not move without a parent update', (
@@ -87,11 +317,13 @@ void main() {
         ),
       ),
     );
-    await tester.tap(find.byType(Slider));
+    final plot = tester.getRect(find.byType(BeuiStatusBarPlot));
+    await tester.tapAt(Offset(plot.left + plot.width / 6, plot.center.dy));
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
     expect(changed, 'b');
-    expect(find.text('Aug 21 · Operational'), findsOneWidget);
+    expect(find.text('Aug 21'), findsWidgets);
+    expect(find.text('Operational'), findsWidgets);
   });
 
   testWidgets('reduced motion and chart semantics render', (tester) async {

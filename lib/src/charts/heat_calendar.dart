@@ -318,7 +318,13 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
               child: Row(
                 children: [
                   for (var w = 0; w < state.widget.weeks; w++)
-                    SizedBox(width: 16, child: _monthLabel(state, w)),
+                    SizedBox(
+                      width: w == state.widget.weeks - 1
+                          ? cellSize
+                          : cellSize + 4,
+                      height: 12,
+                      child: _monthLabel(state, w),
+                    ),
                 ],
               ),
             ),
@@ -360,10 +366,42 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
                             enabled: true,
                             content: BeuiChartTooltipCard(
                               title: '$count ${state.widget.unit}',
-                              lines: [
-                                '${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}, ${date.year}',
+                              titleWidget: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  BeuiChartTicker(
+                                    value: count,
+                                    duration: const Duration(milliseconds: 350),
+                                    format: (value) => value.round().toString(),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(state.widget.unit),
+                                ],
+                              ),
+                              details: [
+                                Text(
+                                  '${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}, ${date.year}',
+                                ),
                                 if (selected?.end != null)
-                                  'Selected span: ${state._rangeTotal} ${state.widget.unit}',
+                                  Text.rich(
+                                    TextSpan(
+                                      text: 'Selected span: ',
+                                      children: [
+                                        WidgetSpan(
+                                          alignment:
+                                              PlaceholderAlignment.middle,
+                                          child: BeuiChartTicker(
+                                            value: state._rangeTotal,
+                                            duration: const Duration(
+                                              milliseconds: 350,
+                                            ),
+                                            format: (value) =>
+                                                '${value.round()} ${state.widget.unit}',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                               ],
                               swatch: color,
                             ),
@@ -432,14 +470,20 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
     final previous = week == 0
         ? null
         : state._startDate().add(Duration(days: (week - 1) * 7));
-    if (previous != null && previous.month == date.month) return null;
-    if (week < 3 && state.widget.weeks > 3) return null;
-    return Align(
+    if (previous != null && previous.month == date.month) {
+      return null;
+    }
+    return OverflowBox(
+      maxWidth: 40,
       alignment: Alignment.centerLeft,
       child: Text(
         _month[date.month - 1],
         maxLines: 1,
-        style: const TextStyle(fontSize: 9),
+        overflow: TextOverflow.visible,
+        style: TextStyle(
+          fontSize: 10,
+          color: BeuiColors.resolve(state.context).mutedForeground,
+        ),
       ),
     );
   }
@@ -471,12 +515,20 @@ class BeuiHeatCalendarLegend extends StatelessWidget {
     final state = _HeatCalendarScope.of(context);
     final colors = BeuiColors.resolve(context);
     final hue = beuiChartColor(state.widget.color, colors);
-    return Wrap(
-      spacing: 4,
-      crossAxisAlignment: WrapCrossAlignment.center,
+    final start = state._startDate();
+    final end = state._utcEnd();
+    final range =
+        '${_month[start.month - 1]} ${start.day} – ${_month[end.month - 1]} ${end.day}';
+    return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Less',
+          range,
+          style: TextStyle(fontSize: 10, color: colors.mutedForeground),
+        ),
+        const SizedBox(width: 16),
+        Text(
+          'less',
           style: TextStyle(fontSize: 10, color: colors.mutedForeground),
         ),
         for (var level = 0; level < 5; level++)
@@ -486,25 +538,28 @@ class BeuiHeatCalendarLegend extends StatelessWidget {
             label: 'Filter activity level $level',
             child: GestureDetector(
               onTap: () => state._toggleFilter(level),
-              child: Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: level == 0
-                      ? colors.foreground.withValues(alpha: .06)
-                      : hue.withValues(
-                          alpha: const [0.0, .24, .46, .70, .94][level],
-                        ),
-                  borderRadius: BorderRadius.circular(3),
-                  border: state._filter == level
-                      ? Border.all(color: colors.foreground)
-                      : null,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: level == 0
+                        ? colors.foreground.withValues(alpha: .06)
+                        : hue.withValues(
+                            alpha: const [0.0, .24, .46, .70, .94][level],
+                          ),
+                    borderRadius: BorderRadius.circular(3),
+                    border: state._filter == level
+                        ? Border.all(color: colors.foreground)
+                        : null,
+                  ),
                 ),
               ),
             ),
           ),
         Text(
-          'More',
+          'more',
           style: TextStyle(fontSize: 10, color: colors.mutedForeground),
         ),
       ],

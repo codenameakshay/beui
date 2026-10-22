@@ -1,3 +1,5 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +28,8 @@ void main() {
     await tester.pumpWidget(beuiTestApp(_chart()));
     expect(find.byKey(const ValueKey('beui-heat-cell-0-0')), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp(r'commits, Oct')), findsWidgets);
-    expect(find.text('More'), findsOneWidget);
+    expect(find.text('more'), findsOneWidget);
+    expect(find.text('Oct'), findsWidgets);
   });
 
   testWidgets('uncontrolled clicks anchor and lock a selected range', (
@@ -50,6 +53,29 @@ void main() {
           .length,
       2,
     );
+  });
+
+  testWidgets('hovering a cell reveals its animated count and date', (
+    tester,
+  ) async {
+    await tester.pumpWidget(beuiTestApp(_chart()));
+    final cell = find.byKey(const ValueKey('beui-heat-cell-0-2'));
+    await tester.ensureVisible(cell);
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    await gesture.moveTo(tester.getCenter(cell));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BeuiChartTicker), findsWidgets);
+    expect(
+      tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker).first).value,
+      7,
+    );
+    expect(find.text('commits'), findsWidgets);
+    expect(find.textContaining('Sep 30, 2026'), findsWidgets);
+    await gesture.removePointer();
   });
 
   testWidgets(

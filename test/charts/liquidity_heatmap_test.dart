@@ -1,4 +1,5 @@
 import 'package:beui/beui.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -75,6 +76,25 @@ void main() {
     await tester.pump();
     expect(find.text('14:02 · 99.00 · 10 SOL'), findsNothing);
     semantics.dispose();
+  });
+
+  testWidgets('hovering a cell activates it and reveals its size ticker', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_surface());
+    final cell = find.bySemanticsLabel('14:00, 101.00: 20 SOL');
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    await gesture.moveTo(tester.getCenter(cell));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pumpAndSettle();
+    expect(find.byType(BeuiChartTicker), findsOneWidget);
+    expect(
+      tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker)).format(20),
+      contains('SOL'),
+    );
+    await gesture.removePointer();
   });
 
   testWidgets('renders under reduced motion and matches rest-state golden', (

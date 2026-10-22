@@ -23,6 +23,7 @@ class _HeatCalendarDemo extends StatelessWidget {
         unit: 'commits',
         weeks: 16,
         maxCount: 14,
+        color: '#22D3EE',
         endDate: DateTime.utc(2026, 10, 21),
         values: [
           for (var week = 0; week < 16; week++)

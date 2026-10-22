@@ -398,6 +398,7 @@ export 'src/charts/_shared.dart'
         BeuiChartSpring,
         BeuiChartSpringRect,
         BeuiChartSwatch,
+        BeuiChartTicker,
         BeuiChartTooltip,
         BeuiChartTooltipCard,
         BeuiChartTooltipSide,

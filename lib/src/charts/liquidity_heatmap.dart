@@ -219,86 +219,145 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (var row = 0; row < prices.length; row++)
-            Row(
-              children: [
-                SizedBox(
-                  width: 54,
-                  child: Text(
-                    scope.formatPrice(prices[row]),
-                    style: TextStyle(
-                      fontSize: 9,
-                      color: colors.mutedForeground,
-                    ),
-                  ),
-                ),
-                for (var col = 0; col < columns.length; col++)
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(1),
-                      child: BeuiChartTooltip(
-                        enabled: row == activeRow && col == activeCol,
-                        content: BeuiChartTooltipCard(
-                          title:
-                              '${columns[col].snapshot.label} · ${scope.formatPrice(prices[row])}',
-                          lines: [
-                            '${columns[col].levels[prices[row]] == null ? 'No data' : scope.formatSize(columns[col].levels[prices[row]]!)} ${scope.unit}',
-                            if (columns[col].snapshot.price case final p?)
-                              'Market ${scope.formatPrice(p)}',
-                          ],
-                        ),
-                        child: Semantics(
-                          button: true,
-                          selected: row == activeRow && col == activeCol,
-                          label:
-                              '${columns[col].snapshot.label}, ${scope.formatPrice(prices[row])}: '
-                              '${columns[col].levels[prices[row]] == null ? 'No data' : '${scope.formatSize(columns[col].levels[prices[row]]!)} ${scope.unit}'}',
-                          child: InkWell(
-                            onFocusChange: (focused) => setActiveId(
-                              focused ? _ids[row * columns.length + col] : null,
-                            ),
-                            onTap: () =>
-                                setActiveId(_ids[row * columns.length + col]),
-                            child: SizedBox(
-                              height: 18,
-                              child: BeuiChartFade(
-                                opacity:
-                                    columns[col].levels.containsKey(prices[row])
-                                    ? 1
-                                    : 0,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color:
-                                        palette[(maximum <= 0
-                                                ? 0
-                                                : ((columns[col].levels[prices[row]] ??
-                                                              0) /
-                                                          maximum *
-                                                          palette.length)
-                                                      .floor())
-                                            .clamp(0, palette.length - 1)],
-                                    border: row == activeRow && col == activeCol
-                                        ? Border.all(
-                                            color: colors.foreground,
-                                            width: 1.5,
-                                          )
-                                        : null,
-                                    borderRadius: BorderRadius.circular(2),
+          Stack(
+            children: [
+              Column(
+                children: [
+                  for (var row = 0; row < prices.length; row++)
+                    Row(
+                      children: [
+                        for (var col = 0; col < columns.length; col++)
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(1),
+                              child: BeuiChartTooltip(
+                                content: BeuiChartTooltipCard(
+                                  title:
+                                      '${columns[col].snapshot.label} · ${scope.formatPrice(prices[row])}',
+                                  titleWidget: Text(
+                                    '${columns[col].snapshot.label} · ${scope.formatPrice(prices[row])}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: colors.mutedForeground,
+                                    ),
+                                  ),
+                                  details: [
+                                    if (columns[col].levels[prices[row]]
+                                        case final size?)
+                                      BeuiChartTicker(
+                                        value: size,
+                                        duration: const Duration(
+                                          milliseconds: 350,
+                                        ),
+                                        format: (value) =>
+                                            '${scope.formatSize(value.toDouble())} ${scope.unit}',
+                                      )
+                                    else
+                                      const Text('No data'),
+                                    if (columns[col].snapshot.price
+                                        case final p?)
+                                      Text('Market ${scope.formatPrice(p)}'),
+                                  ],
+                                ),
+                                child: Semantics(
+                                  button: true,
+                                  selected:
+                                      row == activeRow && col == activeCol,
+                                  label:
+                                      '${columns[col].snapshot.label}, ${scope.formatPrice(prices[row])}: '
+                                      '${columns[col].levels[prices[row]] == null ? 'No data' : '${scope.formatSize(columns[col].levels[prices[row]]!)} ${scope.unit}'}',
+                                  child: InkWell(
+                                    onHover: (hovering) => setActiveId(
+                                      hovering
+                                          ? _ids[row * columns.length + col]
+                                          : null,
+                                    ),
+                                    onFocusChange: (focused) => setActiveId(
+                                      focused
+                                          ? _ids[row * columns.length + col]
+                                          : null,
+                                    ),
+                                    onTap: () => setActiveId(
+                                      _ids[row * columns.length + col],
+                                    ),
+                                    child: SizedBox(
+                                      height: 18,
+                                      child: BeuiChartFade(
+                                        opacity:
+                                            columns[col].levels.containsKey(
+                                              prices[row],
+                                            )
+                                            ? 1
+                                            : 0,
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            color:
+                                                palette[(maximum <= 0
+                                                        ? 0
+                                                        : ((columns[col].levels[prices[row]] ??
+                                                                      0) /
+                                                                  maximum *
+                                                                  palette
+                                                                      .length)
+                                                              .floor())
+                                                    .clamp(
+                                                      0,
+                                                      palette.length - 1,
+                                                    )],
+                                            border:
+                                                row == activeRow &&
+                                                    col == activeCol
+                                                ? Border.all(
+                                                    color: colors.foreground,
+                                                    width: 1.5,
+                                                  )
+                                                : null,
+                                            borderRadius: BorderRadius.circular(
+                                              2,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
+                        SizedBox(
+                          width: 54,
+                          child: Text(
+                            scope.formatPrice(prices[row]),
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 9,
+                              color: colors.mutedForeground,
+                            ),
+                          ),
                         ),
+                      ],
+                    ),
+                ],
+              ),
+              Positioned.fill(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 54),
+                  child: IgnorePointer(
+                    child: CustomPaint(
+                      painter: _LiquidityTracePainter(
+                        columns: columns,
+                        prices: prices,
+                        color: colors.foreground,
                       ),
                     ),
                   ),
-              ],
-            ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 4),
           Row(
             children: [
-              const SizedBox(width: 54),
               for (final c in columns)
                 Expanded(
                   child: Text(
@@ -311,6 +370,7 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
                     ),
                   ),
                 ),
+              const SizedBox(width: 54),
             ],
           ),
           if (activeColumn != null && activePrice != null)
@@ -326,17 +386,6 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
                 ),
               ),
             ),
-          const SizedBox(height: 4),
-          SizedBox(
-            height: 10,
-            child: CustomPaint(
-              painter: _LiquidityTracePainter(
-                columns: columns,
-                prices: prices,
-                color: colors.foreground,
-              ),
-            ),
-          ),
         ],
       ),
     );
