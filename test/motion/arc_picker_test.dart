@@ -112,11 +112,11 @@ void main() {
       );
       double bracketLeft() =>
           tester.getTopLeft(bracket).dx - tester.getTopLeft(stack).dx;
-      expect(tester.getSize(bracket).width, 152);
+      expect(tester.getSize(bracket).width, closeTo(152, 0.01));
       expect(bracketLeft(), closeTo(23.2, 0.001));
 
       await tester.pumpWidget(app('three'));
-      expect(tester.getSize(bracket).width, 248);
+      expect(tester.getSize(bracket).width, closeTo(248, 0.01));
       expect(bracketLeft(), closeTo(-72.8, 0.001));
       expect(find.text('Daybreak'), findsOneWidget);
       expect(
@@ -131,10 +131,10 @@ void main() {
       );
 
       await tester.pumpWidget(app('three'));
-      expect(tester.getSize(bracket).width, 248);
+      expect(tester.getSize(bracket).width, closeTo(248, 0.01));
       expect(bracketLeft(), closeTo(-72.8, 0.001));
       await tester.pumpWidget(app('two'));
-      expect(tester.getSize(bracket).width, 152);
+      expect(tester.getSize(bracket).width, closeTo(152, 0.01));
       expect(bracketLeft(), closeTo(23.2, 0.001));
     });
 

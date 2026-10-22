@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 /// Gallery route for [BeuiImageViewer].
 Widget imageViewerDemo(BuildContext context) => const _ImageViewerDemo();
 
+Widget _photoFallback(BuildContext context, Object error, StackTrace? stack) =>
+    const ColoredBox(
+      color: Color(0xFFB8C6D1),
+      child: Center(child: Icon(Icons.image_outlined, size: 40)),
+    );
+
 class _ImageViewerDemo extends StatelessWidget {
   const _ImageViewerDemo();
 
@@ -17,6 +23,7 @@ class _ImageViewerDemo extends StatelessWidget {
       content: Image.network(
         'https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=900&q=85',
         fit: BoxFit.cover,
+        errorBuilder: _photoFallback,
       ),
     ),
     BeuiImageViewerImage(
@@ -28,6 +35,7 @@ class _ImageViewerDemo extends StatelessWidget {
       content: Image.network(
         'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85',
         fit: BoxFit.cover,
+        errorBuilder: _photoFallback,
       ),
     ),
     BeuiImageViewerImage(
@@ -39,6 +47,7 @@ class _ImageViewerDemo extends StatelessWidget {
       content: Image.network(
         'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85',
         fit: BoxFit.cover,
+        errorBuilder: _photoFallback,
       ),
     ),
   ];
