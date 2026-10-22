@@ -2,12 +2,12 @@
 
 ### Blocks
 
-* Project Folder (`BeuiProjectFolder`) — file fan on hover/focus that morphs into a focus-managed overlay grid.
+* Project Folder (`BeuiProjectFolder`) — file fan on hover/focus that morphs into a focus-managed overlay grid; folder rotateX springs with the fan.
 * Card Folder (`BeuiCardFolder`) — landscape card in a stitched purse pocket, with DigitSwap details and an optional overflow action.
-* Morphing Search (`BeuiMorphingSearch`, `BeuiMorphingSearchChips`) — field or icon that morphs into results, plus a chip search bar with recents.
-* Morphing Tabs (`BeuiMorphingTabs`) — reorderable tabs whose selected item grows into a shared content surface.
+* Morphing Search (`BeuiMorphingSearch`, `BeuiMorphingSearchChips`) — field or icon that morphs into results, plus a chip search bar with recents. The docked bar stays hittable while recents are open. Gallery slug `morphing-search-chips` isolates Chip Search.
+* Morphing Tabs (`BeuiMorphingTabs`) — reorderable tabs whose selected item grows into a cream content surface on charcoal chrome (`#292929` / `#fafaf8`). Inactive tabs pack left with a hover fill.
 * Sign Up Form (`BeuiSignUpForm`) — composed registration with punish-late field errors, strength meter, and a stateful submit.
-* Prediction Market cards (`BeuiPredictionMarketCard`) — listing cards with odds CTAs, volume sparkline, and bookmarks, stacked with the existing trade ticket.
+* Prediction Market cards (`BeuiPredictionMarketCard`) — listing cards with a single odds pill (percent at rest, Yes/No on hover), payout multipliers, volume sparkline, and bookmarks, stacked with the existing trade ticket. Gallery slug `prediction-market-card` isolates the listing.
 * Gallery order now matches beui.dev/components/blocks (Fixtures title; File Upload and Prediction Market stack their install targets).
 
 ## 2.0.0

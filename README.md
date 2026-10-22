@@ -223,14 +223,14 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Multi-chain Swap | `BeuiMultiChainSwap` | Token swap card with chain switching and an animated quote |
 | Dynamic Island | `BeuiDynamicIsland` | iOS-style island that morphs between compact and expanded views |
 | Command Palette | `BeuiCommandPalette` | ⌘K palette with fuzzy search and spring-animated results |
-| Morphing Search ✨ | `BeuiMorphingSearch`, `BeuiMorphingSearchChips` | Search field or icon that morphs into results, plus a chip search bar |
+| Morphing Search ✨ | `BeuiMorphingSearch`, `BeuiMorphingSearchChips` | Search field or icon that morphs into results, plus a chip search bar (`morphing-search-chips`) |
 | Expandable Action Bar | `BeuiExpandableActionBar` | Icon rail whose segments expand to reveal a label on hover |
 | Overflow Actions | `BeuiOverflowActions` | Primary actions with an overflow that fans out from a ⋯ toggle |
 | Expandable Tabs | `BeuiExpandableTabs` | Icon tabs where the active tab expands to show its label |
-| Morphing Tabs ✨ | `BeuiMorphingTabs` | Reorderable tabs whose selected item grows into a shared content surface |
+| Morphing Tabs ✨ | `BeuiMorphingTabs` | Reorderable tabs whose selected item grows into a cream content surface |
 | Swipeable List | `BeuiSwipeableList` | List rows with spring-backed swipe-to-reveal actions |
 | File Upload | `BeuiAttachmentUpload`, `BeuiFileUpload` | Attachment workspace plus a progress queue with retry and removal |
-| Prediction Market | `BeuiPredictionMarketCard`, `BeuiPredictionMarket` | Listing cards with odds CTAs and bookmarks, plus a trade ticket |
+| Prediction Market | `BeuiPredictionMarketCard`, `BeuiPredictionMarket` | Listing cards with percent-to-Yes/No odds pills and bookmarks, plus a trade ticket |
 | Wallet Card ✨ | `BeuiWalletCard` | Wallet card with an account switcher and morphing search |
 | OTP Input | `BeuiOtpInput` | One-time-code field with per-cell focus and a success check |
 | Sign Up Form ✨ | `BeuiSignUpForm` | Registration form with punish-late errors, strength meter, and stateful submit |

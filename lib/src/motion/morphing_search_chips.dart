@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -151,6 +152,11 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
   final _controller = TextEditingController();
   late final _focus = FocusNode(onKeyEvent: _onKey);
   final _barKey = GlobalKey();
+  final _rowsScroll = ScrollController();
+  final _activeRowKey = GlobalKey();
+  bool _revealActiveRow = false;
+  Rect _barRect = const Rect.fromLTWH(0, 0, 0, 56);
+  bool _measurementScheduled = false;
   int _active = 0;
   int? _markedChip;
 
@@ -166,13 +172,31 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
   void initState() {
     super.initState();
     _controller.text = _currentQuery;
+    _focus.addListener(_onFocusChange);
   }
 
   @override
   void didUpdateWidget(covariant BeuiMorphingSearchChips oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.query != widget.query && widget.query != null) {
-      _controller.value = TextEditingValue(text: widget.query!);
+    if (oldWidget.query != widget.query &&
+        widget.query != null &&
+        widget.query != _controller.text) {
+      final text = widget.query!;
+      final selection = _controller.selection;
+      _controller.value = TextEditingValue(
+        text: text,
+        selection: selection.isValid
+            ? selection.copyWith(
+                baseOffset: math.min(selection.baseOffset, text.length),
+                extentOffset: math.min(selection.extentOffset, text.length),
+              )
+            : TextSelection.collapsed(offset: text.length),
+      );
+    }
+    if (!listEquals(oldWidget.chips, widget.chips)) _markedChip = null;
+    if (oldWidget.query != widget.query ||
+        (oldWidget.open != true && widget.open == true)) {
+      _resetActiveRow();
     }
     if (oldWidget.storageKey != widget.storageKey && widget.recents == null) {
       _recents = [..._initialRecents()];
@@ -183,11 +207,15 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
   void dispose() {
     _controller.dispose();
     _focus.dispose();
+    _rowsScroll.dispose();
     super.dispose();
   }
 
   void _setChips(List<String> value) {
-    if (widget.chips == null) setState(() => _chips = value);
+    setState(() {
+      _markedChip = null;
+      if (widget.chips == null) _chips = value;
+    });
     widget.onChipsChange?.call(value);
   }
 
@@ -196,7 +224,10 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
       text: value,
       selection: TextSelection.collapsed(offset: value.length),
     );
-    if (widget.query == null) setState(() => _query = value);
+    setState(() {
+      if (widget.query == null) _query = value;
+      _resetActiveRow();
+    });
     widget.onQueryChange?.call(value);
   }
 
@@ -210,8 +241,57 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
   }
 
   void _setOpen(bool value) {
-    if (widget.open == null) setState(() => _internalOpen = value);
+    if (value == _isOpen) return;
+    setState(() {
+      if (widget.open == null) _internalOpen = value;
+      if (value) _resetActiveRow();
+    });
     widget.onOpenChange?.call(value);
+  }
+
+  void _onFocusChange() {
+    if (_focus.hasFocus && !widget.disabled) _setOpen(true);
+    setState(() {});
+  }
+
+  void _resetActiveRow() {
+    _active = 0;
+    _revealActiveRow = true;
+  }
+
+  void _scheduleActiveRowReveal() {
+    if (!_revealActiveRow) return;
+    _revealActiveRow = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_isOpen || !_rowsScroll.hasClients) return;
+      final row = _activeRowKey.currentContext?.findRenderObject();
+      if (row == null || !row.attached) return;
+      _rowsScroll.position
+        ..ensureVisible(
+          row,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        )
+        ..ensureVisible(
+          row,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
+        );
+    });
+  }
+
+  void _scheduleBarMeasurement() {
+    if (_measurementScheduled || !_isOpen) return;
+    _measurementScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _measurementScheduled = false;
+      if (!mounted || !_isOpen) return;
+      final box = _barKey.currentContext?.findRenderObject() as RenderBox?;
+      if (box != null && box.attached && box.hasSize) {
+        final rect = box.localToGlobal(Offset.zero) & box.size;
+        if (rect != _barRect) setState(() => _barRect = rect);
+      }
+      // Observe layout/scroll frames without keeping an idle panel animating.
+      _scheduleBarMeasurement();
+    });
   }
 
   List<String> get _rows {
@@ -235,6 +315,55 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
       }
     }
     return [query, ...matches.take(widget.maxSuggestions)];
+  }
+
+  Widget _chipPill(String chip, int index, BeuiColors colors) => Chip(
+    label: Text(chip),
+    deleteIcon: const Icon(LucideIcons.x, size: 14),
+    onDeleted: widget.disabled ? null : () => _remove(chip),
+    backgroundColor: colors.foreground.withValues(
+      alpha: _markedChip == index ? .12 : .07,
+    ),
+    side: BorderSide.none,
+    visualDensity: VisualDensity.compact,
+    labelStyle: TextStyle(color: colors.foreground, fontSize: 13),
+  );
+
+  Widget _searchField(BeuiColors colors) => TextField(
+    controller: _controller,
+    focusNode: _focus,
+    enabled: !widget.disabled,
+    onChanged: (value) {
+      if (widget.query == null) _query = value;
+      widget.onQueryChange?.call(value);
+      if (!_isOpen) _setOpen(true);
+      setState(_resetActiveRow);
+    },
+    onTap: () => _setOpen(true),
+    decoration: InputDecoration.collapsed(hintText: widget.placeholder),
+    style: TextStyle(color: colors.foreground),
+  );
+
+  TextSpan _suggestionTitle(String row, BeuiColors colors) {
+    final query = _currentQuery.trim();
+    final matchStart = query.isEmpty
+        ? -1
+        : row.toLowerCase().indexOf(query.toLowerCase());
+    if (matchStart < 0) return TextSpan(text: row);
+    final matchEnd = matchStart + query.length;
+    return TextSpan(
+      children: [
+        TextSpan(text: row.substring(0, matchStart)),
+        TextSpan(
+          text: row.substring(matchStart, matchEnd),
+          style: TextStyle(
+            color: colors.foreground,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        TextSpan(text: row.substring(matchEnd)),
+      ],
+    );
   }
 
   void _add(String raw) {
@@ -273,16 +402,17 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
     }
     if (key == LogicalKeyboardKey.arrowDown ||
         key == LogicalKeyboardKey.arrowUp) {
-      _setOpen(true);
+      if (!_isOpen) {
+        _setOpen(true);
+        return KeyEventResult.handled;
+      }
       final rows = _rows;
       if (rows.isNotEmpty) {
-        setState(
-          () => _active =
-              (_active + (key == LogicalKeyboardKey.arrowDown ? 1 : -1)).clamp(
-                0,
-                rows.length - 1,
-              ),
-        );
+        setState(() {
+          _active = (_active + (key == LogicalKeyboardKey.arrowDown ? 1 : -1))
+              .clamp(0, rows.length - 1);
+          _revealActiveRow = true;
+        });
       }
       return KeyEventResult.handled;
     }
@@ -339,6 +469,7 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
 
   @override
   Widget build(BuildContext context) {
+    _scheduleBarMeasurement();
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final chips = _currentChips;
@@ -350,9 +481,13 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
     final restBarWidth = math.min(
       maxBarWidth,
       math.max(
-        260.0,
-        150.0 +
-            chips.fold<double>(0, (width, chip) => width + chip.length * 7.0),
+        400.0,
+        72.0 +
+            widget.placeholder.length * 9.0 +
+            chips.fold<double>(
+              0,
+              (width, chip) => width + chip.length * 9.0 + 52,
+            ),
       ),
     );
     final glass = colors.background.withValues(alpha: .55);
@@ -365,63 +500,51 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
         borderRadius: BorderRadius.circular(28),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.max,
         children: [
           Icon(LucideIcons.search, size: 20, color: colors.mutedForeground),
           const SizedBox(width: 8),
           if (chips.isNotEmpty)
-            ...chips.indexed.map((entry) {
-              final (index, chip) = entry;
-              Widget pill = Chip(
-                label: Text(chip),
-                deleteIcon: const Icon(LucideIcons.x, size: 14),
-                onDeleted: widget.disabled ? null : () => _remove(chip),
-                backgroundColor: colors.foreground.withValues(
-                  alpha: _markedChip == index ? .12 : .07,
+            Flexible(
+              fit: FlexFit.loose,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final (index, chip) in chips.indexed)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: reduce
+                            ? _chipPill(chip, index, colors)
+                            : SingleMotionBuilder(
+                                value: 1,
+                                from: 0,
+                                motion: motionFor(
+                                  context,
+                                  beuiSpringSwap,
+                                  isMovement: true,
+                                ),
+                                builder: (context, progress, child) => Opacity(
+                                  opacity: progress.clamp(0, 1),
+                                  child: Transform.scale(
+                                    scale: .6 + .4 * progress.clamp(0, 1),
+                                    child: child,
+                                  ),
+                                ),
+                                child: _chipPill(chip, index, colors),
+                              ),
+                      ),
+                  ],
                 ),
-                side: BorderSide.none,
-                visualDensity: VisualDensity.compact,
-                labelStyle: TextStyle(color: colors.foreground, fontSize: 13),
-              );
-              if (!reduce) {
-                pill = SingleMotionBuilder(
-                  value: 1,
-                  from: 0,
-                  motion: motionFor(context, beuiSpringSwap, isMovement: true),
-                  builder: (context, progress, child) => Opacity(
-                    opacity: progress.clamp(0, 1),
-                    child: Transform.scale(
-                      scale: .6 + .4 * progress.clamp(0, 1),
-                      child: child,
-                    ),
-                  ),
-                  child: pill,
-                );
-              }
-              return Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: pill,
-              );
-            }),
+              ),
+            ),
           Expanded(
             child: Semantics(
               textField: true,
               label: widget.label,
-              child: TextField(
-                controller: _controller,
-                focusNode: _focus,
-                enabled: !widget.disabled,
-                onChanged: (value) {
-                  if (widget.query == null) _query = value;
-                  widget.onQueryChange?.call(value);
-                  if (!_isOpen) _setOpen(true);
-                  setState(() => _active = 0);
-                },
-                onTap: () => _setOpen(true),
-                decoration: InputDecoration.collapsed(
-                  hintText: widget.placeholder,
-                ),
-                style: TextStyle(color: colors.foreground),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 0),
+                child: _searchField(colors),
               ),
             ),
           ),
@@ -431,15 +554,15 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
     );
     final expandedBar = reduce
         ? SizedBox(width: _isOpen ? maxBarWidth : restBarWidth, child: bar)
-        : SingleMotionBuilder(
-            value: _isOpen ? 1.0 : 0.0,
-            from: 0,
+        : MotionBuilder<Size>(
+            value: Size(_isOpen ? maxBarWidth : restBarWidth, 56),
+            from: Size(restBarWidth, 56),
+            converter: const SizeMotionConverter(),
             motion: motionFor(context, _chipsEnter, isMovement: true),
-            builder: (context, progress, child) => SizedBox(
-              width:
-                  restBarWidth +
-                  (maxBarWidth - restBarWidth) * progress.clamp(0, 1),
-              child: child,
+            builder: (context, size, child) => SizedBox(
+              width: size.width,
+              height: size.height,
+              child: ClipRect(child: child),
             ),
             child: bar,
           );
@@ -447,24 +570,36 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
       open:
           _isOpen &&
           (rows.isNotEmpty || widget.loading || widget.emptyState != null),
-      onDismiss: () => _setOpen(false),
-      barrierColor: colors.background.withValues(alpha: .04),
-      barrierBlur: beuiBlurSigma(20),
-      barrierSaturation: 1.6,
+      onDismiss: _focus.hasFocus ? null : () => _setOpen(false),
+      barrier: false,
+      trapFocus: false,
       enterDuration: const Duration(milliseconds: 380),
       exitDuration: const Duration(milliseconds: 260),
       overlayBuilder: (context, animation, link) {
-        var above = 0.0;
-        final box = _barKey.currentContext?.findRenderObject() as RenderBox?;
-        if (box != null && box.hasSize) {
-          above = box.localToGlobal(Offset.zero).dy;
-        }
-        final below = MediaQuery.sizeOf(context).height - above - 56;
+        _scheduleActiveRowReveal();
+        final barOrigin = _barRect.topLeft;
+        final barSize = _barRect.size;
+        final above = barOrigin.dy;
+        final below =
+            MediaQuery.sizeOf(context).height - above - barSize.height;
         final side = widget.side == BeuiMorphingSearchChipsSide.auto
             ? (above < 320 && below > above
                   ? BeuiMorphingSearchChipsSide.bottom
                   : BeuiMorphingSearchChipsSide.top)
             : widget.side;
+        final media = MediaQuery.sizeOf(context);
+        final availableHeight = math.max(
+          0.0,
+          side == BeuiMorphingSearchChipsSide.top
+              ? above - 8
+              : media.height - above - barSize.height - 16,
+        );
+        final naturalPanelHeight =
+            88.0 +
+            rows.length * 56 +
+            (widget.loading ? 50 : 0) +
+            (rows.isEmpty && widget.emptyState != null ? 80 : 0);
+        final panelHeight = math.min(naturalPanelHeight, availableHeight);
         final surface = ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: BackdropFilter(
@@ -473,7 +608,10 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
               sigmaY: beuiBlurSigma(20),
             ),
             child: Container(
-              constraints: const BoxConstraints(maxWidth: 560),
+              constraints: BoxConstraints(
+                maxWidth: 560,
+                maxHeight: panelHeight,
+              ),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: glass,
@@ -482,106 +620,149 @@ class _BeuiMorphingSearchChipsState extends State<BeuiMorphingSearchChips> {
                 ),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 6,
-                    ),
-                    child: Text(
-                      _currentQuery.isEmpty ? 'Recent' : 'Suggestions',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colors.mutedForeground,
+              child: SingleChildScrollView(
+                controller: _rowsScroll,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _currentQuery.isEmpty ? 'Recent' : 'Suggestions',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: colors.mutedForeground,
+                              ),
+                            ),
+                          ),
+                          if (_currentQuery.isEmpty &&
+                              _currentRecents.isNotEmpty)
+                            TextButton(
+                              onPressed: () => _setRecents(const []),
+                              child: const Text('Clear'),
+                            ),
+                        ],
                       ),
                     ),
-                  ),
-                  if (rows.isEmpty && widget.emptyState != null)
-                    widget.emptyState!,
-                  for (final (index, row) in rows.indexed)
-                    Semantics(
-                      selected: index == _active,
-                      child: Material(
-                        type: MaterialType.transparency,
-                        child: ListTile(
-                          dense: true,
-                          selected: index == _active,
-                          leading: Icon(
-                            _currentQuery.isEmpty
-                                ? LucideIcons.clock
-                                : LucideIcons.search,
-                            size: 16,
+                    if (rows.isEmpty && widget.emptyState != null)
+                      widget.emptyState!,
+                    for (final (index, row) in rows.indexed)
+                      Semantics(
+                        key: index == _active ? _activeRowKey : null,
+                        selected: index == _active,
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: ListTile(
+                            dense: true,
+                            selected: index == _active,
+                            leading: Icon(
+                              _currentQuery.isEmpty
+                                  ? LucideIcons.clock
+                                  : LucideIcons.search,
+                              size: 16,
+                            ),
+                            title: Text.rich(_suggestionTitle(row, colors)),
+                            onTap: () => _add(row),
                           ),
-                          title: Text(row),
-                          onTap: () => _add(row),
                         ),
                       ),
-                    ),
-                  if (widget.loading)
-                    const Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Text('Searching…'),
-                    ),
-                ],
+                    if (widget.loading)
+                      const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Text('Searching…'),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
         );
-        Widget animated = surface;
-        if (!reduce) {
-          animated = SingleMotionBuilder(
-            value: _isOpen ? 1.0 : 0.0,
-            from: 0,
-            motion: motionFor(
-              context,
-              _isOpen ? _chipsEnter : _chipsExit,
-              isMovement: true,
-            ),
-            builder: (context, progress, child) => Opacity(
-              opacity: progress.clamp(0, 1),
-              child: Transform.translate(
-                offset: Offset(
-                  0,
-                  (side == BeuiMorphingSearchChipsSide.top ? -1 : 1) *
-                      (1 - progress) *
-                      8,
+        final panelWidth = math.min(
+          560.0,
+          MediaQuery.sizeOf(context).width - 32,
+        );
+        final seed = const Size(112, 40);
+        final target = Size(panelWidth, panelHeight);
+        final animated = reduce
+            ? SizedBox(
+                width: target.width,
+                height: target.height,
+                child: surface,
+              )
+            : MotionBuilder<Size>(
+                value: _isOpen ? target : seed,
+                from: seed,
+                converter: const SizeMotionConverter(),
+                motion: motionFor(
+                  context,
+                  _isOpen ? _chipsEnter : _chipsExit,
+                  isMovement: true,
                 ),
-                child: child,
+                builder: (context, size, child) => SizedBox(
+                  width: size.width,
+                  height: size.height,
+                  child: ClipRect(
+                    child: OverflowBox(
+                      alignment: side == BeuiMorphingSearchChipsSide.top
+                          ? Alignment.bottomLeft
+                          : Alignment.topLeft,
+                      minWidth: target.width,
+                      maxWidth: target.width,
+                      minHeight: 0,
+                      maxHeight: double.infinity,
+                      child: child,
+                    ),
+                  ),
+                ),
+                child: surface,
+              );
+        return SizedBox(
+          width: media.width,
+          height: media.height,
+          child: Stack(
+            children: [
+              Positioned(
+                left: barOrigin.dx,
+                top: side == BeuiMorphingSearchChipsSide.top
+                    ? null
+                    : above + barSize.height + 8,
+                bottom: side == BeuiMorphingSearchChipsSide.top
+                    ? media.height - above + 8
+                    : null,
+                child: TapRegion(groupId: this, child: animated),
               ),
-            ),
-            child: animated,
-          );
-        }
-        return CompositedTransformFollower(
-          link: link,
-          targetAnchor: Alignment.topCenter,
-          followerAnchor: side == BeuiMorphingSearchChipsSide.top
-              ? Alignment.bottomCenter
-              : Alignment.topCenter,
-          offset: Offset(0, side == BeuiMorphingSearchChipsSide.top ? -8 : 8),
-          showWhenUnlinked: false,
-          child: SizedBox(
-            width: math.min(560, MediaQuery.sizeOf(context).width - 32),
-            child: animated,
+            ],
           ),
         );
       },
-      child: Row(
-        key: _barKey,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Flexible(child: expandedBar),
-          if (widget.name != null)
-            ...chips.map(
-              (chip) => Semantics(
-                label: '${widget.name}: $chip',
-                child: const SizedBox.shrink(),
-              ),
+      child: TapRegion(
+        groupId: this,
+        onTapOutside: !widget.disabled && _isOpen
+            ? (_) => _setOpen(false)
+            : null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              fit: FlexFit.loose,
+              child: KeyedSubtree(key: _barKey, child: expandedBar),
             ),
-        ],
+            if (widget.name != null)
+              ...chips.map(
+                (chip) => Semantics(
+                  label: '${widget.name}: $chip',
+                  child: const SizedBox.shrink(),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

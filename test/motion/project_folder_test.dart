@@ -148,6 +148,76 @@ void main() {
       expect(overlayPreview.left, greaterThanOrEqualTo(0));
     });
 
+    testWidgets('hover fan spreads previews further than rest', (tester) async {
+      await tester.pumpWidget(_app(open: false));
+      await tester.pumpAndSettle();
+      final restA = tester.getCenter(find.text('A'));
+      final restE = tester.getCenter(find.text('E'));
+      final restSpan = (restE.dx - restA.dx).abs();
+
+      await tester.pumpWidget(_app(open: true));
+      await tester.pumpAndSettle();
+      final openA = tester.getCenter(find.text('A'));
+      final openE = tester.getCenter(find.text('E'));
+      final openSpan = (openE.dx - openA.dx).abs();
+      expect(openSpan, greaterThan(restSpan));
+      expect(openA.dy, lessThan(restA.dy));
+    });
+
+    testWidgets('enabling reduced motion removes existing folder rotation', (
+      tester,
+    ) async {
+      Widget app({required bool reduce}) => beuiTestApp(
+        Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: reduce),
+            child: BeuiProjectFolder(
+              title: 'Brand direction',
+              previews: _previews,
+            ),
+          ),
+        ),
+      );
+      List<List<double>> folderTransforms() => tester
+          .widgetList<Transform>(
+            find.descendant(
+              of: find.byType(BeuiProjectFolder),
+              matching: find.byWidgetPredicate(
+                (widget) =>
+                    widget is Transform &&
+                    widget.alignment == Alignment.bottomCenter,
+              ),
+            ),
+          )
+          .map((widget) => widget.transform.storage.toList())
+          .toList();
+
+      await tester.pumpWidget(app(reduce: true));
+      await tester.pumpAndSettle();
+      final reducedRest = folderTransforms();
+      expect(reducedRest, hasLength(2));
+      expect(reducedRest.map((matrix) => matrix[6]), everyElement(0));
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpWidget(app(reduce: false));
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(
+        location: tester.getCenter(find.byType(BeuiProjectFolder)),
+      );
+      await tester.pumpAndSettle();
+      final rotated = folderTransforms();
+      expect(rotated[0][6], closeTo(0.258819, 0.001));
+      expect(rotated[1][6], closeTo(-0.422618, 0.001));
+      final folderState = tester.state(find.byType(BeuiProjectFolder));
+
+      await tester.pumpWidget(app(reduce: true));
+      expect(tester.state(find.byType(BeuiProjectFolder)), same(folderState));
+      expect(folderTransforms(), reducedRest);
+      await tester.pump(const Duration(milliseconds: 80));
+      expect(folderTransforms(), reducedRest);
+      await gesture.removePointer();
+    });
+
     testWidgets('rest-state matches the project folder golden', (tester) async {
       await tester.pumpWidget(_app());
       await tester.pumpAndSettle();

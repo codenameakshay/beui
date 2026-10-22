@@ -3,7 +3,6 @@ import 'dart:ui' show Tristate;
 import 'package:beui/beui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support.dart';
@@ -27,12 +26,15 @@ Widget _app({
   ValueChanged<bool>? onBookmarkChange,
   ValueChanged<BeuiPredictionMarketCardSelection>? onOutcomeClick,
   bool reduce = false,
+  bool live = false,
+  String status = 'Sunday · 7:30 PM',
   double width = 460,
 }) => beuiTestApp(
   BeuiPredictionMarketCard(
     title: 'Boston Celtics vs. Los Angeles Lakers',
     category: 'Basketball',
-    status: 'Sunday · 7:30 PM',
+    status: status,
+    live: live,
     volume: r'$2.4M',
     volumeHistory: const [12, 18, 15, 26, 20, 32, 29, 38, 34, 48, 43, 58],
     outcomes: _outcomes,
@@ -52,6 +54,12 @@ void main() {
     expect(find.text(r'$2.4M vol.'), findsOneWidget);
     expect(find.text('Celtics'), findsOneWidget);
     expect(find.text('Lakers'), findsOneWidget);
+    expect(find.text('51%'), findsOneWidget);
+    expect(find.text('49%'), findsOneWidget);
+    expect(find.text('2.0×'), findsNWidgets(2));
+    expect(find.text('Yes'), findsNothing);
+    expect(find.text('No'), findsNothing);
+    expect(find.text('LIVE'), findsNothing);
   });
 
   testWidgets('uncontrolled bookmark toggles and reports changes', (
@@ -101,11 +109,13 @@ void main() {
     );
   });
 
-  testWidgets('Yes and No CTAs report outcome and side', (tester) async {
+  testWidgets('single odds CTA reports Yes on even rows and No on odd rows', (
+    tester,
+  ) async {
     final selections = <BeuiPredictionMarketCardSelection>[];
     await tester.pumpWidget(_app(onOutcomeClick: selections.add));
     await tester.tap(find.bySemanticsLabel('Trade yes Celtics at 51%'));
-    await tester.tap(find.bySemanticsLabel('Trade no Lakers at 51%'));
+    await tester.tap(find.bySemanticsLabel('Trade no Lakers at 49%'));
     expect(
       selections.map((selection) => (selection.outcomeId, selection.side)),
       [
@@ -115,7 +125,9 @@ void main() {
     );
   });
 
-  testWidgets('hover and focus swap odds for Yes/No actions', (tester) async {
+  testWidgets('hover rolls percent into Yes on even and No on odd', (
+    tester,
+  ) async {
     await tester.pumpWidget(_app());
     final yes = find.bySemanticsLabel('Trade yes Celtics at 51%');
     final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
@@ -123,21 +135,30 @@ void main() {
     await gesture.moveTo(tester.getCenter(yes));
     await tester.pump();
     expect(find.text('Yes'), findsOneWidget);
+    expect(find.text('No'), findsNothing);
     await gesture.removePointer();
     await tester.pump();
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    final no = find.bySemanticsLabel('Trade no Lakers at 49%');
+    await gesture.addPointer(location: tester.getCenter(no));
+    await gesture.moveTo(tester.getCenter(no));
     await tester.pump();
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-    await tester.pumpAndSettle();
     expect(find.text('No'), findsOneWidget);
+  });
+
+  testWidgets('live status uses a rose dot instead of a LIVE badge', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app(live: true, status: 'Mid 6th'));
+    expect(find.text('LIVE'), findsNothing);
+    expect(find.text('Mid 6th'), findsOneWidget);
   });
 
   testWidgets('reduced motion snaps labels without applying press movement', (
     tester,
   ) async {
     await tester.pumpWidget(_app(reduce: true));
-    final button = find.text('51%').at(1);
+    final button = find.text('51%');
     final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer(location: tester.getCenter(button));
     await gesture.moveTo(tester.getCenter(button));

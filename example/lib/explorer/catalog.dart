@@ -49,6 +49,7 @@ import '../demos/message_demo.dart';
 import '../demos/message_scroller_demo.dart';
 import '../demos/morphing_modal_demo.dart';
 import '../demos/morphing_search_demo.dart';
+import '../demos/morphing_search_chips_demo.dart';
 import '../demos/morphing_tabs_demo.dart';
 import '../demos/not_found_demo.dart';
 import '../demos/notification_stack_demo.dart';
@@ -547,6 +548,15 @@ const List<ExploreEntry> kBlocks = [
     builder: morphingSearchDemo,
   ),
   ExploreEntry(
+    title: 'Morphing Search Chips',
+    slug: 'morphing-search-chips',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb:
+        'Docked chip search bar that springs wider on focus and unfolds recents.',
+    builder: morphingSearchChipsDemo,
+  ),
+  ExploreEntry(
     title: 'Expandable Action Bar',
     slug: 'expandable-action-bar',
     section: ExploreSection.blocks,
@@ -599,6 +609,16 @@ const List<ExploreEntry> kBlocks = [
     blurb: 'Listing cards with odds CTAs and bookmarks, plus a trade ticket.',
     builder: _predictionMarketCombined,
     sourceFile: 'example/lib/demos/prediction_market_demo.dart',
+  ),
+  ExploreEntry(
+    title: 'Prediction Market Card',
+    slug: 'prediction-market-card',
+    section: ExploreSection.blocks,
+    isNew: true,
+    blurb:
+        'Compact listing whose odds pill shows percent at rest and Yes/No on hover.',
+    builder: predictionMarketCardDemo,
+    sourceFile: 'example/lib/demos/prediction_market_card_demo.dart',
   ),
   ExploreEntry(
     title: 'Wallet Card',

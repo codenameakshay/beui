@@ -134,7 +134,6 @@ class _BeuiPredictionMarketCardState extends State<BeuiPredictionMarketCard> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.card,
-          border: Border.all(color: colors.border),
           borderRadius: BorderRadius.circular(24),
         ),
         child: Padding(
@@ -183,14 +182,30 @@ class _BeuiPredictionMarketCardState extends State<BeuiPredictionMarketCard> {
                               spacing: 6,
                               children: [
                                 if (widget.status != null)
-                                  Text(
-                                    widget.status!,
-                                    style: TextStyle(
-                                      color: widget.live
-                                          ? colors.destructive
-                                          : colors.mutedForeground,
-                                      fontSize: 12,
-                                    ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (widget.live) ...[
+                                        Container(
+                                          width: 5,
+                                          height: 5,
+                                          decoration: BoxDecoration(
+                                            color: colors.destructive,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6),
+                                      ],
+                                      Text(
+                                        widget.status!,
+                                        style: TextStyle(
+                                          color: widget.live
+                                              ? colors.destructive
+                                              : colors.mutedForeground,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 if (widget.status != null &&
                                     widget.category != null)
@@ -215,44 +230,18 @@ class _BeuiPredictionMarketCardState extends State<BeuiPredictionMarketCard> {
                       ],
                     ),
                   ),
-                  if (widget.live)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colors.destructive.withValues(alpha: .1),
-                        borderRadius: BorderRadius.circular(99),
-                      ),
-                      child: Text(
-                        'LIVE',
-                        style: TextStyle(
-                          color: colors.destructive,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: .5,
-                        ),
-                      ),
-                    ),
                 ],
               ),
               const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: colors.background,
-                  borderRadius: BorderRadius.circular(20),
-                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Column(
                   children: [
                     for (var i = 0; i < widget.outcomes.length; i++) ...[
                       if (i > 0) const SizedBox(height: 10),
                       _OutcomeRow(
                         outcome: widget.outcomes[i],
+                        index: i,
                         colors: colors,
                         onSelected: (side) => widget.onOutcomeClick?.call(
                           BeuiPredictionMarketCardSelection(
@@ -329,11 +318,13 @@ class _BeuiPredictionMarketCardState extends State<BeuiPredictionMarketCard> {
 class _OutcomeRow extends StatelessWidget {
   const _OutcomeRow({
     required this.outcome,
+    required this.index,
     required this.colors,
     required this.onSelected,
   });
 
   final BeuiPredictionMarketCardOutcome outcome;
+  final int index;
   final BeuiColors colors;
   final ValueChanged<BeuiPredictionMarketCardSide> onSelected;
 
@@ -342,22 +333,30 @@ class _OutcomeRow extends StatelessWidget {
     final probability = outcome.probability.isFinite
         ? outcome.probability.clamp(0.0, 1.0)
         : 0.0;
-    return Column(
+    final yes = index.isEven;
+    final side = yes
+        ? BeuiPredictionMarketCardSide.yes
+        : BeuiPredictionMarketCardSide.no;
+    final payout = probability <= 0
+        ? '—'
+        : '${(1 / probability).toStringAsFixed(1)}×';
+    return Row(
       children: [
-        Row(
-          children: [
-            if (outcome.icon != null) ...[
-              ClipOval(
-                child: SizedBox(
-                  width: 28,
-                  height: 28,
-                  child: ColoredBox(color: colors.muted, child: outcome.icon),
-                ),
-              ),
-              const SizedBox(width: 8),
-            ],
-            Expanded(
-              child: Text(
+        if (outcome.icon != null) ...[
+          ClipOval(
+            child: SizedBox(
+              width: 28,
+              height: 28,
+              child: ColoredBox(color: colors.muted, child: outcome.icon),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
                 outcome.label,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -367,57 +366,50 @@ class _OutcomeRow extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-            ),
-            Text(
-              '${(probability * 100).round()}%',
-              style: TextStyle(
-                color: outcome.color ?? colors.mutedForeground,
-                fontSize: 12,
-                fontFeatures: const [FontFeature.tabularFigures()],
-              ),
-            ),
-            const SizedBox(width: 8),
-            _OddsButton(
-              outcomeLabel: outcome.label,
-              percent: (probability * 100).round(),
-              side: BeuiPredictionMarketCardSide.yes,
-              accent: colors.primary,
-              colors: colors,
-              onPressed: () => onSelected(BeuiPredictionMarketCardSide.yes),
-            ),
-            const SizedBox(width: 6),
-            _OddsButton(
-              outcomeLabel: outcome.label,
-              percent: ((1 - probability) * 100).round(),
-              side: BeuiPredictionMarketCardSide.no,
-              accent: colors.destructive,
-              colors: colors,
-              onPressed: () => onSelected(BeuiPredictionMarketCardSide.no),
-            ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: SizedBox(
-            width: 76,
-            height: 2,
-            child: FractionallySizedBox(
-              widthFactor: probability,
-              alignment: Alignment.centerLeft,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: outcome.color ?? colors.primary,
-                  borderRadius: BorderRadius.circular(99),
+              const SizedBox(height: 5),
+              SizedBox(
+                width: 76,
+                height: 2,
+                child: FractionallySizedBox(
+                  widthFactor: probability,
+                  alignment: Alignment.centerLeft,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: outcome.color ?? (yes ? _yesFill : _noFill),
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
+        ),
+        Text(
+          payout,
+          style: TextStyle(
+            color: colors.mutedForeground,
+            fontSize: 12,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+        ),
+        const SizedBox(width: 8),
+        _OddsButton(
+          outcomeLabel: outcome.label,
+          percent: (probability * 100).round(),
+          side: side,
+          accent: yes ? _yesFill : _noFill,
+          labelColor: yes ? _yesLabel : _noLabel,
+          onPressed: () => onSelected(side),
         ),
       ],
     );
   }
 }
+
+const _yesFill = Color(0xFF1B7A4A);
+const _noFill = Color(0xFF8B3A4A);
+const _yesLabel = Color(0xFFD4F5E2);
+const _noLabel = Color(0xFFF5D0D6);
 
 class _OddsButton extends StatefulWidget {
   const _OddsButton({
@@ -425,7 +417,7 @@ class _OddsButton extends StatefulWidget {
     required this.percent,
     required this.side,
     required this.accent,
-    required this.colors,
+    required this.labelColor,
     required this.onPressed,
   });
 
@@ -433,7 +425,7 @@ class _OddsButton extends StatefulWidget {
   final int percent;
   final BeuiPredictionMarketCardSide side;
   final Color accent;
-  final BeuiColors colors;
+  final Color labelColor;
   final VoidCallback onPressed;
 
   @override
@@ -459,12 +451,12 @@ class _OddsButtonState extends State<_OddsButton> {
       label:
           'Trade ${widget.side.name} ${widget.outcomeLabel} at ${widget.percent}%',
       child: Container(
-        width: 48,
-        height: 36,
+        constraints: const BoxConstraints(minWidth: 56),
+        height: 32,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: widget.accent.withValues(alpha: .12),
-          border: Border.all(color: widget.accent.withValues(alpha: .3)),
+          color: widget.accent.withValues(alpha: active ? 0.95 : 0.82),
           borderRadius: BorderRadius.circular(12),
         ),
         child: BeuiActionSwapText(
@@ -472,9 +464,7 @@ class _OddsButtonState extends State<_OddsButton> {
           text: active ? action : '${widget.percent}%',
           variant: BeuiActionSwapVariant.roll,
           style: TextStyle(
-            color: widget.side == BeuiPredictionMarketCardSide.yes
-                ? widget.colors.primary
-                : widget.colors.destructive,
+            color: widget.labelColor,
             fontSize: 12,
             fontWeight: FontWeight.w700,
           ),
@@ -606,6 +596,16 @@ class _SparklinePainter extends CustomPainter {
     for (final point in points.skip(1)) {
       path.lineTo(point.dx, point.dy);
     }
+    final fill = Path()
+      ..moveTo(points.first.dx, size.height)
+      ..lineTo(points.first.dx, points.first.dy);
+    for (final point in points.skip(1)) {
+      fill.lineTo(point.dx, point.dy);
+    }
+    fill
+      ..lineTo(points.last.dx, size.height)
+      ..close();
+    canvas.drawPath(fill, Paint()..color = color.withValues(alpha: 0.22));
     canvas.drawPath(path, line);
   }
 

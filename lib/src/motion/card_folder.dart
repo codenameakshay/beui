@@ -50,7 +50,7 @@ class BeuiDigitSwap extends StatelessWidget {
           children: [
             for (var i = 0; i < chars.length; i++)
               _DigitGlyph(
-                key: ValueKey('$animationKey:$i:${chars[i]}'),
+                key: ValueKey('$animationKey:$i'),
                 character: chars[i],
                 duration: duration,
                 delay: reduce ? Duration.zero : stagger * i,
@@ -604,7 +604,7 @@ class _PocketDetails extends StatelessWidget {
             const Spacer(),
             _MiniField(label: 'Expiry', value: expiry, colors: colors),
             const SizedBox(width: 16),
-            _MiniField(label: 'CVV', value: cvv, colors: colors),
+            _MiniField(label: 'CVV', value: cvv, colors: colors, animate: true),
           ],
         ),
         const Spacer(),
@@ -655,9 +655,11 @@ class _MiniField extends StatelessWidget {
     required this.label,
     required this.value,
     required this.colors,
+    this.animate = false,
   });
   final String label, value;
   final BeuiColors colors;
+  final bool animate;
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -670,10 +672,13 @@ class _MiniField extends StatelessWidget {
           color: colors.mutedForeground.withValues(alpha: 0.65),
         ),
       ),
-      BeuiDigitSwap(
-        value: value,
-        glyphStyle: TextStyle(fontSize: 12, color: colors.foreground),
-      ),
+      if (animate)
+        BeuiDigitSwap(
+          value: value,
+          glyphStyle: TextStyle(fontSize: 12, color: colors.foreground),
+        )
+      else
+        Text(value, style: TextStyle(fontSize: 12, color: colors.foreground)),
     ],
   );
 }

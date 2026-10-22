@@ -34,7 +34,7 @@ void main() {
     expect(find.text('Create account'), findsOneWidget);
   });
 
-  testWidgets('invalid email stays quiet until blur and clears after fix', (
+  testWidgets('invalid email stays quiet until submit and clears after fix', (
     tester,
   ) async {
     await tester.pumpWidget(_app());
@@ -53,6 +53,99 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text("That doesn't look like an email address."), findsNothing);
   });
+
+  testWidgets('invalid email appears on blur and clears after fix', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    final email = find.byType(TextField).at(1);
+    await tester.enterText(email, 'bad');
+    expect(find.text("That doesn't look like an email address."), findsNothing);
+
+    await tester.tap(find.byType(TextField).at(0));
+    await tester.pumpAndSettle();
+    expect(
+      find.text("That doesn't look like an email address."),
+      findsOneWidget,
+    );
+
+    await tester.tap(email);
+    await tester.enterText(email, 'ada@example.com');
+    await tester.pumpAndSettle();
+    expect(find.text("That doesn't look like an email address."), findsNothing);
+  });
+
+  testWidgets('password strength meter fills its first bar after typing', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    expect(find.textContaining('Password strength:'), findsNothing);
+
+    await tester.enterText(find.byType(TextField).at(2), 'password');
+    await tester.pumpAndSettle();
+    expect(find.text('Password strength: Weak'), findsOneWidget);
+    final firstBar = tester.widget<Transform>(
+      find.byKey(const ValueKey('strength-segment-0-fill')),
+    );
+    expect(firstBar.transform.entry(0, 0), closeTo(1, 0.001));
+    final secondBar = tester.widget<Transform>(
+      find.byKey(const ValueKey('strength-segment-1-fill')),
+    );
+    expect(secondBar.transform.entry(0, 0), closeTo(0, 0.001));
+  });
+
+  testWidgets('short password strength is labeled too short', (tester) async {
+    await tester.pumpWidget(_app());
+    await tester.enterText(find.byType(TextField).at(2), 'short');
+    await tester.pumpAndSettle();
+    expect(find.text('Password strength: Too short'), findsOneWidget);
+  });
+
+  testWidgets(
+    'reduced motion snaps strength fills on the first frame after editing',
+    (tester) async {
+      await tester.pumpWidget(_app(reduce: true));
+      final password = find.byType(TextField).at(2);
+
+      void expectFills(List<double> expected) {
+        final scales = List.generate(
+          4,
+          (index) => tester
+              .widget<Transform>(
+                find.byKey(ValueKey('strength-segment-$index-fill')),
+              )
+              .transform
+              .entry(0, 0),
+        );
+        expect(scales, expected);
+      }
+
+      for (final entry in {
+        'password': [1.0, 0.0, 0.0, 0.0],
+        'Password12345678!': [1.0, 1.0, 1.0, 1.0],
+        'short': [0.0, 0.0, 0.0, 0.0],
+      }.entries) {
+        await tester.enterText(password, entry.key);
+        await tester.pump();
+        expectFills(entry.value);
+        await tester.pump(const Duration(milliseconds: 16));
+        expectFills(entry.value);
+      }
+
+      await tester.enterText(password, '');
+      await tester.pump();
+      expect(find.textContaining('Password strength:'), findsNothing);
+      expect(
+        find.byKey(const ValueKey('strength-segment-0-fill')),
+        findsNothing,
+      );
+
+      await tester.enterText(password, 'password');
+      await tester.pump();
+      expectFills([1.0, 0.0, 0.0, 0.0]);
+      await tester.pumpAndSettle();
+    },
+  );
 
   testWidgets(
     'invalid submit is blocked until required values and terms exist',
