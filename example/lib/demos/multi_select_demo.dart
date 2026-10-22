@@ -48,14 +48,16 @@ class _MultiSelectDemoState extends State<_MultiSelectDemo> {
   List<String> _teams = const ['design', 'engineering'];
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: 360,
-    child: BeuiMultiSelect(
-      items: _teamOptions,
-      value: _teams,
-      onChanged: (value) => setState(() => _teams = value),
-      placeholder: 'Choose teams',
-      searchHint: 'Search teams…',
+  Widget build(BuildContext context) => Center(
+    child: SizedBox(
+      width: 360,
+      child: BeuiMultiSelect(
+        items: _teamOptions,
+        value: _teams,
+        onChanged: (value) => setState(() => _teams = value),
+        placeholder: 'Choose teams',
+        searchHint: 'Search teams…',
+      ),
     ),
   );
 }

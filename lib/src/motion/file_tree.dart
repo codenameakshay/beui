@@ -345,109 +345,13 @@ class _BeuiFileTreeState extends State<BeuiFileTree> {
                       _select(row);
                       if (row.isFolder) _toggleFolder(row);
                     },
-              child: AnimatedOpacity(
-                opacity: row.disabled ? 0.42 : 1,
-                duration: const Duration(milliseconds: 180),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 160),
-                  height: 36,
-                  padding: EdgeInsets.only(left: 8 + row.depth * widget.indent),
-                  decoration: BoxDecoration(
-                    color: selected ? colors.muted : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Stack(
-                    children: [
-                      if (row.depth > 0)
-                        Positioned(
-                          left: 16 + (row.depth - 1) * widget.indent,
-                          top: 0,
-                          bottom: 0,
-                          child: ColoredBox(
-                            color: colors.border.withValues(alpha: 0.7),
-                            child: const SizedBox(width: 1),
-                          ),
-                        ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 16,
-                            child: row.isFolder
-                                ? AnimatedRotation(
-                                    turns: isOpen ? 0.25 : 0,
-                                    duration: reduce
-                                        ? Duration.zero
-                                        : const Duration(milliseconds: 220),
-                                    curve: Curves.easeOutCubic,
-                                    child: Icon(
-                                      LucideIcons.chevron_right,
-                                      size: 14,
-                                      color: colors.mutedForeground,
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                          const SizedBox(width: 8),
-                          SizedBox(
-                            width: 16,
-                            height: 16,
-                            child:
-                                row.icon ??
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 180),
-                                  transitionBuilder: (child, animation) {
-                                    final fade = FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                    return reduce
-                                        ? fade
-                                        : ScaleTransition(
-                                            scale: Tween<double>(
-                                              begin: 0.75,
-                                              end: 1,
-                                            ).animate(animation),
-                                            child: fade,
-                                          );
-                                  },
-                                  child: Icon(
-                                    row.isFolder
-                                        ? (isOpen
-                                              ? LucideIcons.folder_open
-                                              : LucideIcons.folder)
-                                        : LucideIcons.file,
-                                    key: ValueKey<String>(
-                                      '${row.isFolder}-$isOpen',
-                                    ),
-                                    size: 16,
-                                    color: isOpen
-                                        ? colors.foreground
-                                        : colors.mutedForeground,
-                                  ),
-                                ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              row.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: selected
-                                    ? colors.foreground
-                                    : colors.mutedForeground,
-                                fontSize: 14,
-                                fontWeight: selected
-                                    ? FontWeight.w500
-                                    : FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+              child: _FileTreeRow(
+                row: row,
+                isOpen: isOpen,
+                selected: selected,
+                indent: widget.indent,
+                colors: colors,
+                reduce: reduce,
               ),
             ),
           ),
@@ -457,24 +361,169 @@ class _BeuiFileTreeState extends State<BeuiFileTree> {
 
     // Rows entering/leaving on folder toggles share a height spring. Under
     // reduced motion the branch snaps while color and opacity remain intact.
+    // Implicit AnimatedSize is skipped: it looks up TickerMode during dispose.
     return Semantics(
       container: true,
       explicitChildNodes: true,
       role: SemanticsRole.list,
       label: widget.ariaLabel,
       child: ClipRect(
-        child: AnimatedSize(
-          alignment: Alignment.topCenter,
-          duration: reduce ? Duration.zero : const Duration(milliseconds: 260),
-          curve: Curves.easeOutCubic,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 0),
-            child: BeuiSharedLayoutBg(
-              inset: 0,
-              pillColor: colors.muted.withValues(alpha: 0.5),
-              children: rowWidgets,
-            ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 0),
+          child: BeuiSharedLayoutBg(
+            inset: 0,
+            pillColor: colors.muted.withValues(alpha: 0.5),
+            children: rowWidgets,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One tree row. Chevron rotation is driven by a State-owned controller so
+/// dispose never looks up [TickerMode] through an implicit animation.
+class _FileTreeRow extends StatefulWidget {
+  const _FileTreeRow({
+    required this.row,
+    required this.isOpen,
+    required this.selected,
+    required this.indent,
+    required this.colors,
+    required this.reduce,
+  });
+
+  final _FileTreeItem row;
+  final bool isOpen;
+  final bool selected;
+  final double indent;
+  final BeuiColors colors;
+  final bool reduce;
+
+  @override
+  State<_FileTreeRow> createState() => _FileTreeRowState();
+}
+
+class _FileTreeRowState extends State<_FileTreeRow>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _chevron;
+
+  @override
+  void initState() {
+    super.initState();
+    _chevron = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 220),
+      value: widget.isOpen ? 1 : 0,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant _FileTreeRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _chevron.duration = widget.reduce
+        ? Duration.zero
+        : const Duration(milliseconds: 220);
+    if (widget.reduce) {
+      _chevron.value = widget.isOpen ? 1 : 0;
+    } else if (widget.isOpen != oldWidget.isOpen) {
+      if (widget.isOpen) {
+        _chevron.forward();
+      } else {
+        _chevron.reverse();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _chevron.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final row = widget.row;
+    final colors = widget.colors;
+    final isOpen = widget.isOpen;
+    final selected = widget.selected;
+    return Opacity(
+      opacity: row.disabled ? 0.42 : 1,
+      child: Container(
+        height: 36,
+        padding: EdgeInsets.only(left: 8 + row.depth * widget.indent),
+        decoration: BoxDecoration(
+          color: selected ? colors.muted : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Stack(
+          children: [
+            if (row.depth > 0)
+              Positioned(
+                left: 16 + (row.depth - 1) * widget.indent,
+                top: 0,
+                bottom: 0,
+                child: ColoredBox(
+                  color: colors.border.withValues(alpha: 0.7),
+                  child: const SizedBox(width: 1),
+                ),
+              ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 16,
+                  child: row.isFolder
+                      ? RotationTransition(
+                          turns: Tween<double>(
+                            begin: 0,
+                            end: 0.25,
+                          ).animate(_chevron),
+                          child: Icon(
+                            LucideIcons.chevron_right,
+                            size: 14,
+                            color: colors.mutedForeground,
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child:
+                      row.icon ??
+                      Icon(
+                        row.isFolder
+                            ? (isOpen
+                                  ? LucideIcons.folder_open
+                                  : LucideIcons.folder)
+                            : LucideIcons.file,
+                        size: 16,
+                        color: isOpen
+                            ? colors.foreground
+                            : colors.mutedForeground,
+                      ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    row.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: selected
+                          ? colors.foreground
+                          : colors.mutedForeground,
+                      fontSize: 14,
+                      fontWeight: selected
+                          ? FontWeight.w500
+                          : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

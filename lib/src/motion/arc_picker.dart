@@ -461,7 +461,7 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
       fontWeight: FontWeight.w300,
       color: colors.mutedForeground,
     );
-    return Semantics(
+    final picker = Semantics(
       container: true,
       explicitChildNodes: true,
       label: widget.semanticLabel,
@@ -683,5 +683,6 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
         ),
       ),
     );
+    return _horizontal ? picker : Align(widthFactor: 1, child: picker);
   }
 }

@@ -43,48 +43,52 @@ class _ComboboxDemoState extends State<_ComboboxDemo> {
   String? _value = 'studio';
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: 288,
-    child: BeuiCombobox(
-      value: _value,
-      onValueChange: (value) => setState(() => _value = value),
-      trigger: const BeuiComboboxTrigger(
-        child: BeuiComboboxInput(label: 'Search workspaces'),
-      ),
-      content: BeuiComboboxContent(
-        child: BeuiComboboxList(
-          ariaLabel: 'Workspaces',
-          children: <Widget>[
-            const BeuiComboboxEmpty(),
-            for (final group in <String>['Recent', 'Workspaces'])
-              BeuiComboboxGroup(
-                label: group,
-                children: <Widget>[
-                  if (group == 'Workspaces') const BeuiComboboxSeparator(),
-                  for (final workspace in _workspaces.where(
-                    (item) => item.group == group,
-                  ))
-                    BeuiComboboxItem(
-                      value: workspace.value,
-                      textValue: workspace.label,
-                      keywords: <String>[workspace.detail, workspace.group],
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            workspace.label,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          Text(
-                            workspace.detail,
-                            style: const TextStyle(fontSize: 11),
-                          ),
-                        ],
+  Widget build(BuildContext context) => Center(
+    child: SizedBox(
+      width: 288,
+      child: BeuiCombobox(
+        value: _value,
+        onValueChange: (value) => setState(() => _value = value),
+        trigger: const BeuiComboboxTrigger(
+          child: BeuiComboboxInput(label: 'Search workspaces'),
+        ),
+        content: BeuiComboboxContent(
+          child: BeuiComboboxList(
+            ariaLabel: 'Workspaces',
+            children: <Widget>[
+              const BeuiComboboxEmpty(),
+              for (final group in <String>['Recent', 'Workspaces'])
+                BeuiComboboxGroup(
+                  label: group,
+                  children: <Widget>[
+                    if (group == 'Workspaces') const BeuiComboboxSeparator(),
+                    for (final workspace in _workspaces.where(
+                      (item) => item.group == group,
+                    ))
+                      BeuiComboboxItem(
+                        value: workspace.value,
+                        textValue: workspace.label,
+                        keywords: <String>[workspace.detail, workspace.group],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              workspace.label,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              workspace.detail,
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                ],
-              ),
-          ],
+                  ],
+                ),
+            ],
+          ),
         ),
       ),
     ),

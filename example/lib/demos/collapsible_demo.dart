@@ -11,33 +11,35 @@ class _CollapsiblePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 360),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.background,
-          border: Border.all(color: colors.border),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const BeuiCollapsible(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              BeuiCollapsibleTrigger(
-                child: Row(
-                  children: [
-                    Expanded(child: Text('More details')),
-                    BeuiCollapsibleIndicator(),
-                  ],
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colors.background,
+            border: Border.all(color: colors.border),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const BeuiCollapsible(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                BeuiCollapsibleTrigger(
+                  child: Row(
+                    children: [
+                      Expanded(child: Text('More details')),
+                      BeuiCollapsibleIndicator(),
+                    ],
+                  ),
                 ),
-              ),
-              BeuiCollapsibleContent(
-                child: Text(
-                  'Keep extra information tucked away until you need it.',
+                BeuiCollapsibleContent(
+                  child: Text(
+                    'Keep extra information tucked away until you need it.',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

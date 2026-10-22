@@ -118,6 +118,7 @@ class BeuiAspectRatioImage extends StatelessWidget {
           fit: BoxFit.cover,
           alignment: Alignment.center,
           filterQuality: FilterQuality.medium,
+          errorBuilder: (context, error, stackTrace) => const SizedBox.expand(),
         ),
       ),
     );

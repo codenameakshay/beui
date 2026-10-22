@@ -37,6 +37,7 @@ class _AspectRatioPreviewState extends State<_AspectRatioPreview> {
         constraints: const BoxConstraints(maxWidth: 520),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             BeuiTabs<double>(
               value: _ratio,
