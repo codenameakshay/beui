@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -79,6 +80,27 @@ double _motionTarget(WidgetTester tester) =>
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  test('proof captions mark comparison media as historical', () {
+    final html = File('example/proof/voice-orb/show-me.html').readAsStringSync();
+    final figures = RegExp(r'<figure\b[^>]*>[\s\S]*?</figure>')
+        .allMatches(html)
+        .map((match) => match.group(0)!)
+        .toList();
+    for (final media in ['side-by-side.png', 'voice-orb-vs-beui.dev.mp4']) {
+      final figure = figures.firstWhere(
+        (figure) => figure.contains('src="$media"'),
+        orElse: () => '',
+      );
+      expect(figure, isNotEmpty, reason: 'figure for $media');
+      final caption = RegExp(
+        r'<figcaption>([\s\S]*?)</figcaption>',
+      ).firstMatch(figure);
+      expect(caption, isNotNull, reason: 'caption for $media');
+      expect(caption!.group(1), contains('Historical'));
+      expect(caption.group(1), contains('not round-3 evidence'));
+    }
+  });
 
   testWidgets('label replaces child semantics with an image name', (
     tester,
@@ -635,6 +657,52 @@ void main() {
     expect(find.text('SENTINEL orb'), findsOneWidget);
     expect(find.bySemanticsLabel('SENTINEL orb'), findsNothing);
     semantics.dispose();
+  });
+
+  testWidgets('size defaults to 256 and override resizes the same widget', (
+    tester,
+  ) async {
+    await tester.pumpWidget(beuiTestApp(const BeuiVoiceOrb()));
+    await tester.pump();
+    expect(kBeuiVoiceOrbSize, 256);
+    expect(
+      tester.getSize(find.byKey(beuiVoiceOrbCanvasKey)),
+      const Size(256, 256),
+    );
+
+    await tester.pumpWidget(beuiTestApp(const BeuiVoiceOrb(size: 288)));
+    await tester.pump();
+    expect(
+      tester.getSize(find.byKey(beuiVoiceOrbCanvasKey)),
+      const Size(288, 288),
+    );
+
+    await tester.pumpWidget(beuiTestApp(const BeuiVoiceOrb(size: 192)));
+    await tester.pump();
+    expect(
+      tester.getSize(find.byKey(beuiVoiceOrbCanvasKey)),
+      const Size(192, 192),
+    );
+  });
+
+  testWidgets('zero, negative, NaN, and infinite sizes fall back to 256', (
+    tester,
+  ) async {
+    for (final size in <double>[
+      0,
+      -1,
+      double.nan,
+      double.infinity,
+      double.negativeInfinity,
+    ]) {
+      await tester.pumpWidget(beuiTestApp(BeuiVoiceOrb(size: size)));
+      await tester.pump();
+      expect(
+        tester.getSize(find.byKey(beuiVoiceOrbCanvasKey)),
+        const Size(256, 256),
+        reason: 'size $size should use the default',
+      );
+    }
   });
 
   testWidgets('rest-state golden loads the real shader (reduced motion, t=0)', (

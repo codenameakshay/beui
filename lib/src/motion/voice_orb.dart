@@ -42,8 +42,12 @@ const (Color, Color, Color) kBeuiVoiceOrbColors = (
   Color(0xFF346B52),
 );
 
-/// Source `w-64` / `aspect-square`.
+/// Source `w-64` / `aspect-square`. The live preview wraps this at
+/// `sm:w-72` (288); pass [BeuiVoiceOrb.size] to match that frame.
 const double kBeuiVoiceOrbSize = 256;
+
+double _orbSize(double value) =>
+    value.isFinite && value > 0 ? value : kBeuiVoiceOrbSize;
 
 @visibleForTesting
 const beuiVoiceOrbCanvasKey = ValueKey<String>('beui_voice_orb_canvas');
@@ -74,6 +78,7 @@ class BeuiVoiceOrb extends StatefulWidget {
     this.activityListenable,
     this.analyser,
     this.colors = kBeuiVoiceOrbColors,
+    this.size = kBeuiVoiceOrbSize,
     this.active = true,
     this.speed = 1,
     this.onError,
@@ -95,6 +100,10 @@ class BeuiVoiceOrb extends StatefulWidget {
 
   /// Base pigment, highlight and shadow.
   final (Color, Color, Color) colors;
+
+  /// Square edge in logical pixels. Source default is `w-64` (256).
+  /// Non-finite or non-positive values fall back to [kBeuiVoiceOrbSize].
+  final double size;
 
   /// Pause the material while keeping the current surface visible.
   final bool active;
@@ -468,7 +477,10 @@ class _BeuiVoiceOrbState extends State<BeuiVoiceOrb>
             builder: (context, smooth, _) => shell(smooth),
           );
 
-    Widget box = SizedBox.square(dimension: kBeuiVoiceOrbSize, child: child);
+    Widget box = SizedBox.square(
+      dimension: _orbSize(widget.size),
+      child: child,
+    );
 
     final label = widget.semanticLabel;
     if (label == null || label.isEmpty) {

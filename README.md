@@ -255,7 +255,7 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals, questions, and compact-to-expanded proposals |
 | AI Sidebar | `BeuiAiSidebar` | Workspace sidebar for folders, projects, files and bookmarks with inline rename |
 | Chat App | `BeuiChatApp` | A complete conversation workspace composing the widgets above, with a responsive sidebar |
-| Voice Orb | `BeuiVoiceOrb` | Breathing liquid voice visualization with custom pigments and a voice-reactive silhouette |
+| Voice Orb | `BeuiVoiceOrb` | Breathing liquid voice visualization with custom pigments, a voice-reactive silhouette, and a `size` override |
 | Agent Theme | — | Gallery route that installs a custom `BeuiAgentTheme` on the real widgets |
 
 Also exported as standalone primitives: `BeuiMagnetic` (cursor-follow pull) and the `BeuiOverlay` foundation.

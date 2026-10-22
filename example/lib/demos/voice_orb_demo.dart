@@ -37,9 +37,7 @@ class _VoiceOrbDemo extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            _SectionLabel('Voice visualization'),
-            SizedBox(height: 24),
-            _SimulatedOrb(),
+            _SimulatedOrb(size: 288),
             SizedBox(height: 48),
             _SectionLabel('Custom pigments'),
             SizedBox(height: 24),
@@ -54,9 +52,13 @@ class _VoiceOrbDemo extends StatelessWidget {
 }
 
 class _SimulatedOrb extends StatefulWidget {
-  const _SimulatedOrb({this.colors = kBeuiVoiceOrbColors});
+  const _SimulatedOrb({
+    this.colors = kBeuiVoiceOrbColors,
+    this.size = kBeuiVoiceOrbSize,
+  });
 
   final (Color, Color, Color) colors;
+  final double size;
 
   @override
   State<_SimulatedOrb> createState() => _SimulatedOrbState();
@@ -109,6 +111,7 @@ class _SimulatedOrbState extends State<_SimulatedOrb>
     return BeuiVoiceOrb(
       activityListenable: _activity,
       colors: widget.colors,
+      size: widget.size,
       semanticLabel: 'Voice visualization',
     );
   }
