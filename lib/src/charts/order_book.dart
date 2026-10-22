@@ -524,19 +524,22 @@ class BeuiOrderBookSide extends StatelessWidget {
                                     value: s.maxTotal <= 0
                                         ? 0
                                         : row.total / s.maxTotal,
-                                    builder: (_, fraction) =>
-                                        FractionallySizedBox(
-                                          widthFactor: fraction.clamp(0, 1),
-                                          child: ColoredBox(
-                                            color: tint.withValues(
-                                              alpha: isActive
-                                                  ? .55
-                                                  : inRange
-                                                  ? .45
-                                                  : .38,
-                                            ),
-                                          ),
+                                    builder: (_, fraction) => FractionallySizedBox(
+                                      widthFactor: fraction.clamp(0, 1),
+                                      heightFactor: 1,
+                                      child: ColoredBox(
+                                        key: ValueKey(
+                                          'beui-order-bar-${side.name}-${row.price}',
                                         ),
+                                        color: tint.withValues(
+                                          alpha: isActive
+                                              ? .55
+                                              : inRange
+                                              ? .45
+                                              : .38,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -748,6 +751,7 @@ class BeuiOrderBookBalance extends StatelessWidget {
                       value: ratio,
                       builder: (_, value) => FractionallySizedBox(
                         widthFactor: value,
+                        heightFactor: 1,
                         child: ColoredBox(
                           color: colors.success.withValues(alpha: .75),
                         ),

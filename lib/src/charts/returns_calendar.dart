@@ -510,7 +510,7 @@ String _returnsCellLabel(String label, double value) {
     return beuiChartSignedPercent(value, digits: 0);
   }
   if (value.abs() < 4) return '';
-  final rounded = value.round();
+  final rounded = (value + 0.5).floor();
   if (rounded < 0) return '−${rounded.abs()}';
   return '$rounded';
 }

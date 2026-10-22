@@ -36,6 +36,21 @@ void main() {
     },
   );
 
+  testWidgets('half-away month labels follow JS Math.round', (tester) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiReturnsCalendar(
+          years: [2022],
+          returns: [
+            [0, 0, -4.5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          ],
+        ),
+      ),
+    );
+    expect(find.text('−4'), findsOneWidget);
+    expect(find.text('−5'), findsNothing);
+  });
+
   testWidgets('formats short numeric years with a two-digit label', (
     tester,
   ) async {

@@ -121,6 +121,31 @@ void main() {
     );
   });
 
+  testWidgets(
+    'legend spans a 16-week grid with the date range opposite less/more',
+    (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiHeatCalendar(
+            weeks: 16,
+            maxCount: 14,
+            endDate: DateTime.utc(2026, 10, 22),
+            values: List.generate(16, (w) => List.generate(7, (d) => 0.2)),
+          ),
+        ),
+      );
+      final grid = tester.getSize(find.byType(BeuiHeatCalendarGrid));
+      final legend = tester.getSize(find.byType(BeuiHeatCalendarLegend));
+      expect(legend.width, closeTo(grid.width, 0.5));
+      expect(find.text('Jul 6 – Oct 22'), findsOneWidget);
+      expect(find.text('less'), findsOneWidget);
+      expect(find.text('more'), findsOneWidget);
+      final range = tester.getTopLeft(find.text('Jul 6 – Oct 22'));
+      final more = tester.getTopLeft(find.text('more'));
+      expect(more.dx, greaterThan(range.dx + 80));
+    },
+  );
+
   testWidgets('reduced motion renders a stable rest state and golden', (
     tester,
   ) async {

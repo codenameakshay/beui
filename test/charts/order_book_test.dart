@@ -128,6 +128,16 @@ void main() {
     await gesture.removePointer();
   });
 
+  testWidgets('rest depth bars fill the row height', (tester) async {
+    await tester.pumpWidget(_surface(reduce: true));
+    await tester.pump();
+    final bar = tester.getSize(
+      find.byKey(const ValueKey('beui-order-bar-ask-102.0')),
+    );
+    expect(bar.height, closeTo(29, 0.5));
+    expect(bar.width, greaterThan(80));
+  });
+
   testWidgets('reduced-motion bars render and rest state matches golden', (
     tester,
   ) async {

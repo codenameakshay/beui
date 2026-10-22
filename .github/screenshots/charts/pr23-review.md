@@ -92,4 +92,34 @@ Passed
 
 These are local analyzer and behavioral-test results, not hosted CI or visual parity approval.
 The two remaining findings above prevent a complete parity verdict.
-Pre-existing source/Flutter capture directories remain untouched and are not part of this review commit.
+
+## Remainder layout (post-review)
+
+Coordinator follow-up after `c08b427`. Local gates: `fvm flutter analyze` clean; `BEUI_SKIP_GOLDENS=1 fvm flutter test test/charts/` **120 passed**.
+
+| Slug | Rest score (widget/dark-ui) | Layout | Hover |
+| --- | --- | --- | --- |
+| treemap | 71.51 | 69.92 | ticker on hover; settled compare_motion static |
+| candlestick-chart | 78.71 | 79.15 | crosshair + OHLC header |
+| donut-chart | 87.21 | 84.15 | center ticker + caption; motion 94.5 |
+| volume-profile | 74.07 | 76.7 | inline footer readout; gray vs source purple demo chrome |
+| status-bar | 78.66 | 85.07 | ring + inline period; one series vs source two |
+| composition-chart | 44.53 | 39.49 | hover tickers; crop-aspect + extra area region |
+| funnel-chart | 74.65 | 73.03 | hover tooltip; extra Subscribed demo stage |
+| liquidity-heatmap | 53.88 | 42.91 | cubic price trace; source Resimulate + clipped axis |
+| bump-chart | 75.47 | 76.33 | node ticker; rest legend always-on vs source hover-only |
+| order-book | 72.15 | 72.57 | rest bars fill row height; hover range + Avg |
+| heat-calendar | 76.47 | 69.2 | cell tooltip; legend space-between Jul 6 – Oct 22 |
+| returns-calendar | 45.22 | 65.71 | JS matrix + JS round (Mar '22 −4); typography OCR false-low |
+| price-target-fan | 77.51 | 84.45 | point inspect; Center 520×236 cap kept |
+
+### Named gaps
+
+- `BeuiTooltip` has no `followCursor` / controlled-open; composition keyboard cannot reopen the floating card after pointer exit.
+- DigitSwap is a sibling family; donut center uses `BeuiChartTicker`.
+- Status demo is one series vs source two + Replay chrome.
+- Volume demo chrome is gray (default color) vs source purple tabs; `.side` unused (inline footer).
+- Funnel demo includes an extra Subscribed stage.
+- Bump rest always shows the color legend; source shows a rank legend on hover.
+- Liquidity source page includes Resimulate and clips the price axis; live sine path still differs slightly.
+- Order source crop is asks-only with Pause/Step chrome; Flutter demo is the full book.

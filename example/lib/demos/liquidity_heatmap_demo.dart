@@ -16,7 +16,7 @@ class _LiquidityHeatmapDemo extends StatelessWidget {
       return BeuiLiquiditySnapshot(
         id: 'minute-$time',
         label: '14:${(time * 2).toString().padLeft(2, '0')}',
-        price: 245.5 + math.sin(time * .27) * 1.2 + time * .035,
+        price: 244.2 + math.sin(time * .27) * 2.4 + time * .04,
         levels: List.generate(18, (row) {
           final shelf =
               math.exp(-math.pow(row - 4 - math.sin(time * .18) * .7, 2) / .8) +

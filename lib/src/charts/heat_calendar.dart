@@ -519,18 +519,12 @@ class BeuiHeatCalendarLegend extends StatelessWidget {
     final end = state._utcEnd();
     final range =
         '${_month[start.month - 1]} ${start.day} – ${_month[end.month - 1]} ${end.day}';
-    return Row(
+    final gridWidth = state.widget.weeks * 20.0 - 4;
+    final labelStyle = TextStyle(fontSize: 10, color: colors.mutedForeground);
+    final scale = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          range,
-          style: TextStyle(fontSize: 10, color: colors.mutedForeground),
-        ),
-        const SizedBox(width: 16),
-        Text(
-          'less',
-          style: TextStyle(fontSize: 10, color: colors.mutedForeground),
-        ),
+        Text('less', style: labelStyle),
         for (var level = 0; level < 5; level++)
           Semantics(
             button: true,
@@ -558,11 +552,19 @@ class BeuiHeatCalendarLegend extends StatelessWidget {
               ),
             ),
           ),
-        Text(
-          'more',
-          style: TextStyle(fontSize: 10, color: colors.mutedForeground),
-        ),
+        Text('more', style: labelStyle),
       ],
+    );
+    final rangeLabel = Text(range, style: labelStyle);
+    if (gridWidth < 280) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [rangeLabel, const SizedBox(width: 16), scale],
+      );
+    }
+    return SizedBox(
+      width: gridWidth,
+      child: Row(children: [rangeLabel, const Spacer(), scale]),
     );
   }
 }

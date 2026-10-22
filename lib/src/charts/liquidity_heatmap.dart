@@ -412,30 +412,31 @@ class _LiquidityTracePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (columns.length < 2 || prices.length < 2) return;
     final path = Path();
-    var connected = false;
+    Offset? previous;
     for (var i = 0; i < columns.length; i++) {
       final price = columns[i].snapshot.price;
-      final row = price == null ? -1 : _pricePosition(price, prices);
-      if (row < 0) {
-        connected = false;
+      if (price == null || !_priceInDomain(price, prices)) {
+        previous = null;
         continue;
       }
       final point = Offset(
         size.width * (i + .5) / columns.length,
-        size.height * (row + .5) / prices.length,
+        _yForPrice(price, size, prices),
       );
-      if (!connected) {
+      if (previous == null) {
         path.moveTo(point.dx, point.dy);
-        connected = true;
       } else {
-        path.lineTo(point.dx, point.dy);
+        final middle = (previous.dx + point.dx) / 2;
+        path.cubicTo(middle, previous.dy, middle, point.dy, point.dx, point.dy);
       }
+      previous = point;
     }
     canvas.drawPath(
       path,
       Paint()
         ..color = color.withValues(alpha: .9)
         ..strokeWidth = 1.5
+        ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke,
     );
   }
@@ -445,17 +446,19 @@ class _LiquidityTracePainter extends CustomPainter {
       columns != old.columns || prices != old.prices || color != old.color;
 }
 
-int _pricePosition(double price, List<double> prices) {
-  if (!price.isFinite ||
-      prices.isEmpty ||
-      price > prices.first ||
-      price < prices.last) {
-    return -1;
-  }
-  for (var i = 0; i < prices.length - 1; i++) {
-    if (price <= prices[i] && price >= prices[i + 1]) return i;
-  }
-  return prices.length - 1;
+bool _priceInDomain(double price, List<double> prices) =>
+    price.isFinite &&
+    prices.isNotEmpty &&
+    price <= prices.first &&
+    price >= prices.last;
+
+double _yForPrice(double price, Size size, List<double> prices) {
+  final maxPrice = prices.first;
+  final minPrice = prices.last;
+  final span = maxPrice - minPrice;
+  if (span == 0) return size.height / 2;
+  final row = (maxPrice - price) / span * (prices.length - 1);
+  return size.height * (row + .5) / prices.length;
 }
 
 /// Color scale for resting liquidity.
