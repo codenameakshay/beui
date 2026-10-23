@@ -4,9 +4,11 @@ library;
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
+import '../motion/tooltip.dart';
 import '_shared.dart';
 
 /// How composition data is visualized.
@@ -98,7 +100,7 @@ class BeuiCompositionChart extends StatefulWidget {
     this.defaultPeriod,
     this.onPeriodChange,
     this.formatValue,
-    this.label = 'Composition chart',
+    this.label = 'Composition over time',
     this.child,
   });
 
@@ -134,12 +136,15 @@ class BeuiCompositionChart extends StatefulWidget {
 }
 
 class _BeuiCompositionChartState extends State<BeuiCompositionChart>
-    with BeuiChartActiveState<BeuiCompositionChart>, BeuiChartInspectorKeys {
+    with BeuiChartActiveState<BeuiCompositionChart> {
   final FocusNode _inspectorFocusNode = FocusNode();
+  final _tooltipAnchor = GlobalKey();
+  final _tooltipLink = LayerLink();
+  Offset? _pointer;
+  bool _keyboard = true;
   String? _pinned;
   String? _hovered;
   String? _focused;
-  String? _hoveredPeriod;
   bool _tooltipOpen = false;
   void _setTooltipOpen(bool open) {
     if (_tooltipOpen != open) setState(() => _tooltipOpen = open);
@@ -153,8 +158,6 @@ class _BeuiCompositionChartState extends State<BeuiCompositionChart>
   ValueChanged<String?>? get widgetOnActiveChange => null;
   @override
   Iterable<String> get knownIds => widget.periods;
-  @override
-  List<String> get inspectableIds => widget.periods.toSet().toList();
 
   @override
   void initState() {
@@ -166,6 +169,16 @@ class _BeuiCompositionChartState extends State<BeuiCompositionChart>
   void dispose() {
     _inspectorFocusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(BeuiCompositionChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (activeId == null) super.setActiveId(null);
+    final ids = widget.series.map((row) => row.id).toSet();
+    if (!ids.contains(_pinned)) _pinned = null;
+    if (!ids.contains(_hovered)) _hovered = null;
+    if (!ids.contains(_focused)) _focused = null;
   }
 
   List<BeuiCompositionColumn> get columns {
@@ -182,15 +195,15 @@ class _BeuiCompositionChartState extends State<BeuiCompositionChart>
   String? get effectivePeriod {
     final items = columns;
     if (items.isEmpty) return null;
-    final selected = _hoveredPeriod ?? activeId;
+    final selected = activeId;
     return items.any((column) => column.period == selected)
         ? selected
-        : items.first.period;
+        : items.last.period;
   }
 
   @override
   void setActiveId(String? id) {
-    final previous = activeId;
+    final previous = effectivePeriod;
     super.setActiveId(id);
     if (previous != id && id != null) widget.onPeriodChange?.call(id);
   }
@@ -199,13 +212,47 @@ class _BeuiCompositionChartState extends State<BeuiCompositionChart>
     setActiveId(id);
   }
 
+  bool inspectKey(KeyEvent event) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) return false;
+    final items = columns;
+    if (items.isEmpty) return false;
+    final key = event.logicalKey;
+    if (key == LogicalKeyboardKey.escape) {
+      _setTooltipOpen(false);
+      return true;
+    }
+    final current = items.indexWhere((item) => item.period == effectivePeriod);
+    final next = switch (key) {
+      LogicalKeyboardKey.home => 0,
+      LogicalKeyboardKey.end => items.length - 1,
+      LogicalKeyboardKey.arrowRight ||
+      LogicalKeyboardKey.arrowUp => (current + 1).clamp(0, items.length - 1),
+      LogicalKeyboardKey.arrowLeft ||
+      LogicalKeyboardKey.arrowDown => (current - 1).clamp(0, items.length - 1),
+      _ => null,
+    };
+    if (next == null) return false;
+    _keyboard = true;
+    selectPeriod(items[next].period);
+    _setTooltipOpen(true);
+    return true;
+  }
+
   void togglePinned(String id) =>
       setState(() => _pinned = _pinned == id ? null : id);
   void hoverSeries(String? id) => setState(() => _hovered = id);
   void focusSeries(String? id) => setState(() => _focused = id);
-  void hoverPeriod(String? id) {
-    if (_hoveredPeriod != id) setState(() => _hoveredPeriod = id);
-  }
+
+  void movePointer(Offset position) => setState(() {
+    _keyboard = false;
+    _pointer = position;
+  });
+
+  void clearHighlight() => setState(() {
+    _pinned = null;
+    _hovered = null;
+    _focused = null;
+  });
 
   @override
   Widget build(BuildContext context) => _CompositionScope(
@@ -288,10 +335,10 @@ class _CompositionScope extends InheritedWidget {
 /// Stacked bars or areas with a keyboard-adjustable period range.
 class BeuiCompositionPlot extends StatelessWidget {
   /// Creates the plot.
-  const BeuiCompositionPlot({super.key, this.height = 320});
+  const BeuiCompositionPlot({super.key, this.height});
 
   /// Plot height.
-  final double height;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -299,9 +346,14 @@ class BeuiCompositionPlot extends StatelessWidget {
     final columns = state.columns;
     final colors = BeuiColors.resolve(context);
     if (columns.isEmpty || state.widget.series.isEmpty) {
-      return const SizedBox(
-        height: 80,
-        child: Center(child: Text('No composition data')),
+      return SizedBox(
+        height: 256,
+        child: Center(
+          child: Text(
+            'No composition data',
+            style: TextStyle(fontSize: 14, color: colors.mutedForeground),
+          ),
+        ),
       );
     }
     final selected = state.effectivePeriod!;
@@ -309,71 +361,63 @@ class BeuiCompositionPlot extends StatelessWidget {
     final column = columns[index];
     final format =
         state.widget.formatValue ?? (value) => beuiChartFormatNumber(value);
-    final highlight = state._pinned ?? state._focused ?? state._hovered;
+    final highlight = [state._hovered, state._focused, state._pinned]
+        .where((id) => columns.first.segments.any((s) => s.series.id == id))
+        .firstOrNull;
+    final plotHeight =
+        height ?? (MediaQuery.sizeOf(context).width < 640 ? 256.0 : 320.0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('${column.period}${column.valid ? '' : ' · No data'}'),
-            const Text('100%'),
-          ],
+        DefaultTextStyle.merge(
+          style: TextStyle(
+            fontSize: 11,
+            height: 16 / 11,
+            color: colors.mutedForeground,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('${column.period}${column.valid ? '' : ' · No data'}'),
+              const Text('100%', style: TextStyle(fontFamily: 'monospace')),
+            ],
+          ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 12),
         LayoutBuilder(
-          builder: (context, constraints) => BeuiChartTooltip(
-            open: state._tooltipOpen,
-            onOpenChange: state._setTooltipOpen,
-            content: BeuiChartTooltipCard(
-              title: column.period,
-              details: [
-                for (final segment in column.segments)
-                  if (segment.value != null)
-                    _compositionTooltipRow(
-                      segment,
-                      colors: colors,
-                      formatValue: format,
-                    ),
-              ],
-            ),
-            child: Focus(
-              focusNode: state._inspectorFocusNode,
-              onFocusChange: state._setTooltipOpen,
-              onKeyEvent: (node, event) {
-                final handled = state.handleInspectorKey(event);
-                if (handled) {
-                  state.hoverPeriod(null);
-                  state._setTooltipOpen(
-                    event.logicalKey != LogicalKeyboardKey.escape,
-                  );
-                }
-                return handled
-                    ? KeyEventResult.handled
-                    : KeyEventResult.ignored;
-              },
-              child: MouseRegion(
-                onHover: (event) {
-                  state._setTooltipOpen(true);
-                  if (constraints.maxWidth <= 0) return;
-                  final periodIndex =
-                      (event.localPosition.dx /
-                              constraints.maxWidth *
-                              columns.length)
-                          .floor()
-                          .clamp(0, columns.length - 1);
-                  state.hoverPeriod(columns[periodIndex].period);
+          builder: (context, constraints) => Stack(
+            children: [
+              Focus(
+                focusNode: state._inspectorFocusNode,
+                onFocusChange: (focus) {
+                  if (focus) state._keyboard = true;
+                  state._setTooltipOpen(focus);
                 },
-                onExit: (_) {
-                  state.hoverPeriod(null);
-                  state._setTooltipOpen(false);
+                onKeyEvent: (node, event) {
+                  final handled = state.inspectKey(event);
+                  return handled
+                      ? KeyEventResult.handled
+                      : KeyEventResult.ignored;
                 },
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTapDown: (event) {
-                    if (constraints.maxWidth <= 0) return;
-                    state._inspectorFocusNode.requestFocus();
+                child: MouseRegion(
+                  onEnter: (event) {
+                    if (event.kind == PointerDeviceKind.touch) return;
+                    state._keyboard = false;
+                    state._pointer = event.localPosition;
                     state._setTooltipOpen(true);
+                    state.selectPeriod(
+                      columns[(event.localPosition.dx /
+                                  constraints.maxWidth *
+                                  columns.length)
+                              .floor()
+                              .clamp(0, columns.length - 1)]
+                          .period,
+                    );
+                  },
+                  onHover: (event) {
+                    if (event.kind == PointerDeviceKind.touch) return;
+                    state.movePointer(event.localPosition);
+                    if (constraints.maxWidth <= 0) return;
                     final periodIndex =
                         (event.localPosition.dx /
                                 constraints.maxWidth *
@@ -382,50 +426,172 @@ class BeuiCompositionPlot extends StatelessWidget {
                             .clamp(0, columns.length - 1);
                     state.selectPeriod(columns[periodIndex].period);
                   },
-                  child: SizedBox(
-                    height: height,
-                    child: Semantics(
-                      container: true,
-                      label:
-                          '${state.widget.label}, ${column.period}, ${column.segments.where((segment) => segment.value != null).map((segment) => '${segment.series.name}: ${format(segment.value!)} (${segment.share.toStringAsFixed(1)}%)').join(', ')}',
-                      value: column.period,
-                      increasedValue: index < columns.length - 1
-                          ? columns[index + 1].period
-                          : null,
-                      decreasedValue: index > 0
-                          ? columns[index - 1].period
-                          : null,
-                      onIncrease: index < columns.length - 1
-                          ? () => state.selectPeriod(columns[index + 1].period)
-                          : null,
-                      onDecrease: index > 0
-                          ? () => state.selectPeriod(columns[index - 1].period)
-                          : null,
-                      child: BeuiChartSpring(
-                        value: (index + .5) / columns.length,
-                        builder: (context, cursor) => CustomPaint(
-                          painter: _CompositionPainter(
-                            columns: columns,
-                            view: state.widget.view,
-                            colors: {
-                              for (final row in state.widget.series)
-                                row.id: beuiChartColor(row.color, colors),
-                            },
-                            highlight: highlight,
-                            reduce: MediaQuery.disableAnimationsOf(context),
-                            cursor: cursor,
-                            cursorColor: colors.foreground.withValues(
-                              alpha: .7,
+                  onExit: (_) {
+                    state._setTooltipOpen(false);
+                  },
+                  child: Listener(
+                    behavior: HitTestBehavior.opaque,
+                    onPointerDown: (event) {
+                      if (constraints.maxWidth <= 0) return;
+                      state._inspectorFocusNode.requestFocus();
+                      state._keyboard = false;
+                      state._pointer = event.localPosition;
+                      state._setTooltipOpen(true);
+                      final periodIndex =
+                          (event.localPosition.dx /
+                                  constraints.maxWidth *
+                                  columns.length)
+                              .floor()
+                              .clamp(0, columns.length - 1);
+                      state.selectPeriod(columns[periodIndex].period);
+                    },
+                    onPointerMove: (event) {
+                      if (event.buttons != 1) return;
+                      state.movePointer(event.localPosition);
+                      state.selectPeriod(
+                        columns[(event.localPosition.dx /
+                                    constraints.maxWidth *
+                                    columns.length)
+                                .floor()
+                                .clamp(0, columns.length - 1)]
+                            .period,
+                      );
+                    },
+                    onPointerCancel: (_) => state._setTooltipOpen(false),
+                    child: SizedBox(
+                      height: plotHeight,
+                      child: Semantics(
+                        container: true,
+                        slider: true,
+                        label:
+                            '${state.widget.label}, ${column.period}, ${column.segments.where((segment) => segment.value != null).map((segment) => '${segment.series.name}: ${format(segment.value!)} (${segment.share.toStringAsFixed(1)}%)').join(', ')}',
+                        value: column.period,
+                        increasedValue: index < columns.length - 1
+                            ? columns[index + 1].period
+                            : null,
+                        decreasedValue: index > 0
+                            ? columns[index - 1].period
+                            : null,
+                        onIncrease: index < columns.length - 1
+                            ? () =>
+                                  state.selectPeriod(columns[index + 1].period)
+                            : null,
+                        onDecrease: index > 0
+                            ? () =>
+                                  state.selectPeriod(columns[index - 1].period)
+                            : null,
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: _CompositionGeometry(
+                                columns: columns,
+                                view: state.widget.view,
+                                colors: colors,
+                                highlight: highlight,
+                              ),
                             ),
-                          ),
-                          child: const SizedBox.expand(),
+                            Positioned(
+                              left: state._keyboard
+                                  ? constraints.maxWidth *
+                                        (index + .5) /
+                                        columns.length
+                                  : state._pointer?.dx ?? 0,
+                              top: state._keyboard
+                                  ? plotHeight * .3
+                                  : state._pointer?.dy ?? 0,
+                              child: CompositedTransformTarget(
+                                key: state._tooltipAnchor,
+                                link: state._tooltipLink,
+                                child: const SizedBox(width: 1, height: 1),
+                              ),
+                            ),
+                            Positioned.fill(
+                              child: IgnorePointer(
+                                child: BeuiChartSpring(
+                                  value: (index + .5) / columns.length,
+                                  builder: (context, cursor) => CustomPaint(
+                                    painter: _CompositionPainter(
+                                      columns: const [],
+                                      colors: const {},
+                                      gridColor: Colors.transparent,
+                                      cursor: cursor,
+                                      cursorColor: colors.foreground.withValues(
+                                        alpha: .7,
+                                      ),
+                                    ),
+                                    child: const SizedBox.expand(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
+              Positioned(
+                left: 0,
+                top: 0,
+                child: BeuiTooltip(
+                  open: state._tooltipOpen,
+                  onOpenChange: state._setTooltipOpen,
+                  delay: Duration.zero,
+                  followCursor: true,
+                  externalAnchor: state._tooltipAnchor,
+                  anchorLink: state._tooltipLink,
+                  content: SizedBox(
+                    width: math.min(288, MediaQuery.sizeOf(context).width - 40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          column.period,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: colors.foreground,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        if (!column.valid)
+                          Text(
+                            'No complete data for this period.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: colors.mutedForeground,
+                            ),
+                          )
+                        else
+                          for (var i = 0; i < column.segments.length; i++) ...[
+                            if (i > 0) const SizedBox(height: 8),
+                            _compositionTooltipRow(
+                              column.segments[i],
+                              colors: colors,
+                              formatValue: format,
+                            ),
+                          ],
+                      ],
+                    ),
+                  ),
+                  child: const SizedBox.shrink(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        DefaultTextStyle.merge(
+          style: TextStyle(
+            fontSize: 11,
+            height: 16 / 11,
+            color: colors.mutedForeground,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [Text(columns.first.period), Text(columns.last.period)],
           ),
         ),
         Offstage(
@@ -456,92 +622,200 @@ Widget _compositionTooltipRow(
     children: [
       BeuiChartSwatch(
         color: beuiChartColor(segment.series.color, colors),
-        size: 7,
+        size: 6,
       ),
-      const SizedBox(width: 5),
-      Text('${segment.series.name} ', style: muted),
-      BeuiChartTicker(value: segment.value!, format: formatValue, style: muted),
-      Text(' · ', style: muted),
-      BeuiChartTicker(
-        value: segment.share,
-        format: (value) => '${value.toStringAsFixed(1)}%',
-        style: muted,
+      const SizedBox(width: 8),
+      Expanded(
+        child: Text(
+          segment.series.name,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 11, color: colors.foreground),
+        ),
+      ),
+      const SizedBox(width: 8),
+      ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 112),
+        child: BeuiChartTicker(
+          value: segment.value!,
+          duration: const Duration(milliseconds: 200),
+          format: formatValue,
+          style: muted,
+        ),
+      ),
+      const SizedBox(width: 8),
+      SizedBox(
+        width: 48,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: BeuiChartTicker(
+            value: segment.share,
+            duration: const Duration(milliseconds: 200),
+            format: (value) => '${value.toStringAsFixed(1)}%',
+            style: TextStyle(
+              fontSize: 11,
+              fontFamily: 'monospace',
+              color: colors.foreground,
+            ),
+          ),
+        ),
       ),
     ],
+  );
+}
+
+class _CompositionGeometry extends StatelessWidget {
+  const _CompositionGeometry({
+    required this.columns,
+    required this.view,
+    required this.colors,
+    required this.highlight,
+  });
+  final List<BeuiCompositionColumn> columns;
+  final BeuiCompositionView view;
+  final BeuiColors colors;
+  final String? highlight;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      final height = constraints.maxHeight;
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _CompositionPainter(
+                columns: const [],
+                colors: const {},
+                gridColor: colors.border,
+                cursor: 0,
+                cursorColor: Colors.transparent,
+              ),
+            ),
+          ),
+          if (view == BeuiCompositionView.bar)
+            for (var i = 0; i < columns.length; i++)
+              if (columns[i].valid)
+                for (final segment in columns[i].segments)
+                  BeuiChartSpringRect(
+                    key: ValueKey('${columns[i].period}/${segment.series.id}'),
+                    value: Rect.fromLTWH(
+                      width * (i + .1) / columns.length,
+                      height * (1 - (segment.offset + segment.share) / 100),
+                      width * .8 / columns.length,
+                      height * segment.share / 100,
+                    ),
+                    builder: (context, rect) => Positioned.fromRect(
+                      rect: rect,
+                      child: BeuiChartSpring(
+                        value:
+                            highlight != null && highlight != segment.series.id
+                            ? .18
+                            : .9,
+                        builder: (context, opacity) => ColoredBox(
+                          color: beuiChartColor(
+                            segment.series.color,
+                            colors,
+                          ).withValues(alpha: opacity.clamp(0, 1)),
+                        ),
+                      ),
+                    ),
+                  ),
+          if (view == BeuiCompositionView.area)
+            for (var row = 0; row < columns.first.segments.length; row++)
+              Positioned.fill(
+                child: BeuiChartTween(
+                  key: ValueKey(columns.first.segments[row].series.id),
+                  from: 0,
+                  value:
+                      highlight != null &&
+                          highlight != columns.first.segments[row].series.id
+                      ? .18
+                      : .9,
+                  duration: const Duration(milliseconds: 180),
+                  builder: (context, opacity) => CustomPaint(
+                    painter: _CompositionPainter(
+                      columns: columns,
+                      colors: {
+                        for (final segment in columns.first.segments)
+                          segment.series.id: beuiChartColor(
+                            segment.series.color,
+                            colors,
+                          ),
+                      },
+                      gridColor: Colors.transparent,
+                      cursor: 0,
+                      cursorColor: Colors.transparent,
+                      areaRow: row,
+                      opacity: opacity,
+                    ),
+                  ),
+                ),
+              ),
+        ],
+      );
+    },
   );
 }
 
 class _CompositionPainter extends CustomPainter {
   _CompositionPainter({
     required this.columns,
-    required this.view,
     required this.colors,
-    required this.highlight,
-    required this.reduce,
+    required this.gridColor,
     required this.cursor,
     required this.cursorColor,
+    this.areaRow,
+    this.opacity = .9,
   });
 
   final List<BeuiCompositionColumn> columns;
-  final BeuiCompositionView view;
   final Map<String, Color> colors;
-  final String? highlight;
-  final bool reduce;
+  final Color gridColor;
+  final int? areaRow;
+  final double opacity;
   final double cursor;
   final Color cursorColor;
 
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
-      ..color = const Color(0x33000000)
-      ..strokeWidth = 0.5;
+      ..color = gridColor
+      ..strokeWidth = 1;
     for (var i = 0; i <= 4; i++) {
       final y = size.height * i / 4;
       canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
     }
     final count = columns.length;
-    if (view == BeuiCompositionView.bar) {
-      final columnWidth = size.width / count;
-      for (var c = 0; c < count; c++) {
-        final column = columns[c];
-        if (!column.valid) continue;
-        for (final segment in column.segments) {
-          final color = colors[segment.series.id] ?? Colors.blue;
-          final paint = Paint()
-            ..color = color.withValues(
-              alpha: highlight != null && highlight != segment.series.id
-                  ? 0.18
-                  : 0.9,
-            );
-          canvas.drawRect(
-            Rect.fromLTWH(
-              c * columnWidth + columnWidth * 0.1,
-              size.height * (1 - segment.offset / 100 - segment.share / 100),
-              columnWidth * 0.8,
-              size.height * segment.share / 100,
-            ),
-            paint,
-          );
-        }
-      }
-    } else {
+    if (columns.isNotEmpty) {
       final rowCount = columns.first.segments.length;
       for (var row = 0; row < rowCount; row++) {
+        if (areaRow != null && row != areaRow) continue;
         final paint = Paint()
           ..color =
               (colors[columns.first.segments[row].series.id] ?? Colors.blue)
-                  .withValues(
-                    alpha:
-                        highlight != null &&
-                            highlight != columns.first.segments[row].series.id
-                        ? 0.18
-                        : 0.9,
-                  )
+                  .withValues(alpha: opacity)
           ..style = PaintingStyle.fill;
         var run = <int>[];
         void flush() {
           if (run.isEmpty) return;
           final path = Path();
+          if (run.length == 1) {
+            final c = run.single;
+            final seg = columns[c].segments[row];
+            path.addRect(
+              Rect.fromLTRB(
+                size.width * c / count,
+                size.height * (1 - (seg.offset + seg.share) / 100),
+                size.width * (c + 1) / count,
+                size.height * (1 - seg.offset / 100),
+              ),
+            );
+            canvas.drawPath(path, paint);
+            run = [];
+            return;
+          }
           for (var j = 0; j < run.length; j++) {
             final c = run[j];
             final seg = columns[c].segments[row];
@@ -561,19 +835,6 @@ class _CompositionPainter extends CustomPainter {
               size.width * (c + 0.5) / count,
               size.height * (1 - seg.offset / 100),
             );
-          }
-          if (run.length == 1) {
-            final c = run.single;
-            final seg = columns[c].segments[row];
-            path
-              ..lineTo(
-                size.width * (c + 1) / count,
-                size.height * (1 - (seg.offset + seg.share) / 100),
-              )
-              ..lineTo(
-                size.width * (c + 1) / count,
-                size.height * (1 - seg.offset / 100),
-              );
           }
           path.close();
           canvas.drawPath(path, paint);
@@ -619,39 +880,152 @@ class BeuiCompositionLegend extends StatelessWidget {
         .where((item) => item.period == state.effectivePeriod)
         .firstOrNull;
     if (column == null) return const SizedBox.shrink();
-    return Wrap(
-      spacing: 12,
-      runSpacing: 4,
-      children: [
-        for (final segment in column.segments)
-          Semantics(
-            button: true,
-            toggled: state._pinned == segment.series.id,
-            label: segment.series.name,
-            child: GestureDetector(
-              onTap: () => state.togglePinned(segment.series.id),
-              child: MouseRegion(
-                onEnter: (_) => state.hoverSeries(segment.series.id),
-                onExit: (_) => state.hoverSeries(null),
-                child: Focus(
-                  onFocusChange: (focused) =>
-                      state.focusSeries(focused ? segment.series.id : null),
-                  child: BeuiChartLegendItem(
-                    color: beuiChartColor(segment.series.color, colors),
-                    label: segment.series.name,
-                    selected: state._pinned == segment.series.id,
-                    dimmed:
-                        (state._pinned ?? state._hovered ?? state._focused) !=
-                            null &&
-                        (state._pinned ?? state._hovered ?? state._focused) !=
-                            segment.series.id,
-                    onPressed: () => state.togglePinned(segment.series.id),
+    final highlight = [
+      state._hovered,
+      state._focused,
+      state._pinned,
+    ].where((id) => column.segments.any((s) => s.series.id == id)).firstOrNull;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final count = constraints.maxWidth >= 900
+            ? 6
+            : constraints.maxWidth >= 480
+            ? 3
+            : 2;
+        final width = math.max(
+          0.0,
+          (constraints.maxWidth - (count - 1) * 16) / count,
+        );
+        return Wrap(
+          spacing: 16,
+          runSpacing: 4,
+          children: [
+            for (final segment in column.segments)
+              SizedBox(
+                width: width,
+                height: 48,
+                child: BeuiChartTween(
+                  value: highlight != null && highlight != segment.series.id
+                      ? .4
+                      : 1,
+                  duration: const Duration(milliseconds: 150),
+                  builder: (context, opacity) => Opacity(
+                    opacity: opacity.clamp(0, 1),
+                    child: MouseRegion(
+                      onEnter: (event) {
+                        if (event.kind != PointerDeviceKind.touch) {
+                          state.hoverSeries(segment.series.id);
+                        }
+                      },
+                      onExit: (event) {
+                        if (event.kind != PointerDeviceKind.touch) {
+                          state.hoverSeries(null);
+                        }
+                      },
+                      child: Focus(
+                        canRequestFocus: false,
+                        skipTraversal: true,
+                        onFocusChange: (focused) => state.focusSeries(
+                          focused ? segment.series.id : null,
+                        ),
+                        onKeyEvent: (_, event) {
+                          if (event is KeyDownEvent &&
+                              event.logicalKey == LogicalKeyboardKey.escape) {
+                            state.clearHighlight();
+                            return KeyEventResult.handled;
+                          }
+                          return KeyEventResult.ignored;
+                        },
+                        child: Semantics(
+                          button: true,
+                          toggled: state._pinned == segment.series.id,
+                          label: 'Highlight ${segment.series.name}',
+                          child: TextButton(
+                            onPressed: () =>
+                                state.togglePinned(segment.series.id),
+                            style: ButtonStyle(
+                              padding: const WidgetStatePropertyAll(
+                                EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 6,
+                                ),
+                              ),
+                              foregroundColor: WidgetStatePropertyAll(
+                                colors.foreground,
+                              ),
+                              backgroundColor: WidgetStatePropertyAll(
+                                state._pinned == segment.series.id
+                                    ? colors.muted.withValues(alpha: .6)
+                                    : Colors.transparent,
+                              ),
+                              overlayColor: const WidgetStatePropertyAll(
+                                Colors.transparent,
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 4,
+                                  height: 24,
+                                  decoration: BoxDecoration(
+                                    color: beuiChartColor(
+                                      segment.series.color,
+                                      colors,
+                                    ),
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        segment.series.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          height: 16 / 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: colors.mutedForeground,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        column.valid
+                                            ? '${segment.share.toStringAsFixed(1)}%'
+                                            : '—',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          height: 16 / 12,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: 'monospace',
+                                          color: colors.foreground,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

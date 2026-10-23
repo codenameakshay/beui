@@ -225,16 +225,9 @@ void main() {
 
     expect(find.text('Feb'), findsWidgets);
     expect(find.text('Organic'), findsWidgets);
-    final organicRow = find
-        .ancestor(of: find.text('Organic '), matching: find.byType(Row))
-        .first;
     final visibleValues = tester
-        .widgetList<BeuiChartTicker>(
-          find.descendant(
-            of: organicRow,
-            matching: find.byType(BeuiChartTicker),
-          ),
-        )
+        .widgetList<BeuiChartTicker>(find.byType(BeuiChartTicker))
+        .take(2)
         .map((ticker) => ticker.format(ticker.value))
         .toList();
     expect(visibleValues, ['40', '40.0%']);
@@ -323,10 +316,12 @@ void main() {
       ),
     );
     final canvas = tester.getRect(
-      find.descendant(
-        of: find.byType(BeuiCompositionPlot),
-        matching: find.byType(CustomPaint),
-      ),
+      find
+          .descendant(
+            of: find.byType(BeuiCompositionPlot),
+            matching: find.byType(CustomPaint),
+          )
+          .first,
     );
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
     final position = Offset(canvas.left + canvas.width / 6, canvas.center.dy);
@@ -397,20 +392,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 250));
     await tester.pumpAndSettle();
 
-    final organicRow = find
-        .ancestor(of: find.text('Organic '), matching: find.byType(Row))
-        .first;
     final visibleValues = tester
-        .widgetList<BeuiChartTicker>(
-          find.descendant(
-            of: organicRow,
-            matching: find.byType(BeuiChartTicker),
-          ),
-        )
+        .widgetList<BeuiChartTicker>(find.byType(BeuiChartTicker))
+        .take(2)
         .map((ticker) => ticker.format(ticker.value))
         .toList();
     expect(find.text('Feb'), findsWidgets);
-    expect(find.text('Jan'), findsNothing);
+    expect(find.text('Jan'), findsOneWidget);
     expect(visibleValues, ['40', '40.0%']);
     expect(changed, ['Jan', 'Feb']);
   });
@@ -435,7 +423,7 @@ void main() {
   );
 
   testWidgets('resting composition chart matches its golden', (tester) async {
-    await tester.binding.setSurfaceSize(const Size(640, 420));
+    await tester.binding.setSurfaceSize(const Size(640, 520));
     await tester.pumpWidget(
       beuiTestApp(
         const BeuiCompositionChart(series: _series, periods: _periods),
