@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-import '../explorer/widgets.dart';
+import 'agents_replay_button.dart';
 
 /// Gallery route for [BeuiFileDiff], mirroring the source
 /// `agents/file-diff.preview.tsx` exactly: five diff rows streamed at the
@@ -134,7 +134,7 @@ class _FileDiffDemoState extends State<_FileDiffDemo> {
             Positioned(
               left: 0,
               bottom: 0,
-              child: ReplayButton(onPressed: _replay),
+              child: AgentReplayButton(onPressed: _replay, pill: false),
             ),
           ],
         ),

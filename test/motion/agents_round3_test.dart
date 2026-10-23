@@ -6,6 +6,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+// ignore: avoid_relative_lib_imports
+import '../../example/lib/demos/agents_replay_button.dart';
 import '../support.dart';
 
 const _capture = ValueKey('round3-pixels');
@@ -64,6 +66,23 @@ Future<List<int>?> _pixel(WidgetTester tester, Offset point) => tester.runAsync(
 );
 
 void main() {
+  testWidgets('agent replay has the source 24px box and 6px icon gap', (
+    tester,
+  ) async {
+    var replays = 0;
+    await tester.pumpWidget(
+      beuiTestApp(AgentReplayButton(onPressed: () => replays++)),
+    );
+    final button = tester.getRect(find.byType(TextButton));
+    final icon = tester.getRect(find.byIcon(LucideIcons.rotate_ccw));
+    final label = tester.getRect(find.text('Replay'));
+    expect(button.height, 24);
+    expect(icon.left - button.left, 8);
+    expect(label.left - icon.right, 6);
+    expect(label.height, 16);
+    await tester.tap(find.text('Replay'));
+    expect(replays, 1);
+  });
   testWidgets(
     'approval waits for outgoing question before entering the latest step',
     (tester) async {
@@ -123,7 +142,7 @@ void main() {
       expect(find.text('Skipped option'), findsNothing);
       update(() => step = 2);
       await tester.pump();
-    await tester.pump(const Duration(milliseconds: 121));
+      await tester.pump(const Duration(milliseconds: 121));
       await tester.pump();
       expect(find.text('Outgoing option'), findsNothing);
       expect(find.text('Skipped option'), findsNothing);

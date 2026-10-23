@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
-import '../explorer/widgets.dart';
+import 'agents_replay_button.dart';
 
 /// Gallery route for [BeuiApprovalCard] — mirrors the source previews:
 /// multi-step questions + simple review-and-approve, each with Replay.
@@ -156,7 +156,9 @@ class _QuestionPreviewState extends State<_QuestionPreview> {
               Positioned(
                 left: 0,
                 bottom: 0,
-                child: ReplayButton(onPressed: () => setState(() => _run += 1)),
+                child: AgentReplayButton(
+                  onPressed: () => setState(() => _run += 1),
+                ),
               ),
             ],
           ),
@@ -233,7 +235,9 @@ class _ReviewPreviewState extends State<_ReviewPreview> {
               Positioned(
                 left: 0,
                 bottom: 0,
-                child: ReplayButton(onPressed: () => setState(() => _run += 1)),
+                child: AgentReplayButton(
+                  onPressed: () => setState(() => _run += 1),
+                ),
               ),
             ],
           ),

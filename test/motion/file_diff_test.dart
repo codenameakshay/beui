@@ -541,7 +541,9 @@ void main() {
       return null;
     }
 
-    testWidgets('added and removed rows are tinted well apart', (tester) async {
+    testWidgets('added and removed rows use the source seven percent tint', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _host(status: BeuiFileDiffStatus.complete, defaultOpen: true),
       );
@@ -550,9 +552,8 @@ void main() {
       final removed = tintOf(tester, 'return execute(task);');
       expect(added, isNotNull);
       expect(removed, isNotNull);
-      // 0.14, not the old 0.07 — at 0.07 the two washes were 1.04:1 apart.
-      expect(added!.a, closeTo(0.14, 0.005));
-      expect(removed!.a, closeTo(0.14, 0.005));
+      expect(added!.a, closeTo(0.07, 0.005));
+      expect(removed!.a, closeTo(0.07, 0.005));
       expect(added, isNot(removed));
     });
 
@@ -564,22 +565,21 @@ void main() {
       expect(tintOf(tester, 'export async function runTask'), isNull);
     });
 
-    testWidgets(
-      'every row reserves the leading bar, so nothing shifts between them',
-      (tester) async {
-        await tester.pumpWidget(
-          _host(status: BeuiFileDiffStatus.complete, defaultOpen: true),
-        );
-        await tester.pumpAndSettle();
-        final addedLeft = tester
-            .getRect(find.textContaining('const result = await execute'))
-            .left;
-        final contextLeft = tester
-            .getRect(find.textContaining('export async function runTask'))
-            .left;
-        expect(addedLeft, closeTo(contextLeft, 0.5));
-      },
-    );
+    testWidgets('added and context content have the same horizontal inset', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(status: BeuiFileDiffStatus.complete, defaultOpen: true),
+      );
+      await tester.pumpAndSettle();
+      final addedLeft = tester
+          .getRect(find.textContaining('const result = await execute'))
+          .left;
+      final contextLeft = tester
+          .getRect(find.textContaining('export async function runTask'))
+          .left;
+      expect(addedLeft, closeTo(contextLeft, 0.5));
+    });
 
     testWidgets('the +/− markers survive alongside the tint', (tester) async {
       await tester.pumpWidget(
@@ -592,14 +592,18 @@ void main() {
   });
 
   group('BeuiFileDiff gutters', () {
-    testWidgets('line numbers are legible, not a 1.78:1 hairline', (
+    testWidgets('line numbers use forty percent muted foreground', (
       tester,
     ) async {
-      await expectLegibleGutterNumber(
-        tester,
+      await tester.pumpWidget(
         _host(status: BeuiFileDiffStatus.complete, defaultOpen: true),
-        lineNumberText: '18',
       );
+      await tester.pumpAndSettle();
+      final gutter = tester.widget<Text>(find.text('18').first);
+      final colors = BeuiColors.resolve(
+        tester.element(find.byType(BeuiFileDiff)),
+      );
+      expect(gutter.style!.color, colors.mutedForeground.withValues(alpha: 0.4));
     });
   });
 
@@ -697,17 +701,17 @@ void main() {
     });
   });
 
-  group('BeuiFileDiff copy in the header', () {
-    testWidgets('copy is reachable while the panel is collapsed', (
-      tester,
-    ) async {
+  group('BeuiFileDiff copy in the disclosure', () {
+    testWidgets('copy follows body disclosure', (tester) async {
       await tester.pumpWidget(
         _host(status: BeuiFileDiffStatus.complete, defaultOpen: false),
       );
       await tester.pumpAndSettle();
       expect(find.textContaining('export async function'), findsNothing);
-      // collapseOnComplete hides the diff at the moment of interest; the copy
-      // control must not go with it.
+      expect(find.byIcon(LucideIcons.copy), findsNothing);
+      await tester.tap(find.text('src/runner.ts'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('export async function'), findsOneWidget);
       expect(find.byIcon(LucideIcons.copy), findsOneWidget);
     });
 

@@ -517,10 +517,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
     final showChangeNav =
         changes.length > 1 && contentHeight > widget.maxHeight;
 
-    final surface = Color.alphaBlend(
-      colors.muted.withValues(alpha: 0.8),
-      colors.background,
-    );
+    final surface = Color.lerp(colors.background, colors.muted, 0.8)!;
 
     return Semantics(
       container: true,
@@ -555,7 +552,7 @@ class _BeuiFileDiffState extends State<BeuiFileDiff>
               padding: const EdgeInsets.only(left: 24, top: 6), // pl-6 pt-1.5
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: colors.muted.withValues(alpha: 0.8),
+                  color: surface,
                   borderRadius: BorderRadius.circular(12), // rounded-xl
                 ),
                 child: Column(
