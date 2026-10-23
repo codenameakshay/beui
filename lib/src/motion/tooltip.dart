@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/semantics.dart';
 
 import '../overlay/beui_overlay.dart';
+import '../overlay/semantics_move_guard.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 
@@ -290,6 +291,8 @@ class BeuiTooltip extends StatefulWidget {
 }
 
 class _BeuiTooltipState extends State<BeuiTooltip> {
+  static int _nextSemanticsId = 0;
+  final String _semanticsIdentifier = 'beui-tooltip-${_nextSemanticsId++}';
   final Object _owner = Object();
   final SemanticsTag _activationTag = SemanticsTag('Tooltip activation');
   final GlobalKey _triggerKey = GlobalKey();
@@ -319,6 +322,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   @override
   void initState() {
     super.initState();
+    installTooltipSemanticsMoveGuard();
     _tooltipSession.clients++;
     GestureBinding.instance.pointerRouter.addGlobalRoute(_onGlobalPointer);
     HardwareKeyboard.instance.addHandler(_onKeyboardModality);
@@ -723,7 +727,11 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
             ignoring: widget.followCursor || !_open,
             child: AnimatedBuilder(
               animation: animation,
-              child: Semantics(container: true, child: _surface(colors, side)),
+              child: Semantics(
+                container: true,
+                identifier: _semanticsIdentifier,
+                child: _surface(colors, side),
+              ),
               builder: (context, surface) {
                 final t = animation.value.clamp(0.0, 1.0);
                 final exiting =
