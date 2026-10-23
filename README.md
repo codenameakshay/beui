@@ -7,7 +7,7 @@
 Spring-physics UI primitives and composed blocks, built on the [`motor`](https://pub.dev/packages/motor) motion engine so the original's *exact* spring feel carries over — not just its look.
 
 [![Live gallery](https://img.shields.io/badge/demo-live%20gallery-14b8a6?style=flat-square)](https://codenameakshay.github.io/beui/)
-[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.44-02569B?style=flat-square&logo=flutter)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.44.2-02569B?style=flat-square&logo=flutter)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 
 <br/>
