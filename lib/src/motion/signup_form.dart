@@ -291,6 +291,7 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
         focusNode: _focusNodes[keyName],
         placeholder: placeholder,
         error: shown(keyName, error),
+        reserveErrorLine: true,
         success: success,
         enabled: !busy,
         obscureText: obscure,
@@ -302,15 +303,7 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
         leftIcon: Icon(icon, size: 16),
         rightIcon: rightIcon,
       );
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 90),
-            child: Align(alignment: Alignment.topCenter, child: input),
-          ),
-        ],
-      );
+      return input;
     }
 
     final strength = beuiPasswordStrength(values.password);
@@ -332,12 +325,19 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
               children: [
                 Text(
                   widget.title,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontSize: 20,
+                    height: 28 / 20,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.5,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   widget.description,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 14,
+                    height: 20 / 14,
                     color: colors.mutedForeground,
                   ),
                 ),
@@ -464,37 +464,15 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
                   onChanged: (value) =>
                       _setValues(values.copyWith(confirmPassword: value)),
                 ),
-                const SizedBox(height: 8),
-                MergeSemantics(
-                  child: Row(
-                    children: [
-                      BeuiCheckbox(
-                        value: values.terms,
-                        enabled: !busy,
-                        onChanged: (value) {
-                          _setValues(values.copyWith(terms: value));
-                          _touch('terms');
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: busy
-                              ? null
-                              : () {
-                                  _setValues(
-                                    values.copyWith(terms: !values.terms),
-                                  );
-                                  _touch('terms');
-                                },
-                          child: const Text(
-                            'I agree to the Terms and Privacy Policy',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 20),
+                BeuiCheckbox(
+                  label: 'I agree to the Terms and Privacy Policy',
+                  value: values.terms,
+                  enabled: !busy,
+                  onChanged: (value) {
+                    _setValues(values.copyWith(terms: value));
+                    _touch('terms');
+                  },
                 ),
                 if (shown('terms', errors.terms) case final message?)
                   _AnimatedMessage(
@@ -532,6 +510,8 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
                   const SizedBox(height: 20),
                   DefaultTextStyle(
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontSize: 14,
+                      height: 20 / 14,
                       color: colors.mutedForeground,
                     ),
                     textAlign: TextAlign.center,

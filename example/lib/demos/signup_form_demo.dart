@@ -31,14 +31,25 @@ class _SignUpFormDemoState extends State<_SignUpFormDemo> {
         TextSpan(
           text: 'Already have an account? ',
           children: [
-            TextSpan(
-              text: 'Sign in',
-              style: TextStyle(
-                color: BeuiColors.resolve(context).foreground,
-                fontWeight: FontWeight.w500,
-                decoration: TextDecoration.underline,
-                decorationThickness: 1,
-                decorationColor: BeuiColors.resolve(context).foreground,
+            WidgetSpan(
+              alignment: PlaceholderAlignment.baseline,
+              baseline: TextBaseline.alphabetic,
+              child: TextButton(
+                onPressed: () {},
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  foregroundColor: BeuiColors.resolve(context).foreground,
+                  textStyle: const TextStyle(
+                    fontSize: 14,
+                    height: 20 / 14,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                    decorationThickness: 1,
+                  ),
+                ),
+                child: const Text('Sign in'),
               ),
             ),
           ],
