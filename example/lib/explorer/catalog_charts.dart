@@ -1,5 +1,6 @@
 // Charts family catalog — sidebar order matches https://beui.dev/charts.
 import '../demos/bump_chart_demo.dart';
+import '../demos/sankey_chart_demo.dart';
 import '../demos/candlestick_chart_demo.dart';
 import '../demos/composition_chart_demo.dart';
 import '../demos/donut_chart_demo.dart';
@@ -16,6 +17,14 @@ import 'catalog.dart';
 
 /// Charts explorer entries in beui.dev sidebar order.
 const List<ExploreEntry> kCharts = [
+  ExploreEntry(
+    title: 'Sankey Chart',
+    slug: 'sankey-chart',
+    section: ExploreSection.charts,
+    isNew: true,
+    blurb: 'Weighted flows between stages that draw in and morph with your data.',
+    builder: sankeyChartDemo,
+  ),
   ExploreEntry(
     title: 'Treemap',
     slug: 'treemap',

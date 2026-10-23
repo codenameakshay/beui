@@ -1,0 +1,1031 @@
+{
+  "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "fixtures": [
+    {
+      "nodes": [
+        {
+          "id": "ads",
+          "label": "Ads"
+        },
+        {
+          "id": "search",
+          "label": "Search"
+        },
+        {
+          "id": "signup",
+          "label": "Signup"
+        },
+        {
+          "id": "paid",
+          "label": "Paid"
+        },
+        {
+          "id": "free",
+          "label": "Free"
+        }
+      ],
+      "links": [
+        {
+          "source": "ads",
+          "target": "signup",
+          "value": 30
+        },
+        {
+          "source": "search",
+          "target": "signup",
+          "value": 50
+        },
+        {
+          "source": "search",
+          "target": "signup",
+          "value": 20
+        },
+        {
+          "source": "signup",
+          "target": "paid",
+          "value": 40
+        },
+        {
+          "source": "signup",
+          "target": "free",
+          "value": 60
+        },
+        {
+          "source": "paid",
+          "target": "ads",
+          "value": 5
+        }
+      ],
+      "width": 640,
+      "height": 320,
+      "nodeWidth": 12,
+      "nodePadding": 16,
+      "cleaned": {
+        "nodes": [
+          {
+            "id": "ads",
+            "label": "Ads"
+          },
+          {
+            "id": "search",
+            "label": "Search"
+          },
+          {
+            "id": "signup",
+            "label": "Signup"
+          },
+          {
+            "id": "paid",
+            "label": "Paid"
+          },
+          {
+            "id": "free",
+            "label": "Free"
+          }
+        ],
+        "links": [
+          {
+            "source": "ads",
+            "target": "signup",
+            "value": 30,
+            "id": "ads:signup"
+          },
+          {
+            "source": "search",
+            "target": "signup",
+            "value": 70,
+            "id": "search:signup"
+          },
+          {
+            "source": "signup",
+            "target": "paid",
+            "value": 40,
+            "id": "signup:paid"
+          },
+          {
+            "source": "signup",
+            "target": "free",
+            "value": 60,
+            "id": "signup:free"
+          }
+        ],
+        "dropped": {
+          "invalid": [],
+          "cycle": [
+            {
+              "source": "paid",
+              "target": "ads",
+              "value": 5,
+              "id": "paid:ads"
+            }
+          ]
+        }
+      },
+      "layout": {
+        "nodes": [
+          {
+            "id": "ads",
+            "label": "Ads",
+            "color": "#1d4ed8",
+            "value": 30,
+            "inValue": 0,
+            "outValue": 30,
+            "depth": 0,
+            "x0": 0,
+            "x1": 12,
+            "y0": -2.842170943040401e-14,
+            "y1": 91.20000000000002
+          },
+          {
+            "id": "search",
+            "label": "Search",
+            "color": "#7c3aed",
+            "value": 70,
+            "inValue": 0,
+            "outValue": 70,
+            "depth": 0,
+            "x0": 0,
+            "x1": 12,
+            "y0": 107.20000000000002,
+            "y1": 320
+          },
+          {
+            "id": "signup",
+            "label": "Signup",
+            "color": "#0f766e",
+            "value": 100,
+            "inValue": 100,
+            "outValue": 100,
+            "depth": 1,
+            "x0": 314,
+            "x1": 326,
+            "y0": 9.674718400570415,
+            "y1": 313.6747184005704
+          },
+          {
+            "id": "paid",
+            "label": "Paid",
+            "color": "#b45309",
+            "value": 40,
+            "inValue": 40,
+            "outValue": 0,
+            "depth": 2,
+            "x0": 628,
+            "x1": 640,
+            "y0": 5.684341886080802e-14,
+            "y1": 121.60000000000008
+          },
+          {
+            "id": "free",
+            "label": "Free",
+            "color": "#be123c",
+            "value": 60,
+            "inValue": 60,
+            "outValue": 0,
+            "depth": 2,
+            "x0": 628,
+            "x1": 640,
+            "y0": 137.60000000000008,
+            "y1": 320
+          }
+        ],
+        "links": [
+          {
+            "id": "ads:signup",
+            "source": {
+              "id": "ads",
+              "label": "Ads",
+              "color": "#1d4ed8",
+              "value": 30,
+              "inValue": 0,
+              "outValue": 30,
+              "depth": 0,
+              "x0": 0,
+              "x1": 12,
+              "y0": -2.842170943040401e-14,
+              "y1": 91.20000000000002
+            },
+            "target": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 314,
+              "x1": 326,
+              "y0": 9.674718400570415,
+              "y1": 313.6747184005704
+            },
+            "value": 30,
+            "share": 1,
+            "width": 91.2,
+            "x0": 12,
+            "y0": 45.59999999999997,
+            "x1": 314,
+            "y1": 55.274718400570414,
+            "path": "M 12 45.59999999999997 C 163 45.59999999999997 163 55.274718400570414 314 55.274718400570414"
+          },
+          {
+            "id": "search:signup",
+            "source": {
+              "id": "search",
+              "label": "Search",
+              "color": "#7c3aed",
+              "value": 70,
+              "inValue": 0,
+              "outValue": 70,
+              "depth": 0,
+              "x0": 0,
+              "x1": 12,
+              "y0": 107.20000000000002,
+              "y1": 320
+            },
+            "target": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 314,
+              "x1": 326,
+              "y0": 9.674718400570415,
+              "y1": 313.6747184005704
+            },
+            "value": 70,
+            "share": 1,
+            "width": 212.8,
+            "x0": 12,
+            "y0": 213.60000000000002,
+            "x1": 314,
+            "y1": 207.2747184005704,
+            "path": "M 12 213.60000000000002 C 163 213.60000000000002 163 207.2747184005704 314 207.2747184005704"
+          },
+          {
+            "id": "signup:paid",
+            "source": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 314,
+              "x1": 326,
+              "y0": 9.674718400570415,
+              "y1": 313.6747184005704
+            },
+            "target": {
+              "id": "paid",
+              "label": "Paid",
+              "color": "#b45309",
+              "value": 40,
+              "inValue": 40,
+              "outValue": 0,
+              "depth": 2,
+              "x0": 628,
+              "x1": 640,
+              "y0": 5.684341886080802e-14,
+              "y1": 121.60000000000008
+            },
+            "value": 40,
+            "share": 0.4,
+            "width": 121.6,
+            "x0": 326,
+            "y0": 70.47471840057041,
+            "x1": 628,
+            "y1": 60.800000000000054,
+            "path": "M 326 70.47471840057041 C 477 70.47471840057041 477 60.800000000000054 628 60.800000000000054"
+          },
+          {
+            "id": "signup:free",
+            "source": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 314,
+              "x1": 326,
+              "y0": 9.674718400570415,
+              "y1": 313.6747184005704
+            },
+            "target": {
+              "id": "free",
+              "label": "Free",
+              "color": "#be123c",
+              "value": 60,
+              "inValue": 60,
+              "outValue": 0,
+              "depth": 2,
+              "x0": 628,
+              "x1": 640,
+              "y0": 137.60000000000008,
+              "y1": 320
+            },
+            "value": 60,
+            "share": 0.6,
+            "width": 182.4,
+            "x0": 326,
+            "y0": 222.4747184005704,
+            "x1": 628,
+            "y1": 228.80000000000007,
+            "path": "M 326 222.4747184005704 C 477 222.4747184005704 477 228.80000000000007 628 228.80000000000007"
+          }
+        ],
+        "columns": 3,
+        "step": 314
+      }
+    },
+    {
+      "nodes": [
+        {
+          "id": "ads",
+          "label": "Ads"
+        },
+        {
+          "id": "search",
+          "label": "Search"
+        },
+        {
+          "id": "signup",
+          "label": "Signup"
+        },
+        {
+          "id": "paid",
+          "label": "Paid"
+        },
+        {
+          "id": "free",
+          "label": "Free"
+        }
+      ],
+      "links": [
+        {
+          "source": "ads",
+          "target": "signup",
+          "value": 30
+        },
+        {
+          "source": "search",
+          "target": "signup",
+          "value": 50
+        },
+        {
+          "source": "search",
+          "target": "signup",
+          "value": 20
+        },
+        {
+          "source": "signup",
+          "target": "paid",
+          "value": 40
+        },
+        {
+          "source": "signup",
+          "target": "free",
+          "value": 60
+        },
+        {
+          "source": "paid",
+          "target": "ads",
+          "value": 5
+        }
+      ],
+      "width": 512,
+      "height": 180,
+      "nodeWidth": 8,
+      "nodePadding": 80,
+      "cleaned": {
+        "nodes": [
+          {
+            "id": "ads",
+            "label": "Ads"
+          },
+          {
+            "id": "search",
+            "label": "Search"
+          },
+          {
+            "id": "signup",
+            "label": "Signup"
+          },
+          {
+            "id": "paid",
+            "label": "Paid"
+          },
+          {
+            "id": "free",
+            "label": "Free"
+          }
+        ],
+        "links": [
+          {
+            "source": "ads",
+            "target": "signup",
+            "value": 30,
+            "id": "ads:signup"
+          },
+          {
+            "source": "search",
+            "target": "signup",
+            "value": 70,
+            "id": "search:signup"
+          },
+          {
+            "source": "signup",
+            "target": "paid",
+            "value": 40,
+            "id": "signup:paid"
+          },
+          {
+            "source": "signup",
+            "target": "free",
+            "value": 60,
+            "id": "signup:free"
+          }
+        ],
+        "dropped": {
+          "invalid": [],
+          "cycle": [
+            {
+              "source": "paid",
+              "target": "ads",
+              "value": 5,
+              "id": "paid:ads"
+            }
+          ]
+        }
+      },
+      "layout": {
+        "nodes": [
+          {
+            "id": "ads",
+            "label": "Ads",
+            "color": "#1d4ed8",
+            "value": 30,
+            "inValue": 0,
+            "outValue": 30,
+            "depth": 0,
+            "x0": 0,
+            "x1": 8,
+            "y0": 0,
+            "y1": 30
+          },
+          {
+            "id": "search",
+            "label": "Search",
+            "color": "#7c3aed",
+            "value": 70,
+            "inValue": 0,
+            "outValue": 70,
+            "depth": 0,
+            "x0": 0,
+            "x1": 8,
+            "y0": 110,
+            "y1": 180
+          },
+          {
+            "id": "signup",
+            "label": "Signup",
+            "color": "#0f766e",
+            "value": 100,
+            "inValue": 100,
+            "outValue": 100,
+            "depth": 1,
+            "x0": 252,
+            "x1": 260,
+            "y0": 48.37359200285184,
+            "y1": 148.37359200285184
+          },
+          {
+            "id": "paid",
+            "label": "Paid",
+            "color": "#b45309",
+            "value": 40,
+            "inValue": 40,
+            "outValue": 0,
+            "depth": 2,
+            "x0": 504,
+            "x1": 512,
+            "y0": -5.684341886080802e-14,
+            "y1": 39.99999999999994
+          },
+          {
+            "id": "free",
+            "label": "Free",
+            "color": "#be123c",
+            "value": 60,
+            "inValue": 60,
+            "outValue": 0,
+            "depth": 2,
+            "x0": 504,
+            "x1": 512,
+            "y0": 119.99999999999994,
+            "y1": 180
+          }
+        ],
+        "links": [
+          {
+            "id": "ads:signup",
+            "source": {
+              "id": "ads",
+              "label": "Ads",
+              "color": "#1d4ed8",
+              "value": 30,
+              "inValue": 0,
+              "outValue": 30,
+              "depth": 0,
+              "x0": 0,
+              "x1": 8,
+              "y0": 0,
+              "y1": 30
+            },
+            "target": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 252,
+              "x1": 260,
+              "y0": 48.37359200285184,
+              "y1": 148.37359200285184
+            },
+            "value": 30,
+            "share": 1,
+            "width": 30,
+            "x0": 8,
+            "y0": 15,
+            "x1": 252,
+            "y1": 63.37359200285184,
+            "path": "M 8 15 C 130 15 130 63.37359200285184 252 63.37359200285184"
+          },
+          {
+            "id": "search:signup",
+            "source": {
+              "id": "search",
+              "label": "Search",
+              "color": "#7c3aed",
+              "value": 70,
+              "inValue": 0,
+              "outValue": 70,
+              "depth": 0,
+              "x0": 0,
+              "x1": 8,
+              "y0": 110,
+              "y1": 180
+            },
+            "target": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 252,
+              "x1": 260,
+              "y0": 48.37359200285184,
+              "y1": 148.37359200285184
+            },
+            "value": 70,
+            "share": 1,
+            "width": 70,
+            "x0": 8,
+            "y0": 145,
+            "x1": 252,
+            "y1": 113.37359200285184,
+            "path": "M 8 145 C 130 145 130 113.37359200285184 252 113.37359200285184"
+          },
+          {
+            "id": "signup:paid",
+            "source": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 252,
+              "x1": 260,
+              "y0": 48.37359200285184,
+              "y1": 148.37359200285184
+            },
+            "target": {
+              "id": "paid",
+              "label": "Paid",
+              "color": "#b45309",
+              "value": 40,
+              "inValue": 40,
+              "outValue": 0,
+              "depth": 2,
+              "x0": 504,
+              "x1": 512,
+              "y0": -5.684341886080802e-14,
+              "y1": 39.99999999999994
+            },
+            "value": 40,
+            "share": 0.4,
+            "width": 40,
+            "x0": 260,
+            "y0": 68.37359200285184,
+            "x1": 504,
+            "y1": 19.999999999999943,
+            "path": "M 260 68.37359200285184 C 382 68.37359200285184 382 19.999999999999943 504 19.999999999999943"
+          },
+          {
+            "id": "signup:free",
+            "source": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 252,
+              "x1": 260,
+              "y0": 48.37359200285184,
+              "y1": 148.37359200285184
+            },
+            "target": {
+              "id": "free",
+              "label": "Free",
+              "color": "#be123c",
+              "value": 60,
+              "inValue": 60,
+              "outValue": 0,
+              "depth": 2,
+              "x0": 504,
+              "x1": 512,
+              "y0": 119.99999999999994,
+              "y1": 180
+            },
+            "value": 60,
+            "share": 0.6,
+            "width": 60,
+            "x0": 260,
+            "y0": 118.37359200285184,
+            "x1": 504,
+            "y1": 149.99999999999994,
+            "path": "M 260 118.37359200285184 C 382 118.37359200285184 382 149.99999999999994 504 149.99999999999994"
+          }
+        ],
+        "columns": 3,
+        "step": 252
+      }
+    },
+    {
+      "nodes": [
+        {
+          "id": "ads",
+          "label": "Ads"
+        },
+        {
+          "id": "search",
+          "label": "Search"
+        },
+        {
+          "id": "signup",
+          "label": "Signup"
+        },
+        {
+          "id": "paid",
+          "label": "Paid"
+        },
+        {
+          "id": "free",
+          "label": "Free"
+        }
+      ],
+      "links": [
+        {
+          "source": "ads",
+          "target": "signup",
+          "value": 30
+        },
+        {
+          "source": "search",
+          "target": "signup",
+          "value": 50
+        },
+        {
+          "source": "search",
+          "target": "signup",
+          "value": 20
+        },
+        {
+          "source": "signup",
+          "target": "paid",
+          "value": 40
+        },
+        {
+          "source": "signup",
+          "target": "free",
+          "value": 60
+        },
+        {
+          "source": "paid",
+          "target": "ads",
+          "value": 5
+        }
+      ],
+      "width": 768,
+      "height": 320,
+      "nodeWidth": 12,
+      "nodePadding": 16,
+      "cleaned": {
+        "nodes": [
+          {
+            "id": "ads",
+            "label": "Ads"
+          },
+          {
+            "id": "search",
+            "label": "Search"
+          },
+          {
+            "id": "signup",
+            "label": "Signup"
+          },
+          {
+            "id": "paid",
+            "label": "Paid"
+          },
+          {
+            "id": "free",
+            "label": "Free"
+          }
+        ],
+        "links": [
+          {
+            "source": "ads",
+            "target": "signup",
+            "value": 30,
+            "id": "ads:signup"
+          },
+          {
+            "source": "search",
+            "target": "signup",
+            "value": 70,
+            "id": "search:signup"
+          },
+          {
+            "source": "signup",
+            "target": "paid",
+            "value": 40,
+            "id": "signup:paid"
+          },
+          {
+            "source": "signup",
+            "target": "free",
+            "value": 60,
+            "id": "signup:free"
+          }
+        ],
+        "dropped": {
+          "invalid": [],
+          "cycle": [
+            {
+              "source": "paid",
+              "target": "ads",
+              "value": 5,
+              "id": "paid:ads"
+            }
+          ]
+        }
+      },
+      "layout": {
+        "nodes": [
+          {
+            "id": "ads",
+            "label": "Ads",
+            "color": "#1d4ed8",
+            "value": 30,
+            "inValue": 0,
+            "outValue": 30,
+            "depth": 0,
+            "x0": 0,
+            "x1": 12,
+            "y0": -2.842170943040401e-14,
+            "y1": 91.20000000000002
+          },
+          {
+            "id": "search",
+            "label": "Search",
+            "color": "#7c3aed",
+            "value": 70,
+            "inValue": 0,
+            "outValue": 70,
+            "depth": 0,
+            "x0": 0,
+            "x1": 12,
+            "y0": 107.20000000000002,
+            "y1": 320
+          },
+          {
+            "id": "signup",
+            "label": "Signup",
+            "color": "#0f766e",
+            "value": 100,
+            "inValue": 100,
+            "outValue": 100,
+            "depth": 1,
+            "x0": 378,
+            "x1": 390,
+            "y0": 9.674718400570415,
+            "y1": 313.6747184005704
+          },
+          {
+            "id": "paid",
+            "label": "Paid",
+            "color": "#b45309",
+            "value": 40,
+            "inValue": 40,
+            "outValue": 0,
+            "depth": 2,
+            "x0": 756,
+            "x1": 768,
+            "y0": 5.684341886080802e-14,
+            "y1": 121.60000000000008
+          },
+          {
+            "id": "free",
+            "label": "Free",
+            "color": "#be123c",
+            "value": 60,
+            "inValue": 60,
+            "outValue": 0,
+            "depth": 2,
+            "x0": 756,
+            "x1": 768,
+            "y0": 137.60000000000008,
+            "y1": 320
+          }
+        ],
+        "links": [
+          {
+            "id": "ads:signup",
+            "source": {
+              "id": "ads",
+              "label": "Ads",
+              "color": "#1d4ed8",
+              "value": 30,
+              "inValue": 0,
+              "outValue": 30,
+              "depth": 0,
+              "x0": 0,
+              "x1": 12,
+              "y0": -2.842170943040401e-14,
+              "y1": 91.20000000000002
+            },
+            "target": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 378,
+              "x1": 390,
+              "y0": 9.674718400570415,
+              "y1": 313.6747184005704
+            },
+            "value": 30,
+            "share": 1,
+            "width": 91.2,
+            "x0": 12,
+            "y0": 45.59999999999997,
+            "x1": 378,
+            "y1": 55.274718400570414,
+            "path": "M 12 45.59999999999997 C 195 45.59999999999997 195 55.274718400570414 378 55.274718400570414"
+          },
+          {
+            "id": "search:signup",
+            "source": {
+              "id": "search",
+              "label": "Search",
+              "color": "#7c3aed",
+              "value": 70,
+              "inValue": 0,
+              "outValue": 70,
+              "depth": 0,
+              "x0": 0,
+              "x1": 12,
+              "y0": 107.20000000000002,
+              "y1": 320
+            },
+            "target": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 378,
+              "x1": 390,
+              "y0": 9.674718400570415,
+              "y1": 313.6747184005704
+            },
+            "value": 70,
+            "share": 1,
+            "width": 212.8,
+            "x0": 12,
+            "y0": 213.60000000000002,
+            "x1": 378,
+            "y1": 207.2747184005704,
+            "path": "M 12 213.60000000000002 C 195 213.60000000000002 195 207.2747184005704 378 207.2747184005704"
+          },
+          {
+            "id": "signup:paid",
+            "source": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 378,
+              "x1": 390,
+              "y0": 9.674718400570415,
+              "y1": 313.6747184005704
+            },
+            "target": {
+              "id": "paid",
+              "label": "Paid",
+              "color": "#b45309",
+              "value": 40,
+              "inValue": 40,
+              "outValue": 0,
+              "depth": 2,
+              "x0": 756,
+              "x1": 768,
+              "y0": 5.684341886080802e-14,
+              "y1": 121.60000000000008
+            },
+            "value": 40,
+            "share": 0.4,
+            "width": 121.6,
+            "x0": 390,
+            "y0": 70.47471840057041,
+            "x1": 756,
+            "y1": 60.800000000000054,
+            "path": "M 390 70.47471840057041 C 573 70.47471840057041 573 60.800000000000054 756 60.800000000000054"
+          },
+          {
+            "id": "signup:free",
+            "source": {
+              "id": "signup",
+              "label": "Signup",
+              "color": "#0f766e",
+              "value": 100,
+              "inValue": 100,
+              "outValue": 100,
+              "depth": 1,
+              "x0": 378,
+              "x1": 390,
+              "y0": 9.674718400570415,
+              "y1": 313.6747184005704
+            },
+            "target": {
+              "id": "free",
+              "label": "Free",
+              "color": "#be123c",
+              "value": 60,
+              "inValue": 60,
+              "outValue": 0,
+              "depth": 2,
+              "x0": 756,
+              "x1": 768,
+              "y0": 137.60000000000008,
+              "y1": 320
+            },
+            "value": 60,
+            "share": 0.6,
+            "width": 182.4,
+            "x0": 390,
+            "y0": 222.4747184005704,
+            "x1": 756,
+            "y1": 228.80000000000007,
+            "path": "M 390 222.4747184005704 C 573 222.4747184005704 573 228.80000000000007 756 228.80000000000007"
+          }
+        ],
+        "columns": 3,
+        "step": 378
+      }
+    }
+  ]
+}

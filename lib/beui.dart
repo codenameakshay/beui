@@ -597,6 +597,7 @@ export 'src/charts/_shared.dart'
         beuiChartSignedPercent,
         beuiChartToTooltipSide;
 export 'src/charts/treemap.dart';
+export 'src/charts/sankey_chart.dart';
 export 'src/charts/candlestick_chart.dart';
 export 'src/charts/donut_chart.dart';
 export 'src/charts/volume_profile.dart';
