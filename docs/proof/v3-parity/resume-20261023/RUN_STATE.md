@@ -40,3 +40,11 @@ Finish final signup combinations and inspected native recordings, independently 
 - R010: bump rapid native Tab-burst focus loss remains open in worker proof. Source pressed metadata and shared typography/Tooltip differences also remain open.
 - Signup final source/candidate light normal and both reduced combinations pass. Candidate and source normal native recordings visibly reach Account created; reduced recordings require final frame inspection. Captures remain tied to c66a8825, not later unrelated chart commits.
 - Existing composition/funnel and component-example workers remain active. Candle/volume, bump and agent workers have completed; their remaining obligations stay open here.
+
+## Latest integration gates
+
+- `f9a35c2fa` pushed. Signup proof independently exported and verified (1,151 sealed entries, 8 observed sequences, 993 original frames / 4 videos).
+- At that implementation, full root run: 2,394 pass / 59 fail. 54 are preserved golden differences; five older chart checks refer to changed source composition. Parent compatibility updates preserve rank spring tracking, hover-only versus pinned ownership, range identity/tooltip values, and shuffle permutations using current public semantics/content. Updated 18-test batch passes. Exact endpoint text baseline alignment is still a visual gate, not asserted by the spring tracking test.
+- Component example chain integrated as parent commits through `b43d67cb4`; focused 64-test root batch passes. Archive verification is running. Example gallery and fresh combined gates remain pending.
+- Parent agent behavior batch: 227 pass. Candle/volume, bump, agents and signup archives all pass tracked-only independent exports. Disposable exports removed only after success; committed originals remain.
+- Read-only Bump focus diagnosis delegated under task suffix `v3-bump-native-race-diagnosis-20261023`, isolated checkout, owned port 18122. No other worker owns Bump now. Composition/funnel remains active.

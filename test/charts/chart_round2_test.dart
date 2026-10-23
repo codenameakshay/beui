@@ -201,13 +201,14 @@ void main() {
       await tester.pumpWidget(surface([2, 2]));
       await tester.pumpAndSettle();
       final start = tester.getCenter(dot);
+      final labelOffset = tester.getRect(find.text('One').first).top - start.dy;
       await tester.pumpWidget(surface([4, 4]));
       await tester.pump(const Duration(milliseconds: 48));
       final moving = tester.getCenter(dot);
       expect(moving.dy, greaterThan(start.dy));
       expect(moving.dy, lessThan(start.dy + 88));
       final label = tester.getRect(find.text('One').first);
-      expect(label.top, closeTo(moving.dy - 8, .01));
+      expect(label.top, closeTo(moving.dy + labelOffset, .01));
       await tester.pumpWidget(surface([2, 2]));
       await tester.pumpAndSettle();
       expect((tester.getCenter(dot) - start).distance, lessThan(.01));
@@ -253,11 +254,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         tester
-            .widget<BeuiChartLegendItem>(
-              find.byWidgetPredicate(
-                (w) => w is BeuiChartLegendItem && w.label == 'Anchor',
-              ),
-            )
+            .widget<Semantics>(find.byKey(const ValueKey('bump-legend-anchor')))
+            .properties
             .selected,
         isTrue,
       );
@@ -295,16 +293,21 @@ void main() {
       await mouse.addPointer(location: Offset.zero);
       await mouse.moveTo(Offset((start.dx + end.dx) / 2, start.dy));
       await tester.pumpAndSettle();
-      BeuiChartLegendItem legend() => tester.widget<BeuiChartLegendItem>(
-        find.byWidgetPredicate(
-          (w) => w is BeuiChartLegendItem && w.label == 'One',
-        ),
-      );
-      expect(legend().selected, isTrue);
+      double anchorOpacity() => tester
+          .widget<Opacity>(
+            find
+                .descendant(
+                  of: find.byKey(const ValueKey('bump-legend-anchor')),
+                  matching: find.byType(Opacity),
+                )
+                .first,
+          )
+          .opacity;
+      expect(anchorOpacity(), closeTo(.35, .001));
       expect(changes, isEmpty);
       await mouse.moveTo(Offset.zero);
       await tester.pumpAndSettle();
-      expect(legend().selected, isFalse);
+      expect(anchorOpacity(), 1);
       await mouse.removePointer();
     },
   );
@@ -453,16 +456,20 @@ void main() {
           ),
         ]),
       );
-      expect(find.byType(BeuiChartTooltipCard), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open, isTrue);
       expect(
         tester
-            .widget<BeuiChartTooltipCard>(find.byType(BeuiChartTooltipCard))
-            .title,
-        '20.00 – 50.00',
+            .widgetList<BeuiChartTicker>(find.byType(BeuiChartTicker))
+            .map((w) => w.value),
+        containsAll([20, 50, 30]),
       );
       await mouse.moveTo(Offset.zero);
       await tester.pump();
-      expect(find.byType(BeuiChartTooltipCard), findsNothing);
+      expect(
+        tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open,
+        isFalse,
+      );
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.sendKeyEvent(LogicalKeyboardKey.home);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
@@ -471,13 +478,19 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pump();
       expect(selected.last, 'high');
-      expect(find.byType(BeuiChartTooltipCard), findsNothing);
+      expect(
+        tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open,
+        isFalse,
+      );
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pump();
       expect(selected.last, 'low');
       await mouse.removePointer();
       await tester.pumpWidget(surface([high]));
-      expect(find.byType(BeuiChartTooltipCard), findsNothing);
+      expect(
+        tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open,
+        isFalse,
+      );
       await tester.pumpWidget(const SizedBox.shrink());
       for (final invalid in <List<BeuiVolumeProfileBin>>[
         [low, low],

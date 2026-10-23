@@ -153,7 +153,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(_demo(bumpChartDemo));
-    await tester.tap(find.text('Shuffle'));
+    await tester.tap(find.text('Shuffle rankings'));
     await tester.pump();
     final chart = tester.widget<BeuiBumpChart>(find.byType(BeuiBumpChart));
     for (var column = 0; column < 6; column++) {
