@@ -28,7 +28,7 @@ void main() {
   ) async {
     await tester.pumpWidget(beuiTestApp(_chart()));
     expect(find.byKey(const ValueKey('beui-heat-cell-0-0')), findsOneWidget);
-    expect(find.bySemanticsLabel(RegExp(r'commits, Oct')), findsWidgets);
+    expect(find.bySemanticsLabel(RegExp(r'commits on .*Oct')), findsWidgets);
     expect(find.text('more'), findsOneWidget);
     expect(find.text('Oct'), findsWidgets);
   });
@@ -75,7 +75,7 @@ void main() {
       7,
     );
     expect(find.text('commits'), findsWidgets);
-    expect(find.textContaining('Sep 30, 2026'), findsWidgets);
+    expect(find.textContaining('Wed, Sep 30'), findsWidgets);
     await gesture.removePointer();
   });
 
@@ -100,18 +100,20 @@ void main() {
     },
   );
 
-  testWidgets('keyboard inspector advances selection and Escape clears', (
+  testWidgets('native cell focus does not turn arrows into selection', (
     tester,
   ) async {
     await tester.pumpWidget(beuiTestApp(_chart()));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
     expect(
       tester
           .widgetList<Semantics>(find.byType(Semantics))
           .any((s) => s.properties.selected == true),
-      isTrue,
+      isFalse,
     );
+    await tester.tap(find.byKey(const ValueKey('beui-heat-cell-0-0')));
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pump();
     expect(

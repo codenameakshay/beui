@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../motion/_focus_ring.dart';
 import '../theme/beui_colors.dart';
@@ -104,7 +105,35 @@ class BeuiHeatCalendar extends StatefulWidget {
 class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
     with BeuiChartActiveState<BeuiHeatCalendar>, BeuiChartInspectorKeys {
   BeuiHeatCalendarCell? _rangeEnd;
+  BeuiHeatCalendarCell? _hover;
+  BeuiHeatCalendarCell? _dismissed;
+  final _focus = <String, FocusNode>{};
   int? _filter;
+  BeuiHeatCalendarCell? get _tip =>
+      _selection?.end ?? _hover ?? _selection?.start;
+  BeuiHeatCalendarSelection? get _preview {
+    final selection = _selection;
+    return selection == null
+        ? null
+        : BeuiHeatCalendarSelection(
+            start: selection.start,
+            end: selection.end ?? _hover,
+          );
+  }
+
+  void _setHover(BeuiHeatCalendarCell? cell) => setState(() {
+    if (_hover != cell) _dismissed = null;
+    _hover = cell;
+  });
+  void _dismiss(BeuiHeatCalendarCell cell) => setState(() => _dismissed = cell);
+
+  @override
+  void dispose() {
+    for (final node in _focus.values) {
+      node.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   String? get widgetActiveId => _encode(widget.selection?.start);
@@ -158,7 +187,7 @@ class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
   BeuiHeatCalendarCell _cell(int w, int d) =>
       BeuiHeatCalendarCell(week: w, day: d);
   DateTime _utcEnd() {
-    final date = widget.endDate ?? DateTime.now().toUtc();
+    final date = (widget.endDate ?? DateTime.now()).toUtc();
     return DateTime.utc(date.year, date.month, date.day);
   }
 
@@ -178,7 +207,7 @@ class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
               .clamp(0.0, 1.0))
           .toDouble();
   int get _rangeTotal {
-    final selected = _selection;
+    final selected = _preview;
     final end = selected?.end;
     if (selected == null || end == null) return 0;
     final first = selected.start.week * 7 + selected.start.day;
@@ -216,6 +245,7 @@ class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
   }
 
   void _select(BeuiHeatCalendarCell cell) {
+    _dismissed = null;
     if (_future(cell)) return;
     final selected = _selection;
     if (selected?.end != null) {
@@ -288,7 +318,7 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = _HeatCalendarScope.of(context);
     final colors = BeuiColors.resolve(context);
-    final selected = state._selection;
+    final selected = state._preview;
     final anchor = selected?.start;
     final end = selected?.end ?? anchor;
     final lo = anchor == null || end == null
@@ -305,163 +335,195 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
     final width = state.widget.weeks * 20 - 4;
     return SizedBox(
       width: width.toDouble(),
-      child: Focus(
-        autofocus: true,
-        onKeyEvent: (_, event) => state.handleInspectorKey(event)
-            ? KeyEventResult.handled
-            : KeyEventResult.ignored,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: 12,
-              child: Row(
-                children: [
-                  for (var w = 0; w < state.widget.weeks; w++)
-                    SizedBox(
-                      width: w == state.widget.weeks - 1
-                          ? cellSize
-                          : cellSize + 4,
-                      height: 12,
-                      child: _monthLabel(state, w),
-                    ),
-                ],
+      child: FocusTraversalGroup(
+        policy: OrderedTraversalPolicy(),
+        child: Focus(
+          canRequestFocus: false,
+          onKeyEvent: (_, event) {
+            if (event is KeyDownEvent &&
+                const [
+                  LogicalKeyboardKey.arrowRight,
+                  LogicalKeyboardKey.arrowLeft,
+                  LogicalKeyboardKey.arrowUp,
+                  LogicalKeyboardKey.arrowDown,
+                ].contains(event.logicalKey)) {
+              return KeyEventResult.handled;
+            }
+            if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.escape) {
+              state.setActiveId(null);
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 12,
+                child: Row(
+                  children: [
+                    for (var w = 0; w < state.widget.weeks; w++)
+                      SizedBox(
+                        width: w == state.widget.weeks - 1
+                            ? cellSize
+                            : cellSize + 4,
+                        height: 12,
+                        child: _monthLabel(state, w),
+                      ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            for (var d = 0; d < 7; d++) ...[
-              if (d > 0) const SizedBox(height: 4),
-              Row(
-                children: [
-                  for (var w = 0; w < state.widget.weeks; w++) ...[
-                    if (w > 0) const SizedBox(width: 4),
-                    Builder(
-                      builder: (context) {
-                        final cell = state._cell(w, d);
-                        if (state._future(cell)) {
-                          return SizedBox(width: cellSize, height: cellSize);
-                        }
-                        final index = w * 7 + d;
-                        final level = state._level(cell);
-                        final bucket = (level * 5).floor().clamp(0, 4);
-                        final opacity = const [
-                          0.06,
-                          .24,
-                          .46,
-                          .70,
-                          .94,
-                        ][bucket];
-                        final filtered =
-                            state._filter != null && state._filter != bucket;
-                        final inRange = index >= lo && index <= hi;
-                        final pressed =
-                            selected != null &&
-                            (cell == selected.start || cell == selected.end);
-                        final date = state._date(cell);
-                        final count = (level * state.widget.maxCount).round();
-                        return SizedBox(
-                          width: cellSize,
-                          height: cellSize,
-                          child: BeuiChartTooltip(
-                            enabled: true,
-                            content: BeuiChartTooltipCard(
-                              title: '$count ${state.widget.unit}',
-                              titleWidget: Row(
+              const SizedBox(height: 4),
+              for (var d = 0; d < 7; d++) ...[
+                if (d > 0) const SizedBox(height: 4),
+                Row(
+                  children: [
+                    for (var w = 0; w < state.widget.weeks; w++) ...[
+                      if (w > 0) const SizedBox(width: 4),
+                      Builder(
+                        builder: (context) {
+                          final cell = state._cell(w, d);
+                          if (state._future(cell)) {
+                            return SizedBox(width: cellSize, height: cellSize);
+                          }
+                          final index = w * 7 + d;
+                          final level = state._level(cell);
+                          final bucket = (level * 5).floor().clamp(0, 4);
+                          final opacity = const [
+                            0.06,
+                            .24,
+                            .46,
+                            .70,
+                            .94,
+                          ][bucket];
+                          final filtered =
+                              state._filter != null && state._filter != bucket;
+                          final inRange = index >= lo && index <= hi;
+                          final pressed =
+                              selected != null &&
+                              (cell == selected.start || cell == selected.end);
+                          final date = state._date(cell);
+                          final count = (level * state.widget.maxCount).round();
+                          return SizedBox(
+                            width: cellSize,
+                            height: cellSize,
+                            child: BeuiChartTooltip(
+                              enabled: true,
+                              open:
+                                  state._tip == cell &&
+                                  state._dismissed != cell,
+                              onOpenChange: (open) {
+                                if (!open) state._dismiss(cell);
+                              },
+                              content: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   BeuiChartTicker(
-                                    value: count,
+                                    value: selected?.end != null
+                                        ? state._rangeTotal
+                                        : count,
                                     duration: const Duration(milliseconds: 350),
                                     format: (value) => value.round().toString(),
                                   ),
                                   const SizedBox(width: 4),
                                   Text(state.widget.unit),
-                                ],
-                              ),
-                              details: [
-                                Text(
-                                  '${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}, ${date.year}',
-                                ),
-                                if (selected?.end != null)
-                                  Text.rich(
-                                    TextSpan(
-                                      text: 'Selected span: ',
-                                      children: [
-                                        WidgetSpan(
-                                          alignment:
-                                              PlaceholderAlignment.middle,
-                                          child: BeuiChartTicker(
-                                            value: state._rangeTotal,
-                                            duration: const Duration(
-                                              milliseconds: 350,
-                                            ),
-                                            format: (value) =>
-                                                '${value.round()} ${state.widget.unit}',
-                                          ),
-                                        ),
-                                      ],
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    selected?.end != null
+                                        ? '${_month[state._date(selected!.start).month - 1]} ${state._date(selected.start).day} – ${_month[state._date(selected.end!).month - 1]} ${state._date(selected.end!).day}'
+                                        : '${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}',
+                                    style: TextStyle(
+                                      color: colors.mutedForeground,
                                     ),
                                   ),
-                              ],
-                              swatch: color,
-                            ),
-                            child: Semantics(
-                              button: true,
-                              selected: pressed,
-                              label:
-                                  '$count ${state.widget.unit}, ${_month[date.month - 1]} ${date.day}, ${date.year}',
-                              child: GestureDetector(
-                                key: ValueKey('beui-heat-cell-$w-$d'),
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () => state._select(cell),
-                                child: BeuiFocusRing(
-                                  focused: pressed,
-                                  borderRadius: BorderRadius.circular(3),
-                                  child: BeuiChartSpring(
-                                    value: pressed ? 1.12 : 1,
-                                    builder: (context, scale) =>
-                                        Transform.scale(
-                                          scale: scale,
-                                          child: BeuiChartFade(
-                                            opacity: filtered ? .25 : 1,
-                                            child: DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                color: bucket == 0
-                                                    ? colors.foreground
-                                                          .withValues(
-                                                            alpha: .06,
-                                                          )
-                                                    : color.withValues(
-                                                        alpha: opacity,
-                                                      ),
-                                                borderRadius:
-                                                    BorderRadius.circular(3),
-                                                border: inRange
-                                                    ? Border.all(
-                                                        color: colors.foreground
-                                                            .withValues(
-                                                              alpha: .25,
-                                                            ),
-                                                      )
-                                                    : null,
-                                              ),
-                                              child: const SizedBox.expand(),
-                                            ),
-                                          ),
+                                  if (selected?.end != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 6),
+                                      child: Text(
+                                        '${((selected!.start.week * 7 + selected.start.day) - (selected.end!.week * 7 + selected.end!.day)).abs() + 1} days',
+                                        style: TextStyle(
+                                          color: colors.mutedForeground,
                                         ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              child: Semantics(
+                                button: true,
+                                selected: pressed,
+                                label:
+                                    '$count ${state.widget.unit} on ${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}',
+                                child: FocusTraversalOrder(
+                                  order: NumericFocusOrder(index.toDouble()),
+                                  child: InkWell(
+                                    key: ValueKey('beui-heat-cell-$w-$d'),
+                                    focusNode: state._focus.putIfAbsent(
+                                      '$w:$d',
+                                      FocusNode.new,
+                                    ),
+                                    onHover: (on) =>
+                                        state._setHover(on ? cell : null),
+                                    onFocusChange: (on) =>
+                                        state._setHover(on ? cell : null),
+                                    onTap: () {
+                                      state._focus['$w:$d']!.requestFocus();
+                                      state._select(cell);
+                                    },
+                                    child: BeuiFocusRing(
+                                      focused: pressed,
+                                      borderRadius: BorderRadius.circular(3),
+                                      child: BeuiChartSpring(
+                                        value: pressed ? 1.12 : 1,
+                                        builder: (context, scale) =>
+                                            Transform.scale(
+                                              scale: scale,
+                                              child: BeuiChartFade(
+                                                opacity: filtered ? .25 : 1,
+                                                child: DecoratedBox(
+                                                  decoration: BoxDecoration(
+                                                    color: bucket == 0
+                                                        ? colors.foreground
+                                                              .withValues(
+                                                                alpha: .06,
+                                                              )
+                                                        : color.withValues(
+                                                            alpha: opacity,
+                                                          ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          3,
+                                                        ),
+                                                    border: inRange
+                                                        ? Border.all(
+                                                            color: colors
+                                                                .foreground
+                                                                .withValues(
+                                                                  alpha: .25,
+                                                                ),
+                                                          )
+                                                        : null,
+                                                  ),
+                                                  child:
+                                                      const SizedBox.expand(),
+                                                ),
+                                              ),
+                                            ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                      ),
+                    ],
                   ],
-                ],
-              ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

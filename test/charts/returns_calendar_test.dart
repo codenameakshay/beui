@@ -108,7 +108,7 @@ void main() {
     final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer(location: Offset.zero);
 
-    for (final (month, name) in [(0, 'January'), (5, 'June'), (6, 'July')]) {
+    for (final (month, name) in [(0, 'Jan'), (5, 'Jun'), (6, 'Jul')]) {
       final cell = find.byKey(ValueKey('beui-returns-cell-0-$month'));
       await tester.ensureVisible(cell);
       await gesture.moveTo(tester.getCenter(cell));
@@ -118,7 +118,10 @@ void main() {
       final tooltip = tester.widget<BeuiChartTooltip>(
         find.ancestor(of: cell, matching: find.byType(BeuiChartTooltip)),
       );
-      expect((tooltip.content as BeuiChartTooltipCard).title, '2024 $name');
+      expect(
+        ((tooltip.content as Wrap).children.first as Text).data,
+        '$name 2024',
+      );
       expect(find.byType(BeuiChartTicker), findsOneWidget);
     }
 
