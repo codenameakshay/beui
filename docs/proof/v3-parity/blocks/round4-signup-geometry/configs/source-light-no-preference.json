@@ -1,0 +1,99 @@
+{
+  "url": "https://beui.dev/components/blocks/signup-form",
+  "viewport": {
+    "width": 1280,
+    "height": 1400
+  },
+  "theme": "light",
+  "reducedMotion": "no-preference",
+  "reference": true,
+  "requireFlutterProbe": false,
+  "backend": "screenshots",
+  "loadWaitMs": 8000,
+  "targets": {
+    "name": {
+      "x": 600,
+      "y": 589
+    }
+  },
+  "events": [
+    {
+      "atMs": 300,
+      "type": "click",
+      "target": "name"
+    },
+    {
+      "atMs": 850,
+      "type": "text",
+      "text": "Ada Lovelace"
+    },
+    {
+      "atMs": 1300,
+      "type": "key",
+      "key": "Tab"
+    },
+    {
+      "atMs": 1700,
+      "type": "text",
+      "text": "ada@example.com"
+    },
+    {
+      "atMs": 2200,
+      "type": "key",
+      "key": "Tab"
+    },
+    {
+      "atMs": 2600,
+      "type": "text",
+      "text": "ExamplePassword123!"
+    },
+    {
+      "atMs": 3400,
+      "type": "key",
+      "key": "Tab"
+    },
+    {
+      "atMs": 3800,
+      "type": "key",
+      "key": "Space"
+    },
+    {
+      "atMs": 4300,
+      "type": "key",
+      "key": "Tab"
+    },
+    {
+      "atMs": 4800,
+      "type": "text",
+      "text": "ExamplePassword123!"
+    },
+    {
+      "atMs": 5400,
+      "type": "key",
+      "key": "Tab"
+    },
+    {
+      "atMs": 5800,
+      "type": "key",
+      "key": "Space"
+    },
+    {
+      "atMs": 6300,
+      "type": "key",
+      "key": "Tab"
+    },
+    {
+      "atMs": 6800,
+      "type": "key",
+      "key": "Enter"
+    }
+  ],
+  "finalHoldMs": 2400,
+  "provenance": {
+    "candidateRevision": "c66a8825",
+    "sourceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveSourceRevision": "unknown",
+    "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "claim": "native dispatch; inspect decoded states before acceptance"
+  }
+}

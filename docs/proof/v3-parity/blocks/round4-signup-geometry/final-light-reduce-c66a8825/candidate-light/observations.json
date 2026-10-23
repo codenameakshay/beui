@@ -1,0 +1,892 @@
+{
+  "id": "candidate-light",
+  "theme": "light",
+  "motion": "reduce",
+  "states": [
+    {
+      "name": "rest",
+      "text": "Create your account\nSign up with taken@example.com to see the failure state.\nShow password\nCreate account\nSign in",
+      "inputs": [
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 517.5,
+            "width": 286,
+            "height": 30,
+            "top": 517.5,
+            "right": 800,
+            "bottom": 547.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 613.5,
+            "width": 286,
+            "height": 30,
+            "top": 613.5,
+            "right": 800,
+            "bottom": 643.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "password",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 709.5,
+            "width": 236,
+            "height": 30,
+            "top": 709.5,
+            "right": 750,
+            "bottom": 739.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "password",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 805.5,
+            "width": 286,
+            "height": 30,
+            "top": 805.5,
+            "right": 800,
+            "bottom": 835.5,
+            "left": 514
+          }
+        }
+      ],
+      "focus": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1400px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"><flt-semantics id=\"flt-semantic-node-0\" style=\"position: absolute; overflow: visible; filter: opacity(0%); color: rgba(0, 0, 0, 0); pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-1\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-2\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-3\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-4\" role=\"group\" aria-label=\"Capture stage width 592 height 1400 reduced true palette source-default-a76e57c9\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 592px; height: 703px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 344, 348.5);\"><flt-semantics id=\"flt-semantic-node-5\" role=\"group\" style=\"position: absolute; scrollbar-width: none; pointer-events: none; width: 592px; height: 671px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 0, 16);\"><flt-semantics id=\"flt-semantic-node-6\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 1; width: 334px; height: 28px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 25);\"><span style=\"display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(2.58915, 1.55556);\">Create your account</span></flt-semantics><flt-semantics id=\"flt-semantic-node-7\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 2; width: 334px; height: 40px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 57);\"><span style=\"display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(0.907609, 2.22222);\">Sign up with taken@example.com to see the failure state.</span></flt-semantics><flt-semantics id=\"flt-semantic-node-8\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 3; width: 278px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 153);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Name\nAda Lovelace\" type=\"text\" style=\"position: absolute; top: 0px; left: 0px; width: 278px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-9\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 4; width: 278px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 249);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"email\" data-semantics-role=\"text-field\" aria-label=\"Email\nyou@example.com\" type=\"text\" inputmode=\"email\" autocapitalize=\"none\" style=\"position: absolute; top: 0px; left: 0px; width: 278px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-10\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 5; width: 228px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 345);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Password\nAt least 8 characters\" type=\"password\" style=\"position: absolute; top: 0px; left: 0px; width: 228px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-11\" style=\"position: absolute; overflow: visible; pointer-events: none; z-index: 6; width: 40px; height: 40px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 408, 337);\"><flt-semantics id=\"flt-semantic-node-12\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; width: 40px; height: 40px; top: 0px; left: 0px;\">Show password</flt-semantics></flt-semantics><flt-semantics id=\"flt-semantic-node-14\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 7; width: 278px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 441);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Confirm password\nRe-enter your password\" type=\"password\" style=\"position: absolute; top: 0px; left: 0px; width: 278px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-15\" tabindex=\"0\" aria-label=\"I agree to the Terms and Privacy Policy\" flt-tappable=\"\" role=\"checkbox\" aria-checked=\"false\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 8; width: 334px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 517);\"></flt-semantics><flt-semantics id=\"flt-semantic-node-18\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 9; width: 334px; height: 48px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 557);\">Create account</flt-semantics><flt-semantics id=\"flt-semantic-node-19\" role=\"group\" aria-label=\"Already have an account? \" style=\"position: absolute; overflow: visible; pointer-events: none; z-index: 10; width: 334px; height: 21px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 625);\"><flt-semantics id=\"flt-semantic-node-20\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; width: 41.8701px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 230.247, 0.136665);\">Sign in</flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>"
+    },
+    {
+      "name": "invalid",
+      "text": "Create your account\nSign up with taken@example.com to see the failure state.\nEnter your name.\nEnter your email.\nShow password\nChoose a password.\nConfirm your password.\nAccept the terms to continue.\nCreate account\nSign in",
+      "inputs": [
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 506.5,
+            "width": 286,
+            "height": 30,
+            "top": 506.5,
+            "right": 800,
+            "bottom": 536.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 602.5,
+            "width": 286,
+            "height": 30,
+            "top": 602.5,
+            "right": 800,
+            "bottom": 632.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "password",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 698.5,
+            "width": 236,
+            "height": 30,
+            "top": 698.5,
+            "right": 750,
+            "bottom": 728.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "password",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 794.5,
+            "width": 286,
+            "height": 30,
+            "top": 794.5,
+            "right": 800,
+            "bottom": 824.5,
+            "left": 514
+          }
+        }
+      ],
+      "focus": "<flt-semantics id=\"flt-semantic-node-18\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 14; width: 334px; height: 48px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 579);\">Create account</flt-semantics>"
+    },
+    {
+      "name": "name-entered",
+      "text": "Create your account\nSign up with taken@example.com to see the failure state.\nEnter your email.\nShow password\nChoose a password.\nConfirm your password.\nAccept the terms to continue.\nCreate account\nSign in",
+      "inputs": [
+        {
+          "placeholder": "Ada Lovelace",
+          "value": "Ada Lovelace",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 506.5,
+            "width": 260,
+            "height": 30,
+            "top": 506.5,
+            "right": 774,
+            "bottom": 536.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 602.5,
+            "width": 286,
+            "height": 30,
+            "top": 602.5,
+            "right": 800,
+            "bottom": 632.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "password",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 698.5,
+            "width": 236,
+            "height": 30,
+            "top": 698.5,
+            "right": 750,
+            "bottom": 728.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "password",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 794.5,
+            "width": 286,
+            "height": 30,
+            "top": 794.5,
+            "right": 800,
+            "bottom": 824.5,
+            "left": 514
+          }
+        }
+      ],
+      "focus": "<input spellcheck=\"false\" autocorrect=\"on\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Name\" type=\"text\" style=\"position: absolute; top: 0px; left: 0px; width: 252px; height: 24px;\" placeholder=\"Ada Lovelace\" name=\"name\" id=\"name\">"
+    },
+    {
+      "name": "values-entered",
+      "text": "Create your account\nSign up with taken@example.com to see the failure state.\nShow password\nPassword strength: Strong\nAccept the terms to continue.\nCreate account\nSign in",
+      "inputs": [
+        {
+          "placeholder": "Ada Lovelace",
+          "value": "Ada Lovelace",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 489.5,
+            "width": 260,
+            "height": 30,
+            "top": 489.5,
+            "right": 774,
+            "bottom": 519.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "you@example.com",
+          "value": "taken@example.com",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 585.5,
+            "width": 260,
+            "height": 30,
+            "top": 585.5,
+            "right": 774,
+            "bottom": 615.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "At least 8 characters",
+          "value": "ExamplePassword123!",
+          "type": "password",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 681.5,
+            "width": 236,
+            "height": 30,
+            "top": 681.5,
+            "right": 750,
+            "bottom": 711.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "Re-enter your password",
+          "value": "ExamplePassword123!",
+          "type": "password",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 811.5,
+            "width": 260,
+            "height": 30,
+            "top": 811.5,
+            "right": 774,
+            "bottom": 841.5,
+            "left": 514
+          }
+        }
+      ],
+      "focus": "<input spellcheck=\"false\" autocorrect=\"on\" autocomplete=\"new-password\" data-semantics-role=\"text-field\" aria-label=\"Confirm password\" type=\"password\" style=\"position: absolute; top: 0px; left: 0px; width: 252px; height: 24px;\" placeholder=\"Re-enter your password\" name=\"new-password\" id=\"new-password\" autocapitalize=\"off\">"
+    },
+    {
+      "name": "revealed",
+      "text": "Create your account\nSign up with taken@example.com to see the failure state.\nHide password\nPassword strength: Strong\nAccept the terms to continue.\nCreate account\nSign in\nHide password",
+      "inputs": [
+        {
+          "placeholder": "Ada Lovelace",
+          "value": "Ada Lovelace",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 489.5,
+            "width": 260,
+            "height": 30,
+            "top": 489.5,
+            "right": 774,
+            "bottom": 519.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "you@example.com",
+          "value": "taken@example.com",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 585.5,
+            "width": 260,
+            "height": 30,
+            "top": 585.5,
+            "right": 774,
+            "bottom": 615.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "At least 8 characters",
+          "value": "ExamplePassword123!",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 681.5,
+            "width": 236,
+            "height": 30,
+            "top": 681.5,
+            "right": 750,
+            "bottom": 711.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "Re-enter your password",
+          "value": "ExamplePassword123!",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 811.5,
+            "width": 260,
+            "height": 30,
+            "top": 811.5,
+            "right": 774,
+            "bottom": 841.5,
+            "left": 514
+          }
+        }
+      ],
+      "focus": "<flt-semantics id=\"flt-semantic-node-12\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; width: 40px; height: 40px; top: 0px; left: 0px;\">Hide password</flt-semantics>"
+    },
+    {
+      "name": "busy",
+      "text": "Creating account \nCreate your account\nSign up with taken@example.com to see the failure state.\nHide password\nPassword strength: Strong\nCreating account\nSign in",
+      "inputs": [
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": true,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 500.5,
+            "width": 260,
+            "height": 30,
+            "top": 500.5,
+            "right": 774,
+            "bottom": 530.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": true,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 596.5,
+            "width": 260,
+            "height": 30,
+            "top": 596.5,
+            "right": 774,
+            "bottom": 626.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": true,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 692.5,
+            "width": 236,
+            "height": 30,
+            "top": 692.5,
+            "right": 750,
+            "bottom": 722.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": true,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 822.5,
+            "width": 260,
+            "height": 30,
+            "top": 822.5,
+            "right": 774,
+            "bottom": 852.5,
+            "left": 514
+          }
+        }
+      ],
+      "focus": "<flt-semantics id=\"flt-semantic-node-18\" role=\"button\" tabindex=\"0\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 10; width: 334px; height: 48px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 591);\" aria-disabled=\"true\">Creating account</flt-semantics>"
+    },
+    {
+      "name": "rejected",
+      "text": "Create your account\nSign up with taken@example.com to see the failure state.\nHide password\nPassword strength: Strong\nThat email is already registered.\nTry again\nSign in",
+      "inputs": [
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 473.5,
+            "width": 260,
+            "height": 30,
+            "top": 473.5,
+            "right": 774,
+            "bottom": 503.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 569.5,
+            "width": 260,
+            "height": 30,
+            "top": 569.5,
+            "right": 774,
+            "bottom": 599.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 665.5,
+            "width": 236,
+            "height": 30,
+            "top": 665.5,
+            "right": 750,
+            "bottom": 695.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 795.5,
+            "width": 260,
+            "height": 30,
+            "top": 795.5,
+            "right": 774,
+            "bottom": 825.5,
+            "left": 514
+          }
+        }
+      ],
+      "focus": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1400px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"><flt-semantics id=\"flt-semantic-node-0\" style=\"position: absolute; overflow: visible; filter: opacity(0%); color: rgba(0, 0, 0, 0); pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-1\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-2\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px; z-index: 1;\"><flt-semantics id=\"flt-semantic-node-3\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-4\" role=\"group\" aria-label=\"Capture stage width 592 height 1400 reduced true palette source-default-a76e57c9\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 592px; height: 791px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 344, 304.5);\"><flt-semantics id=\"flt-semantic-node-5\" role=\"group\" style=\"position: absolute; scrollbar-width: none; pointer-events: none; width: 592px; height: 759px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 0, 16);\"><flt-semantics id=\"flt-semantic-node-6\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 1; width: 334px; height: 28px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 25);\"><span style=\"display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(2.58915, 1.55556);\">Create your account</span></flt-semantics><flt-semantics id=\"flt-semantic-node-7\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 2; width: 334px; height: 40px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 57);\"><span style=\"display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(0.907609, 2.22222);\">Sign up with taken@example.com to see the failure state.</span></flt-semantics><flt-semantics id=\"flt-semantic-node-40\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 3; width: 252px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 153);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Name\" type=\"text\" style=\"position: absolute; top: 0px; left: 0px; width: 252px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-41\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 4; width: 252px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 249);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"email\" data-semantics-role=\"text-field\" aria-label=\"Email\" type=\"text\" inputmode=\"email\" autocapitalize=\"none\" style=\"position: absolute; top: 0px; left: 0px; width: 252px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-42\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 5; width: 228px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 345);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Password\" type=\"text\" style=\"position: absolute; top: 0px; left: 0px; width: 228px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-43\" style=\"position: absolute; overflow: visible; pointer-events: none; z-index: 6; width: 40px; height: 40px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 408, 337);\"><flt-semantics id=\"flt-semantic-node-44\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; width: 40px; height: 40px; top: 0px; left: 0px;\">Hide password</flt-semantics></flt-semantics><flt-semantics id=\"flt-semantic-node-28\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 7; width: 326px; height: 26px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 133, 409);\"><span style=\"display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(1.94048, 1.44444);\">Password strength: Strong</span></flt-semantics><flt-semantics id=\"flt-semantic-node-46\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 8; width: 252px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 475);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Confirm password\" type=\"text\" style=\"position: absolute; top: 0px; left: 0px; width: 252px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-15\" tabindex=\"0\" aria-label=\"I agree to the Terms and Privacy Policy\" role=\"checkbox\" aria-checked=\"true\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 9; width: 334px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 551);\" flt-tappable=\"\"></flt-semantics><flt-semantics id=\"flt-semantic-node-48\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 10; width: 334px; height: 34px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 591);\"><span style=\"display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(1.62136, 1.88889);\">That email is already registered.</span></flt-semantics><flt-semantics id=\"flt-semantic-node-47\" role=\"button\" aria-description=\"That email is already registered.\" flt-tappable=\"\" tabindex=\"0\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 11; width: 334px; height: 48px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 645);\">Try again</flt-semantics><flt-semantics id=\"flt-semantic-node-19\" role=\"group\" aria-label=\"Already have an account? \" style=\"position: absolute; overflow: visible; pointer-events: none; z-index: 12; width: 334px; height: 21px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 713);\"><flt-semantics id=\"flt-semantic-node-20\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; width: 41.8701px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 230.247, 0.136665);\">Sign in</flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>"
+    },
+    {
+      "name": "success",
+      "text": "Account created \nCreate your account\nSign up with taken@example.com to see the failure state.\nHide password\nPassword strength: Strong\nAccount created\nSign in",
+      "inputs": [
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 500.5,
+            "width": 260,
+            "height": 30,
+            "top": 500.5,
+            "right": 774,
+            "bottom": 530.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 596.5,
+            "width": 260,
+            "height": 30,
+            "top": 596.5,
+            "right": 774,
+            "bottom": 626.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 692.5,
+            "width": 236,
+            "height": 30,
+            "top": 692.5,
+            "right": 750,
+            "bottom": 722.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 822.5,
+            "width": 260,
+            "height": 30,
+            "top": 822.5,
+            "right": 774,
+            "bottom": 852.5,
+            "left": 514
+          }
+        }
+      ],
+      "focus": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1400px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"><flt-semantics id=\"flt-semantic-node-0\" style=\"position: absolute; overflow: visible; filter: opacity(0%); color: rgba(0, 0, 0, 0); pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-1\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-2\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px; z-index: 1;\"><flt-semantics id=\"flt-semantic-node-3\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 1280px; height: 1400px; top: 0px; left: 0px;\"><flt-semantics id=\"flt-semantic-node-4\" role=\"group\" aria-label=\"Capture stage width 592 height 1400 reduced true palette source-default-a76e57c9\" style=\"position: absolute; overflow: visible; pointer-events: none; width: 592px; height: 737px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 344, 331.5);\"><flt-semantics id=\"flt-semantic-node-5\" role=\"group\" style=\"position: absolute; scrollbar-width: none; pointer-events: none; width: 592px; height: 705px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 0, 16);\"><flt-semantics id=\"flt-semantic-node-6\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 1; width: 334px; height: 28px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 25);\"><span style=\"display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(2.58915, 1.55556);\">Create your account</span></flt-semantics><flt-semantics id=\"flt-semantic-node-7\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 2; width: 334px; height: 40px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 57);\"><span style=\"display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(0.907609, 2.22222);\">Sign up with taken@example.com to see the failure state.</span></flt-semantics><flt-semantics id=\"flt-semantic-node-58\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 3; width: 252px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 153);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Name\" type=\"text\" style=\"position: absolute; top: 0px; left: 0px; width: 252px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-59\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 4; width: 252px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 249);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"email\" data-semantics-role=\"text-field\" aria-label=\"Email\" type=\"text\" inputmode=\"email\" autocapitalize=\"none\" style=\"position: absolute; top: 0px; left: 0px; width: 252px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-60\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 5; width: 228px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 345);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Password\" type=\"text\" style=\"position: absolute; top: 0px; left: 0px; width: 228px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-61\" style=\"position: absolute; overflow: visible; pointer-events: none; z-index: 6; width: 40px; height: 40px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 408, 337);\"><flt-semantics id=\"flt-semantic-node-62\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; width: 40px; height: 40px; top: 0px; left: 0px;\">Hide password</flt-semantics></flt-semantics><flt-semantics id=\"flt-semantic-node-28\" style=\"position: absolute; overflow: visible; pointer-events: auto; z-index: 7; width: 326px; height: 26px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 133, 409);\"><span style=\"display: inline-block; white-space: nowrap; transform-origin: 0px 0px 0px; pointer-events: none; transform: scale(1.94048, 1.44444);\">Password strength: Strong</span></flt-semantics><flt-semantics id=\"flt-semantic-node-64\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 8; width: 252px; height: 24px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 170, 475);\"><input spellcheck=\"false\" autocorrect=\"off\" autocomplete=\"off\" data-semantics-role=\"text-field\" aria-label=\"Confirm password\" type=\"text\" style=\"position: absolute; top: 0px; left: 0px; width: 252px; height: 24px;\"></flt-semantics><flt-semantics id=\"flt-semantic-node-15\" tabindex=\"0\" aria-label=\"I agree to the Terms and Privacy Policy\" role=\"checkbox\" aria-checked=\"true\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 9; width: 334px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 551);\" flt-tappable=\"\"></flt-semantics><flt-semantics id=\"flt-semantic-node-18\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; z-index: 10; width: 334px; height: 48px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 591);\">Account created</flt-semantics><flt-semantics id=\"flt-semantic-node-19\" role=\"group\" aria-label=\"Already have an account? \" style=\"position: absolute; overflow: visible; pointer-events: none; z-index: 11; width: 334px; height: 21px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 129, 659);\"><flt-semantics id=\"flt-semantic-node-20\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; width: 41.8701px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 230.247, 0.136665);\">Sign in</flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>"
+    },
+    {
+      "name": "footer-keyboard",
+      "text": "Create your account\nSign up with taken@example.com to see the failure state.\nHide password\nPassword strength: Strong\nAccount created\nSign in",
+      "inputs": [
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 500.5,
+            "width": 260,
+            "height": 30,
+            "top": 500.5,
+            "right": 774,
+            "bottom": 530.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 596.5,
+            "width": 260,
+            "height": 30,
+            "top": 596.5,
+            "right": 774,
+            "bottom": 626.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "",
+          "value": "",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 692.5,
+            "width": 236,
+            "height": 30,
+            "top": 692.5,
+            "right": 750,
+            "bottom": 722.5,
+            "left": 514
+          }
+        },
+        {
+          "placeholder": "Re-enter your password",
+          "value": "ExamplePassword123!",
+          "type": "text",
+          "disabled": false,
+          "readOnly": false,
+          "rect": {
+            "x": 514,
+            "y": 822.5,
+            "width": 260,
+            "height": 30,
+            "top": 822.5,
+            "right": 774,
+            "bottom": 852.5,
+            "left": 514
+          }
+        }
+      ],
+      "focus": "<flt-semantics id=\"flt-semantic-node-20\" role=\"button\" tabindex=\"0\" flt-tappable=\"\" style=\"position: absolute; overflow: visible; pointer-events: all; width: 41.8701px; height: 20px; transform-origin: 0px 0px 0px; transform: matrix(1, 0, 0, 1, 230.247, 0.136665);\">Sign in</flt-semantics>"
+    }
+  ],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:18121/main.dart.js",
+      "status": 200,
+      "bytes": 4711642,
+      "sha256": "55ed90091a0f2213adc12a478b6013faa43cbf88aa60cfe38c4126dd84e19bcb"
+    },
+    {
+      "url": "http://127.0.0.1:18121/assets/assets/fonts/Geist-Regular.ttf",
+      "status": 200,
+      "bytes": 72916,
+      "sha256": "ccce59465ae5c61930ada5453834f60500fbd95084d85db63e0e65fad0125455"
+    },
+    {
+      "url": "http://127.0.0.1:18121/assets/assets/fonts/Geist-Medium.ttf",
+      "status": 200,
+      "bytes": 72996,
+      "sha256": "a8eefb873ba9c9020665f8a98302697ce1f3b79ab2deef6ee508c0ca6a82e876"
+    },
+    {
+      "url": "http://127.0.0.1:18121/assets/assets/fonts/Geist-SemiBold.ttf",
+      "status": 200,
+      "bytes": 73048,
+      "sha256": "7171f481b121803d007f5c6c76cd9988c0d41cce4202db9a18dff9945505d36d"
+    },
+    {
+      "url": "http://127.0.0.1:18121/assets/assets/fonts/Geist-Bold.ttf",
+      "status": 200,
+      "bytes": 72984,
+      "sha256": "1a9874b3be0fc168692a3d2327bccb4d28835653d3b91537a755296a467a83e3"
+    },
+    {
+      "url": "http://127.0.0.1:18121/assets/assets/fonts/GeistMono-Regular.ttf",
+      "status": 200,
+      "bytes": 71160,
+      "sha256": "7022da390e9b401ea35b722f8ed2376948e70add10954bc798839b4bfe17ef3f"
+    },
+    {
+      "url": "http://127.0.0.1:18121/assets/assets/fonts/GeistMono-Medium.ttf",
+      "status": 200,
+      "bytes": 71212,
+      "sha256": "5c1b7b77c2d6132460f03b60c175adc80da1ebd0b418c785135b1aed27a28b30"
+    },
+    {
+      "url": "http://127.0.0.1:18121/assets/assets/fonts/GeistMono-Regular.ttf",
+      "status": 200,
+      "bytes": 71160,
+      "sha256": "7022da390e9b401ea35b722f8ed2376948e70add10954bc798839b4bfe17ef3f"
+    },
+    {
+      "url": "http://127.0.0.1:18121/assets/assets/fonts/GeistMono-Medium.ttf",
+      "status": 200,
+      "bytes": 71212,
+      "sha256": "5c1b7b77c2d6132460f03b60c175adc80da1ebd0b418c785135b1aed27a28b30"
+    },
+    {
+      "url": "http://127.0.0.1:18121/assets/packages/flutter_lucide/lib/fonts/lucide.ttf",
+      "status": 200,
+      "bytes": 62176,
+      "sha256": "48a6bf842b1c18318ebfb54a1391d666b4b75e7281bfc671efdeed6ecad12709"
+    }
+  ],
+  "errors": [],
+  "requests": [
+    "http://127.0.0.1:18121/?slug=signup-form&theme=light&previewWidth=592&captureProbe=1&palette=source-default-a76e57c9",
+    "http://127.0.0.1:18121/flutter_bootstrap.js",
+    "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.wasm",
+    "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.js",
+    "http://127.0.0.1:18121/main.dart.js",
+    "http://127.0.0.1:18121/favicon.png",
+    "http://127.0.0.1:18121/assets/FontManifest.json",
+    "http://127.0.0.1:18121/assets/fonts/MaterialIcons-Regular.otf",
+    "http://127.0.0.1:18121/assets/assets/fonts/Geist-Regular.ttf",
+    "http://127.0.0.1:18121/assets/assets/fonts/Geist-Medium.ttf",
+    "http://127.0.0.1:18121/assets/assets/fonts/Geist-SemiBold.ttf",
+    "http://127.0.0.1:18121/assets/assets/fonts/Geist-Bold.ttf",
+    "http://127.0.0.1:18121/assets/assets/fonts/GeistMono-Regular.ttf",
+    "http://127.0.0.1:18121/assets/assets/fonts/GeistMono-Medium.ttf",
+    "http://127.0.0.1:18121/assets/assets/fonts/GeistMono-Regular.ttf",
+    "http://127.0.0.1:18121/assets/assets/fonts/GeistMono-Medium.ttf",
+    "http://127.0.0.1:18121/assets/packages/flutter_lucide/lib/fonts/lucide.ttf",
+    "https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Me4GZLCzYlKw.woff2"
+  ],
+  "failedRequests": [],
+  "probe": {
+    "disableAnimations": true,
+    "platformDisableAnimations": true,
+    "motionOverride": null,
+    "backgroundArgb": 4294769916,
+    "constraints": {
+      "minWidth": 592,
+      "maxWidth": 592,
+      "minHeight": 0,
+      "maxHeight": 1400
+    },
+    "rect": {
+      "x": 344,
+      "y": 348.5,
+      "width": 592,
+      "height": 703
+    }
+  },
+  "roles": [
+    {
+      "role": "group",
+      "label": "Capture stage width 592 height 1400 reduced true palette source-default-a76e57c9",
+      "text": "Create your accountSign up with taken@example.com to see the failure state.Show passwordPassword strength: StrongAccept the terms to continue.Create accountSign in",
+      "rect": {
+        "x": 344,
+        "y": 320.5,
+        "width": 592,
+        "height": 759,
+        "top": 320.5,
+        "right": 936,
+        "bottom": 1079.5,
+        "left": 344
+      }
+    },
+    {
+      "role": "group",
+      "label": null,
+      "text": "Create your accountSign up with taken@example.com to see the failure state.Show passwordPassword strength: StrongAccept the terms to continue.Create accountSign in",
+      "rect": {
+        "x": 344,
+        "y": 336.5,
+        "width": 592,
+        "height": 727,
+        "top": 336.5,
+        "right": 936,
+        "bottom": 1063.5,
+        "left": 344
+      }
+    },
+    {
+      "role": "button",
+      "label": null,
+      "text": "Show password",
+      "rect": {
+        "x": 752,
+        "y": 673.5,
+        "width": 40,
+        "height": 40,
+        "top": 673.5,
+        "right": 792,
+        "bottom": 713.5,
+        "left": 752
+      }
+    },
+    {
+      "role": "checkbox",
+      "label": "I agree to the Terms and Privacy Policy",
+      "text": "",
+      "rect": {
+        "x": 473,
+        "y": 887.5,
+        "width": 334,
+        "height": 20,
+        "top": 887.5,
+        "right": 807,
+        "bottom": 907.5,
+        "left": 473
+      }
+    },
+    {
+      "role": "button",
+      "label": null,
+      "text": "Create account",
+      "rect": {
+        "x": 473,
+        "y": 949.5,
+        "width": 334,
+        "height": 48,
+        "top": 949.5,
+        "right": 807,
+        "bottom": 997.5,
+        "left": 473
+      }
+    },
+    {
+      "role": "group",
+      "label": "Already have an account? ",
+      "text": "Sign in",
+      "rect": {
+        "x": 473,
+        "y": 1017.5,
+        "width": 334,
+        "height": 21,
+        "top": 1017.5,
+        "right": 807,
+        "bottom": 1038.5,
+        "left": 473
+      }
+    },
+    {
+      "role": "button",
+      "label": null,
+      "text": "Sign in",
+      "rect": {
+        "x": 703.2466430664062,
+        "y": 1017.6366577148438,
+        "width": 41.859375,
+        "height": 20.00006103515625,
+        "top": 1017.6366577148438,
+        "right": 745.1060180664062,
+        "bottom": 1037.63671875,
+        "left": 703.2466430664062
+      }
+    }
+  ],
+  "pass": true
+}
