@@ -407,6 +407,8 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   }
 
   void _finishHide({bool warm = true}) {
+    _timer?.cancel();
+    _timer = null;
     if (_open) {
       _commit(false);
     }
@@ -598,6 +600,11 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
               }
             },
             child: GestureDetector(
+              supportedDevices: const {
+                PointerDeviceKind.touch,
+                PointerDeviceKind.stylus,
+                PointerDeviceKind.invertedStylus,
+              },
               onLongPressStart: (_) => _show(immediate: true),
               onLongPressEnd: (_) {
                 _touchStart = null;

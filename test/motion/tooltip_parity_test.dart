@@ -34,6 +34,40 @@ Future<TestGesture> _open(WidgetTester tester) async {
 }
 
 void main() {
+  for (final controlled in [false, true]) {
+    testWidgets(
+      'held mouse preserves child activation, controlled=$controlled',
+      (tester) async {
+        var activated = 0;
+        final visibility = <bool>[];
+        await tester.pumpWidget(
+          beuiTestApp(
+            BeuiTooltip(
+              open: controlled ? false : null,
+              onOpenChange: visibility.add,
+              content: const Text('Private card context'),
+              child: TextButton(
+                key: _anchor,
+                onPressed: () => activated += 1,
+                child: const Text('Toggle privacy'),
+              ),
+            ),
+          ),
+        );
+        final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await mouse.addPointer(location: Offset.zero);
+        addTearDown(mouse.removePointer);
+        await mouse.moveTo(tester.getCenter(find.byKey(_anchor)));
+        await mouse.down(tester.getCenter(find.byKey(_anchor)));
+        await tester.pump(const Duration(milliseconds: 750));
+        expect(find.text('Private card context'), findsNothing);
+        await mouse.up();
+        await tester.pumpAndSettle();
+        expect(activated, 1);
+        expect(visibility, isNot(contains(true)));
+      },
+    );
+  }
   testWidgets('a hovered tooltip replaces a focused tooltip across providers', (
     tester,
   ) async {
