@@ -1,0 +1,42 @@
+[
+  {
+    "target": "multi-select",
+    "reducedMotion": "no-preference",
+    "failures": [
+      "outside Tab closes and clears",
+      "return input empty"
+    ]
+  },
+  {
+    "target": "multi-select",
+    "reducedMotion": "reduce",
+    "failures": [
+      "outside Tab closes and clears",
+      "return input empty"
+    ]
+  },
+  {
+    "target": "file-tree",
+    "reducedMotion": "no-preference",
+    "failures": []
+  },
+  {
+    "target": "file-tree",
+    "reducedMotion": "reduce",
+    "failures": []
+  },
+  {
+    "target": "sortable-stack",
+    "reducedMotion": "no-preference",
+    "failures": [
+      "KNOWN engine focus after move"
+    ]
+  },
+  {
+    "target": "sortable-stack",
+    "reducedMotion": "reduce",
+    "failures": [
+      "KNOWN engine focus after move"
+    ]
+  }
+]

@@ -1,3 +1,23 @@
+## Combined gallery archive verified for delivery
+
+Parent and independent tracked-only export verifiers pass (exit0),1678 archive files. Export `/var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/beui-integrated-native-staged-v38cth7w`, logs `/tmp/beui-components-native-parent-verify.log` and `/tmp/beui-integrated-native-staged-verify.log`. Evidence preserves known failures and gallery traversal limits, not exact parity. Ready for archive commit/push.
+
+Active implementation tasks: Scheduler copy-menu keyboard r1, Collapsible lifecycle r1, and `v3-combobox-exit-filter-repair-20261024-r1` (new combobox-exit evidence, ports18187-18188). All own disjoint production/tests and must reproduce first. No broad rerun until changed inputs justify it. No merge authorized.
+
+## Combined actual-gallery native evidence complete; archive verification underway
+
+Fresh combined gallery build served JS11c8793e3b26481a2dc98940ba5d8ed3449b88d8ca41d959cab446ce7fa11f00, all six reviewed input hashes match. Actual MultiSelect/FileTree/Sortable routes tested under both motion preferences. No new production regression established. Known Sortable BODY focus after accepted move reproduced without recovery; pointer Undo works. MultiSelect browser-document exit/related-route traversal differs from supplemental fixture; no generic Tab parity claim. FileTree gallery lacks disabled rows; current-item semantics remain distinct from selectable-tree semantics.
+
+Evidence components-integrated-native/ retains16 recordings/951 original frames, all failed assumptions and exact inputs. Parent verifier session66528 and tracked-only staged export verifier running; export path /tmp/beui-integrated-native-staged-path. Commit/push archive after exit0. Scheduler and Collapsible failing-first work continue separately; their test edits are unstaged and excluded. Last pushedc39e7e8bf.
+
+## Next bounded work started after reviewed component delivery
+
+Reconciliation copied to resume-20261024/next-obligations.md. Active independent implementation tasks:
+- `v3-scheduler-copy-keyboard-repair-20261024-r1`: real copy-menu keyboard toggle/footer outcomes, owns copy_menu.dart + scheduler tests and new scheduler-copy evidence, ports18183-18184.
+- `v3-collapsible-lifecycle-repair-20261024-r1`: reproduce controlled-close focus and stable-child growth before fixing, owns collapsible.dart/tests/new lifecycle evidence, ports18185-18186.
+
+Both require failing-first and native exact-input verification, no shared edits or golden changes. Combobox exit-filter retention is next unassigned source-contract finding. Combined gallery native task remains active on prior immutable delivered snapshot. Latest remote deliveryc39e7e8bf; no new implementation accepted yet.
+
 ## Latest delivered head:8fdc8cb5f
 
 Push confirmed successful through FileTree a4bbd37ee and MultiSelect8fdc8cb5f. Both reviewed repairs, all preserved evidence and integrated test logs are on PR26. Root2609 passes/56 unchanged golden failure identities; gallery66 passes. PR description updated with scoped acceptance and limits.
