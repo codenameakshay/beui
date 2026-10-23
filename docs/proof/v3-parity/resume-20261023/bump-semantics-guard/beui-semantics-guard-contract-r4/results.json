@@ -1,0 +1,19 @@
+{
+  "scriptSha256": "0f950151927eff7e5b7c9c3764481f575bc8e719ec086f35dd681a539b108735",
+  "results": [
+    {
+      "name": "chromium",
+      "cases": 240,
+      "errors": [],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"
+    },
+    {
+      "name": "firefox",
+      "unavailable": "Error: browserType.launch: Failed to launch the browser process.\nBrowser logs:\n\n<launching> /Users/codenameakshay/Library/Caches/ms-playwright/firefox-1509/firefox/Nightly.app/Contents/MacOS/firefox -no-remote -headless -profile /var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/playwright_firefoxdev_profile-KdUypV -juggler-pipe -silent\n<launched> pid=66967\n[pid=66967][err] dyld[66967]: Library not loaded: @rpath/libmozglue.dylib\n[pid=66967][err]   Referenced from: <4C4C44BB-5555-3144-A1C4-E2940580A78F> /Users/codenameakshay/Library/Caches/ms-playwright/firefox-1509/firefox/Nightly.app/Contents/MacOS/firefox\n[pid=66967][err]   Reason: tried: '/Users/codenameakshay/Library/Caches/ms-playwright/firefox-1509/firefox/Nightly.app/Contents/MacOS/libmozglue.dylib' (no such file), '/Users/codenameakshay/Library/Caches/ms-playwright/firefox-1509/firefox/Nightly.app/Contents/MacOS/libmozglue.dylib' (no such file)\n[pid=66967] <process did exit: exitCode=null, signal=SIGABRT>\n[pid=66967] starting temporary directories cleanup\nCall log:\n\u001b[2m  - <launching> /Users/codenameakshay/Library/Caches/ms-playwright/firefox-1509/firefox/Nightly.app/Contents/MacOS/firefox -no-remote -headless -profile /var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/playwright_firefoxdev_profile-KdUypV -juggler-pipe -silent\u001b[22m\n\u001b[2m  - <launched> pid=66967\u001b[22m\n\u001b[2m  - [pid=66967][err] dyld[66967]: Library not loaded: @rpath/libmozglue.dylib\u001b[22m\n\u001b[2m  - [pid=66967][err]   Referenced from: <4C4C44BB-5555-3144-A1C4-E2940580A78F> /Users/codenameakshay/Library/Caches/ms-playwright/firefox-1509/firefox/Nightly.app/Contents/MacOS/firefox\u001b[22m\n\u001b[2m  - [pid=66967][err]   Reason: tried: '/Users/codenameakshay/Library/Caches/ms-playwright/firefox-1509/firefox/Nightly.app/Contents/MacOS/libmozglue.dylib' (no such file), '/Users/codenameakshay/Library/Caches/ms-playwright/firefox-1509/firefox/Nightly.app/Contents/MacOS/libmozglue.dylib' (no such file)\u001b[22m\n\u001b[2m  - [pid=66967] <process did exit: exitCode=null, signal=SIGABRT>\u001b[22m\n\u001b[2m  - [pid=66967] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=66967] <gracefully close start>\u001b[22m\n\u001b[2m  - [pid=66967] <kill>\u001b[22m\n\u001b[2m  - [pid=66967] <skipped force kill spawnedProcess.killed=false processClosed=true>\u001b[22m\n\u001b[2m  - [pid=66967] finished temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=66967] <gracefully close end>\u001b[22m\n"
+    },
+    {
+      "name": "webkit",
+      "unavailable": "/Users/codenameakshay/Library/Caches/ms-playwright/webkit-2248/pw_run.sh"
+    }
+  ]
+}

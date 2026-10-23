@@ -78,3 +78,12 @@ Finish final signup combinations and inspected native recordings, independently 
 - Reviewer found R014: mouse modality survived exit/removal and suppressed a later accessibility semantic tap. Fixed in 2b1a8ae52 by clearing pointer kind on trigger exit. Original five reviewer tests pass unchanged; portable repository assertions also unchanged. Focused Tooltip/overlay/chart batch 323 pass, scoped analysis clean, release succeeds.
 - Fresh mouse/touch native contexts pass both motion preferences including repeated activation, Tab and Escape. Proof: tooltip-accessibility-followup. Real screen-reader transition remains unverified; semantic-action widget evidence is explicitly distinct.
 - Latest full-root count remains the f59e909b2 run, not a rerun after this one-line repair. Bump repair-design task remains active; no remaining defect waived.
+
+## R015 Bump semantics ancestor focus repair
+
+- Implemented a conditional internal web adapter that rotates owned tooltip siblings while keeping the focused semantics ancestor stationary. Native insertBefore/append order and return/error contracts retained; no focus restoration, SDK patch or chart timing change.
+- Independent review round one found wrapper ownership and zero-browser test acceptance gaps; both fixed. Round two found no demonstrated new bug, confirmed shadow-root fix and 11 additional checks.
+- Seven r5 Flutter browser runs pass 127 states. Two current-SDK and one Flutter3.44.3 reorder events actually exercise the repair, preserving focus and exact order. Full root: 2,460 pass / 56 preserved golden failures; 323 focused behavior tests pass; analysis clean; both release builds pass.
+- Evidence under bump-semantics-guard. Original failures and failed test/copy attempts retained. WebKit additionally passes 240 contract cases and 21 real Flutter states. Firefox launch is unavailable after macOS sandbox extension errors/timeouts; actual screen-reader checks remain open. Private Flutter DOM integration remains version-sensitive. Other parity obligations are not waived.
+
+- Next read-only diagnosis running: `v3-table-outcomes-followup-20261023-r1`, Table resize and Editable deletion/recovery. No shared production edits delegated.
