@@ -40,34 +40,49 @@ class _BumpChartDemoState extends State<_BumpChartDemo> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              const Expanded(
-                child: Column(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'The leaderboard',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       'Five products. Six months. Every move.',
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: BeuiColors.resolve(context).mutedForeground,
+                      ),
                     ),
                   ],
                 ),
-              ),
-              BeuiButton(
-                variant: BeuiButtonVariant.ghost,
-                size: BeuiButtonSize.sm,
-                onPressed: _shuffle,
-                child: const Text('Shuffle'),
-              ),
-            ],
+                BeuiButton(
+                  variant: BeuiButtonVariant.ghost,
+                  size: BeuiButtonSize.sm,
+                  onPressed: _shuffle,
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(LucideIcons.shuffle, size: 14),
+                      SizedBox(width: 8),
+                      Text('Shuffle rankings'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 24),
           BeuiBumpChart(
@@ -105,6 +120,15 @@ class _BumpChartDemoState extends State<_BumpChartDemo> {
                 color: '#f43f5e',
               ),
             ],
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Inspect a dot for details · Select to pin a product',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 11,
+              color: BeuiColors.resolve(context).mutedForeground,
+            ),
           ),
         ],
       ),

@@ -72,7 +72,7 @@ void main() {
       expect(find.text('Apr'), findsOneWidget);
       expect(find.text('Jun'), findsOneWidget);
       expect(
-        tester.getSemantics(find.bySemanticsLabel('Canvas, Jun, rank 2')),
+        tester.getSemantics(find.bySemanticsLabel('Canvas, Jun: rank 2')),
         isNotNull,
       );
       expect(find.bySemanticsLabel('Canvas, May, rank'), findsNothing);
@@ -89,10 +89,7 @@ void main() {
     await tester.tap(find.text('Studio').last);
     await tester.pump();
     expect(changed, 'studio');
-    expect(
-      find.bySemanticsLabel(RegExp(r'^Studio(?:\nStudio)?$')),
-      findsOneWidget,
-    );
+    expect(find.bySemanticsLabel('Highlight Studio'), findsOneWidget);
     semantics.dispose();
   });
 
@@ -105,25 +102,33 @@ void main() {
     await gesture.addPointer();
     await gesture.moveTo(tester.getCenter(find.text('Studio').last));
     await tester.pump();
-    final studio = tester.widget<BeuiChartLegendItem>(
-      find.byWidgetPredicate(
-        (widget) => widget is BeuiChartLegendItem && widget.label == 'Studio',
-      ),
-    );
-    final canvas = tester.widget<BeuiChartLegendItem>(
-      find.byWidgetPredicate(
-        (widget) => widget is BeuiChartLegendItem && widget.label == 'Canvas',
-      ),
-    );
-    expect(studio.selected, isTrue);
-    expect(canvas.dimmed, isTrue);
+    await tester.pumpAndSettle();
     expect(
       tester
-          .getSemantics(find.bySemanticsLabel('Studio, Apr, rank 2'))
-          .flagsCollection
-          .isSelected
-          .toString(),
-      contains('False'),
+          .widget<Semantics>(find.byKey(const ValueKey('bump-legend-studio')))
+          .properties
+          .toggled,
+      isFalse,
+    );
+    expect(
+      tester
+          .widget<Opacity>(
+            find
+                .descendant(
+                  of: find.byKey(const ValueKey('bump-legend-canvas')),
+                  matching: find.byType(Opacity),
+                )
+                .first,
+          )
+          .opacity,
+      .35,
+    );
+    expect(
+      tester
+          .widget<Semantics>(find.byKey(const ValueKey('bump-node-studio-0')))
+          .properties
+          .toggled,
+      isFalse,
     );
     await gesture.removePointer();
     semantics.dispose();
@@ -143,12 +148,13 @@ void main() {
     await gesture.moveTo(Offset.zero);
     await tester.pump();
 
-    final studio = tester.widget<BeuiChartLegendItem>(
-      find.byWidgetPredicate(
-        (widget) => widget is BeuiChartLegendItem && widget.label == 'Studio',
-      ),
+    expect(
+      tester
+          .widget<Semantics>(find.byKey(const ValueKey('bump-legend-studio')))
+          .properties
+          .toggled,
+      isTrue,
     );
-    expect(studio.selected, isTrue);
     await gesture.removePointer();
   });
 
@@ -185,12 +191,13 @@ void main() {
     await tester.pumpWidget(_surface(series: const []));
     await tester.pumpWidget(_surface());
 
-    final studio = tester.widget<BeuiChartLegendItem>(
-      find.byWidgetPredicate(
-        (widget) => widget is BeuiChartLegendItem && widget.label == 'Studio',
-      ),
+    expect(
+      tester
+          .widget<Semantics>(find.byKey(const ValueKey('bump-legend-studio')))
+          .properties
+          .toggled,
+      isFalse,
     );
-    expect(studio.selected, isFalse);
     await gesture.removePointer();
   });
 
@@ -200,10 +207,7 @@ void main() {
       final semantics = tester.ensureSemantics();
       await tester.pumpWidget(_surface(active: 'canvas', reduce: true));
       await tester.pump();
-      expect(
-        find.bySemanticsLabel(RegExp(r'^Canvas(?:\nCanvas)?$')),
-        findsOneWidget,
-      );
+      expect(find.bySemanticsLabel('Highlight Canvas'), findsOneWidget);
       await expectLater(
         find.byType(MaterialApp),
         matchesGoldenFile('goldens/beui_bump_chart.png'),
@@ -212,7 +216,7 @@ void main() {
     },
   );
 
-  testWidgets('hovering a rank node reveals an animated rank ticker', (
+  testWidgets('hovering a rank node reveals the source static rank', (
     tester,
   ) async {
     await tester.pumpWidget(_surface());
@@ -224,15 +228,12 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
     await tester.pumpAndSettle();
-    expect(find.byType(BeuiChartTicker), findsWidgets);
-    final ticker = tester.widget<BeuiChartTicker>(
-      find.byType(BeuiChartTicker).first,
-    );
-    expect(ticker.value, 2);
-    expect(ticker.format(ticker.value), '#2');
+    expect(find.byType(BeuiChartTicker), findsNothing);
+    expect(find.text('#2'), findsWidgets);
+    expect(find.text('No previous rank'), findsOneWidget);
   });
 
-  testWidgets('Home and Escape inspect and clear series from focused dot', (
+  testWidgets('Home preserves selection and Escape clears from focused dot', (
     tester,
   ) async {
     String? changed;
@@ -243,7 +244,7 @@ void main() {
     expect(changed, 'canvas');
     await tester.sendKeyEvent(LogicalKeyboardKey.home);
     await tester.pump();
-    expect(changed, 'studio');
+    expect(changed, 'canvas');
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pump();
     expect(changed, isNull);

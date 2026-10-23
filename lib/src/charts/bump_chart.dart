@@ -2,13 +2,17 @@
 library;
 
 import 'dart:math' as math;
+import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 
 import '../theme/beui_colors.dart';
 import '../motion/_engine.dart';
 import '../tokens/motion.dart';
+
 import 'package:flutter/services.dart';
+
 import '_shared.dart';
 
 /// A series of ranks, one per period. Null values leave gaps in its path.
@@ -74,32 +78,31 @@ class BeuiBumpChart extends StatefulWidget {
   State<BeuiBumpChart> createState() => _BeuiBumpChartState();
 }
 
-class _BeuiBumpChartState extends State<BeuiBumpChart>
-    with BeuiChartActiveState<BeuiBumpChart>, BeuiChartInspectorKeys {
+class _BeuiBumpChartState extends State<BeuiBumpChart> {
   String? _hoveredId;
   String? _focusedId;
+  FocusNode? _focusedNode;
+  String? _internal;
+  String? get activeId {
+    final id = widget.active ?? _internal;
+    return widget.series.any((row) => row.id == id) ? id : null;
+  }
 
-  @override
-  String? get widgetActiveId => widget.active;
-  @override
-  String? get widgetDefaultActiveId => widget.defaultActive;
-  @override
-  ValueChanged<String?>? get widgetOnActiveChange => widget.onActiveChange;
-  @override
-  Iterable<String> get knownIds => widget.series.map((row) => row.id);
-  @override
-  List<String> get inspectableIds =>
-      widget.series.map((row) => row.id).toList();
+  void _select(String? id) {
+    if (widget.active == null) setState(() => _internal = id);
+    widget.onActiveChange?.call(id);
+  }
 
   @override
   void initState() {
     super.initState();
-    initActive();
+    _internal = widget.defaultActive;
   }
 
   @override
   void didUpdateWidget(covariant BeuiBumpChart oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!widget.series.any((row) => row.id == _internal)) _internal = null;
     if (_hoveredId != null &&
         !widget.series.any((row) => row.id == _hoveredId)) {
       _hoveredId = null;
@@ -118,6 +121,16 @@ class _BeuiBumpChartState extends State<BeuiBumpChart>
   void _setFocusedId(String? id) {
     if (id != null && !widget.series.any((row) => row.id == id)) return;
     if (_focusedId != id) setState(() => _focusedId = id);
+    if (id == null) _focusedNode = null;
+  }
+
+  void _nodeFocus(String id, FocusNode node) {
+    if (node.hasFocus) {
+      _focusedNode = node;
+      _setFocusedId(id);
+    } else if (identical(_focusedNode, node)) {
+      _setFocusedId(null);
+    }
   }
 
   @override
@@ -140,7 +153,7 @@ class _BeuiBumpChartState extends State<BeuiBumpChart>
           color: beuiChartColor(
             row.color,
             colors,
-            fallback: beuiBumpPalette[i % beuiBumpPalette.length],
+            fallback: beuiBumpPalette[(rows.length) % beuiBumpPalette.length],
           ),
         ),
       );
@@ -156,26 +169,25 @@ class _BeuiBumpChartState extends State<BeuiBumpChart>
       activeId: activeId,
       hoveredId: _hoveredId,
       focusedId: _focusedId,
-      onActive: setActiveId,
+      onActive: _select,
       onHover: _setHoveredId,
       onFocus: _setFocusedId,
+      onNodeFocus: _nodeFocus,
       label: widget.label,
       maxRank: maxRank,
       height: height,
-      child: Focus(
-        autofocus: true,
-        onKeyEvent: (_, event) => handleInspectorKey(event)
-            ? KeyEventResult.handled
-            : KeyEventResult.ignored,
+      child: FocusTraversalGroup(
+        policy: OrderedTraversalPolicy(),
         child: BeuiChartFrame(
           label: widget.label,
           child:
               widget.child ??
               const Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   BeuiBumpPlot(),
-                  SizedBox(height: 12),
+                  SizedBox(height: 20),
                   BeuiBumpLegend(),
                 ],
               ),
@@ -206,6 +218,7 @@ class _BumpScope extends InheritedWidget {
     required this.onActive,
     required this.onHover,
     required this.onFocus,
+    required this.onNodeFocus,
     required this.label,
     required this.maxRank,
     required this.height,
@@ -219,6 +232,7 @@ class _BumpScope extends InheritedWidget {
   final ValueChanged<String?> onActive;
   final ValueChanged<String?> onHover;
   final ValueChanged<String?> onFocus;
+  final void Function(String, FocusNode) onNodeFocus;
   final String label;
   final int maxRank;
   final double height;
@@ -246,10 +260,19 @@ class BeuiBumpPlot extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = _BumpScope.of(context);
     final colors = BeuiColors.resolve(context);
-    if (scope.rows.isEmpty || scope.periods.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.all(32),
-        child: Center(child: Text('No ranking data')),
+    if (scope.periods.isEmpty ||
+        !scope.rows.any((row) => row.ranks.any((rank) => rank != null))) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 64),
+        child: Text(
+          'No rankings yet',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 14,
+            height: 20 / 14,
+            color: colors.mutedForeground,
+          ),
+        ),
       );
     }
     return LayoutBuilder(
@@ -281,8 +304,8 @@ class BeuiBumpPlot extends StatelessWidget {
               if (row.ranks[i] case final rank?)
                 (row.series.id, scope.periods[i]): Offset(x(i), y(rank)),
         };
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+        return _BumpScrollRegion(
+          label: '${scope.label} plot, scroll horizontally for more periods',
           child: SizedBox(
             width: width,
             height: height,
@@ -329,10 +352,15 @@ class BeuiBumpPlot extends StatelessWidget {
                           top: point.dy - 14,
                           width: 28,
                           height: 28,
-                          child: _BumpDot(
-                            row: scope.rows[i],
-                            period: j,
-                            seriesIndex: i,
+                          child: FocusTraversalOrder(
+                            order: NumericFocusOrder(
+                              1.0 + i * scope.periods.length + j,
+                            ),
+                            child: _BumpDot(
+                              row: scope.rows[i],
+                              period: j,
+                              seriesIndex: i,
+                            ),
                           ),
                         ),
                   for (var i = 0; i < scope.periods.length; i++)
@@ -366,6 +394,102 @@ class BeuiBumpPlot extends StatelessWidget {
       },
     );
   }
+}
+
+class _BumpScrollRegion extends StatefulWidget {
+  const _BumpScrollRegion({required this.label, required this.child});
+  final String label;
+  final Widget child;
+  @override
+  State<_BumpScrollRegion> createState() => _BumpScrollRegionState();
+}
+
+class _BumpScrollRegionState extends State<_BumpScrollRegion> {
+  final _scroll = ScrollController();
+  bool _ring = false;
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => FocusTraversalOrder(
+    order: const NumericFocusOrder(0),
+    child: Focus(
+      canRequestFocus: false,
+      onKeyEvent: (_, event) {
+        if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
+            !_scroll.hasClients) {
+          return KeyEventResult.ignored;
+        }
+        final next = switch (event.logicalKey) {
+          LogicalKeyboardKey.arrowRight => _scroll.offset + 40,
+          LogicalKeyboardKey.arrowLeft => _scroll.offset - 40,
+          LogicalKeyboardKey.home => 0.0,
+          LogicalKeyboardKey.end => _scroll.position.maxScrollExtent,
+          _ => null,
+        };
+        if (next == null) return KeyEventResult.ignored;
+        _scroll.jumpTo(next.clamp(0, _scroll.position.maxScrollExtent));
+        return KeyEventResult.handled;
+      },
+      child: FocusableActionDetector(
+        onShowFocusHighlight: (value) => setState(() => _ring = value),
+        child: _BumpFocusRing(
+          show: _ring,
+          radius: 8,
+          offset: 2,
+          child: Semantics(
+            label: widget.label,
+            container: true,
+            child: SingleChildScrollView(
+              controller: _scroll,
+              scrollDirection: Axis.horizontal,
+              child: widget.child,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+class _BumpFocusRing extends StatelessWidget {
+  const _BumpFocusRing({
+    required this.show,
+    required this.radius,
+    required this.child,
+    this.offset = 4,
+  });
+  final bool show;
+  final double radius, offset;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => Stack(
+    clipBehavior: Clip.none,
+    children: [
+      child,
+      if (show)
+        Positioned(
+          top: -offset,
+          left: -offset,
+          right: -offset,
+          bottom: -offset,
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(radius + offset),
+                border: Border.all(
+                  color: BeuiColors.resolve(context).ring,
+                  width: 2,
+                ),
+              ),
+            ),
+          ),
+        ),
+    ],
+  );
 }
 
 class _BumpGeometry extends StatefulWidget {
@@ -512,6 +636,7 @@ class _BumpPathLayer extends StatelessWidget {
                   child: MouseRegion(
                     hitTestBehavior: HitTestBehavior.translucent,
                     onHover: (event) {
+                      if (event.kind == PointerDeviceKind.touch) return;
                       // The source uses a 16px transparent stroke as the path hit target.
                       final near = _nearBumpPath(
                         path,
@@ -524,7 +649,8 @@ class _BumpPathLayer extends StatelessWidget {
                         scope.onHover(null);
                       }
                     },
-                    onExit: (_) {
+                    onExit: (event) {
+                      if (event.kind == PointerDeviceKind.touch) return;
                       if (scope.hoveredId == row.series.id) scope.onHover(null);
                     },
                     child: BeuiChartTween(
@@ -667,9 +793,15 @@ class _BumpDot extends StatefulWidget {
 class _BumpDotState extends State<_BumpDot> {
   bool _hovered = false;
   bool _tooltipOpen = false;
+  bool _ring = false;
+  bool _touch = false;
+  bool _touchWasOpen = false;
+  bool _pointerFocus = false;
+  Timer? _hoverDelay;
   final _focus = FocusNode();
   @override
   void dispose() {
+    _hoverDelay?.cancel();
     _focus.dispose();
     super.dispose();
   }
@@ -691,20 +823,34 @@ class _BumpDotState extends State<_BumpDot> {
     void select() =>
         scope.onActive(scope.activeId == row.series.id ? null : row.series.id);
     return Focus(
-      focusNode: _focus,
-      onFocusChange: (focused) {
-        setState(() => _tooltipOpen = focused);
-        scope.onFocus(focused ? row.series.id : null);
-      },
+      canRequestFocus: false,
       onKeyEvent: (_, event) {
-        if (event is! KeyDownEvent) return KeyEventResult.ignored;
-        if (event.logicalKey == LogicalKeyboardKey.enter ||
-            event.logicalKey == LogicalKeyboardKey.space) {
+        if (event is KeyDownEvent && _pointerFocus) {
+          setState(() => _pointerFocus = false);
+        }
+        if (event.logicalKey == LogicalKeyboardKey.enter &&
+                event is KeyDownEvent ||
+            event.logicalKey == LogicalKeyboardKey.space &&
+                event is KeyUpEvent) {
           select();
-          setState(() => _tooltipOpen = true);
           return KeyEventResult.handled;
         }
-        if (event.logicalKey == LogicalKeyboardKey.escape) {
+        if (event.logicalKey == LogicalKeyboardKey.space) {
+          return KeyEventResult.handled;
+        }
+        if ([
+          LogicalKeyboardKey.arrowUp,
+          LogicalKeyboardKey.arrowDown,
+          LogicalKeyboardKey.arrowLeft,
+          LogicalKeyboardKey.arrowRight,
+          LogicalKeyboardKey.home,
+          LogicalKeyboardKey.end,
+        ].contains(event.logicalKey)) {
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.escape &&
+            event is KeyDownEvent) {
+          _hoverDelay?.cancel();
           scope.onActive(null);
           scope.onFocus(null);
           scope.onHover(null);
@@ -713,114 +859,207 @@ class _BumpDotState extends State<_BumpDot> {
         }
         return KeyEventResult.ignored;
       },
-      child: Semantics(
-        key: ValueKey('bump-node-${row.series.id}-${widget.period}'),
-        button: true,
-        selected: scope.activeId == row.series.id,
-        label:
-            '${row.series.name}, ${scope.periods[widget.period]}, rank $rank',
-        child: MouseRegion(
-          onEnter: (_) {
-            setState(() {
-              _hovered = true;
-              _tooltipOpen = true;
-            });
-            scope.onHover(row.series.id);
-          },
-          onExit: (_) {
-            setState(() {
-              _hovered = false;
-              _tooltipOpen = false;
-            });
-            scope.onHover(null);
-          },
-          child: BeuiChartTooltip(
-            open: _tooltipOpen,
-            onOpenChange: (open) => setState(() => _tooltipOpen = open),
-            content: BeuiChartTooltipCard(
-              title: '${row.series.name} · ${scope.periods[widget.period]}',
-              details: [
-                BeuiChartTicker(value: rank, format: (v) => '#$v'),
-                Text(changeText),
-                if (previous != null)
-                  Text(
-                    'Previously #$previous in ${scope.periods[widget.period - 1]}',
-                  ),
-              ],
-            ),
-            child: GestureDetector(
-              onTap: () {
-                _focus.requestFocus();
-                select();
-              },
-              child: BeuiChartTween(
-                from: .85,
-                value: _hovered ? 1.12 : 1,
-                duration: const Duration(milliseconds: 180),
-                motion: beuiSpringPress,
-                isMovement: true,
-                builder: (context, outerScale) => Transform.scale(
-                  scale: outerScale,
-                  child: BeuiChartTween(
-                    from: 0,
-                    value: dimmed ? .22 : 1,
-                    duration: const Duration(milliseconds: 180),
-                    builder: (context, opacity) => Opacity(
-                      opacity: opacity.clamp(0, 1),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          BeuiChartTween(
-                            value: active ? .12 : 0,
-                            duration: const Duration(milliseconds: 150),
-                            builder: (context, glow) => DecoratedBox(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: row.color.withValues(
-                                  alpha: glow.clamp(0, 1),
-                                ),
-                              ),
-                              child: const SizedBox.expand(),
-                            ),
+      child: FocusableActionDetector(
+        focusNode: _focus,
+        onShowFocusHighlight: (value) => setState(() => _ring = value),
+        onFocusChange: (focused) {
+          if (!focused || !_pointerFocus) {
+            setState(() => _tooltipOpen = focused);
+          }
+          scope.onNodeFocus(row.series.id, _focus);
+          if (!focused) _pointerFocus = false;
+        },
+        child: Semantics(
+          key: ValueKey('bump-node-${row.series.id}-${widget.period}'),
+          button: true,
+          toggled: scope.activeId == row.series.id,
+          label:
+              '${row.series.name}, ${scope.periods[widget.period]}: rank $rank',
+          child: MouseRegion(
+            onEnter: (event) {
+              if (event.kind == PointerDeviceKind.touch) return;
+              setState(() {
+                _hovered = true;
+              });
+              _hoverDelay?.cancel();
+              _hoverDelay = Timer(const Duration(milliseconds: 60), () {
+                if (mounted) setState(() => _tooltipOpen = true);
+              });
+              scope.onHover(row.series.id);
+            },
+            onExit: (event) {
+              if (event.kind == PointerDeviceKind.touch) return;
+              _hoverDelay?.cancel();
+              setState(() {
+                _hovered = false;
+                if (!_focus.hasFocus || _pointerFocus) _tooltipOpen = false;
+              });
+              scope.onHover(null);
+            },
+            child: BeuiChartTooltip(
+              open: _tooltipOpen,
+              onOpenChange: (open) => setState(() => _tooltipOpen = open),
+              content: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 132),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          row.series.name,
+                          style: TextStyle(
+                            fontSize: 10,
+                            height: 1.5,
+                            color: BeuiColors.resolve(context).mutedForeground,
                           ),
-                          BeuiChartTween(
-                            from: .85,
-                            value: 1,
-                            motion: beuiSpringPress,
-                            duration: const Duration(milliseconds: 180),
-                            delay: Duration(
-                              milliseconds:
-                                  math.min(widget.period, 8) * 25 +
-                                  math.min(widget.seriesIndex, 4) * 15,
-                            ),
-                            isMovement: true,
-                            builder: (context, innerScale) => Transform.scale(
-                              scale: innerScale,
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: BeuiColors.resolve(context).background,
-                                  border: Border.all(
-                                    color: row.color,
-                                    width: 1.5,
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          scope.periods[widget.period],
+                          style: TextStyle(
+                            fontSize: 10,
+                            height: 1.5,
+                            color: BeuiColors.resolve(context).mutedForeground,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '#$rank',
+                          style: TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: 18,
+                            height: 28 / 18,
+                            fontWeight: FontWeight.w500,
+                            color: row.color,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          changeText,
+                          style: const TextStyle(fontSize: 12, height: 16 / 12),
+                        ),
+                      ],
+                    ),
+                    if (previous != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        'Previously #$previous in ${scope.periods[widget.period - 1]}',
+                        style: TextStyle(
+                          fontSize: 10,
+                          height: 1.5,
+                          color: BeuiColors.resolve(context).mutedForeground,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              child: Listener(
+                onPointerDown: (event) {
+                  _touch = event.kind == PointerDeviceKind.touch;
+                  _touchWasOpen = _tooltipOpen;
+                  _pointerFocus = true;
+                  _hoverDelay?.cancel();
+                  if (!_touch) setState(() => _tooltipOpen = false);
+                  _focus.requestFocus();
+                },
+                child: GestureDetector(
+                  onTap: () {
+                    if (_touch) setState(() => _tooltipOpen = !_touchWasOpen);
+                    select();
+                  },
+                  child: _BumpFocusRing(
+                    show: _ring && !_pointerFocus,
+                    radius: 14,
+                    child: BeuiChartTween(
+                      from: .85,
+                      value:
+                          _hovered && !MediaQuery.disableAnimationsOf(context)
+                          ? 1.12
+                          : 1,
+                      duration: const Duration(milliseconds: 180),
+                      motion: beuiSpringPress,
+                      isMovement: true,
+                      builder: (context, outerScale) => Transform.scale(
+                        scale: outerScale,
+                        child: BeuiChartTween(
+                          from: 0,
+                          value: dimmed ? .22 : 1,
+                          duration: const Duration(milliseconds: 180),
+                          builder: (context, opacity) => Opacity(
+                            opacity: opacity.clamp(0, 1),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                BeuiChartTween(
+                                  value: active ? .12 : 0,
+                                  duration: const Duration(milliseconds: 150),
+                                  builder: (context, glow) => DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: row.color.withValues(
+                                        alpha: glow.clamp(0, 1),
+                                      ),
+                                    ),
+                                    child: const SizedBox.expand(),
                                   ),
                                 ),
-                                child: Text(
-                                  '$rank',
-                                  style: TextStyle(
-                                    fontFamily: 'monospace',
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w500,
-                                    color: row.color,
+                                BeuiChartTween(
+                                  from: .85,
+                                  value: 1,
+                                  motion: beuiSpringPress,
+                                  duration: const Duration(milliseconds: 180),
+                                  delay: Duration(
+                                    milliseconds:
+                                        math.min(widget.period, 8) * 25 +
+                                        math.min(widget.seriesIndex, 4) * 15,
                                   ),
+                                  isMovement: true,
+                                  builder: (context, innerScale) =>
+                                      Transform.scale(
+                                        scale: innerScale,
+                                        child: Container(
+                                          width: 20,
+                                          height: 20,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: BeuiColors.resolve(
+                                              context,
+                                            ).background,
+                                            border: Border.all(
+                                              color: row.color,
+                                              width: 1.5,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            '$rank',
+                                            style: TextStyle(
+                                              fontFamily: 'monospace',
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w500,
+                                              color: row.color,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -842,28 +1081,207 @@ class BeuiBumpLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = _BumpScope.of(context);
-    return BeuiChartLegend(
-      children: [
-        for (final row in scope.rows)
-          BeuiChartLegendItem(
-            color: row.color,
-            label: row.series.name,
-            selected: scope.highlightedId == row.series.id,
-            dimmed:
-                scope.highlightedId != null &&
-                scope.highlightedId != row.series.id,
-            onHover: (hovering) {
-              if (hovering) {
+    final columns = MediaQuery.sizeOf(context).width >= 640 ? 3 : 2;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = (constraints.maxWidth - (columns - 1) * 20) / columns;
+        return Wrap(
+          spacing: 20,
+          runSpacing: 4,
+          children: [
+            for (var i = 0; i < scope.rows.length; i++)
+              SizedBox(
+                width: width,
+                child: FocusTraversalOrder(
+                  order: NumericFocusOrder(1000000.0 + i),
+                  child: _BumpLegendButton(
+                    key: ValueKey(scope.rows[i].series.id),
+                    row: scope.rows[i],
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _BumpLegendButton extends StatefulWidget {
+  const _BumpLegendButton({required this.row, super.key});
+  final _BumpRow row;
+  @override
+  State<_BumpLegendButton> createState() => _BumpLegendButtonState();
+}
+
+class _BumpLegendButtonState extends State<_BumpLegendButton> {
+  final _focus = FocusNode();
+  bool _ring = false;
+  bool _pointerFocus = false;
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = _BumpScope.of(context);
+    final colors = BeuiColors.resolve(context);
+    final row = widget.row;
+    final first = row.ranks.firstOrNull;
+    final last = row.ranks.lastOrNull;
+    final gain = first == null || last == null ? null : first - last;
+    final dimmed =
+        scope.highlightedId != null && scope.highlightedId != row.series.id;
+    void select() =>
+        scope.onActive(scope.activeId == row.series.id ? null : row.series.id);
+    return Focus(
+      canRequestFocus: false,
+      onKeyEvent: (_, event) {
+        if (event is KeyDownEvent && _pointerFocus) {
+          setState(() => _pointerFocus = false);
+        }
+        if (event.logicalKey == LogicalKeyboardKey.enter &&
+                event is KeyDownEvent ||
+            event.logicalKey == LogicalKeyboardKey.space &&
+                event is KeyUpEvent) {
+          select();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.space) {
+          return KeyEventResult.handled;
+        }
+        if ([
+          LogicalKeyboardKey.arrowUp,
+          LogicalKeyboardKey.arrowDown,
+          LogicalKeyboardKey.arrowLeft,
+          LogicalKeyboardKey.arrowRight,
+          LogicalKeyboardKey.home,
+          LogicalKeyboardKey.end,
+        ].contains(event.logicalKey)) {
+          return KeyEventResult.handled;
+        }
+        if (event is KeyDownEvent &&
+            event.logicalKey == LogicalKeyboardKey.escape) {
+          scope.onActive(null);
+          scope.onFocus(null);
+          scope.onHover(null);
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: FocusableActionDetector(
+        focusNode: _focus,
+        onFocusChange: (focused) {
+          if (!focused) _pointerFocus = false;
+          scope.onNodeFocus(row.series.id, _focus);
+        },
+        onShowFocusHighlight: (value) => setState(() => _ring = value),
+        mouseCursor: SystemMouseCursors.click,
+        child: Semantics(
+          key: ValueKey('bump-legend-${row.series.id}'),
+          button: true,
+          toggled: scope.activeId == row.series.id,
+          label: 'Highlight ${row.series.name}',
+          excludeSemantics: true,
+          onTap: select,
+          child: MouseRegion(
+            onEnter: (event) {
+              if (event.kind != PointerDeviceKind.touch) {
                 scope.onHover(row.series.id);
-              } else if (scope.hoveredId == row.series.id) {
+              }
+            },
+            onExit: (event) {
+              if (event.kind != PointerDeviceKind.touch &&
+                  scope.hoveredId == row.series.id) {
                 scope.onHover(null);
               }
             },
-            onPressed: () => scope.onActive(
-              scope.activeId == row.series.id ? null : row.series.id,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) {
+                _pointerFocus = true;
+                _focus.requestFocus();
+              },
+              onTap: select,
+              child: _BumpFocusRing(
+                show: _ring && !_pointerFocus,
+                radius: 6,
+                child: BeuiChartTween(
+                  value: dimmed ? .35 : 1,
+                  duration: const Duration(milliseconds: 150),
+                  builder: (context, opacity) => Opacity(
+                    opacity: opacity.clamp(0, 1),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: scope.activeId == row.series.id
+                            ? colors.muted.withValues(alpha: .6)
+                            : Colors.transparent,
+                      ),
+                      child: DefaultTextStyle(
+                        style: TextStyle(
+                          fontFamily: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.fontFamily,
+                          fontSize: 12,
+                          height: 16 / 12,
+                          color: colors.foreground,
+                        ),
+                        child: Row(
+                          children: [
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: row.color,
+                              ),
+                              child: const SizedBox(width: 8, height: 8),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                row.series.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              last == null ? '—' : '#$last',
+                              style: const TextStyle(fontFamily: 'monospace'),
+                            ),
+                            const SizedBox(width: 8),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(minWidth: 20),
+                              child: Text(
+                                gain == null || gain == 0
+                                    ? '—'
+                                    : '${gain > 0 ? '↑' : '↓'}${gain.abs()}',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  fontFamily: 'monospace',
+                                  fontSize: 10,
+                                  height: 1.5,
+                                  color: colors.mutedForeground,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-      ],
+        ),
+      ),
     );
   }
 }
