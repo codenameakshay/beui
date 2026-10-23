@@ -2,6 +2,40 @@
 
 Done means the scoped source behaviors, appearance and motion are implemented and verified with preserved source/candidate evidence, integrated gates, and pushed PR26 updates. No merge is authorized. Exact parity remains incomplete.
 
+## Latest delivery: Heat Calendar accepted and archived
+
+- Production d74fae552 accepted after independent review and final parent native checks. Archive clean staged regular-file export passes10,972 hashes,22 decoded videos,9,741 recorded frames,8 final default sessions and4 custom sessions. Export /var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/beui-heat-final-export-rztazgt4. No original/golden edits.
+- R016 legend filtering, R017 final-day Tab order, R018 stale readout/removal continuation and R019 invalid locked-range cleanup are resolved within the default and documented custom scopes. Parent chart287 pass with goldens disabled; no global pixel/timing/golden certification.
+- Active task `v3-returns-calendar-native-states-20261023-r1` owns only returns-calendar-native proof paths and /tmp/port18155. Verifies deterministic missing-month/year replacement and focused identity lifecycle, no production changes assumed.
+- Prior Heat Calendar repair/review tasks completed. Parent capture servers18152/18154 closed after archival. Worker18153 cleanup is checked against its actual process command. Older unrelated servers untouched. Pending action: commit archive/RUN_STATE, push authorized PR26 branch and update body.
+
+## Heat Calendar accepted behavior repair
+
+- Production d74fae552 resolves R016-R019 within the reviewed scope. Independent review r2 accepted both lifecycle fixes with no new demonstrated regression;18 regression tests plus5 independent lifecycle checks pass. New focus APIs exist in Flutter3.44.2.
+- Parent chart gate287 passes with goldens disabled, analysis clean, exact final-source release build pass. Parent final default capture passes both motion preferences: no immediate day focus on removal; forward Tab legend0; reverse Tab final surviving day; external-focus cancellation; fresh October5-6 range after invalid endpoint removal. Parent inspected reduced-motion range screenshot. No pixel/native60 acceptance.
+- Heat-calendar-repair archive includes worker rounds, intermediate parent failures, both reviews and final parent capture. Final source chart hash939a3ea71a36b7e50358cdc38576f2f2da2ba68f91c0acdddaae4286dab5e548. Final parent JS0aa5333d1ee7c631898cd1cf40f151f8342fd0c075fc279e2efdc601e3eef991. Archive verification and push pending below; no golden edits.
+
+## Heat Calendar final validation running
+
+- Lifecycle worker r2 completed both continuation and invalid-range fixes. Shared chart SHA939a3ea71a36b7e50358cdc38576f2f2da2ba68f91c0acdddaae4286dab5e548; test SHAc22a9714daac51caff137bda86eeb4d68976f8a27dbd2a700f6c4787ea94c121. Uncommitted patch remains owned by parent.
+- Parent full chart gate:287 pass with BEUI_SKIP_GOLDENS=1, log /tmp/beui-heat-parent-charts-final.log. Scoped analyzer and final-source release build pass. Parent native capture /tmp/beui-heat-parent-lifecycle/native-final is running in session16287, owned server18154 session87824. Served JS0aa5333d1ee7c631898cd1cf40f151f8342fd0c075fc279e2efdc601e3eef991 verified before capture.
+- Independent review `v3-heat-calendar-lifecycle-review-20261023-r2` is active. No final acceptance yet. Worker evidence /tmp/heat-calendar-continuation has exact built source identity, both-preference default sessions and reduced-motion custom/no-legend checks. Its server18153 remains running.
+- Pending archive heat-calendar-repair includes both prior rounds, original failures, intermediate parent capture, review-r1 and lifecycle-worker. verify.py awaits lifecycle-parent capture and archive-sha256.json. After capture: run /tmp/beui-heat-parent-lifecycle/check-native.py; inspect screenshots; copy all final inputs/builds/frames; seal; verify regular-file staged export; consume independent review; commit code separately from evidence; push PR26. Keep old archives and .impeccable untouched.
+
+## Heat Calendar lifecycle follow-up in progress
+
+- Parent exact-source capture completed:84 observations / 1,354 original frames across source/candidate and both preferences. Checked native inputs, PNG hashes and decoded frame counts. Final-day Tab reaches legends0/1; removal clears stale readout. Post-removal Tab still restarts at initial instead of source legend0. All remains intermediate proof, not final acceptance.
+- Independent review r1 confirms that continuation gap and demonstrates R019: a locked range with removed end survives; the next click clears the invalid range instead of anchoring the clicked day. It fails both original and first repair. Review artifacts /tmp/heat-calendar-review, copied under pending heat-calendar-repair/review-r1.
+- Active implementation `v3-heat-calendar-lifecycle-repair-20261023-r2` owns the same two production/test files and /tmp port18153. Requires failing-first cleanup regressions plus native validation of delayed Tab continuation, external focus cancellation and invalid locked selection. Supported FocusScope prototype is only widget-proven and must not be accepted without native proof.
+- Parent intermediate archive heat-calendar-repair is unsealed/uncommitted; preserve worker and parent failed attempts. Parent capture server18152 remains available. No production commit or push yet.
+
+## Heat Calendar repair review in progress
+
+- Worker repair remains uncommitted in heat_calendar.dart and heat_calendar_native_regression_test.dart. Parent focused run passes19 tests with BEUI_SKIP_GOLDENS=1; scoped analyzer clean. Original worker regression run had8 failures/2 passes; patched10 pass.
+- Independent review `v3-heat-calendar-repair-review-20261023-r1` is active. It also investigates the remaining next-Tab-after-removal difference. Do not accept that continuation as repaired yet.
+- Parent exact-source isolated build in /tmp/beui-heat-parent-final succeeds. Production input hash is retained there. JS1eeb3bef7b0f0be9084470c89dc5c54d34c8b49b8c96f4d38b813051e367a9d9 matches worker behavior build despite final comment/import-only differences. Parent capture attempt2 runs on owned18152, server session76106, capture session19507. Attempt1 rejected after18151 bind conflict; existing listener left untouched.
+- Parent before archive is already pushed as038257b6b. Do not edit it. Await review, inspect final captures, fix demonstrated findings, then archive/commit/push the accepted repair and evidence. Worker evidence /tmp/heat-calendar-repair remains intact.
+
 ## Latest continuation: Heat Calendar defects
 
 - Native source/candidate sessions reproduce three behavioral differences under both motion preferences. These are failures, not missing-certification labels. Original heat-calendar-native evidence retains 84 final observations and 1,374 original frames plus earlier failed attempts.
