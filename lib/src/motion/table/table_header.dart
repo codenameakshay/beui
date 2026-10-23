@@ -269,47 +269,63 @@ class _HeaderCell<T> extends StatelessWidget {
       final desc = active && sort?.direction == BeuiSortDirection.desc;
       return MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => state._toggleSort(column.key),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: _rowAlign(column.align),
-              children: [
-                Flexible(
-                  child: Text(
-                    column.header,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: active
-                          ? colors.foreground
-                          : colors.mutedForeground,
+        child: Focus(
+          onKeyEvent: (_, event) {
+            if (event is KeyDownEvent &&
+                (event.logicalKey == LogicalKeyboardKey.enter ||
+                    event.logicalKey == LogicalKeyboardKey.space)) {
+              state._toggleSort(column.key);
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: Builder(
+            builder: (context) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Focus.of(context).requestFocus();
+                state._toggleSort(column.key);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: _rowAlign(column.align),
+                  children: [
+                    Flexible(
+                      child: Text(
+                        column.header,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: active
+                              ? colors.foreground
+                              : colors.mutedForeground,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                AnimatedOpacity(
-                  opacity: active ? 1 : 0.35,
-                  duration: w.reduce
-                      ? Duration.zero
-                      : const Duration(milliseconds: 180),
-                  child: AnimatedRotation(
-                    turns: desc ? 0.5 : 0,
-                    duration: w.reduce
-                        ? Duration.zero
-                        : const Duration(milliseconds: 180),
-                    curve: beuiEaseOut,
-                    child: Icon(
-                      LucideIcons.chevron_up,
-                      size: 14,
-                      color: colors.mutedForeground,
+                    const SizedBox(width: 4),
+                    AnimatedOpacity(
+                      opacity: active ? 1 : 0.35,
+                      duration: w.reduce
+                          ? Duration.zero
+                          : const Duration(milliseconds: 180),
+                      child: AnimatedRotation(
+                        turns: desc ? 0.5 : 0,
+                        duration: w.reduce
+                            ? Duration.zero
+                            : const Duration(milliseconds: 180),
+                        curve: beuiEaseOut,
+                        child: Icon(
+                          LucideIcons.chevron_up,
+                          size: 14,
+                          color: colors.mutedForeground,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

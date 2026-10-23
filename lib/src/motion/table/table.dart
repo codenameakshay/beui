@@ -16,6 +16,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../overlay/beui_overlay.dart';
 import '../../theme/beui_colors.dart';
@@ -206,6 +207,7 @@ class BeuiTable<T> extends StatefulWidget {
     this.onDeleteColumn,
     this.rowHeight = 48,
     this.height = 440,
+    this.borderRadius = const BorderRadius.all(Radius.circular(16)),
     this.onEndReached,
     this.loading = false,
     this.skeletonRows = 3,
@@ -285,6 +287,9 @@ class BeuiTable<T> extends StatefulWidget {
   /// Total table height in px (header + scroll body).
   final double height;
 
+  /// Outer clipping radius. Use [BorderRadius.zero] for the plain source table.
+  final BorderRadius borderRadius;
+
   /// Fires when the body scrolls near the bottom — load the next page.
   final VoidCallback? onEndReached;
 
@@ -342,10 +347,12 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   // `index.tsx`: `deactivateTimer` / `rowTimer`, `setTimeout(..., 100)`).
   String? _activeColumn;
   String? _activeRowId;
+  ({bool row, String id})? _openMenu;
   Timer? _columnDeactivateTimer;
   Timer? _rowDeactivateTimer;
 
   final ScrollController _vScroll = ScrollController();
+  final FocusNode _scrollFocus = FocusNode();
   bool _endReachedFired = false;
 
   @override
@@ -365,6 +372,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   void dispose() {
     _columnDeactivateTimer?.cancel();
     _rowDeactivateTimer?.cancel();
+    _scrollFocus.dispose();
     _vScroll
       ..removeListener(_onScroll)
       ..dispose();
@@ -581,12 +589,14 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   // so crossing the gap onto the handle — whose own MouseRegion re-activates —
   // never blanks the handle mid-reach. Mirrors the source's setTimeout bridge.
   void _activateColumn(String key) {
+    if (_openMenu != null) return;
     _columnDeactivateTimer?.cancel();
     _columnDeactivateTimer = null;
     if (_activeColumn != key) setState(() => _activeColumn = key);
   }
 
   void _deactivateColumn(String key) {
+    if (_openMenu == (row: false, id: key)) return;
     _columnDeactivateTimer?.cancel();
     _columnDeactivateTimer = Timer(const Duration(milliseconds: 100), () {
       if (mounted && _activeColumn == key) {
@@ -596,18 +606,30 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   }
 
   void _activateRow(String id) {
+    if (_openMenu != null) return;
     _rowDeactivateTimer?.cancel();
     _rowDeactivateTimer = null;
     if (_activeRowId != id) setState(() => _activeRowId = id);
   }
 
   void _deactivateRow(String id) {
+    if (_openMenu == (row: true, id: id)) return;
     _rowDeactivateTimer?.cancel();
     _rowDeactivateTimer = Timer(const Duration(milliseconds: 100), () {
       if (mounted && _activeRowId == id) {
         setState(() => _activeRowId = null);
       }
     });
+  }
+
+  void _setMenuOpen({
+    required bool row,
+    required String id,
+    required bool open,
+  }) {
+    _columnDeactivateTimer?.cancel();
+    _rowDeactivateTimer?.cancel();
+    setState(() => _openMenu = open ? (row: row, id: id) : null);
   }
 
   // ---- infinite scroll ------------------------------------------------------
@@ -683,7 +705,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
       decoration: BoxDecoration(
         color: colors.background,
         border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: widget.borderRadius,
       ),
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
@@ -776,7 +798,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
     }
 
     final skeletonCount = widget.loading ? widget.skeletonRows : 0;
-    return ListView.builder(
+    final list = ListView.builder(
       controller: _vScroll,
       itemExtent: widget.rowHeight,
       itemCount: sortedRows.length + skeletonCount,
@@ -803,6 +825,34 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
           hasRowMenu: hasRowMenu,
         );
       },
+    );
+    return Focus(
+      focusNode: _scrollFocus,
+      onKeyEvent: (_, event) {
+        if (event is! KeyDownEvent || !_vScroll.hasClients) {
+          return KeyEventResult.ignored;
+        }
+        final position = _vScroll.position;
+        final key = event.logicalKey;
+        final target = switch (key) {
+          LogicalKeyboardKey.pageDown =>
+            position.pixels + position.viewportDimension,
+          LogicalKeyboardKey.pageUp =>
+            position.pixels - position.viewportDimension,
+          LogicalKeyboardKey.end => position.maxScrollExtent,
+          LogicalKeyboardKey.home => position.minScrollExtent,
+          _ => null,
+        };
+        if (target == null) return KeyEventResult.ignored;
+        _vScroll.jumpTo(
+          target.clamp(position.minScrollExtent, position.maxScrollExtent),
+        );
+        return KeyEventResult.handled;
+      },
+      child: Listener(
+        onPointerDown: hasRowMenu ? null : (_) => _scrollFocus.requestFocus(),
+        child: list,
+      ),
     );
   }
 }

@@ -39,11 +39,15 @@ class _TableHandle<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final isRow = _isRow;
     return _TableMenu(
+      onOpenChanged: (open) =>
+          state._setMenuOpen(row: isRow, id: rowId ?? column!.key, open: open),
+      label: isRow
+          ? 'Row ${index + 1} options'
+          : '${column!.key} column options',
       colors: colors,
       width: isRow ? 8 : 24,
       height: isRow ? 24 : 8,
       icon: isRow ? LucideIcons.ellipsis_vertical : LucideIcons.ellipsis,
-      align: isRow ? _TableMenuAlign.start : _TableMenuAlign.end,
       items: [
         if (isRow
             ? state.widget.onInsertRow != null

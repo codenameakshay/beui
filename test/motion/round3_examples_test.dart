@@ -1,0 +1,172 @@
+import 'dart:ui' show PointerDeviceKind;
+
+import 'package:beui/beui.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../support.dart';
+
+void main() {
+  testWidgets('metallic rim fills the button without adding content padding', (
+    tester,
+  ) async {
+    var activations = 0;
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiMetallicButton(
+          paused: true,
+          onPressed: () => activations++,
+          child: const SizedBox(width: 80, height: 16),
+        ),
+      ),
+    );
+    expect(
+      tester.getSize(find.byType(BeuiMetallicButton)),
+      const Size(120, 40),
+    );
+    await tester.tap(find.byType(BeuiMetallicButton));
+    await tester.pump();
+    expect(activations, 1);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+    expect(activations, 2);
+  });
+  for (final reduce in [false, true]) {
+    for (final design in ['stepped', 'fluid', 'wave', 'bubble', 'ruler']) {
+      testWidgets('$design commits pointer down and PageUp, reduce=$reduce', (
+        tester,
+      ) async {
+        var value = 20.0;
+        final changes = <double>[];
+        await tester.pumpWidget(
+          beuiTestApp(
+            StatefulBuilder(
+              builder: (context, setState) {
+                void onChanged(double next) {
+                  changes.add(next);
+                  setState(() => value = next);
+                }
+
+                final slider = switch (design) {
+                  'stepped' => BeuiRangeSlider(
+                    value: value,
+                    onChanged: onChanged,
+                  ),
+                  'fluid' => BeuiFluidSlider(
+                    value: value,
+                    onChanged: onChanged,
+                  ),
+                  'wave' => BeuiWaveSlider(value: value, onChanged: onChanged),
+                  'bubble' => BeuiBubbleSlider(
+                    value: value,
+                    onChanged: onChanged,
+                  ),
+                  _ => BeuiRulerSlider(value: value, onChanged: onChanged),
+                };
+                return SizedBox(width: 384, child: slider);
+              },
+            ),
+            reduce: reduce,
+          ),
+        );
+        await tester.pump();
+        final target = find.byWidgetPredicate(
+          (w) => switch (design) {
+            'stepped' => w is BeuiRangeSlider,
+            'fluid' => w is BeuiFluidSlider,
+            'wave' => w is BeuiWaveSlider,
+            'bubble' => w is BeuiBubbleSlider,
+            _ => w is BeuiRulerSlider,
+          },
+        );
+        await tester.tap(target);
+        await tester.pump(const Duration(milliseconds: 200));
+        final before = value;
+        await tester.sendKeyEvent(LogicalKeyboardKey.pageUp);
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(value, (before + 10).clamp(0, 100));
+        await tester.sendKeyEvent(LogicalKeyboardKey.home);
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(value, 0);
+        await tester.sendKeyEvent(LogicalKeyboardKey.end);
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(value, 100);
+      });
+    }
+  }
+
+  testWidgets('sortable header keeps native keyboard focus after click', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiTable<String>(
+          data: const ['Ava', 'Zoe'],
+          columns: [
+            BeuiTableColumn(
+              key: 'name',
+              header: 'Name',
+              sortable: true,
+              value: (row) => row,
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.tap(find.text('Name'));
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+    expect(
+      tester.getTopLeft(find.text('Zoe')).dy,
+      lessThan(tester.getTopLeft(find.text('Ava')).dy),
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    await tester.pump();
+    expect(
+      tester.getTopLeft(find.text('Ava')).dy,
+      lessThan(tester.getTopLeft(find.text('Zoe')).dy),
+    );
+  });
+
+  testWidgets('table handle opens, dismisses and selects with native keys', (
+    tester,
+  ) async {
+    var insertion = '';
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiTable<String>(
+          data: const ['Ava'],
+          columns: [
+            BeuiTableColumn(key: 'name', header: 'Name', value: (row) => row),
+          ],
+          onInsertRow: (index, position) =>
+              insertion = '$index:${position.name}',
+        ),
+        width: 400,
+      ),
+    );
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(find.text('Ava')));
+    await tester.pump();
+    await tester.tap(find.byIcon(LucideIcons.ellipsis_vertical));
+    await tester.pumpAndSettle();
+    expect(find.text('Insert before'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(find.text('Insert before'), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text('Insert before'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(insertion, '0:before');
+    await mouse.removePointer();
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(milliseconds: 150));
+  });
+}

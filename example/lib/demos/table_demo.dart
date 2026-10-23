@@ -7,7 +7,8 @@ import '../explorer/widgets.dart';
 /// (`components/previews/motion/table.preview.tsx`): one virtualized 10,000-row
 /// grid with sortable headers, row selection, column resize and reorder, above
 /// a muted row-count / selection-count caption.
-Widget tableDemo(BuildContext context) => const _TableDemo();
+Widget tableDemo(BuildContext context, {String? example}) =>
+    _TableDemo(example: example ?? Uri.base.queryParameters['example']);
 
 class _Person {
   const _Person({
@@ -70,7 +71,9 @@ List<_Person> _buildPeople(int count) => [
 ];
 
 class _TableDemo extends StatefulWidget {
-  const _TableDemo();
+  const _TableDemo({this.example});
+
+  final String? example;
 
   @override
   State<_TableDemo> createState() => _TableDemoState();
@@ -207,144 +210,191 @@ class _TableDemoState extends State<_TableDemo> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            // px-1
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${groupThousands(_data.length)} rows',
-                  style: captionStyle,
-                ),
-                if (_selected.isNotEmpty)
+          if (widget.example == null || widget.example == 'data') ...[
+            Padding(
+              // px-1
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Text(
-                    '${groupThousands(_selected.length)} selected',
+                    '${groupThousands(_data.length)} rows',
                     style: captionStyle,
                   ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8), // gap-2
-          BeuiTable<_Person>(
-            data: _data,
-            columns: columns,
-            getRowId: (r, _) => r.id,
-            selectable: true,
-            resizable: true,
-            reorderable: true,
-            selectedRowIds: _selected,
-            onSelectionChange: (ids) => setState(() => _selected = ids),
-            defaultSort: const BeuiSortState(
-              key: 'mrr',
-              direction: BeuiSortDirection.desc,
-            ),
-            height: 420,
-            rowHeight: 52,
-          ),
-          const SizedBox(height: 32),
-          _sectionLabel(colors, 'Editable Table'),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  _editable
-                      ? 'Click a cell to edit. Use the column and row handles to insert or delete.'
-                      : 'Read-only.',
-                  style: captionStyle,
-                ),
+                  if (_selected.isNotEmpty)
+                    Text(
+                      '${groupThousands(_selected.length)} selected',
+                      style: captionStyle,
+                    ),
+                ],
               ),
-              BeuiSwitch(
-                value: _editable,
-                onChanged: (v) => setState(() => _editable = v),
-                label: 'Editable',
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          BeuiTable<_EditRow>(
-            data: _editRows,
-            columns: [
-              for (var i = 0; i < _editKeys.length; i++)
-                BeuiTableColumn<_EditRow>(
-                  key: _editKeys[i],
-                  header: _editLabels[_editKeys[i]] ?? _editKeys[i],
-                  editable: _editable,
-                  width: i == 0 ? null : 180,
-                  value: (r) => r.fields[_editKeys[i]] ?? '',
-                ),
-            ],
-            getRowId: (r, _) => r.id,
-            rowHeight: 48,
-            height: (_editRows.length.clamp(1, 6) * 48) + 48,
-            onCellEdit: _editable
-                ? (rowId, key, value) {
-                    setState(() {
-                      for (final row in _editRows) {
-                        if (row.id == rowId) row.fields[key] = value;
-                      }
-                    });
-                  }
-                : null,
-            onColumnRename: _editable
-                ? (key, value) => setState(() => _editLabels[key] = value)
-                : null,
-            onInsertRow: _editable ? _insertEditRow : null,
-            onDeleteRow: _editable
-                ? (rowId, _) => setState(
-                    () => _editRows.removeWhere((r) => r.id == rowId),
-                  )
-                : null,
-            onInsertColumn: _editable ? _insertEditColumn : null,
-            onDeleteColumn: _editable
-                ? (key, _) => setState(() {
-                    _editKeys = _editKeys.where((k) => k != key).toList();
-                    for (final row in _editRows) {
-                      row.fields.remove(key);
-                    }
-                  })
-                : null,
-            emptyState: TextButton(
-              onPressed: () =>
-                  _insertEditRow(0, BeuiTableInsertPosition.before),
-              child: const Text('Insert first row'),
             ),
-          ),
-          const SizedBox(height: 32),
-          _sectionLabel(colors, 'Async Table'),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Row(
+            const SizedBox(height: 8), // gap-2
+            BeuiTable<_Person>(
+              data: _data,
+              columns: columns,
+              getRowId: (r, _) => r.id,
+              selectable: true,
+              resizable: true,
+              reorderable: true,
+              selectedRowIds: _selected,
+              onSelectionChange: (ids) => setState(() => _selected = ids),
+              defaultSort: const BeuiSortState(
+                key: 'mrr',
+                direction: BeuiSortDirection.desc,
+              ),
+              height: 420,
+              rowHeight: 52,
+            ),
+          ],
+          if (widget.example == null || widget.example == 'editable') ...[
+            if (widget.example == null) ...[
+              const SizedBox(height: 32),
+              _sectionLabel(colors, 'Editable Table'),
+              const SizedBox(height: 8),
+            ],
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${groupThousands(_asyncRows.length)} loaded',
-                  style: captionStyle,
+                Expanded(
+                  child: Text(
+                    _editable
+                        ? 'Click a cell to edit. Use the column and row handles to insert or delete.'
+                        : 'Read-only.',
+                    style: captionStyle,
+                  ),
                 ),
-                Text(
-                  _asyncLoading
-                      ? 'Loading…'
-                      : _asyncPage >= _maxPages
-                      ? 'All loaded'
-                      : 'Scroll for more',
-                  style: captionStyle,
+                BeuiSwitch(
+                  value: _editable,
+                  onChanged: (v) => setState(() => _editable = v),
+                  label: 'Editable',
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 8),
-          BeuiTable<_Person>(
-            data: _asyncRows,
-            columns: columns,
-            getRowId: (r, _) => r.id,
-            height: 420,
-            rowHeight: 52,
-            onEndReached: _loadMoreAsync,
-            loading: _asyncLoading,
-          ),
+            const SizedBox(height: 12),
+            BeuiTable<_EditRow>(
+              data: _editRows,
+              columns: [
+                for (var i = 0; i < _editKeys.length; i++)
+                  BeuiTableColumn<_EditRow>(
+                    key: _editKeys[i],
+                    header: _editLabels[_editKeys[i]] ?? _editKeys[i],
+                    editable: _editable,
+                    width: i == 0 ? null : 180,
+                    value: (r) => r.fields[_editKeys[i]] ?? '',
+                  ),
+              ],
+              getRowId: (r, _) => r.id,
+              rowHeight: 48,
+              height: _editRows.length.clamp(1, 6) * 48,
+              borderRadius: BorderRadius.zero,
+              onCellEdit: _editable
+                  ? (rowId, key, value) {
+                      setState(() {
+                        for (final row in _editRows) {
+                          if (row.id == rowId) row.fields[key] = value;
+                        }
+                      });
+                    }
+                  : null,
+              onColumnRename: _editable
+                  ? (key, value) => setState(() => _editLabels[key] = value)
+                  : null,
+              onInsertRow: _editable ? _insertEditRow : null,
+              onDeleteRow: _editable
+                  ? (rowId, _) => setState(
+                      () => _editRows.removeWhere((r) => r.id == rowId),
+                    )
+                  : null,
+              onInsertColumn: _editable ? _insertEditColumn : null,
+              onDeleteColumn: _editable
+                  ? (key, _) => setState(() {
+                      _editKeys = _editKeys.where((k) => k != key).toList();
+                      for (final row in _editRows) {
+                        row.fields.remove(key);
+                      }
+                    })
+                  : null,
+              emptyState: TextButton(
+                onPressed: () =>
+                    _insertEditRow(0, BeuiTableInsertPosition.before),
+                child: const Text('Insert first row'),
+              ),
+            ),
+          ],
+          if (widget.example == null || widget.example == 'async') ...[
+            if (widget.example == null) ...[
+              const SizedBox(height: 32),
+              _sectionLabel(colors, 'Async Table'),
+              const SizedBox(height: 8),
+            ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${groupThousands(_asyncRows.length)} loaded',
+                    style: captionStyle,
+                  ),
+                  Text(
+                    _asyncLoading
+                        ? 'Loading…'
+                        : _asyncPage >= _maxPages
+                        ? 'All loaded'
+                        : 'Scroll for more',
+                    style: captionStyle,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            BeuiTable<_Person>(
+              data: _asyncRows,
+              columns: [
+                BeuiTableColumn(
+                  key: 'name',
+                  header: 'Name',
+                  value: (r) => r.name,
+                  cell: (r) => Text(
+                    r.name,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ),
+                BeuiTableColumn(
+                  key: 'email',
+                  header: 'Email',
+                  width: 220,
+                  value: (r) => r.email,
+                ),
+                BeuiTableColumn(
+                  key: 'role',
+                  header: 'Role',
+                  width: 110,
+                  value: (r) => r.role,
+                ),
+                BeuiTableColumn(
+                  key: 'status',
+                  header: 'Status',
+                  width: 120,
+                  value: (r) => r.status,
+                  cell: (r) => statusBadge(r.status),
+                ),
+                BeuiTableColumn(
+                  key: 'mrr',
+                  header: 'MRR',
+                  width: 100,
+                  align: BeuiTableAlign.right,
+                  value: (r) => '\$${r.mrr}',
+                ),
+              ],
+              getRowId: (r, _) => r.id,
+              height: 420,
+              rowHeight: 52,
+              onEndReached: _loadMoreAsync,
+              loading: _asyncLoading,
+            ),
+          ],
         ],
       ),
     );
