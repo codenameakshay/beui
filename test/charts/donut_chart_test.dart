@@ -67,8 +67,8 @@ void main() {
     expect(find.byType(BeuiDonutPlot), findsOneWidget);
     expect(find.byType(BeuiDonutLegend), findsOneWidget);
     expect(
-      tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker)).value,
-      96,
+      tester.widget<BeuiDigitSwap>(find.byType(BeuiDigitSwap)).value,
+      '96',
     );
     expect(
       find.byWidgetPredicate(
@@ -99,9 +99,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 220));
     final centerTicker = find.descendant(
       of: find.byType(BeuiDonutCenter),
-      matching: find.byType(BeuiChartTicker),
+      matching: find.byType(BeuiDigitSwap),
     );
-    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 42);
+    expect(tester.widget<BeuiDigitSwap>(centerTicker).value, '42');
     expect(
       find.descendant(
         of: find.byType(BeuiDonutCenter),
@@ -111,7 +111,7 @@ void main() {
     );
     await tester.tap(find.text('Business'));
     await tester.pump();
-    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 31);
+    expect(tester.widget<BeuiDigitSwap>(centerTicker).value, '31');
     expect(changed, 'business');
     expect(selected, 'business');
     await tester.pumpWidget(
@@ -120,7 +120,7 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 23);
+    expect(tester.widget<BeuiDigitSwap>(centerTicker).value, '23');
     expect(
       find.descendant(
         of: find.byType(BeuiDonutCenter),
@@ -158,21 +158,36 @@ void main() {
     await mouse.addPointer(location: team);
     await mouse.moveTo(team);
     await tester.pump();
-    expect(find.byType(BeuiChartTicker), findsOneWidget);
+    expect(find.byType(BeuiDigitSwap), findsOneWidget);
     final centerTicker = find.descendant(
       of: find.byType(BeuiDonutCenter),
-      matching: find.byType(BeuiChartTicker),
+      matching: find.byType(BeuiDigitSwap),
     );
-    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 42);
+    expect(tester.widget<BeuiDigitSwap>(centerTicker).value, '42');
+    expect(
+      tester.widget<BeuiDigitSwap>(centerTicker).direction,
+      BeuiDigitSwapDirection.down,
+    );
     await tester.pump(const Duration(milliseconds: 220));
     expect(find.text('Team · 43.8%'), findsOneWidget);
 
     final business = tester.getCenter(find.text('Business'));
     await mouse.moveTo(business);
     await tester.pump();
-    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 31);
+    expect(tester.widget<BeuiDigitSwap>(centerTicker).value, '31');
+    expect(
+      tester.widget<BeuiDigitSwap>(centerTicker).direction,
+      BeuiDigitSwapDirection.down,
+    );
     await tester.pump(const Duration(milliseconds: 220));
     expect(find.text('Business · 32.3%'), findsOneWidget);
+    await mouse.moveTo(team);
+    await tester.pump();
+    expect(tester.widget<BeuiDigitSwap>(centerTicker).value, '42');
+    expect(
+      tester.widget<BeuiDigitSwap>(centerTicker).direction,
+      BeuiDigitSwapDirection.up,
+    );
     await mouse.removePointer();
     semantics.dispose();
   });
@@ -209,6 +224,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 110));
     final middlePosition = tester.getTopLeft(outgoingCaption);
     expect(middlePosition.dy, lessThan(startPosition.dy));
+    final fading = find
+        .ancestor(of: outgoingCaption, matching: find.byType(FadeTransition))
+        .first;
+    expect(
+      tester.widget<FadeTransition>(fading).opacity.value,
+      inExclusiveRange(0, 1),
+    );
 
     await tester.pump(const Duration(milliseconds: 111));
     expect(outgoingCaption, findsNothing);
@@ -227,9 +249,9 @@ void main() {
     await tester.pump();
     final centerTicker = find.descendant(
       of: find.byType(BeuiDonutCenter),
-      matching: find.byType(BeuiChartTicker),
+      matching: find.byType(BeuiDigitSwap),
     );
-    expect(tester.widget<BeuiChartTicker>(centerTicker).value, 42);
+    expect(tester.widget<BeuiDigitSwap>(centerTicker).value, '42');
     await tester.pump(const Duration(milliseconds: 120));
     expect(find.text('Team · 43.8%'), findsOneWidget);
     expect(tester.takeException(), isNull);
@@ -244,8 +266,8 @@ void main() {
     );
     await tester.pump();
     expect(
-      tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker)).value,
-      96,
+      tester.widget<BeuiDigitSwap>(find.byType(BeuiDigitSwap)).value,
+      '96',
     );
     expect(tester.takeException(), isNull);
   });

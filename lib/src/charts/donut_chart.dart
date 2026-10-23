@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '../motion/_scroll_geometry.dart';
+import '../motion/digit_swap.dart';
 import '_shared.dart';
 
 /// A labeled donut slice.
@@ -324,31 +325,51 @@ class _BeuiDonutPlotState extends State<BeuiDonutPlot>
 }
 
 /// Center live region showing the total or active segment.
-class BeuiDonutCenter extends StatelessWidget {
+class BeuiDonutCenter extends StatefulWidget {
   /// Creates the center readout.
   const BeuiDonutCenter({super.key, this.totalLabel = 'Total'});
 
   /// Caption used when no segment is active.
   final String totalLabel;
+
+  @override
+  State<BeuiDonutCenter> createState() => _BeuiDonutCenterState();
+}
+
+class _BeuiDonutCenterState extends State<BeuiDonutCenter> {
+  double? _previous;
+  BeuiDigitSwapDirection _direction = BeuiDigitSwapDirection.up;
+
   @override
   Widget build(BuildContext context) {
     final state = _DonutScope.of(context);
     final active = state.widget.segments
         .where((s) => s.id == state.activeId)
         .firstOrNull;
+    final value = active?.value ?? state.total;
+    if (_previous != null && _previous != value) {
+      _direction = value > _previous!
+          ? BeuiDigitSwapDirection.up
+          : BeuiDigitSwapDirection.down;
+    }
+    _previous = value;
     return Semantics(
       liveRegion: true,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          BeuiChartTicker(
-            value: active?.value ?? state.total,
-            format: (v) => state.format(v.toDouble()),
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
+          BeuiDigitSwap(
+            value: state.format(value),
+            direction: _direction,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+              letterSpacing: -.6,
+              color: BeuiColors.resolve(context).foreground,
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
+          const SizedBox(height: 4),
           SizedBox(
             height: 16,
             child: ClipRect(
@@ -368,7 +389,10 @@ class BeuiDonutCenter extends StatelessWidget {
                     begin: Offset(0, isIncoming ? 1 : -1),
                     end: Offset.zero,
                   ).animate(animation);
-                  return SlideTransition(position: offset, child: child);
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(position: offset, child: child),
+                  );
                 },
                 child: SizedBox(
                   key: ValueKey(active?.id ?? 'total'),
@@ -376,7 +400,7 @@ class BeuiDonutCenter extends StatelessWidget {
                   child: active == null
                       ? Center(
                           child: Text(
-                            totalLabel,
+                            widget.totalLabel,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         )
