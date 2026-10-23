@@ -520,11 +520,11 @@ class _DonutPainter extends CustomPainter {
       final visibleSweep = math.min(sweep, math.max(0.0, remaining));
       if (visibleSweep <= 0) break;
       final g = gap * math.pi / 180;
-      final start = cursor + (segments.length == 1 ? 0 : g / 2);
-      final span = math.max(
-        .001,
-        visibleSweep - (segments.length == 1 ? 0 : g),
-      );
+      final inset = segments.length == 1
+          ? 0.0
+          : g / 2 + thickness * scale / 2 / radius;
+      final start = cursor + inset;
+      final span = math.max(.001, visibleSweep - inset * 2);
       final color = beuiChartColor(
         s.color,
         colors,

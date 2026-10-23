@@ -13,6 +13,32 @@ const _bins = [
 ];
 
 void main() {
+  testWidgets('value area stops before the next bin exceeds its target', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiVolumeProfile(data: _bins), reduce: true),
+    );
+    expect(find.text('Value area 11.00 – 11.00 (40.0%)'), findsOneWidget);
+  });
+
+  testWidgets('a full value area includes empty edge bins', (tester) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiVolumeProfile(
+          valueArea: 1,
+          data: [
+            BeuiVolumeProfileBin(price: 10, volume: 0),
+            BeuiVolumeProfileBin(price: 11, volume: 10),
+            BeuiVolumeProfileBin(price: 12, volume: 0),
+          ],
+        ),
+        reduce: true,
+      ),
+    );
+    expect(find.text('Value area 10.00 – 12.00 (100.0%)'), findsOneWidget);
+  });
+
   testWidgets('renders profile, summary, tooltip data and slider semantics', (
     tester,
   ) async {

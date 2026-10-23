@@ -1,6 +1,9 @@
+import 'dart:ui' as ui;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
@@ -22,6 +25,37 @@ const _segments = [
 ];
 
 void main() {
+  testWidgets('round caps leave the source gap open at twelve oclock', (
+    tester,
+  ) async {
+    const key = ValueKey('ring-caps');
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiDonutChart(
+          segments: _segments,
+          child: RepaintBoundary(
+            key: key,
+            child: SizedBox(width: 200, height: 200, child: BeuiDonutPlot()),
+          ),
+        ),
+        reduce: true,
+      ),
+    );
+    final boundary = tester.renderObject<RenderRepaintBoundary>(
+      find.byKey(key),
+    );
+    await tester.runAsync(() async {
+      final image = await boundary.toImage();
+      final bytes = (await image.toByteData(
+        format: ui.ImageByteFormat.rawRgba,
+      ))!;
+      expect(
+        bytes.getUint8((19 * image.width + 100) * 4 + 3),
+        inInclusiveRange(165, 167),
+      );
+      image.dispose();
+    });
+  });
   testWidgets('renders ring, center total and legend', (tester) async {
     final semantics = tester.ensureSemantics();
     await tester.pumpWidget(

@@ -49,6 +49,46 @@ Widget _chart({
 );
 
 void main() {
+  testWidgets(
+    'price axis uses five source midpoint ticks and live-price scale',
+    (tester) async {
+      await tester.pumpWidget(beuiTestApp(_chart(lastPrice: 20)));
+      await tester.pump();
+      for (final tick in ['19.60', '17.05', '14.50', '11.95', '9.40']) {
+        expect(find.text(tick), findsOneWidget);
+      }
+    },
+  );
+
+  testWidgets(
+    'pointer crosshair tracks price, ignores axis, and clears on exit',
+    (tester) async {
+      String? changed;
+      await tester.pumpWidget(
+        beuiTestApp(_chart(onActiveIdChange: (id) => changed = id)),
+      );
+      final plot = tester.getRect(find.byType(BeuiCandlestickPlot));
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset(plot.left - 5, plot.top));
+      await mouse.moveTo(Offset(plot.left + 10, plot.top + 50));
+      await tester.pump();
+      expect(changed, 'a');
+      final priceTag = find.byKey(const ValueKey('candle-pointer-price'));
+      expect(priceTag, findsOneWidget);
+      expect(tester.getCenter(priceTag).dy, closeTo(plot.top + 50, 1));
+      await mouse.moveTo(Offset(plot.right - 5, plot.top + 80));
+      await tester.pump();
+      expect(changed, 'a');
+      await mouse.moveTo(Offset(plot.left + 10, plot.bottom - 1));
+      await tester.pump();
+      expect(priceTag, findsNothing);
+      await mouse.moveTo(Offset(plot.left - 5, plot.top));
+      await tester.pump();
+      expect(changed, isNull);
+      await mouse.removePointer();
+    },
+  );
+
   testWidgets('renders plot, live OHLC readout and accessible slider', (
     tester,
   ) async {
@@ -76,6 +116,9 @@ void main() {
     );
     await tester.pump();
     expect(find.text('12:00'), findsOneWidget);
+    final plot = tester.getRect(find.byType(BeuiCandlestickPlot));
+    await tester.tapAt(Offset(plot.left + 10, plot.top + 10));
+    await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
     expect(changed, 'b');
@@ -126,7 +169,7 @@ void main() {
 
     final plotTop = tester.getTopLeft(find.byType(BeuiCandlestickPlot)).dy;
     final firstBadgeCenter = tester.getCenter(find.byType(BeuiChartTicker)).dy;
-    expect(firstBadgeCenter, closeTo(plotTop + 124.8, 2));
+    expect(firstBadgeCenter, closeTo(plotTop + 127.2, 2));
 
     await tester.pumpWidget(
       beuiTestApp(_chart(candles: candles, lastPrice: 107)),

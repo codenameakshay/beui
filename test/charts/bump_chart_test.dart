@@ -39,6 +39,31 @@ Widget _surface({
 );
 
 void main() {
+  testWidgets('rank dots share the source path coordinates', (tester) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const SizedBox(
+          width: 560,
+          child: BeuiBumpChart(
+            periods: ['Apr', 'May'],
+            series: [
+              BeuiBumpSeries(id: 'one', name: 'One', ranks: [1, 5]),
+            ],
+          ),
+        ),
+      ),
+    );
+    final plot = tester.getRect(find.byType(BeuiBumpPlot));
+    expect(plot.height, 240);
+    expect(
+      tester.getCenter(find.byKey(const ValueKey('bump-node-one-0'))),
+      plot.topLeft + const Offset(32, 28),
+    );
+    expect(
+      tester.getCenter(find.byKey(const ValueKey('bump-node-one-1'))),
+      plot.topLeft + const Offset(460, 204),
+    );
+  });
   testWidgets(
     'renders ranks, period labels and missing-period break in accessible plot',
     (tester) async {

@@ -154,7 +154,10 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
     lowArea = pocIndex;
     highArea = pocIndex;
     final target = widget.valueArea;
-    if (target is num &&
+    if (target == 1 && total > 0 && pocIndex >= 0) {
+      lowArea = 0;
+      highArea = bins.length - 1;
+    } else if (target is num &&
         target > 0 &&
         target <= 1 &&
         total > 0 &&
@@ -166,12 +169,17 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
         final above = highArea < bins.length - 1
             ? bins[highArea + 1].bin.volume
             : -1.0;
-        if (above >= below) {
+        final takeAbove =
+            above > below ||
+            (above == below &&
+                highArea + 1 - pocIndex <= pocIndex - (lowArea - 1));
+        final next = takeAbove ? above : below;
+        if (area + next > total * target) break;
+        area += next;
+        if (takeAbove) {
           highArea++;
-          area += above;
         } else {
           lowArea--;
-          area += below;
         }
       }
     } else {

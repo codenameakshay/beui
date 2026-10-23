@@ -146,7 +146,7 @@ class _BeuiBumpChartState extends State<BeuiBumpChart>
         rows.expand((row) => row.ranks.whereType<int>()).toSet().toList()
           ..sort();
     final maxRank = rankValues.isEmpty ? 1 : rankValues.last;
-    final height = 220.0 + math.min(math.max(maxRank - 1, 1), 8) * 20.0;
+    final height = 28.0 + math.min(math.max(maxRank - 1, 1), 8) * 44.0 + 36;
     return _BumpScope(
       rows: rows,
       periods: widget.periods,
@@ -251,12 +251,17 @@ class BeuiBumpPlot extends StatelessWidget {
     }
     return LayoutBuilder(
       builder: (context, constraints) {
-        const left = 30.0, right = 78.0, top = 24.0, bottom = 28.0;
         final width = constraints.maxWidth.isFinite
             ? constraints.maxWidth
             : 560.0;
+        final scale = width / 560;
+        final left = 32 * scale,
+            right = 100 * scale,
+            top = 28 * scale,
+            bottom = 36 * scale;
+        final height = scope.height * scale;
         final plotWidth = math.max(1, width - left - right);
-        final plotHeight = scope.height - top - bottom;
+        final plotHeight = height - top - bottom;
         double x(int period) => scope.periods.length <= 1
             ? left + plotWidth / 2
             : left + period * plotWidth / (scope.periods.length - 1);
@@ -264,11 +269,11 @@ class BeuiBumpPlot extends StatelessWidget {
             ? top + plotHeight / 2
             : top + (rank - 1) * plotHeight / (scope.maxRank - 1);
         return SizedBox(
-          height: scope.height,
+          height: height,
           child: Stack(
             children: [
               CustomPaint(
-                size: Size(width, scope.height),
+                size: Size(width, height),
                 painter: _BumpPainter(
                   rows: scope.rows,
                   maxRank: scope.maxRank,
@@ -284,10 +289,10 @@ class BeuiBumpPlot extends StatelessWidget {
                 for (var j = 0; j < scope.periods.length; j++)
                   if (scope.rows[i].ranks[j] case final rank?)
                     Positioned(
-                      left: (x(j) - 17).clamp(0, width - 34),
-                      top: y(rank) + top - 17,
-                      width: 34,
-                      height: 34,
+                      left: x(j) - 14,
+                      top: y(rank) - 14,
+                      width: 28,
+                      height: 28,
                       child: Semantics(
                         button: true,
                         selected:
@@ -312,6 +317,17 @@ class BeuiBumpPlot extends StatelessWidget {
                                   duration: const Duration(milliseconds: 350),
                                   format: (value) => '#${value.round()}',
                                 ),
+                                Text(
+                                  j == 0 || scope.rows[i].ranks[j - 1] == null
+                                      ? 'No previous rank'
+                                      : scope.rows[i].ranks[j - 1] == rank
+                                      ? 'No change'
+                                      : '${scope.rows[i].ranks[j - 1]! > rank ? 'Up' : 'Down'} ${(scope.rows[i].ranks[j - 1]! - rank).abs()} ${(scope.rows[i].ranks[j - 1]! - rank).abs() == 1 ? 'place' : 'places'}',
+                                ),
+                                if (j > 0 && scope.rows[i].ranks[j - 1] != null)
+                                  Text(
+                                    'Previously #${scope.rows[i].ranks[j - 1]} in ${scope.periods[j - 1]}',
+                                  ),
                               ],
                             ),
                             child: InkWell(
@@ -336,24 +352,25 @@ class BeuiBumpPlot extends StatelessWidget {
                                     '${scope.rows[i].series.name}, ${scope.periods[j]}, rank $rank',
                                 child: Center(
                                   child: Container(
-                                    width: 22,
-                                    height: 22,
+                                    width: 20,
+                                    height: 20,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: scope.rows[i].color,
+                                      color: colors.background,
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                        color: colors.background,
-                                        width: 2,
+                                        color: scope.rows[i].color,
+                                        width: 1.5,
                                       ),
                                     ),
                                     child: Text(
                                       '$rank',
                                       style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 9,
+                                        fontFamily: 'monospace',
+                                        fontWeight: FontWeight.w500,
                                         height: 1,
-                                        color: colors.background,
+                                        color: scope.rows[i].color,
                                       ),
                                     ),
                                   ),
@@ -367,7 +384,7 @@ class BeuiBumpPlot extends StatelessWidget {
               for (var i = 0; i < scope.periods.length; i++)
                 Positioned(
                   left: x(i) - 28,
-                  top: scope.height - bottom,
+                  top: height - 18 * scale,
                   width: 56,
                   child: Text(
                     scope.periods[i],
@@ -378,26 +395,12 @@ class BeuiBumpPlot extends StatelessWidget {
                     ),
                   ),
                 ),
-              for (var rank = 1; rank <= scope.maxRank; rank++)
-                Positioned(
-                  left: 0,
-                  top: y(rank) + top - 7,
-                  width: left - 6,
-                  child: Text(
-                    '$rank',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: colors.mutedForeground,
-                    ),
-                  ),
-                ),
               for (final row in scope.rows)
                 if (row.ranks.lastOrNull case final rank?)
                   Positioned(
-                    left: width - right + 8,
-                    top: y(rank) + top - 8,
-                    width: right - 8,
+                    left: width - right + 18 * scale,
+                    top: y(rank) - 8,
+                    width: right - 18 * scale,
                     child: Text(
                       row.series.name,
                       overflow: TextOverflow.ellipsis,
@@ -453,13 +456,15 @@ class _BumpPainter extends CustomPainter {
         : top + (rank - 1) * plotHeight / (maxRank - 1);
     for (var rank = 1; rank <= maxRank; rank++) {
       final yy = y(rank);
-      canvas.drawLine(
-        Offset(left, yy),
-        Offset(size.width - right, yy),
-        Paint()
-          ..color = colors.border.withValues(alpha: .55)
-          ..strokeWidth = 1,
-      );
+      for (var xx = left; xx < size.width - right; xx += 7) {
+        canvas.drawLine(
+          Offset(xx, yy),
+          Offset(math.min(xx + 2, size.width - right), yy),
+          Paint()
+            ..color = colors.border
+            ..strokeWidth = 1,
+        );
+      }
     }
     for (final row in rows) {
       final path = Path();
