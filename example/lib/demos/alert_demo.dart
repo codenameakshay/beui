@@ -24,6 +24,8 @@ class _AlertDemoState extends State<_AlertDemo> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = BeuiColors.resolve(context);
     final copy = switch (_variant) {
       BeuiAlertVariant.default_ => (
         'Notice',
@@ -63,17 +65,37 @@ class _AlertDemoState extends State<_AlertDemo> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            BeuiTabs<BeuiAlertVariant>(
-              value: _variant,
-              variant: BeuiTabsVariant.pill,
-              onChanged: (value) => setState(() {
-                _variant = value;
-                _open = true;
-              }),
-              tabs: [
-                for (final variant in variants)
-                  BeuiTab(value: variant, label: Text(_label(variant))),
-              ],
+            Theme(
+              data: theme.copyWith(
+                extensions: [
+                  ...theme.extensions.values.where(
+                    (value) => value is! BeuiColors,
+                  ),
+                  colors.copyWith(card: colors.muted),
+                ],
+              ),
+              child: BeuiTabs<BeuiAlertVariant>(
+                value: _variant,
+                variant: BeuiTabsVariant.pill,
+                triggerPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                onChanged: (value) => setState(() {
+                  _variant = value;
+                  _open = true;
+                }),
+                tabs: [
+                  for (final variant in variants)
+                    BeuiTab(
+                      value: variant,
+                      label: Text(
+                        _label(variant),
+                        style: const TextStyle(fontSize: 12, height: 16 / 12),
+                      ),
+                    ),
+                ],
+              ),
             ),
             const SizedBox(height: 24),
             BeuiAlert(
