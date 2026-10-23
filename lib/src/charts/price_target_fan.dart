@@ -156,11 +156,25 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
   static const double top = 16;
   static const double bottom = 28;
   final _historyFocus = FocusNode();
+  final _targetFocus = <String, FocusNode>{};
   PointerDeviceKind? _targetPointerKind;
+
+  FocusNode focusFor(String key) =>
+      _targetFocus.putIfAbsent(key, FocusNode.new);
+
+  void clearBlurredInspection() {
+    if (!_historyFocus.hasFocus &&
+        !_targetFocus.values.any((focus) => focus.hasFocus)) {
+      setActiveId(null);
+    }
+  }
 
   @override
   void dispose() {
     _historyFocus.dispose();
+    for (final focus in _targetFocus.values) {
+      focus.dispose();
+    }
     super.dispose();
   }
 
@@ -209,6 +223,11 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
   void didUpdateWidget(covariant BeuiPriceTargetFan oldWidget) {
     super.didUpdateWidget(oldWidget);
     _validate(widget);
+    final keys = widget.targets.map((target) => target.key).toSet();
+    for (final key
+        in _targetFocus.keys.where((key) => !keys.contains(key)).toList()) {
+      _targetFocus.remove(key)!.dispose();
+    }
   }
 
   void _validate(BeuiPriceTargetFan input) {
@@ -683,9 +702,13 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                           }
                           return KeyEventResult.handled;
                         },
-                        onFocusChange: (focused) => state.setActiveId(
-                          focused ? 't:${target.key}' : null,
-                        ),
+                        onFocusChange: (focused) {
+                          if (focused) {
+                            state.setActiveId('t:${target.key}');
+                          } else {
+                            state.clearBlurredInspection();
+                          }
+                        },
                         child: Listener(
                           onPointerDown: (event) {
                             state._targetPointerKind = event.kind;
@@ -695,10 +718,13 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                                     ? null
                                     : 't:${target.key}',
                               );
+                            } else {
+                              state.focusFor(target.key).requestFocus();
                             }
                           },
                           child: TextButton(
                             key: ValueKey('price-target-target-${target.key}'),
+                            focusNode: state.focusFor(target.key),
                             onPressed: () {
                               if (state._targetPointerKind !=
                                   PointerDeviceKind.touch) {
@@ -771,7 +797,7 @@ class BeuiPriceTargetHistoryPoints extends StatelessWidget {
           ? state._activeHistory == null
                 ? select(state.widget.history.length - 1)
                 : null
-          : state.setActiveId(null),
+          : state.clearBlurredInspection(),
       onKeyEvent: (_, event) {
         if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
           return KeyEventResult.ignored;
