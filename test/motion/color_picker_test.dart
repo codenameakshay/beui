@@ -11,6 +11,19 @@ Widget _app(Widget child) => MaterialApp(
 );
 
 void main() {
+  testWidgets('default trigger preserves the source lowercase hex text', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        const BeuiColorPicker(
+          trigger: BeuiColorPickerTrigger(),
+          child: BeuiColorPickerContent(child: BeuiColorPickerArea()),
+        ),
+      ),
+    );
+    expect(find.text('#3478f6'), findsOneWidget);
+  });
   testWidgets(
     'hex previews full entries and restores rejected drafts on blur',
     (tester) async {

@@ -1253,7 +1253,7 @@ class BeuiColorPickerTrigger extends StatelessWidget {
           const SizedBox(width: 10),
           child ??
               Text(
-                beuiColorToHex(scope.color).toUpperCase(),
+                beuiColorToHex(scope.color),
                 style: TextStyle(
                   fontFamily: 'Geist Mono',
                   fontSize: 14,
