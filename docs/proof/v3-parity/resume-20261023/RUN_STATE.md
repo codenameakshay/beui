@@ -2,7 +2,18 @@
 
 Done means the scoped source behaviors, appearance and motion are implemented and verified with preserved source/candidate evidence, integrated gates, and pushed PR26 updates. No merge is authorized. Exact parity remains incomplete.
 
-## Current state
+## Latest continuation: Table grid and badge
+
+- Grid production `450699dec` and self-contained archive `de25e67b9` are pushed to PR26. Intrinsic header content remains52px and advances52.5px; body content uses full52px rows. Shared rules scroll beneath fixed header content. Default flex is unchanged. Fractional visible-rule omission was independently found, reproduced with raster assertions, fixed and re-reviewed.
+- Exact grid library run:2520 root passes with the same56 golden failure identities; gallery63; scoped analysis and release pass. Final native30 horizontal comparisons and16 light/dark/preference/scroll pixel-column pairs pass. Original/rejected recordings remain in table-vertical-grid. Independent regular-file export verifies246 hashes and36 videos.
+- Badge production `aa373177c` is committed locally pending its evidence push. It uses the parent line baseline and respects cell width. Actual-Geist1x/2x tests and direct ambient-tracking regression pass. Final gallery66 passes with zero overflow messages; analysis/release pass. Root library files match the grid full-suite run, but that run is not relabeled exact-aa373177c proof.
+- Badge archive table-badge-baseline passes independent regular-file export:113 hashes,16 decoded original videos,30 horizontal and16 grid comparisons. Ordinary fixture JS6467520a61c2b2750a3b3c7ab58678cf28d163d84590cada26af6029b9eb0ee0. Separate diagnostic JS2dfe2fbddaf70e2c6de237648de5d6553d50ab7635d8b2e23985d0e47a6984ca reports actual CanvasKit baselines124.48 normal and124.47 badge versus source124.5. Red ink bounds still differ by one pixel; no screenshot-fitted offset or exact badge raster claim.
+- A gallery gate limitation was observed: its existing Multiple exceptions filter swallowed intermediate Row overflow messages. The direct regression caught it, the badge was constrained, and the final full-gallery log has no overflow messages. The intermediate falsely clean result remains in the archive.
+- Minimum SDK task r1 confirmed Flutter3.44.0 bundles Dart3.12.0 and fails fresh resolution against ^3.12.2. Official source identifies Flutter3.44.2 / Dart3.12.2 as the earliest stable constraint-compatible pair; it is not yet behaviorally verified. Evidence /tmp/beui-pr26-min-sdk-20261023-evidence/REPORT.md. No constraints changed.
+- Active child `v3-minimum-sdk-verify-20261023-r2`: isolated3.44.2 resolution, adapter contract, native Bump reorder; owns /tmp only, suggested18147. Active child `v3-order-book-native-states-20261023-r1`: deterministic fixed-snapshot native state proof, owns only order-book-deterministic proof directory and /tmp, suggested18146. No shared production edits delegated.
+- Next parent work: finish badge archive/PR push, consume those tasks, and isolate shared typography raster residuals. Read-only prioritization is /tmp/beui-pr26-next-obligations-20261023.md. No merge authorized. Preserve .impeccable/. Historical sections below are superseded where newer evidence exists.
+
+## Historical initial state
 
 - Parent head before this document: `678812d36`; last confirmed pushed head `25b395e7`.
 - Signup capture build: `c66a8825`, port 18121, JS `55ed90091a0f2213adc12a478b6013faa43cbf88aa60cfe38c4126dd84e19bcb`.
@@ -27,7 +38,7 @@ These IDs cover the resumed parent work; earlier detailed defects remain in thei
 | R007 | Sankey archive not self-contained | Git ignored 43 sealed logs | 678812d36 | Parent verifier: 2,186 files, 16 recordings | Archive verified |
 | R008 | Intermittent Lucide tofu | Unknown; successful same-JS font response exists | No speculative font change | Historical deficient frames preserved; request tracing enabled | Transient watched |
 
-## Next actions
+## Historical initial next actions
 
 Finish final signup combinations and inspected native recordings, independently export Sankey proof, integrate existing owner results, run combined gates, push authorized branch updates, and continue unassigned coverage obligations. Do not treat archive integrity or passing behavior tests as pixel or motion certification.
 
