@@ -2,6 +2,14 @@
 
 Done means the scoped source behaviors, appearance and motion are implemented and verified with preserved source/candidate evidence, integrated gates, and pushed PR26 updates. No merge is authorized. Exact parity remains incomplete.
 
+## Latest continuation: Heat Calendar defects
+
+- Native source/candidate sessions reproduce three behavioral differences under both motion preferences. These are failures, not missing-certification labels. Original heat-calendar-native evidence retains 84 final observations and 1,374 original frames plus earlier failed attempts.
+- R016: legend hover does not filter and click/exit retains filtering. Candidate legend has only an onTap GestureDetector; source has pointer and focus handlers. Repair and regression pending.
+- R017: Tab from focused October 23 reaches candidate October 3 then October 4 instead of source legend levels 0 and 1. Row-major semantics/native traversal is under investigation; cause not yet established.
+- R018: removing focused October 23 by changing endDate to October 19 exposes stale October 4 readout. Parent visually inspected the retained screenshot. Focus/hover identity synchronization is under investigation; cause not yet established.
+- Active child `v3-heat-calendar-repair-20261023-r1` owns heat_calendar.dart and a new focused regression file, with isolated /tmp native diagnostics on18150. No shared Tooltip/overlay edits, golden changes or broad suites. Before archive remains immutable; passing integrity verifies the recorded failures, not parity.
+
 ## Latest continuation: chart mono measurements
 
 - The current candle/volume narrowing did not reproduce in a fresh fixture or actual gallery. Actual advances exactly match the named Geist Mono and registered monospace controls. Source DOM and candidate advances differ by less than 0.019px across six labels; source Canvas2D advances differ by less than 0.00055px. Baselines differ by 0.26px. No typography change is supported.

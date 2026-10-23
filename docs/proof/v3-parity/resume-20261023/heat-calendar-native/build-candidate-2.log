@@ -1,0 +1,35 @@
+Unhandled exception:
+Error on line 13, column 5: While parsing a block collection, expected '-'.
+   ╷
+13 │     sdk: flutter
+   │     ^
+   ╵
+#0      Parser._parseBlockSequenceEntry (package:yaml/src/parser.dart:382:5)
+#1      Parser._stateMachine (package:yaml/src/parser.dart:91:16)
+#2      Parser.parse (package:yaml/src/parser.dart:61:19)
+#3      Loader._loadSequence (package:yaml/src/loader.dart:141:23)
+#4      Loader._loadNode (package:yaml/src/loader.dart:87:11)
+#5      Loader._loadMapping (package:yaml/src/loader.dart:163:19)
+#6      Loader._loadNode (package:yaml/src/loader.dart:88:35)
+#7      Loader._loadMapping (package:yaml/src/loader.dart:163:19)
+#8      Loader._loadNode (package:yaml/src/loader.dart:88:35)
+#9      Loader._loadDocument (package:yaml/src/loader.dart:68:20)
+#10     Loader.load (package:yaml/src/loader.dart:60:20)
+#11     loadYamlDocument (package:yaml/yaml.dart:69:25)
+#12     loadYamlNode (package:yaml/yaml.dart:54:5)
+#13     loadYaml (package:yaml/yaml.dart:41:5)
+#14     FlutterManifest.createFromString (package:flutter_tools/src/flutter_manifest.dart:54:28)
+#15     FlutterManifest.createFromPath (package:flutter_tools/src/flutter_manifest.dart:48:28)
+#16     runInContext.<anonymous closure> (package:flutter_tools/src/context_runner.dart:227:44)
+#17     AppContext._generateIfNecessary.<anonymous closure> (package:flutter_tools/src/base/context.dart:108:42)
+#18     _LinkedHashMapMixin.putIfAbsent (dart:_compact_hash:631:23)
+#19     AppContext._generateIfNecessary (package:flutter_tools/src/base/context.dart:95:20)
+#20     AppContext.get (package:flutter_tools/src/base/context.dart:125:32)
+#21     featureFlags (package:flutter_tools/src/features.dart:13:42)
+#22     run.<anonymous closure> (package:flutter_tools/runner.dart:55:40)
+#23     runInContext.runnerWrapper (package:flutter_tools/src/context_runner.dart:76:18)
+<asynchronous suspension>
+#24     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#25     main (package:flutter_tools/executable.dart:103:3)
+<asynchronous suspension>
