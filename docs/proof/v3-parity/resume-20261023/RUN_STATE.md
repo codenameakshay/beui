@@ -1,3 +1,9 @@
+## 2026-10-24 native gallery observations and next diagnosis
+
+Fresh final gallery build served `27f85b5e40e2528bbc787be0e0a2af23fea6e081f4bdfe87c6c01e68a36a0aed`. Collapsible/Scheduler bounded checks pass both preferences. Scheduler pointer deselection moves focus to checkbox; Enter does not mutate background, without proving retained-focus fixture case. Combobox ordinary interactions pass but rapid Escape/type/filter remains inconsistent: run-1 empty/closed, followup sometimes Pro with all options. No unconditional native acceptance.
+
+Evidence `../resume-20261024/three-components-native/REPORT.md`: 14 contexts, 2,216 original frames, worker integrity/replay pass. Parent verifier session9236 completed exit0; log `/tmp/beui-three-native-parent-verify.log`. New read-only task `v3-combobox-gallery-rapid-diagnosis-20261024-r5` inspecting raw events/code/source, no builds/captures because free disk is only364MiB. No originals deleted. Need resolve capacity before further large validation.
+
 ## 2026-10-24 combined local integration complete
 
 At pushed head `ee5b755599cead69fabf30079af1be9634f80280`, root 2,668 pass / 56 golden failures exactly match previous failure identities; no added/removed failures. Gallery 66 pass. Package, example and affected-file analysis pass. Whole-tree analysis fails with 7,804 diagnostics under archived docs/proof fixtures; root/example formatting checks also fail on documented files. These gates are not green or waived. All six repaired inputs and 647 scanned Dart/PNG files unchanged. Parent independently verified the 268-file manifest in `../resume-20261024/components-integration/`.
@@ -513,3 +519,5 @@ Finish final signup combinations and inspected native recordings, independently 
 - Exact code-head full root2517pass/56identical baseline golden failures, gallery62/62, focused Table73/73 with goldens disabled, scoped analysis and release pass. Final fixture JS c5b13dd0985cf017542a352778d5cce72c2472ca6daede83fcaecaa342dff62a. Actual Chrome finalr4 passes30 exact horizontal comparisons across rest/freeze/50px trusted drag and both motion preferences.
 - table-intrinsic-browser preserves r1 incomplete DOM extraction, r2 pre-wrapper captures, r3 wrapper repair and r4 sampling repair; all original screenshots and16WebMs retained. Verifier checks hashes/decoded frames/trusted inputs/served hashes/effective preferences. No pixel/native60 certification.
 - Active next diagnosis: `v3-table-vertical-geometry-diagnosis-20261023-r1`, read-only source/candidate vertical row/baseline correspondence. Owns /tmp and browser page only. Parent server18137 retained for this task; source18134 is unchanged. Earlier parent-owned18135/18136 remain frozen, no unrelated servers stopped.
+
+Completed review cleanup: removed only generated build/{native_assets,test_cache,unit_test_assets} trees in /tmp/beui-scheduler-r2-20261024, /tmp/beui-scheduler-r2-min3442-20261024, and /tmp/beui-combobox-review-20261024-fudo0o_d after their logs/probes were archived. No captures, source, locks, or logs removed.
