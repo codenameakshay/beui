@@ -105,14 +105,32 @@ try {
     })();
   } else await cdp.send('Page.startScreencast', { format: 'png', everyNthFrame: 1 });
   const sequenceStartMs = elapsed();
+  const dispatch = {
+    move: (action, target) => page.mouse.move(target.x, target.y),
+    click: (action, target) => page.mouse.click(target.x, target.y),
+    key: action => page.keyboard.press(action.key),
+    text: action => page.keyboard.insertText(action.text),
+  };
   for (const action of config.events) {
-    const delay = sequenceStartMs + action.atMs - elapsed();
-    if (delay > 0) await page.waitForTimeout(delay);
+    const type = action.type ?? 'move';
+    if (!Object.hasOwn(dispatch, type)) throw new Error(`Unknown event type ${type}`);
     const target = targets[action.target];
-    if (!target) throw new Error(`Unknown target ${action.target}`);
-    const beforeMs = elapsed();
-    await page.mouse.move(target.x, target.y);
-    events.push({ ...action, pointer: target, dispatchBeforeMs: beforeMs, dispatchAfterMs: elapsed() });
+    if ((action.target !== undefined || type === 'move' || type === 'click') && !target) throw new Error(`Unknown target ${action.target}`);
+    if (type === 'key' && typeof action.key !== 'string') throw new Error('Key event requires a string key');
+    if (type === 'text' && typeof action.text !== 'string') throw new Error('Text event requires a string text');
+    const requestedMs = sequenceStartMs + action.atMs;
+    while (elapsed() < requestedMs) await page.waitForTimeout(Math.ceil(requestedMs - elapsed()));
+    const event = { ...action, type, pointer: type === 'move' || type === 'click' ? target : undefined,
+      requestedMs, dispatchBeforeMs: elapsed() };
+    events.push(event);
+    try {
+      await dispatch[type](action, target);
+    } catch (error) {
+      event.error = String(error);
+      throw error;
+    } finally {
+      event.dispatchAfterMs = elapsed();
+    }
   }
   await page.waitForTimeout(config.finalHoldMs || 700);
   const stopMs = elapsed();

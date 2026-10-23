@@ -19,9 +19,23 @@ Each output directory must be new. Existing directories fail with `EEXIST` befor
 
 The config contains the URL, viewport, theme, provenance, named pointer targets, and scheduled events. The live reference uses accessible button names. Baseline coordinates came from the rendered 80 by 40 pixel triggers at this viewport. Re-measure coordinates for every other route or layout. Do not reuse Tooltip coordinates for another widget.
 
+An event with no `type` still moves the pointer. Explicit types are `move`, `click`, `key`, and `text`. Move and click require a named `target`. Key and text act on the focused element, so click the input first. Text inserts a literal string and sends an input event, not individual character keydowns. Key accepts Playwright key combinations such as `Enter`, `Escape`, and `ControlOrMeta+A`.
+
+```json
+[
+  { "atMs": 600, "type": "click", "target": "search" },
+  { "atMs": 900, "type": "text", "text": "Shared layout" },
+  { "atMs": 1200, "type": "key", "key": "Enter" }
+]
+```
+
+Each event retains its requested relative `atMs`, absolute monotonic `requestedMs`, and actual `dispatchBeforeMs` and `dispatchAfterMs`. All monotonic fields use the recording process's clock origin. Dispatch errors remain on the event in `failure.json`. These timestamps bracket input dispatch, not visual completion.
+
+Run `PARITY_PLAYWRIGHT=/tmp/beui-parity-capture-runtime/node_modules/playwright-core/index.mjs node tool/parity_capture_test.mjs` to exercise default hover, clicks, literal text replacement, and Enter through a real Chrome fixture. The check asserts the browser's observed values and retains its screenshot video under a new temporary directory.
+
 Use `backend: "screenshots"` for Flutter CanvasKit. This calls `Page.captureScreenshot` repeatedly with no fixed-rate resampler. Each image retains its request and response timestamps. A screenshot's exact exposure time is unknown inside that interval. The alternative compositor backend calls `Page.startScreencast` with `everyNthFrame: 1` and keeps Chrome's compositor timestamps. Its delivered timestamps can arrive out of order, so encoding sorts by timestamp while preserving original delivery order in the timeline.
 
-Start with the baseline config for a repaired candidate. Change its URL, provenance, and measured targets, then use a fresh output directory. Run each capture from reset. The recorder currently supports pointer movement only. It does not validate an agent submit, edit, approval, or cancellation flow. Those need route-specific actions and observable outcomes.
+Start with the baseline config for a repaired candidate. Change its URL, provenance, and measured targets, then use a fresh output directory. Run each capture from reset. Supported input events do not validate an agent submit, edit, approval, or cancellation flow. Those still need route-specific actions and observable outcomes.
 
 ## Verify pixels and timestamps
 
