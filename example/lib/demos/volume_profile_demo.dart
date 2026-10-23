@@ -109,80 +109,87 @@ class _VolumeProfileDemoState extends State<_VolumeProfileDemo> {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 576),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'BTC / USD',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Volume by price · Demo data',
-                      style: TextStyle(
-                        fontSize: 12,
-                        height: 4 / 3,
-                        color: BeuiColors.resolve(context).mutedForeground,
-                      ),
-                    ),
-                  ],
-                ),
-                BeuiTabs<String>(
-                  value: _session,
-                  onChanged: (value) => setState(() => _session = value),
-                  variant: BeuiTabsVariant.segment,
-                  triggerPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  tabs: [
-                    for (final name in _sessions.keys)
-                      BeuiTab(
-                        value: name,
-                        label: Text(name, style: const TextStyle(fontSize: 12)),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            BeuiVolumeProfile(
-              data: data,
-              label: 'BTC volume profile',
-              unit: 'BTC',
-              formatPrice: (v) => '\$${beuiChartFormatNumber(v)}',
-              formatVolume: (v) => beuiChartFormatNumber(
-                v,
-                maximumFractionDigits: v == v.roundToDouble() ? 0 : 2,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 12,
+                runSpacing: 12,
                 children: [
-                  BeuiVolumeProfilePlot(
-                    height: MediaQuery.sizeOf(context).width < 640 ? 288 : 320,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'BTC / USD',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Volume by price · Demo data',
+                        style: TextStyle(
+                          fontSize: 12,
+                          height: 4 / 3,
+                          color: BeuiColors.resolve(context).mutedForeground,
+                        ),
+                      ),
+                    ],
                   ),
-                  const BeuiVolumeProfileTooltip(),
-                  const SizedBox(height: 20),
-                  const BeuiVolumeProfileSummary(),
-                  const SizedBox(height: 20),
+                  BeuiTabs<String>(
+                    value: _session,
+                    onChanged: (value) => setState(() => _session = value),
+                    variant: BeuiTabsVariant.segment,
+                    triggerPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    tabs: [
+                      for (final name in _sessions.keys)
+                        BeuiTab(
+                          value: name,
+                          label: Text(
+                            name,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              BeuiVolumeProfile(
+                data: data,
+                label: 'BTC volume profile',
+                unit: 'BTC',
+                formatPrice: (v) => '\$${beuiChartFormatNumber(v)}',
+                formatVolume: (v) => beuiChartFormatNumber(
+                  v,
+                  maximumFractionDigits: v == v.roundToDouble() ? 0 : 2,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    BeuiVolumeProfilePlot(
+                      height: MediaQuery.sizeOf(context).width < 640
+                          ? 288
+                          : 320,
+                    ),
+                    const BeuiVolumeProfileTooltip(),
+                    const SizedBox(height: 20),
+                    const BeuiVolumeProfileSummary(),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
