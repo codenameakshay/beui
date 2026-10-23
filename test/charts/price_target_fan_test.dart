@@ -30,6 +30,7 @@ Future<void> _pumpChart(
     tester.view.resetDevicePixelRatio();
   });
   await tester.pumpWidget(beuiTestApp(chart, reduce: reduce, width: 640));
+  await tester.pumpAndSettle();
 }
 
 BeuiPriceTargetFan _chart({
@@ -125,6 +126,7 @@ void main() {
         ),
       ),
     );
+    await tester.pumpAndSettle();
     final before = paints;
     update(() => current = 188);
     await tester.pump();
@@ -196,7 +198,7 @@ void main() {
     expect(paints, greaterThan(before));
   });
 
-  testWidgets('target fan repaints when current changes in a boundary', (
+  testWidgets('target paths repaint their origin when current changes', (
     tester,
   ) async {
     var current = 178.52;
@@ -220,10 +222,32 @@ void main() {
         ),
       ),
     );
-    final before = paints;
+    await tester.pumpAndSettle();
+    double originY() {
+      final canvas = TestRecordingCanvas();
+      final paint = tester
+          .widgetList<CustomPaint>(
+            find.descendant(
+              of: find.byType(BeuiPriceTargetTargets),
+              matching: find.byType(CustomPaint),
+            ),
+          )
+          .first;
+      paint.painter!.paint(canvas, const Size(520, 236));
+      final path =
+          canvas.invocations
+                  .firstWhere((call) => call.invocation.memberName == #drawPath)
+                  .invocation
+                  .positionalArguments
+                  .first
+              as Path;
+      return path.computeMetrics().first.getTangentForOffset(0)!.position.dy;
+    }
+
+    expect(originY(), closeTo(150.85093, .001));
     update(() => current = 188);
     await tester.pump();
-    expect(paints, greaterThan(before));
+    expect(originY(), closeTo(128.77019, .001));
   });
 
   testWidgets('history points can be inspected by hover and keyboard', (
@@ -240,12 +264,12 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
     await tester.pumpAndSettle();
-    expect(find.text('2025-10-14'), findsWidgets);
+    expect(find.text('Tue, Oct 14'), findsWidgets);
     expect(find.text('Price'), findsWidgets);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.home);
     await tester.pump();
-    expect(find.text('2025-09-14'), findsWidgets);
+    expect(find.text('Sun, Sep 14'), findsWidgets);
   });
 
   testWidgets('dragging from a history point selects the last history date', (
@@ -308,11 +332,8 @@ void main() {
       tester,
       _chart(onActiveChange: (value) => changed = value),
     );
-    final point = find.byKey(const ValueKey('price-target-history-2025-11-14'));
     final focus =
-        tester.state(
-              find.ancestor(of: point, matching: find.byType(Focus)).first,
-            )
+        tester.state(find.byKey(const ValueKey('price-target-history-slider')))
             as dynamic;
     focus.focusNode.requestFocus();
     await tester.pump();
@@ -381,14 +402,14 @@ void main() {
         onActiveChange: (value) => changed = value,
       ),
     );
-    expect(find.text('2025-09-14'), findsWidgets);
+    expect(find.text('Sun, Sep 14'), findsWidgets);
     await tester.tap(
       find.byKey(const ValueKey('price-target-history-2025-09-14')),
     );
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
     expect(changed, const BeuiPriceTargetFanActive.history('2025-10-14'));
-    expect(find.text('2025-10-14'), findsWidgets);
+    expect(find.text('Tue, Oct 14'), findsWidgets);
   });
 
   testWidgets('keyboard inspector selects an endpoint and Escape clears', (
