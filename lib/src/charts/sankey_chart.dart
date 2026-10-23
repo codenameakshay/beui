@@ -216,6 +216,9 @@ class _SankeyState extends State<BeuiSankeyChart> {
       colors: widget.colors,
     );
     if (!controlled && internal != null && active == null) internal = null;
+    if (cursor != null && !layout.nodes.any((node) => node.id == cursor)) {
+      cursor = null;
+    }
   }
 
   @override
@@ -766,7 +769,6 @@ class _NodeTargetState extends State<_NodeTarget> {
     return FocusableActionDetector(
       focusNode: focus,
       includeFocusSemantics: false,
-      enabled: widget.enabled,
       onShowFocusHighlight: (v) => setState(() => ring = v),
       onFocusChange: (v) {
         if (v) {
@@ -774,6 +776,17 @@ class _NodeTargetState extends State<_NodeTarget> {
           s.focused = n.id;
           s.select(n.id, open: true, keyboard: !s.pointerFocus);
           s.pointerFocus = false;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || !focus.hasFocus) return;
+            Scrollable.ensureVisible(
+              context,
+              alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtStart,
+            );
+            Scrollable.ensureVisible(
+              context,
+              alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+            );
+          });
         }
       },
       child: Focus(
