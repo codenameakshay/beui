@@ -127,14 +127,16 @@ class BeuiFunnelChart extends StatelessWidget {
       label: label,
       child:
           child ??
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              BeuiFunnelPlot(),
-              SizedBox(height: 24),
-              BeuiFunnelSummary(),
-            ],
-          ),
+          (_rows.isEmpty
+              ? const BeuiFunnelPlot()
+              : const Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    BeuiFunnelPlot(),
+                    SizedBox(height: 24),
+                    BeuiFunnelSummary(),
+                  ],
+                )),
     ),
   );
 }

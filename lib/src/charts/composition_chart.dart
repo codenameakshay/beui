@@ -264,14 +264,16 @@ class _BeuiCompositionChartState extends State<BeuiCompositionChart>
       label: widget.label,
       child:
           widget.child ??
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              BeuiCompositionPlot(),
-              SizedBox(height: 16),
-              BeuiCompositionLegend(),
-            ],
-          ),
+          (columns.isEmpty
+              ? const BeuiCompositionPlot()
+              : const Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    BeuiCompositionPlot(),
+                    SizedBox(height: 16),
+                    BeuiCompositionLegend(),
+                  ],
+                )),
     ),
   );
 }

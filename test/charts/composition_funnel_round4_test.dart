@@ -55,6 +55,27 @@ Future<Color> _pixel(WidgetTester tester, Offset global) async {
 }
 
 void main() {
+  for (final (name, chart, height) in <(String, Widget, double)>[
+    ('composition', const BeuiCompositionChart(series: [], periods: []), 256),
+    ('funnel', const BeuiFunnelChart(stages: []), 148),
+    (
+      'invalid funnel',
+      const BeuiFunnelChart(
+        stages: [BeuiFunnelStage(id: 'invalid', label: 'Invalid', value: -1)],
+      ),
+      148,
+    ),
+  ]) {
+    testWidgets('default empty $name does not reserve absent-part spacing', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(SingleChildScrollView(child: chart), width: 600),
+      );
+      expect(tester.getSize(find.byType(BeuiChartFrame)).height, height);
+    });
+  }
+
   for (final reduce in [false, true]) {
     testWidgets(
       'funnel hover tint follows the source 150ms curve, reduce=$reduce',
