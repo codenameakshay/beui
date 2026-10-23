@@ -67,3 +67,7 @@ The final served JavaScript is
 The archive retains 16 original WebM videos, including intermediates, and all
 original screenshots. The verifier checks 30 exact final horizontal boundary
 comparisons. These are local/browser results, not hosted CI or deployment proof.
+
+`geometry-comparison.json` is the retained r3 calculation. The verifier computes
+its final 30 comparisons directly from r4 results; it does not reuse that older
+calculation or relabel it as final-head proof.
