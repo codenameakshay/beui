@@ -48,3 +48,17 @@ Finish final signup combinations and inspected native recordings, independently 
 - Component example chain integrated as parent commits through `b43d67cb4`; focused 64-test root batch passes. Archive verification is running. Example gallery and fresh combined gates remain pending.
 - Parent agent behavior batch: 227 pass. Candle/volume, bump, agents and signup archives all pass tracked-only independent exports. Disposable exports removed only after success; committed originals remain.
 - Read-only Bump focus diagnosis delegated under task suffix `v3-bump-native-race-diagnosis-20261023`, isolated checkout, owned port 18122. No other worker owns Bump now. Composition/funnel remains active.
+
+## Integrated continuation at 410893339
+
+- Pushed through `410893339` to origin/akshay/v3-ship for PR26. No merge.
+- Sankey independent defects fixed in `383931bbb`; compact traversal fixed in `e61ff63be`. Fresh native lifecycle proof `d07eca954` passes all 12 source/candidate scenarios across motion preferences. Independent tracked-file export verifies 148 files. R3 pointer interception remains a separate open Tooltip concern; R4 uses actual Tab to leave the chart and does not waive it.
+- NumberTicker measured geometry repair `f23e8af49` and source file icon `072647a92` integrated. Matching geometry test lookup corrected in `410893339` without changing assertions. Composition percentage width now grows beyond its source 48px minimum when measured text needs it (`8eed11643`).
+- Composition/funnel chain integrated through `bb41eecc7`, evidence `70660748b`. Independent tracked-file export passes 13,719 files / 669,376,638 bytes, 102 recordings / 11,118 original frames. All source and superseded evidence retained.
+- Latest combined chart+ticker behavior: 283 pass with goldens disabled. Full root at 410893339: 2,449 pass / 56 preserved golden failures, no non-golden failures. Gallery: 56 pass. Production/test scoped analysis passes; whole-tree analysis has four informational lints in archived evidence fixtures, retained unchanged. Release succeeds.
+- Latest gallery JS `6dde1f24097e8562b2ddf8bf093b0d2b8b640feac3e531aa6f9f3e3963a709bc`. Fresh composition hover screenshots show readable measured values and percentages; actual served hash and motion probes retained under integration-round5. This is not pixel parity.
+- R011: Sankey cursor revival, pre-entry keyboard exclusion, horizontal offscreen focus: repaired and widget/native verified.
+- R012: Sankey compact hit-target overlap skips chart in reading-order traversal: repaired with chart traversal group; red/green widget and native checks retained.
+- R013: Native Tooltip mouse-click and second-tap dismissal fail in funnel under both motion preferences. Read-only diagnosis active: `node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-tooltip-native-dismiss-diagnosis-20261023`; owns only /tmp and port18125. No production edits delegated.
+- Bump focus race remains open. Rejected sort-key experiment was reverted and archived as d6a2e5c27. Do not reapply or report as fixed.
+- Existing composition/funnel worker is completed. Remaining table, typography, coverage, pixel and fast-motion obligations remain open. No parity certification.
