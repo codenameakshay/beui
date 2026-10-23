@@ -1,6 +1,6 @@
 # v3-components design-compare (widget / dark-ui)
 
-Captured 2026-10-22 against beui.dev crops and the visual harness at `http://127.0.0.1:8098/?slug=<slug>&theme=dark` after `6f97bc3`.
+Captured 2026-10-22 against beui.dev crops and the visual harness at `http://127.0.0.1:8098/?slug=<slug>&theme=dark` after `6f97bc3`. Hover stills for sortable-stack and breadcrumb recaptured 2026-10-23 on `a214f0d`.
 
 | Slug | overall | layout | color | notes |
 | --- | --- | --- | --- | --- |
@@ -18,6 +18,8 @@ Hover / enter proved in this harness pass:
 - card: 2-col, labels left / switches right, selected ring on Signed contract
 - tabs: overflow chevrons both sides; Activity hover lightens the label
 - number: compact `Animate` under 320-wide digit-swap
+- sortable-stack: four-row list + Undo; first-handle hover paints a 36×36 muted rounded fill and `Reorder Collect references` (`cand-sortable-stack.png` → `cand-sortable-stack-hover.png`)
+- breadcrumb: `Workspace > … > Navigation`; Workspace hover paints muted/60 rounded fill and foreground text (`cand-breadcrumb.png` → `cand-breadcrumb-hover.png`)
 
 `compare_motion` on the full 1440×900 tooltip sequence reports `motion_status: static` (tiny ROI vs viewport). The enter stills show the surface appearing.
 
