@@ -214,6 +214,7 @@ class MarketArtwork extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
+    constraints: const BoxConstraints.expand(),
     color: rates ? Colors.white : null,
     padding: EdgeInsets.all(compact ? 2 : 4),
     child: rates

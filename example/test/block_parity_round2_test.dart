@@ -85,13 +85,16 @@ void main() {
       () async {
         await tester.pumpWidget(
           app(
-            (_) => const SizedBox(
-              width: 48,
-              height: 48,
-              child: MarketArtwork(
-                url:
-                    'https://upload.wikimedia.org/wikipedia/commons/7/73/Seal_of_the_United_States_Federal_Reserve_Board.svg',
-                rates: true,
+            (_) => Center(
+              child: Container(
+                width: 48,
+                height: 48,
+                alignment: Alignment.center,
+                child: const MarketArtwork(
+                  url:
+                      'https://upload.wikimedia.org/wikipedia/commons/7/73/Seal_of_the_United_States_Federal_Reserve_Board.svg',
+                  rates: true,
+                ),
               ),
             ),
           ),
@@ -107,6 +110,9 @@ void main() {
           ),
         );
         expect(info!.size, const Size(1, 1));
+        await tester.pumpAndSettle();
+        expect(tester.getSize(find.byType(MarketArtwork)), const Size(48, 48));
+        expect(tester.getSize(find.byType(SvgPicture)), const Size(40, 40));
         final recorder = ui.PictureRecorder();
         final canvas = Canvas(recorder)..scale(40);
         canvas.drawPicture(info.picture);
