@@ -234,8 +234,8 @@ class BeuiFunnelPlot extends StatelessWidget {
                   children: [
                     for (var i = 0; i < rows.length; i++)
                       Positioned.fill(
+                        key: ValueKey('funnel-shape-${rows[i].stage.id}'),
                         child: _FunnelShape(
-                          key: ValueKey(rows[i].stage.id),
                           points: _funnelPoints(
                             rows.map((row) => row.proportion).toList(),
                             i,
@@ -246,6 +246,7 @@ class BeuiFunnelPlot extends StatelessWidget {
                       ),
                     for (var i = 0; i < rows.length; i++)
                       Positioned(
+                        key: ValueKey('funnel-button-${rows[i].stage.id}'),
                         left: horizontal ? width * i / rows.length : 0,
                         top: horizontal ? 0 : plotHeight * i / rows.length,
                         width: horizontal ? width / rows.length : width,
@@ -316,50 +317,71 @@ class BeuiFunnelPlot extends StatelessWidget {
   }
 }
 
-class _FunnelStageButton extends StatelessWidget {
+class _FunnelStageButton extends StatefulWidget {
   const _FunnelStageButton({required this.value, required this.colors});
   final String value;
   final BeuiColors colors;
+
   @override
-  Widget build(BuildContext context) => TextButton(
-    onPressed: () {},
-    style: ButtonStyle(
-      padding: const WidgetStatePropertyAll(EdgeInsets.zero),
-      minimumSize: const WidgetStatePropertyAll(Size.zero),
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
-      overlayColor: WidgetStateProperty.resolveWith(
-        (states) => states.contains(WidgetState.hovered)
-            ? colors.foreground.withValues(alpha: .05)
-            : Colors.transparent,
-      ),
-      side: WidgetStateProperty.resolveWith(
-        (states) =>
-            states.contains(WidgetState.focused) &&
-                FocusManager.instance.highlightMode ==
-                    FocusHighlightMode.traditional
-            ? BorderSide(color: colors.ring, width: 2)
-            : BorderSide.none,
-      ),
-    ),
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: colors.background.withValues(alpha: .85),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        value,
-        style: TextStyle(
-          fontFamily: 'monospace',
-          fontSize: 12,
-          height: 16 / 12,
-          fontWeight: FontWeight.w500,
-          color: colors.foreground,
+  State<_FunnelStageButton> createState() => _FunnelStageButtonState();
+}
+
+class _FunnelStageButtonState extends State<_FunnelStageButton> {
+  final _focus = FocusNode();
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    return Listener(
+      onPointerDown: (_) => _focus.requestFocus(),
+      child: TextButton(
+        focusNode: _focus,
+        onPressed: () {},
+        style: ButtonStyle(
+          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+          minimumSize: const WidgetStatePropertyAll(Size.zero),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
+          overlayColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.hovered)
+                ? colors.foreground.withValues(alpha: .05)
+                : Colors.transparent,
+          ),
+          side: WidgetStateProperty.resolveWith(
+            (states) =>
+                states.contains(WidgetState.focused) &&
+                    FocusManager.instance.highlightMode ==
+                        FocusHighlightMode.traditional
+                ? BorderSide(color: colors.ring, width: 2)
+                : BorderSide.none,
+          ),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: colors.background.withValues(alpha: .85),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            widget.value,
+            style: TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 12,
+              height: 16 / 12,
+              fontWeight: FontWeight.w500,
+              color: colors.foreground,
+            ),
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 Widget _funnelTooltip(
@@ -446,7 +468,7 @@ List<double> _funnelPoints(
 }
 
 class _FunnelShape extends StatelessWidget {
-  const _FunnelShape({required this.points, required this.color, super.key});
+  const _FunnelShape({required this.points, required this.color});
   final List<double> points;
   final Color color;
   @override

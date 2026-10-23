@@ -36,7 +36,8 @@ void main() {
       final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await mouse.addPointer(location: Offset.zero);
       await mouse.moveTo(tester.getCenter(plot));
-      await tester.tapAt(tester.getCenter(plot));
+      await mouse.down(tester.getCenter(plot));
+      await mouse.up();
       await tester.pumpAndSettle();
       expect(tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open, isTrue);
       await mouse.moveTo(Offset.zero);

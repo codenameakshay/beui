@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
 import '../motion/tooltip.dart';
+import '../motion/_engine.dart';
 import '_shared.dart';
 
 /// How composition data is visualized.
@@ -468,6 +469,11 @@ class BeuiCompositionPlot extends StatelessWidget {
                         );
                       },
                       onPointerCancel: (_) => state._setTooltipOpen(false),
+                      onPointerUp: (event) {
+                        if (event.kind == PointerDeviceKind.touch) {
+                          state._setTooltipOpen(false);
+                        }
+                      },
                       child: SizedBox(
                         height: plotHeight,
                         child: Semantics(
@@ -630,6 +636,7 @@ Widget _compositionTooltipRow(
 }) {
   final muted = TextStyle(fontSize: 11, color: colors.mutedForeground);
   return Row(
+    key: ValueKey(segment.series.id),
     mainAxisSize: MainAxisSize.min,
     children: [
       BeuiChartSwatch(
@@ -737,8 +744,8 @@ class _CompositionGeometry extends StatelessWidget {
           if (view == BeuiCompositionView.area)
             for (var row = 0; row < columns.first.segments.length; row++)
               Positioned.fill(
+                key: ValueKey(columns.first.segments[row].series.id),
                 child: BeuiChartTween(
-                  key: ValueKey(columns.first.segments[row].series.id),
                   from: 0,
                   value:
                       highlight != null &&
@@ -746,6 +753,10 @@ class _CompositionGeometry extends StatelessWidget {
                       ? .18
                       : .9,
                   duration: const Duration(milliseconds: 180),
+                  motion: const CurvedMotion(
+                    Duration(milliseconds: 180),
+                    Cubic(0, 0, .58, 1),
+                  ),
                   builder: (context, opacity) => CustomPaint(
                     painter: _CompositionPainter(
                       columns: columns,
@@ -914,6 +925,7 @@ class BeuiCompositionLegend extends StatelessWidget {
           children: [
             for (final segment in column.segments)
               SizedBox(
+                key: ValueKey('composition-legend-${segment.series.id}'),
                 width: width,
                 height: 48,
                 child: BeuiChartTween(
@@ -921,6 +933,10 @@ class BeuiCompositionLegend extends StatelessWidget {
                       ? .4
                       : 1,
                   duration: const Duration(milliseconds: 150),
+                  motion: const CurvedMotion(
+                    Duration(milliseconds: 150),
+                    Cubic(.4, 0, .2, 1),
+                  ),
                   builder: (context, opacity) => Opacity(
                     opacity: opacity.clamp(0, 1),
                     child: MouseRegion(

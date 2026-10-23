@@ -41,7 +41,7 @@ Future<Color> _pixel(WidgetTester tester, Offset global) async {
   final point = boundary.globalToLocal(global);
   final image = (await tester.runAsync(() => boundary.toImage()))!;
   final data = (await tester.runAsync(
-    () => image.toByteData(format: ui.ImageByteFormat.rawRgba),
+    () => image.toByteData(format: ui.ImageByteFormat.rawStraightRgba),
   ))!;
   final offset = (point.dy.floor() * image.width + point.dx.floor()) * 4;
   final raw = Color.fromARGB(
@@ -89,10 +89,10 @@ void main() {
     expect(await _pixel(tester, point), Colors.white);
     await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.pumpAndSettle();
-    expect((await _pixel(tester, point)).toARGB32(), 0xffe0e0e0);
+    expect((await _pixel(tester, point)).toARGB32(), 0xffe1e1e1);
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
-    expect((await _pixel(tester, point)).toARGB32(), 0xffe0e0e0);
+    expect((await _pixel(tester, point)).toARGB32(), 0xffe1e1e1);
     await tester.tapAt(plot.center);
     await tester.pumpAndSettle();
     expect(await _pixel(tester, point), Colors.white);
@@ -128,6 +128,11 @@ void main() {
         2,
       );
       await touch.up();
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open,
+        isFalse,
+      );
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
       await tester.pumpAndSettle();
       expect(changes, ['Jan', 'Mar', 'Feb']);
@@ -189,6 +194,79 @@ void main() {
       expect(find.text('— from previous stage'), findsOneWidget);
     },
   );
+  testWidgets('composition area uses the source duration-only ease-out fade', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const RepaintBoundary(
+          key: ValueKey('pixels'),
+          child: BeuiCompositionChart(
+            series: _series,
+            periods: ['Jan', 'Feb', 'Mar'],
+            view: BeuiCompositionView.area,
+          ),
+        ),
+        width: 600,
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 90));
+    final plot = tester.getRect(_paint('_CompositionPainter').first);
+    final pixel = await _pixel(tester, plot.topLeft + const Offset(15, 280));
+    expect(pixel.r, 1);
+    expect(pixel.b, closeTo(.384, .015));
+  });
+
+  testWidgets(
+    'funnel mouse focus continues to the next stage and follows stable IDs',
+    (tester) async {
+      var stages = _stages;
+      late StateSetter update;
+      await tester.pumpWidget(
+        beuiTestApp(
+          StatefulBuilder(
+            builder: (context, setState) {
+              update = setState;
+              return BeuiFunnelChart(stages: stages);
+            },
+          ),
+          reduce: true,
+        ),
+      );
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(
+        tester.getCenter(
+          find.byKey(const ValueKey('funnel-stage-a-semantics')),
+        ),
+      );
+      await mouse.down(
+        tester.getCenter(
+          find.byKey(const ValueKey('funnel-stage-a-semantics')),
+        ),
+      );
+      await mouse.up();
+      await mouse.moveTo(Offset.zero);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker)).format(20),
+        '20 people',
+      );
+      final focused = FocusManager.instance.primaryFocus;
+      update(() => stages = [_stages[0], _stages[2], _stages[1]]);
+      await tester.pumpAndSettle();
+      expect(FocusManager.instance.primaryFocus, same(focused));
+      expect(
+        tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker)).format(20),
+        '20 people',
+      );
+      await mouse.removePointer();
+    },
+  );
+
   testWidgets(
     'composition bar geometry springs from its displayed rect and reduced motion snaps',
     (tester) async {
