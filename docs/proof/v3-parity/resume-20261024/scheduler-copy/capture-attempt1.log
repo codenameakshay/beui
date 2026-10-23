@@ -1,0 +1,54 @@
+FAIL source no-preference accept trusted input [{"type":"pointerdown","isTrusted":false,"x":0,"y":0,"time":1786.7999999523163,"tag":"BUTTON","label":"Copy Monday hours to other days"},{"type":"pointerup","isTrusted":false,"x":0,"y":0,"time":1791.5,"tag":"BUTTON","label":"Copy Monday hours to other days"},{"type":"pointerdown","isTrusted":false,"x":0,"y":0,"time":7215.100000023842,"tag":"BUTTON","label":"Copy Monday hours to other days"},{"type":"pointerup","isTrusted":false,"x":0,"y":0,"time":7217.700000047684,"tag":"BUTTON","label":"Copy Monday hours to other days"}]
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  owner: 'accept',
+  failures: [ 'trusted input' ]
+}
+FAIL source no-preference reject trusted input [{"type":"pointerdown","isTrusted":false,"x":0,"y":0,"time":1779.5,"tag":"BUTTON","label":"Copy Monday hours to other days"},{"type":"pointerup","isTrusted":false,"x":0,"y":0,"time":1783.3999999761581,"tag":"BUTTON","label":"Copy Monday hours to other days"},{"type":"pointerdown","isTrusted":false,"x":0,"y":0,"time":7035.299999952316,"tag":"BUTTON","label":"Copy Monday hours to other days"},{"type":"pointerup","isTrusted":false,"x":0,"y":0,"time":7037.899999976158,"tag":"BUTTON","label":"Copy Monday hours to other days"}]
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  owner: 'reject',
+  failures: [ 'trusted input' ]
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  owner: 'accept',
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  owner: 'reject',
+  failures: []
+}
+FAIL candidate no-preference accept sequence completed "Error: Tab target unreachable {\"text\":\"Add time\\nAdd time range to Sunday\",\"label\":null,\"role\":\"button\",\"tag\":\"FLT-SEMANTICS\"}"
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'accept',
+  failures: [ 'sequence completed' ]
+}
+FAIL candidate no-preference reject sequence completed "Error: Tab target unreachable {\"text\":\"Add time\\nAdd time range to Sunday\",\"label\":null,\"role\":\"button\",\"tag\":\"FLT-SEMANTICS\"}"
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'reject',
+  failures: [ 'sequence completed' ]
+}
+FAIL candidate reduce accept sequence completed "Error: Tab target unreachable {\"text\":\"Add time\\nAdd time range to Sunday\",\"label\":null,\"role\":\"button\",\"tag\":\"FLT-SEMANTICS\"}"
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'accept',
+  failures: [ 'sequence completed' ]
+}
+FAIL candidate reduce reject sequence completed "Error: Tab target unreachable {\"text\":\"Add time\\nAdd time range to Sunday\",\"label\":null,\"role\":\"button\",\"tag\":\"FLT-SEMANTICS\"}"
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'reject',
+  failures: [ 'sequence completed' ]
+}

@@ -1,0 +1,4507 @@
+{
+  "target": "candidate",
+  "reducedMotion": "no-preference",
+  "owner": "accept",
+  "browser": "156.0.8078.48",
+  "scripts": [
+    {
+      "url": "http://127.0.0.1:18184/flutter_bootstrap.js",
+      "sha256": "68626eb4e822b77802e63b3d002906814bc6172a5aff581fbebbc14727d99414",
+      "bytes": 13091
+    },
+    {
+      "url": "http://127.0.0.1:18184/main.dart.js",
+      "sha256": "cc146889ad5777fbba9be57d4ad4b451571aaa7eaffba178e483cb20c1e2d575",
+      "bytes": 2038962
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.js",
+      "sha256": "6018b12bd8ed37e6952eee72d59c1cf7ad707ccdb74a0a45190010f77edd9068",
+      "bytes": 86226
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.wasm",
+      "sha256": "ba4024133403777f41c709b9e76e9f4bdb76c73d33adba8645527a59d815d824",
+      "bytes": 5428553
+    }
+  ],
+  "states": [
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "switchIndex": -1,
+        "label": null,
+        "text": "Monday8:30 AM\n8:30 AM–4:30 PM\n4:30 PMRemove\nRemove time rangeAdd time\nAdd time range to MondayCopy times\nCopy Monday hours to other daysTuesdayUnavailableAdd time\nAdd time range to TuesdayCopy times\nCopy Tuesday hours to other daysWednesday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to WednesdayCopy times\nCopy Wednesday hours to other daysThursday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to ThursdayCopy times\nCopy Thursday hours to other daysFriday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to FridayCopy times\nCopy Friday hours to other daysSaturdayUnavailableAdd time\nAdd time range to SaturdayCopy times\nCopy Saturday hours to other daysSunday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to SundayCopy times\nCopy Sunday hours to other daysflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "rest",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "rest.png",
+        "sha256": "483635233ac0194280161f441af5691e1fcc734b1214bcafb14e87f193f33893"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "switchIndex": -1,
+        "label": null,
+        "text": "Copy times\nCopy Monday hours to other days"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "opened",
+      "aria": "- text: Copy times\n- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\" [disabled]\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "opened.png",
+        "sha256": "0fd1766fedae74afb3c72df002aeaa2d3f7b0df391f41d116b2361129d37a880"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "checkbox",
+        "switchIndex": -1,
+        "label": null,
+        "text": ""
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "pointer-selected",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox [checked]\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "pointer-selected.png",
+        "sha256": "1be6e01b4ebdfdb81fdcc3a4aff104d7e106092ffb990c75497a83c8475dc623"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "switchIndex": -1,
+        "label": null,
+        "text": "Monday8:30 AM\n8:30 AM–4:30 PM\n4:30 PMRemove\nRemove time rangeAdd time\nAdd time range to MondayCopy times\nCopy Monday hours to other daysTuesdayUnavailableAdd time\nAdd time range to TuesdayCopy times\nCopy Tuesday hours to other daysWednesday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to WednesdayCopy times\nCopy Wednesday hours to other daysThursday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to ThursdayCopy times\nCopy Thursday hours to other daysFriday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to FridayCopy times\nCopy Friday hours to other daysSaturdayUnavailableAdd time\nAdd time range to SaturdayCopy times\nCopy Saturday hours to other daysSunday10:00 AM\n10:00 AM–12:00 PM\n12:00 PMRemove\nRemove time rangeAdd time\nAdd time range to SundayCopy times\nCopy Sunday hours to other daysCopy timesflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "canceled",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"\n- text: Copy times",
+      "screenshot": {
+        "file": "canceled.png",
+        "sha256": "7e48c918814888f27d6687829fe84d56b6c79408b7d5260e5a681d2507f497bc"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "switchIndex": -1,
+        "label": null,
+        "text": "Copy times\nCopy Monday hours to other days"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "cancel-reopened",
+      "aria": "- text: Copy times\n- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox [checked]\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "cancel-reopened.png",
+        "sha256": "15f68ab0e7f78c4906e754fdec359417f58bf84a4c605b56807bee02ce6fee41"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "checkbox",
+        "switchIndex": -1,
+        "label": null,
+        "text": ""
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "cleared",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\" [disabled]\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "cleared.png",
+        "sha256": "c6f8ef38bb020cd72f27ecdc9e637e8e408e2e995d0f2a8cdf7b615337056efa"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "checkbox",
+        "switchIndex": -1,
+        "label": null,
+        "text": ""
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "selected",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox [checked]\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "selected.png",
+        "sha256": "aa304d5c978ca30daaac0ac54ed80b430b6b957f7cb911f282d7323a9393a1ff"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c0",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "switchIndex": -1,
+        "label": null,
+        "text": "Remove\nRemove time range"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "applied",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch [checked]\n  - text: Tuesday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"\n- text: Copy times",
+      "screenshot": {
+        "file": "applied.png",
+        "sha256": "d75c4e976fe245d7c2389d1bf6f7c271a6ddc718502599238c80add4c9c4f201"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c0",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "switchIndex": -1,
+        "label": null,
+        "text": "Add time\nAdd time range to Friday"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "post-apply-tab",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch [checked]\n  - text: Tuesday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - text: Add time\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "post-apply-tab.png",
+        "sha256": "764fd2314065192da04e67e4a85141da07395009207490a62f6bad3deab63c46"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c0",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "switchIndex": -1,
+        "label": null,
+        "text": "Copy times\nCopy Monday hours to other days"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "reopened",
+      "aria": "- text: Copy times\n- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\" [disabled]\n  - switch [checked]\n  - text: Tuesday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "reopened.png",
+        "sha256": "40e07ccffcd40eb86795ed60277586e778b66b51a6c69f92a826b845934b7e29"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c1",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-c2",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-c3",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-c4",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sat-c5",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-c6",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          },
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c1",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-c2",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-c3",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-c4",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sat-c5",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-c6",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "switch",
+        "switchIndex": 4,
+        "label": null,
+        "text": ""
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "everyday",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch [checked]\n  - text: Tuesday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch [checked]\n  - text: Saturday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"\n- text: Copy times",
+      "screenshot": {
+        "file": "everyday.png",
+        "sha256": "cd21898636d5b759fe38434c2b22674980d9622a21056e2b2f7729c1ae038761"
+      }
+    },
+    {
+      "fixture": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c1",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-c2",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-c3",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-c4",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sat-c5",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-c6",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          }
+        },
+        "calls": [
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c0",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": false,
+              "ranges": [
+                {
+                  "id": "sat-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-fixed",
+                  "start": "10:00",
+                  "end": "12:00"
+                }
+              ]
+            }
+          },
+          {
+            "mon": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "mon-fixed",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "tue": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "tue-c1",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "wed": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "wed-c2",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "thu": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "thu-c3",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "fri": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "fri-c4",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "sat": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sat-c5",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            },
+            "sun": {
+              "enabled": true,
+              "ranges": [
+                {
+                  "id": "sun-c6",
+                  "start": "08:30",
+                  "end": "16:30"
+                }
+              ]
+            }
+          }
+        ],
+        "reject": false
+      },
+      "reduce": false,
+      "focus": {
+        "tag": "FLT-SEMANTICS",
+        "role": "switch",
+        "switchIndex": 4,
+        "label": null,
+        "text": ""
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "post-everyday-tab",
+      "aria": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch [checked]\n  - text: Tuesday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch [checked]\n  - text: Saturday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"",
+      "screenshot": {
+        "file": "post-everyday-tab.png",
+        "sha256": "8982cd62072daa686c933d4101f8ee18d98efe1e3776a163c0551a72ab78bbfa"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "empty Apply disabled",
+      "pass": true,
+      "actual": "- text: Copy times\n- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\" [disabled]\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\""
+    },
+    {
+      "name": "pointer checkbox once",
+      "pass": true,
+      "actual": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox [checked]\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\""
+    },
+    {
+      "name": "cancel no update",
+      "pass": true,
+      "actual": {
+        "value": {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "tue-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        "calls": [],
+        "reject": false
+      }
+    },
+    {
+      "name": "cancel retains selection",
+      "pass": true,
+      "actual": "- text: Copy times\n- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox [checked]\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\""
+    },
+    {
+      "name": "keyboard clears checkbox",
+      "pass": true,
+      "actual": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\" [disabled]\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\""
+    },
+    {
+      "name": "selected checkbox",
+      "pass": true,
+      "actual": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox [checked]\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\"\n  - switch\n  - text: Tuesday Unavailable\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\""
+    },
+    {
+      "name": "one callback",
+      "pass": true,
+      "actual": [
+        {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c0",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "payload mon",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "mon-fixed",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload tue",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "tue-c0",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload wed",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "wed-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload thu",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "thu-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload fri",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "fri-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload sat",
+      "pass": true,
+      "actual": {
+        "enabled": false,
+        "ranges": [
+          {
+            "id": "sat-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload sun",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "sun-fixed",
+            "start": "10:00",
+            "end": "12:00"
+          }
+        ]
+      }
+    },
+    {
+      "name": "controlled owner",
+      "pass": true,
+      "actual": {
+        "mon": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "mon-fixed",
+              "start": "08:30",
+              "end": "16:30"
+            }
+          ]
+        },
+        "tue": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "tue-c0",
+              "start": "08:30",
+              "end": "16:30"
+            }
+          ]
+        },
+        "wed": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "wed-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        },
+        "thu": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "thu-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        },
+        "fri": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "fri-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        },
+        "sat": {
+          "enabled": false,
+          "ranges": [
+            {
+              "id": "sat-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        },
+        "sun": {
+          "enabled": true,
+          "ranges": [
+            {
+              "id": "sun-fixed",
+              "start": "10:00",
+              "end": "12:00"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "panel closed",
+      "pass": true,
+      "actual": "- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\"\n  - switch [checked]\n  - text: Tuesday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\"\n- text: Copy times"
+    },
+    {
+      "name": "focus continuation Monday",
+      "pass": false,
+      "actual": {
+        "tag": "FLT-SEMANTICS",
+        "role": "button",
+        "switchIndex": -1,
+        "label": null,
+        "text": "Add time\nAdd time range to Friday"
+      }
+    },
+    {
+      "name": "apply clears selection",
+      "pass": true,
+      "actual": "- text: Copy times\n- group:\n  - switch [checked]\n  - text: Monday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Monday\"\n  - button \"Copy times Copy Monday hours to other days\" [expanded]\n  - group \"Copy times to\":\n    - button\n    - group \"Tuesday\":\n      - checkbox\n    - group \"Wednesday\":\n      - checkbox\n    - group \"Thursday\":\n      - checkbox\n    - group \"Friday\":\n      - checkbox\n    - group \"Saturday\":\n      - checkbox\n    - group \"Sunday\":\n      - checkbox\n    - button \"Every day Every day\"\n    - button \"Apply Apply\" [disabled]\n  - switch [checked]\n  - text: Tuesday\n  - button \"8:30 AM 8:30 AM\"\n  - text: –\n  - button \"4:30 PM 4:30 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Tuesday\"\n  - button \"Copy times Copy Tuesday hours to other days\"\n  - switch [checked]\n  - text: Wednesday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Wednesday\"\n  - button \"Copy times Copy Wednesday hours to other days\"\n  - switch [checked]\n  - text: Thursday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Thursday\"\n  - button \"Copy times Copy Thursday hours to other days\"\n  - switch [checked]\n  - text: Friday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Friday\"\n  - button \"Copy times Copy Friday hours to other days\"\n  - switch\n  - text: Saturday Unavailable\n  - button \"Add time Add time range to Saturday\"\n  - button \"Copy times Copy Saturday hours to other days\"\n  - switch [checked]\n  - text: Sunday\n  - button \"10:00 AM 10:00 AM\"\n  - text: –\n  - button \"12:00 PM 12:00 PM\"\n  - button \"Remove Remove time range\"\n  - button \"Add time Add time range to Sunday\"\n  - button \"Copy times Copy Sunday hours to other days\""
+    },
+    {
+      "name": "second callback",
+      "pass": true,
+      "actual": [
+        {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c0",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": false,
+            "ranges": [
+              {
+                "id": "sat-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-fixed",
+                "start": "10:00",
+                "end": "12:00"
+              }
+            ]
+          }
+        },
+        {
+          "mon": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "mon-fixed",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "tue": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "tue-c1",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "wed": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "wed-c2",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "thu": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "thu-c3",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "fri": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "fri-c4",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "sat": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sat-c5",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          },
+          "sun": {
+            "enabled": true,
+            "ranges": [
+              {
+                "id": "sun-c6",
+                "start": "08:30",
+                "end": "16:30"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "everyday mon",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "mon-fixed",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday tue",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "tue-c1",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday wed",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "wed-c2",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday thu",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "thu-c3",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday fri",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "fri-c4",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday sat",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "sat-c5",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday sun",
+      "pass": true,
+      "actual": {
+        "enabled": true,
+        "ranges": [
+          {
+            "id": "sun-c6",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ]
+      }
+    },
+    {
+      "name": "everyday focus continuation Monday",
+      "pass": false,
+      "actual": {
+        "tag": "FLT-SEMANTICS",
+        "role": "switch",
+        "switchIndex": 4,
+        "label": null,
+        "text": ""
+      }
+    },
+    {
+      "name": "trusted keyboard input",
+      "pass": true,
+      "actual": [
+        {
+          "type": "click",
+          "isTrusted": false,
+          "x": 0,
+          "y": 0,
+          "time": 425.10000002384186,
+          "tag": "FLT-SEMANTICS-PLACEHOLDER",
+          "label": "Enable accessibility"
+        }
+      ]
+    },
+    {
+      "name": "no page errors",
+      "pass": true,
+      "actual": []
+    }
+  ],
+  "frames": [],
+  "inputs": [
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 316.3000000715256,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": false,
+      "x": 0,
+      "y": 0,
+      "time": 425.10000002384186,
+      "tag": "FLT-SEMANTICS-PLACEHOLDER",
+      "label": "Enable accessibility"
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1671,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1671.2000000476837,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1672.6000000238419,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1748.7000000476837,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1749,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1750.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1824.6000000238419,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1828.3000000715256,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1828.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1902.3000000715256,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1912.3000000715256,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1912.4000000953674,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 1977,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "pointerdown",
+      "isTrusted": true,
+      "x": 763.0015869140625,
+      "y": 463.9932861328125,
+      "time": 2536.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2536.7000000476837,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2536.9000000953674,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "pointerup",
+      "isTrusted": true,
+      "x": 763.0015869140625,
+      "y": 463.9932861328125,
+      "time": 2537,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": true,
+      "x": 763,
+      "y": 463,
+      "time": 2537.3000000715256,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Escape",
+      "isTrusted": true,
+      "time": 3075.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3212.4000000953674,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3212.4000000953674,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3614.8000000715256,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3615,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3616.4000000953674,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3692.9000000953674,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3693.2000000476837,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3694.9000000953674,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3768.2000000476837,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3779.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3779.7000000476837,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3840.2000000476837,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3845.9000000953674,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3846.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3914.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3929.3000000715256,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3929.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 3988.2000000476837,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3995.8000000715256,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3996,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4062.9000000953674,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4078.9000000953674,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4079.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4136.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4146.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4146.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4210.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4227.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4228,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4284.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4295,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4295.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4358.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4363.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4363.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4431.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4446.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4446.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4505.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4511.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4512,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4580.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4594.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4594.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4654.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4662.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4662.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4726.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4729.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4729.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4800,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4812.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4813,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4874.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4879.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4880.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 4947,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4961.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4962,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5019.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5026.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5026.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5095,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5095.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5096,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5168.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5177.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5178.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5241.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5241.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5242.900000095367,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5316.300000071526,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5316.600000023842,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5317.200000047684,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5392.700000047684,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5392.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5394.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5473.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5473.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5474.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5549.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5561.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5561.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 5624.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5629.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5629.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 5698.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 6232.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 6243.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 6244.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 6305.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 6312.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 6312.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 6380.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 6380.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 6381.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": " ",
+      "isTrusted": true,
+      "time": 6455,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": " ",
+      "isTrusted": true,
+      "time": 6976.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7515,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7528.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7529,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7588.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7596.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7596.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7661.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7678.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7678.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7738.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7738.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7740.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7815,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7827.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7827.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7887,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7894.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7895.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 7961.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 7962,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 7963.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8037.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8045.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8045.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8109.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8112.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8112.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8185.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8186.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8188.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8263.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8276.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8276.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8338.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8344.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8344.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8413.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8430,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8430.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8488.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8494.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8494.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8563.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8578.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8578.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8641.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8641.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8643.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8719.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8729.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8729.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8796.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8796.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 8797.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 8871.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 8897.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 8898.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9428.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9428.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9429.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 9963.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 9977.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 9978,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10038.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10046,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10046.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10113.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10128.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10129,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10188.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10195,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10195.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10263.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10277.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10277.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10339.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10339.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10340.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10415.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10429,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10429.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10490.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10494.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10494.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10563.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10563.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10564,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10564.400000095367,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10638.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10644.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10644.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10713.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10713.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10715.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10789.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10793.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10794,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 10862,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 10877.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 10877.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 10934.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 11464.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 11477.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 11478.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 11539.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 11544.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 11544.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 11614.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 11627.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 11628,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 11687.800000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 11694.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 11694.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 11764.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 11764.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 11765.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 11840.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 11844.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 11844.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 11916.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 11916.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 11918.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 11997.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 11997.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 11998.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12073.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12078,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12078.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12147.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12161.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12162,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12224,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12224.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12225.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12301.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12311.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12311.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12375.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12377.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12377.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12451.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12451.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12453.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12531.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12545.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12546,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12606.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12612.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12612.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12682.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12694.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12694.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12757.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12758,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12759.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12835.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12845,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12845.200000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12878.400000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12908.200000047684,
+      "tag": "BODY",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12908.400000095367,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12910.900000095367,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12910.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12912.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 12986.700000047684,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 12986.900000095367,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 12988.5,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": " ",
+      "isTrusted": true,
+      "time": 13065.300000071526,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 13231.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 13231.300000071526,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 13246.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 13246.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 13608.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    }
+  ],
+  "errors": []
+}

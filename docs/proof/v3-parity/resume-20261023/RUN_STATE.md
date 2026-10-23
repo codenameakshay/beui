@@ -1,3 +1,15 @@
+## 2026-10-24 Scheduler independently accepted within scope
+
+R2 reviewer accepts final production `b3a48de0ac3adf9f824ada52a8a142bcc671f3369e7a575c6dd9cfe23cde9047` / tests `4fcd24ee754298800c488b09f39e55f30989cb9daf7e6233744aa37e9ecf90c8`. Unchanged original disabled-focus repro fails exact previous bytes and passes final. 50 focused executions pass on current3.47.1 and actual minimum3.44.2, with repeated lifecycle cases disclosed. Original tooltip-first Escape probe fails both versions and remains preserved. Native evidence reviewed, not freshly replayed by reviewer. Parent archive verifiers passed separately.
+
+Review evidence in `../resume-20261024/scheduler-review-r2/current/REVIEW.md`. Combined suite/gallery qualification remains pending for final Collapsible/Combobox/Scheduler set. No general parity or release claim.
+
+## 2026-10-24 Scheduler disabled-focus repair under review
+
+Production `b3a48de0ac3adf9f824ada52a8a142bcc671f3369e7a575c6dd9cfe23cde9047` and tests `4fcd24ee754298800c488b09f39e55f30989cb9daf7e6233744aa37e9ecf90c8`: panel-owned FocusScope and synchronous history cleanup prevent disabled Apply from restoring another action. Worker reports 38 focused executions, analyzer clean, four source native passes, four baseline defect reproductions, four patched passes. Parent `scheduler-disabled-focus/verify.py` completed with exit 0; log `/tmp/beui-scheduler-disabled-focus-parent-verify.log`.
+
+Independent review `v3-scheduler-disabled-focus-review-20261024-r2` running. No Scheduler commit/push before acceptance. Combined integration gates remain pending after final code acceptance. Combobox pushed at `b898cbd55`.
+
 ## 2026-10-24 Combobox independently accepted within scope
 
 Final production `4d3d7dcccb86162b198182488cdaa022c8da61ef3d739d075f9eb1c377ca1fca` and tests `af6be0fe80755361e1dcc12438207f6e6fd6c38440f18d02725cce217a3db1fe` accepted. Independent 23 supplied + five new tests pass on 3.47.1 and actual minimum Flutter3.44.2/Dart3.12.2. Analysis clean. Parent archive verifier passed. Review retained in `../resume-20261024/combobox-review-r1/`.

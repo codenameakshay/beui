@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../overlay/beui_overlay.dart';
 import '../../theme/beui_colors.dart';
@@ -46,6 +47,7 @@ class _CopyMenuState extends State<CopyMenu> {
   bool _copied = false;
   final Set<BeuiDayKey> _picked = <BeuiDayKey>{};
   Timer? _copiedTimer;
+  final _panelFocus = FocusScopeNode();
 
   List<BeuiDayKey> get _others =>
       BeuiDayKey.values.where((d) => d != widget.from).toList();
@@ -53,6 +55,7 @@ class _CopyMenuState extends State<CopyMenu> {
   @override
   void dispose() {
     _copiedTimer?.cancel();
+    _panelFocus.dispose();
     super.dispose();
   }
 
@@ -69,6 +72,9 @@ class _CopyMenuState extends State<CopyMenu> {
 
   void _apply(List<BeuiDayKey> targets) {
     if (targets.isEmpty) return;
+    FocusManager.instance.primaryFocus?.unfocus();
+    // Clear the parent traversal history before the owner chooses focus.
+    _panelFocus.unfocus();
     widget.onApply(targets);
     _copiedTimer?.cancel();
     setState(() {
@@ -89,6 +95,7 @@ class _CopyMenuState extends State<CopyMenu> {
     return BeuiOverlay(
       open: _open,
       onDismiss: () => _setOpen(false),
+      trapFocus: false,
       barrierColor: const Color(0x00000000),
       enterDuration: const Duration(milliseconds: 220),
       exitDuration: const Duration(milliseconds: 140),
@@ -215,7 +222,8 @@ class _CopyMenuState extends State<CopyMenu> {
         alignment: Alignment.topRight,
         child: AnimatedBuilder(
           animation: animation,
-          child: panel,
+          // Keep the scope inside Align so the anchored panel stays loose.
+          child: FocusScope(node: _panelFocus, autofocus: true, child: panel),
           builder: (context, child) {
             final t = animation.value.clamp(0.0, 1.0);
             if (reduce) return Opacity(opacity: t, child: child);
@@ -292,7 +300,7 @@ class _DayCheckState extends State<_DayCheck> {
               IgnorePointer(
                 child: BeuiCheckbox(
                   value: widget.checked,
-                  onChanged: (_) {},
+                  onChanged: (_) => widget.onToggle(),
                   style: const BeuiCheckboxStyle(size: 16, borderRadius: 5),
                 ),
               ),
@@ -326,6 +334,24 @@ class _FooterButton extends StatefulWidget {
 
 class _FooterButtonState extends State<_FooterButton> {
   bool _hovered = false;
+  bool _focusVisible = false;
+  final _focusNode = FocusNode();
+
+  @override
+  void didUpdateWidget(_FooterButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.enabled && !widget.enabled && _focusNode.hasFocus) {
+      // A disabled action must not activate the previously focused action.
+      // Unfocus clears this menu scope's history and focuses the scope itself.
+      _focusNode.unfocus();
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -348,30 +374,53 @@ class _FooterButtonState extends State<_FooterButton> {
         button: true,
         enabled: enabled,
         label: widget.label,
-        child: MouseRegion(
-          cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
-          onEnter: (_) => setState(() => _hovered = true),
-          onExit: (_) => setState(() => _hovered = false),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: enabled ? widget.onTap : null,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 120),
-              curve: Curves.ease,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: bg,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                widget.label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: widget.primary
-                      ? FontWeight.w600
-                      : FontWeight.w500,
-                  color: fg,
+        child: FocusableActionDetector(
+          focusNode: _focusNode,
+          enabled: enabled,
+          shortcuts: const {
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          actions: {
+            ActivateIntent: CallbackAction<ActivateIntent>(
+              onInvoke: (_) {
+                if (enabled) widget.onTap();
+                return null;
+              },
+            ),
+          },
+          onShowFocusHighlight: (value) =>
+              setState(() => _focusVisible = value),
+          child: MouseRegion(
+            cursor: enabled
+                ? SystemMouseCursors.click
+                : SystemMouseCursors.basic,
+            onEnter: (_) => setState(() => _hovered = true),
+            onExit: (_) => setState(() => _hovered = false),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: enabled ? widget.onTap : null,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 120),
+                curve: Curves.ease,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: bg,
+                  border: _focusVisible
+                      ? Border.all(color: colors.ring, width: 2)
+                      : null,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  widget.label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: widget.primary
+                        ? FontWeight.w600
+                        : FontWeight.w500,
+                    color: fg,
+                  ),
                 ),
               ),
             ),

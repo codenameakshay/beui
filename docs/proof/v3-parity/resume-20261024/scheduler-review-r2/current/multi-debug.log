@@ -1,0 +1,510 @@
+00:00 +0: loading /private/tmp/beui-scheduler-r2-20261024/test/motion/r2_debug_test.dart
+00:00 +0: r2 multiple menus Escape teardown and independent picks
+FocusManager#03a84
+ │ primaryFocus: FocusNode#9a4af([PRIMARY FOCUS])
+ │ primaryFocusCreator: Focus ← MouseRegion-[GlobalKey#3d290] ←
+ │   _ActionsScope ← Actions ← Semantics ← _FocusInheritedScope ←
+ │   Focus ← Shortcuts ← FocusableActionDetector ← Listener ←
+ │   Semantics ← SchedulerIconButton ← Semantics ← MergeSemantics ←
+ │   Semantics ← Listener ← _GestureSemantics ← RawGestureDetector ←
+ │   GestureDetector ← Listener ← ⋯
+ │
+ └─rootScope: FocusScopeNode#e3e14(Root Focus Scope [IN FOCUS PATH])
+   │ IN FOCUS PATH
+   │ focusedChildren: FocusScopeNode#08df7(View Scope [IN FOCUS PATH])
+   │
+   └─Child 1: _FocusTraversalGroupNode#6ac15(FocusTraversalGroup [IN FOCUS PATH])
+     │ context: Focus
+     │ NOT FOCUSABLE
+     │ IN FOCUS PATH
+     │
+     └─Child 1: FocusScopeNode#08df7(View Scope [IN FOCUS PATH])
+       │ context: _FocusScopeWithExternalFocusNode
+       │ IN FOCUS PATH
+       │ focusedChildren: FocusScopeNode#8b5b1(Navigator Scope [IN FOCUS
+       │   PATH])
+       │
+       └─Child 1: FocusNode#39d79(Shortcuts: <Default WidgetsApp Shortcuts> [IN FOCUS PATH])
+         │ context: Focus
+         │ NOT FOCUSABLE
+         │ IN FOCUS PATH
+         │
+         └─Child 1: FocusNode#1d98a(Shortcuts: <Default Text Editing Shortcuts> [IN FOCUS PATH])
+           │ context: Focus
+           │ NOT FOCUSABLE
+           │ IN FOCUS PATH
+           │
+           └─Child 1: _FocusTraversalGroupNode#ace6e(FocusTraversalGroup [IN FOCUS PATH])
+             │ context: Focus
+             │ NOT FOCUSABLE
+             │ IN FOCUS PATH
+             │
+             └─Child 1: FocusNode#e01ae(Shortcuts: <Shortcut Registrar> [IN FOCUS PATH])
+               │ context: Focus
+               │ NOT FOCUSABLE
+               │ IN FOCUS PATH
+               │
+               └─Child 1: FocusNode#c1c3f([IN FOCUS PATH])
+                 │ context: Focus
+                 │ NOT FOCUSABLE
+                 │ IN FOCUS PATH
+                 │
+                 └─Child 1: FocusScopeNode#8b5b1(Navigator Scope [IN FOCUS PATH])
+                   │ context: FocusScope
+                   │ IN FOCUS PATH
+                   │ focusedChildren: FocusScopeNode#c802f(_ModalScopeState<dynamic>
+                   │   Focus Scope [IN FOCUS PATH])
+                   │
+                   └─Child 1: _FocusTraversalGroupNode#7ab84(FocusTraversalGroup [IN FOCUS PATH])
+                     │ context: Focus
+                     │ NOT FOCUSABLE
+                     │ IN FOCUS PATH
+                     │
+                     └─Child 1: FocusNode#660e0(Navigator [IN FOCUS PATH])
+                       │ context: Focus
+                       │ IN FOCUS PATH
+                       │
+                       └─Child 1: FocusScopeNode#c802f(_ModalScopeState<dynamic> Focus Scope [IN FOCUS PATH])
+                         │ context: _FocusScopeWithExternalFocusNode
+                         │ IN FOCUS PATH
+                         │ focusedChildren: FocusNode#9a4af([PRIMARY FOCUS]),
+                         │   FocusScopeNode#29484
+                         │ traversalEdgeBehavior: TraversalEdgeBehavior.parentScope
+                         │
+                         ├─Child 1: FocusNode#1a907(Shortcuts)
+                         │ │ context: Focus
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#a176b
+                         │     context: Focus
+                         │
+                         ├─Child 2: FocusNode#a811b(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#ed31e]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#ae61e(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#31c69
+                         │       context: Focus
+                         │
+                         ├─Child 3: FocusNode#1021b(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#c3bbc]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#4c88a(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#c6658
+                         │       context: Focus
+                         │
+                         ├─Child 4: FocusNode#66495(Shortcuts)
+                         │ │ context: Focus
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#a4205
+                         │     context: Focus
+                         │
+                         ├─Child 5: FocusNode#c8bed(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#384ce]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#60601(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#08e09
+                         │       context: Focus
+                         │
+                         ├─Child 6: FocusNode#d5fcf(Tooltip trigger scope [IN FOCUS PATH])
+                         │ │ context: Focus-[GlobalKey#85142]
+                         │ │ NOT FOCUSABLE
+                         │ │ IN FOCUS PATH
+                         │ │
+                         │ └─Child 1: FocusNode#12341(Shortcuts [IN FOCUS PATH])
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │ IN FOCUS PATH
+                         │   │
+                         │   └─Child 1: FocusNode#9a4af([PRIMARY FOCUS])
+                         │       context: Focus
+                         │       PRIMARY FOCUS
+                         │
+                         ├─Child 7: FocusNode#67f12(Shortcuts)
+                         │ │ context: Focus
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#9fb51
+                         │     context: Focus
+                         │
+                         ├─Child 8: FocusNode#0a289(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#6f508]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#71779(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#4798f
+                         │       context: Focus
+                         │
+                         ├─Child 9: FocusNode#dd872(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#d46e7]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#276c4(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#b9b18
+                         │       context: Focus
+                         │
+                         ├─Child 10: FocusNode#2aa96(Shortcuts)
+                         │ │ context: Focus
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#bf63b
+                         │     context: Focus
+                         │
+                         ├─Child 11: FocusNode#e323d(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#41faa]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#7e195(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#e6f7d
+                         │       context: Focus
+                         │
+                         ├─Child 12: FocusNode#38a81(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#3441c]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#6c179(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#ac6aa
+                         │       context: Focus
+                         │
+                         ├─Child 13: FocusNode#ebd3e(Shortcuts)
+                         │ │ context: Focus
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#92a41
+                         │     context: Focus
+                         │
+                         ├─Child 14: FocusNode#204e0(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#e6445]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#3a38a(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#c7f23
+                         │       context: Focus
+                         │
+                         ├─Child 15: FocusNode#09673(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#6c3fc]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#05e3c(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#75270
+                         │       context: Focus
+                         │
+                         ├─Child 16: FocusNode#9d8e1(Shortcuts)
+                         │ │ context: Focus
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#0f82f
+                         │     context: Focus
+                         │
+                         ├─Child 17: FocusNode#0e0af(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#d800b]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#c0fbd(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#cbf4e
+                         │       context: Focus
+                         │
+                         ├─Child 18: FocusNode#af535(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#0c404]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#dac3c(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#8491a
+                         │       context: Focus
+                         │
+                         ├─Child 19: FocusNode#7649a(Shortcuts)
+                         │ │ context: Focus
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#678b6
+                         │     context: Focus
+                         │
+                         ├─Child 20: FocusNode#ffb95(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#67e2f]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#c8cdf(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#8322a
+                         │       context: Focus
+                         │
+                         ├─Child 21: FocusNode#550cb(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#df1ee]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#d92f9(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#8fc07
+                         │       context: Focus
+                         │
+                         ├─Child 22: FocusNode#be23a(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#4da72]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#510dd(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#65da7
+                         │       context: Focus
+                         │
+                         ├─Child 23: FocusNode#7b912(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#578cf]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#aaf3c(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#1125e
+                         │       context: Focus
+                         │
+                         ├─Child 24: FocusNode#8ad46(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#143ee]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#23a37(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#c827c
+                         │       context: Focus
+                         │
+                         ├─Child 25: FocusNode#1228c(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#67efc]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#9cbd7(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#55fd0
+                         │       context: Focus
+                         │
+                         ├─Child 26: FocusNode#a3452(Tooltip trigger scope)
+                         │ │ context: Focus-[GlobalKey#8ed25]
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#ef95e(Shortcuts)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusNode#2a7c5
+                         │       context: Focus
+                         │
+                         ├─Child 27: FocusNode#1f02f
+                         │ │ context: Focus
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#d8e1a(BeuiOverlay)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusScopeNode#29484
+                         │     │ context: FocusScope
+                         │     │
+                         │     ├─Child 1: FocusNode#93d22(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#fbaf8
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 2: FocusNode#e3439(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#0f9b5
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 3: FocusNode#bdb91(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#78bb8
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 4: FocusNode#a60da(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#5c016
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 5: FocusNode#4db88(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#6b900
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 6: FocusNode#ad815(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#f6bd1
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 7: FocusNode#18e58(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#54320
+                         │     │     context: Focus
+                         │     │
+                         │     └─Child 8: FocusNode#92b85(Shortcuts)
+                         │       │ context: Focus
+                         │       │ NOT FOCUSABLE
+                         │       │
+                         │       └─Child 1: FocusNode#98331
+                         │           context: Focus
+                         │
+                         ├─Child 28: FocusNode#8ef60
+                         │ │ context: Focus
+                         │ │ NOT FOCUSABLE
+                         │ │
+                         │ └─Child 1: FocusNode#389f7(BeuiOverlay)
+                         │   │ context: Focus
+                         │   │ NOT FOCUSABLE
+                         │   │
+                         │   └─Child 1: FocusScopeNode#56baf
+                         │     │ context: FocusScope
+                         │     │
+                         │     ├─Child 1: FocusNode#5428c(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#2daac
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 2: FocusNode#47765(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#b0621
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 3: FocusNode#8cd98(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#c3c05
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 4: FocusNode#2c2fa(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#6e7a3
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 5: FocusNode#e4962(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#c0dfd
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 6: FocusNode#be560(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#1b612
+                         │     │     context: Focus
+                         │     │
+                         │     ├─Child 7: FocusNode#b11ab(Shortcuts)
+                         │     │ │ context: Focus
+                         │     │ │ NOT FOCUSABLE
+                         │     │ │
+                         │     │ └─Child 1: FocusNode#3f526
+                         │     │     context: Focus
+                         │     │
+                         │     └─Child 8: FocusNode#74507
+                         │         context: Focus
+                         │         NOT FOCUSABLE
+                         │
+                         └─Child 29: FocusNode#5fc94
+                           │ context: Focus
+                           │ NOT FOCUSABLE
+                           │
+                           └─Child 1: FocusNode#ddf46(BeuiOverlay)
+                               context: Focus
+                               NOT FOCUSABLE
+
+tooltips 1
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 2 widgets with text "Copy times to": [
+            Text("Copy times to", inherit: true, color: Color(alpha: 1.0000, red: 0.3882, green:
+0.3882, blue: 0.3882, colorSpace: ColorSpace.sRGB), size: 12.0, weight: 500, dependencies:
+[DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+            Text("Copy times to", inherit: true, color: Color(alpha: 1.0000, red: 0.3882, green:
+0.3882, blue: 0.3882, colorSpace: ColorSpace.sRGB), size: 12.0, weight: 500, dependencies:
+[DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+          ]>
+   Which: is too many
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/beui-scheduler-r2-20261024/test/motion/r2_debug_test.dart:127:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/beui-scheduler-r2-20261024/test/motion/r2_debug_test.dart line 127
+The test description was:
+  r2 multiple menus Escape teardown and independent picks
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: r2 multiple menus Escape teardown and independent picks [E]
+  Test failed. See exception logs above.
+  The test description was: r2 multiple menus Escape teardown and independent picks
+  
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /private/tmp/beui-scheduler-r2-20261024/test/motion/r2_debug_test.dart: r2 multiple menus Escape teardown and independent picks

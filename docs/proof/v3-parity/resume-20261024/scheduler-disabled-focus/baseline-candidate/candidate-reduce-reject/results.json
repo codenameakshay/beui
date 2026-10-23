@@ -1,0 +1,55 @@
+{
+  "target": "candidate",
+  "reducedMotion": "reduce",
+  "owner": "reject",
+  "browser": "156.0.8078.48",
+  "scripts": [
+    {
+      "url": "http://127.0.0.1:18214/flutter_bootstrap.js",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "states": [
+    {
+      "reduce": true,
+      "focus": {
+        "tag": "BODY",
+        "role": null,
+        "switchIndex": -1,
+        "label": null,
+        "text": "\n  \n  \n\n\n"
+      },
+      "fields": [],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "failure",
+      "aria": "",
+      "screenshot": {
+        "file": "failure.png",
+        "sha256": "4db87909037c35f250bf943f3cc51077f27f0151d74dd39d184d31539c25ba01"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "sequence completed",
+      "pass": false,
+      "actual": "TimeoutError: page.waitForFunction: Timeout 30000ms exceeded."
+    },
+    {
+      "name": "trusted keyboard input",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "no page errors",
+      "pass": true,
+      "actual": []
+    }
+  ],
+  "frames": [],
+  "inputs": [],
+  "errors": []
+}

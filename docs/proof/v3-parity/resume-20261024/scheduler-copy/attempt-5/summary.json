@@ -1,0 +1,63 @@
+[
+  {
+    "target": "source",
+    "reducedMotion": "no-preference",
+    "owner": "accept",
+    "failures": []
+  },
+  {
+    "target": "source",
+    "reducedMotion": "no-preference",
+    "owner": "reject",
+    "failures": []
+  },
+  {
+    "target": "source",
+    "reducedMotion": "reduce",
+    "owner": "accept",
+    "failures": [
+      "sequence completed"
+    ]
+  },
+  {
+    "target": "source",
+    "reducedMotion": "reduce",
+    "owner": "reject",
+    "failures": []
+  },
+  {
+    "target": "candidate",
+    "reducedMotion": "no-preference",
+    "owner": "accept",
+    "failures": [
+      "cancel no update",
+      "sequence completed"
+    ]
+  },
+  {
+    "target": "candidate",
+    "reducedMotion": "no-preference",
+    "owner": "reject",
+    "failures": [
+      "cancel no update",
+      "sequence completed"
+    ]
+  },
+  {
+    "target": "candidate",
+    "reducedMotion": "reduce",
+    "owner": "accept",
+    "failures": [
+      "cancel no update",
+      "sequence completed"
+    ]
+  },
+  {
+    "target": "candidate",
+    "reducedMotion": "reduce",
+    "owner": "reject",
+    "failures": [
+      "sequence completed"
+    ]
+  }
+]

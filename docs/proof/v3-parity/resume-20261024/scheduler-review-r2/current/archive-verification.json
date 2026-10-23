@@ -1,0 +1,149 @@
+{
+  "integrity": {
+    "passed": true,
+    "files": 2710,
+    "errors": []
+  },
+  "recordedBehavior": {
+    "passed": true,
+    "errors": [],
+    "runs": [
+      {
+        "run": "baseline-source/source-no-preference-accept",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 212,
+        "motionSyntheticPressEvents": 6
+      },
+      {
+        "run": "baseline-source/source-no-preference-reject",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 206,
+        "motionSyntheticPressEvents": 6
+      },
+      {
+        "run": "baseline-source/source-reduce-accept",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 212,
+        "motionSyntheticPressEvents": 0
+      },
+      {
+        "run": "baseline-source/source-reduce-reject",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 206,
+        "motionSyntheticPressEvents": 0
+      },
+      {
+        "run": "baseline-candidate-retry/candidate-no-preference-accept",
+        "checks": 34,
+        "expectedDefect": true,
+        "failures": [
+          "disabled Enter emits no proposal",
+          "disabled Enter preserves Friday"
+        ],
+        "trustedInputs": 92,
+        "motionSyntheticPressEvents": 0
+      },
+      {
+        "run": "baseline-candidate-retry/candidate-no-preference-reject",
+        "checks": 34,
+        "expectedDefect": true,
+        "failures": [
+          "disabled Enter emits no proposal"
+        ],
+        "trustedInputs": 89,
+        "motionSyntheticPressEvents": 0
+      },
+      {
+        "run": "baseline-candidate-retry/candidate-reduce-accept",
+        "checks": 34,
+        "expectedDefect": true,
+        "failures": [
+          "disabled Enter emits no proposal",
+          "disabled Enter preserves Friday"
+        ],
+        "trustedInputs": 104,
+        "motionSyntheticPressEvents": 0
+      },
+      {
+        "run": "baseline-candidate-retry/candidate-reduce-reject",
+        "checks": 34,
+        "expectedDefect": true,
+        "failures": [
+          "disabled Enter emits no proposal"
+        ],
+        "trustedInputs": 99,
+        "motionSyntheticPressEvents": 0
+      },
+      {
+        "run": "final-candidate/candidate-no-preference-accept",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 72,
+        "motionSyntheticPressEvents": 0
+      },
+      {
+        "run": "final-candidate/candidate-no-preference-reject",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 72,
+        "motionSyntheticPressEvents": 0
+      },
+      {
+        "run": "final-candidate/candidate-reduce-accept",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 72,
+        "motionSyntheticPressEvents": 0
+      },
+      {
+        "run": "final-candidate/candidate-reduce-reject",
+        "checks": 34,
+        "expectedDefect": false,
+        "failures": [],
+        "trustedInputs": 72,
+        "motionSyntheticPressEvents": 0
+      }
+    ]
+  },
+  "retainedFirstAttemptFailures": [
+    {
+      "run": "baseline-candidate/candidate-no-preference-accept",
+      "failures": [
+        "disabled Enter emits no proposal",
+        "disabled Enter preserves Friday",
+        "no page errors"
+      ]
+    },
+    {
+      "run": "baseline-candidate/candidate-no-preference-reject",
+      "failures": [
+        "disabled Enter emits no proposal"
+      ]
+    },
+    {
+      "run": "baseline-candidate/candidate-reduce-accept",
+      "failures": [
+        "disabled Enter emits no proposal",
+        "disabled Enter preserves Friday"
+      ]
+    },
+    {
+      "run": "baseline-candidate/candidate-reduce-reject",
+      "failures": [
+        "sequence completed"
+      ]
+    }
+  ],
+  "limits": "Checks recorded trusted native behavior and hashes; does not rerun browser, decode motion, or establish release readiness."
+}
