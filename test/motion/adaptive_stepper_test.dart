@@ -33,6 +33,29 @@ Widget _stepper({
 );
 
 void main() {
+  testWidgets(
+    'liquid separation overshoots then settles at 600ms and retargets',
+    (tester) async {
+      await tester.pumpWidget(_stepper(defaultValue: 0));
+      final value = find.byType(BeuiAdaptiveStepperValue);
+      expect(tester.getSize(value).width, 152);
+      await tester.tap(find.bySemanticsLabel('Increase value'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(tester.getSize(value).width, lessThan(88));
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(tester.getSize(value).width, closeTo(88, .01));
+      await tester.tap(find.bySemanticsLabel('Decrease value'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      final interrupted = tester.getSize(value).width;
+      await tester.tap(find.bySemanticsLabel('Increase value'));
+      await tester.pump();
+      expect(tester.getSize(value).width, closeTo(interrupted, .01));
+      await tester.pumpAndSettle();
+      expect(tester.getSize(value).width, closeTo(88, .01));
+    },
+  );
   testWidgets('increment and decrement update the uncontrolled value', (
     tester,
   ) async {
@@ -138,7 +161,9 @@ void main() {
     );
   });
 
-  testWidgets('rest actions paint a circular outline', (tester) async {
+  testWidgets('actions leave their surface to the shared liquid layer', (
+    tester,
+  ) async {
     await tester.pumpWidget(_stepper(defaultValue: 2, min: 0, max: 3));
     await tester.pumpAndSettle();
     final container = tester.widget<AnimatedContainer>(
@@ -150,10 +175,7 @@ void main() {
     final box = container.decoration! as BoxDecoration;
     expect(box.color, Colors.transparent);
     expect(box.borderRadius, BorderRadius.circular(24));
-    expect(
-      box.border,
-      Border.all(color: BeuiColors.light().foreground.withValues(alpha: 0.18)),
-    );
+    expect(box.border, Border.all(color: Colors.transparent));
   });
 
   for (final increase in [false, true]) {

@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -5,6 +7,11 @@ import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
+
+const _liquidMotion = CurvedMotion(
+  Duration(milliseconds: 600),
+  Cubic(0.22, 1.3, 0.71, 1),
+);
 
 /// A bounded quantity control whose value surface expands into unavailable
 /// actions while preserving a fixed footprint.
@@ -165,7 +172,13 @@ class _BeuiAdaptiveStepperState extends State<BeuiAdaptiveStepper> {
         child: SizedBox(
           width: 216,
           height: 48,
-          child: Stack(clipBehavior: Clip.none, children: widget.children),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              _StepperLiquid(atMin: _atMin, atMax: _atMax),
+              ...widget.children,
+            ],
+          ),
         ),
       ),
     );
@@ -247,7 +260,7 @@ class BeuiAdaptiveStepperValue extends StatelessWidget {
     final reduce = MediaQuery.disableAnimationsOf(context);
     final colors = BeuiColors.resolve(context);
     final rect = _valueRect(scope);
-    final movement = motionFor(context, beuiSpringLayout, isMovement: true);
+    final movement = motionFor(context, _liquidMotion, isMovement: true);
 
     Widget output(Rect target) => Positioned.fromRect(
       rect: target,
@@ -258,13 +271,6 @@ class BeuiAdaptiveStepperValue extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: colors.secondary,
-                border: Border.all(color: colors.border),
-                borderRadius: BorderRadius.circular(24),
-              ),
-            ),
             ExcludeSemantics(
               child: Center(
                 child: AnimatedSwitcher(
@@ -360,7 +366,7 @@ class _AdaptiveStepperActionState extends State<_AdaptiveStepperAction> {
         ? (hidden ? 136.0 : 168.0)
         : (hidden ? 32.0 : 0.0);
     final rect = Rect.fromLTWH(x, 0, 48, 48);
-    final movement = motionFor(context, beuiSpringLayout, isMovement: true);
+    final movement = motionFor(context, _liquidMotion, isMovement: true);
     final label = widget.increase ? 'Increase value' : 'Decrease value';
 
     Widget actionAt(Rect target) {
@@ -414,9 +420,7 @@ class _AdaptiveStepperActionState extends State<_AdaptiveStepperAction> {
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: _focused
-                            ? colors.ring
-                            : colors.foreground.withValues(alpha: 0.18),
+                        color: _focused ? colors.ring : Colors.transparent,
                         width: _focused ? 2 : 1,
                       ),
                     ),
@@ -485,4 +489,145 @@ Rect _valueRect(_AdaptiveStepperScope scope) {
 double _clamp(double value, double lower, double upper) {
   final finite = value.isFinite ? value : lower;
   return finite.clamp(lower, upper).toDouble();
+}
+
+class _StepperLiquid extends StatelessWidget {
+  const _StepperLiquid({required this.atMin, required this.atMax});
+  final bool atMin;
+  final bool atMax;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = BeuiColors.resolve(context);
+    final motion = motionFor(context, _liquidMotion, isMovement: true);
+    final value = atMin && atMax
+        ? const Rect.fromLTWH(0, 0, 216, 48)
+        : atMin
+        ? const Rect.fromLTWH(0, 0, 152, 48)
+        : atMax
+        ? const Rect.fromLTWH(64, 0, 152, 48)
+        : const Rect.fromLTWH(64, 0, 88, 48);
+    return MotionBuilder<Rect>(
+      value: value,
+      motion: motion,
+      converter: const RectMotionConverter(),
+      builder: (context, center, _) => SingleMotionBuilder(
+        value: atMin ? 32 : 0,
+        motion: motion,
+        builder: (context, left, _) => SingleMotionBuilder(
+          value: atMax ? 136 : 168,
+          motion: motion,
+          builder: (context, right, _) => IgnorePointer(
+            child: CustomPaint(
+              size: const Size(216, 48),
+              painter: _LiquidPainter(
+                rects: [
+                  Rect.fromLTWH(left, 0, 48, 48),
+                  center,
+                  Rect.fromLTWH(right, 0, 48, 48),
+                ],
+                fill: colors.background,
+                edge: colors.foreground.withValues(alpha: .08),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LiquidPainter extends CustomPainter {
+  const _LiquidPainter({
+    required this.rects,
+    required this.fill,
+    required this.edge,
+  });
+  final List<Rect> rects;
+  final Color fill;
+  final Color edge;
+
+  ui.ImageFilter _alpha(double slope, double intercept) => ColorFilter.matrix([
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    slope,
+    intercept * 255,
+  ]);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final bounds = (Offset.zero & size).inflate(48);
+    final goo = ui.ImageFilter.compose(
+      outer: _alpha(22, -8.67),
+      inner: ui.ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+    );
+    void shapes(ui.ImageFilter filter, BlendMode blend) {
+      canvas.saveLayer(
+        bounds,
+        Paint()
+          ..imageFilter = filter
+          ..blendMode = blend,
+      );
+      for (final rect in rects) {
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(rect, const Radius.circular(24)),
+          Paint()..color = Colors.white,
+        );
+      }
+      canvas.restore();
+    }
+
+    canvas.saveLayer(bounds, Paint());
+    shapes(goo, BlendMode.srcOver);
+    canvas.drawRect(
+      bounds,
+      Paint()
+        ..color = fill
+        ..blendMode = BlendMode.srcIn,
+    );
+    canvas.restore();
+
+    final solid = ui.ImageFilter.compose(outer: _alpha(60, -29.5), inner: goo);
+    canvas.saveLayer(bounds, Paint());
+    shapes(solid, BlendMode.srcOver);
+    shapes(
+      ui.ImageFilter.compose(
+        outer: ui.ImageFilter.erode(radiusX: 1, radiusY: 1),
+        inner: solid,
+      ),
+      BlendMode.dstOut,
+    );
+    canvas.drawRect(
+      bounds,
+      Paint()
+        ..color = edge
+        ..blendMode = BlendMode.srcIn,
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_LiquidPainter oldDelegate) =>
+      fill != oldDelegate.fill ||
+      edge != oldDelegate.edge ||
+      List.generate(
+        rects.length,
+        (i) => rects[i] != oldDelegate.rects[i],
+      ).any((changed) => changed);
 }
