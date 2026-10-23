@@ -2,6 +2,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support.dart';
@@ -50,6 +51,49 @@ Widget _app({
 );
 
 void main() {
+  testWidgets('privacy has one accessible toggle node after reveal', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final changes = <bool>[];
+    await tester.pumpWidget(_app(onDetailsVisibleChange: changes.add));
+    await tester.tap(find.bySemanticsLabel('Show card details'));
+    await tester.pumpAndSettle();
+    var root = tester.getSemantics(find.byType(BeuiCardFolder));
+    while (root.parent != null) {
+      root = root.parent!;
+    }
+    debugPrint(root.toStringDeep());
+    final nodes = <SemanticsNode>[];
+    void visit(SemanticsNode node) {
+      if (node.label == 'Hide card details') nodes.add(node);
+      node.visitChildren((child) {
+        visit(child);
+        return true;
+      });
+    }
+
+    visit(root);
+    expect(nodes, hasLength(1));
+    expect(
+      nodes.single.getSemanticsData().hasAction(SemanticsAction.tap),
+      isTrue,
+    );
+    expect(
+      nodes.single.getSemanticsData().hasFlag(SemanticsFlag.isButton),
+      isTrue,
+    );
+    expect(
+      nodes.single.getSemanticsData().hasFlag(SemanticsFlag.isToggled),
+      isTrue,
+    );
+    expect(nodes.single.getSemanticsData().tooltip, isEmpty);
+    expect(changes, [true]);
+    nodes.single.owner!.performAction(nodes.single.id, SemanticsAction.tap);
+    await tester.pumpAndSettle();
+    expect(changes, [true, false]);
+    semantics.dispose();
+  });
   testWidgets('pointer activation transfers keyboard control to the folder', (
     tester,
   ) async {

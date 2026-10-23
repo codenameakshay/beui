@@ -37,6 +37,62 @@ Widget app(WidgetBuilder demo, {bool reduce = false, bool dark = true}) =>
     );
 
 void main() {
+  for (final status in [400, 200, 503]) {
+    testWidgets(
+      'rates artwork retains its slot on invalid SVG response $status',
+      (tester) async {
+        final requested = <String>[];
+        await http.runWithClient(
+          () async {
+            await tester.pumpWidget(
+              app(
+                (_) => Center(
+                  child: SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: MarketArtwork(
+                      url: 'https://example.test/broken-$status.svg',
+                      rates: true,
+                    ),
+                  ),
+                ),
+              ),
+            );
+            await tester.runAsync(() async {
+              await Future<void>.delayed(const Duration(milliseconds: 100));
+            });
+            await tester.pumpAndSettle();
+            expect(requested, ['https://example.test/broken-$status.svg']);
+            expect(tester.takeException(), isNull);
+            expect(
+              tester.getSize(find.byType(MarketArtwork)),
+              const Size(48, 48),
+            );
+            expect(find.byType(ErrorWidget), findsNothing);
+            expect(find.byType(Icon), findsNothing);
+            expect(find.text('Unavailable'), findsNothing);
+            expect(
+              find.byKey(const ValueKey('market-artwork-unavailable')),
+              findsOneWidget,
+            );
+            await tester.pumpWidget(const SizedBox.shrink());
+          },
+          () => MockClient((request) async {
+            requested.add(request.url.toString());
+            return http.Response(
+              status == 503
+                  ? '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40"/></svg>'
+                  : '<html>Not an SVG</html>',
+              status,
+              headers: {
+                'content-type': status == 503 ? 'image/svg+xml' : 'text/html',
+              },
+            );
+          }),
+        );
+      },
+    );
+  }
   testWidgets(
     'search backdrop fills both source rows and accepts a recent chip',
     (tester) async {
