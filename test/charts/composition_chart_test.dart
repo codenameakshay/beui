@@ -24,6 +24,47 @@ const _series = [
 ];
 
 void main() {
+  testWidgets(
+    'pointer exit then consumed keyboard input reopens chart tooltip',
+    (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiCompositionChart(series: _series, periods: _periods),
+        ),
+      );
+      final plot = find.byType(BeuiCompositionPlot);
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(tester.getCenter(plot));
+      await tester.tapAt(tester.getCenter(plot));
+      await tester.pumpAndSettle();
+      expect(tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open, isTrue);
+      await mouse.moveTo(Offset.zero);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open,
+        isFalse,
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.home);
+      await tester.pumpAndSettle();
+      expect(tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open, isTrue);
+      final values = tester
+          .widgetList<BeuiChartTicker>(find.byType(BeuiChartTicker))
+          .map((ticker) => ticker.format(ticker.value));
+      expect(values, containsAll(['60', '60.0%', '40', '40.0%']));
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open,
+        isFalse,
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.end);
+      await tester.pumpAndSettle();
+      expect(tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open, isTrue);
+      expect(find.text('Mar · No data'), findsOneWidget);
+      await mouse.removePointer();
+    },
+  );
   testWidgets('renders stacked chart and series legend', (tester) async {
     await tester.pumpWidget(
       beuiTestApp(

@@ -666,6 +666,7 @@ class _BumpDot extends StatefulWidget {
 
 class _BumpDotState extends State<_BumpDot> {
   bool _hovered = false;
+  bool _tooltipOpen = false;
   final _focus = FocusNode();
   @override
   void dispose() {
@@ -691,18 +692,23 @@ class _BumpDotState extends State<_BumpDot> {
         scope.onActive(scope.activeId == row.series.id ? null : row.series.id);
     return Focus(
       focusNode: _focus,
-      onFocusChange: (focused) => scope.onFocus(focused ? row.series.id : null),
+      onFocusChange: (focused) {
+        setState(() => _tooltipOpen = focused);
+        scope.onFocus(focused ? row.series.id : null);
+      },
       onKeyEvent: (_, event) {
         if (event is! KeyDownEvent) return KeyEventResult.ignored;
         if (event.logicalKey == LogicalKeyboardKey.enter ||
             event.logicalKey == LogicalKeyboardKey.space) {
           select();
+          setState(() => _tooltipOpen = true);
           return KeyEventResult.handled;
         }
         if (event.logicalKey == LogicalKeyboardKey.escape) {
           scope.onActive(null);
           scope.onFocus(null);
           scope.onHover(null);
+          setState(() => _tooltipOpen = false);
           return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
@@ -715,14 +721,22 @@ class _BumpDotState extends State<_BumpDot> {
             '${row.series.name}, ${scope.periods[widget.period]}, rank $rank',
         child: MouseRegion(
           onEnter: (_) {
-            setState(() => _hovered = true);
+            setState(() {
+              _hovered = true;
+              _tooltipOpen = true;
+            });
             scope.onHover(row.series.id);
           },
           onExit: (_) {
-            setState(() => _hovered = false);
+            setState(() {
+              _hovered = false;
+              _tooltipOpen = false;
+            });
             scope.onHover(null);
           },
           child: BeuiChartTooltip(
+            open: _tooltipOpen,
+            onOpenChange: (open) => setState(() => _tooltipOpen = open),
             content: BeuiChartTooltipCard(
               title: '${row.series.name} · ${scope.periods[widget.period]}',
               details: [

@@ -474,7 +474,7 @@ class BeuiChartTicker extends StatelessWidget {
 
 /// Tooltip surface used by charts that need a custom body. Built on
 /// [BeuiTooltip] so it shares the overlay, spring, and reduced-motion path.
-class BeuiChartTooltip extends StatelessWidget {
+class BeuiChartTooltip extends StatefulWidget {
   /// Wraps [child] with [content].
   const BeuiChartTooltip({
     required this.content,
@@ -482,6 +482,9 @@ class BeuiChartTooltip extends StatelessWidget {
     super.key,
     this.side = BeuiChartTooltipSide.top,
     this.enabled = true,
+    this.open,
+    this.onOpenChange,
+    this.followCursor = false,
   });
 
   /// Tooltip body.
@@ -496,13 +499,105 @@ class BeuiChartTooltip extends StatelessWidget {
   /// When false, renders [child] only.
   final bool enabled;
 
+  /// Chart-owned inspection visibility. Focus and pointer state are fallbacks.
+  final bool? open;
+  final ValueChanged<bool>? onOpenChange;
+  final bool followCursor;
+
+  @override
+  State<BeuiChartTooltip> createState() => _BeuiChartTooltipState();
+}
+
+class _BeuiChartTooltipState extends State<BeuiChartTooltip> {
+  final _anchor = GlobalKey();
+  final _anchorLink = LayerLink();
+  bool _open = false;
+  Offset? _pointer;
+  bool _keyboard = false;
+  void _setOpen(bool open) {
+    if (_open != open) setState(() => _open = open);
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (!enabled) return child;
-    return BeuiTooltip(
-      content: content,
-      side: beuiChartToTooltipSide(side),
-      child: child,
+    if (!widget.enabled) return widget.child;
+    final cursorAnchor = widget.followCursor && !_keyboard && _pointer != null;
+    final target = CompositedTransformTarget(
+      key: _anchor,
+      link: _anchorLink,
+      child: const SizedBox.expand(),
+    );
+    return MouseRegion(
+      onEnter: (event) {
+        if (widget.followCursor) {
+          setState(() {
+            _pointer = event.localPosition;
+            _keyboard = false;
+          });
+        }
+        _setOpen(true);
+      },
+      onHover: (event) {
+        if (widget.followCursor) {
+          setState(() {
+            _pointer = event.localPosition;
+            _keyboard = false;
+          });
+        }
+      },
+      onExit: (_) => _setOpen(false),
+      child: Focus(
+        canRequestFocus: false,
+        skipTraversal: true,
+        onFocusChange: (focused) {
+          if (focused) _keyboard = true;
+          _setOpen(focused);
+        },
+        onKeyEvent: (_, event) {
+          _keyboard = true;
+          if (event is KeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.escape) {
+            _setOpen(false);
+            widget.onOpenChange?.call(false);
+          }
+          return KeyEventResult.ignored;
+        },
+        child: Stack(
+          fit: StackFit.passthrough,
+          children: [
+            widget.child,
+            Positioned(
+              left: cursorAnchor ? _pointer!.dx : 0,
+              top: cursorAnchor ? _pointer!.dy : 0,
+              right: cursorAnchor ? null : 0,
+              bottom: cursorAnchor ? null : 0,
+              width: cursorAnchor ? 1 : null,
+              height: cursorAnchor ? 1 : null,
+              child: IgnorePointer(child: target),
+            ),
+            Positioned(
+              left: 0,
+              top: 0,
+              child: BeuiTooltip(
+                content: widget.content,
+                side: beuiChartToTooltipSide(widget.side),
+                open: widget.open ?? _open,
+                delay: Duration.zero,
+                followCursor: widget.followCursor,
+                externalAnchor: _anchor,
+                anchorLink: _anchorLink,
+                onOpenChange: (open) {
+                  if (!open) {
+                    _setOpen(false);
+                    widget.onOpenChange?.call(false);
+                  }
+                },
+                child: const SizedBox.shrink(),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

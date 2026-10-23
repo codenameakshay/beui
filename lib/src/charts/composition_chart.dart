@@ -4,6 +4,7 @@ library;
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
 import '_shared.dart';
@@ -139,6 +140,10 @@ class _BeuiCompositionChartState extends State<BeuiCompositionChart>
   String? _hovered;
   String? _focused;
   String? _hoveredPeriod;
+  bool _tooltipOpen = false;
+  void _setTooltipOpen(bool open) {
+    if (_tooltipOpen != open) setState(() => _tooltipOpen = open);
+  }
 
   @override
   String? get widgetActiveId => widget.period;
@@ -318,6 +323,8 @@ class BeuiCompositionPlot extends StatelessWidget {
         const SizedBox(height: 6),
         LayoutBuilder(
           builder: (context, constraints) => BeuiChartTooltip(
+            open: state._tooltipOpen,
+            onOpenChange: state._setTooltipOpen,
             content: BeuiChartTooltipCard(
               title: column.period,
               details: [
@@ -332,15 +339,22 @@ class BeuiCompositionPlot extends StatelessWidget {
             ),
             child: Focus(
               focusNode: state._inspectorFocusNode,
+              onFocusChange: state._setTooltipOpen,
               onKeyEvent: (node, event) {
                 final handled = state.handleInspectorKey(event);
-                if (handled) state.hoverPeriod(null);
+                if (handled) {
+                  state.hoverPeriod(null);
+                  state._setTooltipOpen(
+                    event.logicalKey != LogicalKeyboardKey.escape,
+                  );
+                }
                 return handled
                     ? KeyEventResult.handled
                     : KeyEventResult.ignored;
               },
               child: MouseRegion(
                 onHover: (event) {
+                  state._setTooltipOpen(true);
                   if (constraints.maxWidth <= 0) return;
                   final periodIndex =
                       (event.localPosition.dx /
@@ -350,12 +364,16 @@ class BeuiCompositionPlot extends StatelessWidget {
                           .clamp(0, columns.length - 1);
                   state.hoverPeriod(columns[periodIndex].period);
                 },
-                onExit: (_) => state.hoverPeriod(null),
+                onExit: (_) {
+                  state.hoverPeriod(null);
+                  state._setTooltipOpen(false);
+                },
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTapDown: (event) {
                     if (constraints.maxWidth <= 0) return;
                     state._inspectorFocusNode.requestFocus();
+                    state._setTooltipOpen(true);
                     final periodIndex =
                         (event.localPosition.dx /
                                 constraints.maxWidth *
