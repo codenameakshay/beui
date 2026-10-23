@@ -1,0 +1,16 @@
+{
+  "recoveredOriginalCommit": "d9ff1995b68ae6faa9716fcb92357f9f084c19d1",
+  "recoveredCherryPick": "62d8ab9",
+  "combinedRecorderCommit": "a88d982",
+  "script": "tool/parity_capture.mjs",
+  "scriptSha256": "47995b4625b91fdec1c2f8d56b193a1049fa1dc22d97ce881987189a20658e48",
+  "configTests": "config-tests.txt",
+  "realBrowserTests": "recorder-events-tests.txt",
+  "observedNormal": ["motion:false", "pointer entered", "advanced", "value:hello", "value:Search phrase", "submitted:Search phrase"],
+  "observedReduced": ["motion:true", "pointer entered", "advanced", "value:hello", "value:Search phrase", "submitted:Search phrase"],
+  "fixtureCaptureDirectories": [
+    "/var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/beui-capture-events-YLRwdB/capture-no-preference",
+    "/var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/beui-capture-events-YLRwdB/capture-reduce"
+  ],
+  "wrapperRecordings": "run-20261023-1 was recorded before this reconciliation using the input fingerprints retained in its build-inputs.json. Its configs and recordings remain unchanged."
+}

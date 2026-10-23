@@ -12,6 +12,8 @@
 //   theme  — `dark` (default) or `light`.
 //   color  — BeuiColorTheme name (default `defaultMono`, matching the site).
 //   pad    — outer padding in logical px (default 48).
+//   previewWidth — optional measured inner width, clamped by available space.
+//   captureProbe — `1` publishes observed layout and motion to browser tooling.
 //
 // An unknown slug renders a plain error card rather than throwing, so a bad
 // capture shows up as an obviously-wrong frame instead of a blank page.
@@ -19,6 +21,7 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 
 import 'explorer/catalog.dart';
+import 'explorer/capture_probe.dart';
 import 'explorer/explorer_app.dart';
 
 void main() => runApp(const VisualHarnessApp());
@@ -26,11 +29,14 @@ void main() => runApp(const VisualHarnessApp());
 /// Renders a single demo named by the `slug` query parameter.
 class VisualHarnessApp extends StatelessWidget {
   /// Creates the harness app.
-  const VisualHarnessApp({super.key});
+  const VisualHarnessApp({super.key, this.uri});
+
+  final Uri? uri;
 
   @override
   Widget build(BuildContext context) {
-    final params = Uri.base.queryParameters;
+    final launchUri = uri ?? Uri.base;
+    final params = launchUri.queryParameters;
     final slug = params['slug'] ?? '';
     final brightness = params['theme'] == 'light'
         ? Brightness.light
@@ -52,11 +58,34 @@ class VisualHarnessApp extends StatelessWidget {
         backgroundColor: colors.background,
         body: Padding(
           padding: EdgeInsets.all(pad),
-          child: Center(child: _Demo(slug: slug)),
+          child: VisualCaptureStage(
+            innerWidth: explorerPreviewWidthFromUri(launchUri),
+            child: CaptureProbe(
+              enabled: params['captureProbe'] == '1',
+              background: colors.background,
+              child: _Demo(slug: slug),
+            ),
+          ),
         ),
       ),
     );
   }
+}
+
+/// A loose demo constraint with an optional measured maximum inner width.
+class VisualCaptureStage extends StatelessWidget {
+  const VisualCaptureStage({super.key, this.innerWidth, required this.child});
+
+  final double? innerWidth;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: innerWidth ?? double.infinity),
+      child: Center(child: child),
+    ),
+  );
 }
 
 class _Demo extends StatelessWidget {

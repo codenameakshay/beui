@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'catalog.dart';
+import 'capture_probe.dart';
 import 'theme_scope.dart';
 
 /// The teal uppercase "NEW" pill, matching the source badge.
@@ -215,12 +216,16 @@ class PreviewSurface extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 360),
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: colors.card.withValues(alpha: 0.4),
+        color: colors.background,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: colors.border),
       ),
       alignment: Alignment.center,
-      child: child,
+      child: CaptureProbe(
+        enabled: Uri.base.queryParameters['captureProbe'] == '1',
+        background: colors.background,
+        child: child,
+      ),
     );
     return hasWidth ? Align(child: surface) : surface;
   }
