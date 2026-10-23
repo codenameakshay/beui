@@ -829,7 +829,7 @@ class _BumpDotState extends State<_BumpDot> {
           setState(() => _pointerFocus = false);
         }
         if (event.logicalKey == LogicalKeyboardKey.enter &&
-                event is KeyDownEvent ||
+                (event is KeyDownEvent || event is KeyRepeatEvent) ||
             event.logicalKey == LogicalKeyboardKey.space &&
                 event is KeyUpEvent) {
           select();
@@ -849,7 +849,7 @@ class _BumpDotState extends State<_BumpDot> {
           return KeyEventResult.handled;
         }
         if (event.logicalKey == LogicalKeyboardKey.escape &&
-            event is KeyDownEvent) {
+            (event is KeyDownEvent || event is KeyRepeatEvent)) {
           _hoverDelay?.cancel();
           scope.onActive(null);
           scope.onFocus(null);
@@ -995,7 +995,9 @@ class _BumpDotState extends State<_BumpDot> {
                       builder: (context, outerScale) => Transform.scale(
                         scale: outerScale,
                         child: BeuiChartTween(
-                          from: 0,
+                          from: MediaQuery.disableAnimationsOf(context)
+                              ? null
+                              : 0,
                           value: dimmed ? .22 : 1,
                           duration: const Duration(milliseconds: 180),
                           builder: (context, opacity) => Opacity(
@@ -1143,7 +1145,7 @@ class _BumpLegendButtonState extends State<_BumpLegendButton> {
           setState(() => _pointerFocus = false);
         }
         if (event.logicalKey == LogicalKeyboardKey.enter &&
-                event is KeyDownEvent ||
+                (event is KeyDownEvent || event is KeyRepeatEvent) ||
             event.logicalKey == LogicalKeyboardKey.space &&
                 event is KeyUpEvent) {
           select();
@@ -1162,7 +1164,7 @@ class _BumpLegendButtonState extends State<_BumpLegendButton> {
         ].contains(event.logicalKey)) {
           return KeyEventResult.handled;
         }
-        if (event is KeyDownEvent &&
+        if ((event is KeyDownEvent || event is KeyRepeatEvent) &&
             event.logicalKey == LogicalKeyboardKey.escape) {
           scope.onActive(null);
           scope.onFocus(null);

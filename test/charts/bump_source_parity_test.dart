@@ -132,6 +132,28 @@ void main() {
       expect(pinned(tester, 'canvas'), isFalse);
     },
   );
+
+  testWidgets(
+    'held Enter repeats native activation on dots and legend buttons',
+    (tester) async {
+      final changes = <String?>[];
+      await tester.pumpWidget(surface(onActive: changes.add));
+      await tester.tap(dot('studio', 0));
+      await tester.pump();
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.enter);
+      await tester.sendKeyRepeatEvent(LogicalKeyboardKey.enter);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(changes, ['studio', null, 'studio']);
+      await tester.tap(legend('canvas'));
+      await tester.pump();
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.enter);
+      await tester.sendKeyRepeatEvent(LogicalKeyboardKey.enter);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(changes, ['studio', null, 'studio', 'canvas', null, 'canvas']);
+    },
+  );
   testWidgets(
     'removed uncontrolled pinned identity does not revive after reinsertion',
     (tester) async {
