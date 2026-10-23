@@ -148,6 +148,13 @@ class _BeuiStatusBarState extends State<BeuiStatusBar>
   }
 
   @override
+  void didUpdateWidget(covariant BeuiStatusBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Discard stale uncontrolled ownership, rather than only hiding its label.
+    if (activeId == null) super.setActiveId(null);
+  }
+
+  @override
   void dispose() {
     _inspectorFocusNode.dispose();
     super.dispose();
