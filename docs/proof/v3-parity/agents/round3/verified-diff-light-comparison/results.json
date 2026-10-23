@@ -1,0 +1,341 @@
+{
+  "inputs": [
+    "source-diff-light-run1",
+    "verified-diff-light-run1"
+  ],
+  "results": [
+    {
+      "state": "complete-collapsed",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 300,
+          "changedPixels": 1052,
+          "totalPixels": 153600,
+          "absoluteChannelDelta": 116541
+        },
+        {
+          "name": "header",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 36,
+          "changedPixels": 675,
+          "totalPixels": 18432,
+          "absoluteChannelDelta": 44595
+        },
+        {
+          "name": "body",
+          "x": 24,
+          "y": 42,
+          "width": 488,
+          "height": 138,
+          "changedPixels": 0,
+          "totalPixels": 67344,
+          "absoluteChannelDelta": 0
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    },
+    {
+      "state": "complete-expanded",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 300,
+          "changedPixels": 5200,
+          "totalPixels": 153600,
+          "absoluteChannelDelta": 305361
+        },
+        {
+          "name": "header",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 36,
+          "changedPixels": 675,
+          "totalPixels": 18432,
+          "absoluteChannelDelta": 47058
+        },
+        {
+          "name": "body",
+          "x": 24,
+          "y": 42,
+          "width": 488,
+          "height": 138,
+          "changedPixels": 4148,
+          "totalPixels": 67344,
+          "absoluteChannelDelta": 186357
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    },
+    {
+      "state": "copied",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 300,
+          "changedPixels": 5866,
+          "totalPixels": 153600,
+          "absoluteChannelDelta": 383972
+        },
+        {
+          "name": "header",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 36,
+          "changedPixels": 675,
+          "totalPixels": 18432,
+          "absoluteChannelDelta": 44634
+        },
+        {
+          "name": "body",
+          "x": 24,
+          "y": 42,
+          "width": 488,
+          "height": 138,
+          "changedPixels": 4814,
+          "totalPixels": 67344,
+          "absoluteChannelDelta": 267392
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    },
+    {
+      "state": "row-1",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 300,
+          "changedPixels": 3616,
+          "totalPixels": 153600,
+          "absoluteChannelDelta": 189239
+        },
+        {
+          "name": "header",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 36,
+          "changedPixels": 622,
+          "totalPixels": 18432,
+          "absoluteChannelDelta": 42768
+        },
+        {
+          "name": "body",
+          "x": 24,
+          "y": 42,
+          "width": 488,
+          "height": 138,
+          "changedPixels": 1265,
+          "totalPixels": 67344,
+          "absoluteChannelDelta": 54378
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    },
+    {
+      "state": "row-2",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 300,
+          "changedPixels": 12033,
+          "totalPixels": 153600,
+          "absoluteChannelDelta": 221661
+        },
+        {
+          "name": "header",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 36,
+          "changedPixels": 638,
+          "totalPixels": 18432,
+          "absoluteChannelDelta": 43512
+        },
+        {
+          "name": "body",
+          "x": 24,
+          "y": 42,
+          "width": 488,
+          "height": 138,
+          "changedPixels": 11018,
+          "totalPixels": 67344,
+          "absoluteChannelDelta": 106220
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    },
+    {
+      "state": "row-3",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 300,
+          "changedPixels": 21836,
+          "totalPixels": 153600,
+          "absoluteChannelDelta": 302318
+        },
+        {
+          "name": "header",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 36,
+          "changedPixels": 708,
+          "totalPixels": 18432,
+          "absoluteChannelDelta": 47236
+        },
+        {
+          "name": "body",
+          "x": 24,
+          "y": 42,
+          "width": 488,
+          "height": 138,
+          "changedPixels": 20751,
+          "totalPixels": 67344,
+          "absoluteChannelDelta": 183153
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    },
+    {
+      "state": "row-4",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 300,
+          "changedPixels": 31599,
+          "totalPixels": 153600,
+          "absoluteChannelDelta": 370254
+        },
+        {
+          "name": "header",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 36,
+          "changedPixels": 732,
+          "totalPixels": 18432,
+          "absoluteChannelDelta": 48513
+        },
+        {
+          "name": "body",
+          "x": 24,
+          "y": 42,
+          "width": 488,
+          "height": 138,
+          "changedPixels": 30490,
+          "totalPixels": 67344,
+          "absoluteChannelDelta": 249812
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    },
+    {
+      "state": "row-5",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 300,
+          "changedPixels": 31776,
+          "totalPixels": 153600,
+          "absoluteChannelDelta": 378173
+        },
+        {
+          "name": "header",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 36,
+          "changedPixels": 740,
+          "totalPixels": 18432,
+          "absoluteChannelDelta": 49641
+        },
+        {
+          "name": "body",
+          "x": 24,
+          "y": 42,
+          "width": 488,
+          "height": 138,
+          "changedPixels": 30659,
+          "totalPixels": 67344,
+          "absoluteChannelDelta": 256603
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    },
+    {
+      "state": "stream-complete",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 300,
+          "changedPixels": 1052,
+          "totalPixels": 153600,
+          "absoluteChannelDelta": 116541
+        },
+        {
+          "name": "header",
+          "x": 0,
+          "y": 0,
+          "width": 512,
+          "height": 36,
+          "changedPixels": 675,
+          "totalPixels": 18432,
+          "absoluteChannelDelta": 44595
+        },
+        {
+          "name": "body",
+          "x": 24,
+          "y": 42,
+          "width": 488,
+          "height": 138,
+          "changedPixels": 0,
+          "totalPixels": 67344,
+          "absoluteChannelDelta": 0
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    }
+  ]
+}

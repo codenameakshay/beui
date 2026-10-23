@@ -1,0 +1,42 @@
+{
+  "inputs": [
+    "source-orb-error-dark-run1",
+    "verified-orb-error-dark-run1"
+  ],
+  "results": [
+    {
+      "state": "renderer-error",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 288,
+          "height": 288,
+          "changedPixels": 1611,
+          "totalPixels": 82944,
+          "absoluteChannelDelta": 21443
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    },
+    {
+      "state": "renderer-error-held",
+      "regions": [
+        {
+          "name": "stage",
+          "x": 0,
+          "y": 0,
+          "width": 288,
+          "height": 288,
+          "changedPixels": 1611,
+          "totalPixels": 82944,
+          "absoluteChannelDelta": 21443
+        }
+      ],
+      "verdict": "FAIL. Nonzero exact RGB difference.",
+      "temporalEquivalence": false
+    }
+  ]
+}

@@ -1,0 +1,2075 @@
+{
+  "phase": "after",
+  "slug": "approval-card",
+  "theme": "light",
+  "motion": "normal",
+  "sourceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "liveRevision": "unknown",
+  "expectedJs": "3e4489f9dfc5780cbac6884e8d6890fedb5e9771fb931f0a7deeb4314c089692",
+  "captureScriptSha256": "1bbd9f39baa24bfc21b40252a64bb8d0ad5eda9516a59860faa37745148b9bc0",
+  "loaded": [
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after4/flutter_bootstrap.js",
+      "sha256": "aa24f8a19f1493da313c137b854b2117b9cf6054b992c6110cd456b7ef70af88"
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.js",
+      "sha256": "6018b12bd8ed37e6952eee72d59c1cf7ad707ccdb74a0a45190010f77edd9068"
+    },
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after4/main.dart.js",
+      "sha256": "3e4489f9dfc5780cbac6884e8d6890fedb5e9771fb931f0a7deeb4314c089692"
+    }
+  ],
+  "fontAssets": [
+    {
+      "url": "http://127.0.0.1:18117/agents-round3-after4/assets/FontManifest.json",
+      "bytes": 748,
+      "sha256": "94709ae500d3812d4e346edadad1c08c8e845b1f7d00dceef94f2bee2c322c1d"
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Me4GZLCzYlKw.woff2",
+      "bytes": 63464,
+      "sha256": "35b02ca266b79eb4996590f15817425a1ce9ebf48f84471843233ff614656bf2"
+    }
+  ],
+  "errors": [],
+  "snapshots": [
+    {
+      "state": "idle",
+      "stage": {
+        "x": 464,
+        "y": 265,
+        "width": 512,
+        "height": 470
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"How focused should the first release be? 1/3 Question 1 of 3\":\n    - radio \"A focused starter set Ship a few polished pieces first.\"\n    - radio \"A broader collection Cover more ground with lighter depth.\"\n    - radio \"One flagship experience Pour everything into a single showcase.\"\n    - textbox \"Describe another scope…\"\n    - button \"Previous question\" [disabled]\n    - button \"Next question\" [disabled]\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "label": "A focused starter set\nShip a few polished pieces first.",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 518,
+            "y": 317,
+            "width": 436,
+            "height": 34,
+            "top": 317,
+            "right": 954,
+            "bottom": 351,
+            "left": 518
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "label": "A broader collection\nCover more ground with lighter depth.",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 518,
+            "y": 361,
+            "width": 436,
+            "height": 34,
+            "top": 361,
+            "right": 954,
+            "bottom": 395,
+            "left": 518
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "label": "One flagship experience\nPour everything into a single showcase.",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 518,
+            "y": 405,
+            "width": 436,
+            "height": 34,
+            "top": 405,
+            "right": 954,
+            "bottom": 439,
+            "left": 518
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "label": "Describe another scope…",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 514,
+            "y": 451,
+            "width": 452,
+            "height": 46,
+            "top": 451,
+            "right": 966,
+            "bottom": 497,
+            "left": 514
+          },
+          "font": "13.3333px Arial",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(0, 0, 0)",
+          "focused": false,
+          "value": ""
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 512,
+            "y": 509,
+            "width": 32,
+            "height": 32,
+            "top": 509,
+            "right": 544,
+            "bottom": 541,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Next question",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 928,
+            "y": 509,
+            "width": 32,
+            "height": 32,
+            "top": 509,
+            "right": 960,
+            "bottom": 541,
+            "left": 928
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 711,
+            "width": 69.5,
+            "height": 24,
+            "top": 711,
+            "right": 533.5,
+            "bottom": 735,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "label": "A focused starter set\nShip a few polished pieces first.",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 54,
+            "y": 52,
+            "width": 436,
+            "height": 34
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "label": "A broader collection\nCover more ground with lighter depth.",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 54,
+            "y": 96,
+            "width": 436,
+            "height": 34
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "label": "One flagship experience\nPour everything into a single showcase.",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 54,
+            "y": 140,
+            "width": 436,
+            "height": 34
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "label": "Describe another scope…",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 50,
+            "y": 186,
+            "width": 452,
+            "height": 46
+          },
+          "font": "13.3333px Arial",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(0, 0, 0)",
+          "focused": false,
+          "value": ""
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 48,
+            "y": 244,
+            "width": 32,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Next question",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 464,
+            "y": 244,
+            "width": 32,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 446,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 114.07770800000071,
+      "receivedMs": 216.80020800000057,
+      "sha256": "8b99939c0ffef6ede6194fe5873a56e451e3f054ccb0a35a2cfb5cc77ab52d9b",
+      "file": "idle.png"
+    },
+    {
+      "state": "checks-idle",
+      "stage": {
+        "x": 464,
+        "y": 265,
+        "width": 512,
+        "height": 470
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Which checks should block publishing? 2/3 Select every check the agent must pass before it can continue. Question 2 of 3\":\n    - checkbox \"Type safety\"\n    - checkbox \"Accessibility\"\n    - checkbox \"Registry validation\"\n    - button \"Previous question\"\n    - button \"Next question\" [disabled]\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Type safety",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 518,
+            "y": 345,
+            "width": 103.359375,
+            "height": 20,
+            "top": 345,
+            "right": 621.359375,
+            "bottom": 365,
+            "left": 518
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Accessibility",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 518,
+            "y": 383,
+            "width": 110.28125,
+            "height": 20,
+            "top": 383,
+            "right": 628.28125,
+            "bottom": 403,
+            "left": 518
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Registry validation",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 518,
+            "y": 421,
+            "width": 146.296875,
+            "height": 20,
+            "top": 421,
+            "right": 664.296875,
+            "bottom": 441,
+            "left": 518
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 512,
+            "y": 465,
+            "width": 32,
+            "height": 32,
+            "top": 465,
+            "right": 544,
+            "bottom": 497,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Next question",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 928,
+            "y": 465,
+            "width": 32,
+            "height": 32,
+            "top": 465,
+            "right": 960,
+            "bottom": 497,
+            "left": 928
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 711,
+            "width": 69.5,
+            "height": 24,
+            "top": 711,
+            "right": 533.5,
+            "bottom": 735,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Type safety",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 54,
+            "y": 80,
+            "width": 103.359375,
+            "height": 20
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Accessibility",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 54,
+            "y": 118,
+            "width": 110.28125,
+            "height": 20
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Registry validation",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 54,
+            "y": 156,
+            "width": 146.296875,
+            "height": 20
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 48,
+            "y": 200,
+            "width": 32,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Next question",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 464,
+            "y": 200,
+            "width": 32,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 446,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 1427.0247500000005,
+      "receivedMs": 1537.4548749999994,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda",
+      "file": "checks-idle.png"
+    },
+    {
+      "state": "checks-selected",
+      "stage": {
+        "x": 464,
+        "y": 265,
+        "width": 512,
+        "height": 470
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Which checks should block publishing? 2/3 Select every check the agent must pass before it can continue. Question 2 of 3\":\n    - checkbox \"Type safety\" [checked]\n    - checkbox \"Accessibility\" [checked]\n    - checkbox \"Registry validation\"\n    - button \"Previous question\"\n    - button \"Next question\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Type safety",
+          "checked": "true",
+          "disabled": null,
+          "bounds": {
+            "x": 518,
+            "y": 345,
+            "width": 103.359375,
+            "height": 20,
+            "top": 345,
+            "right": 621.359375,
+            "bottom": 365,
+            "left": 518
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Accessibility",
+          "checked": "true",
+          "disabled": null,
+          "bounds": {
+            "x": 518,
+            "y": 383,
+            "width": 110.28125,
+            "height": 20,
+            "top": 383,
+            "right": 628.28125,
+            "bottom": 403,
+            "left": 518
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Registry validation",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 518,
+            "y": 421,
+            "width": 146.296875,
+            "height": 20,
+            "top": 421,
+            "right": 664.296875,
+            "bottom": 441,
+            "left": 518
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 512,
+            "y": 465,
+            "width": 32,
+            "height": 32,
+            "top": 465,
+            "right": 544,
+            "bottom": 497,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Next question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 928,
+            "y": 465,
+            "width": 32,
+            "height": 32,
+            "top": 465,
+            "right": 960,
+            "bottom": 497,
+            "left": 928
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 711,
+            "width": 69.5,
+            "height": 24,
+            "top": 711,
+            "right": 533.5,
+            "bottom": 735,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Type safety",
+          "checked": "true",
+          "disabled": null,
+          "bounds": {
+            "x": 54,
+            "y": 80,
+            "width": 103.359375,
+            "height": 20
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Accessibility",
+          "checked": "true",
+          "disabled": null,
+          "bounds": {
+            "x": 54,
+            "y": 118,
+            "width": 110.28125,
+            "height": 20
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "checkbox",
+          "label": "Registry validation",
+          "checked": "false",
+          "disabled": null,
+          "bounds": {
+            "x": 54,
+            "y": 156,
+            "width": 146.296875,
+            "height": 20
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 48,
+            "y": 200,
+            "width": 32,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Next question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 200,
+            "width": 32,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 446,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 3785.3009999999995,
+      "receivedMs": 3875.8055829999994,
+      "sha256": "ede007cff49524c05363d448c2efdfe6fbdea628a9291b6a3d7a4045ba2eaa71",
+      "file": "checks-selected.png"
+    },
+    {
+      "state": "after-next-dispatch",
+      "stage": {
+        "x": 464,
+        "y": 265,
+        "width": 512,
+        "height": 470
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Anything the agent should preserve? 3/3 Question 3 of 3\":\n    - textbox \"Add a final constraint…\"\n    - button \"Previous question\"\n    - button \"Submit response Submit response\" [disabled]\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "role": null,
+          "label": "Add a final constraint…",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 514,
+            "y": 315,
+            "width": 452,
+            "height": 46,
+            "top": 315,
+            "right": 966,
+            "bottom": 361,
+            "left": 514
+          },
+          "font": "13.3333px Arial",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(0, 0, 0)",
+          "focused": false,
+          "value": ""
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 512,
+            "y": 373,
+            "width": 32,
+            "height": 32,
+            "top": 373,
+            "right": 544,
+            "bottom": 405,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Submit response\nSubmit response",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 825.9765625,
+            "y": 373,
+            "width": 134.015625,
+            "height": 32,
+            "top": 373,
+            "right": 959.9921875,
+            "bottom": 405,
+            "left": 825.9765625
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 711,
+            "width": 69.5,
+            "height": 24,
+            "top": 711,
+            "right": 533.5,
+            "bottom": 735,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "INPUT",
+          "role": null,
+          "label": "Add a final constraint…",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 50,
+            "y": 50,
+            "width": 452,
+            "height": 46
+          },
+          "font": "13.3333px Arial",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(0, 0, 0)",
+          "focused": false,
+          "value": ""
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 48,
+            "y": 108,
+            "width": 32,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Submit response\nSubmit response",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 361.9765625,
+            "y": 108,
+            "width": 134.015625,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 446,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 4745.717540999998,
+      "receivedMs": 4809.011041000002,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829",
+      "file": "after-next-dispatch.png"
+    },
+    {
+      "state": "constraint",
+      "stage": {
+        "x": 464,
+        "y": 265,
+        "width": 512,
+        "height": 470
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Anything the agent should preserve? 3/3 Question 3 of 3\":\n    - textbox: Keep the release focused.\n    - button \"Previous question\"\n    - button \"Submit response Submit response\"\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "role": null,
+          "label": "",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 514,
+            "y": 315,
+            "width": 452,
+            "height": 46,
+            "top": 315,
+            "right": 966,
+            "bottom": 361,
+            "left": 514
+          },
+          "font": "13.3333px Arial",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(0, 0, 0)",
+          "focused": true,
+          "value": "Keep the release focused."
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 512,
+            "y": 373,
+            "width": 32,
+            "height": 32,
+            "top": 373,
+            "right": 544,
+            "bottom": 405,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Submit response\nSubmit response",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 825.9765625,
+            "y": 373,
+            "width": 134.015625,
+            "height": 32,
+            "top": 373,
+            "right": 959.9921875,
+            "bottom": 405,
+            "left": 825.9765625
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 711,
+            "width": 69.5,
+            "height": 24,
+            "top": 711,
+            "right": 533.5,
+            "bottom": 735,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "INPUT",
+          "role": null,
+          "label": "",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 50,
+            "y": 50,
+            "width": 452,
+            "height": 46
+          },
+          "font": "13.3333px Arial",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(0, 0, 0)",
+          "focused": true,
+          "value": "Keep the release focused."
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 48,
+            "y": 108,
+            "width": 32,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Submit response\nSubmit response",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 361.9765625,
+            "y": 108,
+            "width": 134.015625,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 446,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 8373.614458,
+      "receivedMs": 8417.482916,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91",
+      "file": "constraint.png"
+    },
+    {
+      "state": "submitting",
+      "stage": {
+        "x": 464,
+        "y": 265,
+        "width": 512,
+        "height": 470
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - group \"Anything the agent should preserve? 3/3 Question 3 of 3\":\n    - textbox [disabled]: Keep the release focused.\n    - button \"Previous question\" [disabled]\n    - button \"Submit response\" [disabled]\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "INPUT",
+          "role": null,
+          "label": "",
+          "checked": null,
+          "disabled": true,
+          "bounds": {
+            "x": 514,
+            "y": 315,
+            "width": 452,
+            "height": 46,
+            "top": 315,
+            "right": 966,
+            "bottom": 361,
+            "left": 514
+          },
+          "font": "13.3333px Arial",
+          "background": "rgba(239, 239, 239, 0.3)",
+          "color": "rgb(84, 84, 84)",
+          "focused": false,
+          "value": "Keep the release focused."
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 512,
+            "y": 373,
+            "width": 32,
+            "height": 32,
+            "top": 373,
+            "right": 544,
+            "bottom": 405,
+            "left": 512
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Submit response",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 920,
+            "y": 373,
+            "width": 40,
+            "height": 32,
+            "top": 373,
+            "right": 960,
+            "bottom": 405,
+            "left": 920
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 711,
+            "width": 69.5,
+            "height": 24,
+            "top": 711,
+            "right": 533.5,
+            "bottom": 735,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "INPUT",
+          "role": null,
+          "label": "",
+          "checked": null,
+          "disabled": true,
+          "bounds": {
+            "x": 50,
+            "y": 50,
+            "width": 452,
+            "height": 46
+          },
+          "font": "13.3333px Arial",
+          "background": "rgba(239, 239, 239, 0.3)",
+          "color": "rgb(84, 84, 84)",
+          "focused": false,
+          "value": "Keep the release focused."
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Previous question",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 48,
+            "y": 108,
+            "width": 32,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Submit response",
+          "checked": null,
+          "disabled": "true",
+          "bounds": {
+            "x": 456,
+            "y": 108,
+            "width": 40,
+            "height": 32
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": true
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 446,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 8832.351999999999,
+      "receivedMs": 8925.595833,
+      "sha256": "a384822a1d34f4b2dcaaba53d83c9d80f263a370cc10c0cb2e54ade926aab8c5",
+      "file": "submitting.png"
+    },
+    {
+      "state": "answered",
+      "stage": {
+        "x": 464,
+        "y": 265,
+        "width": 512,
+        "height": 470
+      },
+      "nativeRaster": {
+        "width": 1440,
+        "height": 913
+      },
+      "aria": "- group \"Capture stage width 752 height 1000 reduced false palette source-default-a76e57c9\":\n  - text: Anything the agent should preserve? Response submitted Three responses sent to the agent.\n  - button \"Replay\"",
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 464,
+            "y": 711,
+            "width": 69.5,
+            "height": 24,
+            "top": 711,
+            "right": 533.5,
+            "bottom": 735,
+            "left": 464
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "localControls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "label": "Replay",
+          "checked": null,
+          "disabled": null,
+          "bounds": {
+            "x": 0,
+            "y": 446,
+            "width": 69.5,
+            "height": 24
+          },
+          "font": "16px Times",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(0, 0, 0, 0)",
+          "focused": false
+        }
+      ],
+      "requestedMs": 9899.449958000001,
+      "receivedMs": 9942.027375000001,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909",
+      "file": "answered.png"
+    }
+  ],
+  "frames": [
+    {
+      "file": "frames/000000.png",
+      "requestedMs": 0.012749999999869033,
+      "receivedMs": 188.37012499999946,
+      "sha256": "8b99939c0ffef6ede6194fe5873a56e451e3f054ccb0a35a2cfb5cc77ab52d9b"
+    },
+    {
+      "file": "frames/000001.png",
+      "requestedMs": 193.21083299999918,
+      "receivedMs": 238.1999999999989,
+      "sha256": "8b99939c0ffef6ede6194fe5873a56e451e3f054ccb0a35a2cfb5cc77ab52d9b"
+    },
+    {
+      "file": "frames/000002.png",
+      "requestedMs": 244.43512499999997,
+      "receivedMs": 294.352832999999,
+      "sha256": "8b99939c0ffef6ede6194fe5873a56e451e3f054ccb0a35a2cfb5cc77ab52d9b"
+    },
+    {
+      "file": "frames/000003.png",
+      "requestedMs": 295.74012500000026,
+      "receivedMs": 369.4316660000004,
+      "sha256": "8b99939c0ffef6ede6194fe5873a56e451e3f054ccb0a35a2cfb5cc77ab52d9b"
+    },
+    {
+      "file": "frames/000004.png",
+      "requestedMs": 369.87604099999953,
+      "receivedMs": 538.7850830000007,
+      "sha256": "1f0fb48f584f9798de68702d6dff0faa245bdc552665b368498164962e8f331b"
+    },
+    {
+      "file": "frames/000005.png",
+      "requestedMs": 582.981749999999,
+      "receivedMs": 894.7750830000004,
+      "sha256": "de65637995f6bf898ed6b593e2d7b348e503dad7c28b3350f90388f79871f5f0"
+    },
+    {
+      "file": "frames/000006.png",
+      "requestedMs": 897.5857080000005,
+      "receivedMs": 1033.5265409999993,
+      "sha256": "eb53ae6972cb97fa51cbcee67636258c8af49b435d4748f4edc2aa0eeca797bf"
+    },
+    {
+      "file": "frames/000007.png",
+      "requestedMs": 1038.482249999999,
+      "receivedMs": 1127.1142909999999,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda"
+    },
+    {
+      "file": "frames/000008.png",
+      "requestedMs": 1128.4811659999996,
+      "receivedMs": 1196.5080409999991,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda"
+    },
+    {
+      "file": "frames/000009.png",
+      "requestedMs": 1198.038790999999,
+      "receivedMs": 1232.8760000000002,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda"
+    },
+    {
+      "file": "frames/000010.png",
+      "requestedMs": 1234.496583,
+      "receivedMs": 1301.5572909999992,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda"
+    },
+    {
+      "file": "frames/000011.png",
+      "requestedMs": 1302.70075,
+      "receivedMs": 1339.558583,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda"
+    },
+    {
+      "file": "frames/000012.png",
+      "requestedMs": 1349.0054999999993,
+      "receivedMs": 1475.569540999999,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda"
+    },
+    {
+      "file": "frames/000013.png",
+      "requestedMs": 1479.1656249999996,
+      "receivedMs": 1563.194125,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda"
+    },
+    {
+      "file": "frames/000014.png",
+      "requestedMs": 1577.734457999999,
+      "receivedMs": 1661.592290999999,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda"
+    },
+    {
+      "file": "frames/000015.png",
+      "requestedMs": 1669.4671249999992,
+      "receivedMs": 1721.3056660000002,
+      "sha256": "29a5b7e232e53dc248c104d4d7820e805bd8f04a5e397f0a35312beabd41ecda"
+    },
+    {
+      "file": "frames/000016.png",
+      "requestedMs": 1726.277666,
+      "receivedMs": 3059.271790999999,
+      "sha256": "18b53a3cda04e4832de228314fd743fc9a29ba63c2d690a6ac77dc115a621687"
+    },
+    {
+      "file": "frames/000017.png",
+      "requestedMs": 3061.4522080000006,
+      "receivedMs": 3161.255332999999,
+      "sha256": "18b53a3cda04e4832de228314fd743fc9a29ba63c2d690a6ac77dc115a621687"
+    },
+    {
+      "file": "frames/000018.png",
+      "requestedMs": 3173.5554159999992,
+      "receivedMs": 3218.2690829999992,
+      "sha256": "18b53a3cda04e4832de228314fd743fc9a29ba63c2d690a6ac77dc115a621687"
+    },
+    {
+      "file": "frames/000019.png",
+      "requestedMs": 3220.5254999999997,
+      "receivedMs": 3254.897416,
+      "sha256": "18b53a3cda04e4832de228314fd743fc9a29ba63c2d690a6ac77dc115a621687"
+    },
+    {
+      "file": "frames/000020.png",
+      "requestedMs": 3262.636708,
+      "receivedMs": 3300.9387910000005,
+      "sha256": "18b53a3cda04e4832de228314fd743fc9a29ba63c2d690a6ac77dc115a621687"
+    },
+    {
+      "file": "frames/000021.png",
+      "requestedMs": 3305.6132500000003,
+      "receivedMs": 3375.251875,
+      "sha256": "18b53a3cda04e4832de228314fd743fc9a29ba63c2d690a6ac77dc115a621687"
+    },
+    {
+      "file": "frames/000022.png",
+      "requestedMs": 3378.512541,
+      "receivedMs": 3466.3926250000004,
+      "sha256": "18b53a3cda04e4832de228314fd743fc9a29ba63c2d690a6ac77dc115a621687"
+    },
+    {
+      "file": "frames/000023.png",
+      "requestedMs": 3469.7350829999996,
+      "receivedMs": 3557.5676249999997,
+      "sha256": "96e782995c8f9a60ce2d364e3957d3671d2060198bed514330cf70c8e4dc8f09"
+    },
+    {
+      "file": "frames/000024.png",
+      "requestedMs": 3559.5285409999997,
+      "receivedMs": 3642.435458,
+      "sha256": "f275bc10afa32894958b4d3aaa38144d9bac0b623eeeb020a902b3a20a8cd48b"
+    },
+    {
+      "file": "frames/000025.png",
+      "requestedMs": 3644.0627079999995,
+      "receivedMs": 3709.9324579999993,
+      "sha256": "ede007cff49524c05363d448c2efdfe6fbdea628a9291b6a3d7a4045ba2eaa71"
+    },
+    {
+      "file": "frames/000026.png",
+      "requestedMs": 3711.5092910000003,
+      "receivedMs": 3856.3205830000006,
+      "sha256": "ede007cff49524c05363d448c2efdfe6fbdea628a9291b6a3d7a4045ba2eaa71"
+    },
+    {
+      "file": "frames/000027.png",
+      "requestedMs": 3863.5436250000002,
+      "receivedMs": 3920.712207999999,
+      "sha256": "ede007cff49524c05363d448c2efdfe6fbdea628a9291b6a3d7a4045ba2eaa71"
+    },
+    {
+      "file": "frames/000028.png",
+      "requestedMs": 3929.4292079999996,
+      "receivedMs": 4048.361583,
+      "sha256": "ede007cff49524c05363d448c2efdfe6fbdea628a9291b6a3d7a4045ba2eaa71"
+    },
+    {
+      "file": "frames/000029.png",
+      "requestedMs": 4049.723749999999,
+      "receivedMs": 4112.045833,
+      "sha256": "ede007cff49524c05363d448c2efdfe6fbdea628a9291b6a3d7a4045ba2eaa71"
+    },
+    {
+      "file": "frames/000030.png",
+      "requestedMs": 4113.8330000000005,
+      "receivedMs": 4261.995999999999,
+      "sha256": "ddd23489381fcc1fb65f6edb72a42b0feff569a26e7f4dea680092c833f6e171"
+    },
+    {
+      "file": "frames/000031.png",
+      "requestedMs": 4262.675875000001,
+      "receivedMs": 4332.975290999999,
+      "sha256": "6b62a342a2ab7871ffa3aa6eb31abd09989b269691f6024dc4924b467f85bf83"
+    },
+    {
+      "file": "frames/000032.png",
+      "requestedMs": 4336.573666,
+      "receivedMs": 4391.898791,
+      "sha256": "de50e6ab47e4b546be40bc8e505229517e030d523ecedca6e81f89733fe8b824"
+    },
+    {
+      "file": "frames/000033.png",
+      "requestedMs": 4395.697625000001,
+      "receivedMs": 4474.682083,
+      "sha256": "0b4ac885090018c3929271339aecd23ecaa5463840978b57212d4598861584a4"
+    },
+    {
+      "file": "frames/000034.png",
+      "requestedMs": 4487.104291,
+      "receivedMs": 4694.909124999998,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000035.png",
+      "requestedMs": 4701.939249999999,
+      "receivedMs": 4732.063665999998,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000036.png",
+      "requestedMs": 4738.357082999999,
+      "receivedMs": 4760.180457999999,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000037.png",
+      "requestedMs": 4760.7929159999985,
+      "receivedMs": 4826.440290999999,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000038.png",
+      "requestedMs": 4837.990290999998,
+      "receivedMs": 4984.384458,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000039.png",
+      "requestedMs": 4988.309375000001,
+      "receivedMs": 5013.041125,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000040.png",
+      "requestedMs": 5018.939791000001,
+      "receivedMs": 5060.682124999999,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000041.png",
+      "requestedMs": 5062.625124999999,
+      "receivedMs": 5097.565125000001,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000042.png",
+      "requestedMs": 5098.196124999999,
+      "receivedMs": 5166.204833,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000043.png",
+      "requestedMs": 5170.001250000001,
+      "receivedMs": 5220.742374999998,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000044.png",
+      "requestedMs": 5222.435249999999,
+      "receivedMs": 5258.328957999998,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000045.png",
+      "requestedMs": 5259.180208000002,
+      "receivedMs": 5300.670208,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000046.png",
+      "requestedMs": 5302.583791000001,
+      "receivedMs": 5366.179250000001,
+      "sha256": "2b697b4d344451d1d1e9cfa46bf4eac661f0eaa8a7af1f24501178020b76d829"
+    },
+    {
+      "file": "frames/000047.png",
+      "requestedMs": 5367.264583,
+      "receivedMs": 5477.558041,
+      "sha256": "7a7ba773dd7aac546c72c1e40920c119c79b4c53e27184b027207c708b1e9f47"
+    },
+    {
+      "file": "frames/000048.png",
+      "requestedMs": 5479.9572499999995,
+      "receivedMs": 5552.133290999998,
+      "sha256": "df0d7d4317c4ae8b0dbfe37f320abf00aad7fabe9ead0f384a18b6eb3af5d2bc"
+    },
+    {
+      "file": "frames/000049.png",
+      "requestedMs": 5567.225791000001,
+      "receivedMs": 5641.466291000001,
+      "sha256": "6b6e461d8da8785b9e426e3d56f2b735c42a32c87cd9bab751a1a57b0cc4ca7a"
+    },
+    {
+      "file": "frames/000050.png",
+      "requestedMs": 5644.160625,
+      "receivedMs": 5707.2043330000015,
+      "sha256": "6b6e461d8da8785b9e426e3d56f2b735c42a32c87cd9bab751a1a57b0cc4ca7a"
+    },
+    {
+      "file": "frames/000051.png",
+      "requestedMs": 5712.6161250000005,
+      "receivedMs": 5791.564791000001,
+      "sha256": "6b6e461d8da8785b9e426e3d56f2b735c42a32c87cd9bab751a1a57b0cc4ca7a"
+    },
+    {
+      "file": "frames/000052.png",
+      "requestedMs": 5792.757540999999,
+      "receivedMs": 5880.203000000001,
+      "sha256": "6b6e461d8da8785b9e426e3d56f2b735c42a32c87cd9bab751a1a57b0cc4ca7a"
+    },
+    {
+      "file": "frames/000053.png",
+      "requestedMs": 5890.079957999998,
+      "receivedMs": 5949.934249999998,
+      "sha256": "5c9e1b286187749c02cca664a2e2982120c9f6249e0883f622593a0bbc8561e8"
+    },
+    {
+      "file": "frames/000054.png",
+      "requestedMs": 5950.423541,
+      "receivedMs": 6027.414375,
+      "sha256": "d9270f0d8a1707f8d5264ed4c6423c18a5d1b37532f84ef7c253477b1ba9e503"
+    },
+    {
+      "file": "frames/000055.png",
+      "requestedMs": 6028.855082999999,
+      "receivedMs": 6137.0625,
+      "sha256": "9fbd01f3af34cbb8c03b38894dc95e51f112b9f748c5bb66aa7e99d062f7a283"
+    },
+    {
+      "file": "frames/000056.png",
+      "requestedMs": 6148.7173330000005,
+      "receivedMs": 6253.092540999998,
+      "sha256": "4d1dcbb94c8e3ac4cc2feb966b4fe6768091fb5c1e0603583eb52268c4a0890d"
+    },
+    {
+      "file": "frames/000057.png",
+      "requestedMs": 6255.789249999998,
+      "receivedMs": 6313.604749999999,
+      "sha256": "651136c81980fb7670e6aa2a476b65dbc87988691af4e7f22d34715de2c81b21"
+    },
+    {
+      "file": "frames/000058.png",
+      "requestedMs": 6315.1548330000005,
+      "receivedMs": 6359.296957999999,
+      "sha256": "5bd93fc5588bcb5fd780ad75ba50298b6b10d50895db9d03ecc037c8fe3c9eab"
+    },
+    {
+      "file": "frames/000059.png",
+      "requestedMs": 6362.919791,
+      "receivedMs": 6429.791416,
+      "sha256": "cb888500603194071e29604aa5789ae45c734b81ed8cc7bd4fe8c4f905544ccd"
+    },
+    {
+      "file": "frames/000060.png",
+      "requestedMs": 6441.300875000001,
+      "receivedMs": 6518.208875,
+      "sha256": "8414a9a4dd505a6170fc0a77da30f3567bf32d69ceb093b9650dd1138c99a6ce"
+    },
+    {
+      "file": "frames/000061.png",
+      "requestedMs": 6521.44025,
+      "receivedMs": 6651.131540999999,
+      "sha256": "0f91060193c54ef7b8197617148894df6a26fcd270e05aecf27dd507bc5f84fc"
+    },
+    {
+      "file": "frames/000062.png",
+      "requestedMs": 6656.4853330000005,
+      "receivedMs": 6827.808958000001,
+      "sha256": "fe58d08b1609b428b513771312c1f4f27778548579ef64f6aa403d9b22f346d6"
+    },
+    {
+      "file": "frames/000063.png",
+      "requestedMs": 6832.295041000001,
+      "receivedMs": 6920.9180000000015,
+      "sha256": "5231ea6d5630c1ffc02758d538998f5b4e1f446ce82117713219994d37dbfe5d"
+    },
+    {
+      "file": "frames/000064.png",
+      "requestedMs": 6931.9958750000005,
+      "receivedMs": 7017.572666,
+      "sha256": "5231ea6d5630c1ffc02758d538998f5b4e1f446ce82117713219994d37dbfe5d"
+    },
+    {
+      "file": "frames/000065.png",
+      "requestedMs": 7018.905208,
+      "receivedMs": 7311.780541,
+      "sha256": "80ec21b6ba7d2384a58e50727db4bea34346f39583e36e9623ee696b138beef8"
+    },
+    {
+      "file": "frames/000066.png",
+      "requestedMs": 7317.918874999999,
+      "receivedMs": 7459.774125,
+      "sha256": "4b6ebbc8e8daa7c22487b1f259aa2c3438428d31a04055672008999f24aa48fd"
+    },
+    {
+      "file": "frames/000067.png",
+      "requestedMs": 7461.015124999998,
+      "receivedMs": 7533.853833000001,
+      "sha256": "6b929d6b061578b838cc5f491b0f051d3c6bd27040c93a916929bf0c84b3770d"
+    },
+    {
+      "file": "frames/000068.png",
+      "requestedMs": 7534.739125,
+      "receivedMs": 7694.707458000001,
+      "sha256": "1072afa8011992d52f31a41b444606f870da44f2d6c3709a6be3c02a52e58acd"
+    },
+    {
+      "file": "frames/000069.png",
+      "requestedMs": 7696.427208000001,
+      "receivedMs": 7967.891250000001,
+      "sha256": "7c23b399ae5f68091ddfdc3c87f9490d00afda9a7695ed0869e076536cb8d9ef"
+    },
+    {
+      "file": "frames/000070.png",
+      "requestedMs": 7974.869999999999,
+      "receivedMs": 8030.816040999998,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000071.png",
+      "requestedMs": 8032.096874999999,
+      "receivedMs": 8057.846874999999,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000072.png",
+      "requestedMs": 8059.888833000001,
+      "receivedMs": 8110.957458000001,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000073.png",
+      "requestedMs": 8112.318208000001,
+      "receivedMs": 8141.609,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000074.png",
+      "requestedMs": 8142.127625000001,
+      "receivedMs": 8160.382791,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000075.png",
+      "requestedMs": 8163.672332999999,
+      "receivedMs": 8271.476749999998,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000076.png",
+      "requestedMs": 8275.871040999999,
+      "receivedMs": 8301.440166,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000077.png",
+      "requestedMs": 8303.301541,
+      "receivedMs": 8357.976791000001,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000078.png",
+      "requestedMs": 8359.237708,
+      "receivedMs": 8395.709791000001,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000079.png",
+      "requestedMs": 8396.013707999999,
+      "receivedMs": 8431.900708000001,
+      "sha256": "041870fb54f3ac6e4dc02a2f6297a42999175d89dc4f5c7859d5480d4b23de91"
+    },
+    {
+      "file": "frames/000080.png",
+      "requestedMs": 8434.417957999998,
+      "receivedMs": 8467.080083,
+      "sha256": "9acba60459a2bd002cf87484dff3d14741a7ac9dbe00d580cbcb31fb016bc4d3"
+    },
+    {
+      "file": "frames/000081.png",
+      "requestedMs": 8467.386541,
+      "receivedMs": 8492.107666,
+      "sha256": "9acba60459a2bd002cf87484dff3d14741a7ac9dbe00d580cbcb31fb016bc4d3"
+    },
+    {
+      "file": "frames/000082.png",
+      "requestedMs": 8496.432333,
+      "receivedMs": 8563.515791000002,
+      "sha256": "47c9df4ac4b03c08d11f09cda05a855309aba9bd2aa0cffa54de8d15c517148f"
+    },
+    {
+      "file": "frames/000083.png",
+      "requestedMs": 8572.896165999999,
+      "receivedMs": 8746.580750000001,
+      "sha256": "b85d5978238269058574d2c20942a336b321966634cbe24fdf9b2d94f2937b81"
+    },
+    {
+      "file": "frames/000084.png",
+      "requestedMs": 8761.3345,
+      "receivedMs": 8850.209749999998,
+      "sha256": "88d4e8936f798a82dd0fbd3a673476f0a932e66f20a5b3cafac1ff754c6934f6"
+    },
+    {
+      "file": "frames/000085.png",
+      "requestedMs": 8853.540958000001,
+      "receivedMs": 8928.200125,
+      "sha256": "a384822a1d34f4b2dcaaba53d83c9d80f263a370cc10c0cb2e54ade926aab8c5"
+    },
+    {
+      "file": "frames/000086.png",
+      "requestedMs": 8929.226665999999,
+      "receivedMs": 8986.314208,
+      "sha256": "04bf0c02b18e56ad2557d5085d76fd080da69cfb9d4cb97249d1f8c4d58e15ff"
+    },
+    {
+      "file": "frames/000087.png",
+      "requestedMs": 8990.333374999998,
+      "receivedMs": 9042.611458,
+      "sha256": "d07b0623cfd896ed09078bdc54b7fae922b3397189374c31fe596402f282ef12"
+    },
+    {
+      "file": "frames/000088.png",
+      "requestedMs": 9043.68925,
+      "receivedMs": 9115.070666,
+      "sha256": "39a1ff27c6c1080cef80d2fab0b471224d7eb63873cce0cbf3dcff8276ac4d41"
+    },
+    {
+      "file": "frames/000089.png",
+      "requestedMs": 9115.768583000001,
+      "receivedMs": 9190.194082999998,
+      "sha256": "1dafa5a2c24dc3f1f0da30bce9f2eb8ed53eb037557f49bfdf6e432ee280532b"
+    },
+    {
+      "file": "frames/000090.png",
+      "requestedMs": 9194.624583,
+      "receivedMs": 9271.557125,
+      "sha256": "633d2f1d5e144fe144226ccf3572f3ae27104bea674b20e494f9ecf40dcc7e4d"
+    },
+    {
+      "file": "frames/000091.png",
+      "requestedMs": 9273.141625,
+      "receivedMs": 9360.700041,
+      "sha256": "4c01b56ca925da84337f78f1906147dfa01fd9df265feb017e649ce0cf939e4c"
+    },
+    {
+      "file": "frames/000092.png",
+      "requestedMs": 9368.168833,
+      "receivedMs": 9501.894916000001,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909"
+    },
+    {
+      "file": "frames/000093.png",
+      "requestedMs": 9504.185375000001,
+      "receivedMs": 9576.918791,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909"
+    },
+    {
+      "file": "frames/000094.png",
+      "requestedMs": 9580.357166000002,
+      "receivedMs": 9656.674665999999,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909"
+    },
+    {
+      "file": "frames/000095.png",
+      "requestedMs": 9659.228749999998,
+      "receivedMs": 9739.299458000001,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909"
+    },
+    {
+      "file": "frames/000096.png",
+      "requestedMs": 9740.466874999998,
+      "receivedMs": 9807.604166000001,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909"
+    },
+    {
+      "file": "frames/000097.png",
+      "requestedMs": 9808.4595,
+      "receivedMs": 9856.99225,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909"
+    },
+    {
+      "file": "frames/000098.png",
+      "requestedMs": 9858.132207999999,
+      "receivedMs": 9874.560666000001,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909"
+    },
+    {
+      "file": "frames/000099.png",
+      "requestedMs": 9876.858333,
+      "receivedMs": 9919.657374999999,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909"
+    },
+    {
+      "file": "frames/000100.png",
+      "requestedMs": 9922.772041,
+      "receivedMs": 9953.682499999999,
+      "sha256": "00ab7b8040ce175bc6c3dad89910a4fd0565b47835dacca99fd1c39904a75909"
+    }
+  ],
+  "keyboardTraversal": [],
+  "url": "http://127.0.0.1:18117/agents-round3-after4/?slug=approval-card&theme=light&previewWidth=752&captureProbe=1&palette=source-default-a76e57c9",
+  "environment": {
+    "viewport": {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1
+    },
+    "browserReducedMotion": false,
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 752,
+        "maxWidth": 752,
+        "minHeight": 0,
+        "maxHeight": 1000
+      },
+      "rect": {
+        "x": 344,
+        "y": 0,
+        "width": 752,
+        "height": 1000
+      }
+    },
+    "fonts": [],
+    "colors": {
+      "background": "",
+      "foreground": "",
+      "muted": "",
+      "muted-foreground": "",
+      "primary": "",
+      "primary-foreground": ""
+    },
+    "htmlClass": "",
+    "dataTheme": null,
+    "browser": "155.0.8059.86"
+  },
+  "cadence": {
+    "samples": 101,
+    "decodedFrames": 101,
+    "width": 1440,
+    "height": 913,
+    "measuredFps": 10.240327821566487,
+    "maxGapMs": 1337.966124999999,
+    "interpolated": false,
+    "temporalEquivalence": false
+  }
+}
