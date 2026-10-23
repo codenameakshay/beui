@@ -2,6 +2,13 @@
 
 Done means the scoped source behaviors, appearance and motion are implemented and verified with preserved source/candidate evidence, integrated gates, and pushed PR26 updates. No merge is authorized. Exact parity remains incomplete.
 
+## Latest continuation: deterministic Order Book
+
+- Parent independently exported the staged Git tree to regular files and ran the exported verifier. All 6,285 checks passed with no failures. Four final sessions retain 136 observations and 1,576 original frames, with source/candidate build identities and trusted events.
+- Accepted scope: deterministic cumulative readouts, selection, exit, keyboard traversal, reorder, Step, empty state and focused-side replacement under both motion preferences. No production change. Full-demo timer equivalence, pixels and native60 remain open.
+- SDK follow-up completed: Flutter 3.44.2 / Dart 3.12.2 passed fresh resolution, adapter compilation, 240 Chromium contract cases, release Bump build and 294 native states. Zero actual ancestor reorder events occurred; causal repair evidence remains established only from 3.44.3 upward. Report is pending archival at /tmp/beui-min-sdk-3442-20261023-evidence/REPORT.md.
+- Typography diagnosis reproduced the badge ink difference with identical font bytes and explicit baselines in DOM and CanvasKit. No component offset or font change is supported. Historical chart mono advances remain unmeasured. Report is pending archival at /tmp/beui-table-raster-research-20261023/REPORT.md.
+
 ## Latest continuation: Table grid and badge
 
 - Grid production `450699dec` and self-contained archive `de25e67b9` are pushed to PR26. Intrinsic header content remains52px and advances52.5px; body content uses full52px rows. Shared rules scroll beneath fixed header content. Default flex is unchanged. Fractional visible-rule omission was independently found, reproduced with raster assertions, fixed and re-reviewed.
