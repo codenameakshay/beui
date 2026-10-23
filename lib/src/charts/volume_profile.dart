@@ -506,7 +506,9 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                                   i >= state.lowArea && i <= state.highArea;
                               final fraction = state.maxVolume <= 0
                                   ? 0.0
-                                  : (bin.volume / state.maxVolume).clamp(0, 1);
+                                  : (bin.volume / state.maxVolume)
+                                        .clamp(0.0, 1.0)
+                                        .toDouble();
                               return Positioned(
                                 key: ValueKey(state.bins[i].id),
                                 top: top,
@@ -534,8 +536,11 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             color: isPoc ? pocColor : barColor,
                                             borderRadius:
-                                                const BorderRadius.horizontal(
-                                                  right: Radius.circular(4),
+                                                BorderRadius.horizontal(
+                                                  right: Radius.elliptical(
+                                                    4 * fraction,
+                                                    4,
+                                                  ),
                                                 ),
                                           ),
                                         ),
@@ -819,7 +824,7 @@ class _ProfileFocusRing extends CustomPainter {
   void paint(Canvas canvas, Size size) => canvas.drawRRect(
     RRect.fromRectAndRadius(
       (Offset.zero & size).inflate(5),
-      const Radius.circular(7),
+      const Radius.circular(9),
     ),
     Paint()
       ..color = color

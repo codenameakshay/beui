@@ -398,6 +398,12 @@ void main() {
         ),
       );
       final bar = find.byKey(const ValueKey('volume-bar-a'));
+      final smallBar = tester.widget<Container>(
+        find.byKey(const ValueKey('volume-bar-c')),
+      );
+      final radius =
+          (smallBar.decoration as BoxDecoration).borderRadius! as BorderRadius;
+      expect(radius.topRight, const Radius.elliptical(1, 4));
       final before = tester.getRect(bar);
       double alpha() => tester
           .widget<Opacity>(
