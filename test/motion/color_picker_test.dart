@@ -10,6 +10,44 @@ Widget _app(Widget child) => MaterialApp(
 );
 
 void main() {
+  testWidgets('trigger chip grows into area and returns on controlled close', (
+    tester,
+  ) async {
+    final open = ValueNotifier(false);
+    await tester.pumpWidget(
+      _app(
+        ValueListenableBuilder(
+          valueListenable: open,
+          builder: (context, value, _) => BeuiColorPicker(
+            open: value,
+            onOpenChanged: (value) => open.value = value,
+            trigger: const BeuiColorPickerTrigger(),
+            child: const BeuiColorPickerContent(child: BeuiColorPickerArea()),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byType(BeuiColorPickerTrigger));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    final spectrum = find.byKey(const ValueKey('color-picker-spectrum'));
+    expect(tester.getRect(spectrum).width, closeTo(24, 1));
+    await tester.pump(const Duration(milliseconds: 160));
+    final growing = tester.getRect(spectrum).width;
+    expect(growing, inExclusiveRange(24, 264));
+    await tester.pumpAndSettle();
+    expect(tester.getRect(spectrum).width, closeTo(264, .1));
+    expect(tester.getRect(spectrum).height, closeTo(160, .1));
+    open.value = false;
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 160));
+    expect(tester.getRect(spectrum).width, inExclusiveRange(24, 264));
+    await tester.pumpAndSettle();
+    expect(spectrum, findsNothing);
+    await tester.pumpWidget(const SizedBox.shrink());
+    open.dispose();
+  });
   test('hex parsing accepts short, long, and alpha forms', () {
     expect(beuiColorFromHex('#abc'), const Color(0xffaabbcc));
     expect(beuiColorFromHex('#aabbcc'), const Color(0xffaabbcc));
@@ -149,7 +187,7 @@ void main() {
 
     updateColor(() => color = '#000000');
     await tester.pump();
-    expect(thumbOffset(), const Offset(-8, 136));
+    expect(thumbOffset(), const Offset(-8, 152));
   });
 
   testWidgets('uncontrolled area tap retains and commits the requested color', (
@@ -180,15 +218,15 @@ void main() {
         (widget) => widget is Positioned && widget.child is Container,
       ),
     );
-    await tester.tapAt(tester.getTopLeft(area) + const Offset(100, 72));
+    await tester.tapAt(tester.getTopLeft(area) + const Offset(100, 80));
     await tester.pump();
 
     expect(changes, ['#804040', '#804040']);
     expect(commits, ['#804040']);
-    expect(tester.getSize(area), const Size(200, 144));
+    expect(tester.getSize(area), const Size(200, 160));
     final offset = tester.getTopLeft(thumb) - tester.getTopLeft(area);
     expect(offset.dx, 92);
-    expect(offset.dy, closeTo(63.717647, 0.001));
+    expect(offset.dy, closeTo(71.686275, 0.001));
     final container = tester.widget<Positioned>(thumb).child as Container;
     final decoration = container.decoration! as BoxDecoration;
     expect(beuiColorToHex(decoration.color!), '#804040');
@@ -223,7 +261,7 @@ void main() {
       ),
     );
     for (var attempt = 0; attempt < 2; attempt++) {
-      final position = tester.getTopLeft(area) + const Offset(100, 72);
+      final position = tester.getTopLeft(area) + const Offset(100, 80);
       if (attempt == 0) {
         await tester.tapAt(position);
       } else {
@@ -232,7 +270,7 @@ void main() {
         await pointer.up();
       }
       await tester.pump();
-      expect(tester.getSize(area), const Size(200, 144));
+      expect(tester.getSize(area), const Size(200, 160));
       expect(tester.getSize(thumb), const Size(16, 16));
       expect(
         tester.getTopLeft(thumb) - tester.getTopLeft(area),
@@ -388,13 +426,8 @@ void main() {
     for (var attempt = 0; attempt < 2; attempt++) {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
-      final material = find
-          .ancestor(
-            of: find.byType(BeuiColorPickerContent),
-            matching: find.byType(Material),
-          )
-          .first;
-      expect(tester.getSize(material), const Size(288, 168));
+      final material = find.byKey(const ValueKey('color-picker-panel-surface'));
+      expect(tester.getSize(material), const Size(288, 184));
       expect(
         (tester.getTopLeft(material) -
                 (tester.getBottomLeft(find.text('Open')) + const Offset(0, 8)))
@@ -420,12 +453,7 @@ void main() {
     );
     await tester.tap(find.text('Open'));
     await tester.pumpAndSettle();
-    final material = find
-        .ancestor(
-          of: find.byType(BeuiColorPickerContent),
-          matching: find.byType(Material),
-        )
-        .first;
+    final material = find.byKey(const ValueKey('color-picker-panel-surface'));
     expect(tester.getSize(material), const Size(288, 24));
   });
 
@@ -446,33 +474,26 @@ void main() {
     await tester.tap(find.text('Open'));
     await tester.pump();
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 110));
     await tester.pump(const Duration(milliseconds: 50));
-    final material = find
-        .ancestor(
-          of: find.byType(BeuiColorPickerContent),
-          matching: find.byType(Material),
-        )
-        .first;
+    final material = find.byKey(const ValueKey('color-picker-panel-surface'));
     final fade = find
-        .ancestor(of: material, matching: find.byType(FadeTransition))
+        .ancestor(of: material, matching: find.byType(Opacity))
         .first;
     final expectedTopLeft =
         tester.getBottomLeft(find.text('Open')) + const Offset(0, 8);
-    expect(
-      tester.widget<FadeTransition>(fade).opacity.value,
-      inExclusiveRange(0, 1),
-    );
+    expect(tester.widget<Opacity>(fade).opacity, inExclusiveRange(0, 1));
     expect(tester.getTopLeft(material), expectedTopLeft);
     expect(
       tester.getBottomRight(material),
-      expectedTopLeft + const Offset(288, 168),
+      expectedTopLeft + const Offset(288, 184),
     );
     await tester.pumpAndSettle();
-    expect(tester.widget<FadeTransition>(fade).opacity.value, 1);
+    expect(tester.widget<Opacity>(fade).opacity, 1);
     expect(tester.getTopLeft(material), expectedTopLeft);
     expect(
       tester.getBottomRight(material),
-      expectedTopLeft + const Offset(288, 168),
+      expectedTopLeft + const Offset(288, 184),
     );
   });
 

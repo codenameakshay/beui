@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -116,6 +118,7 @@ class BeuiColorPicker extends StatefulWidget {
 }
 
 class _BeuiColorPickerState extends State<BeuiColorPicker> {
+  final _chipKey = GlobalKey();
   late Color _internalColor =
       beuiColorFromHex(widget.defaultValue) ?? const Color(0xff3478f6);
   late bool _internalOpen = widget.defaultOpen;
@@ -148,31 +151,51 @@ class _BeuiColorPickerState extends State<BeuiColorPicker> {
       enabled: widget.enabled,
       reduce: MediaQuery.disableAnimationsOf(context),
       onColor: _setColor,
+      chipKey: widget.trigger == null ? null : _chipKey,
+      open: _open,
     );
     if (widget.trigger == null) {
       return _ColorPickerInherited(scope: scope, child: widget.child);
     }
-    final panelMotion = motionFor(context, beuiSpringPanel, isMovement: true);
-    final panel = Material(
-      color: colors.background,
-      elevation: 12,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: colors.border),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Semantics(
-        scopesRoute: true,
-        namesRoute: true,
-        explicitChildNodes: true,
-        label: widget.label,
-        child: Align(
-          alignment: Alignment.topLeft,
-          widthFactor: 1,
-          heightFactor: 1,
-          child: SizedBox(width: 288, child: widget.child),
+    final panel = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned.fill(
+          child: _PickerReveal(
+            open: _open,
+            delay: const Duration(milliseconds: 100),
+            movement: false,
+            child: DecoratedBox(
+              key: const ValueKey('color-picker-panel-surface'),
+              decoration: BoxDecoration(
+                color: colors.background,
+                border: Border.all(color: colors.border),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x40000000),
+                    blurRadius: 32,
+                    spreadRadius: -8,
+                    offset: Offset(0, 12),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
+        Semantics(
+          scopesRoute: true,
+          namesRoute: true,
+          explicitChildNodes: true,
+          label: widget.label,
+          child: Align(
+            alignment: Alignment.topLeft,
+            widthFactor: 1,
+            heightFactor: 1,
+            child: SizedBox(width: 288, child: widget.child),
+          ),
+        ),
+      ],
     );
     return _ColorPickerInherited(
       scope: scope,
@@ -183,32 +206,17 @@ class _BeuiColorPickerState extends State<BeuiColorPicker> {
         barrierColor: const Color(0x00000000),
         barrierDismissible: true,
         trapFocus: false,
-        enterDuration: Duration(milliseconds: scope.reduce ? 140 : 250),
-        exitDuration: Duration(milliseconds: scope.reduce ? 120 : 180),
+        enterDuration: const Duration(milliseconds: 600),
+        exitDuration: Duration(milliseconds: scope.reduce ? 120 : 600),
         overlayBuilder: (context, animation, link) =>
             CompositedTransformFollower(
               link: link,
               targetAnchor: Alignment.bottomLeft,
               followerAnchor: Alignment.topLeft,
               offset: const Offset(0, 8),
-              child: FadeTransition(
-                opacity: animation,
-                child: panelMotion is NoMotion
-                    ? panel
-                    : SingleMotionBuilder(
-                        value: _open ? 1.0 : 0.0,
-                        from: 0.0,
-                        motion: panelMotion,
-                        builder: (context, progress, child) =>
-                            Transform.translate(
-                              offset: Offset(0, -8 * (1 - progress)),
-                              child: Transform.scale(
-                                scale: 0.97 + 0.03 * progress.clamp(0.0, 1.0),
-                                child: child,
-                              ),
-                            ),
-                        child: panel,
-                      ),
+              child: IgnorePointer(
+                ignoring: !_open,
+                child: ExcludeSemantics(excluding: !_open, child: panel),
               ),
             ),
         child: InkWell(
@@ -228,10 +236,14 @@ class _ColorPickerScope {
     required this.enabled,
     required this.reduce,
     required this.onColor,
+    this.chipKey,
+    this.open = false,
   });
   final Color color;
   final bool alpha, enabled, reduce;
   final void Function(Color, {bool commit}) onColor;
+  final GlobalKey? chipKey;
+  final bool open;
 }
 
 class _ColorPickerInherited extends InheritedWidget {
@@ -249,7 +261,10 @@ class _ColorPickerInherited extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_ColorPickerInherited old) =>
-      scope.color != old.scope.color || scope.enabled != old.scope.enabled;
+      scope.color != old.scope.color ||
+      scope.enabled != old.scope.enabled ||
+      scope.open != old.scope.open ||
+      scope.reduce != old.scope.reduce;
 }
 
 /// Saturation/value 2D control with arrow-key operation.
@@ -299,7 +314,7 @@ class _BeuiColorPickerAreaState extends State<BeuiColorPickerArea> {
     final hsv = HSVColor.fromColor(scope.color);
     final colors = BeuiColors.resolve(context);
     final thumbMotion = motionFor(context, beuiSpringLayout, isMovement: true);
-    final thumb = Container(
+    final thumbSurface = Container(
       width: 16,
       height: 16,
       decoration: BoxDecoration(
@@ -314,6 +329,15 @@ class _BeuiColorPickerAreaState extends State<BeuiColorPickerArea> {
         ],
       ),
     );
+    final thumb = scope.chipKey == null
+        ? thumbSurface
+        : _PickerReveal(
+            open: scope.open,
+            delay: const Duration(milliseconds: 220),
+            duration: const Duration(milliseconds: 200),
+            movement: false,
+            child: thumbSurface,
+          );
     void update(Offset p, Size size) {
       _gestureColor = HSVColor.fromAHSV(
         scope.color.a,
@@ -326,7 +350,7 @@ class _BeuiColorPickerAreaState extends State<BeuiColorPickerArea> {
 
     return LayoutBuilder(
       builder: (context, box) {
-        final size = Size(box.maxWidth, 144);
+        final size = Size(box.maxWidth, 160);
         return Semantics(
           label: widget.label,
           value:
@@ -392,109 +416,134 @@ class _BeuiColorPickerAreaState extends State<BeuiColorPickerArea> {
                   onPanEnd: scope.enabled
                       ? (_) => scope.onColor(_gestureColor, commit: true)
                       : null,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: SizedBox(
-                          width: size.width,
-                          height: size.height,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: LinearGradient(
-                                colors: [
-                                  HSVColor.fromAHSV(1, hsv.hue, 1, 1).toColor(),
-                                  Colors.black,
-                                ],
-                                begin: Alignment.topRight,
-                                end: Alignment.bottomRight,
+                  child: _PickerAreaMorph(
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: SizedBox(
+                            width: size.width,
+                            height: size.height,
+                            child: DecoratedBox(
+                            key: const ValueKey('color-picker-spectrum'),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: HSVColor.fromAHSV(
+                                  1,
+                                  hsv.hue,
+                                  1,
+                                  1,
+                                ).toColor(),
                               ),
-                            ),
-                            child: Stack(
-                              children: [
-                                const Positioned.fill(
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white,
-                                          Color(0x00ffffff),
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
+                              child: Stack(
+                                children: [
+                                  const Positioned.fill(
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Colors.white,
+                                            Color(0x00ffffff),
+                                          ],
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                if (thumbMotion is NoMotion)
-                                  Positioned(
-                                    left:
-                                        (hsv.saturation * size.width).clamp(
-                                          0,
-                                          size.width,
-                                        ) -
-                                        8,
-                                    top:
-                                        ((1 - hsv.value) * size.height).clamp(
-                                          0,
-                                          size.height,
-                                        ) -
-                                        8,
-                                    child: thumb,
-                                  )
-                                else
-                                  SingleMotionBuilder(
-                                    value: hsv.saturation,
-                                    motion: thumbMotion,
-                                    builder: (context, saturation, child) =>
-                                        SingleMotionBuilder(
-                                          value: hsv.value,
-                                          motion: thumbMotion,
-                                          builder: (context, value, child) =>
-                                              Positioned(
-                                                left:
-                                                    (saturation * size.width)
-                                                        .clamp(0, size.width) -
-                                                    8,
-                                                top:
-                                                    ((1 - value) * size.height)
-                                                        .clamp(0, size.height) -
-                                                    8,
-                                                child: child!,
-                                              ),
-                                          child: child!,
+                                  const Positioned.fill(
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Color(0x00000000),
+                                            Colors.black,
+                                          ],
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
                                         ),
-                                    child: thumb,
+                                      ),
+                                    ),
                                   ),
-                              ],
+                                  if (thumbMotion is NoMotion)
+                                    Positioned(
+                                      left:
+                                          (hsv.saturation * size.width).clamp(
+                                            0,
+                                            size.width,
+                                          ) -
+                                          8,
+                                      top:
+                                          ((1 - hsv.value) * size.height).clamp(
+                                            0,
+                                            size.height,
+                                          ) -
+                                          8,
+                                      child: thumb,
+                                    )
+                                  else
+                                    SingleMotionBuilder(
+                                      value: hsv.saturation,
+                                      motion: thumbMotion,
+                                      builder: (context, saturation, child) =>
+                                          SingleMotionBuilder(
+                                            value: hsv.value,
+                                            motion: thumbMotion,
+                                            builder: (context, value, child) =>
+                                                Positioned(
+                                                  left:
+                                                      (saturation * size.width)
+                                                          .clamp(
+                                                            0,
+                                                            size.width,
+                                                          ) -
+                                                      8,
+                                                  top:
+                                                      ((1 - value) *
+                                                              size.height)
+                                                          .clamp(
+                                                            0,
+                                                            size.height,
+                                                          ) -
+                                                      8,
+                                                  child: child!,
+                                                ),
+                                            child: child!,
+                                          ),
+                                      child: thumb,
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      if (_loupePosition != null)
-                        Positioned(
-                          key: const ValueKey('color-picker-loupe'),
-                          left: _loupePosition!.dx + 10,
-                          top: _loupePosition!.dy - 50,
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _loupeColor,
-                              border: Border.all(color: Colors.white, width: 3),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color(0x55000000),
-                                  blurRadius: 5,
+                        if (_loupePosition != null)
+                          Positioned(
+                            key: const ValueKey('color-picker-loupe'),
+                            left: _loupePosition!.dx + 10,
+                            top: _loupePosition!.dy - 50,
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _loupeColor,
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 3,
                                 ),
-                              ],
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x55000000),
+                                    blurRadius: 5,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -940,7 +989,8 @@ class BeuiColorPickerTrigger extends StatelessWidget {
     final scope = _ColorPickerInherited.of(context);
     final colors = BeuiColors.resolve(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      height: 40,
+      padding: const EdgeInsets.only(left: 10, right: 14),
       decoration: BoxDecoration(
         color: colors.background,
         border: Border.all(color: colors.border),
@@ -950,10 +1000,13 @@ class BeuiColorPickerTrigger extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
+            key: scope.chipKey,
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: scope.color,
+              color: scope.open && !scope.reduce
+                  ? Colors.transparent
+                  : scope.color,
               borderRadius: BorderRadius.circular(6),
               border: Border.all(color: colors.border),
             ),
@@ -979,8 +1032,184 @@ class BeuiColorPickerContent extends StatelessWidget {
   /// Content widgets.
   final Widget child;
   @override
-  Widget build(BuildContext context) =>
-      Padding(padding: const EdgeInsets.all(12), child: child);
+  Widget build(BuildContext context) {
+    final scope = _ColorPickerInherited.of(context);
+    final body = child;
+    var row = 0;
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: scope.chipKey == null || body is! Column
+          ? body
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: body.crossAxisAlignment,
+              children: [
+                for (final item in body.children)
+                  if (item is BeuiColorPickerArea || item is SizedBox)
+                    item
+                  else
+                    _PickerReveal(
+                      open: scope.open,
+                      delay: Duration(milliseconds: 100 + 35 * ++row),
+                      child: item,
+                    ),
+              ],
+            ),
+    );
+  }
+}
+
+class _PickerReveal extends StatefulWidget {
+  const _PickerReveal({
+    required this.open,
+    required this.delay,
+    required this.child,
+    this.movement = true,
+    this.invert = false,
+    this.duration = const Duration(milliseconds: 160),
+  });
+  final bool open;
+  final Duration delay;
+  final Widget child;
+  final bool movement;
+  final bool invert;
+  final Duration duration;
+  @override
+  State<_PickerReveal> createState() => _PickerRevealState();
+}
+
+class _PickerRevealState extends State<_PickerReveal> {
+  Timer? _timer;
+  bool _visible = false;
+  @override
+  void initState() {
+    super.initState();
+    _retarget();
+  }
+
+  @override
+  void didUpdateWidget(_PickerReveal old) {
+    super.didUpdateWidget(old);
+    if (old.open != widget.open) _retarget();
+  }
+
+  void _retarget() {
+    _timer?.cancel();
+    if (!widget.open) {
+      _visible = false;
+      return;
+    }
+    _timer = Timer(widget.delay, () {
+      if (mounted) setState(() => _visible = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => SingleMotionBuilder(
+    value: _visible ? 1 : 0,
+    from: 0,
+    motion: CurvedMotion(
+      widget.open ? widget.duration : const Duration(milliseconds: 100),
+      beuiEaseOut,
+    ),
+    child: widget.child,
+    builder: (context, p, child) => Opacity(
+      opacity: (widget.invert ? 1 - p : p).clamp(0, 1),
+      child: widget.movement && !MediaQuery.disableAnimationsOf(context)
+          ? Transform.translate(offset: Offset(0, -6 * (1 - p)), child: child)
+          : child,
+    ),
+  );
+}
+
+class _PickerAreaMorph extends StatefulWidget {
+  const _PickerAreaMorph({required this.child});
+  final Widget child;
+  @override
+  State<_PickerAreaMorph> createState() => _PickerAreaMorphState();
+}
+
+class _PickerAreaMorphState extends State<_PickerAreaMorph> {
+  final _areaKey = GlobalKey();
+  Rect? _chip;
+  @override
+  Widget build(BuildContext context) {
+    final scope = _ColorPickerInherited.of(context);
+    if (scope.chipKey == null || scope.reduce) return widget.child;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final area = _areaKey.currentContext?.findRenderObject() as RenderBox?;
+      final chip =
+          scope.chipKey?.currentContext?.findRenderObject() as RenderBox?;
+      if (area != null && chip != null && area.hasSize && chip.hasSize) {
+        final rect =
+            area.globalToLocal(chip.localToGlobal(Offset.zero)) & chip.size;
+        if (_chip != rect) setState(() => _chip = rect);
+      }
+    });
+    return SizedBox(
+      key: _areaKey,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final target = Offset.zero & Size(constraints.maxWidth, 160);
+          if (_chip == null) return Opacity(opacity: 0, child: widget.child);
+          return SingleMotionBuilder(
+            value: scope.open ? 1 : 0,
+            from: 0,
+            motion: SpringMotion(
+              SpringDescription.withDurationAndBounce(
+                duration: const Duration(milliseconds: 500),
+                bounce: .2,
+              ),
+            ),
+            child: widget.child,
+            builder: (context, p, child) {
+              final rect = Rect.lerp(_chip ?? target, target, p)!;
+              return Transform(
+                alignment: Alignment.topLeft,
+                transform: Matrix4.identity()
+                  ..translateByDouble(rect.left, rect.top, 0, 1)
+                  ..scaleByDouble(
+                    rect.width / target.width,
+                    rect.height / target.height,
+                    1,
+                    1,
+                  ),
+                child: Stack(
+                  children: [
+                    child!,
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: _PickerReveal(
+                          open: scope.open,
+                          invert: true,
+                          delay: const Duration(milliseconds: 60),
+                          duration: const Duration(milliseconds: 400),
+                          movement: false,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: scope.color,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 }
 
 /// Live color swatch displaying the current selection.
