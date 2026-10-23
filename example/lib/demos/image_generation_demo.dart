@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../explorer/widgets.dart';
 
-/// Gallery route for [BeuiImageGeneration] — mirrors the source preview:
-/// progressive queued → generating → refining → complete cycle with Replay.
+/// Source generation cycle with a replay control.
 Widget imageGenerationDemo(BuildContext context) =>
     const _ImageGenerationDemo();
 
@@ -26,45 +25,9 @@ class _ImageGenerationDemoState extends State<_ImageGenerationDemo> {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 576), // max-w-xl
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SectionLabel('Generated image surface'),
-            const SizedBox(height: 16),
-            _GenerationRun(
-              key: ValueKey<int>(_run),
-              onReplay: () => setState(() => _run++),
-            ),
-            const SizedBox(height: 24),
-            const SectionLabel('Statuses'),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: [
-                for (final status in BeuiImageGenerationStatus.values)
-                  SizedBox(
-                    width: 160,
-                    child: BeuiImageGeneration(
-                      status: status,
-                      prompt: status == BeuiImageGenerationStatus.error
-                          ? 'a quiet mountain landscape at sunset'
-                          : null,
-                      resolution: '512 × 512',
-                      onRetry: status == BeuiImageGenerationStatus.error
-                          ? () {}
-                          : null,
-                      child:
-                          status == BeuiImageGenerationStatus.complete ||
-                              status == BeuiImageGenerationStatus.refining ||
-                              status == BeuiImageGenerationStatus.error
-                          ? const _GeneratedArtwork()
-                          : null,
-                    ),
-                  ),
-              ],
-            ),
-          ],
+        child: _GenerationRun(
+          key: ValueKey<int>(_run),
+          onReplay: () => setState(() => _run++),
         ),
       ),
     );
@@ -86,9 +49,7 @@ class _GenerationRun extends StatefulWidget {
 
 class _GenerationRunState extends State<_GenerationRun> {
   BeuiImageGenerationStatus _status = BeuiImageGenerationStatus.queued;
-  double _progress = 0;
   final List<Timer> _timers = <Timer>[];
-  Timer? _progressTimer;
 
   @override
   void initState() {
@@ -107,8 +68,6 @@ class _GenerationRunState extends State<_GenerationRun> {
       t.cancel();
     }
     _timers.clear();
-    _progressTimer?.cancel();
-    _progressTimer = null;
   }
 
   void _arm() {
@@ -119,20 +78,12 @@ class _GenerationRunState extends State<_GenerationRun> {
     if (reduce) {
       setState(() {
         _status = BeuiImageGenerationStatus.complete;
-        _progress = 1;
       });
       return;
     }
 
     setState(() {
       _status = BeuiImageGenerationStatus.queued;
-      _progress = 0;
-    });
-    // Drives the frame's determinate hairline with a real value instead of
-    // leaving it indeterminate for the whole run.
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 120), (t) {
-      if (!mounted) return;
-      setState(() => _progress = (_progress + 0.02).clamp(0.0, 1.0));
     });
     _timers.addAll([
       Timer(const Duration(milliseconds: 500), () {
@@ -147,42 +98,26 @@ class _GenerationRunState extends State<_GenerationRun> {
       }),
       Timer(const Duration(milliseconds: 5200), () {
         if (mounted) {
-          _progressTimer?.cancel();
           setState(() {
             _status = BeuiImageGenerationStatus.complete;
-            _progress = 1;
           });
         }
       }),
     ]);
   }
 
-  /// Cancels the run: stops every timer and lands the surface on the error
-  /// status, so the cancel path shows somewhere concrete.
-  void _cancelRun() {
-    _cancel();
-    setState(() => _status = BeuiImageGenerationStatus.error);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final active =
-        _status == BeuiImageGenerationStatus.queued ||
-        _status == BeuiImageGenerationStatus.generating ||
-        _status == BeuiImageGenerationStatus.refining;
-
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         BeuiImageGeneration(
           label: 'A quiet mountain landscape at sunset',
           prompt: 'a quiet mountain landscape at sunset',
           resolution: '1024 × 1024',
           status: _status,
-          // Non-null only while the run is active; complete/error carry no
-          // progress value.
-          progress: active ? _progress : null,
-          onCancel: active ? _cancelRun : null,
           onRetry: widget.onReplay,
+          reserveErrorSlot: false,
           child: const _GeneratedArtwork(),
         ),
         const SizedBox(height: 16),
@@ -201,9 +136,15 @@ class _GeneratedArtwork extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CustomPaint(
-      painter: _LandscapePainter(),
-      child: SizedBox.expand(),
+    return const ClipRect(
+      child: FittedBox(
+        fit: BoxFit.cover,
+        child: SizedBox(
+          width: 800,
+          height: 600,
+          child: CustomPaint(painter: _LandscapePainter()),
+        ),
+      ),
     );
   }
 }
@@ -259,10 +200,11 @@ class _LandscapePainter extends CustomPainter {
     );
 
     // Ground.
-    final groundGrad = ui.Gradient.linear(Offset(0, y(0)), Offset(0, h), const [
-      Color(0xFF314946),
-      Color(0xFF101817),
-    ]);
+    final groundGrad = ui.Gradient.linear(
+      Offset(0, y(352)),
+      Offset(0, h),
+      const [Color(0xFF314946), Color(0xFF101817)],
+    );
     final ground = Path()
       ..moveTo(x(0), y(432))
       ..lineTo(x(118), y(376))

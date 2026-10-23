@@ -4,60 +4,25 @@ import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-/// Gallery route for [BeuiVoiceOrb] — ports the source preview's simulated
-/// syllable envelope, plus a custom-pigment row from the documented API.
+/// Gallery route for [BeuiVoiceOrb], matching the source's simulated activity.
 Widget voiceOrbDemo(BuildContext context) => const _VoiceOrbDemo();
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel(this.text);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = BeuiColors.resolve(context);
-    return Text(
-      text.toUpperCase(),
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.8,
-        color: colors.mutedForeground,
-      ),
-    );
-  }
-}
 
 class _VoiceOrbDemo extends StatelessWidget {
   const _VoiceOrbDemo();
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      padding: EdgeInsets.all(24),
-      child: Center(
-        child: Column(
-          children: [
-            _SimulatedOrb(size: 288),
-            SizedBox(height: 48),
-            _SectionLabel('Custom pigments'),
-            SizedBox(height: 24),
-            _SimulatedOrb(
-              colors: (Color(0xFF5B8DEF), Color(0xFFD7E4FF), Color(0xFF1B3A5F)),
-            ),
-          ],
-        ),
+    return Center(
+      child: _SimulatedOrb(
+        size: MediaQuery.sizeOf(context).width < 640 ? 256 : 288,
       ),
     );
   }
 }
 
 class _SimulatedOrb extends StatefulWidget {
-  const _SimulatedOrb({
-    this.colors = kBeuiVoiceOrbColors,
-    this.size = kBeuiVoiceOrbSize,
-  });
+  const _SimulatedOrb({required this.size});
 
-  final (Color, Color, Color) colors;
   final double size;
 
   @override
@@ -110,7 +75,6 @@ class _SimulatedOrbState extends State<_SimulatedOrb>
   Widget build(BuildContext context) {
     return BeuiVoiceOrb(
       activityListenable: _activity,
-      colors: widget.colors,
       size: widget.size,
       semanticLabel: 'Voice visualization',
     );

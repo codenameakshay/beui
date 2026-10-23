@@ -65,76 +65,18 @@ class _PromptInputDemo extends StatefulWidget {
 
 class _PromptInputDemoState extends State<_PromptInputDemo> {
   Timer? _timer;
-  Timer? _uploadTimer;
   bool _loading = false;
   String? _sent;
   String? _notice;
   String _model = 'gpt-5.2';
 
-  // The composer owns no attachment state of its own — the host holds the
-  // list and hands a new one down, the same contract as `value`/`onChanged`.
-  List<BeuiPromptAttachment> _attachments = const [
-    BeuiPromptAttachment(id: 'diagram', name: 'architecture.png'),
-    BeuiPromptAttachment(
-      id: 'notes',
-      name: 'review-notes.md',
-      status: BeuiPromptAttachmentStatus.uploading,
-      progress: 0.35,
-    ),
-    BeuiPromptAttachment(
-      id: 'bundle',
-      name: 'bundle.zip',
-      status: BeuiPromptAttachmentStatus.failed,
-      error: 'Larger than the 25 MB limit',
-    ),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _startUploadTicker();
-  }
-
-  /// Creeps in-flight chips along so the determinate wash is visible, and
-  /// stops itself once nothing is uploading.
-  void _startUploadTicker() {
-    _uploadTimer?.cancel();
-    _uploadTimer = Timer.periodic(const Duration(milliseconds: 700), (timer) {
-      if (!mounted) return;
-      final uploading = _attachments.any(
-        (a) => a.status == BeuiPromptAttachmentStatus.uploading,
-      );
-      if (!uploading) {
-        timer.cancel();
-        return;
-      }
-      setState(() {
-        _attachments = [
-          for (final a in _attachments)
-            if (a.status == BeuiPromptAttachmentStatus.uploading)
-              BeuiPromptAttachment(
-                id: a.id,
-                name: a.name,
-                status: a.progress! >= 0.99
-                    ? BeuiPromptAttachmentStatus.ready
-                    : a.status,
-                progress: (a.progress! + 0.12).clamp(0.0, 1.0),
-              )
-            else
-              a,
-        ];
-      });
-    });
-  }
-
   @override
   void dispose() {
     _timer?.cancel();
-    _uploadTimer?.cancel();
     super.dispose();
   }
 
-  void _submit(BeuiPromptSubmission submission) {
+  void _submit(String prompt, String? model) {
     setState(() {
       _sent = null;
       _notice = null;
@@ -145,11 +87,7 @@ class _PromptInputDemoState extends State<_PromptInputDemo> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _sent = submission.text;
-        _notice = submission.attachments.isEmpty
-            ? null
-            : 'Sent with ${submission.attachments.length} attachment'
-                  '${submission.attachments.length == 1 ? '' : 's'}.';
+        _sent = prompt;
       });
     });
   }
@@ -186,42 +124,7 @@ class _PromptInputDemoState extends State<_PromptInputDemo> {
                 defaultValue:
                     'Review the current implementation and suggest the next improvement.',
                 loading: _loading,
-                attachments: _attachments,
-                onAttachmentRemoved: (a) => setState(() {
-                  _attachments = [
-                    for (final x in _attachments)
-                      if (x.id != a.id) x,
-                  ];
-                  _notice = 'Removed ${a.name}.';
-                  _sent = null;
-                }),
-                onAttachmentRetry: (a) => setState(() {
-                  _attachments = [
-                    for (final x in _attachments)
-                      if (x.id == a.id)
-                        BeuiPromptAttachment(
-                          id: x.id,
-                          name: x.name,
-                          status: BeuiPromptAttachmentStatus.uploading,
-                          progress: 0,
-                        )
-                      else
-                        x,
-                  ];
-                  _notice = 'Retrying ${a.name}.';
-                  _sent = null;
-                  _startUploadTicker();
-                }),
-                onSubmitFull: _submit,
-                onSubmitBlocked: (reason) => setState(() {
-                  _notice = switch (reason) {
-                    BeuiPromptBlockedReason.loading =>
-                      'Still generating — press stop first, or keep drafting.',
-                    BeuiPromptBlockedReason.empty =>
-                      'Write something (or attach a file) to send.',
-                  };
-                  _sent = null;
-                }),
+                onSubmit: _submit,
                 onStop: _stop,
                 onAction: (action) {
                   BeuiPromptAction? selected;

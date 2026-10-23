@@ -38,6 +38,29 @@ List<String> _liveRegions(WidgetTester tester) {
 }
 
 void main() {
+  testWidgets('completion flush updates the ancestor live region after build', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    Widget app(BeuiStreamingResponseStatus status) => beuiTestApp(
+      BeuiMessageScroller(
+        child: BeuiStreamingResponse(
+          status: status,
+          announceText: 'A complete answer without punctuation',
+          showActions: false,
+          child: const Text('A complete answer without punctuation'),
+        ),
+      ),
+    );
+    await tester.pumpWidget(app(BeuiStreamingResponseStatus.streaming));
+    await tester.pumpWidget(app(BeuiStreamingResponseStatus.complete));
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+    expect(_liveRegions(tester), ['A complete answer without punctuation']);
+    handle.dispose();
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   group('BeuiStreamAnnouncer', () {
     test('emits whole sentences, not tokens', () {
       final chunks = <String>[];

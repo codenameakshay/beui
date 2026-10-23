@@ -356,7 +356,9 @@ class _BeuiStreamingResponseState extends State<BeuiStreamingResponse> {
     // without punctuation, or the tail of a stopped stream, still has to be
     // read out.
     if (widget.status != old.status && !_streaming) {
-      _announcer?.flush();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_streaming) _announcer?.flush();
+      });
     }
   }
 

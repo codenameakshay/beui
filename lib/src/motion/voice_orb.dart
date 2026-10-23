@@ -454,7 +454,7 @@ class _BeuiVoiceOrbState extends State<BeuiVoiceOrb>
         );
       }
 
-      if (reduce) return surface;
+      if (reduce || _error != null) return surface;
       return Transform.translate(
         offset: Offset(0, -smooth * 2),
         child: Transform(

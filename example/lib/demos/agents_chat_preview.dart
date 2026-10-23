@@ -97,7 +97,7 @@ class ChatPreview extends StatefulWidget {
     this.userVariant = BeuiMessageBubbleVariant.solid,
     this.placeholder = 'Send a message…',
     this.outcome = ChatPreviewOutcome.complete,
-    this.showActions = true,
+    this.showActions = false,
     this.announce = true,
   });
 
@@ -129,9 +129,8 @@ class ChatPreview extends StatefulWidget {
   /// fails partway; `stopped` is what the composer's stop button produces.
   final ChatPreviewOutcome outcome;
 
-  /// Whether responses carry copy / retry / feedback controls. True by
-  /// default, so the library's "real chat" showcase demonstrates the
-  /// controls every response should offer.
+  /// Whether responses carry copy, retry, and feedback controls.
+  /// Defaults to false to match the source's shared preview.
   final bool showActions;
 
   /// Whether the transcript speaks streamed text.
@@ -158,7 +157,6 @@ class _ChatPreviewState extends State<ChatPreview> {
   Timer? _streamTimer;
   _Rendered? _streamTarget;
   String _streamFull = '';
-  Stopwatch? _streamClock;
 
   bool get _loading => _pending || _streamTarget != null;
 
@@ -172,28 +170,15 @@ class _ChatPreviewState extends State<ChatPreview> {
   void _submit(String prompt, String? model) {
     if (_loading) return;
     final run = _nextId++;
-    // The assistant row is created now, empty and streaming, so the turn has
-    // one identity from "preparing" through "streaming" to "done" instead of
-    // a pending row that unmounts and hands off to a separate real row.
     setState(() {
-      _messages
-        ..add(
-          _Rendered(
-            id: 'sent-user-$run',
-            from: BeuiMessageFrom.user,
-            content: prompt,
-            animateIn: true,
-          ),
-        )
-        ..add(
-          _Rendered(
-            id: 'sent-assistant-$run',
-            from: BeuiMessageFrom.assistant,
-            content: '',
-            animateIn: true,
-            streaming: true,
-          ),
-        );
+      _messages.add(
+        _Rendered(
+          id: 'sent-user-$run',
+          from: BeuiMessageFrom.user,
+          content: prompt,
+          animateIn: true,
+        ),
+      );
       _pending = true;
     });
     _beginReply('sent-assistant-$run');
@@ -201,7 +186,8 @@ class _ChatPreviewState extends State<ChatPreview> {
 
   void _beginReply(String id) {
     _replyTimer?.cancel();
-    _replyTimer = Timer(_replyDelay, () {
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    _replyTimer = Timer(reduce ? Duration.zero : _replyDelay, () {
       if (!mounted) return;
       final existing = _messages.where((m) => m.id == id).firstOrNull;
       final target =
@@ -233,16 +219,22 @@ class _ChatPreviewState extends State<ChatPreview> {
   static const double _failAt = 0.55;
 
   void _startStream() {
-    _streamClock = Stopwatch()..start();
+    if (MediaQuery.disableAnimationsOf(context)) {
+      setState(() {
+        _streamTarget!.content = _streamFull;
+        _streamTarget!.streaming = false;
+        _streamTarget = null;
+      });
+      return;
+    }
     _streamTimer?.cancel();
     _streamTimer = Timer.periodic(const Duration(milliseconds: 16), (t) {
       final target = _streamTarget;
-      final clock = _streamClock;
-      if (!mounted || target == null || clock == null) {
+      if (!mounted || target == null) {
         t.cancel();
         return;
       }
-      final elapsed = clock.elapsed - _streamDelay;
+      final elapsed = Duration(milliseconds: t.tick * 16) - _streamDelay;
       final cursor = elapsed.isNegative
           ? 0
           : (elapsed.inMicroseconds / 1e6 * _charactersPerSecond).floor().clamp(
@@ -407,7 +399,25 @@ class _ChatPreviewState extends State<ChatPreview> {
                   announce: widget.announce,
                   child: BeuiMessageGroup(
                     spacing: BeuiMessageSpacing.standard,
-                    children: [for (final m in _messages) _row(m)],
+                    children: [
+                      for (final m in _messages) _row(m),
+                      if (_pending)
+                        BeuiMessage(
+                          key: const ValueKey('pending-assistant'),
+                          from: BeuiMessageFrom.assistant,
+                          children: [
+                            if (widget.showAvatars)
+                              const BeuiMessageAvatar(
+                                child: Icon(LucideIcons.bot),
+                              ),
+                            const BeuiMessageContent(
+                              children: [
+                                BeuiMessageTyping(label: 'Preparing response'),
+                              ],
+                            ),
+                          ],
+                        ),
+                    ],
                   ),
                 ),
               ),
