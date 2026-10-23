@@ -1,0 +1,63 @@
+{
+  "integrity": "pass",
+  "acceptance": false,
+  "native": [
+    {
+      "run": "candidate-no-preference",
+      "frames": 259,
+      "servedSHA256": "b4363be82f600ecaff0f0e37d7ff1e41bf7a761f37b8a1f19ebcfa4d354e85d1",
+      "checks": {
+        "escape": true,
+        "escape-input": true,
+        "select": true,
+        "select-input": true,
+        "escape-empty": true,
+        "escape-empty-input": true,
+        "reopen-fresh-query": true
+      }
+    },
+    {
+      "run": "candidate-reduce",
+      "frames": 54,
+      "servedSHA256": "b4363be82f600ecaff0f0e37d7ff1e41bf7a761f37b8a1f19ebcfa4d354e85d1",
+      "checks": {
+        "escape": true,
+        "escape-input": true,
+        "select": true,
+        "select-input": true,
+        "escape-empty": true,
+        "escape-empty-input": true,
+        "reopen-fresh-query": false
+      }
+    },
+    {
+      "run": "source-no-preference",
+      "frames": 326,
+      "servedSHA256": "5334af13db05dfdaacba8bd2a569a791bc542cbf1d0660a04977b4eaea5d97e1",
+      "checks": {
+        "escape": true,
+        "select": true,
+        "escape-empty": true,
+        "reopen-fresh-query": true
+      }
+    },
+    {
+      "run": "source-reduce",
+      "frames": 68,
+      "servedSHA256": "5334af13db05dfdaacba8bd2a569a791bc542cbf1d0660a04977b4eaea5d97e1",
+      "checks": {
+        "escape": true,
+        "select": true,
+        "escape-empty": true,
+        "reopen-fresh-query": true
+      }
+    }
+  ],
+  "controlledOwnership": "21-test focused widget suite; no controlled native fixture",
+  "limits": [
+    "Reduced-motion native mid-exit reopen fails in recovery capture.",
+    "Source no-results exit retains selected Banana input and Fresh label; candidate clears input and hides empty group.",
+    "RGB replay is a synthetic 25fps frame index, not original timing.",
+    "No pixel parity, timing/performance, physical device, screen reader, cross-browser, full suite, golden, CI or release claim."
+  ]
+}

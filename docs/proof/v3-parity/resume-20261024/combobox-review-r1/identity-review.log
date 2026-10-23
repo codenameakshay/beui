@@ -1,0 +1,34 @@
+Non-video/frame lock files checked: 2651, mismatches: []
+Source input hashes checked: 1992; git pin files: ['components/motion/popover-position.ts', 'lib/utils.ts', 'components/motion/combobox/use-active-option.ts', 'components/motion/combobox/context.tsx', 'components/motion/combobox/content.tsx', 'lib/ease.ts', 'components/motion/combobox/list.tsx', 'components/motion/combobox/trigger.tsx', 'components/motion/combobox.tsx']
+baseline/candidate-no-preference/observations.json
+scripts [{'url': 'http://localhost:18208/main.dart.js', 'sha256': 'b4363be82f600ecaff0f0e37d7ff1e41bf7a761f37b8a1f19ebcfa4d354e85d1'}]
+last sample {'time': 12059.5, 'panel': True, 'text': 'FRESHApple\nApple', 'rect': {'height': 69.984375, 'y': 386}, 'input': 'apl', 'focus': 'INPUT', 'rows': ['Apple\nApple']}
+untrusted [{'type': 'click', 'trusted': False, 'tag': 'FLT-SEMANTICS-PLACEHOLDER', 'time': 2528.1999999284744}]
+baseline/candidate-reduce/observations.json
+scripts [{'url': 'http://localhost:18208/main.dart.js', 'sha256': 'b4363be82f600ecaff0f0e37d7ff1e41bf7a761f37b8a1f19ebcfa4d354e85d1'}]
+last sample {'time': 11993, 'panel': False, 'rect': None, 'input': 'apl', 'focus': 'INPUT', 'rows': ['']}
+untrusted [{'type': 'click', 'trusted': False, 'tag': 'FLT-SEMANTICS-PLACEHOLDER', 'time': 2527.1999999284744}]
+baseline/source-no-preference/observations.json
+scripts [{'url': 'http://localhost:18207/source.js', 'sha256': '5334af13db05dfdaacba8bd2a569a791bc542cbf1d0660a04977b4eaea5d97e1'}]
+last sample {'time': 11758.5, 'panel': True, 'text': 'FreshApple', 'rect': {'height': 84, 'y': 387}, 'input': 'apl', 'focus': 'INPUT', 'rows': ['Apple']}
+untrusted []
+baseline/source-reduce/observations.json
+scripts [{'url': 'http://localhost:18207/source.js', 'sha256': '5334af13db05dfdaacba8bd2a569a791bc542cbf1d0660a04977b4eaea5d97e1'}]
+last sample {'time': 11812.899999976158, 'panel': True, 'text': 'FreshApple', 'rect': {'height': 84, 'y': 387}, 'input': 'apl', 'focus': 'INPUT', 'rows': ['Apple']}
+untrusted []
+final/candidate-no-preference/observations.json
+scripts [{'url': 'http://localhost:18208/main.dart.js', 'sha256': 'c869b255209659a044043eb700ad7f6f44f15a9d94b27287e76a927c7f82141a'}]
+last sample {'time': 12057.799999952316, 'panel': True, 'text': 'FRESHApple\nApple', 'rect': {'height': 69.984375, 'y': 386}, 'input': 'apl', 'focus': 'INPUT', 'rows': ['Apple\nApple']}
+untrusted [{'type': 'click', 'trusted': False, 'tag': 'FLT-SEMANTICS-PLACEHOLDER', 'time': 2543.6999999284744}]
+final/candidate-reduce/observations.json
+scripts [{'url': 'http://localhost:18208/main.dart.js', 'sha256': 'c869b255209659a044043eb700ad7f6f44f15a9d94b27287e76a927c7f82141a'}]
+last sample {'time': 12004.399999976158, 'panel': True, 'text': 'FRESHApple\nApple', 'rect': {'height': 70, 'y': 386}, 'input': 'apl', 'focus': 'INPUT', 'rows': ['Apple\nApple']}
+untrusted [{'type': 'click', 'trusted': False, 'tag': 'FLT-SEMANTICS-PLACEHOLDER', 'time': 2528.5}]
+final/source-no-preference/observations.json
+scripts [{'url': 'http://localhost:18207/source.js', 'sha256': '5334af13db05dfdaacba8bd2a569a791bc542cbf1d0660a04977b4eaea5d97e1'}]
+last sample {'time': 11845.199999928474, 'panel': True, 'text': 'FreshApple', 'rect': {'height': 84, 'y': 387}, 'input': 'apl', 'focus': 'INPUT', 'rows': ['Apple']}
+untrusted []
+final/source-reduce/observations.json
+scripts [{'url': 'http://localhost:18207/source.js', 'sha256': '5334af13db05dfdaacba8bd2a569a791bc542cbf1d0660a04977b4eaea5d97e1'}]
+last sample {'time': 11781.600000023842, 'panel': True, 'text': 'FreshApple', 'rect': {'height': 84, 'y': 387}, 'input': 'apl', 'focus': 'INPUT', 'rows': ['Apple']}
+untrusted []

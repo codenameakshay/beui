@@ -1,0 +1,14 @@
+--- docs/proof/v3-parity/resume-20261024/combobox-exit/candidate-inputs/lib/src/motion/combobox.dart	2026-10-24 00:58:06
++++ lib/src/motion/combobox.dart	2026-10-24 01:37:29
+@@ -450,10 +450,7 @@
+               child: Align(
+                 alignment: Alignment.topCenter,
+                 heightFactor: progress.clamp(0.0, 1.0),
+-                child: Opacity(
+-                  opacity: animation.value.clamp(0.0, 1.0),
+-                  child: child,
+-                ),
++                child: FadeTransition(opacity: animation, child: child),
+               ),
+             ),
+             child: KeyedSubtree(

@@ -261,6 +261,203 @@ void main() {
     });
   });
 
+  group('exit filtering', () {
+    for (final reduce in [false, true]) {
+      for (final close in ['escape', 'selection', 'no-results']) {
+        testWidgets('$close retains exiting rows reduce=$reduce', (
+          tester,
+        ) async {
+          final events = <String>[];
+          await tester.pumpWidget(
+            _combobox(
+              reduce: reduce,
+              onOpenChange: (v) => events.add('open:$v'),
+              onQueryChange: (v) => events.add('query:$v'),
+              onValueChange: (v) => events.add('value:$v'),
+            ),
+          );
+          await tester.pumpAndSettle();
+          await tester.tap(find.byType(BeuiComboboxInput));
+          await tester.pumpAndSettle();
+          await tester.enterText(
+            find.byType(TextField),
+            close == 'no-results' ? 'zzz' : 'ban',
+          );
+          await tester.pumpAndSettle();
+          events.clear();
+          await tester.sendKeyEvent(
+            close == 'selection'
+                ? LogicalKeyboardKey.enter
+                : LogicalKeyboardKey.escape,
+          );
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 20));
+          expect(find.byType(BeuiComboboxList), findsOneWidget);
+          expect(find.text('Apple'), findsNothing);
+          expect(find.text('Cherry'), findsNothing);
+          expect(
+            find.text('FRESH'),
+            close == 'no-results' ? findsNothing : findsOneWidget,
+          );
+          expect(
+            find.text('Nothing found'),
+            close == 'no-results' ? findsOneWidget : findsNothing,
+          );
+          expect(
+            tester.widget<TextField>(find.byType(TextField)).controller!.text,
+            close == 'selection' ? 'Banana' : '',
+          );
+          expect(events, [
+            if (close == 'selection') 'value:banana',
+            'open:false',
+            'query:',
+          ]);
+          await tester.pumpAndSettle();
+          expect(find.byType(BeuiComboboxList), findsNothing);
+        });
+      }
+      testWidgets(
+        'reopen after selection and empty search stays visible reduce=$reduce',
+        (tester) async {
+          tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
+              FakeAccessibilityFeatures(disableAnimations: reduce);
+          addTearDown(
+            tester
+                .binding
+                .platformDispatcher
+                .clearAccessibilityFeaturesTestValue,
+          );
+          Future<void> settleFrames() async {
+            for (var frame = 0; frame < 60; frame++) {
+              await tester.pump(const Duration(milliseconds: 16));
+            }
+          }
+
+          await tester.pumpWidget(_combobox(reduce: reduce));
+          await settleFrames();
+          await tester.tap(find.byType(BeuiComboboxInput));
+          await settleFrames();
+          await tester.enterText(find.byType(TextField), 'ban');
+          await settleFrames();
+          await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+          await settleFrames();
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await settleFrames();
+          await tester.enterText(find.byType(TextField), 'zzz');
+          await settleFrames();
+          await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+          await settleFrames();
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await settleFrames();
+          await tester.enterText(find.byType(TextField), 'ban');
+          await settleFrames();
+          await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 25));
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.enterText(find.byType(TextField), 'apl');
+          await settleFrames();
+          expect(find.text('Apple'), findsOneWidget);
+          expect(find.text('Banana'), findsNothing);
+          final panel = find.byType(BeuiComboboxList);
+          final opacities = tester.widgetList<Opacity>(
+            find.ancestor(of: panel, matching: find.byType(Opacity)),
+          );
+          for (final opacity in opacities) {
+            expect(opacity.opacity, 1.0);
+          }
+          final fades = tester.widgetList<FadeTransition>(
+            find.ancestor(of: panel, matching: find.byType(FadeTransition)),
+          );
+          for (final fade in fades) {
+            expect(fade.opacity.value, 1.0);
+          }
+        },
+      );
+      testWidgets('reopen midexit uses fresh query reduce=$reduce', (
+        tester,
+      ) async {
+        final values = <String>[];
+        await tester.pumpWidget(
+          _combobox(reduce: reduce, onValueChange: values.add),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(BeuiComboboxInput));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField), 'ban');
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 20));
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pump();
+        await tester.enterText(find.byType(TextField), 'apl');
+        await tester.pumpAndSettle();
+        expect(find.text('Apple'), findsOneWidget);
+        expect(find.text('Banana'), findsNothing);
+        expect(
+          tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+          isTrue,
+        );
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(values, ['apple']);
+      });
+    }
+    for (final acceptOpen in [false, true]) {
+      for (final acceptQuery in [false, true]) {
+        testWidgets('controlled close open=$acceptOpen query=$acceptQuery', (
+          tester,
+        ) async {
+          var open = false;
+          var query = 'ban';
+          final events = <String>[];
+          await tester.pumpWidget(
+            StatefulBuilder(
+              builder: (context, update) => _combobox(
+                open: open,
+                query: query,
+                onOpenChange: (v) {
+                  events.add('open:$v');
+                  if (v || acceptOpen) update(() => open = v);
+                },
+                onQueryChange: (v) {
+                  events.add('query:$v');
+                  if (acceptQuery) update(() => query = v);
+                },
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+          await tester.tap(find.byType(TextField));
+          await tester.pumpAndSettle();
+          events.clear();
+          await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 20));
+          expect(find.byType(BeuiComboboxList), findsOneWidget);
+          expect(
+            find.text('Apple'),
+            !acceptOpen && acceptQuery ? findsOneWidget : findsNothing,
+          );
+          expect(find.text('FRESH'), findsOneWidget);
+          expect(find.text('Nothing found'), findsNothing);
+          expect(query, acceptQuery ? '' : 'ban');
+          expect(
+            tester.widget<TextField>(find.byType(TextField)).controller!.text,
+            acceptOpen || acceptQuery ? '' : 'ban',
+          );
+          expect(events, ['open:false', 'query:', 'open:false', 'query:']);
+          await tester.pumpAndSettle();
+          expect(
+            find.byType(BeuiComboboxList),
+            acceptOpen ? findsNothing : findsOneWidget,
+          );
+        });
+      }
+    }
+  });
+
   testWidgets('rest-state golden', (tester) async {
     await tester.pumpWidget(
       _testApp(

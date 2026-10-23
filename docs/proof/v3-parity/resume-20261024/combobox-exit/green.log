@@ -1,0 +1,141 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart
+00:00 +0: BeuiCombobox interactions selected input stays editable and opens on keyboard focus
+00:00 +1: BeuiCombobox interactions opens and filters by subsequence
+00:00 +2: BeuiCombobox interactions select commits, closes, and reports value
+00:00 +3: BeuiCombobox interactions ArrowDown, Home, End, Enter and Escape work
+00:01 +4: BeuiCombobox interactions controlled open and query notify without internal ownership
+00:01 +5: BeuiCombobox interactions disabled option cannot be selected
+00:01 +6: BeuiCombobox interactions reduced motion still opens and filters
+00:01 +7: BeuiCombobox interactions trigger border strengthens on pointer hover
+00:01 +8: BeuiCombobox interactions pointer hover highlights an inactive option
+00:01 +9: exit filtering escape retains exiting rows reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: ['open:false', 'query:', 'open:false', 'query:']
+  Actual: ['open:false', 'query:']
+   Which: at location [2] is ['open:false', 'query:'] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart:310:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart line 310
+The test description was:
+  escape retains exiting rows reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +9 -1: exit filtering escape retains exiting rows reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: escape retains exiting rows reduce=false
+  
+00:01 +9 -1: exit filtering selection retains exiting rows reduce=false
+00:01 +10 -1: exit filtering no-results retains exiting rows reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: ['open:false', 'query:', 'open:false', 'query:']
+  Actual: ['open:false', 'query:']
+   Which: at location [2] is ['open:false', 'query:'] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart:310:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart line 310
+The test description was:
+  no-results retains exiting rows reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +10 -2: exit filtering no-results retains exiting rows reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: no-results retains exiting rows reduce=false
+  
+00:02 +10 -2: exit filtering reopen midexit uses fresh query reduce=false
+00:02 +11 -2: exit filtering escape retains exiting rows reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: ['open:false', 'query:', 'open:false', 'query:']
+  Actual: ['open:false', 'query:']
+   Which: at location [2] is ['open:false', 'query:'] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart:310:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart line 310
+The test description was:
+  escape retains exiting rows reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +11 -3: exit filtering escape retains exiting rows reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: escape retains exiting rows reduce=true
+  
+00:02 +11 -3: exit filtering selection retains exiting rows reduce=true
+00:02 +12 -3: exit filtering no-results retains exiting rows reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: ['open:false', 'query:', 'open:false', 'query:']
+  Actual: ['open:false', 'query:']
+   Which: at location [2] is ['open:false', 'query:'] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart:310:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart line 310
+The test description was:
+  no-results retains exiting rows reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +12 -4: exit filtering no-results retains exiting rows reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: no-results retains exiting rows reduce=true
+  
+00:02 +12 -4: exit filtering reopen midexit uses fresh query reduce=true
+00:02 +13 -4: exit filtering controlled close open=false query=false
+00:02 +14 -4: exit filtering controlled close open=false query=true
+00:02 +15 -4: exit filtering controlled close open=true query=false
+00:02 +16 -4: exit filtering controlled close open=true query=true
+00:02 +17 -4: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart: exit filtering escape retains exiting rows reduce=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart: exit filtering escape retains exiting rows reduce=true
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart: exit filtering no-results retains exiting rows reduce=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/combobox_test.dart: exit filtering no-results retains exiting rows reduce=true

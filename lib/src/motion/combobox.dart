@@ -112,6 +112,7 @@ class _BeuiComboboxState extends State<BeuiCombobox> {
   final Map<String, Set<Object>> _registrants = <String, Set<Object>>{};
   String? _internalValue;
   String _internalQuery = '';
+  late String _openQuery;
   bool _internalOpen = false;
   String? _activeValue;
   double _triggerWidth = 0;
@@ -120,11 +121,12 @@ class _BeuiComboboxState extends State<BeuiCombobox> {
 
   String? get _value => widget.value ?? _internalValue;
   String get _query => widget.query ?? _internalQuery;
+  String get _listQuery => _open ? _query : _openQuery;
   bool get _open => widget.open ?? _internalOpen;
 
   List<_ComboboxOption> get _visibleItems => _items.values
       .where(
-        (item) => widget.filter(item.value, _query, <String>[
+        (item) => widget.filter(item.value, _listQuery, <String>[
           item.label,
           ...item.keywords,
         ]),
@@ -140,6 +142,7 @@ class _BeuiComboboxState extends State<BeuiCombobox> {
     _internalValue = widget.defaultValue;
     _internalQuery = widget.defaultQuery;
     _internalOpen = widget.defaultOpen;
+    _openQuery = _query;
   }
 
   @override
@@ -306,6 +309,7 @@ class _BeuiComboboxState extends State<BeuiCombobox> {
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
+    if (_open) _openQuery = _query;
     final visible = _visibleItems;
     if (_open &&
         _activeValue != null &&
@@ -315,6 +319,7 @@ class _BeuiComboboxState extends State<BeuiCombobox> {
     final scope = _ComboboxScope(
       state: this,
       query: _query,
+      listQuery: _listQuery,
       value: _value,
       open: _open,
       activeValue: _activeValue,
@@ -445,10 +450,7 @@ class _BeuiComboboxState extends State<BeuiCombobox> {
               child: Align(
                 alignment: Alignment.topCenter,
                 heightFactor: progress.clamp(0.0, 1.0),
-                child: Opacity(
-                  opacity: animation.value.clamp(0.0, 1.0),
-                  child: child,
-                ),
+                child: FadeTransition(opacity: animation, child: child),
               ),
             ),
             child: KeyedSubtree(
@@ -495,6 +497,7 @@ class _ComboboxScope {
   const _ComboboxScope({
     required this.state,
     required this.query,
+    required this.listQuery,
     required this.value,
     required this.open,
     required this.activeValue,
@@ -504,6 +507,7 @@ class _ComboboxScope {
 
   final _BeuiComboboxState state;
   final String query;
+  final String listQuery;
   final String? value;
   final bool open;
   final String? activeValue;
@@ -525,6 +529,7 @@ class _ComboboxScopeProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(_ComboboxScopeProvider oldWidget) =>
       scope.query != oldWidget.scope.query ||
+      scope.listQuery != oldWidget.scope.listQuery ||
       scope.value != oldWidget.scope.value ||
       scope.open != oldWidget.scope.open ||
       scope.activeValue != oldWidget.scope.activeValue ||
@@ -836,7 +841,7 @@ class _BeuiComboboxItemState extends State<BeuiComboboxItem> {
     final scope = _ComboboxScopeProvider.of(context);
     final visible = scope.state.widget.filter(
       widget.value,
-      scope.query,
+      scope.listQuery,
       <String>[widget.textValue ?? widget.value, ...widget.keywords],
     );
     if (!visible) return const SizedBox.shrink();
@@ -910,10 +915,11 @@ class BeuiComboboxGroup extends StatelessWidget {
     final options = children.whereType<BeuiComboboxItem>().toList();
     if (options.isNotEmpty &&
         !options.any(
-          (item) => scope.state.widget.filter(item.value, scope.query, <String>[
-            item.textValue ?? item.value,
-            ...item.keywords,
-          ]),
+          (item) => scope.state.widget.filter(
+            item.value,
+            scope.listQuery,
+            <String>[item.textValue ?? item.value, ...item.keywords],
+          ),
         )) {
       return const SizedBox.shrink();
     }

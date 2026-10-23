@@ -1,3 +1,33 @@
+## 2026-10-24 Combobox independently accepted within scope
+
+Final production `4d3d7dcccb86162b198182488cdaa022c8da61ef3d739d075f9eb1c377ca1fca` and tests `af6be0fe80755361e1dcc12438207f6e6fd6c38440f18d02725cce217a3db1fe` accepted. Independent 23 supplied + five new tests pass on 3.47.1 and actual minimum Flutter3.44.2/Dart3.12.2. Analysis clean. Parent archive verifier passed. Review retained in `../resume-20261024/combobox-review-r1/`.
+
+Native evidence is archived, uncontrolled, and binds baseline opacity failure and final both-preference success. Widget tests do not reproduce native opacity failure. Known no-results differences and duplicate rejected-close callbacks remain outside repair. Scheduler P2 repair r3 remains active and excluded from Combobox delivery.
+
+## 2026-10-24 Scheduler P2 blocks acceptance
+
+Review r1 demonstrates focus escape after focused Apply becomes disabled. Pointer-removing final Tuesday selection moves focus to Friday background Remove time range; Enter emits unintended destructive week proposal. Both preferences. 24 supplied + five independent cases pass; archived native runs omit this transition. Review evidence retained in `../resume-20261024/scheduler-review-r1/`.
+
+Repair task `v3-scheduler-disabled-focus-repair-20261024-r3` owns Scheduler code/tests and new `scheduler-disabled-focus` archive, preserving original evidence. No Scheduler commit/push. Combobox final independent review remains pending.
+
+## 2026-10-24 Combobox opacity repair ready for review
+
+Reduced-motion native reopen failure reproduced and traced to sampling overlay opacity inside the movement builder. Component-owned FadeTransition now listens to opacity. The defective read predates exit-query changes. Final production `4d3d7dcccb86162b198182488cdaa022c8da61ef3d739d075f9eb1c377ca1fca`: worker reports fresh native exact sequence passes both preferences, 23 focused tests and analyzer pass. Widget attempts did not reproduce native failure. Controlled ownership remains widget-only.
+
+Evidence: `../resume-20261024/combobox-reopen/README.md`; original `combobox-exit` archive unchanged. Independent review task `v3-combobox-final-independent-review-20261024-r1` running. Parent verifier completed with exit 0; log: `/tmp/beui-combobox-reopen-parent-verify.log`. Independent review remains pending. Scheduler parent archive passes; independent review remains pending. No new commit/push.
+
+## 2026-10-24 Scheduler recovery ready for review
+
+Recovery r2 reports 24 focused tests and analysis passing, eight trusted native owner/motion runs, and 4,759 RGB-exact replay frames. Exact production `e988d873c612ef92f277ed05d0457d999c7cda46a7ff41745115bda9a4a9d6ae`; tests `59f859745bdc709dde7fe386a838e26f84474400093f90b5956e606d1a46c3b7`.
+
+Independent task `v3-scheduler-copy-independent-review-20261024-r1` is running. Parent `verify-recovery.py` session 37540 completed with exit 0; log: `/tmp/beui-scheduler-copy-parent-verify.log`. Independent review remains pending. Evidence: `../resume-20261024/scheduler-copy/RECOVERY.md`. Two original stale log hashes and an accidental isolated golden failure remain disclosed. No Scheduler delivery before review acceptance. Combobox reduced-motion diagnosis r4 remains active.
+
+## 2026-10-24 Combobox recovery exposes native reopen failure
+
+Recovery r3 completed without Dart edits. Current production `b4b7b24c6fec2aa053676d08e2f1401f08bcf8c8abc78a8bb428f636b78566d7`: 21 focused tests/analyzer pass, but reduced-motion selection/no-results/Escape/ArrowDown/replacement typing leaves `apl` with no popup. Native acceptance remains false. `combobox-exit` archive preserves failures and portable integrity verification; saved candidate bundle was reused, not rebuilt.
+
+Root-cause/repair task `v3-combobox-reduced-reopen-diagnosis-20261024-r4` now owns Combobox code/tests and new `combobox-reopen` evidence only. Original archive is immutable. Collapsible was pushed as `8fd89f601`; Scheduler recovery remains outstanding.
+
 ## 2026-10-24 Collapsible r2 accepted within scope
 
 Original pending-owner-focus finding resolved at production `298d69810e2a002fc96518e62cc81fc33fa49c6f4df7cc7bcbc633e3df414f53`. Independent original 16/16 and final 32/32 pass; analysis and saved-native verification pass. Review retained at `../resume-20261024/collapsible-review-r2/`.
