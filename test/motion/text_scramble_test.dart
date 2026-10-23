@@ -5,6 +5,33 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
 
 void main() {
+  testWidgets('settles within its duration from the update, not a later tick', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiTextScramble(
+          'Old',
+          duration: Duration(milliseconds: 80),
+          glyphs: '#',
+        ),
+      ),
+    );
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiTextScramble(
+          'New',
+          duration: Duration(milliseconds: 80),
+          glyphs: '#',
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 40));
+    expect(find.text('N##'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 40));
+    expect(find.text('New'), findsOneWidget);
+  });
+
   testWidgets('first mount shows the final text without scrambling', (
     tester,
   ) async {

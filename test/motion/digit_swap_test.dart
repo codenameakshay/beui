@@ -5,6 +5,51 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
 
 void main() {
+  testWidgets('outgoing glyph rolls away opposite the incoming glyph', (
+    tester,
+  ) async {
+    await tester.pumpWidget(beuiTestApp(const BeuiDigitSwap(value: '1')));
+    await tester.pumpWidget(beuiTestApp(const BeuiDigitSwap(value: '2')));
+    await tester.pump(const Duration(milliseconds: 60));
+    double offset(String glyph) => tester
+        .widget<SlideTransition>(
+          find
+              .ancestor(
+                of: find.text(glyph),
+                matching: find.byType(SlideTransition),
+              )
+              .first,
+        )
+        .position
+        .value
+        .dy;
+    expect(offset('1'), lessThan(0));
+    expect(offset('2'), greaterThan(0));
+    await tester.pumpAndSettle();
+    expect(find.text('1'), findsNothing);
+    expect(find.text('2'), findsOneWidget);
+  });
+
+  testWidgets('unchanged staggered glyph receives new styling', (tester) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiDigitSwap(
+          value: '12',
+          glyphStyle: TextStyle(color: Colors.red),
+        ),
+      ),
+    );
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiDigitSwap(
+          value: '12',
+          glyphStyle: TextStyle(color: Colors.blue),
+        ),
+      ),
+    );
+    expect(tester.widget<Text>(find.text('2')).style?.color, Colors.blue);
+  });
+
   testWidgets('renders the value in semantics', (tester) async {
     await tester.pumpWidget(beuiTestApp(const BeuiDigitSwap(value: '4242')));
     expect(find.bySemanticsLabel('4242'), findsOneWidget);

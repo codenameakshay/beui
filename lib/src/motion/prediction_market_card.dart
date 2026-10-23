@@ -7,6 +7,7 @@ import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 import 'action_swap.dart';
+import 'tooltip.dart';
 
 /// One possible outcome in a [BeuiPredictionMarketCard].
 @immutable
@@ -137,108 +138,122 @@ class _BeuiPredictionMarketCardState extends State<BeuiPredictionMarketCard> {
           borderRadius: BorderRadius.circular(24),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  if (widget.icon != null) ...[
-                    Container(
-                      width: 44,
-                      height: 44,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        color: colors.background,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: colors.border),
-                      ),
-                      alignment: Alignment.center,
-                      child: widget.icon,
-                    ),
-                    const SizedBox(width: 12),
-                  ],
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Semantics(
-                          header: true,
-                          child: Text(
-                            widget.title,
-                            style: Theme.of(context).textTheme.titleSmall
-                                ?.copyWith(
-                                  color: colors.foreground,
-                                  fontWeight: FontWeight.w600,
-                                  height: 1.25,
-                                ),
-                          ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    if (widget.icon != null) ...[
+                      Container(
+                        width: 48,
+                        height: 48,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          color: colors.background,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: colors.border),
                         ),
-                        if (widget.status != null || widget.category != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              spacing: 6,
-                              children: [
-                                if (widget.status != null)
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (widget.live) ...[
-                                        Container(
-                                          width: 5,
-                                          height: 5,
-                                          decoration: BoxDecoration(
-                                            color: colors.destructive,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 6),
-                                      ],
-                                      Text(
-                                        widget.status!,
-                                        style: TextStyle(
-                                          color: widget.live
-                                              ? colors.destructive
-                                              : colors.mutedForeground,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
+                        alignment: Alignment.center,
+                        child: widget.icon,
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              widget.title,
+                              style: Theme.of(context).textTheme.titleSmall
+                                  ?.copyWith(
+                                    color: colors.foreground,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: -0.4,
+                                    height: 1.375,
                                   ),
-                                if (widget.status != null &&
-                                    widget.category != null)
-                                  Text(
-                                    '·',
-                                    style: TextStyle(
-                                      color: colors.mutedForeground,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                if (widget.category != null)
-                                  Text(
-                                    widget.category!,
-                                    style: TextStyle(
-                                      color: colors.mutedForeground,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                              ],
                             ),
                           ),
-                      ],
+                          if (widget.status != null || widget.category != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 6,
+                                children: [
+                                  if (widget.status != null)
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (widget.live) ...[
+                                          Container(
+                                            width: 6,
+                                            height: 6,
+                                            decoration: BoxDecoration(
+                                              color: colors.destructive,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                        ],
+                                        Text(
+                                          widget.status!,
+                                          style: TextStyle(
+                                            color: widget.live
+                                                ? colors.destructive
+                                                : colors.mutedForeground,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  if (widget.status != null &&
+                                      widget.category != null)
+                                    Text(
+                                      '·',
+                                      style: TextStyle(
+                                        color: colors.mutedForeground,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  if (widget.category != null)
+                                    Text(
+                                      widget.category!,
+                                      style: TextStyle(
+                                        color: colors.mutedForeground,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: colors.background,
+                  borderRadius: BorderRadius.circular(24),
+                ),
                 child: Column(
                   children: [
                     for (var i = 0; i < widget.outcomes.length; i++) ...[
-                      if (i > 0) const SizedBox(height: 10),
+                      if (i > 0) const SizedBox(height: 12),
                       _OutcomeRow(
                         outcome: widget.outcomes[i],
                         index: i,
@@ -262,7 +277,9 @@ class _BeuiPredictionMarketCardState extends State<BeuiPredictionMarketCard> {
                             child: CustomPaint(
                               painter: _SparklinePainter(
                                 widget.volumeHistory!,
-                                colors.primary,
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? const Color(0xff34d399)
+                                    : const Color(0xff10b981),
                               ),
                             ),
                           ),
@@ -334,82 +351,115 @@ class _OutcomeRow extends StatelessWidget {
         ? outcome.probability.clamp(0.0, 1.0)
         : 0.0;
     final yes = index.isEven;
-    final side = yes
-        ? BeuiPredictionMarketCardSide.yes
-        : BeuiPredictionMarketCardSide.no;
     final payout = probability <= 0
         ? '—'
         : '${(1 / probability).toStringAsFixed(1)}×';
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (outcome.icon != null) ...[
-          ClipOval(
-            child: SizedBox(
-              width: 28,
-              height: 28,
-              child: ColoredBox(color: colors.muted, child: outcome.icon),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 40),
+          child: Row(
             children: [
-              Text(
-                outcome.label,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: colors.foreground,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+              if (outcome.icon != null) ...[
+                ClipOval(
+                  child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: ColoredBox(color: colors.muted, child: outcome.icon),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              Expanded(
+                child: Text(
+                  outcome.label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: colors.foreground,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-              const SizedBox(height: 5),
-              SizedBox(
-                width: 76,
-                height: 2,
-                child: FractionallySizedBox(
-                  widthFactor: probability,
-                  alignment: Alignment.centerLeft,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: outcome.color ?? (yes ? _yesFill : _noFill),
-                      borderRadius: BorderRadius.circular(99),
+              BeuiTooltip(
+                content: const SizedBox(
+                  width: 176,
+                  child: Text(
+                    'Potential payout per \$1 if this outcome wins, including your stake. Before fees; based on the displayed price.',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                child: Semantics(
+                  label: 'Potential payout for ${outcome.label}',
+                  child: TextButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(
+                      minimumSize: Size.zero,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      foregroundColor: colors.mutedForeground,
+                    ),
+                    child: Text(
+                      payout,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontFeatures: [FontFeature.tabularFigures()],
+                      ),
                     ),
                   ),
                 ),
               ),
+              const SizedBox(width: 8),
+              _OddsButton(
+                outcomeLabel: outcome.label,
+                percent: (probability * 100).round(),
+                side: yes
+                    ? BeuiPredictionMarketCardSide.yes
+                    : BeuiPredictionMarketCardSide.no,
+                accent: yes ? _yesFill : _noFill,
+                labelColor: yes ? _yesLabel : _noLabel,
+                onPressed: () => onSelected(BeuiPredictionMarketCardSide.yes),
+              ),
             ],
           ),
         ),
-        Text(
-          payout,
-          style: TextStyle(
-            color: colors.mutedForeground,
-            fontSize: 12,
-            fontFeatures: const [FontFeature.tabularFigures()],
+        const SizedBox(height: 4),
+        SingleMotionBuilder(
+          value: probability,
+          motion: const CurvedMotion(Duration(milliseconds: 250), beuiEaseOut),
+          builder: (context, value, _) => SizedBox(
+            width: 96,
+            height: 2,
+            child: FractionallySizedBox(
+              widthFactor: MediaQuery.disableAnimationsOf(context)
+                  ? probability
+                  : value.clamp(0.0, 1.0),
+              alignment: Alignment.centerLeft,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color:
+                      outcome.color ??
+                      const Color(0xff34d399).withValues(
+                        alpha: Theme.of(context).brightness == Brightness.dark
+                            ? .4
+                            : .7,
+                      ),
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        _OddsButton(
-          outcomeLabel: outcome.label,
-          percent: (probability * 100).round(),
-          side: side,
-          accent: yes ? _yesFill : _noFill,
-          labelColor: yes ? _yesLabel : _noLabel,
-          onPressed: () => onSelected(side),
         ),
       ],
     );
   }
 }
 
-const _yesFill = Color(0xFF1B7A4A);
-const _noFill = Color(0xFF8B3A4A);
-const _yesLabel = Color(0xFFD4F5E2);
-const _noLabel = Color(0xFFF5D0D6);
+const _yesFill = Color(0xFF10B981);
+const _noFill = Color(0xFFF43F5E);
+const _yesLabel = Color(0xFF34D399);
+const _noLabel = Color(0xFFFB7185);
 
 class _OddsButton extends StatefulWidget {
   const _OddsButton({
@@ -448,25 +498,35 @@ class _OddsButtonState extends State<_OddsButton> {
     final targetScale = _pressed && !reduce ? .96 : 1.0;
     final face = Semantics(
       button: true,
-      label:
-          'Trade ${widget.side.name} ${widget.outcomeLabel} at ${widget.percent}%',
+      label: 'Trade ${widget.outcomeLabel} at ${widget.percent}%',
       child: Container(
-        constraints: const BoxConstraints(minWidth: 56),
-        height: 32,
+        constraints: const BoxConstraints(minWidth: 64),
+        height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: widget.accent.withValues(alpha: active ? 0.95 : 0.82),
+          color: widget.accent.withValues(alpha: active ? 0.15 : 0.1),
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: widget.accent.withValues(alpha: .25)),
+          boxShadow: [
+            BoxShadow(
+              color: widget.accent.withValues(alpha: .2),
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: BeuiActionSwapText(
           value: active ? action : '${widget.percent}%',
           text: active ? action : '${widget.percent}%',
           variant: BeuiActionSwapVariant.roll,
           style: TextStyle(
-            color: widget.labelColor,
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? widget.labelColor
+                : widget.side == BeuiPredictionMarketCardSide.yes
+                ? const Color(0xff047857)
+                : const Color(0xffbe123c),
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -484,16 +544,18 @@ class _OddsButtonState extends State<_OddsButton> {
           );
     return Material(
       type: MaterialType.transparency,
-      child: InkWell(
-        onHover: (hovered) => setState(() => _hovered = hovered),
-        onFocusChange: (focused) => setState(() => _focused = focused),
-        onTapDown: (_) => setState(() => _pressed = true),
-        onTapCancel: () => setState(() => _pressed = false),
-        onTapUp: (_) => setState(() => _pressed = false),
-        onTap: widget.onPressed,
-        canRequestFocus: true,
-        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-        child: scaled,
+      child: FocusableActionDetector(
+        onShowFocusHighlight: (focused) => setState(() => _focused = focused),
+        child: InkWell(
+          onHover: (hovered) => setState(() => _hovered = hovered),
+          onTapDown: (_) => setState(() => _pressed = true),
+          onTapCancel: () => setState(() => _pressed = false),
+          onTapUp: (_) => setState(() => _pressed = false),
+          onTap: widget.onPressed,
+          canRequestFocus: true,
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+          child: scaled,
+        ),
       ),
     );
   }

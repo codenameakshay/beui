@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
@@ -58,6 +59,7 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
   late bool _open = widget.defaultOpen;
   late bool _detailsVisible = widget.defaultDetailsVisible;
   bool _pressed = false;
+  bool _focusVisible = false;
 
   bool get isOpen => widget.open ?? _open;
   bool get detailsVisible => widget.detailsVisible ?? _detailsVisible;
@@ -102,22 +104,24 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
             children: [
               SingleMotionBuilder(
                 value: isOpen ? 1 : 0,
-                from: isOpen ? 0 : 1,
+                from: isOpen ? 1 : 0,
                 motion: motionFor(context, _purseMorph, isMovement: true),
                 builder: (context, progress, _) {
                   final p = progress.clamp(0.0, 1.0);
                   final lift = math.sin(math.pi * p);
                   final purseOpacity =
                       (1 - ((p - 0.76) / 0.24).clamp(0.0, 1.0));
-                  final backTransform =
-                      reduce ? Matrix4.identity() : Matrix4.identity()
-                        ..translateByDouble(0.0, height * 0.18 * p, 0, 1)
-                        ..scaleByDouble(1.0, 1 - 0.82 * p, 1, 1);
+                  final backTransform = Matrix4.identity();
+                  if (!reduce) {
+                    backTransform
+                      ..translateByDouble(0.0, height * 0.9 * 0.18 * p, 0, 1)
+                      ..scaleByDouble(1.0, 1 - 0.82 * p, 1, 1);
+                  }
                   final frontTransform = Matrix4.identity();
                   if (!reduce) {
                     frontTransform
                       ..setEntry(3, 2, -1 / 1200)
-                      ..translateByDouble(0.0, height * 0.18 * p, 0, 1)
+                      ..translateByDouble(0.0, height * 0.5 * 0.18 * p, 0, 1)
                       ..rotateX(-72 * math.pi / 180 * p);
                   }
                   Widget purseBack = Opacity(
@@ -207,114 +211,149 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                     enabled: !widget.disabled,
                     expanded: isOpen,
                     label: accessibleLabel,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTapDown: widget.disabled
-                          ? null
-                          : (_) => setState(() => _pressed = true),
-                      onTapUp: widget.disabled
-                          ? null
-                          : (_) => setState(() => _pressed = false),
-                      onTapCancel: () => setState(() => _pressed = false),
-                      onTap: widget.disabled
-                          ? null
-                          : () {
-                              _setOpen(!isOpen);
-                              widget.onClick?.call();
-                            },
-                      child: SingleMotionBuilder(
-                        value: _pressed && !reduce ? _pressScale : 1,
-                        from: 1,
-                        motion: motionFor(
-                          context,
-                          beuiSpringPress,
-                          isMovement: true,
+                    child: FocusableActionDetector(
+                      enabled: !widget.disabled,
+                      onShowFocusHighlight: (visible) =>
+                          setState(() => _focusVisible = visible),
+                      shortcuts: const {
+                        SingleActivator(LogicalKeyboardKey.enter):
+                            ActivateIntent(),
+                        SingleActivator(LogicalKeyboardKey.space):
+                            ActivateIntent(),
+                      },
+                      actions: {
+                        ActivateIntent: CallbackAction<ActivateIntent>(
+                          onInvoke: (_) {
+                            _setOpen(!isOpen);
+                            widget.onClick?.call();
+                            return null;
+                          },
                         ),
-                        builder: (context, scale, child) =>
-                            Transform.scale(scale: scale, child: child),
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              top: height * 0.1,
-                              bottom: 0,
-                              child: purseBack,
+                      },
+                      child: DecoratedBox(
+                        position: DecorationPosition.foreground,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: _focusVisible
+                              ? Border.all(color: colors.ring, width: 2)
+                              : null,
+                        ),
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTapDown: widget.disabled
+                              ? null
+                              : (_) => setState(() => _pressed = true),
+                          onTapUp: widget.disabled
+                              ? null
+                              : (_) => setState(() => _pressed = false),
+                          onTapCancel: () => setState(() => _pressed = false),
+                          onTap: widget.disabled
+                              ? null
+                              : () {
+                                  _setOpen(!isOpen);
+                                  widget.onClick?.call();
+                                },
+                          child: SingleMotionBuilder(
+                            value: _pressed && !reduce ? _pressScale : 1,
+                            from: 1,
+                            motion: motionFor(
+                              context,
+                              beuiSpringPress,
+                              isMovement: true,
                             ),
-                            Positioned(
-                              left: width * 0.047,
-                              right: width * 0.047,
-                              top: 0,
-                              height: width * 0.586,
-                              child: Transform.translate(
-                                offset: Offset(
-                                  0,
-                                  reduce ? 0 : -height * 0.08 * lift,
+                            builder: (context, scale, child) =>
+                                Transform.scale(scale: scale, child: child),
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  top: height * 0.1,
+                                  bottom: 0,
+                                  child: purseBack,
                                 ),
-                                child: Transform.scale(
-                                  scale: reduce ? 1 : 1 + 0.01 * lift,
-                                  alignment: Alignment.bottomCenter,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color: colors.card,
-                                      border: Border.all(color: colors.border),
-                                      borderRadius: BorderRadius.circular(12),
+                                Positioned(
+                                  left: width * 0.047,
+                                  right: width * 0.047,
+                                  top: 0,
+                                  height: width * 0.586,
+                                  child: Transform.translate(
+                                    offset: Offset(
+                                      0,
+                                      reduce ? 0 : -height * 0.08 * lift,
                                     ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(11),
-                                      child: widget.card,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              top: height / 2,
-                              bottom: 0,
-                              child: ExcludeSemantics(
-                                excluding: isOpen,
-                                child: IgnorePointer(
-                                  ignoring: isOpen,
-                                  child: purseFront,
-                                ),
-                              ),
-                            ),
-                            if (widget.onAction != null)
-                              Positioned(
-                                right: width * 0.026,
-                                top: height * 0.1,
-                                child: SingleMotionBuilder(
-                                  value: isOpen && !reduce ? -14 : 0,
-                                  from: 0,
-                                  motion: motionFor(
-                                    context,
-                                    _purseMorph,
-                                    isMovement: true,
-                                  ),
-                                  builder: (context, offset, child) =>
-                                      Transform.translate(
-                                        offset: Offset(0, offset),
-                                        child: child,
+                                    child: Transform.scale(
+                                      scale: reduce ? 1 : 1 + 0.01 * lift,
+                                      alignment: Alignment.bottomCenter,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          color: colors.card,
+                                          border: Border.all(
+                                            color: colors.border,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            11,
+                                          ),
+                                          child: widget.card,
+                                        ),
                                       ),
-                                  child: IconButton(
-                                    tooltip:
-                                        widget.actionLabel ??
-                                        'Open actions for ${widget.title}',
-                                    onPressed: widget.disabled
-                                        ? null
-                                        : widget.onAction,
-                                    icon: Icon(
-                                      LucideIcons.ellipsis_vertical,
-                                      size: 16,
-                                      color: colors.foreground,
                                     ),
                                   ),
                                 ),
-                              ),
-                          ],
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  top: height / 2,
+                                  bottom: 0,
+                                  child: ExcludeSemantics(
+                                    excluding: isOpen,
+                                    child: IgnorePointer(
+                                      ignoring: isOpen,
+                                      child: purseFront,
+                                    ),
+                                  ),
+                                ),
+                                if (widget.onAction != null)
+                                  Positioned(
+                                    right: width * 0.026,
+                                    top: height * 0.1,
+                                    child: SingleMotionBuilder(
+                                      value: isOpen && !reduce ? -14 : 0,
+                                      from: 0,
+                                      motion: motionFor(
+                                        context,
+                                        _purseMorph,
+                                        isMovement: true,
+                                      ),
+                                      builder: (context, offset, child) =>
+                                          Transform.translate(
+                                            offset: Offset(0, offset),
+                                            child: child,
+                                          ),
+                                      child: IconButton(
+                                        tooltip:
+                                            widget.actionLabel ??
+                                            'Open actions for ${widget.title}',
+                                        onPressed: widget.disabled
+                                            ? null
+                                            : widget.onAction,
+                                        icon: Icon(
+                                          LucideIcons.ellipsis_vertical,
+                                          size: 16,
+                                          color: colors.foreground,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),

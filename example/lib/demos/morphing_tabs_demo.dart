@@ -40,6 +40,7 @@ class _MorphingTabsDemoState extends State<_MorphingTabsDemo> {
 
   @override
   Widget build(BuildContext context) {
+    final wide = MediaQuery.sizeOf(context).width >= 768;
     final items = _order.where(_rooms.containsKey).map((id) {
       final room = _rooms[id]!;
       return BeuiMorphingTabsItem(
@@ -51,7 +52,7 @@ class _MorphingTabsDemoState extends State<_MorphingTabsDemo> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(wide ? 32 : 12),
       color: const Color(0xff242424),
       alignment: Alignment.center,
       child: ConstrainedBox(
@@ -80,69 +81,75 @@ class _RoomPanel extends StatelessWidget {
   final ({String eyebrow, String title, String detail, Color accent}) room;
 
   @override
-  Widget build(BuildContext context) => CustomPaint(
-    painter: const _DotGridPainter(),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 40),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 176, maxWidth: 560),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              room.eyebrow.toUpperCase(),
-              style: const TextStyle(
-                color: Color(0x66000000),
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 2.4,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              room.title,
-              style: const TextStyle(
-                color: Color(0xff151515),
-                fontSize: 42,
-                fontWeight: FontWeight.w300,
-                letterSpacing: -2,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              room.detail,
-              style: const TextStyle(
-                color: Color(0x8c000000),
-                fontSize: 15,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 28),
-            Row(
-              children: [
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: room.accent,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const SizedBox(width: 8, height: 8),
+  Widget build(BuildContext context) {
+    final wide = MediaQuery.sizeOf(context).width >= 768;
+    return CustomPaint(
+      painter: const _DotGridPainter(),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: wide ? 48 : 28,
+          vertical: wide ? 40 : 32,
+        ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 176, maxWidth: 576),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                room.eyebrow.toUpperCase(),
+                style: const TextStyle(
+                  color: Color(0x66000000),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 2.4,
                 ),
-                const SizedBox(width: 12),
-                const Text(
-                  'drag any room to reorder',
-                  style: TextStyle(
-                    color: Color(0x80000000),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                room.title,
+                style: TextStyle(
+                  color: Color(0xff151515),
+                  fontSize: wide ? 48 : 30,
+                  fontWeight: FontWeight.w300,
+                  letterSpacing: (wide ? 48 : 30) * -0.055,
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                room.detail,
+                style: TextStyle(
+                  color: Color(0x8c000000),
+                  fontSize: wide ? 16 : 14,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 32),
+              Row(
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: room.accent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const SizedBox(width: 8, height: 8),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'drag any room to reorder',
+                    style: TextStyle(
+                      color: Color(0x80000000),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _DotGridPainter extends CustomPainter {

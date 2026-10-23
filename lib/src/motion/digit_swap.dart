@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import '../tokens/motion.dart';
@@ -132,13 +134,14 @@ class _GlyphSlot extends StatelessWidget {
     }
     final slotWidth = _isDigit ? fontSize * 0.6 : null; // ~1ch
     final slotHeight = fontSize * 1.1;
+    final glyphKey = ValueKey<Object?>('${replayKey ?? ''}-$character');
     final switcher = AnimatedSwitcher(
       duration: duration,
       switchInCurve: beuiEaseOut,
       switchOutCurve: beuiEaseOut,
       transitionBuilder: (child, animation) {
         final offset = Tween<Offset>(
-          begin: Offset(0, enterDy),
+          begin: Offset(0, child.key == glyphKey ? enterDy : -enterDy),
           end: Offset.zero,
         ).animate(animation);
         return FadeTransition(
@@ -155,7 +158,7 @@ class _GlyphSlot extends StatelessWidget {
       ),
       child: Text(
         character,
-        key: ValueKey<Object?>('${replayKey ?? ''}-$character'),
+        key: glyphKey,
         style: style.copyWith(
           height: 1.1,
           leadingDistribution: TextLeadingDistribution.even,
@@ -196,6 +199,7 @@ class _Delayed extends StatefulWidget {
 
 class _DelayedState extends State<_Delayed> {
   Widget? _shown;
+  Timer? _pending;
 
   @override
   void initState() {
@@ -207,10 +211,21 @@ class _DelayedState extends State<_Delayed> {
   void didUpdateWidget(_Delayed old) {
     super.didUpdateWidget(old);
     if (old.token != widget.token) {
-      Future<void>.delayed(widget.delay, () {
-        if (mounted) setState(() => _shown = widget.child);
+      _pending?.cancel();
+      final next = widget.child;
+      _pending = Timer(widget.delay, () {
+        _pending = null;
+        if (mounted) setState(() => _shown = next);
       });
+    } else if (_pending == null) {
+      _shown = widget.child;
     }
+  }
+
+  @override
+  void dispose() {
+    _pending?.cancel();
+    super.dispose();
   }
 
   @override

@@ -40,6 +40,70 @@ List<BeuiMorphingTabsItem> _items({bool disabledSearch = false}) => [
 
 void main() {
   group('BeuiMorphingTabs', () {
+    testWidgets('fits equal width slots before sacrificing the source gap', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(width: 528, child: BeuiMorphingTabs(items: _items())),
+        ),
+      );
+      final tabs = find.descendant(
+        of: find.byType(BeuiMorphingTabs),
+        matching: find.byType(InkWell),
+      );
+      expect(tabs, findsNWidgets(3));
+      for (var i = 0; i < 3; i++) {
+        expect(tester.getSize(tabs.at(i)).width, 154);
+      }
+      expect(
+        tester.getTopLeft(tabs.at(1)).dx - tester.getTopLeft(tabs.at(0)).dx,
+        170,
+      );
+    });
+
+    testWidgets('panel content determines the root height', (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(
+            width: 528,
+            child: BeuiMorphingTabs(
+              items: const [
+                BeuiMorphingTabsItem(
+                  id: 'tall',
+                  label: 'Tall',
+                  content: SizedBox(height: 420),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      expect(tester.getSize(find.byType(BeuiMorphingTabs)).height, 500);
+    });
+
+    testWidgets('short content does not shrink the shared panel width', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          SizedBox(
+            width: 528,
+            child: BeuiMorphingTabs(
+              items: const [
+                BeuiMorphingTabsItem(
+                  id: 'short',
+                  label: 'Short',
+                  content: SizedBox(width: 100, height: 100),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      expect(tester.getSize(find.bySemanticsLabel('Short panel')).width, 496);
+    });
+
     testWidgets('renders tabs and selects the first item by default', (
       tester,
     ) async {
@@ -191,7 +255,7 @@ void main() {
       );
     });
 
-    testWidgets('selected tab grows and inactive tabs pack to the left', (
+    testWidgets('selected tab keeps the same slot width as inactive tabs', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -204,15 +268,15 @@ void main() {
       final one = tester.getTopLeft(find.text('One'));
       final two = tester.getTopLeft(find.text('Two'));
       final three = tester.getTopLeft(find.text('Three'));
-      expect(two.dx - one.dx, lessThan(180));
-      expect(three.dx - two.dx, lessThan(180));
+      expect(two.dx - one.dx, 192);
+      expect(three.dx - two.dx, 192);
       expect(one.dx, lessThan(160));
       Size tabSize(String label) => tester.getSize(
         find
             .ancestor(of: find.text(label), matching: find.byType(MouseRegion))
             .first,
       );
-      expect(tabSize('One').width, greaterThan(tabSize('Two').width));
+      expect(tabSize('One').width, tabSize('Two').width);
     });
 
     testWidgets('shrunk tabs stay inside the rail in a narrow parent', (

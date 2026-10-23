@@ -1,5 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support.dart';
@@ -48,6 +49,20 @@ Widget _app({
 );
 
 void main() {
+  testWidgets('keyboard opens and closes the folder before privacy control', (
+    tester,
+  ) async {
+    final changes = <bool>[];
+    await tester.pumpWidget(_app(onOpenChange: changes.add));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(changes, [true]);
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    await tester.pumpAndSettle();
+    expect(changes, [true, false]);
+  });
+
   testWidgets('closed rest state masks details and retains last four', (
     tester,
   ) async {

@@ -56,7 +56,7 @@ class _DemoCard extends StatelessWidget {
           Positioned.fill(child: CustomPaint(painter: _ContourPainter())),
           Positioned(
             left: constraints.maxWidth * 0.06,
-            top: constraints.maxHeight * 0.09,
+            top: constraints.maxHeight * 0.08,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -65,7 +65,7 @@ class _DemoCard extends StatelessWidget {
                   style: TextStyle(
                     color: Color(0x8CFFFFFF),
                     fontSize: 10,
-                    letterSpacing: 1.5,
+                    letterSpacing: 2.2,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -77,17 +77,19 @@ class _DemoCard extends StatelessWidget {
                       ? BeuiDigitSwapDirection.up
                       : BeuiDigitSwapDirection.down,
                   suffixLength: 4,
-                  glyphStyle: const TextStyle(
-                    color: Color(0xA6FFFFFF),
+                  glyphStyle: TextStyle(
+                    color: detailsVisible
+                        ? Color(0xE6FFFFFF)
+                        : Color(0xA6FFFFFF),
                     fontFamily: 'monospace',
                     fontSize: 12,
-                    letterSpacing: 1,
+                    letterSpacing: 1.56,
                   ),
                   suffixStyle: const TextStyle(
                     color: Color(0xE6FFFFFF),
                     fontFamily: 'monospace',
                     fontSize: 12,
-                    letterSpacing: 1,
+                    letterSpacing: 1.56,
                   ),
                 ),
               ],
@@ -102,7 +104,7 @@ class _DemoCard extends StatelessWidget {
           ),
           Positioned(
             left: constraints.maxWidth * 0.06,
-            bottom: constraints.maxHeight * 0.08,
+            bottom: constraints.maxHeight * 0.09,
             child: Row(
               children: [
                 const Text(
@@ -131,7 +133,7 @@ class _DemoCard extends StatelessWidget {
           ),
           Positioned(
             right: constraints.maxWidth * 0.07,
-            bottom: constraints.maxHeight * 0.08,
+            bottom: constraints.maxHeight * 0.1,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -162,13 +164,17 @@ class _ArtworkField extends StatelessWidget {
         style: const TextStyle(
           color: Color(0x66FFFFFF),
           fontSize: 8,
-          letterSpacing: 1.2,
+          letterSpacing: 1.28,
           fontWeight: FontWeight.w500,
         ),
       ),
       const SizedBox(height: 4),
-      Text(
-        value,
+      BeuiDigitSwap(
+        value: value,
+        animationKey: value,
+        direction: value == '•••'
+            ? BeuiDigitSwapDirection.down
+            : BeuiDigitSwapDirection.up,
         style: const TextStyle(
           color: Color(0xE6FFFFFF),
           fontSize: 12,
@@ -266,6 +272,13 @@ class _Chip extends StatelessWidget {
 class _ContourPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.save();
+    final scale = math.min(size.width / 640, size.height / 404);
+    canvas.translate(
+      (size.width - 640 * scale) / 2,
+      (size.height - 404 * scale) / 2,
+    );
+    canvas.scale(scale);
     for (var i = 0; i < 18; i++) {
       final radius = 72.0 + i * 24;
       canvas.drawCircle(
@@ -277,10 +290,11 @@ class _ContourPainter extends CustomPainter {
           ..strokeWidth = 1.5,
       );
     }
+    canvas.restore();
     final glow = Paint()
       ..shader = const RadialGradient(
         center: Alignment(0.56, -0.84),
-        radius: 0.7,
+        radius: 0.64,
         colors: [Color(0x1CFFFFFF), Color(0x00FFFFFF)],
       ).createShader(Offset.zero & size);
     canvas.drawRect(Offset.zero & size, glow);

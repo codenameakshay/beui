@@ -34,8 +34,7 @@ const _springPress = SpringMotion(
 );
 
 const _maxTabWidth = 176.0;
-const _minTabWidth = 88.0;
-const _tabGap = 4.0;
+const _minTabWidth = 96.0;
 const _tabHeight = 56.0;
 const _railHeight = 80.0;
 const _panelInset = 16.0;
@@ -209,7 +208,7 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
     if (_draggedId == null) return;
     _dragDelta += delta;
     final from = _order.indexOf(_draggedId!);
-    final step = slotWidth + 12;
+    final step = slotWidth;
     final shifts = (_dragDelta / step).round();
     final to = (from + shifts).clamp(0, _order.length - 1);
     if (to == from) return;
@@ -238,16 +237,6 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
       a.length == b.length &&
       a.indexed.every((entry) => entry.$2 == b[entry.$1]);
 
-  double _widthForTab(BeuiMorphingTabsItem item, bool active) {
-    final close = widget.onClose != null ? 28.0 : 0.0;
-    final icon = item.icon != null ? 26.0 : 0.0;
-    final compact = 20 + icon + item.label.length * 8.0 + close;
-    final width = active
-        ? math.max(compact + 28, 132.0)
-        : math.max(compact, _minTabWidth);
-    return math.min(_maxTabWidth, width);
-  }
-
   @override
   Widget build(BuildContext context) {
     final items = _orderedItems;
@@ -267,20 +256,25 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
             ? constraints.maxWidth
             : 600.0;
         final innerWidth = math.max(0.0, width - _panelInset * 2);
-        final tabWidths = [
-          for (final item in items) _widthForTab(item, item.id == active?.id),
-        ];
-        var packed =
-            tabWidths.fold<double>(0, (sum, item) => sum + item) +
-            _tabGap * math.max(0, items.length - 1);
-        var tabGap = _tabGap;
-        if (packed > innerWidth && packed > 0) {
-          final scale = innerWidth / packed;
-          tabGap *= scale;
-          for (var i = 0; i < tabWidths.length; i++) {
-            tabWidths[i] *= scale;
+        var tabGap = MediaQuery.sizeOf(context).width >= 768 ? 16.0 : 12.0;
+        double widthAt(double gap) =>
+            ((innerWidth - gap * (items.length - 1)) / items.length)
+                .floorToDouble();
+        var slotWidth = math.min(_maxTabWidth, widthAt(tabGap));
+        if (slotWidth < _minTabWidth) {
+          if (items.length > 1 && widthAt(0) >= _minTabWidth) {
+            slotWidth = _minTabWidth;
+            tabGap = math.max(
+              0,
+              ((innerWidth - _minTabWidth * items.length) / (items.length - 1))
+                  .floorToDouble(),
+            );
+          } else {
+            slotWidth = math.max(0, widthAt(0));
+            tabGap = 0;
           }
         }
+        final tabWidths = List.filled(items.length, slotWidth);
         final tabLefts = <double>[];
         var cursor = _panelInset;
         for (final tabWidth in tabWidths) {
@@ -306,64 +300,63 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              const SizedBox(height: _railHeight + 256),
-              Positioned(
-                left: 0,
-                right: 0,
-                top: _railHeight,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: _panelInset),
-                  child: Container(
-                    constraints: const BoxConstraints(minHeight: 256),
-                    decoration: BoxDecoration(
-                      color: panelColor,
-                      borderRadius: BorderRadius.circular(_panelRadius),
-                    ),
-                    child: active == null
-                        ? const SizedBox(height: 256)
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(_panelRadius),
-                            child: Semantics(
-                              container: true,
-                              explicitChildNodes: true,
-                              label: '${active.label} panel',
-                              role: SemanticsRole.tabPanel,
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 180),
-                                switchInCurve: Curves.easeOut,
-                                transitionBuilder: (child, animation) =>
-                                    AnimatedBuilder(
-                                      animation: animation,
-                                      child: child,
-                                      builder: (context, child) {
-                                        final fade = FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                        if (reduce) return fade;
-                                        final sigma = animation.isCompleted
-                                            ? 0.0
-                                            : 3 * (1 - animation.value);
-                                        return ImageFiltered(
-                                          imageFilter: ImageFilter.blur(
-                                            sigmaX: sigma,
-                                            sigmaY: sigma,
-                                          ),
-                                          child: fade,
-                                        );
-                                      },
-                                    ),
-                                child: KeyedSubtree(
-                                  key: ValueKey(active.id),
-                                  child: DefaultTextStyle(
-                                    style: TextStyle(color: panelText),
-                                    child: active.content,
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: _railHeight,
+                  left: _panelInset,
+                  right: _panelInset,
+                ),
+                child: Container(
+                  width: double.infinity,
+                  constraints: const BoxConstraints(minHeight: 256),
+                  decoration: BoxDecoration(
+                    color: panelColor,
+                    borderRadius: BorderRadius.circular(_panelRadius),
+                  ),
+                  child: active == null
+                      ? const SizedBox(height: 256)
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(_panelRadius),
+                          child: Semantics(
+                            container: true,
+                            explicitChildNodes: true,
+                            label: '${active.label} panel',
+                            role: SemanticsRole.tabPanel,
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 180),
+                              switchInCurve: Curves.easeOut,
+                              transitionBuilder: (child, animation) =>
+                                  AnimatedBuilder(
+                                    animation: animation,
+                                    child: child,
+                                    builder: (context, child) {
+                                      final fade = FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                      if (reduce) return fade;
+                                      final sigma = animation.isCompleted
+                                          ? 0.0
+                                          : 3 * (1 - animation.value);
+                                      return ImageFiltered(
+                                        imageFilter: ImageFilter.blur(
+                                          sigmaX: sigma,
+                                          sigmaY: sigma,
+                                        ),
+                                        child: fade,
+                                      );
+                                    },
                                   ),
+                              child: KeyedSubtree(
+                                key: ValueKey(active.id),
+                                child: DefaultTextStyle(
+                                  style: TextStyle(color: panelText),
+                                  child: active.content,
                                 ),
                               ),
                             ),
                           ),
-                  ),
+                        ),
                 ),
               ),
               Positioned(
@@ -550,34 +543,56 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
         top: Radius.circular(_tabRadius),
       ),
     ),
-    padding: const EdgeInsets.symmetric(horizontal: 10),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      spacing: 8,
+    child: Stack(
+      fit: StackFit.expand,
       children: [
-        if (item.icon != null) Icon(item.icon, size: 18, color: foreground),
-        Flexible(
-          child: Text(
-            item.label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: foreground,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0,
+        Padding(
+          padding: EdgeInsets.fromLTRB(
+            12,
+            0,
+            widget.onClose == null ? 12 : 40,
+            active ? 0 : 8,
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) => Row(
+              spacing: (constraints.maxWidth - 32).clamp(0, 8),
+              children: [
+                if (item.icon != null)
+                  SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: Icon(item.icon, size: 18, color: foreground),
+                  ),
+                Expanded(
+                  child: Text(
+                    item.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: foreground,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: -0.4,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
         if (widget.onClose != null)
-          IconButton(
-            tooltip: 'Close ${item.label}',
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints.tightFor(width: 24, height: 24),
-            icon: const Icon(LucideIcons.x, size: 14),
-            color: foreground.withValues(alpha: 0.7),
-            onPressed: () => widget.onClose?.call(item.id),
+          Positioned(
+            right: 8,
+            top: active ? 16 : 12,
+            child: IconButton(
+              tooltip: 'Close ${item.label}',
+              visualDensity: VisualDensity.standard,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 24, height: 24),
+              icon: const Icon(LucideIcons.x, size: 14),
+              color: foreground.withValues(alpha: 0.7),
+              onPressed: () => widget.onClose?.call(item.id),
+            ),
           ),
       ],
     ),

@@ -57,7 +57,6 @@ class _BeuiTextScrambleState extends State<BeuiTextScramble>
   late String _display = widget.text;
   bool _mountedOnce = false;
   Ticker? _ticker;
-  Duration _started = Duration.zero;
   Duration _lastUpdate = Duration.zero;
   Duration _window = Duration.zero;
   final _random = math.Random();
@@ -92,28 +91,27 @@ class _BeuiTextScrambleState extends State<BeuiTextScramble>
     _ticker?.dispose();
     _ticker = null;
     final reduce = MediaQuery.disableAnimationsOf(context);
-    if (reduce || widget.glyphs.isEmpty) {
+    if (reduce ||
+        widget.glyphs.isEmpty ||
+        _animationDuration <= Duration.zero) {
       setState(() => _display = widget.text);
       return;
     }
     _window = _animationDuration;
-    _started = Duration.zero;
     _lastUpdate = Duration.zero;
     _ticker = createTicker(_onTick)..start();
   }
 
   void _onTick(Duration elapsed) {
-    if (_started == Duration.zero) _started = elapsed;
-    final now = elapsed - _started;
-    if (elapsed - _lastUpdate < _tick && now < _window) return;
+    if (elapsed - _lastUpdate < _tick && elapsed < _window) return;
     _lastUpdate = elapsed;
-    final progress = (now.inMicroseconds / _window.inMicroseconds).clamp(
+    final progress = (elapsed.inMicroseconds / _window.inMicroseconds).clamp(
       0.0,
       1.0,
     );
     final settled = (progress * widget.text.length).floor();
     final next = beuiScramble(widget.text, settled, _random, widget.glyphs);
-    if (now >= _window) {
+    if (elapsed >= _window) {
       _ticker?.dispose();
       _ticker = null;
       setState(() => _display = widget.text);

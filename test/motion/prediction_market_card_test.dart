@@ -109,18 +109,18 @@ void main() {
     );
   });
 
-  testWidgets('single odds CTA reports Yes on even rows and No on odd rows', (
+  testWidgets('each outcome CTA buys that outcome, independent of its color', (
     tester,
   ) async {
     final selections = <BeuiPredictionMarketCardSelection>[];
     await tester.pumpWidget(_app(onOutcomeClick: selections.add));
-    await tester.tap(find.bySemanticsLabel('Trade yes Celtics at 51%'));
-    await tester.tap(find.bySemanticsLabel('Trade no Lakers at 49%'));
+    await tester.tap(find.bySemanticsLabel('Trade Celtics at 51%'));
+    await tester.tap(find.bySemanticsLabel('Trade Lakers at 49%'));
     expect(
       selections.map((selection) => (selection.outcomeId, selection.side)),
       [
         ('celtics', BeuiPredictionMarketCardSide.yes),
-        ('lakers', BeuiPredictionMarketCardSide.no),
+        ('lakers', BeuiPredictionMarketCardSide.yes),
       ],
     );
   });
@@ -129,7 +129,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(_app());
-    final yes = find.bySemanticsLabel('Trade yes Celtics at 51%');
+    final yes = find.bySemanticsLabel('Trade Celtics at 51%');
     final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer(location: tester.getCenter(yes));
     await gesture.moveTo(tester.getCenter(yes));
@@ -139,7 +139,7 @@ void main() {
     await gesture.removePointer();
     await tester.pump();
 
-    final no = find.bySemanticsLabel('Trade no Lakers at 49%');
+    final no = find.bySemanticsLabel('Trade Lakers at 49%');
     await gesture.addPointer(location: tester.getCenter(no));
     await gesture.moveTo(tester.getCenter(no));
     await tester.pump();

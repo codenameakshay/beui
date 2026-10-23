@@ -26,7 +26,11 @@ class _PredictionMarketCardDemoState extends State<_PredictionMarketCardDemo> {
       status: 'Sunday · 7:30 PM',
       volume: r'$2.4M',
       history: [12, 18, 15, 26, 20, 32, 29, 38, 34, 48, 43, 58],
-      colors: [Color(0xff16784b), Color(0xffd6a82f)],
+      colors: [Color(0xff34d399), Color(0xfffbbf24)],
+      images: [
+        'https://a.espncdn.com/i/teamlogos/nba/500/bos.png',
+        'https://a.espncdn.com/i/teamlogos/nba/500/lal.png',
+      ],
       labels: ['Celtics', 'Lakers'],
       probabilities: [.51, .49],
       next: [.56, .44],
@@ -38,7 +42,11 @@ class _PredictionMarketCardDemoState extends State<_PredictionMarketCardDemo> {
       status: 'Mid 6th',
       volume: r'$458K',
       history: [8, 12, 10, 19, 15, 28, 23, 34, 30, 40, 36, 45],
-      colors: [Color(0xff4584c3), Color(0xffb7475b)],
+      colors: [Color(0xff60a5fa), Color(0xfffb7185)],
+      images: [
+        'https://a.espncdn.com/i/teamlogos/mlb/500/tb.png',
+        'https://a.espncdn.com/i/teamlogos/mlb/500/atl.png',
+      ],
       labels: ['Rays', 'Braves'],
       probabilities: [.46, .54],
       next: [.52, .48],
@@ -51,7 +59,10 @@ class _PredictionMarketCardDemoState extends State<_PredictionMarketCardDemo> {
       status: 'Dec 31',
       volume: r'$347K',
       history: [15, 11, 17, 14, 24, 21, 30, 25, 32, 29, 39, 42],
-      colors: [Color(0xff16784b), Color(0xff4584c3)],
+      colors: [Color(0xff34d399), Color(0xff60a5fa)],
+      images: [
+        'https://upload.wikimedia.org/wikipedia/commons/7/73/Seal_of_the_United_States_Federal_Reserve_Board.svg',
+      ],
       labels: ['Below 3.5%', 'Above 4.0%'],
       probabilities: [.68, .23],
       next: [.72, .18],
@@ -65,7 +76,7 @@ class _PredictionMarketCardDemoState extends State<_PredictionMarketCardDemo> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 920),
+          constraints: const BoxConstraints(maxWidth: 768),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,8 +132,8 @@ class _PredictionMarketCardDemoState extends State<_PredictionMarketCardDemo> {
                                 _saved.remove(market.id);
                               }
                             }),
-                            icon: _MarketMark(
-                              color: market.colors.first,
+                            icon: _MarketArtwork(
+                              url: market.images.first,
                               rates: market.rates,
                             ),
                             outcomes: [
@@ -136,8 +147,8 @@ class _PredictionMarketCardDemoState extends State<_PredictionMarketCardDemo> {
                                   color: market.colors[i],
                                   icon: market.rates
                                       ? null
-                                      : _MarketMark(
-                                          color: market.colors[i],
+                                      : _MarketArtwork(
+                                          url: market.images[i],
                                           compact: true,
                                         ),
                                 ),
@@ -165,6 +176,7 @@ class _MarketData {
     required this.volume,
     required this.history,
     required this.colors,
+    required this.images,
     required this.labels,
     required this.probabilities,
     required this.next,
@@ -179,6 +191,7 @@ class _MarketData {
   final String volume;
   final List<double> history;
   final List<Color> colors;
+  final List<String> images;
   final List<String> labels;
   final List<double> probabilities;
   final List<double> next;
@@ -186,32 +199,25 @@ class _MarketData {
   final bool rates;
 }
 
-class _MarketMark extends StatelessWidget {
-  const _MarketMark({
-    required this.color,
+class _MarketArtwork extends StatelessWidget {
+  const _MarketArtwork({
+    required this.url,
     this.compact = false,
     this.rates = false,
   });
 
-  final Color color;
+  final String url;
   final bool compact;
   final bool rates;
 
   @override
   Widget build(BuildContext context) => Container(
-    width: compact ? 28 : 44,
-    height: compact ? 28 : 44,
-    alignment: Alignment.center,
-    color: rates ? Colors.white : color.withValues(alpha: .14),
-    child: rates
-        ? Icon(LucideIcons.landmark, size: compact ? 16 : 24, color: color)
-        : Text(
-            compact ? '•' : '◎',
-            style: TextStyle(
-              color: color,
-              fontSize: compact ? 18 : 27,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+    color: rates ? Colors.white : null,
+    padding: EdgeInsets.all(compact ? 2 : 4),
+    child: Image.network(
+      url,
+      fit: BoxFit.contain,
+      webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+    ),
   );
 }
