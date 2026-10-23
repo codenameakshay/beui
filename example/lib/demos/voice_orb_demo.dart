@@ -38,6 +38,7 @@ class _OrbErrorPreviewState extends State<_OrbErrorPreview> {
   @override
   void initState() {
     super.initState();
+    // ignore: invalid_use_of_visible_for_testing_member
     BeuiVoiceOrb.debugLoadError = StateError(
       'Explicit renderer-error demo fixture',
     );
@@ -45,6 +46,7 @@ class _OrbErrorPreviewState extends State<_OrbErrorPreview> {
 
   @override
   void dispose() {
+    // ignore: invalid_use_of_visible_for_testing_member
     BeuiVoiceOrb.debugLoadError = null;
     super.dispose();
   }
