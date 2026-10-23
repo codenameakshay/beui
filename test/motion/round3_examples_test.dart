@@ -8,6 +8,36 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
 
 void main() {
+  testWidgets('stepped disabled drag cannot bypass the pointer-down guard', (
+    tester,
+  ) async {
+    for (final enabled in [true, false]) {
+      final changes = <double>[];
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiRangeSlider(
+            key: ValueKey(enabled),
+            defaultValue: 40,
+            enabled: enabled,
+            onChanged: changes.add,
+          ),
+          width: 200,
+        ),
+      );
+      final rect = tester.getRect(find.byType(BeuiRangeSlider));
+      await tester.dragFrom(
+        Offset(rect.left + 20, rect.center.dy),
+        const Offset(160, 0),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      if (enabled) {
+        expect(changes.last, 90);
+      } else {
+        expect(changes, isEmpty);
+      }
+    }
+  });
+
   testWidgets('one native move preserves the entire table resize delta', (
     tester,
   ) async {

@@ -338,8 +338,11 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider>
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onPanDown: (d) => _onPanStart(d.localPosition, trackWidth),
-          onPanStart: (d) =>
-              commitValue(sliderValueFromDx(d.localPosition.dx, trackWidth)),
+          onPanStart: (d) {
+            if (widget.enabled) {
+              commitValue(sliderValueFromDx(d.localPosition.dx, trackWidth));
+            }
+          },
           onPanUpdate: (d) => _onPanUpdate(d, trackWidth),
           onPanEnd: (_) => _onPanEnd(),
           onPanCancel: _onPanEnd,
