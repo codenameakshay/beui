@@ -231,24 +231,24 @@ class _BeuiInlineSliderState extends State<BeuiInlineSlider> {
     double? next;
     final key = event.logicalKey;
     if (key == LogicalKeyboardKey.arrowRight ||
-        key == LogicalKeyboardKey.arrowUp ||
-        key == LogicalKeyboardKey.pageUp) {
+        key == LogicalKeyboardKey.arrowUp) {
       next = stops
           .map((s) => s.value)
           .cast<double?>()
           .firstWhere((v) => v! > current, orElse: () => widget.max);
     } else if (key == LogicalKeyboardKey.arrowLeft ||
-        key == LogicalKeyboardKey.arrowDown ||
-        key == LogicalKeyboardKey.pageDown) {
+        key == LogicalKeyboardKey.arrowDown) {
       next = stops
           .map((s) => s.value)
           .toList()
           .reversed
           .cast<double?>()
           .firstWhere((v) => v! < current, orElse: () => widget.min);
-    } else if (key == LogicalKeyboardKey.home) {
+    } else if (key == LogicalKeyboardKey.home ||
+        key == LogicalKeyboardKey.pageDown) {
       next = widget.min;
-    } else if (key == LogicalKeyboardKey.end) {
+    } else if (key == LogicalKeyboardKey.end ||
+        key == LogicalKeyboardKey.pageUp) {
       next = widget.max;
     }
     if (next == null) return KeyEventResult.ignored;

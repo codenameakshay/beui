@@ -155,25 +155,16 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider>
 
   double _travel(double trackWidth) => trackWidth - _thumbWidth;
 
-  // The thumb has width, so (unlike `sliderValueFromDx`) the pointer maps
-  // over the shorter span its centre can actually travel.
-  double _valueFromDx(double dx, double trackWidth) {
-    final travel = _travel(trackWidth);
-    if (travel <= 0) return sliderMin;
-    final ratio = sliderClamp((dx - _thumbWidth / 2) / travel, 0, 1);
-    return sliderMin + ratio * (sliderMax - sliderMin);
-  }
-
-  void _onPanStart(DragStartDetails details, double trackWidth) {
+  void _onPanStart(Offset position, double trackWidth) {
     if (!widget.enabled) return;
     _focus.requestFocus();
     setState(() => _grabbed = true);
-    commitValue(_valueFromDx(details.localPosition.dx, trackWidth));
+    commitValue(sliderValueFromDx(position.dx, trackWidth));
   }
 
   void _onPanUpdate(DragUpdateDetails details, double trackWidth) {
     if (!widget.enabled || !_grabbed) return;
-    commitValue(_valueFromDx(details.localPosition.dx, trackWidth));
+    commitValue(sliderValueFromDx(details.localPosition.dx, trackWidth));
   }
 
   void _onPanEnd() {
@@ -346,7 +337,9 @@ class _BeuiRangeSliderState extends State<BeuiRangeSlider>
 
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onPanStart: (d) => _onPanStart(d, trackWidth),
+          onPanDown: (d) => _onPanStart(d.localPosition, trackWidth),
+          onPanStart: (d) =>
+              commitValue(sliderValueFromDx(d.localPosition.dx, trackWidth)),
           onPanUpdate: (d) => _onPanUpdate(d, trackWidth),
           onPanEnd: (_) => _onPanEnd(),
           onPanCancel: _onPanEnd,
