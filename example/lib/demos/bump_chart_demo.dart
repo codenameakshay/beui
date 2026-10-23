@@ -39,6 +39,7 @@ class _BumpChartDemoState extends State<_BumpChartDemo> {
       constraints: const BoxConstraints(maxWidth: 752),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -63,6 +64,7 @@ class _BumpChartDemoState extends State<_BumpChartDemo> {
                       'Five products. Six months. Every move.',
                       style: TextStyle(
                         fontSize: 12,
+                        height: 16 / 12,
                         color: BeuiColors.resolve(context).mutedForeground,
                       ),
                     ),
@@ -127,6 +129,7 @@ class _BumpChartDemoState extends State<_BumpChartDemo> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 11,
+              height: 1.5,
               color: BeuiColors.resolve(context).mutedForeground,
             ),
           ),

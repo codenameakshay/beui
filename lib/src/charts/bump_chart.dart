@@ -98,7 +98,9 @@ class _BeuiBumpChartState extends State<BeuiBumpChart> {
   @override
   void initState() {
     super.initState();
-    _internal = widget.defaultActive;
+    _internal = widget.series.any((row) => row.id == widget.defaultActive)
+        ? widget.defaultActive
+        : null;
   }
 
   @override
@@ -146,7 +148,9 @@ class _BeuiBumpChartState extends State<BeuiBumpChart> {
       final ranks = List<int?>.generate(widget.periods.length, (index) {
         if (index >= row.ranks.length) return null;
         final rank = row.ranks[index];
-        return rank != null && rank > 0 ? rank : null;
+        return rank != null && rank > 0 && rank <= 9007199254740991
+            ? rank
+            : null;
       });
       rows.add(
         _BumpRow(

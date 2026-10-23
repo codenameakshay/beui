@@ -181,6 +181,30 @@ void main() {
       expect(pinned(tester, 'studio'), isFalse);
     },
   );
+
+  testWidgets(
+    'unknown initial pin cannot appear later and unsafe ranks remain missing',
+    (tester) async {
+      await tester.pumpWidget(
+        surface(series: rows.sublist(1), defaultActive: 'studio'),
+      );
+      await tester.pumpWidget(surface(defaultActive: 'studio'));
+      expect(pinned(tester, 'studio'), isFalse);
+      await tester.pumpWidget(
+        surface(
+          series: const [
+            BeuiBumpSeries(
+              id: 'unsafe',
+              name: 'Unsafe',
+              ranks: [9007199254740992, 0, -1],
+            ),
+          ],
+        ),
+      );
+      expect(find.text('No rankings yet'), findsOneWidget);
+      expect(dot('unsafe', 0), findsNothing);
+    },
+  );
   testWidgets(
     'empty and all-missing source models render empty plot with surviving legend',
     (tester) async {
