@@ -89,9 +89,17 @@ Final verification separates149 focused component passes,37 DateRange/chart
 compatibility passes, three owned gallery passes,27 asserted browser sequences,
 and36 labeled before/after videos. Tests with goldens disabled are not a pixel
 gate. The final unsuppressed selection has139 passes and eight golden failures.
-Baselines remain unchanged. Native60fps and the shared visible icon-font
-rendering defect remain unresolved. Do not describe this as exact parity.
+Baselines remain unchanged. Native60fps and the historical visible icon-font
+defect's cause remain unresolved. Do not describe this as exact parity.
 
 No shared Tabs default changed. Alert uses the existing caller-only padding and
 Text style APIs. The recorder and wrapper are unchanged and their provenance
 is recorded per capture. The original300 files and74 videos retain their hashes.
+
+The archive follow-up commits every retained round2 original PNG sequence,
+including failed and superseded runs. The 112 sequences contain 10,611 PNGs and
+1,022,998,499 bytes. The round2 verifier now checks the complete archive against
+its original timelines and committed byte inventory without another worktree.
+Historical deficient glyph pixels remain unchanged. Parent diagnostic
+`c2ac3e1d` confirms fresh `dff2693a` icons render correctly, but does not resolve
+the older `2e2aa803` footage's glyph cause.

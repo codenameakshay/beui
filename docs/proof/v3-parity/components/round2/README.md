@@ -121,11 +121,11 @@ Exact pixel parity is not established. Eight unchanged golden comparisons fail
 for stepper, Alert, Breadcrumb, ColorPicker, ColorSelector, Combobox, ImageViewer,
 and DateRange. These are separate from functional behavior checks.
 
-Some candidate footage visibly renders tiny missing-glyph boxes for Lucide
-icons. The frozen font request returns200, the manifest names the package
-family, and read-only font inspection confirms the subset contains the expected
-codepoints and original outlines. The shared rendering cause is unresolved
-and was relayed to the parent. These pixels remain visible in the evidence.
+Historical `functional-final` footage from `2e2aa803` and JavaScript `37b90f6d`
+visibly renders tiny missing-glyph boxes for Lucide icons. Its cause remains
+unresolved. The parent's diagnostic `c2ac3e1d` confirms that fresh port8110
+JavaScript `dff2693a` renders the icons correctly. That result does not explain
+or repair the deficient historical pixels. Their labels and bytes are unchanged.
 
 Fast-motion parity is inconclusive. Measured cadence across the36 selected
 after clips ranges from7.855 to51.204fps, with maximum observed gap1503.922ms.
@@ -136,16 +136,33 @@ coverage, but that does not certify native browser timing or frame smoothness.
 
 [Original integrity](original-integrity.json) verifies all300 original before
 files and all74 original video byte sizes and hashes in the original checkout.
-The expected inventories remain unchanged. Original PNG sequences for new
-captures remain locally in each `original-frames` directory and are hashed by
-their timelines. They are excluded from Git to avoid duplicating the payload.
+The expected inventories remain unchanged.
+
+All retained round2 original PNG sequences are committed, including failed and
+superseded runs. The archive contains 112 sequences and 10,611 PNGs with exactly
+1,022,998,499 bytes. Every PNG matches its original timeline SHA256.
+[The archive inventory](original-frames-archive.json) records every relative
+path, byte count, and hash. No PNG was re-encoded, renamed, or replaced.
+Only the round2 original-frame exclusion was removed. Presentation intermediate
+video exclusions remain unchanged.
+
+The archive follow-up also includes the 36 existing final before/after videos.
+The earlier intermediate `*-after.mp4` exclusion unintentionally omitted those
+final files from `3fa062f8`. They are now tracked without re-encoding. The full
+verifier's decoded-frame checks require these videos in the integrated checkout.
+[Archive verification](ARCHIVE_VERIFICATION.md) records exact added media counts,
+byte totals, and successful verification from an isolated checkout.
 
 ```sh
 node docs/proof/v3-parity/components/round2/verify-round2.mjs
-node docs/proof/v3-parity/components/round2/audit-originals.mjs /Users/codenameakshay/.t3/worktrees/beui/t3-48d38279
+node docs/proof/v3-parity/components/round2/verify-original-frames.mjs
 ```
 
-The frame-hash verifier requires the retained local original PNG sequences.
+Both verifiers run from an integrated checkout using its committed files.
+They do not require the implementation worktree, a gallery server, or new
+captures. The complete round2 verifier requires Node.js and `ffprobe`.
+The original300-file and74-video audit is a separate historical check recorded
+in `original-integrity.json`, not an external dependency of the round2 verifier.
 Captures can be reproduced with [record-round2.mjs](record-round2.mjs) and the
 unchanged shared recorder after rebuilding and verifying the named frozen build.
 No push, PR mutation, or merge was performed by this implementation work.

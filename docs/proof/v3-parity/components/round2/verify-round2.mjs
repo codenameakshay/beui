@@ -5,6 +5,9 @@ import { join, dirname, relative } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const root = import.meta.dirname;
+const archive = spawnSync(process.execPath, [join(root, 'verify-original-frames.mjs')], { encoding: 'utf8' });
+assert.equal(archive.status, 0, archive.stderr);
+process.stdout.write(archive.stdout);
 const json = async path => JSON.parse(await readFile(path));
 const presentations = await json(join(root, 'presentations/index.json'));
 assert.equal(presentations.length, 36);
