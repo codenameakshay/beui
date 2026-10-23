@@ -5,6 +5,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/semantics.dart';
 
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
@@ -290,6 +291,7 @@ class BeuiTooltip extends StatefulWidget {
 
 class _BeuiTooltipState extends State<BeuiTooltip> {
   final Object _owner = Object();
+  final SemanticsTag _activationTag = SemanticsTag('Tooltip activation');
   final GlobalKey _triggerKey = GlobalKey();
   final GlobalKey _surfaceKey = GlobalKey();
   final FocusNode _triggerFocus = FocusNode(
@@ -299,6 +301,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   bool get _open => !widget.disabled && (widget.open ?? _internalOpen);
   bool _focused = false;
   bool _pointerFocus = false;
+  PointerDeviceKind? _pointerKind;
   bool _suppressed = false;
   Offset? _touchStart;
   bool _touchWasOpen = false;
@@ -319,6 +322,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     _tooltipSession.clients++;
     GestureBinding.instance.pointerRouter.addGlobalRoute(_onGlobalPointer);
     HardwareKeyboard.instance.addHandler(_onKeyboardModality);
+    SemanticsBinding.instance.addSemanticsActionListener(_onSemanticAction);
   }
 
   @override
@@ -326,12 +330,46 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     _timer?.cancel();
     GestureBinding.instance.pointerRouter.removeGlobalRoute(_onGlobalPointer);
     HardwareKeyboard.instance.removeHandler(_onKeyboardModality);
+    SemanticsBinding.instance.removeSemanticsActionListener(_onSemanticAction);
     _triggerFocus.dispose();
     _tooltipSession.detach(_owner);
     super.dispose();
   }
 
+  void _onSemanticAction(SemanticsActionEvent event) {
+    if (event.type != SemanticsAction.tap ||
+        widget.disabled ||
+        event.viewId != View.of(context).viewId) {
+      return;
+    }
+    final owner = _triggerKey.currentContext?.findRenderObject()?.owner;
+    SemanticsNode? findNode(SemanticsNode node) {
+      if (node.id == event.nodeId) return node;
+      SemanticsNode? match;
+      node.visitChildren((child) {
+        match = findNode(child);
+        return match == null;
+      });
+      return match;
+    }
+
+    final root = owner?.semanticsOwner?.rootSemanticsNode;
+    final node = root == null ? null : findNode(root);
+    if (!(node?.getSemanticsData().tags?.contains(_activationTag) ?? false)) {
+      return;
+    }
+    _pointerFocus = true;
+    _focused = false;
+    if (_open || _pointerKind == PointerDeviceKind.mouse) {
+      _suppressed = true;
+      _finishHide();
+    } else {
+      _show(immediate: true);
+    }
+  }
+
   bool _onKeyboardModality(KeyEvent event) {
+    _pointerKind = null;
     _pointerFocus = false;
     return false;
   }
@@ -558,6 +596,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       child: MouseRegion(
         onHover: _onPointerHover,
         onEnter: (event) {
+          _pointerKind = event.kind;
           _grace = null;
           _pointerGlobal = event.position;
           if (!_suppressed) _show();
@@ -582,6 +621,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
           },
           child: Listener(
             onPointerDown: (event) {
+              _pointerKind = event.kind;
               _pointerFocus = true;
               if (event.kind == PointerDeviceKind.mouse) {
                 _suppressed = true;
@@ -610,11 +650,14 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
                 _touchStart = null;
                 _hide();
               },
-              child: MergeSemantics(
-                child: Semantics(
-                  label: widget.asLabel ? _semanticText : null,
-                  tooltip: widget.asLabel ? null : _semanticText,
-                  child: widget.child,
+              child: Semantics(
+                tagForChildren: _activationTag,
+                child: MergeSemantics(
+                  child: Semantics(
+                    label: widget.asLabel ? _semanticText : null,
+                    tooltip: widget.asLabel ? null : _semanticText,
+                    child: widget.child,
+                  ),
                 ),
               ),
             ),
@@ -679,7 +722,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
             ignoring: widget.followCursor || !_open,
             child: AnimatedBuilder(
               animation: animation,
-              child: _surface(colors, side),
+              child: Semantics(container: true, child: _surface(colors, side)),
               builder: (context, surface) {
                 final t = animation.value.clamp(0.0, 1.0);
                 final exiting =
