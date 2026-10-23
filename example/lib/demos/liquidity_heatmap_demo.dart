@@ -49,53 +49,50 @@ class _LiquidityHeatmapDemoState extends State<_LiquidityHeatmapDemo> {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 672),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: BeuiLiquidityHeatmap(
-            snapshots: snapshots,
-            maxSize: 2400,
-            unit: 'SOL',
-            label: 'Simulated SOL liquidity heatmap',
-            formatPrice: (price) => '\$${price.toStringAsFixed(2)}',
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Text(
-                        'Where liquidity rests',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
+        child: BeuiLiquidityHeatmap(
+          snapshots: snapshots,
+          maxSize: 2400,
+          unit: 'SOL',
+          label: 'Simulated SOL liquidity heatmap',
+          formatPrice: (price) => '\$${price.toStringAsFixed(2)}',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Where liquidity rests',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
                       ),
                     ),
-                    BeuiButton(
-                      variant: BeuiButtonVariant.ghost,
-                      size: BeuiButtonSize.sm,
-                      onPressed: () => setState(() => _phase++),
-                      child: const Text('Resimulate'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 3),
-                const Text(
-                  'SOL / USD · Simulated depth',
-                  style: TextStyle(fontSize: 12),
-                ),
-                const SizedBox(height: 24),
-                const BeuiLiquidityPlot(),
-                const SizedBox(height: 12),
-                const BeuiLiquidityLegend(),
-                const SizedBox(height: 8),
-                const Text(
-                  'Brighter bands hold more liquidity · White line tracks price',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 11),
-                ),
-              ],
-            ),
+                  ),
+                  BeuiButton(
+                    variant: BeuiButtonVariant.ghost,
+                    size: BeuiButtonSize.sm,
+                    onPressed: () => setState(() => _phase++),
+                    child: const Text('Resimulate'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 3),
+              const Text(
+                'SOL / USD · Simulated depth',
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(height: 24),
+              const BeuiLiquidityPlot(),
+              const SizedBox(height: 12),
+              const BeuiLiquidityLegend(),
+              const SizedBox(height: 8),
+              const Text(
+                'Brighter bands hold more liquidity · White line tracks price',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 11),
+              ),
+            ],
           ),
         ),
       ),

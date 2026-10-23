@@ -52,7 +52,7 @@ Future<Path> _paintIrregularTrace(
   await tester.pumpWidget(
     beuiTestApp(
       SizedBox(
-        width: marketPrices.length * 100.0 + 54,
+        width: marketPrices.length * 100.0 + 72,
         child: BeuiLiquidityHeatmap(
           formatPrice: (price) => price.toStringAsFixed(2),
           snapshots: [
@@ -80,14 +80,14 @@ Future<Path> _paintIrregularTrace(
   );
   expect(trace, findsOneWidget);
   final size = tester.getSize(trace);
-  expect(size, Size(marketPrices.length * 100.0, 60));
+  expect(size, Size(marketPrices.length * 100.0, 78));
   final canvas = TestRecordingCanvas();
   tester.widget<CustomPaint>(trace).painter!.paint(canvas, size);
   final draws = canvas.invocations.where(
     (record) => record.invocation.memberName == #drawPath,
   );
-  expect(draws, hasLength(1));
-  return draws.single.invocation.positionalArguments.first as Path;
+  expect(draws, hasLength(2));
+  return draws.first.invocation.positionalArguments.first as Path;
 }
 
 void _expectTraceGeometry(Path actual, Path expected) {
@@ -119,7 +119,7 @@ void _expectTraceGeometry(Path actual, Path expected) {
 }
 
 void main() {
-  for (final band in [(110.0, 10.0), (100.0, 30.0), (99.0, 50.0)]) {
+  for (final band in [(110.0, 13.0), (100.0, 39.0), (99.0, 65.0)]) {
     testWidgets('market price ${band.$1} aligns with its actual band center', (
       tester,
     ) async {
@@ -128,16 +128,16 @@ void main() {
         path,
         Path()
           ..moveTo(50, band.$2)
-          ..cubicTo(100, band.$2, 100, band.$2, 150, band.$2),
+          ..lineTo(150, band.$2),
       );
     });
   }
 
   for (final point in [
-    (107.5, 15.0),
-    (102.5, 25.0),
-    (99.75, 35.0),
-    (99.25, 45.0),
+    (107.5, 19.5),
+    (102.5, 32.5),
+    (99.75, 45.5),
+    (99.25, 58.5),
   ]) {
     testWidgets(
       'market price ${point.$1} interpolates between adjacent band centers',
@@ -147,22 +147,22 @@ void main() {
           path,
           Path()
             ..moveTo(50, point.$2)
-            ..cubicTo(100, point.$2, 100, point.$2, 150, point.$2),
+            ..lineTo(150, point.$2),
         );
       },
     );
   }
 
-  testWidgets('trace draws cubic segments between snapshot column centers', (
+  testWidgets('trace draws straight segments between snapshot column centers', (
     tester,
   ) async {
     final path = await _paintIrregularTrace(tester, [110, 99, 110]);
     _expectTraceGeometry(
       path,
       Path()
-        ..moveTo(50, 10)
-        ..cubicTo(100, 10, 100, 50, 150, 50)
-        ..cubicTo(200, 50, 200, 10, 250, 10),
+        ..moveTo(50, 13)
+        ..lineTo(150, 65)
+        ..lineTo(250, 13),
     );
   });
 
@@ -187,10 +187,10 @@ void main() {
       _expectTraceGeometry(
         path,
         Path()
-          ..moveTo(50, 10)
-          ..cubicTo(100, 10, 100, 50, 150, 50)
-          ..moveTo(350, 50)
-          ..cubicTo(400, 50, 400, 10, 450, 10),
+          ..moveTo(50, 13)
+          ..lineTo(150, 65)
+          ..moveTo(350, 65)
+          ..lineTo(450, 13),
       );
     });
   }
@@ -233,7 +233,7 @@ void main() {
         expect(invalidCell, findsNWidgets(2));
         await tester.tap(invalidCell.first);
         await tester.pump();
-        expect(find.text('14:00 · 100.00 · 40 SOL'), findsOneWidget);
+        expect(find.text('14:00 · 100.00 · 40 SOL'), findsNothing);
 
         final gesture = await tester.createGesture(
           kind: PointerDeviceKind.mouse,
@@ -244,7 +244,7 @@ void main() {
         await tester.pump(const Duration(milliseconds: 250));
         await tester.pumpAndSettle();
         expect(find.text('14:00 · 100.00'), findsOneWidget);
-        expect(find.text('14:00 · 100.00 · 40 SOL'), findsOneWidget);
+        expect(find.text('14:00 · 100.00 · 40 SOL'), findsNothing);
         expect(find.textContaining('Market '), findsNothing);
 
         await gesture.moveTo(tester.getCenter(invalidCell.last));
@@ -252,7 +252,7 @@ void main() {
         await tester.pump(const Duration(milliseconds: 250));
         await tester.pumpAndSettle();
         expect(find.text('14:00 · 100.00'), findsOneWidget);
-        expect(find.text('14:00 · 100.00 · 40 SOL'), findsOneWidget);
+        expect(find.text('14:00 · 100.00 · 40 SOL'), findsNothing);
         expect(find.text('Market 100.50'), findsOneWidget);
         await gesture.removePointer();
         semantics.dispose();
@@ -282,10 +282,23 @@ void main() {
     await tester.pumpWidget(_surface());
     await tester.tap(find.bySemanticsLabel('14:00, 101.00: 20 SOL'));
     await tester.pump();
-    expect(find.text('14:00 · 101.00 · 20 SOL'), findsOneWidget);
+    expect(
+      tester
+          .widgetList<BeuiChartTooltip>(find.byType(BeuiChartTooltip))
+          .where((tooltip) => tooltip.open == true)
+          .single
+          .content,
+      isA<BeuiChartTooltipCard>(),
+    );
     await tester.sendKeyEvent(LogicalKeyboardKey.end);
     await tester.pump();
-    expect(find.text('14:02 · 99.00 · 10 SOL'), findsOneWidget);
+    expect(
+      tester
+          .widgetList<BeuiChartTooltip>(find.byType(BeuiChartTooltip))
+          .where((tooltip) => tooltip.open == true)
+          .map((tooltip) => (tooltip.content as BeuiChartTooltipCard).title),
+      ['14:02 · 101.00'],
+    );
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pump();
     expect(find.text('14:02 · 99.00 · 10 SOL'), findsNothing);

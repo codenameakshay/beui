@@ -4,8 +4,10 @@ library;
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
 import '_shared.dart';
 
 /// One time-ordered order-book observation.
@@ -143,6 +145,42 @@ class BeuiLiquidityPlot extends StatefulWidget {
 class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
     with BeuiChartInspectorKeys {
   String? _active;
+  String? _cursor;
+  final _focus = <String, FocusNode>{};
+
+  @override
+  void dispose() {
+    for (final node in _focus.values) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  bool _handleGridKey(KeyEvent event, int columns) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) return false;
+    if (event.logicalKey == LogicalKeyboardKey.escape) {
+      setActiveId(null);
+      return true;
+    }
+    final index = math.max(0, _ids.indexOf(_cursor ?? _active ?? ''));
+    final column = index % columns;
+    final offset = switch (event.logicalKey) {
+      LogicalKeyboardKey.arrowRight => 1,
+      LogicalKeyboardKey.arrowLeft => -1,
+      LogicalKeyboardKey.arrowDown => columns,
+      LogicalKeyboardKey.arrowUp => -columns,
+      LogicalKeyboardKey.home => -column,
+      LogicalKeyboardKey.end => columns - 1 - column,
+      _ => null,
+    };
+    if (offset == null) return false;
+    final id = _ids[(index + offset).clamp(0, _ids.length - 1)];
+    _focus[id]?.requestFocus();
+    setState(() => _cursor = id);
+    setActiveId(id);
+    return true;
+  }
+
   @override
   String? get activeId => _active;
   late List<String> _ids;
@@ -180,6 +218,16 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
       for (final p in prices)
         for (final c in columns) '${c.snapshot.id}:$p',
     ];
+    for (final id in _focus.keys.where((id) => !_ids.contains(id)).toList()) {
+      _focus.remove(id)!.dispose();
+    }
+    for (final id in _ids) {
+      _focus.putIfAbsent(id, FocusNode.new);
+    }
+    if (!_ids.contains(_cursor)) _cursor = _ids.firstOrNull;
+    for (final entry in _focus.entries) {
+      entry.value.skipTraversal = entry.key != _cursor;
+    }
     if (columns.isEmpty || prices.isEmpty) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 48),
@@ -206,14 +254,9 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
     final index = _active == null ? -1 : _ids.indexOf(_active!);
     final activeRow = index < 0 ? -1 : index ~/ columns.length;
     final activeCol = index < 0 ? -1 : index % columns.length;
-    final activeColumn = activeCol < 0 ? null : columns[activeCol];
-    final activePrice = activeRow < 0 ? null : prices[activeRow];
-    final activeSize = activeColumn == null
-        ? null
-        : activeColumn.levels[activePrice];
     return Focus(
-      autofocus: true,
-      onKeyEvent: (_, event) => handleInspectorKey(event)
+      canRequestFocus: false,
+      onKeyEvent: (_, event) => _handleGridKey(event, columns.length)
           ? KeyEventResult.handled
           : KeyEventResult.ignored,
       child: Column(
@@ -231,6 +274,16 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
                             child: Padding(
                               padding: const EdgeInsets.all(1),
                               child: BeuiChartTooltip(
+                                open: row == activeRow && col == activeCol,
+                                onOpenChange: (open) {
+                                  if (!open &&
+                                      row == activeRow &&
+                                      col == activeCol &&
+                                      _active ==
+                                          _ids[row * columns.length + col]) {
+                                    setActiveId(null);
+                                  }
+                                },
                                 content: BeuiChartTooltipCard(
                                   title:
                                       '${columns[col].snapshot.label} · ${scope.formatPrice(prices[row])}',
@@ -267,21 +320,32 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
                                       '${columns[col].snapshot.label}, ${scope.formatPrice(prices[row])}: '
                                       '${columns[col].levels[prices[row]] == null ? 'No data' : '${scope.formatSize(columns[col].levels[prices[row]]!)} ${scope.unit}'}',
                                   child: InkWell(
+                                    focusNode:
+                                        _focus[_ids[row * columns.length +
+                                            col]],
                                     onHover: (hovering) => setActiveId(
                                       hovering
                                           ? _ids[row * columns.length + col]
                                           : null,
                                     ),
-                                    onFocusChange: (focused) => setActiveId(
-                                      focused
-                                          ? _ids[row * columns.length + col]
-                                          : null,
-                                    ),
-                                    onTap: () => setActiveId(
-                                      _ids[row * columns.length + col],
-                                    ),
+                                    onFocusChange: (focused) {
+                                      final id =
+                                          _ids[row * columns.length + col];
+                                      if (focused) {
+                                        _cursor = id;
+                                      }
+                                      if (focused || _active == id) {
+                                        setActiveId(focused ? id : null);
+                                      }
+                                    },
+                                    onTap: () {
+                                      final id =
+                                          _ids[row * columns.length + col];
+                                      _focus[id]!.requestFocus();
+                                      setActiveId(id);
+                                    },
                                     child: SizedBox(
-                                      height: 18,
+                                      height: 24,
                                       child: BeuiChartFade(
                                         opacity:
                                             columns[col].levels.containsKey(
@@ -289,7 +353,11 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
                                             )
                                             ? 1
                                             : 0,
-                                        child: DecoratedBox(
+                                        child: AnimatedContainer(
+                                          duration: const Duration(
+                                            milliseconds: 280,
+                                          ),
+                                          curve: beuiEaseOut,
                                           decoration: BoxDecoration(
                                             color:
                                                 palette[(maximum <= 0
@@ -325,7 +393,7 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
                             ),
                           ),
                         SizedBox(
-                          width: 54,
+                          width: 72,
                           child: Text(
                             scope.formatPrice(prices[row]),
                             textAlign: TextAlign.right,
@@ -341,51 +409,30 @@ class _BeuiLiquidityPlotState extends State<BeuiLiquidityPlot>
               ),
               Positioned.fill(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 54),
+                  padding: const EdgeInsets.only(right: 72),
                   child: IgnorePointer(
-                    child: CustomPaint(
-                      painter: _LiquidityTracePainter(
-                        columns: columns,
-                        prices: prices,
-                        color: colors.foreground,
-                      ),
-                    ),
+                    child: _LiquidityTrace(columns: columns, prices: prices),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 12),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              for (final c in columns)
-                Expanded(
-                  child: Text(
-                    c.snapshot.label,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
+              for (var i = 0; i < columns.length; i++)
+                if (i % math.max(1, (columns.length / 5).ceil()) == 0 ||
+                    i == columns.length - 1)
+                  Text(
+                    columns[i].snapshot.label,
                     style: TextStyle(
                       fontSize: 9,
                       color: colors.mutedForeground,
                     ),
                   ),
-                ),
-              const SizedBox(width: 54),
             ],
           ),
-          if (activeColumn != null && activePrice != null)
-            Semantics(
-              liveRegion: true,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text(
-                  '${activeColumn.snapshot.label} · ${scope.formatPrice(activePrice)} · '
-                  '${activeSize == null ? 'No data' : '${scope.formatSize(activeSize)} ${scope.unit}'}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 11, color: colors.mutedForeground),
-                ),
-              ),
-            ),
         ],
       ),
     );
@@ -399,42 +446,40 @@ class _LiquidityColumn {
 }
 
 class _LiquidityTracePainter extends CustomPainter {
-  const _LiquidityTracePainter({
-    required this.columns,
-    required this.prices,
-    required this.color,
-  });
-  final List<_LiquidityColumn> columns;
-  final List<double> prices;
-  final Color color;
+  const _LiquidityTracePainter({required this.points});
+  final List<Offset?> points;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (columns.length < 2 || prices.length < 2) return;
     final path = Path();
     Offset? previous;
-    for (var i = 0; i < columns.length; i++) {
-      final price = columns[i].snapshot.price;
-      if (price == null || !_priceInDomain(price, prices)) {
+    for (final normalized in points) {
+      if (normalized == null) {
         previous = null;
         continue;
       }
       final point = Offset(
-        size.width * (i + .5) / columns.length,
-        _yForPrice(price, size, prices),
+        normalized.dx * size.width,
+        normalized.dy * size.height,
       );
       if (previous == null) {
         path.moveTo(point.dx, point.dy);
       } else {
-        final middle = (previous.dx + point.dx) / 2;
-        path.cubicTo(middle, previous.dy, middle, point.dy, point.dx, point.dy);
+        path.lineTo(point.dx, point.dy);
       }
       previous = point;
     }
     canvas.drawPath(
       path,
       Paint()
-        ..color = color.withValues(alpha: .9)
+        ..color = Colors.black.withValues(alpha: .35)
+        ..strokeWidth = 4
+        ..style = PaintingStyle.stroke,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = Colors.white.withValues(alpha: .9)
         ..strokeWidth = 1.5
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke,
@@ -442,8 +487,84 @@ class _LiquidityTracePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_LiquidityTracePainter old) =>
-      columns != old.columns || prices != old.prices || color != old.color;
+  bool shouldRepaint(_LiquidityTracePainter old) => points != old.points;
+}
+
+class _LiquidityTrace extends StatefulWidget {
+  const _LiquidityTrace({required this.columns, required this.prices});
+  final List<_LiquidityColumn> columns;
+  final List<double> prices;
+  @override
+  State<_LiquidityTrace> createState() => _LiquidityTraceState();
+}
+
+class _LiquidityTraceState extends State<_LiquidityTrace>
+    with SingleTickerProviderStateMixin {
+  late final _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 280),
+  );
+  late List<Offset?> _from = _target;
+  late List<Offset?> _to = _target;
+  List<Offset?> get _target => [
+    for (var i = 0; i < widget.columns.length; i++)
+      if (widget.columns[i].snapshot.price case final price?
+          when _priceInDomain(price, widget.prices))
+        Offset(
+          (i + .5) / widget.columns.length,
+          _yForPrice(price, const Size(1, 1), widget.prices),
+        )
+      else
+        null,
+  ];
+  List<Offset?> get _current {
+    final t = beuiEaseOut.transform(_controller.value);
+    return [
+      for (var i = 0; i < _to.length; i++)
+        _to[i] == null ? null : Offset.lerp(_from[i], _to[i], t),
+    ];
+  }
+
+  @override
+  void didUpdateWidget(covariant _LiquidityTrace oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final next = _target;
+    final sameTopology =
+        oldWidget.columns.length == widget.columns.length &&
+        List.generate(
+          widget.columns.length,
+          (i) =>
+              oldWidget.columns[i].snapshot.id ==
+                  widget.columns[i].snapshot.id &&
+              (_to[i] == null) == (next[i] == null),
+        ).every((same) => same);
+    if (sameTopology &&
+        List.generate(
+          next.length,
+          (i) => next[i] == _to[i],
+        ).every((same) => same)) {
+      return;
+    }
+    _from = sameTopology ? _current : next;
+    _to = next;
+    _controller.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: _controller,
+    builder: (context, _) => CustomPaint(
+      painter: _LiquidityTracePainter(
+        points: MediaQuery.disableAnimationsOf(context) ? _to : _current,
+      ),
+    ),
+  );
 }
 
 bool _priceInDomain(double price, List<double> prices) =>
