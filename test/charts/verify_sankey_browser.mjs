@@ -28,6 +28,7 @@ for(const reducedMotion of ['no-preference','reduce']) for(const source of [true
     await page.keyboard.press(key);state=await remember(key+'-'+name.replaceAll(' ','_'));assert.match(state.focused.text,new RegExp(`^${name}`));assert.equal(state.tooltips.length,1,JSON.stringify(state));assert.equal(state.nodeTabStops.length,1);
   }
   await page.keyboard.press('Escape');state=await remember('escape');assert.equal(state.tooltips.length,0);assert.match(state.focused.text,/^Services/);
+  for(const key of ['Enter','Space']){await page.keyboard.press(key);state=await remember('closed-'+key);assert.equal(state.tooltips.length,0);}
   await page.keyboard.press('ArrowRight');state=await remember('reopen');assert.equal(state.tooltips.length,1);
   await page.keyboard.press('Shift+Tab');state=await remember('shift-tab-out');assert.doesNotMatch(state.focused.text||'',/^Revenue\./);assert.equal(state.tooltips.length,0);
   await page.keyboard.press('Tab');state=await remember('tab-back');assert.match(state.focused.text,/^Revenue\./);assert.equal(state.tooltips.length,1);
