@@ -70,11 +70,11 @@ void main() {
     final measurement = tester.widget<IntrinsicMeasurement>(
       find.byType(IntrinsicMeasurement),
     );
-    // ceil((420 - 52) / 52) visible rows plus ten forward overscan rows.
-    expect(measurement.samples, hasLength(6 + 18 * 5));
+    // ceil(420 / 52) visible rows plus ten forward overscan rows.
+    expect(measurement.samples, hasLength(6 + 19 * 5));
     expect(measurement.samples.first.widths, (minimum: 24.0, maximum: 24.0));
     for (final key in _keys) {
-      expect(measurement.samples.where((s) => s.column == key), hasLength(19));
+      expect(measurement.samples.where((s) => s.column == key), hasLength(20));
     }
     final mrr = measurement.samples
         .where((s) => s.column == 'mrr')
@@ -129,12 +129,12 @@ void main() {
     final list = tester.widget<ListView>(find.byType(ListView));
     list.controller!.jumpTo(52 * 100);
     await tester.pump();
-    expect(emails(), hasLength(28));
+    expect(emails(), hasLength(29));
     expect(emails().toSet().intersection(before.toSet()), isEmpty);
     _expectAligned(tester);
     await tester.tap(find.text('Name').hitTestable());
     await tester.pump();
-    expect(emails(), hasLength(28));
+    expect(emails(), hasLength(29));
     expect(emails(), everyElement(startsWith('ava.cole')));
     expect(tester.takeException(), isNull);
     await _dispose(tester);

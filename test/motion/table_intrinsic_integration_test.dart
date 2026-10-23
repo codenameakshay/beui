@@ -149,13 +149,13 @@ void main() {
       ),
     );
     expect(windows.last.first, '0');
-    expect(windows.last.length, 13);
+    expect(windows.last.length, 14);
     final list = tester.widget<ListView>(find.byType(ListView));
     list.controller!.jumpTo(48 * 50);
     await tester.pump();
     expect(windows.last.first, '40');
-    expect(windows.last.last, '62');
-    expect(windows.every((w) => w.length <= 23), isTrue);
+    expect(windows.last.last, '63');
+    expect(windows.every((w) => w.length <= 24), isTrue);
     expect(tester.takeException(), isNull);
   });
 

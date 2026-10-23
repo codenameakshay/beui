@@ -242,7 +242,9 @@ class BeuiTable<T> extends StatefulWidget {
   /// sorted visible/overscan rows. Include padding, icons and matching styles.
   /// Selectable tables also require a selection sample. Unsupported cells and
   /// editors require explicit widths; never duplicate live controls or keys.
-  /// The supplied rows cover the viewport plus ten rows on each side. Widths
+  /// The supplied rows follow source fixed-estimate ranges using the full
+  /// table viewport plus ten rows on each side, independently of Flutter
+  /// mounting. Widths
   /// can change as rows enter or leave this window. Called during layout;
   /// do not mutate ancestor state. Required only for intrinsic sizing.
   final List<BeuiTableIntrinsicSample> Function(
@@ -394,7 +396,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   final ScrollController _vScroll = ScrollController();
   final FocusNode _scrollFocus = FocusNode();
   bool _endReachedFired = false;
-  int _sampleScrollRow = 0;
+  ({int start, int end})? _sampleRange;
 
   @override
   void initState() {
@@ -676,8 +678,8 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
   // ---- infinite scroll ------------------------------------------------------
   void _onScroll() {
     if (widget.sizing == BeuiTableSizing.intrinsic && _vScroll.hasClients) {
-      final row = math.max(0, (_vScroll.offset / widget.rowHeight).floor());
-      if (row != _sampleScrollRow) setState(() => _sampleScrollRow = row);
+      final range = _intrinsicSampleRange(_vScroll.offset);
+      if (range != _sampleRange) setState(() => _sampleRange = range);
     }
     if (widget.onEndReached == null || widget.loading || _endReachedFired) {
       return;
@@ -688,6 +690,23 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
       _endReachedFired = true;
       widget.onEndReached!();
     }
+  }
+
+  ({int start, int end}) _intrinsicSampleRange(double offset) {
+    final count = widget.data.length;
+    final height = widget.height.roundToDouble();
+    if (count == 0 || height <= 0) return (start: 0, end: 0);
+    final first = (math.max(0, offset) / widget.rowHeight).floor().clamp(
+      0,
+      count - 1,
+    );
+    final last = math
+        .max(
+          first,
+          ((math.max(0, offset) + height) / widget.rowHeight).ceil() - 1,
+        )
+        .clamp(0, count - 1);
+    return (start: math.max(0, first - 10), end: math.min(count, last + 11));
   }
 
   // ---- width resolution -----------------------------------------------------
@@ -817,19 +836,10 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
                 'and columns with flex == 1.',
               );
             }
-            final visibleCount = math.max(
-              0,
-              ((widget.height - widget.rowHeight) / widget.rowHeight).ceil(),
+            final range = _intrinsicSampleRange(
+              _vScroll.hasClients ? _vScroll.offset : 0,
             );
-            final scrollRow = _vScroll.hasClients
-                ? math.max(0, (_vScroll.offset / widget.rowHeight).floor())
-                : 0;
-            _sampleScrollRow = scrollRow;
-            final start = (scrollRow - 10).clamp(0, sortedRows.length);
-            final end = (scrollRow + visibleCount + 10).clamp(
-              start,
-              sortedRows.length,
-            );
+            _sampleRange = range;
             return IntrinsicMeasurement(
               columns: [
                 if (widget.selectable) '#checkbox',
@@ -839,7 +849,8 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
               samples: sampler(
                 context,
                 List.unmodifiable([
-                  for (var i = start; i < end; i++) sortedRows[i].row,
+                  for (var i = range.start; i < range.end; i++)
+                    sortedRows[i].row,
                 ]),
               ),
               builder: (context, measurement) {

@@ -5,8 +5,10 @@ selection width and resize behavior are unchanged.
 
 `BeuiTableSizing.intrinsic` separates measured content contributions, declared
 absolute preferences and resize overrides. Supply `intrinsicSamples` and leave
-column flex weights at one. The callback receives the sorted viewport rows plus
-ten overscan rows on each side. It must return passive outer-width samples for
+column flex weights at one. The callback receives the sorted source-equivalent index window plus
+ten overscan rows on each side. Range endpoints use the full table viewport
+height and fractional scroll offset. This differs from Flutter mounting, whose
+body viewport excludes the sticky header. It must return passive outer-width samples for
 every column, including headers. Selectable tables also need a selection sample.
 The callback runs during layout and must not change ancestor state.
 
@@ -36,3 +38,9 @@ This mode does not implement arbitrary CSS table layout. It does not certify
 Flutter/browser font raster correspondence, unsupported custom cells or exact
 source virtualization. The gallery has not yet opted in; native integrated
 geometry acceptance remains open.
+
+For runtime row-height updates, this API recalculates estimates immediately.
+The pinned TanStack source retains cached estimates until remeasurement; its
+Table does not explicitly request that remeasurement. Dynamic-height parity is
+therefore not claimed. Fixed-estimate range tests use the source dependency's
+actual boundary behavior, including equality at a row end.
