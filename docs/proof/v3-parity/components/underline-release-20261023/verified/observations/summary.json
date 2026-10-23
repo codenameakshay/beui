@@ -1,0 +1,1326 @@
+[
+  {
+    "id": "source-light",
+    "url": "https://beui.dev/components/motion/tabs",
+    "initial": {
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": null,
+      "active": {
+        "tag": "BUTTON",
+        "text": "Light themeLight theme"
+      },
+      "list": {
+        "x": 376,
+        "y": 795,
+        "width": 177.796875,
+        "height": 44,
+        "top": 795,
+        "right": 553.796875,
+        "bottom": 839,
+        "left": 376
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 376,
+            "y": 795,
+            "width": 41.109375,
+            "height": 44,
+            "top": 795,
+            "right": 417.109375,
+            "bottom": 839,
+            "left": 376
+          },
+          "selected": "true",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(3.04863 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 421.109375,
+            "y": 795,
+            "width": 59.09375,
+            "height": 44,
+            "top": 795,
+            "right": 480.203125,
+            "bottom": 839,
+            "left": 421.109375
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(42 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 484.203125,
+            "y": 795,
+            "width": 69.59375,
+            "height": 44,
+            "top": 795,
+            "right": 553.796875,
+            "bottom": 839,
+            "left": 484.203125
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(42 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        }
+      ],
+      "indicator": {
+        "x": 376,
+        "y": 838,
+        "width": 41.109375,
+        "height": 1,
+        "top": 838,
+        "right": 417.109375,
+        "bottom": 839,
+        "left": 376
+      },
+      "indicatorColor": "rgb(2, 133, 247)"
+    },
+    "states": [
+      {
+        "name": "default",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Light themeLight theme"
+        },
+        "indicator": {
+          "x": 376,
+          "y": 838,
+          "width": 41.109375,
+          "height": 1,
+          "top": 838,
+          "right": 417.109375,
+          "bottom": 839,
+          "left": 376
+        }
+      },
+      {
+        "name": "hover",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Light themeLight theme"
+        },
+        "indicator": {
+          "x": 376,
+          "y": 838,
+          "width": 41.109375,
+          "height": 1,
+          "top": 838,
+          "right": 417.109375,
+          "bottom": 839,
+          "left": 376
+        }
+      },
+      {
+        "name": "down",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Open"
+        },
+        "indicator": {
+          "x": 376,
+          "y": 838,
+          "width": 41.109375,
+          "height": 1,
+          "top": 838,
+          "right": 417.109375,
+          "bottom": 839,
+          "left": 376
+        }
+      },
+      {
+        "name": "selected",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Open"
+        },
+        "indicator": {
+          "x": 420.99298095703125,
+          "y": 838,
+          "width": 59.047332763671875,
+          "height": 1,
+          "top": 838,
+          "right": 480.0403137207031,
+          "bottom": 839,
+          "left": 420.99298095703125
+        }
+      },
+      {
+        "name": "pointer-end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Closed"
+        },
+        "indicator": {
+          "x": 484.04022216796875,
+          "y": 838,
+          "width": 69.56658935546875,
+          "height": 1,
+          "top": 838,
+          "right": 553.6068115234375,
+          "bottom": 839,
+          "left": 484.04022216796875
+        }
+      },
+      {
+        "name": "pointer-left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Open"
+        },
+        "indicator": {
+          "x": 421.2842712402344,
+          "y": 838,
+          "width": 59.12286376953125,
+          "height": 1,
+          "top": 838,
+          "right": 480.4071350097656,
+          "bottom": 839,
+          "left": 421.2842712402344
+        }
+      }
+    ]
+  },
+  {
+    "id": "before-light",
+    "url": "http://127.0.0.1:8111/?slug=tabs&theme=light&color=Blue&previewWidth=592&captureProbe=1",
+    "initial": {
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "SPAN",
+        "text": "PILL"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "true",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    "states": [
+      {
+        "name": "default",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "SPAN",
+          "text": "PILL"
+        }
+      },
+      {
+        "name": "hover",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "SPAN",
+          "text": "PILL"
+        }
+      },
+      {
+        "name": "down",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "selected",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "pointer-end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Closed"
+        }
+      },
+      {
+        "name": "pointer-left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "keyboard-focus",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "All"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "All"
+        }
+      },
+      {
+        "name": "home",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "All"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "All"
+        }
+      },
+      {
+        "name": "end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Closed"
+        }
+      },
+      {
+        "name": "left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      }
+    ]
+  },
+  {
+    "id": "after-light",
+    "url": "http://127.0.0.1:8112/?slug=tabs&theme=light&color=Blue&previewWidth=592&captureProbe=1",
+    "initial": {
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "SPAN",
+        "text": "PILL"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "true",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    "states": [
+      {
+        "name": "default",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "SPAN",
+          "text": "PILL"
+        }
+      },
+      {
+        "name": "hover",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "SPAN",
+          "text": "PILL"
+        }
+      },
+      {
+        "name": "down",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "selected",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "pointer-end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Closed"
+        }
+      },
+      {
+        "name": "pointer-left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "keyboard-focus",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "All"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "All"
+        }
+      },
+      {
+        "name": "home",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "All"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "All"
+        }
+      },
+      {
+        "name": "end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Closed"
+        }
+      },
+      {
+        "name": "left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      }
+    ]
+  },
+  {
+    "id": "source-dark",
+    "url": "https://beui.dev/components/motion/tabs",
+    "initial": {
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": null,
+      "active": {
+        "tag": "BUTTON",
+        "text": "Dark themeDark theme"
+      },
+      "list": {
+        "x": 376,
+        "y": 795,
+        "width": 177.796875,
+        "height": 44,
+        "top": 795,
+        "right": 553.796875,
+        "bottom": 839,
+        "left": 376
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 376,
+            "y": 795,
+            "width": 41.109375,
+            "height": 44,
+            "top": 795,
+            "right": 417.109375,
+            "bottom": 839,
+            "left": 376
+          },
+          "selected": "true",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(95.36 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 421.109375,
+            "y": 795,
+            "width": 59.09375,
+            "height": 44,
+            "top": 795,
+            "right": 480.203125,
+            "bottom": 839,
+            "left": 421.109375
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 484.203125,
+            "y": 795,
+            "width": 69.59375,
+            "height": 44,
+            "top": 795,
+            "right": 553.796875,
+            "bottom": 839,
+            "left": 484.203125
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        }
+      ],
+      "indicator": {
+        "x": 376,
+        "y": 838,
+        "width": 41.109375,
+        "height": 1,
+        "top": 838,
+        "right": 417.109375,
+        "bottom": 839,
+        "left": 376
+      },
+      "indicatorColor": "rgb(2, 133, 247)"
+    },
+    "states": [
+      {
+        "name": "default",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Dark themeDark theme"
+        },
+        "indicator": {
+          "x": 376,
+          "y": 838,
+          "width": 41.109375,
+          "height": 1,
+          "top": 838,
+          "right": 417.109375,
+          "bottom": 839,
+          "left": 376
+        }
+      },
+      {
+        "name": "hover",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Dark themeDark theme"
+        },
+        "indicator": {
+          "x": 376,
+          "y": 838,
+          "width": 41.109375,
+          "height": 1,
+          "top": 838,
+          "right": 417.109375,
+          "bottom": 839,
+          "left": 376
+        }
+      },
+      {
+        "name": "down",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Open"
+        },
+        "indicator": {
+          "x": 376,
+          "y": 838,
+          "width": 41.109375,
+          "height": 1,
+          "top": 838,
+          "right": 417.109375,
+          "bottom": 839,
+          "left": 376
+        }
+      },
+      {
+        "name": "selected",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Open"
+        },
+        "indicator": {
+          "x": 420.9941711425781,
+          "y": 838,
+          "width": 59.047821044921875,
+          "height": 1,
+          "top": 838,
+          "right": 480.0419921875,
+          "bottom": 839,
+          "left": 420.9941711425781
+        }
+      },
+      {
+        "name": "pointer-end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Closed"
+        },
+        "indicator": {
+          "x": 484.04022216796875,
+          "y": 838,
+          "width": 69.56658935546875,
+          "height": 1,
+          "top": 838,
+          "right": 553.6068115234375,
+          "bottom": 839,
+          "left": 484.04022216796875
+        }
+      },
+      {
+        "name": "pointer-left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "text": "Open"
+        },
+        "indicator": {
+          "x": 421.27374267578125,
+          "y": 838,
+          "width": 59.12109375,
+          "height": 1,
+          "top": 838,
+          "right": 480.39483642578125,
+          "bottom": 839,
+          "left": 421.27374267578125
+        }
+      }
+    ]
+  },
+  {
+    "id": "before-dark",
+    "url": "http://127.0.0.1:8111/?slug=tabs&theme=dark&color=Blue&previewWidth=592&captureProbe=1",
+    "initial": {
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "SPAN",
+        "text": "PILL"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "true",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    "states": [
+      {
+        "name": "default",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "SPAN",
+          "text": "PILL"
+        }
+      },
+      {
+        "name": "hover",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "SPAN",
+          "text": "PILL"
+        }
+      },
+      {
+        "name": "down",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "selected",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "pointer-end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Closed"
+        }
+      },
+      {
+        "name": "pointer-left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "keyboard-focus",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "All"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "All"
+        }
+      },
+      {
+        "name": "home",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "All"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "All"
+        }
+      },
+      {
+        "name": "end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Closed"
+        }
+      },
+      {
+        "name": "left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      }
+    ]
+  },
+  {
+    "id": "after-dark",
+    "url": "http://127.0.0.1:8112/?slug=tabs&theme=dark&color=Blue&previewWidth=592&captureProbe=1",
+    "initial": {
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "active": {
+        "tag": "SPAN",
+        "text": "PILL"
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 416,
+            "y": 695.5,
+            "width": 41.09375,
+            "height": 44,
+            "top": 695.5,
+            "right": 457.09375,
+            "bottom": 739.5,
+            "left": 416
+          },
+          "selected": "true",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 461.09393310546875,
+            "y": 695.5,
+            "width": 59.078125,
+            "height": 44,
+            "top": 695.5,
+            "right": 520.1720581054688,
+            "bottom": 739.5,
+            "left": 461.09393310546875
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 524.1777954101562,
+            "y": 695.5,
+            "width": 69.578125,
+            "height": 44,
+            "top": 695.5,
+            "right": 593.7559204101562,
+            "bottom": 739.5,
+            "left": 524.1777954101562
+          },
+          "selected": "false",
+          "focused": false,
+          "style": null
+        }
+      ],
+      "indicatorColor": null
+    },
+    "states": [
+      {
+        "name": "default",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "SPAN",
+          "text": "PILL"
+        }
+      },
+      {
+        "name": "hover",
+        "selected": [
+          "All"
+        ],
+        "focused": [],
+        "active": {
+          "tag": "SPAN",
+          "text": "PILL"
+        }
+      },
+      {
+        "name": "down",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "selected",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "pointer-end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Closed"
+        }
+      },
+      {
+        "name": "pointer-left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      },
+      {
+        "name": "keyboard-focus",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "All"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "All"
+        }
+      },
+      {
+        "name": "home",
+        "selected": [
+          "All"
+        ],
+        "focused": [
+          "All"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "All"
+        }
+      },
+      {
+        "name": "end",
+        "selected": [
+          "Closed"
+        ],
+        "focused": [
+          "Closed"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Closed"
+        }
+      },
+      {
+        "name": "left",
+        "selected": [
+          "Open"
+        ],
+        "focused": [
+          "Open"
+        ],
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "text": "Open"
+        }
+      }
+    ]
+  }
+]

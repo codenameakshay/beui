@@ -1,0 +1,1862 @@
+[
+  {
+    "id": "before-light-5",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "before-light-6",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "before-light-8",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      }
+    ],
+    "expected": "All",
+    "selected": [
+      "All"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "true",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "false",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "before-light-9",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      },
+      {
+        "atMs": 5300,
+        "type": "key",
+        "key": "End"
+      }
+    ],
+    "expected": "Closed",
+    "selected": [
+      "Closed"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "false",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "true",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "before-light-10",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      },
+      {
+        "atMs": 5300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 6200,
+        "type": "key",
+        "key": "ArrowLeft"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-light-5",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-light-6",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-light-8",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      }
+    ],
+    "expected": "All",
+    "selected": [
+      "All"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "true",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "false",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-light-9",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      },
+      {
+        "atMs": 5300,
+        "type": "key",
+        "key": "End"
+      }
+    ],
+    "expected": "Closed",
+    "selected": [
+      "Closed"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "false",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "true",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-light-10",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      },
+      {
+        "atMs": 5300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 6200,
+        "type": "key",
+        "key": "ArrowLeft"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "before-dark-5",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "before-dark-6",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "before-dark-8",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      }
+    ],
+    "expected": "All",
+    "selected": [
+      "All"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "true",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "false",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "before-dark-9",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      },
+      {
+        "atMs": 5300,
+        "type": "key",
+        "key": "End"
+      }
+    ],
+    "expected": "Closed",
+    "selected": [
+      "Closed"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "false",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "true",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "before-dark-10",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      },
+      {
+        "atMs": 5300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 6200,
+        "type": "key",
+        "key": "ArrowLeft"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-dark-5",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-dark-6",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-dark-8",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      }
+    ],
+    "expected": "All",
+    "selected": [
+      "All"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "true",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "false",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-dark-9",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      },
+      {
+        "atMs": 5300,
+        "type": "key",
+        "key": "End"
+      }
+    ],
+    "expected": "Closed",
+    "selected": [
+      "Closed"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "false",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "true",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  },
+  {
+    "id": "after-dark-10",
+    "events": [
+      {
+        "atMs": 500,
+        "type": "move",
+        "target": "open"
+      },
+      {
+        "atMs": 1000,
+        "type": "down",
+        "target": "open"
+      },
+      {
+        "atMs": 1250,
+        "type": "up",
+        "target": "open"
+      },
+      {
+        "atMs": 2100,
+        "type": "move",
+        "target": "outside"
+      },
+      {
+        "atMs": 2300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 3200,
+        "type": "key",
+        "key": "ArrowLeft"
+      },
+      {
+        "atMs": 4100,
+        "type": "key",
+        "key": "Shift+Tab"
+      },
+      {
+        "atMs": 4400,
+        "type": "key",
+        "key": "Home"
+      },
+      {
+        "atMs": 5300,
+        "type": "key",
+        "key": "End"
+      },
+      {
+        "atMs": 6200,
+        "type": "key",
+        "key": "ArrowLeft"
+      }
+    ],
+    "expected": "Open",
+    "selected": [
+      "Open"
+    ],
+    "buttons": [
+      {
+        "name": "All",
+        "selected": "false",
+        "rect": {
+          "x": 416,
+          "y": 695.5,
+          "width": 41.09375,
+          "height": 44,
+          "top": 695.5,
+          "right": 457.09375,
+          "bottom": 739.5,
+          "left": 416
+        }
+      },
+      {
+        "name": "Open",
+        "selected": "true",
+        "rect": {
+          "x": 461.09393310546875,
+          "y": 695.5,
+          "width": 59.078125,
+          "height": 44,
+          "top": 695.5,
+          "right": 520.1720581054688,
+          "bottom": 739.5,
+          "left": 461.09393310546875
+        }
+      },
+      {
+        "name": "Closed",
+        "selected": "false",
+        "rect": {
+          "x": 524.1777954101562,
+          "y": 695.5,
+          "width": 69.578125,
+          "height": 44,
+          "top": 695.5,
+          "right": 593.7559204101562,
+          "bottom": 739.5,
+          "left": 524.1777954101562
+        }
+      }
+    ],
+    "activeBeforeObservation": "<flutter-view flt-view-id=\"0\" tabindex=\"-1\" style=\"position: absolute; inset: 0px; width: 1280px; height: 1000px;\"><flt-glass-pane></flt-glass-pane><flt-text-editing-host></flt-text-editing-host><flt-semantics-host style=\"position: absolute; transform-origin: 0px 0px 0px; transform: scale(1);\"></flt-semantics-host><style id=\"flt-text-editing-stylesheet\">flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}</style></flutter-view>",
+    "observation": "Screenshot taken before enabling semantics. Semantics enabled only after the final native action to read selection. Each checkpoint uses a fresh context."
+  }
+]

@@ -1,0 +1,18 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok(maxPtsDeltaSeconds <= 0.000002)
+
+    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/docs/proof/v3-parity/components/underline-release-20261023/present.mjs:44:14 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v26.12.0

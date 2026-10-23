@@ -1,0 +1,701 @@
+{
+  "id": "source-light",
+  "url": "https://beui.dev/components/motion/tabs",
+  "theme": "light",
+  "phase": "source",
+  "initial": {
+    "scroll": {
+      "x": 0,
+      "y": 0
+    },
+    "dpr": 1,
+    "probe": null,
+    "active": {
+      "tag": "BODY",
+      "text": "{\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"@id\":\"https://beui.dev/#webs"
+    },
+    "list": {
+      "x": 376,
+      "y": 795,
+      "width": 177.796875,
+      "height": 44,
+      "top": 795,
+      "right": 553.796875,
+      "bottom": 839,
+      "left": 376
+    },
+    "buttons": [
+      {
+        "name": "All",
+        "rect": {
+          "x": 376,
+          "y": 795,
+          "width": 41.109375,
+          "height": 44,
+          "top": 795,
+          "right": 417.109375,
+          "bottom": 839,
+          "left": 376
+        },
+        "selected": "true",
+        "focused": false,
+        "style": {
+          "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+          "padding": "4px 12px 10px",
+          "color": "lab(95.36 0 0)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      },
+      {
+        "name": "Open",
+        "rect": {
+          "x": 421.109375,
+          "y": 795,
+          "width": 59.09375,
+          "height": 44,
+          "top": 795,
+          "right": 480.203125,
+          "bottom": 839,
+          "left": 421.109375
+        },
+        "selected": "false",
+        "focused": false,
+        "style": {
+          "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+          "padding": "4px 12px 10px",
+          "color": "lab(55.92 -0.0000298023 0)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      },
+      {
+        "name": "Closed",
+        "rect": {
+          "x": 484.203125,
+          "y": 795,
+          "width": 69.59375,
+          "height": 44,
+          "top": 795,
+          "right": 553.796875,
+          "bottom": 839,
+          "left": 484.203125
+        },
+        "selected": "false",
+        "focused": false,
+        "style": {
+          "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+          "padding": "4px 12px 10px",
+          "color": "lab(55.92 -0.0000298023 0)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      }
+    ],
+    "indicator": {
+      "x": 376,
+      "y": 838,
+      "width": 41.109375,
+      "height": 1,
+      "top": 838,
+      "right": 417.109375,
+      "bottom": 839,
+      "left": 376
+    },
+    "indicatorColor": "rgb(2, 133, 247)"
+  },
+  "states": [
+    {
+      "name": "default",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": null,
+      "active": {
+        "tag": "BODY",
+        "text": "{\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"@id\":\"https://beui.dev/#webs"
+      },
+      "list": {
+        "x": 376,
+        "y": 795,
+        "width": 177.796875,
+        "height": 44,
+        "top": 795,
+        "right": 553.796875,
+        "bottom": 839,
+        "left": 376
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 376,
+            "y": 795,
+            "width": 41.109375,
+            "height": 44,
+            "top": 795,
+            "right": 417.109375,
+            "bottom": 839,
+            "left": 376
+          },
+          "selected": "true",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(95.36 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 421.109375,
+            "y": 795,
+            "width": 59.09375,
+            "height": 44,
+            "top": 795,
+            "right": 480.203125,
+            "bottom": 839,
+            "left": 421.109375
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 484.203125,
+            "y": 795,
+            "width": 69.59375,
+            "height": 44,
+            "top": 795,
+            "right": 553.796875,
+            "bottom": 839,
+            "left": 484.203125
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        }
+      ],
+      "indicator": {
+        "x": 376,
+        "y": 838,
+        "width": 41.109375,
+        "height": 1,
+        "top": 838,
+        "right": 417.109375,
+        "bottom": 839,
+        "left": 376
+      },
+      "indicatorColor": "rgb(2, 133, 247)"
+    },
+    {
+      "name": "hover",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": null,
+      "active": {
+        "tag": "BODY",
+        "text": "{\"@context\":\"https://schema.org\",\"@type\":\"WebSite\",\"@id\":\"https://beui.dev/#webs"
+      },
+      "list": {
+        "x": 376,
+        "y": 795,
+        "width": 177.796875,
+        "height": 44,
+        "top": 795,
+        "right": 553.796875,
+        "bottom": 839,
+        "left": 376
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 376,
+            "y": 795,
+            "width": 41.109375,
+            "height": 44,
+            "top": 795,
+            "right": 417.109375,
+            "bottom": 839,
+            "left": 376
+          },
+          "selected": "true",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(95.36 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 421.109375,
+            "y": 795,
+            "width": 59.09375,
+            "height": 44,
+            "top": 795,
+            "right": 480.203125,
+            "bottom": 839,
+            "left": 421.109375
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(95.36 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 484.203125,
+            "y": 795,
+            "width": 69.59375,
+            "height": 44,
+            "top": 795,
+            "right": 553.796875,
+            "bottom": 839,
+            "left": 484.203125
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        }
+      ],
+      "indicator": {
+        "x": 376,
+        "y": 838,
+        "width": 41.109375,
+        "height": 1,
+        "top": 838,
+        "right": 417.109375,
+        "bottom": 839,
+        "left": 376
+      },
+      "indicatorColor": "rgb(2, 133, 247)"
+    },
+    {
+      "name": "down",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": null,
+      "active": {
+        "tag": "BUTTON",
+        "text": "Open"
+      },
+      "list": {
+        "x": 376,
+        "y": 795,
+        "width": 177.796875,
+        "height": 44,
+        "top": 795,
+        "right": 553.796875,
+        "bottom": 839,
+        "left": 376
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 376,
+            "y": 795,
+            "width": 41.109375,
+            "height": 44,
+            "top": 795,
+            "right": 417.109375,
+            "bottom": 839,
+            "left": 376
+          },
+          "selected": "true",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(95.36 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 421.109375,
+            "y": 795,
+            "width": 59.09375,
+            "height": 44,
+            "top": 795,
+            "right": 480.203125,
+            "bottom": 839,
+            "left": 421.109375
+          },
+          "selected": "false",
+          "focused": true,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(95.36 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 484.203125,
+            "y": 795,
+            "width": 69.59375,
+            "height": 44,
+            "top": 795,
+            "right": 553.796875,
+            "bottom": 839,
+            "left": 484.203125
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        }
+      ],
+      "indicator": {
+        "x": 376,
+        "y": 838,
+        "width": 41.109375,
+        "height": 1,
+        "top": 838,
+        "right": 417.109375,
+        "bottom": 839,
+        "left": 376
+      },
+      "indicatorColor": "rgb(2, 133, 247)"
+    },
+    {
+      "name": "selected",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": null,
+      "active": {
+        "tag": "BUTTON",
+        "text": "Open"
+      },
+      "list": {
+        "x": 376,
+        "y": 795,
+        "width": 177.796875,
+        "height": 44,
+        "top": 795,
+        "right": 553.796875,
+        "bottom": 839,
+        "left": 376
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 376,
+            "y": 795,
+            "width": 41.109375,
+            "height": 44,
+            "top": 795,
+            "right": 417.109375,
+            "bottom": 839,
+            "left": 376
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 421.109375,
+            "y": 795,
+            "width": 59.09375,
+            "height": 44,
+            "top": 795,
+            "right": 480.203125,
+            "bottom": 839,
+            "left": 421.109375
+          },
+          "selected": "true",
+          "focused": true,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(95.36 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 484.203125,
+            "y": 795,
+            "width": 69.59375,
+            "height": 44,
+            "top": 795,
+            "right": 553.796875,
+            "bottom": 839,
+            "left": 484.203125
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        }
+      ],
+      "indicator": {
+        "x": 420.9880065917969,
+        "y": 838,
+        "width": 59.045379638671875,
+        "height": 1,
+        "top": 838,
+        "right": 480.03338623046875,
+        "bottom": 839,
+        "left": 420.9880065917969
+      },
+      "indicatorColor": "rgb(2, 133, 247)"
+    },
+    {
+      "name": "pointer-end",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": null,
+      "active": {
+        "tag": "BUTTON",
+        "text": "Closed"
+      },
+      "list": {
+        "x": 376,
+        "y": 795,
+        "width": 177.796875,
+        "height": 44,
+        "top": 795,
+        "right": 553.796875,
+        "bottom": 839,
+        "left": 376
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 376,
+            "y": 795,
+            "width": 41.109375,
+            "height": 44,
+            "top": 795,
+            "right": 417.109375,
+            "bottom": 839,
+            "left": 376
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 421.109375,
+            "y": 795,
+            "width": 59.09375,
+            "height": 44,
+            "top": 795,
+            "right": 480.203125,
+            "bottom": 839,
+            "left": 421.109375
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 484.203125,
+            "y": 795,
+            "width": 69.59375,
+            "height": 44,
+            "top": 795,
+            "right": 553.796875,
+            "bottom": 839,
+            "left": 484.203125
+          },
+          "selected": "true",
+          "focused": true,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(95.36 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        }
+      ],
+      "indicator": {
+        "x": 484.0451965332031,
+        "y": 838,
+        "width": 69.56741333007812,
+        "height": 1,
+        "top": 838,
+        "right": 553.6126098632812,
+        "bottom": 839,
+        "left": 484.0451965332031
+      },
+      "indicatorColor": "rgb(2, 133, 247)"
+    },
+    {
+      "name": "pointer-left",
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "dpr": 1,
+      "probe": null,
+      "active": {
+        "tag": "BUTTON",
+        "text": "Open"
+      },
+      "list": {
+        "x": 376,
+        "y": 795,
+        "width": 177.796875,
+        "height": 44,
+        "top": 795,
+        "right": 553.796875,
+        "bottom": 839,
+        "left": 376
+      },
+      "buttons": [
+        {
+          "name": "All",
+          "rect": {
+            "x": 376,
+            "y": 795,
+            "width": 41.109375,
+            "height": 44,
+            "top": 795,
+            "right": 417.109375,
+            "bottom": 839,
+            "left": 376
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Open",
+          "rect": {
+            "x": 421.109375,
+            "y": 795,
+            "width": 59.09375,
+            "height": 44,
+            "top": 795,
+            "right": 480.203125,
+            "bottom": 839,
+            "left": 421.109375
+          },
+          "selected": "true",
+          "focused": true,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(95.36 0 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "name": "Closed",
+          "rect": {
+            "x": 484.203125,
+            "y": 795,
+            "width": 69.59375,
+            "height": 44,
+            "top": 795,
+            "right": 553.796875,
+            "bottom": 839,
+            "left": 484.203125
+          },
+          "selected": "false",
+          "focused": false,
+          "style": {
+            "font": "500 14px / 20px Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+            "padding": "4px 12px 10px",
+            "color": "lab(55.92 -0.0000298023 0)",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        }
+      ],
+      "indicator": {
+        "x": 421.2589416503906,
+        "y": 838,
+        "width": 59.118621826171875,
+        "height": 1,
+        "top": 838,
+        "right": 480.3775634765625,
+        "bottom": 839,
+        "left": 421.2589416503906
+      },
+      "indicatorColor": "rgb(2, 133, 247)"
+    }
+  ],
+  "observerSetup": "Theme tab clicked."
+}
