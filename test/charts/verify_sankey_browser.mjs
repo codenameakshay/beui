@@ -38,6 +38,9 @@ for(const reducedMotion of ['no-preference','reduce']) for(const source of [true
   await page.mouse.move(260,380);state=await remember('mouse-after-touch');
   await page.mouse.move(50,50);await page.waitForTimeout(300);
   await page.mouse.click(280,232);state=await remember('q2');assert.match(state.text,/\$62M/);
+  await node('Subscriptions').click();state=await remember('q2-click');assert.match(state.focused.text,/^Subscriptions\./);
+  await page.keyboard.press('ArrowRight');state=await remember('q2-arrow');assert.match(state.focused.text,/^Revenue\./);assert.equal(state.nodeTabStops.length,1);
+  await page.keyboard.press('Escape');await remember('q2-escape');
   await page.setViewportSize({width:390,height:800});state=await remember('narrow');
   const beforeX=(await node('Gross profit').boundingBox()).x;
   const cdp=await page.context().newCDPSession(page);
@@ -65,4 +68,5 @@ for(const source of [true,false]){
   }
   await page.close();
 }
+await writeFile(`${output}/result.json`,JSON.stringify({passed:true,states:states.length},null,2));
 }finally{await writeFile(`${output}/states.json`,JSON.stringify(states,null,2));await browser.close();}

@@ -1,13 +1,13 @@
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-const [sourcePath,candidatePath,output]=process.argv.slice(2);
+const [sourcePath,candidatePath,output,candidateBase='fixture-proof']=process.argv.slice(2);
 await mkdir(output);
 const revision=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const sha=async p=>createHash('sha256').update(await readFile(p)).digest('hex');
 for(const source of [true,false])for(const reduce of [false,true])for(const entrance of [false,true]){
   const theme=reduce?'light':'dark', reducedMotion=reduce?'reduce':'no-preference';
-  const base=source?'source-v6':'fixture-proof';
+  const base=source?'source-v6':candidateBase;
   const url=`http://127.0.0.1:18119/${base}/?theme=${theme}`;
   const javascript=source?'source.js':'main.dart.js';
   const config={url,viewport:{width:1280,height:800},theme,reducedMotion,reference:false,requireFlutterProbe:!source,backend:'screenshots',loadWaitMs:3000,

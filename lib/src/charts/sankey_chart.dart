@@ -775,7 +775,11 @@ class _NodeTargetState extends State<_NodeTarget> {
           label: label,
           excludeSemantics: true,
           onTap: widget.enabled
-              ? () => s.select(n.id, open: true, keyboard: true)
+              ? () {
+                  s.pointerFocus = s.pointer != null;
+                  focus.requestFocus();
+                  s.select(n.id, open: true, keyboard: s.pointer == null);
+                }
               : null,
           child: DecoratedBox(
             decoration: BoxDecoration(

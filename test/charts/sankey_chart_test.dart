@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui' show SemanticsRole;
+import 'dart:ui' show SemanticsRole, SemanticsAction, SemanticsActionEvent;
 import 'package:beui/beui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:beui/src/motion/_engine.dart';
 import 'package:beui/src/charts/_shared.dart';
+// The gallery demo is the source dataset under comparison, not a dependency.
+// ignore: avoid_relative_lib_imports
+import '../../example/lib/demos/sankey_chart_demo.dart';
 
 const nodes = [
   BeuiSankeyNode(id: 'ads', label: 'Ads'),
@@ -54,6 +57,52 @@ dynamic flowPainter(WidgetTester t, String id) => t
     .cast<dynamic>()
     .firstWhere((p) => p.link.id == id);
 void main() {
+  test('actual demo cubic centerlines match source SVG interior samples', () {
+    final reference = jsonDecode(
+      File(
+        'docs/proof/v3-parity/charts/sankey/source/curves.json',
+      ).readAsStringSync(),
+    );
+    for (final f in reference['fixtures'] as List) {
+      final layout = beuiLayoutSankey(
+        beuiCleanSankey(sankeyDemoNodes, sankeyDemoLinks(f['quarter'])),
+        size: const Size(768, 320),
+      );
+      expect(layout.links.length, 9);
+      for (var i = 0; i < layout.links.length; i++) {
+        final metric = layout.links[i].path.computeMetrics().single,
+            expected = f['paths'][i];
+        final link = layout.links[i];
+        final controls = (expected['d'] as String)
+            .split(RegExp(r'[ MC,]+'))
+            .where((s) => s.isNotEmpty)
+            .map(double.parse)
+            .toList();
+        final actual = [
+          link.start.dx,
+          link.start.dy,
+          (link.start.dx + link.end.dx) / 2,
+          link.start.dy,
+          (link.start.dx + link.end.dx) / 2,
+          link.end.dy,
+          link.end.dx,
+          link.end.dy,
+        ];
+        for (var c = 0; c < actual.length; c++) {
+          expect(actual[c], closeTo(controls[c], 1e-9));
+        }
+        expect(metric.length, closeTo(expected['length'], .1));
+        for (final sample in expected['samples']) {
+          final point = metric
+              .getTangentForOffset(metric.length * (sample['fraction'] as num))!
+              .position;
+          // Blink and Skia approximate arc-length inversion differently.
+          expect(point.dx, closeTo(sample['x'], .5));
+          expect(point.dy, closeTo(sample['y'], .5));
+        }
+      }
+    }
+  });
   test(
     'source-derived geometry at three sizes matches every node and cubic end',
     () {
@@ -288,6 +337,53 @@ void main() {
     },
   );
   testWidgets(
+    'native semantic activation focuses a non-current node after external focus',
+    (t) async {
+      final handle = t.ensureSemantics();
+      final external = FocusNode();
+      await t.pumpWidget(
+        wrap(
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton(
+                focusNode: external,
+                onPressed: () {},
+                child: const Text('Quarter'),
+              ),
+              const BeuiSankeyChart(nodes: nodes, links: links),
+            ],
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+      focus(t, 'signup').requestFocus();
+      await t.pumpAndSettle();
+      external.requestFocus();
+      await t.pumpAndSettle();
+      final semantic = t.getSemantics(
+        find
+            .descendant(of: target('ads'), matching: find.byType(Semantics))
+            .first,
+      );
+      t.binding.performSemanticsAction(
+        SemanticsActionEvent(
+          type: SemanticsAction.tap,
+          viewId: t.view.viewId,
+          nodeId: semantic.id,
+        ),
+      );
+      await t.pumpAndSettle();
+      expect(focus(t, 'ads').hasPrimaryFocus, true);
+      await t.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await t.pumpAndSettle();
+      expect(focus(t, 'signup').hasPrimaryFocus, true);
+      await t.pumpWidget(const SizedBox.shrink());
+      handle.dispose();
+      external.dispose();
+    },
+  );
+  testWidgets(
     'controlled null requests selection without rendering it; custom content and stale removal',
     (t) async {
       final changes = <String?>[];
@@ -398,8 +494,8 @@ void main() {
       await t.pumpWidget(
         wrap(
           BeuiSankeyChart(
-              nodes: [
-                const BeuiSankeyNode(
+            nodes: [
+              const BeuiSankeyNode(
                 id: 'hub',
                 label: 'Hub',
                 description: 'All channels',
