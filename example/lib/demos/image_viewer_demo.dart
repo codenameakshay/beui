@@ -53,83 +53,87 @@ class _ImageViewerDemo extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) => ConstrainedBox(
-    constraints: const BoxConstraints(maxWidth: 576),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'COLLECTED MOMENTS',
-                    style: TextStyle(
-                      fontSize: 10,
-                      height: 1.5,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 1.8,
-                      color: BeuiColors.resolve(context).mutedForeground,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Look a little closer.',
-                    style: TextStyle(
-                      fontSize: 18,
-                      height: 28 / 18,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: -0.45,
-                      color: BeuiColors.resolve(context).foreground,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Text(
-              '3 photographs',
-              style: TextStyle(
-                fontSize: 12,
-                height: 16 / 12,
-                color: BeuiColors.resolve(context).mutedForeground,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        BeuiImageViewer(
-          images: _photos,
-          label: 'Collected photographs',
-          children: const Column(
-            mainAxisSize: MainAxisSize.min,
+  Widget build(BuildContext context) => Align(
+    alignment: Alignment.topCenter,
+    heightFactor: 1,
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 576),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              BeuiImageViewerGallery(
-                columns: 3,
-                children: [
-                  BeuiImageViewerThumbnail(imageId: 'architecture'),
-                  BeuiImageViewerThumbnail(imageId: 'landscape'),
-                  BeuiImageViewerThumbnail(imageId: 'workspace'),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'COLLECTED MOMENTS',
+                      style: TextStyle(
+                        fontSize: 10,
+                        height: 1.5,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1.8,
+                        color: BeuiColors.resolve(context).mutedForeground,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Look a little closer.',
+                      style: TextStyle(
+                        fontSize: 18,
+                        height: 28 / 18,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: -0.45,
+                        color: BeuiColors.resolve(context).foreground,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              BeuiImageViewerContent(),
+              Text(
+                '3 photographs',
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 16 / 12,
+                  color: BeuiColors.resolve(context).mutedForeground,
+                ),
+              ),
             ],
           ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Open a photograph. Swipe or use the arrows to explore.',
-          style: TextStyle(
-            fontSize: 12,
-            height: 16 / 12,
-            color: BeuiColors.resolve(context).mutedForeground,
+          const SizedBox(height: 20),
+          BeuiImageViewer(
+            images: _photos,
+            label: 'Collected photographs',
+            children: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BeuiImageViewerGallery(
+                  columns: 3,
+                  children: [
+                    BeuiImageViewerThumbnail(imageId: 'architecture'),
+                    BeuiImageViewerThumbnail(imageId: 'landscape'),
+                    BeuiImageViewerThumbnail(imageId: 'workspace'),
+                  ],
+                ),
+                BeuiImageViewerContent(),
+              ],
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          Text(
+            'Open a photograph. Swipe or use the arrows to explore.',
+            style: TextStyle(
+              fontSize: 12,
+              height: 16 / 12,
+              color: BeuiColors.resolve(context).mutedForeground,
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
