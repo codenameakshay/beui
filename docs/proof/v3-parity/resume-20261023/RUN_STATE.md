@@ -2,6 +2,13 @@
 
 Done means the scoped source behaviors, appearance and motion are implemented and verified with preserved source/candidate evidence, integrated gates, and pushed PR26 updates. No merge is authorized. Exact parity remains incomplete.
 
+## Current delivery and next diagnosis
+
+- Pushed Order Book evidence `41a4f7bb0` and SDK/raster evidence with effective minimum correction `7a17c6621` to PR26. No merge.
+- Parent clean regular-file export verified all 880 SDK hashes and 256 raster diagnosis hashes, then independently checked all 14 SDK sessions / 294 native states. Actual ancestor reorders remain zero in this SDK run.
+- Active child `v3-chart-mono-runtime-diagnosis-20261023-r1` measures actual candle/volume monospace paragraph advances and loaded-font selection. Owns only new /tmp artifacts and port18148; no production edits, broad suites, or original evidence changes. Task ID suffix matches that client request under the current T3 parent.
+- Earlier SDK, Order Book and badge raster tasks are completed and integrated. Their historical active entries below are superseded. Remaining acceptance still includes nonzero pixels, 56 preserved root golden failures, native60, screen-reader coverage, full-demo timer correspondence and later route-state obligations. No parity gate is waived.
+
 ## Latest continuation: deterministic Order Book
 
 - Parent independently exported the staged Git tree to regular files and ran the exported verifier. All 6,285 checks passed with no failures. Four final sessions retain 136 observations and 1,576 original frames, with source/candidate build identities and trusted events.
