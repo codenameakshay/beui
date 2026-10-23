@@ -36,6 +36,27 @@ Widget _alert({
 );
 
 void main() {
+  testWidgets(
+    'close uses the source neutral tone and negative margin position',
+    (tester) async {
+      await tester.pumpWidget(_alert(open: true, reduce: true));
+      final close = find.descendant(
+        of: find.byType(BeuiAlertClose),
+        matching: find.byType(IconButton),
+      );
+      final button = tester.widget<IconButton>(close);
+      final colors = BeuiColors.resolve(tester.element(close));
+      expect(
+        button.style!.foregroundColor!.resolve({}),
+        colors.mutedForeground,
+      );
+      final alertRect = tester.getRect(find.byType(BeuiAlert));
+      final closeRect = tester.getRect(close);
+      expect(closeRect.size, const Size(32, 32));
+      expect(closeRect.top - alertRect.top, 10);
+      expect(alertRect.right - closeRect.right, 10);
+    },
+  );
   testWidgets('variant replacement retains the outgoing icon for its exit', (
     tester,
   ) async {

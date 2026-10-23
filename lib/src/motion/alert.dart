@@ -479,22 +479,32 @@ class _BeuiAlertCloseState extends State<BeuiAlertClose> {
   @override
   Widget build(BuildContext context) {
     final state = _AlertScope.of(context, 'BeuiAlertClose');
-    final foreground = BeuiColors.resolve(context).foreground;
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: _hovered
-              ? foreground.withValues(alpha: 0.05)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: IconButton(
-          tooltip: 'Dismiss alert',
-          visualDensity: VisualDensity.compact,
-          onPressed: state.dismiss,
-          icon: widget.child ?? const Icon(LucideIcons.x, size: 16),
+    final colors = BeuiColors.resolve(context);
+    final foreground = colors.foreground;
+    return Transform.translate(
+      offset: const Offset(6, -6),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: _hovered
+                ? foreground.withValues(alpha: 0.05)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: IconButton(
+            tooltip: 'Dismiss alert',
+            visualDensity: VisualDensity.standard,
+            constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+            padding: EdgeInsets.zero,
+            style: IconButton.styleFrom(
+              foregroundColor: _hovered ? foreground : colors.mutedForeground,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            onPressed: state.dismiss,
+            icon: widget.child ?? const Icon(LucideIcons.x, size: 16),
+          ),
         ),
       ),
     );
