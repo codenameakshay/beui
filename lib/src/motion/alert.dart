@@ -82,28 +82,32 @@ class _BeuiAlertState extends State<BeuiAlert> {
 
   void _setOpen(bool value) {
     if (value == _open) return;
-    if (widget.open == null) setState(() => _internalOpen = value);
+    if (widget.open == null) {
+      if (!value) _restoreFocusIfInside();
+      setState(() => _internalOpen = value);
+    }
     widget.onOpenChange?.call(value);
   }
 
-  void _dismiss() {
+  void _restoreFocusIfInside() {
     var focusedInside = false;
     FocusManager.instance.primaryFocus?.context?.visitAncestorElements((
       element,
     ) {
-      if (element.widget == widget) {
+      if (element == context) {
         focusedInside = true;
         return false;
       }
       return true;
     });
-    _setOpen(false);
     if (focusedInside) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        widget.returnFocus?.requestFocus();
+        if (mounted && !_open) widget.returnFocus?.requestFocus();
       });
     }
   }
+
+  void _dismiss() => _setOpen(false);
 
   @override
   void didUpdateWidget(BeuiAlert oldWidget) {
@@ -111,6 +115,7 @@ class _BeuiAlertState extends State<BeuiAlert> {
     if (oldWidget.open != null && widget.open == null) {
       _internalOpen = oldWidget.open!;
     }
+    if ((oldWidget.open ?? _internalOpen) && !_open) _restoreFocusIfInside();
   }
 
   @override
@@ -118,13 +123,22 @@ class _BeuiAlertState extends State<BeuiAlert> {
     final movement = motionFor(context, beuiSpringLayout, isMovement: true);
     final colors = BeuiColors.resolve(context);
     final dark = Theme.of(context).brightness == Brightness.dark;
+    final defaults = BeuiColors.of(colors.colorTheme, colors.brightness);
     final color = switch (widget.variant) {
       BeuiAlertVariant.default_ => colors.foreground,
       BeuiAlertVariant.info => colors.primary,
       BeuiAlertVariant.success =>
-        dark ? const Color(0xff00d492) : const Color(0xff007a55),
+        colors.success != defaults.success
+            ? colors.success
+            : dark
+            ? const Color(0xff00d492)
+            : const Color(0xff007a55),
       BeuiAlertVariant.warning =>
-        dark ? const Color(0xffffd230) : const Color(0xff973c00),
+        colors.warning != defaults.warning
+            ? colors.warning
+            : dark
+            ? const Color(0xffffd230)
+            : const Color(0xff973c00),
       BeuiAlertVariant.destructive => colors.destructive,
     };
     final role =
@@ -148,9 +162,12 @@ class _BeuiAlertState extends State<BeuiAlert> {
         state: state,
         child: IgnorePointer(
           ignoring: !_open,
-          child: ExcludeSemantics(
+          child: ExcludeFocus(
             excluding: !_open,
-            child: _buildAlertSurface(color, movement),
+            child: ExcludeSemantics(
+              excluding: !_open,
+              child: _buildAlertSurface(color, movement),
+            ),
           ),
         ),
       ),
@@ -160,9 +177,17 @@ class _BeuiAlertState extends State<BeuiAlert> {
   }
 
   Widget _buildAlertSurface(Color color, Motion movement) {
+    final colors = BeuiColors.resolve(context);
+    final defaults = BeuiColors.of(colors.colorTheme, colors.brightness);
     final background = switch (widget.variant) {
-      BeuiAlertVariant.success => const Color(0xff00bc7d),
-      BeuiAlertVariant.warning => const Color(0xfffe9a00),
+      BeuiAlertVariant.success =>
+        colors.success == defaults.success
+            ? const Color(0xff00bc7d)
+            : colors.success,
+      BeuiAlertVariant.warning =>
+        colors.warning == defaults.warning
+            ? const Color(0xfffe9a00)
+            : colors.warning,
       _ => color,
     };
     final fade = SingleMotionBuilder(
