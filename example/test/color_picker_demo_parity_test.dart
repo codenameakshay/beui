@@ -50,7 +50,7 @@ void main() {
       expect(find.byType(BeuiColorPickerHex), findsOneWidget);
       await tester.tap(find.bySemanticsLabel('Red'));
       await tester.pumpAndSettle();
-      expect(find.text('#E55656'), findsOneWidget);
+      expect(find.text('#e55656'), findsOneWidget);
     },
   );
 }
