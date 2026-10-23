@@ -279,25 +279,27 @@ class _SankeyState extends State<BeuiSankeyChart> {
   @override
   Widget build(BuildContext context) => _SankeyScope(
     state: this,
-    child: BeuiChartFrame(
-      label: widget.label,
-      child: Stack(
-        fit: StackFit.passthrough,
-        children: [
-          widget.child ??
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [BeuiSankeyChartPlot(), BeuiSankeyChartTooltip()],
-              ),
-          Positioned(
-            left: 0,
-            top: 0,
-            width: 1,
-            height: 1,
-            child: _SankeyDataTable(state: this),
-          ),
-        ],
+    child: FocusTraversalGroup(
+      child: BeuiChartFrame(
+        label: widget.label,
+        child: Stack(
+          fit: StackFit.passthrough,
+          children: [
+            widget.child ??
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [BeuiSankeyChartPlot(), BeuiSankeyChartTooltip()],
+                ),
+            Positioned(
+              left: 0,
+              top: 0,
+              width: 1,
+              height: 1,
+              child: _SankeyDataTable(state: this),
+            ),
+          ],
+        ),
       ),
     ),
   );
