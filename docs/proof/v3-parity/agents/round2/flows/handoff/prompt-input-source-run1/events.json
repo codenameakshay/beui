@@ -1,0 +1,38 @@
+[
+  {
+    "name": "idle",
+    "atMs": 1636.0735409999998,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt\":\n    - /placeholder: Ask the agent to do something…\n    - text: Review the current implementation and suggest the next improvement.\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\":\n    - button"
+  },
+  {
+    "action": "submit source prompt through composer",
+    "beforeMs": 1637.198625,
+    "afterMs": 1652.4223749999996
+  },
+  {
+    "name": "loading send becomes stop",
+    "atMs": 1667.555375,
+    "expected": "Stop generating",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Stop generating\":\n    - button"
+  },
+  {
+    "name": "900ms notice rather than transcript",
+    "atMs": 2823.024583,
+    "expected": "Prompt sent to the selected model.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt Ask the agent to do something…\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\" [disabled]:\n    - button [disabled]\n  - text: Prompt sent to the selected model."
+  },
+  {
+    "action": "open actions",
+    "beforeMs": 2823.0370829999997,
+    "afterMs": 2853.833916
+  },
+  {
+    "action": "choose attach image",
+    "beforeMs": 2853.838541
+  },
+  {
+    "failure": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('menuitem', { name: /Attach image/ })\u001b[22m\n",
+    "atMs": 32856.183375,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt Ask the agent to do something…\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\" [expanded]:\n    - button\n    - group \"Prompt actions\":\n      - button \"Attach image\":\n        - button \"Attach image Add a screenshot or visual reference.\"\n      - button \"Use a skill\":\n        - button \"Use a skill Give the agent a specialized workflow.\"\n      - button \"Add context\":\n        - button \"Add context Include a file with supporting details.\"\n  - button \"GPT-5.2\"\n  - button \"Send prompt\" [disabled]:\n    - button [disabled]\n  - text: Prompt sent to the selected model."
+  }
+]

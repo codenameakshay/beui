@@ -1,0 +1,66 @@
+[
+  {
+    "name": "idle",
+    "atMs": 1709.1351249999998,
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt\":\n    - /placeholder: Ask the agent to do something…\n    - text: Review the current implementation and suggest the next improvement.\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\":\n    - button"
+  },
+  {
+    "action": "submit source prompt through composer",
+    "beforeMs": 1711.7680839999998,
+    "afterMs": 5770.071625
+  },
+  {
+    "composerBeforeSubmit": {
+      "tag": "TEXTAREA",
+      "value": "Review the current implementation and suggest the next improvement."
+    },
+    "editors": [
+      {
+        "tag": "TEXTAREA",
+        "parent": "FLT-SEMANTICS",
+        "value": "Review the current implementation and suggest the next improvement.",
+        "active": true,
+        "rect": {
+          "x": 441,
+          "y": 442,
+          "width": 564,
+          "height": 54,
+          "top": 442,
+          "right": 1005,
+          "bottom": 496,
+          "left": 441
+        }
+      }
+    ],
+    "atMs": 5745.3256249999995
+  },
+  {
+    "name": "loading send becomes stop",
+    "atMs": 5910.583292,
+    "expected": "Stop generating",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt Ask the agent to do something…\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Stop generating\":\n    - button"
+  },
+  {
+    "name": "900ms notice rather than transcript",
+    "atMs": 7080.372834,
+    "expected": "Prompt sent to the selected model.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt Ask the agent to do something…\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\" [disabled]:\n    - button [disabled]\n  - text: Prompt sent to the selected model."
+  },
+  {
+    "action": "open actions",
+    "beforeMs": 7080.385042,
+    "afterMs": 7359.840709
+  },
+  {
+    "action": "choose attach image",
+    "beforeMs": 7359.852124999999,
+    "afterMs": 7533.221750000001
+  },
+  {
+    "name": "sent notice priority survives action",
+    "atMs": 7854.900541999999,
+    "expected": "Prompt sent to the selected model.",
+    "absent": "Attach image selected.",
+    "aria": "- group \"Capture stage width 752 height 1000 reduced false\":\n  - textbox \"Prompt Ask the agent to do something…\":\n    - /placeholder: Ask the agent to do something…\n  - button \"Add to prompt\":\n    - button\n  - button \"GPT-5.2\"\n  - button \"Send prompt\" [disabled]:\n    - button [disabled]\n  - text: Prompt sent to the selected model."
+  }
+]

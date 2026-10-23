@@ -1,0 +1,35 @@
+- group "Capture stage width 752 height 1000 reduced false":
+  - group:
+    - text: PERMISSION CARD
+    - group "terminal.run Allow this tool to run? The agent wants to run the project test suite in the current workspace.":
+      - text: Approval required
+      - button "View details" [expanded]
+      - group: Command bun test tests/a11y.test.tsx Directory ui-components
+      - button "Allow once"
+      - button "Always allow"
+      - button "Deny"
+    - button "Replay"
+    - text: SEVERITY TIERS
+    - group "fs.readFile Read a project file? Reversible, scoped to the workspace.":
+      - text: Approval required
+      - button "View details" [expanded]
+      - group: Path src/components/button.tsx
+      - button "Allow once"
+      - button "Always allow"
+      - button "Deny"
+    - group "git.push Push to the shared branch? Affects other people, but can be reverted.":
+      - text: Approval required
+      - button "View details" [expanded]
+      - group: Remote origin main
+      - button "Allow once"
+      - button "Always allow"
+      - button "Deny"
+    - group "fs.remove Delete the project directory? This cannot be undone.":
+      - text: Approval required
+      - button "View details" [expanded]
+      - group: Command rm -rf ~/project
+      - button "Deny"
+      - button "Allow once"
+    - text: LAPSED END-STATES
+    - group "terminal.run Terminal access The request lapsed before anyone answered it.": Expired
+    - group "http.request Fetch project activity Approved, then cut off at the execution budget.": Timed out

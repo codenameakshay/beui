@@ -1,0 +1,22 @@
+- text: Working through it…
+- group "Capture stage width 752 height 1000 reduced false":
+  - group:
+    - text: MIXED STREAM
+    - group "Working through it…": Reading the launch brief independent coffee roasters in Portland
+    - button "Replay"
+    - text: COMPLETED · STEP SUMMARY
+    - group "Completed":
+      - button "Thought for 5s" [expanded]
+      - text: Parse the request Draft the outline 1.2s Polish the answer
+    - text: TRACE ROWS
+    - group "Completed":
+      - button "1 tool call, 2 messages" [expanded]
+      - text: Plan outline response structure Shell rg "agent-activity" lib/ Reply
+    - text: FAILED · THE RUN CRASHED
+    - group "Failed":
+      - button "Failed · bun test exited 1 after 2 tools" [expanded]
+      - text: Read campaign-notes.md Run bun test launch
+    - text: CANCELLED · STOPPED PART-WAY
+    - group "Cancelled":
+      - button "Cancelled · Thought for 12s" [expanded]
+      - text: Reading the launch brief Drafting the campaign plan

@@ -1,0 +1,35 @@
+- group "Capture stage width 752 height 1000 reduced false":
+  - group:
+    - group "Conversation":
+      - text: Start with the smallest workflow that still feels complete.
+      - group "Conversation":
+        - group:
+          - group "user message": What should we include in the first release?
+          - group "assistant message":
+            - group "Response Start with the smallest workflow that still feels complete.":
+              - button "Copy response"
+              - button "Retry"
+              - switch "Helpful"
+              - switch "Not helpful"
+    - textbox "Prompt Send a bubble…"
+    - button "Send prompt" [disabled]:
+      - button [disabled]
+    - text: "TONES Six variants. `danger` carries a leading alert glyph as well as its tint, so the state survives a colourblind reader; `outline` has a card fill so its hairline is not the only thing holding the shape."
+    - group "user message": solid — the usual user turn
+    - group "assistant message": soft — the usual assistant turn
+    - group "assistant message": tint — primary wash, for emphasis
+    - group "assistant message": outline — bordered card surface
+    - group "assistant message": ghost — no chrome, full width
+    - group "assistant message": danger — a turn that went wrong
+    - text: GROUP AND MARKER Consecutive turns from one author stack in a group under a single avatar; a marker separates them.
+    - group "assistant message": Assistant 09:41 I found three candidates. Two are in the checkout path. Want me to open the first?
+    - text: New messages
+    - group "user message": Open it. Sent
+    - text: "COLLAPSIBLE Long bodies clamp to `collapsedLines` behind a fade and animate open on the library disclosure curve."
+    - group "assistant message":
+      - button "Show more"
+      - text: "The checkout flow calls the pricing service twice: once to render the summary and again on submit. The second call is what fails under load, because it happens inside the transaction and inherits its timeout. Moving it before the transaction opens fixes the timeout without changing the pricing logic, and it also lets the summary and the submit share one response instead of racing each other. The tradeoff is a slightly staler price if the user waits on the summary screen, which the existing five-second cache already allows for."
+    - text: "INTERACTIVE A bubble with `onTap` is a button: it reports the role, takes Enter and Space, and shows a focus ring painted outside layout so focusing does not reflow the text."
+    - group "assistant message":
+      - button "Open pricing service trace Open pricing service trace"
+    - text: Tab to it, then press Enter or Space.

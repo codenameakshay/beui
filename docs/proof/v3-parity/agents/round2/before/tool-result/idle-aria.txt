@@ -1,0 +1,98 @@
+- button "beUI"
+- button "Components"
+- button "Agents"
+- button "Blocks"
+- button "Charts"
+- button "Guides"
+- button "Search ⌘K"
+- button "Color theme"
+- button "Light mode"
+- button "GitHub"
+- group:
+  - text: INTRO
+  - button "Home"
+  - text: GUIDES
+  - button "Motion Guides"
+  - text: COMPONENTS 54
+  - button "Timeline NEW"
+  - button "Animated Alert NEW"
+  - button "Animated Collapsible NEW"
+  - button "Aspect Ratio NEW"
+  - button "Arc Picker NEW"
+  - button "Sortable List NEW"
+  - button "Image Viewer NEW"
+  - button "Date Range Picker NEW"
+  - button "Card NEW"
+  - button "Color Picker NEW"
+  - button "Animated Color Selector NEW"
+  - button "Animated Breadcrumb NEW"
+  - button "Tilt Card"
+  - button "Button"
+  - button "Animated CTA Buttons"
+  - button "Expandable Control NEW"
+  - button "Adaptive Stepper NEW"
+  - button "Marquee"
+  - button "Tabs"
+  - button "Switch"
+  - button "Input"
+  - button "Select"
+  - button "Combobox NEW"
+  - button "Multi Select NEW"
+  - button "Checkbox"
+  - button "Radio Group"
+  - button "Bottom Sheet"
+  - button "Pull to Refresh"
+  - button "Shared Layout Background"
+  - button "Bounce Sidebar"
+- group:
+  - button "AI Agents"
+  - text: Tool Result ON THIS PAGE Execution disclosure for terminal output that collapses when done. Tool Result NEW
+  - button "Preview"
+  - button "Usage"
+  - button "Code"
+  - button "Preview"
+  - button "Usage"
+  - button "Code"
+  - text: RELATED
+  - button "Prompt Input"
+  - text: TERMINAL OUTPUT
+  - group: $ bun test tests/a11y.test.tsx bun test v1.3.14 ✓ StreamingResponse complete ✓ ToolApproval pending
+  - button "Running accessibility tests terminal.run Running" [expanded]
+  - button "Message"
+  - button "Message Bubble"
+  - button "Message Scroller"
+  - button "Streaming Response"
+  - button "Image Generation"
+  - button "Copy result"
+  - button "Run again"
+  - button "Replay"
+  - text: REQUEST RESULT
+  - button "Fetching project activity GET /v1/activity http.request Running" [expanded]
+  - group: "{ \"error\": \"rate_limit_exceeded\", \"retryAfter\": 30, \"requestId\": \"req_8f21\" }"
+  - button "Copy result"
+  - button "Run again"
+  - button "Replay"
+  - text: "CANCELLED A run the user stopped. Neutral, not an error — the status role is `neutral`, and the actions stay reachable so it can be run again."
+  - button "Migration was cancelled 0.4s terminal.run Cancelled" [expanded]
+  - group: $ bun run db:migrate Applying 004_add_orders… ^C interrupted by user
+  - button "Copy result"
+  - button "Run again"
+  - text: "NARROW HEADER (TWO LINES) Under 400px the seven-element header wraps: title and status lead, metadata and the tool slug drop to a second line."
+  - button "Fetching project activity Completed GET /v1/activity http.request" [expanded]
+  - group: "{ \"status\": 200, \"events\": 12 }"
+  - button "Copy result"
+  - button "Run again"
+  - text: CAPPED OUTPUT A 120px viewport over a 60-line log. The bottom fade and the "+N more" count only appear while content is actually below the fold — scroll to the end and both retire.
+  - button "Building 60 modules 11.2s terminal.run Completed" [expanded]
+  - group: "[01/60] bundled module_0.ts [02/60] bundled module_1.ts [03/60] bundled module_2.ts [04/60] bundled module_3.ts [05/60] bundled module_4.ts [06/60] bundled module_5.ts [07/60] bundled module_6.ts [08/60] bundled module_7.ts [09/60] bundled module_8.ts [10/60] bundled module_9.ts [11/60] bundled module_10.ts [12/60] bundled module_11.ts [13/60] bundled module_12.ts [14/60] bundled module_13.ts [15/60] bundled module_14.ts [16/60] bundled module_15.ts [17/60] bundled module_16.ts [18/60] bundled module_17.ts [19/60] bundled module_18.ts [20/60] bundled module_19.ts [21/60] bundled module_20.ts [22/60] bundled module_21.ts [23/60] bundled module_22.ts [24/60] bundled module_23.ts [25/60] bundled module_24.ts [26/60] bundled module_25.ts [27/60] bundled module_26.ts [28/60] bundled module_27.ts [29/60] bundled module_28.ts [30/60] bundled module_29.ts [31/60] bundled module_30.ts [32/60] bundled module_31.ts [33/60] bundled module_32.ts [34/60] bundled module_33.ts [35/60] bundled module_34.ts [36/60] bundled module_35.ts [37/60] bundled module_36.ts [38/60] bundled module_37.ts [39/60] bundled module_38.ts [40/60] bundled module_39.ts [41/60] bundled module_40.ts [42/60] bundled module_41.ts [43/60] bundled module_42.ts [44/60] bundled module_43.ts [45/60] bundled module_44.ts [46/60] bundled module_45.ts [47/60] bundled module_46.ts [48/60] bundled module_47.ts [49/60] bundled module_48.ts [50/60] bundled module_49.ts [51/60] bundled module_50.ts [52/60] bundled module_51.ts [53/60] bundled module_52.ts [54/60] bundled module_53.ts [55/60] bundled module_54.ts [56/60] bundled module_55.ts [57/60] bundled module_56.ts [58/60] bundled module_57.ts [59/60] bundled module_58.ts [60/60] bundled module_59.ts"
+  - text: 56 more lines
+  - button "Copy result"
+  - text: CONCURRENT TOOL CALLS Two tools running at once is a Column of BeuiToolResults in one message — each with its own status, its own body, and its own collapse. No extra component required.
+  - button "Searching for checkout call sites Found 3 call sites 0.6s search.grep Running Completed" [expanded]
+  - group: src/checkout/submit.ts:14 src/checkout/validate.ts:88 src/checkout/index.ts:3
+  - button "Copy result"
+  - button "Type-checking the workspace terminal.run Running" [expanded]
+  - group: "tsc --noEmit src/checkout/validate.ts(88,7): error TS2345"
+  - button "Copy result"
+  - button "Run again"
+  - button "Replay"

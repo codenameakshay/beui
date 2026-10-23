@@ -1,0 +1,9 @@
+- group "Capture stage width 752 height 1000 reduced false":
+  - group "terminal.run Allow this tool to run? The agent wants to run the project test suite in the current workspace.":
+    - text: Approval required
+    - button "View details" [expanded]
+    - group: Command bun test tests/a11y.test.tsx Directory ui-components
+    - button "Allow once"
+    - button "Always allow"
+    - button "Deny"
+  - button "Replay"
