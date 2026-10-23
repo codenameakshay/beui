@@ -1351,27 +1351,51 @@ class BeuiDateRangePickerTrigger extends StatelessWidget {
       button: true,
       expanded: state.isOpen,
       label: '${state.widget.label}: $summary',
-      child: OutlinedButton.icon(
+      child: OutlinedButton(
         onPressed: state.widget.enabled
             ? () => state.setOpen(!state.isOpen)
             : null,
-        icon: child == null
-            ? Icon(
-                LucideIcons.calendar,
-                size: 16,
-                color: colors.mutedForeground,
-              )
-            : const SizedBox.shrink(),
-        label:
+        style:
+            OutlinedButton.styleFrom(
+              minimumSize: const Size(0, 36),
+              maximumSize: const Size(double.infinity, 36),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              visualDensity: VisualDensity.standard,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              foregroundColor: colors.foreground,
+              backgroundColor: colors.background,
+              side: BorderSide(color: colors.border),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 13,
+                height: 1.5,
+                fontWeight: FontWeight.w500,
+              ),
+            ).copyWith(
+              overlayColor: WidgetStateProperty.resolveWith(
+                (states) => states.contains(WidgetState.hovered)
+                    ? colors.muted.withValues(alpha: .4)
+                    : Colors.transparent,
+              ),
+            ),
+        child:
             child ??
             Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                Icon(
+                  LucideIcons.calendar_days,
+                  size: 15,
+                  color: colors.mutedForeground,
+                ),
+                const SizedBox(width: 8),
                 Text(summary),
                 const SizedBox(width: 8),
                 Icon(
                   LucideIcons.chevron_down,
-                  size: 14,
+                  size: 13,
                   color: colors.mutedForeground,
                 ),
               ],

@@ -23,6 +23,22 @@ Widget _app(Widget child, {bool reduce = false}) => MaterialApp(
 );
 
 void main() {
+  testWidgets('trigger keeps the source 36px height and 13px type', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        const BeuiDateRangePickerDropdown(
+          value: BeuiDateRange(from: '2026-10-17', to: '2026-10-23'),
+        ),
+      ),
+    );
+    final trigger = find.byType(OutlinedButton);
+    expect(tester.getSize(trigger).height, 36);
+    final button = tester.widget<OutlinedButton>(trigger);
+    expect(button.style!.textStyle!.resolve({})!.fontSize, 13);
+    expect(find.text('Oct 17 – Oct 23, 2026'), findsOneWidget);
+  });
   testWidgets(
     'trigger summarizes same-year, cross-year and incomplete ranges',
     (tester) async {
