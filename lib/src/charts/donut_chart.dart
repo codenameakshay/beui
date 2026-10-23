@@ -523,7 +523,10 @@ class BeuiDonutLegend extends StatelessWidget {
                       onFocusChange: (focused) {
                         if (focused) {
                           state.setActiveId(segment.id);
-                        } else if (state.activeId == segment.id) {
+                        } else if (state.activeId == segment.id &&
+                            !state._legendFocus.values.any(
+                              (node) => node.hasFocus,
+                            )) {
                           state.setActiveId(null);
                         }
                       },
