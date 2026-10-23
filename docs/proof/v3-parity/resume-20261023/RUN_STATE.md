@@ -2,6 +2,14 @@
 
 Done means the scoped source behaviors, appearance and motion are implemented and verified with preserved source/candidate evidence, integrated gates, and pushed PR26 updates. No merge is authorized. Exact parity remains incomplete.
 
+## Latest continuation: Returns Calendar defects
+
+- Heat Calendar repair/evidence pushed through aef70e819. Returns Calendar native worker completed and parent is accepting its before-repair archive. Final four sessions retain92 observations and1,373 original frames, with source/input/served hashes and rejected attempts.
+- R020: year replacement retains candidate month element/focus by row position while source disconnects it. Next Tab reaches candidate April instead of source January. Restoring the year also differs. Both motion preferences reproduce this.
+- R021: emptying all years restores candidate focus to a previously visited fixture control; source goes to body. Next Tab reaches replace versus source initial. Native focus history is under investigation.
+- Missing-month truncation/reinsertion readouts and retained focus agree. Preserve these. Source stale Jan readout after restoration is explicitly recorded, not silently normalized into a generic cleanup rule.
+- Active repair `v3-returns-calendar-repair-20261023-r1` owns returns_calendar.dart and a new focused regression file, plus /tmp port18156. Requires failing-first tests and exact-input native validation; no shared Tooltip/overlay changes or old-proof edits. No production fix accepted yet.
+
 ## Latest delivery: Heat Calendar accepted and archived
 
 - Production d74fae552 accepted after independent review and final parent native checks. Archive clean staged regular-file export passes10,972 hashes,22 decoded videos,9,741 recorded frames,8 final default sessions and4 custom sessions. Export /var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/beui-heat-final-export-rztazgt4. No original/golden edits.
