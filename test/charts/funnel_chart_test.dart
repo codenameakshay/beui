@@ -22,7 +22,7 @@ void main() {
     expect(find.text('Visitors'), findsOneWidget);
     expect(find.text('Signed up'), findsOneWidget);
     expect(find.text('Subscribed'), findsOneWidget);
-    expect(find.text('18.0%'), findsOneWidget);
+    expect(find.text('18.0%'), findsNWidgets(2));
   });
 
   testWidgets(
@@ -67,7 +67,11 @@ void main() {
     );
     final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer(location: Offset.zero);
-    await gesture.moveTo(tester.getCenter(find.text('Visitors')));
+    await gesture.moveTo(
+      tester.getCenter(
+        find.byKey(const ValueKey('funnel-stage-visit-semantics')),
+      ),
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
     await tester.pumpAndSettle();
@@ -93,7 +97,7 @@ void main() {
           reduce: true,
         ),
       );
-      expect(find.text('18.0%'), findsOneWidget);
+      expect(find.text('18.0%'), findsNWidgets(2));
       expect(find.byType(CustomPaint), findsWidgets);
     },
   );
