@@ -669,9 +669,10 @@ Widget _compositionTooltipRow(
         ),
       ),
       const SizedBox(width: 8),
-      SizedBox(
-        width: 48,
+      ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 48),
         child: Align(
+          widthFactor: 1,
           alignment: Alignment.centerRight,
           child: BeuiChartTicker(
             value: segment.share,
