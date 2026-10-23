@@ -40,6 +40,11 @@ class _BeuiColorSelectorState extends State<BeuiColorSelector> {
   String? _internal;
   Rect? _target;
   Color? _builtSelectedColor;
+  String? _pressed;
+
+  void _press(String? value) {
+    if (_pressed != value) setState(() => _pressed = value);
+  }
 
   bool get _controlled => widget.value != null;
   String? get _selected => _controlled ? widget.value : _internal;
@@ -184,6 +189,7 @@ class _BeuiColorSelectorState extends State<BeuiColorSelector> {
                   alpha: 0.65,
                 ),
                 reduce: reduce,
+                pressed: _pressed == _selected,
               ),
           ],
         ),
@@ -365,9 +371,18 @@ class _BeuiColorSelectorItemState extends State<BeuiColorSelectorItem> {
                       },
                 onTapDown: unavailable
                     ? null
-                    : (_) => setState(() => _pressed = true),
-                onTapUp: (_) => setState(() => _pressed = false),
-                onTapCancel: () => setState(() => _pressed = false),
+                    : (_) {
+                        setState(() => _pressed = true);
+                        state._press(widget.value);
+                      },
+                onTapUp: (_) {
+                  setState(() => _pressed = false);
+                  state._press(null);
+                },
+                onTapCancel: () {
+                  setState(() => _pressed = false);
+                  state._press(null);
+                },
                 child: SingleMotionBuilder(
                   value: scale,
                   motion: motionFor(context, beuiSpringPress, isMovement: true),
@@ -434,10 +449,12 @@ class _SelectionRing extends StatefulWidget {
     required this.target,
     required this.color,
     required this.reduce,
+    required this.pressed,
   });
   final Rect target;
   final Color color;
   final bool reduce;
+  final bool pressed;
 
   @override
   State<_SelectionRing> createState() => _SelectionRingState();
@@ -493,11 +510,17 @@ class _SelectionRingState extends State<_SelectionRing>
     width: rect.width,
     height: rect.height,
     child: IgnorePointer(
-      child: DecoratedBox(
-        key: const ValueKey('beui_color_selector_ring'),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: widget.color, width: 2),
+      child: SingleMotionBuilder(
+        value: widget.pressed && !widget.reduce ? 0.94 : 1.0,
+        motion: motionFor(context, beuiSpringPress, isMovement: true),
+        builder: (context, scale, child) =>
+            Transform.scale(scale: scale, child: child),
+        child: DecoratedBox(
+          key: const ValueKey('beui_color_selector_ring'),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: widget.color, width: 2),
+          ),
         ),
       ),
     ),

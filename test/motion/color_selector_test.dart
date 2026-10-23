@@ -52,6 +52,29 @@ Widget _selector({
 );
 
 void main() {
+  testWidgets(
+    'selected ring contracts with its swatch during press and recovers',
+    (tester) async {
+      await tester.pumpWidget(_selector());
+      await tester.pumpAndSettle();
+      final ring = find.byKey(const ValueKey('beui_color_selector_ring'));
+      final rest = tester.getRect(ring);
+      final press = await tester.startGesture(
+        tester.getCenter(find.bySemanticsLabel('Blue')),
+      );
+      await tester.pumpAndSettle();
+      final pressed = tester.getRect(ring);
+      expect(pressed.width, closeTo(rest.width * .94, .01));
+      expect(pressed.center, rest.center);
+      await press.up();
+      await tester.pumpAndSettle();
+      expect(tester.getRect(ring).width, closeTo(rest.width, .01));
+      expect(
+        (tester.getRect(ring).center - rest.center).distance,
+        lessThan(.01),
+      );
+    },
+  );
   testWidgets('disabled choices reject taps and arrows skip them', (
     tester,
   ) async {
