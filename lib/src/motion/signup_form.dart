@@ -380,22 +380,25 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
                   error: errors.password,
                   onChanged: (value) =>
                       _setValues(values.copyWith(password: value)),
-                  rightIcon: MergeSemantics(
-                    child: Semantics(
-                      button: true,
-                      label: _revealPassword
-                          ? 'Hide password'
-                          : 'Show password',
-                      child: IconButton(
-                        tooltip: _revealPassword
+                  rightIcon: Tooltip(
+                    message: _revealPassword
+                        ? 'Hide password'
+                        : 'Show password',
+                    excludeFromSemantics: true,
+                    child: MergeSemantics(
+                      child: Semantics(
+                        button: true,
+                        label: _revealPassword
                             ? 'Hide password'
                             : 'Show password',
-                        onPressed: busy
-                            ? null
-                            : () => setState(
-                                () => _revealPassword = !_revealPassword,
-                              ),
-                        icon: _PasswordRevealGlyph(revealed: _revealPassword),
+                        child: IconButton(
+                          onPressed: busy
+                              ? null
+                              : () => setState(
+                                  () => _revealPassword = !_revealPassword,
+                                ),
+                          icon: _PasswordRevealGlyph(revealed: _revealPassword),
+                        ),
                       ),
                     ),
                   ),

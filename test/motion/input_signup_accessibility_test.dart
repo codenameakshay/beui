@@ -17,6 +17,7 @@ void main() {
     final reveal = find.bySemanticsLabel('Show password');
     expect(reveal, findsOneWidget);
     final node = tester.getSemantics(reveal);
+    expect(node.getSemanticsData().tooltip, isEmpty);
     expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
     expect(node.getSemanticsData().flagsCollection.isTextField, isFalse);
     tester
