@@ -1,7 +1,9 @@
-import 'dart:ui' show PointerDeviceKind, SemanticsRole;
+import 'dart:ui'
+    show PointerDeviceKind, SemanticsRole, Tristate, SemanticsAction;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 
@@ -224,7 +226,7 @@ void main() {
     });
   });
 
-  testWidgets('exposes tree and treeitem semantics', (tester) async {
+  testWidgets('exposes supported list and listitem semantics', (tester) async {
     final semantics = tester.ensureSemantics();
     await tester.pumpWidget(
       _app(
@@ -259,6 +261,121 @@ void main() {
       SemanticsRole.listItem,
     );
     semantics.dispose();
+  });
+
+  testWidgets(
+    'row actions expose selection and disabled state without losing focus',
+    (tester) async {
+      final handle = tester.ensureSemantics();
+
+      final selections = <String>[];
+      final expansions = <List<String>>[];
+      await tester.pumpWidget(
+        _app(
+          BeuiFileTree(
+            defaultValue: 'selected',
+            onChanged: selections.add,
+            onExpandedChanged: expansions.add,
+            children: const [
+              BeuiFileTreeFile(value: 'selected', name: 'Selected'),
+              BeuiFileTreeFolder(
+                value: 'disabled',
+                name: 'Disabled',
+                disabled: true,
+                children: [BeuiFileTreeFile(value: 'hidden', name: 'Hidden')],
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final nodes = <SemanticsData>[];
+      void collect(SemanticsNode node) {
+        nodes.add(node.getSemanticsData());
+        node.visitChildren((SemanticsNode child) {
+          collect(child);
+          return true;
+        });
+      }
+
+      collect(tester.getSemantics(find.byType(BeuiFileTree)));
+      final selected = nodes.singleWhere(
+        (SemanticsData d) =>
+            d.label == 'Selected' && d.flagsCollection.isButton,
+      );
+      expect(selected.flagsCollection.isSelected, Tristate.isTrue);
+      final disabled = nodes.singleWhere(
+        (SemanticsData d) =>
+            d.label == 'Disabled' && d.flagsCollection.isButton,
+      );
+      expect(disabled.flagsCollection.isEnabled, Tristate.isFalse);
+      expect(disabled.hasAction(SemanticsAction.tap), isFalse);
+      final row = nodes.singleWhere(
+        (d) => d.label == 'Disabled' && d.role == SemanticsRole.listItem,
+      );
+      expect(row.flagsCollection.isEnabled, Tristate.none);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(
+        FocusManager.instance.primaryFocus?.debugLabel,
+        'file tree Disabled',
+      );
+      for (final key in [
+        LogicalKeyboardKey.enter,
+        LogicalKeyboardKey.space,
+        LogicalKeyboardKey.arrowRight,
+      ]) {
+        await tester.sendKeyEvent(key);
+        await tester.pumpAndSettle();
+      }
+      expect(selections, isEmpty);
+      expect(expansions, isEmpty);
+      expect(find.text('Hidden'), findsNothing);
+      handle.dispose();
+    },
+  );
+
+  testWidgets('row icon keeps independent content actions', (tester) async {
+    final handle = tester.ensureSemantics();
+    final calls = <String>[];
+    await tester.pumpWidget(
+      _app(
+        BeuiFileTree(
+          children: [
+            BeuiFileTreeFile(
+              value: 'file',
+              name: 'File',
+              icon: Row(
+                children: [
+                  for (final label in ['Inspect', 'Pin'])
+                    Expanded(
+                      child: Semantics(
+                        button: true,
+                        label: label,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => calls.add(label),
+                          child: const SizedBox(height: 16),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    for (final label in ['Inspect', 'Pin']) {
+      final node = tester.getSemantics(find.bySemanticsLabel(label));
+      expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
+      await tester.tap(find.bySemanticsLabel(label));
+      await tester.pump();
+    }
+    expect(calls, ['Inspect', 'Pin']);
+    handle.dispose();
   });
 
   testWidgets('rest-state golden', (tester) async {

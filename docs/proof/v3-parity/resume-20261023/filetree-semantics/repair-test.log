@@ -1,0 +1,39 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/file_tree_test.dart
+00:00 +0: row actions expose selection and disabled state without losing focus
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following _TypeError was thrown running a test:
+Null check operator used on a null value
+
+When the exception was thrown, this was the stack:
+#0      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/file_tree_test.dart:302:75)
+<asynchronous suspension>
+#1      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#2      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  row actions expose selection and disabled state without losing focus
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: row actions expose selection and disabled state without losing focus [E]
+  Test failed. See exception logs above.
+  The test description was: row actions expose selection and disabled state without losing focus
+  
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/file_tree_test.dart: row actions expose selection and disabled state without losing focus

@@ -324,31 +324,38 @@ class _BeuiFileTreeState extends State<BeuiFileTree> {
           focused: focused == row.value,
           selected: selected,
           expanded: row.isFolder ? isOpen : null,
-          enabled: !row.disabled,
-          child: Focus(
-            focusNode: focusNode,
-            skipTraversal: focused != row.value,
-            onFocusChange: (hasFocus) {
-              if (hasFocus && _focusedId != row.value) {
-                setState(() => _focusedId = row.value);
-              }
-            },
-            onKeyEvent: (node, event) => _onKey(event, row, rows, expanded),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: row.disabled
-                  ? null
-                  : () {
-                      focusNode.requestFocus();
-                      _select(row);
-                      if (row.isFolder) _toggleFolder(row);
-                    },
-              child: _FileTreeRow(
-                row: row,
-                isOpen: isOpen,
-                selected: selected,
-                indent: widget.indent,
-                colors: colors,
+          // Keep traversal on the row: Flutter web does not focus disabled
+          // semantics nodes. The child action carries the disabled state.
+          child: Semantics(
+            container: true,
+            button: true,
+            selected: selected,
+            enabled: !row.disabled,
+            child: Focus(
+              focusNode: focusNode,
+              skipTraversal: focused != row.value,
+              onFocusChange: (hasFocus) {
+                if (hasFocus && _focusedId != row.value) {
+                  setState(() => _focusedId = row.value);
+                }
+              },
+              onKeyEvent: (node, event) => _onKey(event, row, rows, expanded),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: row.disabled
+                    ? null
+                    : () {
+                        focusNode.requestFocus();
+                        _select(row);
+                        if (row.isFolder) _toggleFolder(row);
+                      },
+                child: _FileTreeRow(
+                  row: row,
+                  isOpen: isOpen,
+                  selected: selected,
+                  indent: widget.indent,
+                  colors: colors,
+                ),
               ),
             ),
           ),

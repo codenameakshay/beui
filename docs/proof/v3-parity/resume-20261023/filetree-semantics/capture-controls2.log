@@ -1,0 +1,26 @@
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  owner: 'accept',
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  owner: 'accept',
+  failures: []
+}
+FAIL candidate no-preference accept sequence completed "TimeoutError: locator.boundingBox: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Inspect', exact: true })\u001b[22m\n"
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  owner: 'accept',
+  failures: [ 'sequence completed' ]
+}
+FAIL candidate reduce accept sequence completed "TimeoutError: locator.boundingBox: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Inspect', exact: true })\u001b[22m\n"
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  owner: 'accept',
+  failures: [ 'sequence completed' ]
+}

@@ -1,0 +1,2427 @@
+{
+  "target": "source",
+  "reducedMotion": "reduce",
+  "owner": "accept",
+  "browser": "156.0.8078.48",
+  "scripts": [
+    {
+      "url": "http://127.0.0.1:18175/controls/source.css",
+      "sha256": "0e3d6dc5343a612111ebd5537f00c61b2ebee4121adac997adf16f0a19799ca2",
+      "bytes": 130663
+    },
+    {
+      "url": "http://127.0.0.1:18175/controls/source.js",
+      "sha256": "6a1a5a318b682dac927969507471e2518c81d7cf19d77cc3364b99045181c9bc",
+      "bytes": 1176926
+    }
+  ],
+  "states": [
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [],
+        "value": "none",
+        "calls": [],
+        "expCalls": [],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BODY",
+        "role": null,
+        "label": null,
+        "text": "Supplemental FileTree. C externally collapses all folders.BeforeParentInspectPinTailAfter"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"false\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "rest",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [level=1]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "rest.png",
+        "sha256": "37bbb32eb304c2586a1b13a52fb066e230afed3ded19b545ae450bc585cfbfda"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [],
+        "value": "none",
+        "calls": [],
+        "expCalls": [],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Parent"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"false\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "tab-parent",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [level=1]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "tab-parent.png",
+        "sha256": "bbc52891b1d05f7a439f9e8053d5badd84aab3f016c9afcb9a72c48178faa85f"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent"
+        ],
+        "value": "none",
+        "calls": [],
+        "expCalls": [
+          [
+            "parent"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Parent"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Folder",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "expand-parent",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [level=2]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "expand-parent.png",
+        "sha256": "07ee6b28fc9789203f8bfa91a8fa9bba393e43404f9ae8865f0f80a5c79f80e3"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent"
+        ],
+        "value": "none",
+        "calls": [],
+        "expCalls": [
+          [
+            "parent"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Folder"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Folder",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"false\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "enter-folder",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [level=2]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "enter-folder.png",
+        "sha256": "07280e70ad3efebea0629ad4b3b2158fc1358d2785a6eaec8db3c0b1c3732c76"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent",
+          "folder"
+        ],
+        "value": "none",
+        "calls": [],
+        "expCalls": [
+          [
+            "parent"
+          ],
+          [
+            "parent",
+            "folder"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Folder"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Folder",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Leaf",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"1\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Leaf</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Disabled",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": "true",
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"2\" aria-setsize=\"3\" aria-selected=\"false\" aria-expanded=\"false\" aria-disabled=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Disabled</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Sibling",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"3\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Sibling</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "expand-folder",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [expanded] [level=2]\n    - treeitem \"Leaf\" [level=3]\n    - treeitem \"Disabled\" [disabled] [level=3]\n    - treeitem \"Sibling\" [level=3]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "expand-folder.png",
+        "sha256": "45437ff1e5febb7becd88920ae351ad4af7ecf2fe35170d9728b9fd268027f71"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent",
+          "folder"
+        ],
+        "value": "none",
+        "calls": [],
+        "expCalls": [
+          [
+            "parent"
+          ],
+          [
+            "parent",
+            "folder"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Leaf"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Folder",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Leaf",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"1\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Leaf</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Disabled",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": "true",
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"2\" aria-setsize=\"3\" aria-selected=\"false\" aria-expanded=\"false\" aria-disabled=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Disabled</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Sibling",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"3\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Sibling</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "enter-leaf",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [expanded] [level=2]\n    - treeitem \"Leaf\" [level=3]\n    - treeitem \"Disabled\" [disabled] [level=3]\n    - treeitem \"Sibling\" [level=3]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "enter-leaf.png",
+        "sha256": "d7c48a732f46608d5503cafa6689cd61bb59c549543710faabfdc99fd356dbb7"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent",
+          "folder"
+        ],
+        "value": "leaf",
+        "calls": [
+          "leaf"
+        ],
+        "expCalls": [
+          [
+            "parent"
+          ],
+          [
+            "parent",
+            "folder"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Leaf"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Folder",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Leaf",
+          "expanded": null,
+          "selected": "true",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"1\" aria-setsize=\"3\" aria-selected=\"true\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed bg-muted font-medium text-foreground\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Leaf</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Disabled",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": "true",
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"2\" aria-setsize=\"3\" aria-selected=\"false\" aria-expanded=\"false\" aria-disabled=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Disabled</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Sibling",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"3\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Sibling</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "select-leaf",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [expanded] [level=2]\n    - treeitem \"Leaf\" [level=3] [selected]\n    - treeitem \"Disabled\" [disabled] [level=3]\n    - treeitem \"Sibling\" [level=3]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "select-leaf.png",
+        "sha256": "967403efc1b91e040a18a9acebe1e7e0962873076ccde4e6ae77d703efdb170c"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent",
+          "folder"
+        ],
+        "value": "leaf",
+        "calls": [
+          "leaf"
+        ],
+        "expCalls": [
+          [
+            "parent"
+          ],
+          [
+            "parent",
+            "folder"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Disabled"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Folder",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Leaf",
+          "expanded": null,
+          "selected": "true",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"1\" aria-setsize=\"3\" aria-selected=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed bg-muted font-medium text-foreground\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Leaf</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Disabled",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": "true",
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"2\" aria-setsize=\"3\" aria-selected=\"false\" aria-expanded=\"false\" aria-disabled=\"true\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Disabled</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Sibling",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"3\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Sibling</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "disabled-down",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [expanded] [level=2]\n    - treeitem \"Leaf\" [level=3] [selected]\n    - treeitem \"Disabled\" [disabled] [level=3]\n    - treeitem \"Sibling\" [level=3]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "disabled-down.png",
+        "sha256": "e3adab83441b1b88d78c687e152e4940b0c7b92464543cc7b29070a067fd55f6"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent",
+          "folder"
+        ],
+        "value": "leaf",
+        "calls": [
+          "leaf"
+        ],
+        "expCalls": [
+          [
+            "parent"
+          ],
+          [
+            "parent",
+            "folder"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Disabled"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Folder",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Leaf",
+          "expanded": null,
+          "selected": "true",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"1\" aria-setsize=\"3\" aria-selected=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed bg-muted font-medium text-foreground\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Leaf</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Disabled",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": "true",
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"2\" aria-setsize=\"3\" aria-selected=\"false\" aria-expanded=\"false\" aria-disabled=\"true\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Disabled</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Sibling",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"3\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Sibling</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "disabled-enter",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [expanded] [level=2]\n    - treeitem \"Leaf\" [level=3] [selected]\n    - treeitem \"Disabled\" [disabled] [level=3]\n    - treeitem \"Sibling\" [level=3]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "disabled-enter.png",
+        "sha256": "e3adab83441b1b88d78c687e152e4940b0c7b92464543cc7b29070a067fd55f6"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent",
+          "folder"
+        ],
+        "value": "leaf",
+        "calls": [
+          "leaf"
+        ],
+        "expCalls": [
+          [
+            "parent"
+          ],
+          [
+            "parent",
+            "folder"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Disabled"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Folder",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Leaf",
+          "expanded": null,
+          "selected": "true",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"1\" aria-setsize=\"3\" aria-selected=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed bg-muted font-medium text-foreground\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Leaf</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Disabled",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": "true",
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"2\" aria-setsize=\"3\" aria-selected=\"false\" aria-expanded=\"false\" aria-disabled=\"true\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Disabled</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Sibling",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"3\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Sibling</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "disabled-space",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [expanded] [level=2]\n    - treeitem \"Leaf\" [level=3] [selected]\n    - treeitem \"Disabled\" [disabled] [level=3]\n    - treeitem \"Sibling\" [level=3]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "disabled-space.png",
+        "sha256": "e3adab83441b1b88d78c687e152e4940b0c7b92464543cc7b29070a067fd55f6"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent",
+          "folder"
+        ],
+        "value": "leaf",
+        "calls": [
+          "leaf"
+        ],
+        "expCalls": [
+          [
+            "parent"
+          ],
+          [
+            "parent",
+            "folder"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Disabled"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Folder",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Leaf",
+          "expanded": null,
+          "selected": "true",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"1\" aria-setsize=\"3\" aria-selected=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed bg-muted font-medium text-foreground\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Leaf</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Disabled",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": "true",
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"2\" aria-setsize=\"3\" aria-selected=\"false\" aria-expanded=\"false\" aria-disabled=\"true\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Disabled</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Sibling",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"3\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Sibling</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "disabled-right",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [expanded] [level=2]\n    - treeitem \"Leaf\" [level=3] [selected]\n    - treeitem \"Disabled\" [disabled] [level=3]\n    - treeitem \"Sibling\" [level=3]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "disabled-right.png",
+        "sha256": "e3adab83441b1b88d78c687e152e4940b0c7b92464543cc7b29070a067fd55f6"
+      }
+    },
+    {
+      "fixture": {
+        "controlCalls": [],
+        "expanded": [
+          "parent",
+          "folder"
+        ],
+        "value": "leaf",
+        "calls": [
+          "leaf"
+        ],
+        "expCalls": [
+          [
+            "parent"
+          ],
+          [
+            "parent",
+            "folder"
+          ]
+        ],
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "BUTTON",
+        "role": "treeitem",
+        "label": null,
+        "text": "Disabled"
+      },
+      "rows": [
+        {
+          "text": "Parent",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Parent</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Folder",
+          "expanded": "true",
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"1\" aria-setsize=\"2\" aria-selected=\"false\" aria-expanded=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: rotate(90deg);\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center transition-colors group-hover/file-tree:text-foreground text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-open size-4\"><path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Folder</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Leaf",
+          "expanded": null,
+          "selected": "true",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"1\" aria-setsize=\"3\" aria-selected=\"true\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed bg-muted font-medium text-foreground\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Leaf</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Disabled",
+          "expanded": "false",
+          "selected": "false",
+          "disabled": "true",
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"2\" aria-setsize=\"3\" aria-selected=\"false\" aria-expanded=\"false\" aria-disabled=\"true\" tabindex=\"0\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder size-4\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Disabled</span></button>",
+          "tabIndex": 0
+        },
+        {
+          "text": "Sibling",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"3\" aria-posinset=\"3\" aria-setsize=\"3\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 44px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 34px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Sibling</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "Peer",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"2\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 26px;\"><span aria-hidden=\"true\" class=\"absolute top-0 bottom-0 w-px origin-top bg-border/70\" style=\"left: 16px; opacity: 1; transform: none;\"></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-file size-4\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"></path><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"></path></svg></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Peer</span></button>",
+          "tabIndex": -1
+        },
+        {
+          "text": "InspectPinTail",
+          "expanded": null,
+          "selected": "false",
+          "disabled": null,
+          "current": null,
+          "html": "<button type=\"button\" role=\"treeitem\" aria-level=\"1\" aria-posinset=\"2\" aria-setsize=\"2\" aria-selected=\"false\" tabindex=\"-1\" class=\"group/file-tree relative flex h-9 w-full items-center gap-2 overflow-hidden rounded-lg pr-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset aria-disabled:cursor-not-allowed\" style=\"padding-left: 8px;\"><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center opacity-0\" style=\"transform: none;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3.5\"><path d=\"m9 18 6-6-6-6\"></path></svg></span><span aria-hidden=\"true\" class=\"relative z-10 grid size-4 shrink-0 place-items-center text-muted-foreground transition-colors group-hover/file-tree:text-foreground\"><span><button aria-label=\"Inspect\">Inspect</button><button aria-label=\"Pin\">Pin</button></span></span><span class=\"relative z-10 min-w-0 flex-1 truncate\">Tail</span></button>",
+          "tabIndex": -1
+        }
+      ],
+      "name": "failure",
+      "aria": "- main:\n  - paragraph: Supplemental FileTree. C externally collapses all folders.\n  - button \"Before\"\n  - tree \"Files\":\n    - treeitem \"Parent\" [expanded] [level=1]\n    - treeitem \"Folder\" [expanded] [level=2]\n    - treeitem \"Leaf\" [level=3] [selected]\n    - treeitem \"Disabled\" [disabled] [level=3]\n    - treeitem \"Sibling\" [level=3]\n    - treeitem \"Peer\" [level=2]\n    - treeitem \"Tail\" [level=1]\n  - button \"After\"",
+      "screenshot": {
+        "file": "failure.png",
+        "sha256": "e3adab83441b1b88d78c687e152e4940b0c7b92464543cc7b29070a067fd55f6"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "sequence completed",
+      "pass": false,
+      "actual": "TimeoutError: locator.boundingBox: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Inspect', exact: true })\u001b[22m\n"
+    },
+    {
+      "name": "trusted input",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "no page errors",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "video encode",
+      "pass": true,
+      "actual": 0
+    }
+  ],
+  "frames": [
+    {
+      "file": "original-frames/frame_000000.png",
+      "sha256": "77c32e0cab3ac0a9c3a18322f1ca455d4f768106e306d2dfac263db1f131b54a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782281.870722,
+        "monotonicTimestamp": 599070.496411
+      }
+    },
+    {
+      "file": "original-frames/frame_000001.png",
+      "sha256": "77c32e0cab3ac0a9c3a18322f1ca455d4f768106e306d2dfac263db1f131b54a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.36245,
+        "monotonicTimestamp": 599070.988174
+      }
+    },
+    {
+      "file": "original-frames/frame_000002.png",
+      "sha256": "2d6e5621ff0f4fb0441ff7ffd6d8c4c586a8d8bcedf5f7c530a320af75224d79",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.395779,
+        "monotonicTimestamp": 599071.021506
+      }
+    },
+    {
+      "file": "original-frames/frame_000003.png",
+      "sha256": "b2a4ce0500071fbd473444406c0276e3f90871f91b66c581003e7e556dca205f",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.412444,
+        "monotonicTimestamp": 599071.038172
+      }
+    },
+    {
+      "file": "original-frames/frame_000004.png",
+      "sha256": "708016f556a9b1e7a2de5cd006fb28c340c74569db7e65e071ac0c359a0e00e4",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.42911,
+        "monotonicTimestamp": 599071.054838
+      }
+    },
+    {
+      "file": "original-frames/frame_000005.png",
+      "sha256": "3340c287472df0f1b1512ed33c9bd1816cbf1095e39a30aaba02218c54cf2139",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.445774,
+        "monotonicTimestamp": 599071.071504
+      }
+    },
+    {
+      "file": "original-frames/frame_000006.png",
+      "sha256": "6f99f45731a53771b6238bd4ec979422ea84c1bd3f84b0d68d6c2e1ce338f77d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.462439,
+        "monotonicTimestamp": 599071.08817
+      }
+    },
+    {
+      "file": "original-frames/frame_000007.png",
+      "sha256": "ef5cbcdeacc12d60c18ae873645ffe12fbf5fffb168e5c9f8b28d2804a9e881a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.479103,
+        "monotonicTimestamp": 599071.104836
+      }
+    },
+    {
+      "file": "original-frames/frame_000008.png",
+      "sha256": "0db107e5b4ee4b4fafefa8468b21077cb33408f0faf1a1a1d2e01fd5194e7184",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.495769,
+        "monotonicTimestamp": 599071.121502
+      }
+    },
+    {
+      "file": "original-frames/frame_000009.png",
+      "sha256": "dfbffc679a8856f851400fdf9969b411b6905a07eb81efd717af6879d7d09745",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.512433,
+        "monotonicTimestamp": 599071.138168
+      }
+    },
+    {
+      "file": "original-frames/frame_000010.png",
+      "sha256": "10a5d5f817aa1ac4cf7f7decb37e7c591dbe51aab92dbf06a82349945f1894b6",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.529098,
+        "monotonicTimestamp": 599071.154834
+      }
+    },
+    {
+      "file": "original-frames/frame_000011.png",
+      "sha256": "2f5cbeee1e6047bc5ab3c550d587921f652c653a2dcd57e98caa29b1859c5d06",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.545762,
+        "monotonicTimestamp": 599071.1715
+      }
+    },
+    {
+      "file": "original-frames/frame_000012.png",
+      "sha256": "2f5cbeee1e6047bc5ab3c550d587921f652c653a2dcd57e98caa29b1859c5d06",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.562428,
+        "monotonicTimestamp": 599071.188166
+      }
+    },
+    {
+      "file": "original-frames/frame_000013.png",
+      "sha256": "ed168603efe0e25f9dba53bcb116395fdb83d5c7a9a774b032b60330ea7d56e4",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.579093,
+        "monotonicTimestamp": 599071.204832
+      }
+    },
+    {
+      "file": "original-frames/frame_000014.png",
+      "sha256": "3dc4b9f3f4ec2106a00c8a008e335f9a1243e355eec606ad99bc4e02fee8a481",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.595758,
+        "monotonicTimestamp": 599071.221498
+      }
+    },
+    {
+      "file": "original-frames/frame_000015.png",
+      "sha256": "ddcc14211223d04d5c41d1ebe086373d78c31c9b15df56b2914fa7c366701a28",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.612422,
+        "monotonicTimestamp": 599071.238164
+      }
+    },
+    {
+      "file": "original-frames/frame_000016.png",
+      "sha256": "ddcc14211223d04d5c41d1ebe086373d78c31c9b15df56b2914fa7c366701a28",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.629088,
+        "monotonicTimestamp": 599071.25483
+      }
+    },
+    {
+      "file": "original-frames/frame_000017.png",
+      "sha256": "04f374ba0536f2b08b662bda337bc00108b3f02a5bfb2108bc57af00181ba636",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.645752,
+        "monotonicTimestamp": 599071.271496
+      }
+    },
+    {
+      "file": "original-frames/frame_000018.png",
+      "sha256": "04f374ba0536f2b08b662bda337bc00108b3f02a5bfb2108bc57af00181ba636",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.662417,
+        "monotonicTimestamp": 599071.288162
+      }
+    },
+    {
+      "file": "original-frames/frame_000019.png",
+      "sha256": "21f2726e0462f5b1615610523bff6d41d11b97cfde1460ee3e702ce04a9fd48d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.679081,
+        "monotonicTimestamp": 599071.304828
+      }
+    },
+    {
+      "file": "original-frames/frame_000020.png",
+      "sha256": "21f2726e0462f5b1615610523bff6d41d11b97cfde1460ee3e702ce04a9fd48d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.84573,
+        "monotonicTimestamp": 599071.471488
+      }
+    },
+    {
+      "file": "original-frames/frame_000021.png",
+      "sha256": "87639498cca1635bc40a012a7b36225ae83f9514760a1d1bf5d6343f53aa8fcb",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.862395,
+        "monotonicTimestamp": 599071.488154
+      }
+    },
+    {
+      "file": "original-frames/frame_000022.png",
+      "sha256": "07d8db965b1a0838d6f13dbe2f73f6b2cbeac168b56ab82e9a881da572f4153e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.879059,
+        "monotonicTimestamp": 599071.50482
+      }
+    },
+    {
+      "file": "original-frames/frame_000023.png",
+      "sha256": "0f870d5e2d1ecdc9626850bebf53575f55e6667706e840d73f66899c9b9a07b2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.895724,
+        "monotonicTimestamp": 599071.521486
+      }
+    },
+    {
+      "file": "original-frames/frame_000024.png",
+      "sha256": "fc975dc61528b5efb27655142175c4636c602997823c22b1ea3b088ef24d4e8c",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.912389,
+        "monotonicTimestamp": 599071.538152
+      }
+    },
+    {
+      "file": "original-frames/frame_000025.png",
+      "sha256": "c0b012b3c8f79a99492deaad43cb4854cacaf8e8e39df5bb37e928b8b2608048",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.929054,
+        "monotonicTimestamp": 599071.554818
+      }
+    },
+    {
+      "file": "original-frames/frame_000026.png",
+      "sha256": "df83c30b21f0f25c53f8367838b6ad3ff1104e1d988adb59fa3f78ef9f9df2b9",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.945719,
+        "monotonicTimestamp": 599071.571484
+      }
+    },
+    {
+      "file": "original-frames/frame_000027.png",
+      "sha256": "15a5d75ab07f7fa35de0fd57f610f4c56b07687d4245eea3221b59768db3b543",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.962383,
+        "monotonicTimestamp": 599071.58815
+      }
+    },
+    {
+      "file": "original-frames/frame_000028.png",
+      "sha256": "8a021d2ae04e1c191c6963f8f0c43dd3c0e3bff50b517efd2916df15a493bea9",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.979049,
+        "monotonicTimestamp": 599071.604816
+      }
+    },
+    {
+      "file": "original-frames/frame_000029.png",
+      "sha256": "c1acf8149021c820dfdbe5976c76e376354a4b94eee4fab4f625c2fdd9fbb225",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782282.995712,
+        "monotonicTimestamp": 599071.621482
+      }
+    },
+    {
+      "file": "original-frames/frame_000030.png",
+      "sha256": "120f5616acf5187e6520ac4d35fa5764a69bdae1b13d2222f796d4b1a72d6f81",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.012378,
+        "monotonicTimestamp": 599071.638148
+      }
+    },
+    {
+      "file": "original-frames/frame_000031.png",
+      "sha256": "120f5616acf5187e6520ac4d35fa5764a69bdae1b13d2222f796d4b1a72d6f81",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.029043,
+        "monotonicTimestamp": 599071.654814
+      }
+    },
+    {
+      "file": "original-frames/frame_000032.png",
+      "sha256": "8b28d4f4687a125dbee9c9fe72925b6ad277e13432cbf82438640927f9a62be8",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.179026,
+        "monotonicTimestamp": 599071.804808
+      }
+    },
+    {
+      "file": "original-frames/frame_000033.png",
+      "sha256": "8b28d4f4687a125dbee9c9fe72925b6ad277e13432cbf82438640927f9a62be8",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.312345,
+        "monotonicTimestamp": 599071.938136
+      }
+    },
+    {
+      "file": "original-frames/frame_000034.png",
+      "sha256": "7556879221901a6e727b6c3b03f6d2c73de09a3e6852cd104d5ebc1f5e985b46",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.329011,
+        "monotonicTimestamp": 599071.954802
+      }
+    },
+    {
+      "file": "original-frames/frame_000035.png",
+      "sha256": "7556879221901a6e727b6c3b03f6d2c73de09a3e6852cd104d5ebc1f5e985b46",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.49566,
+        "monotonicTimestamp": 599072.121462
+      }
+    },
+    {
+      "file": "original-frames/frame_000036.png",
+      "sha256": "7556879221901a6e727b6c3b03f6d2c73de09a3e6852cd104d5ebc1f5e985b46",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.778962,
+        "monotonicTimestamp": 599072.404784
+      }
+    },
+    {
+      "file": "original-frames/frame_000037.png",
+      "sha256": "e60ae7042e170f99a79037cb10e5d9f7c8d44031ccefb66fb1aaec8836e7d932",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.795627,
+        "monotonicTimestamp": 599072.42145
+      }
+    },
+    {
+      "file": "original-frames/frame_000038.png",
+      "sha256": "f3550c83eba49414d163f5d27bfd4348c184629cb0256f4d33ac611084f3cbca",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.812292,
+        "monotonicTimestamp": 599072.438116
+      }
+    },
+    {
+      "file": "original-frames/frame_000039.png",
+      "sha256": "0599362e278340ac869fbc54f0e330caf0869f3b8b9de4871133585e86f208bd",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.828957,
+        "monotonicTimestamp": 599072.454782
+      }
+    },
+    {
+      "file": "original-frames/frame_000040.png",
+      "sha256": "e201a3f4c0460802dea86356f20d5fb33aa273efbb1c2a6e5463c2761ca20fcf",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.845622,
+        "monotonicTimestamp": 599072.471448
+      }
+    },
+    {
+      "file": "original-frames/frame_000041.png",
+      "sha256": "62405ae16ec9239ac68e44b3d9ee8da2a85e0f54dc65a41e478f59155e9ca614",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.862288,
+        "monotonicTimestamp": 599072.488114
+      }
+    },
+    {
+      "file": "original-frames/frame_000042.png",
+      "sha256": "f568c57593cde020672b7a31a41f75b857b1a92596fc37b3382a81033aaa642e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.878951,
+        "monotonicTimestamp": 599072.50478
+      }
+    },
+    {
+      "file": "original-frames/frame_000043.png",
+      "sha256": "bcdb49e387e12c03694ba4c8ee04758824812f2b4d719b600baa9045fb7728c7",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.895618,
+        "monotonicTimestamp": 599072.521446
+      }
+    },
+    {
+      "file": "original-frames/frame_000044.png",
+      "sha256": "d017c9216a345ca0a4cb797095245d029a18303f0b6f3dbd2a4ec4ecb30f7ca6",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.912283,
+        "monotonicTimestamp": 599072.538112
+      }
+    },
+    {
+      "file": "original-frames/frame_000045.png",
+      "sha256": "94c0d13ebaec497806a38d52a39cb3b937685931f7fef36655317863b0de4249",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.928947,
+        "monotonicTimestamp": 599072.554778
+      }
+    },
+    {
+      "file": "original-frames/frame_000046.png",
+      "sha256": "7b681427c03780f526b7f99a67fafc65347efe22c16242d6937d6fb99c10cedc",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.945611,
+        "monotonicTimestamp": 599072.571444
+      }
+    },
+    {
+      "file": "original-frames/frame_000047.png",
+      "sha256": "26486f6779ba3f35d09a5f524d35b7f73c345c3f170fb4a5448db6c62111e02d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.962277,
+        "monotonicTimestamp": 599072.58811
+      }
+    },
+    {
+      "file": "original-frames/frame_000048.png",
+      "sha256": "26486f6779ba3f35d09a5f524d35b7f73c345c3f170fb4a5448db6c62111e02d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.978942,
+        "monotonicTimestamp": 599072.604776
+      }
+    },
+    {
+      "file": "original-frames/frame_000049.png",
+      "sha256": "d60c0df86bbdb886fa2690580c2122d3e073776d6d862b3844bdcde1222c2f93",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782283.995607,
+        "monotonicTimestamp": 599072.621442
+      }
+    },
+    {
+      "file": "original-frames/frame_000050.png",
+      "sha256": "08ce6453907cfb8054fd246dcaca28d02a1dddac80615dde9b70ec1de4dfb3e9",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.012271,
+        "monotonicTimestamp": 599072.638108
+      }
+    },
+    {
+      "file": "original-frames/frame_000051.png",
+      "sha256": "08ce6453907cfb8054fd246dcaca28d02a1dddac80615dde9b70ec1de4dfb3e9",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.028936,
+        "monotonicTimestamp": 599072.654774
+      }
+    },
+    {
+      "file": "original-frames/frame_000052.png",
+      "sha256": "08ce6453907cfb8054fd246dcaca28d02a1dddac80615dde9b70ec1de4dfb3e9",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.045602,
+        "monotonicTimestamp": 599072.67144
+      }
+    },
+    {
+      "file": "original-frames/frame_000053.png",
+      "sha256": "9575877fb1a8fa3d01716c85f2ddc5ac4af15d615184df405abac0519c50ac03",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.062266,
+        "monotonicTimestamp": 599072.688106
+      }
+    },
+    {
+      "file": "original-frames/frame_000054.png",
+      "sha256": "9575877fb1a8fa3d01716c85f2ddc5ac4af15d615184df405abac0519c50ac03",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.07893,
+        "monotonicTimestamp": 599072.704772
+      }
+    },
+    {
+      "file": "original-frames/frame_000055.png",
+      "sha256": "48bd1dbccee6bc9ab48cb63cb5cc82f936593d170fe89998d275c10ef675585e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.095596,
+        "monotonicTimestamp": 599072.721438
+      }
+    },
+    {
+      "file": "original-frames/frame_000056.png",
+      "sha256": "48bd1dbccee6bc9ab48cb63cb5cc82f936593d170fe89998d275c10ef675585e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.245581,
+        "monotonicTimestamp": 599072.871432
+      }
+    },
+    {
+      "file": "original-frames/frame_000057.png",
+      "sha256": "e0572b743083e14aa427545c5c3d7172feea8ea15af9e4279c8063e557bbd3a4",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.278909,
+        "monotonicTimestamp": 599072.904764
+      }
+    },
+    {
+      "file": "original-frames/frame_000058.png",
+      "sha256": "e0572b743083e14aa427545c5c3d7172feea8ea15af9e4279c8063e557bbd3a4",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.428895,
+        "monotonicTimestamp": 599073.054758
+      }
+    },
+    {
+      "file": "original-frames/frame_000059.png",
+      "sha256": "e0572b743083e14aa427545c5c3d7172feea8ea15af9e4279c8063e557bbd3a4",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.728866,
+        "monotonicTimestamp": 599073.354746
+      }
+    },
+    {
+      "file": "original-frames/frame_000060.png",
+      "sha256": "f494c862b206710e2b85f9c0c8fe6d73d69ddb72c33189ad96f81c8dd3b42280",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.745531,
+        "monotonicTimestamp": 599073.371412
+      }
+    },
+    {
+      "file": "original-frames/frame_000061.png",
+      "sha256": "cb975ae3667c06d5ddb1bcd1bf31ebba0fe17e735d5bdf0f01e4823bb2370095",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.762195,
+        "monotonicTimestamp": 599073.388078
+      }
+    },
+    {
+      "file": "original-frames/frame_000062.png",
+      "sha256": "dc6a76799c3732a86a9ea32ad7912b3a3b0348a058209e0dfe797f4e161444cc",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.795525,
+        "monotonicTimestamp": 599073.42141
+      }
+    },
+    {
+      "file": "original-frames/frame_000063.png",
+      "sha256": "40331a4224b21ebe32078dc70c3905874a36bcd77c9857523db40345e7b0e0ba",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.812191,
+        "monotonicTimestamp": 599073.438076
+      }
+    },
+    {
+      "file": "original-frames/frame_000064.png",
+      "sha256": "fdaebd1ef43a4065f75546526d01cfa96929a3e26108adf920cfbda733d9dab8",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.828855,
+        "monotonicTimestamp": 599073.454742
+      }
+    },
+    {
+      "file": "original-frames/frame_000065.png",
+      "sha256": "aad6e2fae5cec7e63545b7250faaa4c758f24156eb323d0b2d38a4c25bf56335",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.845519,
+        "monotonicTimestamp": 599073.471408
+      }
+    },
+    {
+      "file": "original-frames/frame_000066.png",
+      "sha256": "c209d30ef951f0a4cf4f77a3635cc94fe61625219c9c80b93b1adc4cd70bc402",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.862186,
+        "monotonicTimestamp": 599073.488074
+      }
+    },
+    {
+      "file": "original-frames/frame_000067.png",
+      "sha256": "c209d30ef951f0a4cf4f77a3635cc94fe61625219c9c80b93b1adc4cd70bc402",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.878849,
+        "monotonicTimestamp": 599073.50474
+      }
+    },
+    {
+      "file": "original-frames/frame_000068.png",
+      "sha256": "c209d30ef951f0a4cf4f77a3635cc94fe61625219c9c80b93b1adc4cd70bc402",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.895516,
+        "monotonicTimestamp": 599073.521406
+      }
+    },
+    {
+      "file": "original-frames/frame_000069.png",
+      "sha256": "c209d30ef951f0a4cf4f77a3635cc94fe61625219c9c80b93b1adc4cd70bc402",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.912181,
+        "monotonicTimestamp": 599073.538072
+      }
+    },
+    {
+      "file": "original-frames/frame_000070.png",
+      "sha256": "c209d30ef951f0a4cf4f77a3635cc94fe61625219c9c80b93b1adc4cd70bc402",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782284.928845,
+        "monotonicTimestamp": 599073.554738
+      }
+    },
+    {
+      "file": "original-frames/frame_000071.png",
+      "sha256": "c209d30ef951f0a4cf4f77a3635cc94fe61625219c9c80b93b1adc4cd70bc402",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782285.195485,
+        "monotonicTimestamp": 599073.821394
+      }
+    },
+    {
+      "file": "original-frames/frame_000072.png",
+      "sha256": "f42ae03506073d41d6efb00222fa15eaedbca8d8827f4dde527cf002d5e16774",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782285.228815,
+        "monotonicTimestamp": 599073.854726
+      }
+    },
+    {
+      "file": "original-frames/frame_000073.png",
+      "sha256": "f42ae03506073d41d6efb00222fa15eaedbca8d8827f4dde527cf002d5e16774",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782285.378801,
+        "monotonicTimestamp": 599074.00472
+      }
+    },
+    {
+      "file": "original-frames/frame_000074.png",
+      "sha256": "f42ae03506073d41d6efb00222fa15eaedbca8d8827f4dde527cf002d5e16774",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782285.678772,
+        "monotonicTimestamp": 599074.304708
+      }
+    },
+    {
+      "file": "original-frames/frame_000075.png",
+      "sha256": "f42ae03506073d41d6efb00222fa15eaedbca8d8827f4dde527cf002d5e16774",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782286.145394,
+        "monotonicTimestamp": 599074.771356
+      }
+    },
+    {
+      "file": "original-frames/frame_000076.png",
+      "sha256": "f42ae03506073d41d6efb00222fa15eaedbca8d8827f4dde527cf002d5e16774",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782286.612018,
+        "monotonicTimestamp": 599075.238004
+      }
+    },
+    {
+      "file": "original-frames/frame_000077.png",
+      "sha256": "f42ae03506073d41d6efb00222fa15eaedbca8d8827f4dde527cf002d5e16774",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782287.078642,
+        "monotonicTimestamp": 599075.704652
+      }
+    },
+    {
+      "file": "original-frames/frame_000078.png",
+      "sha256": "f42ae03506073d41d6efb00222fa15eaedbca8d8827f4dde527cf002d5e16774",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792782317.627,
+        "monotonicTimestamp": 599106.25343
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "type": "pointerdown",
+      "isTrusted": true,
+      "x": 281.1640625,
+      "y": 364,
+      "time": 1241.1999999284744,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1241.2999999523163,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "pointerup",
+      "isTrusted": true,
+      "x": 281.1640625,
+      "y": 364,
+      "time": 1241.3999999761581,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": true,
+      "x": 281,
+      "y": 364,
+      "time": 1241.5,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1241.7999999523163,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1241.8999999761581,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1242.1000000238419,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Tab",
+      "isTrusted": true,
+      "time": 1264.3999999761581,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 1726.6000000238419,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 1731.2999999523163,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 2193.6999999284744,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 2193.7999999523163,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 2194.100000023842,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 2196.100000023842,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 2657.600000023842,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 2660.600000023842,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 3137.6999999284744,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3138,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3138.5,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 3140,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 3603.2999999523163,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 3606.2999999523163,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "ArrowDown",
+      "isTrusted": true,
+      "time": 4085.600000023842,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 4085.600000023842,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 4085.899999976158,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "ArrowDown",
+      "isTrusted": true,
+      "time": 4087.399999976158,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 4552,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 4552.100000023842,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": " ",
+      "isTrusted": true,
+      "time": 5020.600000023842,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": " ",
+      "isTrusted": true,
+      "time": 5020.799999952316,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 5492.199999928474,
+      "tag": "BUTTON",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "ArrowRight",
+      "isTrusted": true,
+      "time": 5492.600000023842,
+      "tag": "BUTTON",
+      "label": null
+    }
+  ],
+  "errors": []
+}
