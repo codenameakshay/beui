@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -36,7 +37,69 @@ Widget app(WidgetBuilder demo, {bool reduce = false, bool dark = true}) =>
       ),
     );
 
+Future<void> waitForArtworkFailure(WidgetTester tester) async {
+  await tester.runAsync(() async {
+    final elapsed = Stopwatch()..start();
+    while (find
+        .byKey(const ValueKey('market-artwork-unavailable'))
+        .evaluate()
+        .isEmpty) {
+      if (elapsed.elapsed >= const Duration(seconds: 10)) {
+        throw TestFailure('Artwork did not reach its failed-load state.');
+      }
+      await Future<void>.delayed(Duration.zero);
+      await tester.pump();
+    }
+  });
+  await tester.pump();
+}
+
 void main() {
+  testWidgets('rates artwork waits for an asynchronous invalid SVG response', (
+    tester,
+  ) async {
+    final response = Completer<http.Response>();
+    final requested = <String>[];
+    await http.runWithClient(
+      () async {
+        await tester.pumpWidget(
+          app(
+            (_) => const Center(
+              child: SizedBox.square(
+                dimension: 48,
+                child: MarketArtwork(
+                  url: 'https://example.test/deferred-invalid.svg',
+                  rates: true,
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(requested, ['https://example.test/deferred-invalid.svg']);
+        expect(find.byType(SvgPicture), findsOneWidget);
+        expect(
+          find.byKey(const ValueKey('market-artwork-unavailable')),
+          findsNothing,
+        );
+        expect(tester.takeException(), isNull);
+        response.complete(http.Response('<html>Not an SVG</html>', 200));
+        await waitForArtworkFailure(tester);
+        expect(
+          find.byKey(const ValueKey('market-artwork-unavailable')),
+          findsOneWidget,
+        );
+        expect(tester.getSize(find.byType(MarketArtwork)), const Size(48, 48));
+        expect(find.byType(ErrorWidget), findsNothing);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox.shrink());
+      },
+      () => MockClient((request) {
+        requested.add(request.url.toString());
+        return response.future;
+      }),
+    );
+  });
   for (final status in [400, 200, 503]) {
     testWidgets(
       'rates artwork retains its slot on invalid SVG response $status',
@@ -58,10 +121,7 @@ void main() {
                 ),
               ),
             );
-            await tester.runAsync(() async {
-              await Future<void>.delayed(const Duration(milliseconds: 100));
-            });
-            await tester.pumpAndSettle();
+            await waitForArtworkFailure(tester);
             expect(requested, ['https://example.test/broken-$status.svg']);
             expect(tester.takeException(), isNull);
             expect(
