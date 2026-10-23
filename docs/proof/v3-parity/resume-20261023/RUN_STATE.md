@@ -1,3 +1,9 @@
+## 2026-10-24 combined local integration complete
+
+At pushed head `ee5b755599cead69fabf30079af1be9634f80280`, root 2,668 pass / 56 golden failures exactly match previous failure identities; no added/removed failures. Gallery 66 pass. Package, example and affected-file analysis pass. Whole-tree analysis fails with 7,804 diagnostics under archived docs/proof fixtures; root/example formatting checks also fail on documented files. These gates are not green or waived. All six repaired inputs and 647 scanned Dart/PNG files unchanged. Parent independently verified the 268-file manifest in `../resume-20261024/components-integration/`.
+
+Native gallery task `v3-three-components-native-integration-20261024-r2` running on the final three components. No new full-suite rerun requested. Disk ~995MiB after parent removed only three own already verified/committed staged export copies (Collapsible jcpolrtj, Combobox 7axi6uhy, Scheduler cwqxfrr4); canonical evidence retained. Native worker must report any space blocker.
+
 ## 2026-10-24 Scheduler independently accepted within scope
 
 R2 reviewer accepts final production `b3a48de0ac3adf9f824ada52a8a142bcc671f3369e7a575c6dd9cfe23cde9047` / tests `4fcd24ee754298800c488b09f39e55f30989cb9daf7e6233744aa37e9ecf90c8`. Unchanged original disabled-focus repro fails exact previous bytes and passes final. 50 focused executions pass on current3.47.1 and actual minimum3.44.2, with repeated lifecycle cases disclosed. Original tooltip-first Escape probe fails both versions and remains preserved. Native evidence reviewed, not freshly replayed by reviewer. Parent archive verifiers passed separately.
