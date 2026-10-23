@@ -2,6 +2,8 @@
 
 Exact parity is not certified for any chart. This slice contains repairs, preserved baseline recordings, and an explicit remaining-work inventory.
 
+Round two adds six implementation repairs and append-only evidence in [round2/README.md](round2/README.md). The report below remains historical. Round-two tests do not certify exact visual or motion parity.
+
 ## Revisions and ownership
 
 - Baseline is `5ec78ac30e1274727ddd185a883346e4d908e6c8`.

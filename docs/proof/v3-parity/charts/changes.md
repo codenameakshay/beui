@@ -1,5 +1,20 @@
 # Chart change text
 
+## Round two captions
+
+These captions refer to the round-two code and stills in `round2/`. New native-cadence videos and side-by-side caption assembly remain with the parent's recorder. No video below is claimed as a new round-two recording.
+
+| Widget | Before round two | After round two | Recording obligation |
+| --- | --- | --- | --- |
+| Candlestick | Non-last wick, body, and volume changes jump. Entrance has no stagger. | Independent geometry springs retain stable candle identity. Candles enter 12ms apart. Last-price tag and line retarget through scale changes. | Initial reveal, paused Step, non-last update, interruption, pointer and keyboard restoration. |
+| Bump | Rank changes jump. Path hover has no emphasis motion. | Paths, dots, and endpoint labels share springs. Paths reveal; dots enter and grow on hover. Hover exit restores pinning. | Shuffle during motion, path and point A/B/A, pin, focus, exit, and removal. |
+| Donut | Entrance follows total. Narrow layout stays in a row. | Visibility-gated ring sweep, staggered segments, stable hit geometry, spring emphasis, and narrow column layout. | Entry before visibility threshold, segment A/B/A, pin, reorder, zero, and narrow layout. |
+| Volume profile | Positional identity and inferred midpoint ranges. | Stable IDs, validated low/high ranges, actual unequal geometry, source axes and POC marker, retained selection on tooltip close. | All sessions, top/middle/bottom bins, gap hit, replacement, removal, keyboard, and empty restore. |
+| Composition | 240px plot without cursor. | 320px desktop plot with a spring-driven dashed cursor. | Both views, period A/B/A, leave, keyboard, and missing data. |
+| Funnel | ChoiceChips and different heading/subtitle. | Source-style direction buttons, heading/subtitle, and canonical Next cohort action. | Both directions, cohort reversal, keyboard, zero, empty, and disabled states. |
+
+## Round one captions
+
 These captions describe the implementation changes for the parent's before/after video assembly. They are not parity verdicts.
 
 | Widget | Before | After | Video |
