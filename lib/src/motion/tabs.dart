@@ -234,9 +234,13 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     final variant = widget.variant;
+    final tabStop = widget.tabs.any((tab) => tab.value == _current)
+        ? _current
+        : widget.tabs.first.value;
 
     final triggers = <Widget>[];
     for (final tab in widget.tabs) {
+      _focusNodes[tab.value]!.skipTraversal = tab.value != tabStop;
       triggers.add(
         _TabTrigger(
           key: ValueKey(tab.value),
@@ -474,6 +478,7 @@ class _TabTrigger extends StatefulWidget {
 class _TabTriggerState extends State<_TabTrigger> {
   bool _hovered = false;
   bool _focusVisible = false;
+  bool _pointerFocused = false;
 
   Color _textColor(BeuiColors colors) {
     if (widget.active) {
@@ -493,6 +498,13 @@ class _TabTriggerState extends State<_TabTrigger> {
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
+    // Mouse input does not reset Flutter's traditional highlight mode.
+    widget.focusNode.onKeyEvent = (_, event) {
+      if (_pointerFocused && event is! KeyUpEvent) {
+        setState(() => _pointerFocused = false);
+      }
+      return KeyEventResult.ignored;
+    };
 
     Widget content = Container(
       key: widget.measureKey,
@@ -500,10 +512,14 @@ class _TabTriggerState extends State<_TabTrigger> {
           ? const BoxConstraints(minHeight: 44)
           : const BoxConstraints(),
       padding: _padding,
-      decoration: _focusVisible
+      foregroundDecoration: _focusVisible && !_pointerFocused
           ? BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [BoxShadow(color: colors.ring, spreadRadius: 2)],
+              borderRadius: switch (widget.variant) {
+                BeuiTabsVariant.pill => BorderRadius.circular(9999),
+                BeuiTabsVariant.segment => BorderRadius.circular(6),
+                BeuiTabsVariant.underline => BorderRadius.zero,
+              },
+              border: Border.all(color: colors.focusRing, width: 2),
             )
           : null,
       // `widthFactor: 1` sizes the trigger to its label; a bare
@@ -583,12 +599,24 @@ class _TabTriggerState extends State<_TabTrigger> {
       },
       onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
       onShowHoverHighlight: (v) => setState(() => _hovered = v),
+      onFocusChange: (focused) {
+        if (!focused && _pointerFocused) {
+          setState(() => _pointerFocused = false);
+        }
+      },
       child: Semantics(
         selected: widget.active,
         button: true,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: widget.onSelect,
+          onTapDown: (_) {
+            setState(() => _pointerFocused = true);
+            widget.focusNode.requestFocus();
+          },
+          onTap: () {
+            widget.focusNode.requestFocus();
+            widget.onSelect();
+          },
           child: content,
         ),
       ),
