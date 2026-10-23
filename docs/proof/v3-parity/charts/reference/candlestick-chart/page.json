@@ -1,0 +1,538 @@
+{
+  "url": "https://beui.dev/charts/candlestick-chart",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "text": "beUI Native is free — Pro mobile blocks and screens are in presale from $99\n\nReserve\nbeUI Pro for mobile\nbeUI\nComponents\nBlocks\nAgents\nCharts\nPlayground\nSponsors\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\n1.9k\nGet Pro\n\nINTRO\n\nHome\nCHARTS\n14\nSankey Chart\nNEW\nTreemap\nCandlestick Chart\nDonut Chart\nVolume Profile\nStatus Bar\nComposition Chart\nFunnel Chart\nLiquidity Heatmap\nBump Chart\nOrder Book\nHeat Calendar\nReturns Calendar\nPrice Target Fan\nCharts\nCandlestick Chart\nCandlestick Chart\nCopy Page\n\nLive OHLC candles with volume, a last-price line, and a crosshair readout.\n\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\nETH / USD · 5m\nSIMULATED\nPause\nStep\nCandle\n15:55\nO\n2,360.34\nH\n2,372.43\nL\n2,351.12\nC\n2,369.62\nVol\n278.7\n+0.39%\n2,439.72\n2,417.85\n2,395.98\n2,374.11\n2,352.24\n2,369.62\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\ncandlestick-chart\ncandlestick-chart\nAPI Reference\nCandlestickChart\ncandles\nreadonly Candle[]\n—\nlastPrice?\nnumber\n\nDraws a dashed line and tag at this price, usually the last trade.\n\n—\nactiveId?\nstring | null\n\nControlled crosshair candle, by `id`, so it stays on the same candle as new ones arrive. Pair with `onActiveIdChange`.\n\n—\ndefaultActiveId?\nstring | null\n—\nonActiveIdChange?\n((id: string | null) => void)\n—\nformatPrice?\n((value: number) => string)\n—\nformatVolume?\n((value: number) => string)\n—\nlabel?\nstring\n\nAccessible name for the chart.\n\n—\nclassName?\nstring\n—\nCandlestickChartLegend\nchildren?\n((candle: Candle, change: number) => ReactNode)\n\nCustom readout. Receives the crosshair candle, or the latest one.\n\n—\nclassName?\nstring\n—\nCandlestickChartPlot\nheight?\nnumber\n\nPlot height in px.\n\n320\nclassName?\nstring\n—\nRelated components\nVolume Profile\n\nAnimated volume by price, with point of control and value area highlights.\n\nPrice Target Fan\n\nComposable price target chart with Header, Plot, SVG, Axes, History, Targets, Now, Cursor, and Tooltip parts. Supply dated price history and targets; scrub with a pointer or keyboard and customize the active readout.\n\nOrder Book\n\nAnimated order book with bid and ask depth, spread, and volume balance.\n\nAbout Candlestick Chart\n\nCandlestick Chart is an animated React OHLC chart for price data. It draws open, high, low and close candles with volume bars underneath, a dashed last-price line with a price tag, and a crosshair with an axis price tag and an OHLC readout. When new trades arrive, the live candle's body, wick and volume spring to their new values with Framer Motion using transforms only, so the chart handles streaming data smoothly.\n\nWhen to use it\nA crypto or stock trading app shows live price action for a market.\nA portfolio or asset page shows recent price history with volume.\nA trading dashboard needs a crosshair readout of open, high, low and close for any candle.\nAccessibility\n\nThe plot is a focusable element with the slider role, and its value text reads the active candle's label with its open, high, low and close prices. Arrow Left and Arrow Right move the crosshair one candle, Home and End jump to the first and last candle, and Escape clears it. With reduced motion enabled, candles skip their fade in and values update in place without springs.\n\nFAQ\nHow do I make a candlestick chart in React?\nInstall the chart with the shadcn CLI and pass candles to CandlestickChart, each with an id, label, open, high, low, close and volume. Compose CandlestickChartLegend and CandlestickChartPlot inside it, or leave children empty for the default layout.\nDoes it work with live price data?\nYes. Update the candles array as trades print and set lastPrice to the latest trade. Candles keep their identity by id, so the crosshair stays on the same candle as new ones arrive.\nCan I format prices and volume?\nYes. Pass formatPrice and formatVolume to CandlestickChart. Use activeId with onActiveIdChange to control the crosshair, and the height prop on CandlestickChartPlot to size the plot.\n\nUpdated Oct 18, 2026\n\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+  "elements": [
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -265.9902038574219,
+        "y": 0,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -1240.5074462890625,
+        "y": 5.84375,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 988.78125,
+        "y": 13.5,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Search components",
+      "text": "Search⌘K",
+      "box": {
+        "x": 1035.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1046.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Light themeLight theme",
+      "box": {
+        "x": 1083.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Dark themeDark theme",
+      "box": {
+        "x": 1115.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "System themeSystem theme",
+      "box": {
+        "x": 1147.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Customize theme",
+      "text": "",
+      "box": {
+        "x": 1191.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1201.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1248.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1378,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 352.6875,
+        "y": 131,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy page as Markdown",
+      "text": "Copy Page",
+      "box": {
+        "x": 920.671875,
+        "y": 164,
+        "width": 102.328125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 930.671875,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "More page actions",
+      "text": "",
+      "box": {
+        "x": 1024,
+        "y": 164,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1033,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "PreviewPreview",
+      "box": {
+        "x": 308,
+        "y": 268,
+        "width": 80.1875,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "UsageUsage",
+      "box": {
+        "x": 392.1875,
+        "y": 268,
+        "width": 69.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CodeCode",
+      "box": {
+        "x": 465.59375,
+        "y": 268,
+        "width": 62.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Expand preview",
+      "text": "",
+      "box": {
+        "x": 1016,
+        "y": 264,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1028,
+        "y": 276,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "Pause",
+      "box": {
+        "x": 935.171875,
+        "y": 360,
+        "width": 58.4375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "Step",
+      "box": {
+        "x": 1001.609375,
+        "y": 360,
+        "width": 50.390625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "DIV",
+      "role": "slider",
+      "label": "Simulated ETH / USD, 5 minute candles",
+      "text": "2,439.722,417.852,395.982,374.112,352.242,369.62",
+      "box": {
+        "x": 304,
+        "y": 436,
+        "width": 752,
+        "height": 320
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 304,
+        "y": 436,
+        "width": 752,
+        "height": 320
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CLICLI",
+      "box": {
+        "x": 308,
+        "y": 937,
+        "width": 49.34375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "ManualManual",
+      "box": {
+        "x": 361.34375,
+        "y": 937,
+        "width": 76.203125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "bunbun",
+      "box": {
+        "x": 317,
+        "y": 998,
+        "width": 41.3125,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "npmnpm",
+      "box": {
+        "x": 360.3125,
+        "y": 998,
+        "width": 44.671875,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "pnpmpnpm",
+      "box": {
+        "x": 406.984375,
+        "y": 998,
+        "width": 51.84375,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "yarnyarn",
+      "box": {
+        "x": 460.828125,
+        "y": 998,
+        "width": 44.5,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy code",
+      "text": "",
+      "box": {
+        "x": 1011,
+        "y": 996,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1020,
+        "y": 1005,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "About Candlestick Chart",
+      "box": {
+        "x": 292,
+        "y": 2783.5625,
+        "width": 776,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1040,
+        "y": 2795.5625,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1299.375,
+        "y": 380.5,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1379,
+        "y": 624.5,
+        "width": 16,
+        "height": 16
+      }
+    }
+  ]
+}

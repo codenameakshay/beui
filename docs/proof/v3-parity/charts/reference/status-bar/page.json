@@ -1,0 +1,514 @@
+{
+  "url": "https://beui.dev/charts/status-bar",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "text": "beUI Native is free — Pro mobile blocks and screens are in presale from $99\n\nReserve\nbeUI Pro for mobile\nbeUI\nComponents\nBlocks\nAgents\nCharts\nPlayground\nSponsors\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\n1.9k\nGet Pro\n\nINTRO\n\nHome\nCHARTS\n14\nSankey Chart\nNEW\nTreemap\nCandlestick Chart\nDonut Chart\nVolume Profile\nStatus Bar\nComposition Chart\nFunnel Chart\nLiquidity Heatmap\nBump Chart\nOrder Book\nHeat Calendar\nReturns Calendar\nPrice Target Fan\nCharts\nStatus Bar\nStatus Bar\nCopy Page\n\nAnimated status history with rounded bars and period tooltips.\n\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\n48 days of status\nReplay\nSimulate incident\nAPI\nOperational\nAug 21\nOct 7\nAPI status data\nPeriod\tStatus\tDetails\nAug 21\tOperational\tAll checks passed.\nAug 22\tOperational\tAll checks passed.\nAug 23\tOperational\tAll checks passed.\nAug 24\tOperational\tAll checks passed.\nAug 25\tOperational\tAll checks passed.\nAug 26\tOperational\tAll checks passed.\nAug 27\tOperational\tAll checks passed.\nAug 28\tOperational\tAll checks passed.\nAug 29\tDegraded\tElevated response times for 12 minutes.\nAug 30\tOperational\tAll checks passed.\nAug 31\tOperational\tAll checks passed.\nSep 1\tOperational\tAll checks passed.\nSep 2\tOperational\tAll checks passed.\nSep 3\tOperational\tAll checks passed.\nSep 4\tOperational\tAll checks passed.\nSep 5\tOperational\tAll checks passed.\nSep 6\tOperational\tAll checks passed.\nSep 7\tOperational\tAll checks passed.\nSep 8\tOperational\tAll checks passed.\nSep 9\tOperational\tAll checks passed.\nSep 10\tOperational\tAll checks passed.\nSep 11\tOperational\tAll checks passed.\nSep 12\tOperational\tAll checks passed.\nSep 13\tOperational\tAll checks passed.\nSep 14\tOperational\tAll checks passed.\nSep 15\tOperational\tAll checks passed.\nSep 16\tOperational\tAll checks passed.\nSep 17\tOperational\tAll checks passed.\nSep 18\tOperational\tAll checks passed.\nSep 19\tOperational\tAll checks passed.\nSep 20\tOperational\tAll checks passed.\nSep 21\tOperational\tAll checks passed.\nSep 22\tOperational\tAll checks passed.\nSep 23\tOperational\tAll checks passed.\nSep 24\tOperational\tAll checks passed.\nSep 25\tOperational\tAll checks passed.\nSep 26\tOperational\tAll checks passed.\nSep 27\tOperational\tAll checks passed.\nSep 28\tOperational\tAll checks passed.\nSep 29\tOperational\tAll checks passed.\nSep 30\tOperational\tAll checks passed.\nOct 1\tOperational\tAll checks passed.\nOct 2\tOperational\tAll checks passed.\nOct 3\tOperational\tAll checks passed.\nOct 4\tOperational\tAll checks passed.\nOct 5\tOperational\tAll checks passed.\nOct 6\tOperational\tAll checks passed.\nOct 7\tOperational\tAll checks passed.\nWebsite\nOperational\nAug 21\nOct 7\nOperational\nDegraded\nOutage\nWebsite status data\nPeriod\tStatus\tDetails\nAug 21\tOperational\tAll checks passed.\nAug 22\tOperational\tAll checks passed.\nAug 23\tOperational\tAll checks passed.\nAug 24\tOperational\tAll checks passed.\nAug 25\tOperational\tAll checks passed.\nAug 26\tOperational\tAll checks passed.\nAug 27\tOperational\tAll checks passed.\nAug 28\tOperational\tAll checks passed.\nAug 29\tOperational\tAll checks passed.\nAug 30\tOperational\tAll checks passed.\nAug 31\tOperational\tAll checks passed.\nSep 1\tOperational\tAll checks passed.\nSep 2\tOperational\tAll checks passed.\nSep 3\tOperational\tAll checks passed.\nSep 4\tOperational\tAll checks passed.\nSep 5\tOperational\tAll checks passed.\nSep 6\tOperational\tAll checks passed.\nSep 7\tOperational\tAll checks passed.\nSep 8\tOperational\tAll checks passed.\nSep 9\tOperational\tAll checks passed.\nSep 10\tOperational\tAll checks passed.\nSep 11\tOperational\tAll checks passed.\nSep 12\tOperational\tAll checks passed.\nSep 13\tOperational\tAll checks passed.\nSep 14\tOperational\tAll checks passed.\nSep 15\tOperational\tAll checks passed.\nSep 16\tOperational\tAll checks passed.\nSep 17\tOperational\tAll checks passed.\nSep 18\tOperational\tAll checks passed.\nSep 19\tOperational\tAll checks passed.\nSep 20\tOperational\tAll checks passed.\nSep 21\tOperational\tAll checks passed.\nSep 22\tOperational\tAll checks passed.\nSep 23\tOperational\tAll checks passed.\nSep 24\tOperational\tAll checks passed.\nSep 25\tOperational\tAll checks passed.\nSep 26\tOperational\tAll checks passed.\nSep 27\tOperational\tAll checks passed.\nSep 28\tOperational\tAll checks passed.\nSep 29\tOperational\tAll checks passed.\nSep 30\tOperational\tAll checks passed.\nOct 1\tOperational\tAll checks passed.\nOct 2\tOperational\tAll checks passed.\nOct 3\tOperational\tAll checks passed.\nOct 4\tOperational\tAll checks passed.\nOct 5\tOperational\tAll checks passed.\nOct 6\tOperational\tAll checks passed.\nOct 7\tOperational\tAll checks passed.\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\nstatus-bar\nstatus-bar\nAPI Reference\nStatusBar\ndata\nreadonly StatusBarDatum[]\n\nObservations in display order. The chart never generates or aggregates data.\n\n—\nstatuses?\nreadonly StatusBarStatus[]\n\nOverride the default status labels and colors, or define your own states.\n\n—\nlabel?\nstring\n—\nactiveId?\nstring | null\n—\ndefaultActiveId?\nstring | null\n—\nonActiveChange?\n((id: string | null) => void)\n—\nclassName?\nstring\n—\nStatusBarLegend\nshowCounts?\nboolean\nfalse\nclassName?\nstring\n—\nStatusBarPlot\nclassName?\nstring\n—\nbarClassName?\nstring\n\nCustomize segment height and roundness independently of the 44px hit area.\n\n—\nshowLabels?\nboolean\ntrue\nStatusBarTooltip\nclassName?\nstring\n—\nside?\n\"bottom\" | \"left\" | \"right\" | \"top\"\ntop\nRelated components\nComposition Chart\n\nStacked bar and area shares with period tooltips and a compact interactive legend.\n\nBump Chart\n\nAnimated rankings with curved paths, interactive rank dots, and tooltips.\n\nFunnel Chart\n\nVertical and horizontal funnels with curved stages and animated number tooltips.\n\nAbout Status Bar\n\nStatus Bar is an animated React status history chart, the row of colored bars used on uptime and status pages. Each period is a rounded bar colored by its status, the bars stagger in on first view, and when a period's status changes only its color crossfades with Framer Motion. It ships default operational, degraded, outage, maintenance and no data statuses, and you can define your own labels and colors.\n\nWhen to use it\nA status page shows 90 days of uptime for each service.\nA monitoring dashboard shows recent health checks or incidents for an API or region.\nA CI or cron dashboard shows pass and fail history for each job.\nAccessibility\n\nInspection runs through one native range input over the bars, so Arrow keys, Home and End move between periods, and screen readers hear the period label, status and description. Escape closes the tooltip, and a visually hidden table lists every period with its status, so color is never the only way to read the history. With reduced motion enabled, the bars fade in without their rise.\n\nFAQ\nHow do I build an uptime status bar in React?\nInstall the chart with the shadcn CLI and pass data to StatusBar, with each period's id, label, status and optional description. With no children it renders StatusBarPlot, StatusBarTooltip and StatusBarLegend.\nCan I use my own statuses and colors?\nYes. Pass a statuses array with an id, label and color for each state. Every status used in data must exist in statuses, and the defaults are exported as STATUS_BAR_STATUSES.\nCan I control the highlighted period?\nYes. Pass activeId and onActiveChange for controlled use, or defaultActiveId for uncontrolled use. StatusBarLegend takes showCounts to show how many periods have each status.\n\nUpdated Oct 18, 2026\n\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+  "elements": [
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -229.99632263183594,
+        "y": 0,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -1267.5028076171875,
+        "y": 5.84375,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 988.78125,
+        "y": 13.5,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Search components",
+      "text": "Search⌘K",
+      "box": {
+        "x": 1035.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1046.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Light themeLight theme",
+      "box": {
+        "x": 1083.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Dark themeDark theme",
+      "box": {
+        "x": 1115.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "System themeSystem theme",
+      "box": {
+        "x": 1147.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Customize theme",
+      "text": "",
+      "box": {
+        "x": 1191.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1201.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1248.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1378,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 352.6875,
+        "y": 131,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy page as Markdown",
+      "text": "Copy Page",
+      "box": {
+        "x": 920.671875,
+        "y": 164,
+        "width": 102.328125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 930.671875,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "More page actions",
+      "text": "",
+      "box": {
+        "x": 1024,
+        "y": 164,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1033,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "PreviewPreview",
+      "box": {
+        "x": 308,
+        "y": 268,
+        "width": 80.1875,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "UsageUsage",
+      "box": {
+        "x": 392.1875,
+        "y": 268,
+        "width": 69.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CodeCode",
+      "box": {
+        "x": 465.59375,
+        "y": 268,
+        "width": 62.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Expand preview",
+      "text": "",
+      "box": {
+        "x": 1016,
+        "y": 264,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1028,
+        "y": 276,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "Replay",
+      "box": {
+        "x": 827.5625,
+        "y": 360,
+        "width": 62.5,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "Simulate incident",
+      "box": {
+        "x": 894.0625,
+        "y": 360,
+        "width": 121.9375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CLICLI",
+      "box": {
+        "x": 308,
+        "y": 890,
+        "width": 49.34375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "ManualManual",
+      "box": {
+        "x": 361.34375,
+        "y": 890,
+        "width": 76.203125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "bunbun",
+      "box": {
+        "x": 317,
+        "y": 951,
+        "width": 41.3125,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "npmnpm",
+      "box": {
+        "x": 360.3125,
+        "y": 951,
+        "width": 44.671875,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "pnpmpnpm",
+      "box": {
+        "x": 406.984375,
+        "y": 951,
+        "width": 51.84375,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "yarnyarn",
+      "box": {
+        "x": 460.828125,
+        "y": 951,
+        "width": 44.5,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy code",
+      "text": "",
+      "box": {
+        "x": 1011,
+        "y": 949,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1020,
+        "y": 958,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "About Status Bar",
+      "box": {
+        "x": 292,
+        "y": 2774.5625,
+        "width": 776,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1040,
+        "y": 2786.5625,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1299.375,
+        "y": 380.5,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1379,
+        "y": 624.5,
+        "width": 16,
+        "height": 16
+      }
+    }
+  ]
+}

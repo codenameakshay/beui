@@ -1,0 +1,514 @@
+{
+  "url": "https://beui.dev/charts/price-target-fan",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "text": "beUI Native is free — Pro mobile blocks and screens are in presale from $99\n\nReserve\nbeUI Pro for mobile\nbeUI\nComponents\nBlocks\nAgents\nCharts\nPlayground\nSponsors\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\n1.9k\nGet Pro\n\nINTRO\n\nHome\nCHARTS\n14\nSankey Chart\nNEW\nTreemap\nCandlestick Chart\nDonut Chart\nVolume Profile\nStatus Bar\nComposition Chart\nFunnel Chart\nLiquidity Heatmap\nBump Chart\nOrder Book\nHeat Calendar\nReturns Calendar\nPrice Target Fan\nCharts\nPrice Target Fan\nPrice Target Fan\nCopy Page\n\nComposable price target chart with Header, Plot, SVG, Axes, History, Targets, Now, Cursor, and Tooltip parts. Supply dated price history and targets; scrub with a pointer or keyboard and customize the active readout.\n\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\n$205.00\n$\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n.\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n+14.8%\n+\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n.\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n%\nMean target\n160\n180\n200\n220\nSep 2025\nMar 2026\nNow\nSep 2027\n232\n205\n168\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\nprice-target-fan\nprice-target-fan\nAPI Reference\nPriceTargetFan\nlabel?\nstring\n\nAccessible name of the chart.\n\n—\ncurrent\nnumber\n\nLast traded price; the history walks to this point.\n\n—\ntargets\n[PriceTarget, PriceTarget, PriceTarget]\n\nHigh, mean and low targets, in that order.\n\n—\ndates?\n{ start?: string; mid?: string; horizon?: string | undefined; } | undefined\n\nAxis labels, oldest to horizon.\n\n—\nhistory?\nPriceHistoryPoint[]\n\nActual prices, oldest first, using ISO dates. Empty history renders only the current price and targets.\n\n—\nactive?\nPriceTargetFanActive | null\n—\ndefaultActive?\nPriceTargetFanActive | null\n—\nonActiveChange?\n((active: PriceTargetFanActive | null) => void)\n—\nclassName?\nstring\n—\nPriceTargetFanHeader\nclassName?\nstring\n—\nPriceTargetFanAxes\nclassName?\nstring\n—\nPriceTargetFanPlot\nclassName?\nstring\n—\nPriceTargetFanSvg\nclassName?\nstring\n—\nPriceTargetFanCursor\nclassName?\nstring\n—\nPriceTargetFanHistory\nclassName?\nstring\n—\nPriceTargetFanNow\nclassName?\nstring\n—\nPriceTargetFanTargets\nclassName?\nstring\n—\nPriceTargetFanTooltip\nclassName?\nstring\n—\nRelated components\nHeat Calendar\n\nComposable activity calendar with Grid, Legend, and Tooltip parts, controlled range selection, and UTC calendar dates. Supply weekly intensities to visualize activity and total a selected span.\n\nReturns Calendar\n\nComposable monthly returns calendar with Grid and Tooltip parts, controlled month or year selections, and compounded totals. Supply your own years and monthly percentages.\n\nCandlestick Chart\n\nLive OHLC candles with volume, a last-price line, and a crosshair readout.\n\nAbout Price Target Fan\n\nPrice Target Fan is a React stock chart that shows a price history leading to today and three dashed projections fanning out to analyst high, mean and low price targets. The history draws itself with Framer Motion, the hovered target's projection draws solid and takes over the header, where its price and percentage roll in on a NumberTicker. Scrubbing the history or hovering a target shows a tooltip, and the chart composes from header, plot, axes, history, targets, now, cursor and tooltip parts with a usePriceTargetFan hook.\n\nWhen to use it\nA stock research or brokerage page shows where analysts expect a share price to go over the next twelve months.\nAn investment newsletter or report wants an interactive version of the consensus price target chart.\nA portfolio app shows upside and downside to target next to the current price.\nAccessibility\n\nThe chart is an SVG group labeled with the mean target and current price. The history line is a focusable slider: Arrow Left and Arrow Right step through dates, Home and End jump to the ends, and Escape lets go. Each target is a focusable button that toggles with Enter or Space, reports a pressed state and is linked to the tooltip. With reduced motion enabled, the chart appears finished, the cursor moves without travel and the live ring on the now dot is removed.\n\nFAQ\nHow do I build an analyst price target chart in React?\nPass PriceTargetFan the current price, a targets tuple of high, mean and low (each with key, price and analysts) and an optional history array of ISO date and price points.\nDoes it generate sample data?\nNo. It only draws the data you pass. It throws a RangeError if history dates are not ascending ISO dates, or if there are not exactly three positive targets with unique keys.\nCan I control which point is shown?\nYes. Use active with onActiveChange, or defaultActive. The value is either a history point by date or a target by key.\nContributed by\nSavva\n\nUpdated Oct 18, 2026\n\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+  "elements": [
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -228.99127197265625,
+        "y": 0,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": -1268.256591796875,
+        "y": 5.84375,
+        "width": 2880,
+        "height": 39
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 988.78125,
+        "y": 13.5,
+        "width": 12,
+        "height": 12
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Search components",
+      "text": "Search⌘K",
+      "box": {
+        "x": 1035.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1046.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Light themeLight theme",
+      "box": {
+        "x": 1083.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1091.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "Dark themeDark theme",
+      "box": {
+        "x": 1115.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1123.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "System themeSystem theme",
+      "box": {
+        "x": 1147.84375,
+        "y": 52,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1155.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Customize theme",
+      "text": "",
+      "box": {
+        "x": 1191.84375,
+        "y": 50,
+        "width": 36,
+        "height": 36
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1201.84375,
+        "y": 60,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1248.84375,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1378,
+        "y": 61,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 352.6875,
+        "y": 131,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy page as Markdown",
+      "text": "Copy Page",
+      "box": {
+        "x": 920.671875,
+        "y": 164,
+        "width": 102.328125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 930.671875,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "More page actions",
+      "text": "",
+      "box": {
+        "x": 1024,
+        "y": 164,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1033,
+        "y": 173,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "PreviewPreview",
+      "box": {
+        "x": 308,
+        "y": 316,
+        "width": 80.1875,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "UsageUsage",
+      "box": {
+        "x": 392.1875,
+        "y": 316,
+        "width": 69.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CodeCode",
+      "box": {
+        "x": 465.59375,
+        "y": 316,
+        "width": 62.40625,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Expand preview",
+      "text": "",
+      "box": {
+        "x": 1016,
+        "y": 312,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1028,
+        "y": 324,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": "group",
+      "label": "Price target · 12 months: mean $205.00, now $178.52",
+      "text": "160180200220Sep 2025Mar 2026NowSep 2027 232205168",
+      "box": {
+        "x": 420,
+        "y": 444,
+        "width": 520,
+        "height": 236
+      }
+    },
+    {
+      "tag": "g",
+      "role": "slider",
+      "label": "Price history",
+      "text": " ",
+      "box": {
+        "x": 456,
+        "y": 581.9000244140625,
+        "width": 210.55999755859375,
+        "height": 59.79998779296875
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "CLICLI",
+      "box": {
+        "x": 308,
+        "y": 861,
+        "width": 49.34375,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "ManualManual",
+      "box": {
+        "x": 361.34375,
+        "y": 861,
+        "width": 76.203125,
+        "height": 32
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "bunbun",
+      "box": {
+        "x": 317,
+        "y": 922,
+        "width": 41.3125,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "npmnpm",
+      "box": {
+        "x": 360.3125,
+        "y": 922,
+        "width": 44.671875,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "pnpmpnpm",
+      "box": {
+        "x": 406.984375,
+        "y": 922,
+        "width": 51.84375,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": "tab",
+      "label": null,
+      "text": "yarnyarn",
+      "box": {
+        "x": 460.828125,
+        "y": 922,
+        "width": 44.5,
+        "height": 28
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": "Copy code",
+      "text": "",
+      "box": {
+        "x": 1011,
+        "y": 920,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1020,
+        "y": 929,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "BUTTON",
+      "role": null,
+      "label": null,
+      "text": "About Price Target Fan",
+      "box": {
+        "x": 292,
+        "y": 3503.5625,
+        "width": 776,
+        "height": 40
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1040,
+        "y": 3515.5625,
+        "width": 16,
+        "height": 16
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1299.375,
+        "y": 380.5,
+        "width": 14,
+        "height": 14
+      }
+    },
+    {
+      "tag": "svg",
+      "role": null,
+      "label": null,
+      "text": "",
+      "box": {
+        "x": 1379,
+        "y": 624.5,
+        "width": 16,
+        "height": 16
+      }
+    }
+  ]
+}
