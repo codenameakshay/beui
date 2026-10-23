@@ -180,7 +180,8 @@ class _BeuiColorPickerState extends State<BeuiColorPicker> {
           _triggerKey.currentContext?.findRenderObject() as RenderBox?;
       if (trigger == null || !trigger.hasSize) return;
       final left = trigger.localToGlobal(Offset.zero).dx;
-      final viewport = Overlay.of(context).context.findRenderObject() as RenderBox;
+      final viewport =
+          Overlay.of(context).context.findRenderObject() as RenderBox;
       final width = viewport.size.width;
       final shift =
           left.clamp(8.0, (width - 288 - 8).clamp(8.0, double.infinity)) - left;
@@ -458,8 +459,6 @@ class _BeuiColorPickerAreaState extends State<BeuiColorPickerArea> {
               return KeyEventResult.handled;
             },
             child: MouseRegion(
-              onHover: (event) =>
-                  _showLoupe(event.localPosition, size, hsv, scope.color.a),
               onExit: (_) => _hideLoupe(),
               child: Listener(
                 onPointerDown: (event) =>
@@ -479,18 +478,18 @@ class _BeuiColorPickerAreaState extends State<BeuiColorPickerArea> {
                       ? (_) => scope.onColor(_gestureColor, commit: true)
                       : null,
                   child: _PickerAreaMorph(
-                    child: Stack(
+                    builder: (radius) => Stack(
                       clipBehavior: Clip.none,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: radius,
                           child: SizedBox(
                             width: size.width,
                             height: size.height,
                             child: DecoratedBox(
                               key: const ValueKey('color-picker-spectrum'),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: radius,
                                 color: HSVColor.fromAHSV(
                                   1,
                                   hsv.hue,
@@ -728,12 +727,13 @@ class _ColorSliderState extends State<_ColorSlider> {
                 ? (_) => scope.onColor(_gestureColor, commit: true)
                 : null,
             child: SizedBox(
-              height: 24,
+              height: 14,
               child: Stack(
+                clipBehavior: Clip.none,
                 alignment: Alignment.center,
                 children: [
                   Container(
-                    height: 10,
+                    height: 14,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       gradient: alpha
@@ -792,19 +792,29 @@ class _ColorSliderThumb extends StatelessWidget {
   const _ColorSliderThumb({required this.colors});
   final BeuiColors colors;
   @override
-  Widget build(BuildContext context) => Container(
-    width: 16,
-    height: 16,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      color: colors.background,
-      border: Border.all(color: colors.border, width: 2),
-      boxShadow: [
-        BoxShadow(
-          color: colors.foreground.withValues(alpha: .2),
-          blurRadius: 3,
+  Widget build(BuildContext context) => SizedBox(
+    width: 18,
+    height: 14,
+    child: OverflowBox(
+      minWidth: 18,
+      maxWidth: 18,
+      minHeight: 18,
+      maxHeight: 18,
+      child: Container(
+        width: 18,
+        height: 18,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: colors.background,
+          border: Border.all(color: Colors.white, width: 3),
+          boxShadow: [
+            BoxShadow(
+              color: colors.foreground.withValues(alpha: .2),
+              blurRadius: 3,
+            ),
+          ],
         ),
-      ],
+      ),
     ),
   );
 }
@@ -819,15 +829,21 @@ class BeuiColorPickerHex extends StatefulWidget {
 
 class _BeuiColorPickerHexState extends State<BeuiColorPickerHex> {
   late final TextEditingController _controller;
+  final _focus = FocusNode();
+  bool _draft = false;
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
+    _focus.addListener(() {
+      if (!_focus.hasFocus && _draft) _settle();
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -835,38 +851,54 @@ class _BeuiColorPickerHexState extends State<BeuiColorPickerHex> {
   Widget build(BuildContext context) {
     final scope = _ColorPickerInherited.of(context);
     final hex = beuiColorToHex(scope.color).substring(1).toUpperCase();
-    if (!_controller.selection.isValid || !_controller.selection.isCollapsed) {
-      _controller.text = hex;
-    } else if (_controller.text.isEmpty) {
-      _controller.text = hex;
-    }
-    void commit() {
-      final color = beuiColorFromHex(_controller.text);
-      if (color != null) {
-        scope.onColor(color, commit: true);
-        _controller.text = beuiColorToHex(color).substring(1).toUpperCase();
-      } else {
-        _controller.text = hex;
-      }
-    }
+    if (!_draft && _controller.text != hex) _controller.text = hex;
 
-    return TextField(
-      controller: _controller,
-      enabled: scope.enabled,
-      maxLength: 8,
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[#0-9a-fA-F]')),
-      ],
-      onSubmitted: (_) => commit(),
-      onEditingComplete: commit,
-      decoration: const InputDecoration(
-        prefixText: '#',
-        counterText: '',
-        isDense: true,
-        border: OutlineInputBorder(),
+    return SizedBox(
+      height: 36,
+      child: TextField(
+        controller: _controller,
+        focusNode: _focus,
+        enabled: scope.enabled,
+        maxLength: 9,
+        onChanged: (text) {
+          _draft = true;
+          final raw = text.replaceFirst('#', '');
+          final color = beuiColorFromHex(raw);
+          if ((raw.length == 6 || raw.length == 8) && color != null) {
+            scope.onColor(color);
+          }
+        },
+        onSubmitted: (_) => _settle(),
+        decoration: InputDecoration(
+          hintText: 'Hex color',
+          prefixText: '#',
+          counterText: '',
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 8,
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        style: const TextStyle(
+          fontFamily: 'Geist Mono',
+          fontSize: 14,
+          height: 20 / 14,
+          fontFeatures: [FontFeature.tabularFigures()],
+        ),
       ),
-      style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
     );
+  }
+
+  void _settle() {
+    if (!_draft) return;
+    final scope = _ColorPickerInherited.of(context);
+    final color = beuiColorFromHex(_controller.text);
+    if (color != null) scope.onColor(color, commit: true);
+    _draft = false;
+    _controller.text = beuiColorToHex(
+      color ?? scope.color,
+    ).substring(1).toUpperCase();
   }
 }
 
@@ -906,22 +938,18 @@ class BeuiColorPickerChannels extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(right: i < values.length - 1 ? 6 : 0),
-              child: TextField(
+              child: _ColorChannelInput(
+                key: ValueKey('$format-$i'),
                 enabled: scope.enabled,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: labels[i],
-                  isDense: true,
-                  border: const OutlineInputBorder(),
-                ),
-                controller: TextEditingController(text: '${values[i]}'),
-                onSubmitted: (text) {
-                  final max = i == 3
-                      ? 100
-                      : format == BeuiColorFormat.rgb
-                      ? 255
-                      : (i == 0 ? 360 : 100);
-                  final n = (int.tryParse(text) ?? values[i]).clamp(0, max);
+                label: labels[i],
+                short: (i == 3 ? 'A' : labels[i].substring(0, 1)),
+                value: values[i],
+                max: i == 3
+                    ? 100
+                    : format == BeuiColorFormat.rgb
+                    ? 255
+                    : (i == 0 ? 360 : 100),
+                onChanged: (n, commit) {
                   final next = i == 3
                       ? color.withValues(alpha: n / 100)
                       : format == BeuiColorFormat.rgb
@@ -937,11 +965,148 @@ class BeuiColorPickerChannels extends StatelessWidget {
                           i == 1 ? n / 100 : hsl.saturation,
                           i == 2 ? n / 100 : hsl.lightness,
                         ).toColor();
-                  scope.onColor(next, commit: true);
+                  scope.onColor(next, commit: commit);
                 },
               ),
             ),
           ),
+      ],
+    );
+  }
+}
+
+class _ColorChannelInput extends StatefulWidget {
+  const _ColorChannelInput({
+    required this.enabled,
+    required this.label,
+    required this.short,
+    required this.value,
+    required this.max,
+    required this.onChanged,
+    super.key,
+  });
+  final bool enabled;
+  final String label, short;
+  final int value, max;
+  final void Function(int, bool) onChanged;
+  @override
+  State<_ColorChannelInput> createState() => _ColorChannelInputState();
+}
+
+class _ColorChannelInputState extends State<_ColorChannelInput> {
+  final _controller = TextEditingController();
+  final _focus = FocusNode();
+  bool _draft = false;
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(() {
+      if (!_focus.hasFocus && _draft) _settle();
+    });
+  }
+
+  void _settle() {
+    if (!_draft) return;
+    final value = (int.tryParse(_controller.text) ?? widget.value).clamp(
+      0,
+      widget.max,
+    );
+    widget.onChanged(value, true);
+    setState(() => _draft = false);
+  }
+
+  void _nudge(int delta) {
+    final value = (widget.value + delta).clamp(0, widget.max);
+    _draft = false;
+    _controller.text = '$value';
+    widget.onChanged(value, true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_draft && _controller.text != '${widget.value}') {
+      _controller.text = '${widget.value}';
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CallbackShortcuts(
+          bindings: {
+            const SingleActivator(LogicalKeyboardKey.arrowUp): () => _nudge(1),
+            const SingleActivator(LogicalKeyboardKey.arrowDown): () =>
+                _nudge(-1),
+            const SingleActivator(
+              LogicalKeyboardKey.arrowUp,
+              shift: true,
+            ): () =>
+                _nudge(10),
+            const SingleActivator(
+              LogicalKeyboardKey.arrowDown,
+              shift: true,
+            ): () =>
+                _nudge(-10),
+          },
+          child: SizedBox(
+            height: 36,
+            child: Semantics(
+              label: widget.label,
+              child: TextField(
+                enabled: widget.enabled,
+                focusNode: _focus,
+                controller: _controller,
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(3),
+                ],
+                style: const TextStyle(
+                  fontSize: 14,
+                  height: 20 / 14,
+                  fontFeatures: [FontFeature.tabularFigures()],
+                ),
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 8,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onChanged: (text) {
+                  _draft = true;
+                  if (text.isNotEmpty) {
+                    widget.onChanged(
+                      int.parse(text).clamp(0, widget.max),
+                      false,
+                    );
+                  }
+                },
+                onSubmitted: (_) => _settle(),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        ExcludeSemantics(
+          child: Text(
+            widget.short,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: BeuiColors.resolve(context).mutedForeground,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -967,7 +1132,16 @@ class BeuiColorPickerEyeDropper extends StatelessWidget {
     return IconButton(
       tooltip: '$label (unavailable on this platform)',
       onPressed: null,
-      icon: Icon(LucideIcons.pipette, color: colors.mutedForeground),
+      constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+      padding: EdgeInsets.zero,
+      style: IconButton.styleFrom(
+        minimumSize: const Size(36, 36),
+        maximumSize: const Size(36, 36),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        side: BorderSide(color: colors.border),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      icon: Icon(LucideIcons.pipette, size: 16, color: colors.mutedForeground),
     );
   }
 }
@@ -1077,7 +1251,11 @@ class BeuiColorPickerTrigger extends StatelessWidget {
           child ??
               Text(
                 beuiColorToHex(scope.color).toUpperCase(),
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                style: TextStyle(
+                  fontFamily: 'Geist Mono',
+                  fontSize: 14,
+                  color: colors.foreground,
+                ),
               ),
         ],
       ),
@@ -1191,8 +1369,8 @@ class _PickerRevealState extends State<_PickerReveal> {
 }
 
 class _PickerAreaMorph extends StatefulWidget {
-  const _PickerAreaMorph({required this.child});
-  final Widget child;
+  const _PickerAreaMorph({required this.builder});
+  final Widget Function(BorderRadius) builder;
   @override
   State<_PickerAreaMorph> createState() => _PickerAreaMorphState();
 }
@@ -1203,7 +1381,9 @@ class _PickerAreaMorphState extends State<_PickerAreaMorph> {
   @override
   Widget build(BuildContext context) {
     final scope = _ColorPickerInherited.of(context);
-    if (scope.chipKey == null || scope.reduce) return widget.child;
+    if (scope.chipKey == null || scope.reduce) {
+      return widget.builder(BorderRadius.circular(12));
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final area = _areaKey.currentContext?.findRenderObject() as RenderBox?;
@@ -1223,7 +1403,7 @@ class _PickerAreaMorphState extends State<_PickerAreaMorph> {
           if (_chip == null) {
             return Opacity(
               opacity: scope.chipKey?.currentContext == null ? 1 : 0,
-              child: widget.child,
+              child: widget.builder(BorderRadius.circular(12)),
             );
           }
           return SingleMotionBuilder(
@@ -1235,22 +1415,22 @@ class _PickerAreaMorphState extends State<_PickerAreaMorph> {
                 bounce: .2,
               ),
             ),
-            child: widget.child,
-            builder: (context, p, child) {
+            builder: (context, p, _) {
               final rect = Rect.lerp(_chip ?? target, target, p)!;
+              final scaleX = rect.width / target.width;
+              final scaleY = rect.height / target.height;
+              final corner = 6 + 6 * p.clamp(0.0, 1.0);
+              final radius = BorderRadius.all(
+                Radius.elliptical(corner / scaleX, corner / scaleY),
+              );
               return Transform(
                 alignment: Alignment.topLeft,
                 transform: Matrix4.identity()
                   ..translateByDouble(rect.left, rect.top, 0, 1)
-                  ..scaleByDouble(
-                    rect.width / target.width,
-                    rect.height / target.height,
-                    1,
-                    1,
-                  ),
+                  ..scaleByDouble(scaleX, scaleY, 1, 1),
                 child: Stack(
                   children: [
-                    child!,
+                    widget.builder(radius),
                     Positioned.fill(
                       child: IgnorePointer(
                         child: _PickerReveal(
@@ -1262,7 +1442,7 @@ class _PickerAreaMorphState extends State<_PickerAreaMorph> {
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                               color: scope.color,
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: radius,
                             ),
                           ),
                         ),

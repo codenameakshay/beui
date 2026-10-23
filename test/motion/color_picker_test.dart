@@ -11,6 +11,85 @@ Widget _app(Widget child) => MaterialApp(
 );
 
 void main() {
+  testWidgets(
+    'hex previews full entries and restores rejected drafts on blur',
+    (tester) async {
+      final changes = <String>[];
+      final commits = <String>[];
+      await tester.pumpWidget(
+        _app(
+          BeuiColorPicker(
+            onChanged: changes.add,
+            onCommit: commits.add,
+            child: const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BeuiColorPickerHex(),
+                TextButton(onPressed: null, child: Text('Other')),
+              ],
+            ),
+          ),
+        ),
+      );
+      final field = find.byType(TextField);
+      await tester.enterText(field, 'abc');
+      expect(changes, isEmpty);
+      await tester.enterText(field, '123456');
+      expect(changes, ['#123456']);
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      expect(commits, ['#123456']);
+      await tester.enterText(field, 'notvalid');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      expect(
+        tester.widget<EditableText>(find.byType(EditableText)).controller.text,
+        '123456',
+      );
+      expect(commits, ['#123456']);
+    },
+  );
+
+  testWidgets(
+    'numeric channels edit live and accept shifted arrow increments',
+    (tester) async {
+      String color = '#3478f6';
+      final commits = <String>[];
+      await tester.pumpWidget(
+        _app(
+          StatefulBuilder(
+            builder: (context, update) => SizedBox(
+              width: 240,
+              child: BeuiColorPicker(
+                value: color,
+                onChanged: (value) => update(() => color = value),
+                onCommit: commits.add,
+                child: const BeuiColorPickerChannels(),
+              ),
+            ),
+          ),
+        ),
+      );
+      final red = find.byType(TextField).first;
+      await tester.enterText(red, '100');
+      await tester.pump();
+      expect(color, '#6478f6');
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.pump();
+      expect(color, '#6e78f6');
+      expect(commits, ['#6e78f6']);
+      expect(
+        tester
+            .widget<EditableText>(find.byType(EditableText).first)
+            .controller
+            .text,
+        '110',
+      );
+    },
+  );
+
   testWidgets('popover clamps horizontally and transfers focus in and back', (
     tester,
   ) async {
@@ -134,7 +213,7 @@ void main() {
     expect(find.byKey(const ValueKey('color-picker-loupe')), findsNothing);
   });
 
-  testWidgets('area loupe also appears on hover and hides on exit', (
+  testWidgets('area hover is idle and a held pointer lifts the loupe', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -145,11 +224,14 @@ void main() {
     await mouse.addPointer(location: center);
     await mouse.moveTo(center);
     await tester.pump();
+    expect(find.byKey(const ValueKey('color-picker-loupe')), findsNothing);
+    await mouse.down(center);
+    await tester.pump();
     expect(find.byKey(const ValueKey('color-picker-loupe')), findsOneWidget);
-
-    await mouse.moveTo(const Offset(-20, -20));
+    await mouse.up();
     await tester.pump();
     expect(find.byKey(const ValueKey('color-picker-loupe')), findsNothing);
+    await mouse.removePointer();
   });
 
   testWidgets('controlled color reports changes without changing its value', (
@@ -353,14 +435,14 @@ void main() {
           (widget) =>
               widget is Container &&
               widget.constraints ==
-                  const BoxConstraints.tightFor(width: 16, height: 16),
+                  const BoxConstraints.tightFor(width: 18, height: 18),
         ),
       );
-      expect(tester.getSize(slider), const Size(200, 24));
-      expect(tester.getSize(thumb), const Size(16, 16));
+      expect(tester.getSize(slider), const Size(200, 14));
+      expect(tester.getSize(thumb), const Size(18, 18));
       expect(
         tester.getTopLeft(thumb) - tester.getTopLeft(slider),
-        alpha ? const Offset(184, 4) : const Offset(0, 4),
+        alpha ? const Offset(182, -2) : const Offset(0, -2),
       );
       for (var attempt = 0; attempt < 2; attempt++) {
         final origin = tester.getTopLeft(slider);
@@ -376,7 +458,7 @@ void main() {
         expect(changes.last, requestedColor);
         expect(
           tester.getTopLeft(thumb) - tester.getTopLeft(slider),
-          const Offset(92, 4),
+          const Offset(91, -2),
         );
       }
       expect(commits, [requestedColor, requestedColor]);
@@ -420,7 +502,7 @@ void main() {
             (widget) =>
                 widget is Container &&
                 widget.constraints ==
-                    const BoxConstraints.tightFor(width: 16, height: 16),
+                    const BoxConstraints.tightFor(width: 18, height: 18),
           ),
         );
         for (var attempt = 0; attempt < 2; attempt++) {
@@ -436,11 +518,11 @@ void main() {
           await pointer.up();
           await tester.pump();
           expect(changes.last, requestedColor);
-          expect(tester.getSize(slider), const Size(200, 24));
-          expect(tester.getSize(thumb), const Size(16, 16));
+          expect(tester.getSize(slider), const Size(200, 14));
+          expect(tester.getSize(thumb), const Size(18, 18));
           expect(
             tester.getTopLeft(thumb) - tester.getTopLeft(slider),
-            alpha ? const Offset(184, 4) : const Offset(0, 4),
+            alpha ? const Offset(182, -2) : const Offset(0, -2),
           );
         }
         expect(commits, [requestedColor, requestedColor]);
