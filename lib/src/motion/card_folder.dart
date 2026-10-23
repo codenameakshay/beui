@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -221,46 +222,47 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                     enabled: !widget.disabled,
                     expanded: isOpen,
                     label: accessibleLabel,
-                    child: FocusableActionDetector(
-                      focusNode: _folderFocus,
-                      enabled: !widget.disabled,
-                      onShowFocusHighlight: (visible) =>
-                          setState(() => _focusVisible = visible),
-                      shortcuts: const {
-                        SingleActivator(LogicalKeyboardKey.enter):
-                            ActivateIntent(),
-                        SingleActivator(LogicalKeyboardKey.space):
-                            ActivateIntent(),
-                      },
-                      actions: {
-                        ActivateIntent: CallbackAction<ActivateIntent>(
-                          onInvoke: (_) {
-                            _setOpen(!isOpen);
-                            widget.onClick?.call();
-                            return null;
-                          },
-                        ),
-                      },
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTapDown: widget.disabled
-                            ? null
-                            : (_) => setState(() => _pressed = true),
-                        onTapUp: widget.disabled
-                            ? null
-                            : (_) => setState(() => _pressed = false),
-                        onTapCancel: () => setState(() => _pressed = false),
-                        onTap: widget.disabled
-                            ? null
-                            : () {
-                                _folderFocus.requestFocus();
-                                _setOpen(!isOpen);
-                                widget.onClick?.call();
-                              },
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Positioned.fill(
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned.fill(
+                          child: FocusableActionDetector(
+                            focusNode: _folderFocus,
+                            enabled: !widget.disabled,
+                            onShowFocusHighlight: (visible) =>
+                                setState(() => _focusVisible = visible),
+                            shortcuts: const {
+                              SingleActivator(LogicalKeyboardKey.enter):
+                                  ActivateIntent(),
+                              SingleActivator(LogicalKeyboardKey.space):
+                                  ActivateIntent(),
+                            },
+                            actions: {
+                              ActivateIntent: CallbackAction<ActivateIntent>(
+                                onInvoke: (_) {
+                                  _setOpen(!isOpen);
+                                  widget.onClick?.call();
+                                  return null;
+                                },
+                              ),
+                            },
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTapDown: widget.disabled
+                                  ? null
+                                  : (_) => setState(() => _pressed = true),
+                              onTapUp: widget.disabled
+                                  ? null
+                                  : (_) => setState(() => _pressed = false),
+                              onTapCancel: () =>
+                                  setState(() => _pressed = false),
+                              onTap: widget.disabled
+                                  ? null
+                                  : () {
+                                      _folderFocus.requestFocus();
+                                      _setOpen(!isOpen);
+                                      widget.onClick?.call();
+                                    },
                               child: SingleMotionBuilder(
                                 value: _pressed && !reduce ? _pressScale : 1,
                                 from: 1,
@@ -272,11 +274,14 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                                 builder: (context, scale, child) =>
                                     Transform.scale(
                                       scale: scale,
-                                      child: CustomPaint(
-                                        foregroundPainter: _focusVisible
-                                            ? _FolderFocusPainter(colors.ring)
-                                            : null,
-                                        child: child,
+                                      child: Opacity(
+                                        opacity: widget.disabled ? 0.5 : 1,
+                                        child: CustomPaint(
+                                          foregroundPainter: _focusVisible
+                                              ? _FolderFocusPainter(colors.ring)
+                                              : null,
+                                          child: child,
+                                        ),
                                       ),
                                     ),
                                 child: Stack(
@@ -331,54 +336,55 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                                 ),
                               ),
                             ),
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              top: height / 2,
-                              bottom: 0,
-                              child: ExcludeSemantics(
-                                excluding: isOpen,
-                                child: IgnorePointer(
-                                  ignoring: isOpen,
-                                  child: purseFront,
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          top: height / 2,
+                          bottom: 0,
+                          child: ExcludeSemantics(
+                            excluding: isOpen,
+                            child: IgnorePointer(
+                              ignoring: isOpen,
+                              child: purseFront,
+                            ),
+                          ),
+                        ),
+                        if (widget.onAction != null)
+                          Positioned(
+                            right: width * 0.026,
+                            top: height * 0.1,
+                            child: SingleMotionBuilder(
+                              value: isOpen && !reduce ? -14 : 0,
+                              from: 0,
+                              motion: motionFor(
+                                context,
+                                _purseMorph,
+                                isMovement: true,
+                              ),
+                              builder: (context, offset, child) =>
+                                  Transform.translate(
+                                    offset: Offset(0, offset - 20),
+                                    child: child,
+                                  ),
+                              child: _FolderControl(
+                                label:
+                                    widget.actionLabel ??
+                                    'Open actions for ${widget.title}',
+                                onPressed: widget.disabled
+                                    ? null
+                                    : widget.onAction,
+                                colors: colors,
+                                action: true,
+                                child: const Icon(
+                                  LucideIcons.ellipsis_vertical,
+                                  size: 16,
                                 ),
                               ),
                             ),
-                            if (widget.onAction != null)
-                              Positioned(
-                                right: width * 0.026,
-                                top: height * 0.1,
-                                child: SingleMotionBuilder(
-                                  value: isOpen && !reduce ? -14 : 0,
-                                  from: 0,
-                                  motion: motionFor(
-                                    context,
-                                    _purseMorph,
-                                    isMovement: true,
-                                  ),
-                                  builder: (context, offset, child) =>
-                                      Transform.translate(
-                                        offset: Offset(0, offset - 20),
-                                        child: child,
-                                      ),
-                                  child: IconButton(
-                                    tooltip:
-                                        widget.actionLabel ??
-                                        'Open actions for ${widget.title}',
-                                    onPressed: widget.disabled
-                                        ? null
-                                        : widget.onAction,
-                                    icon: Icon(
-                                      LucideIcons.ellipsis_vertical,
-                                      size: 16,
-                                      color: colors.foreground,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
+                          ),
+                      ],
                     ),
                   );
                 },
@@ -519,6 +525,197 @@ class _PocketPainter extends CustomPainter {
       oldDelegate.colors != colors;
 }
 
+class _FolderControl extends StatefulWidget {
+  const _FolderControl({
+    required this.label,
+    required this.onPressed,
+    required this.colors,
+    required this.child,
+    this.toggled,
+    this.tooltip = false,
+    this.action = false,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final BeuiColors colors;
+  final Widget child;
+  final bool? toggled;
+  final bool tooltip, action;
+
+  @override
+  State<_FolderControl> createState() => _FolderControlState();
+}
+
+class _FolderControlState extends State<_FolderControl> {
+  final _focusNode = FocusNode();
+  bool _hovered = false;
+  bool _pressed = false;
+  bool _focusVisible = false;
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = widget.onPressed != null;
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final foreground = widget.action
+        ? Colors.white.withValues(alpha: _hovered && enabled ? 1 : 0.65)
+        : (_hovered && enabled
+              ? widget.colors.foreground
+              : widget.colors.mutedForeground);
+    Widget control = FocusableActionDetector(
+      focusNode: _focusNode,
+      enabled: enabled,
+      mouseCursor: enabled
+          ? SystemMouseCursors.click
+          : SystemMouseCursors.forbidden,
+      onShowHoverHighlight: (value) => setState(() => _hovered = value),
+      onShowFocusHighlight: (value) => setState(() => _focusVisible = value),
+      shortcuts: const {
+        SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+        SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+      },
+      actions: {
+        ActivateIntent: CallbackAction<ActivateIntent>(
+          onInvoke: (_) {
+            widget.onPressed?.call();
+            return null;
+          },
+        ),
+      },
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        excludeFromSemantics: true,
+        onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
+        onTapUp: enabled ? (_) => setState(() => _pressed = false) : null,
+        onTapCancel: () => setState(() => _pressed = false),
+        onTap: enabled
+            ? () {
+                _focusNode.requestFocus();
+                widget.onPressed!();
+              }
+            : null,
+        child: SingleMotionBuilder(
+          value: _pressed && enabled && !reduce ? _pressScale : 1,
+          from: 1,
+          motion: motionFor(context, beuiSpringPress, isMovement: true),
+          builder: (context, scale, child) =>
+              Transform.scale(scale: scale, child: child),
+          child: Opacity(
+            opacity: enabled ? 1 : 0.5,
+            child: SizedBox.square(
+              dimension: 40,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: widget.action && _hovered && enabled
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : null,
+                  border: _focusVisible && enabled
+                      ? Border.all(
+                          color: widget.action
+                              ? Colors.white
+                              : widget.colors.ring,
+                          width: 2,
+                        )
+                      : null,
+                ),
+                child: Center(
+                  child: IconTheme(
+                    data: IconThemeData(color: foreground),
+                    child: widget.child,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    if (widget.tooltip) {
+      control = BeuiTooltip(
+        disabled: !enabled,
+        content: ExcludeSemantics(child: Text(widget.label)),
+        child: control,
+      );
+    }
+    return Semantics(
+      container: true,
+      excludeSemantics: true,
+      button: true,
+      enabled: enabled,
+      focusable: enabled,
+      label: widget.label,
+      toggled: widget.toggled,
+      onTap: widget.onPressed,
+      child: control,
+    );
+  }
+}
+
+class _PrivacyIcon extends StatelessWidget {
+  const _PrivacyIcon({required this.visible});
+  final bool visible;
+
+  @override
+  Widget build(BuildContext context) {
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    return SizedBox.square(
+      dimension: 16,
+      child: Stack(
+        children: [
+          for (final hidden in [false, true])
+            Positioned.fill(
+              child: SingleMotionBuilder(
+                value: visible == hidden ? 1 : 0,
+                from: visible == hidden ? 1 : 0,
+                motion: CurvedMotion(
+                  Duration(milliseconds: reduce ? 120 : 300),
+                  reduce ? Curves.linear : const _PrivacySpringCurve(),
+                ),
+                builder: (context, value, child) {
+                  final opacity = value.clamp(0.0, 1.0);
+                  return Opacity(
+                    opacity: opacity,
+                    child: reduce
+                        ? child
+                        : Transform.scale(
+                            scale: 0.25 + 0.75 * opacity,
+                            child: ImageFiltered(
+                              imageFilter: ImageFilter.blur(
+                                sigmaX: beuiBlurSigma(4) * (1 - opacity),
+                                sigmaY: beuiBlurSigma(4) * (1 - opacity),
+                              ),
+                              child: child,
+                            ),
+                          ),
+                  );
+                },
+                child: Icon(
+                  hidden ? LucideIcons.eye_off : LucideIcons.eye,
+                  size: 16,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+// Motion 12's duration=300, bounce=0 spring resolves to omega=30.778044921505288.
+class _PrivacySpringCurve extends Curve {
+  const _PrivacySpringCurve();
+  @override
+  double transformInternal(double t) =>
+      1 - (1 + 9.233413476451586 * t) * math.exp(-9.233413476451586 * t);
+}
+
 class _PocketDetails extends StatelessWidget {
   const _PocketDetails({
     required this.title,
@@ -547,102 +744,86 @@ class _PocketDetails extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Semantics(
-                container: true,
-                excludeSemantics: true,
-                button: true,
-                enabled: !disabled,
+              _FolderControl(
+                colors: colors,
                 label: detailsVisible
                     ? 'Hide card details'
                     : 'Show card details',
                 toggled: detailsVisible,
-                onTap: disabled ? null : onToggle,
-                child: BeuiTooltip(
-                  disabled: disabled,
-                  content: ExcludeSemantics(
-                    child: Text(
-                      detailsVisible
-                          ? 'Hide card details'
-                          : 'Show card details',
-                    ),
-                  ),
-                  child: IconButton(
-                    onPressed: disabled ? null : onToggle,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints.tightFor(
-                      width: 40,
-                      height: 40,
-                    ),
-                    icon: Icon(
-                      detailsVisible ? LucideIcons.eye_off : LucideIcons.eye,
-                      size: 16,
-                      color: colors.mutedForeground,
-                    ),
-                  ),
-                ),
+                onPressed: disabled ? null : onToggle,
+                tooltip: true,
+                child: _PrivacyIcon(visible: detailsVisible),
               ),
               const Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(top: 8, right: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    _MiniField(label: 'Expiry', value: expiry, colors: colors),
-                    const SizedBox(width: 14),
-                    _MiniField(
-                      label: 'CVV',
-                      value: cvv,
-                      colors: colors,
-                      animate: true,
-                      revealed: detailsVisible,
-                    ),
-                  ],
+              IgnorePointer(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8, right: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      _MiniField(
+                        label: 'Expiry',
+                        value: expiry,
+                        colors: colors,
+                      ),
+                      const SizedBox(width: 14),
+                      _MiniField(
+                        label: 'CVV',
+                        value: cvv,
+                        colors: colors,
+                        animate: true,
+                        revealed: detailsVisible,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
           const Spacer(),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 18,
-                    height: 1.25,
-                    fontWeight: FontWeight.w500,
+          IgnorePointer(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 18,
+                      height: 1.25,
+                      fontWeight: FontWeight.w500,
+                      color: colors.foreground,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                BeuiDigitSwap(
+                  value: cardNumber,
+                  animationKey: detailsVisible ? 'revealed' : 'masked',
+                  direction: detailsVisible
+                      ? BeuiDigitSwapDirection.up
+                      : BeuiDigitSwapDirection.down,
+                  suffixLength: 4,
+                  glyphStyle: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 12,
+                    letterSpacing: 0.96,
+                    color: detailsVisible
+                        ? colors.foreground
+                        : colors.mutedForeground,
+                  ),
+                  suffixStyle: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 12,
+                    letterSpacing: 0.96,
                     color: colors.foreground,
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              BeuiDigitSwap(
-                value: cardNumber,
-                animationKey: detailsVisible ? 'revealed' : 'masked',
-                direction: detailsVisible
-                    ? BeuiDigitSwapDirection.up
-                    : BeuiDigitSwapDirection.down,
-                suffixLength: 4,
-                glyphStyle: TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 12,
-                  letterSpacing: 0.96,
-                  color: detailsVisible
-                      ? colors.foreground
-                      : colors.mutedForeground,
-                ),
-                suffixStyle: TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 12,
-                  letterSpacing: 0.96,
-                  color: colors.foreground,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
