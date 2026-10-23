@@ -1,3 +1,32 @@
+export function captureEvents(config) {
+  if (!Array.isArray(config.events)) throw new Error('events must be an array');
+  let heldButton = null;
+  const events = config.events.map(action => {
+    if (!action || typeof action !== 'object') throw new Error('Event must be an object');
+    const type = action.type ?? 'move';
+    if (!['move', 'click', 'down', 'up', 'key', 'text'].includes(type)) throw new Error(`Unknown event type ${type}`);
+    if ((action.target !== undefined || type === 'move' || type === 'click') &&
+        !Object.hasOwn(config.targets ?? {}, action.target)) throw new Error(`Unknown target ${action.target}`);
+    if (type === 'key' && typeof action.key !== 'string') throw new Error('Key event requires a string key');
+    if (type === 'text' && typeof action.text !== 'string') throw new Error('Text event requires a string text');
+    const event = { ...action, type };
+    if (['click', 'down', 'up'].includes(type)) {
+      event.button = action.button === undefined ? 'left' : action.button;
+      if (!['left', 'middle', 'right'].includes(event.button)) throw new Error(`Unsupported button ${event.button}`);
+      if (type === 'up') {
+        if (heldButton !== event.button) throw new Error(`Pointer up ${event.button} does not match held button ${heldButton}`);
+        heldButton = null;
+      } else {
+        if (heldButton !== null) throw new Error(`Cannot ${type} while button ${heldButton} is held`);
+        if (type === 'down') heldButton = event.button;
+      }
+    } else if (action.button !== undefined) throw new Error(`Event ${type} does not accept a button`);
+    return event;
+  });
+  if (heldButton !== null) throw new Error(`Unreleased pointer button ${heldButton}`);
+  return events;
+}
+
 export function captureReducedMotion(config) {
   const value = config.reducedMotion ?? 'no-preference';
   if (!['reduce', 'no-preference'].includes(value)) {

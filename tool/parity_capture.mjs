@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { performance } from 'node:perf_hooks';
 import { createHash } from 'node:crypto';
-import { captureReducedMotion, assertMotionEnvironment, assertServedJavascript } from './parity_capture_config.mjs';
+import { captureEvents, captureReducedMotion, assertMotionEnvironment, assertServedJavascript } from './parity_capture_config.mjs';
 
 const [configPath, outputPath] = process.argv.slice(2);
 if (!configPath || !outputPath || !process.env.PARITY_PLAYWRIGHT) {
@@ -13,6 +13,7 @@ if (!configPath || !outputPath || !process.env.PARITY_PLAYWRIGHT) {
 }
 const config = JSON.parse(await readFile(configPath, 'utf8'));
 const reducedMotion = captureReducedMotion(config);
+const actions = captureEvents(config);
 const output = resolve(outputPath);
 await mkdir(output);
 await mkdir(join(output, 'original-frames'));
@@ -29,13 +30,15 @@ const pending = [];
 const origin = performance.now();
 const originEpochMs = Date.now();
 const elapsed = () => performance.now() - origin;
+let page;
+let heldButton = null;
 try {
   const context = await browser.newContext({
     viewport: config.viewport, deviceScaleFactor: 1,
     colorScheme: config.theme, reducedMotion,
     locale: 'en-US', timezoneId: 'Asia/Kolkata',
   });
-  const page = await context.newPage();
+  page = await context.newPage();
   const scripts = [];
   const scriptReads = [];
   page.on('response', response => {
@@ -91,6 +94,7 @@ try {
   }, null, 2));
   assertMotionEnvironment(config, environment);
   await page.mouse.move(10, 10);
+  let pointer = { x: 10, y: 10 };
   const cdp = await context.newCDPSession(page);
   let sampling = true;
   let sampler;
@@ -132,24 +136,35 @@ try {
   const sequenceStartMs = elapsed();
   const dispatch = {
     move: (action, target) => page.mouse.move(target.x, target.y),
-    click: (action, target) => page.mouse.click(target.x, target.y),
+    click: async (action, target) => {
+      heldButton = action.button;
+      await page.mouse.click(target.x, target.y, { button: action.button });
+      heldButton = null;
+    },
+    down: async action => {
+      heldButton = action.button;
+      await page.mouse.down({ button: action.button });
+    },
+    up: async action => {
+      await page.mouse.up({ button: action.button });
+      heldButton = null;
+    },
     key: action => page.keyboard.press(action.key),
     text: action => page.keyboard.insertText(action.text),
   };
-  for (const action of config.events) {
-    const type = action.type ?? 'move';
-    if (!Object.hasOwn(dispatch, type)) throw new Error(`Unknown event type ${type}`);
+  for (const action of actions) {
+    const { type } = action;
     const target = targets[action.target];
-    if ((action.target !== undefined || type === 'move' || type === 'click') && !target) throw new Error(`Unknown target ${action.target}`);
-    if (type === 'key' && typeof action.key !== 'string') throw new Error('Key event requires a string key');
-    if (type === 'text' && typeof action.text !== 'string') throw new Error('Text event requires a string text');
     const requestedMs = sequenceStartMs + action.atMs;
     while (elapsed() < requestedMs) await page.waitForTimeout(Math.ceil(requestedMs - elapsed()));
-    const event = { ...action, type, pointer: type === 'move' || type === 'click' ? target : undefined,
+    const pointerAction = ['move', 'click', 'down', 'up'].includes(type);
+    const event = { ...action, pointer: pointerAction ? target ?? pointer : undefined,
       requestedMs, dispatchBeforeMs: elapsed() };
     events.push(event);
     try {
+      if ((type === 'down' || type === 'up') && target) await page.mouse.move(target.x, target.y);
       await dispatch[type](action, target);
+      if (pointerAction && target) pointer = target;
     } catch (error) {
       event.error = String(error);
       throw error;
@@ -207,5 +222,9 @@ try {
   await writeFile(join(output, 'failure.json'), JSON.stringify({ error: String(error), events, frames }, null, 2));
   throw error;
 } finally {
-  await browser.close();
+  try {
+    if (heldButton !== null) await page.mouse.up({ button: heldButton });
+  } finally {
+    await browser.close();
+  }
 }
