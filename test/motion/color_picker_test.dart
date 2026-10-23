@@ -1,6 +1,7 @@
 import 'package:beui/src/motion/color_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:beui/src/theme/beui_colors.dart';
 
@@ -10,6 +11,41 @@ Widget _app(Widget child) => MaterialApp(
 );
 
 void main() {
+  testWidgets('popover clamps horizontally and transfers focus in and back', (
+    tester,
+  ) async {
+    final edits = <String>[];
+    await tester.pumpWidget(
+      _app(
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: BeuiColorPicker(
+              onChanged: edits.add,
+              trigger: const BeuiColorPickerTrigger(),
+              child: const BeuiColorPickerContent(child: BeuiColorPickerArea()),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byType(BeuiColorPickerTrigger));
+    await tester.pumpAndSettle();
+    expect(
+      tester.getRect(find.byType(BeuiColorPickerContent)).right,
+      lessThanOrEqualTo(792),
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(edits.single, '#367af6');
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(find.byType(BeuiColorPickerContent), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(BeuiColorPickerContent), findsOneWidget);
+  });
   testWidgets('trigger chip grows into area and returns on controlled close', (
     tester,
   ) async {

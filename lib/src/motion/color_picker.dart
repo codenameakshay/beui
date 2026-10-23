@@ -119,6 +119,10 @@ class BeuiColorPicker extends StatefulWidget {
 
 class _BeuiColorPickerState extends State<BeuiColorPicker> {
   final _chipKey = GlobalKey();
+  final _triggerKey = GlobalKey();
+  final _triggerFocus = FocusNode(debugLabel: 'Color picker trigger');
+  final _panelFocus = FocusScopeNode(debugLabel: 'Color picker panel');
+  double _panelShift = 0;
   late Color _internalColor =
       beuiColorFromHex(widget.defaultValue) ?? const Color(0xff3478f6);
   late bool _internalOpen = widget.defaultOpen;
@@ -129,6 +133,7 @@ class _BeuiColorPickerState extends State<BeuiColorPicker> {
   bool get _open => widget.open ?? _internalOpen;
 
   void _setColor(Color value, {bool commit = false}) {
+    if (!widget.enabled || (widget.trigger != null && !_open)) return;
     final next = widget.alpha ? value : value.withAlpha(255);
     if (widget.value == null) setState(() => _internalColor = next);
     final hex = beuiColorToHex(next);
@@ -138,17 +143,66 @@ class _BeuiColorPickerState extends State<BeuiColorPicker> {
 
   void _setOpen(bool value) {
     if (value == _open) return;
-    if (widget.open == null) setState(() => _internalOpen = value);
+    if (widget.open == null) {
+      setState(() => _internalOpen = value);
+      _transferFocus(value);
+    }
     widget.onOpenChanged?.call(value);
+  }
+
+  @override
+  void didUpdateWidget(BeuiColorPicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if ((oldWidget.open ?? _internalOpen) != _open) _transferFocus(_open);
+  }
+
+  void _transferFocus(bool open, [int attempt = 0]) {
+    if (!open && !_panelFocus.hasFocus) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _open != open) return;
+      if (!open) {
+        _triggerFocus.requestFocus();
+      } else if (_panelFocus.context != null) {
+        ReadingOrderTraversalPolicy()
+            .findFirstFocus(_panelFocus)
+            ?.requestFocus();
+      } else if (attempt < 3) {
+        _transferFocus(open, attempt + 1);
+      }
+    });
+  }
+
+  void _measurePanel() {
+    if (!_open) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_open) return;
+      final trigger =
+          _triggerKey.currentContext?.findRenderObject() as RenderBox?;
+      if (trigger == null || !trigger.hasSize) return;
+      final left = trigger.localToGlobal(Offset.zero).dx;
+      final viewport = Overlay.of(context).context.findRenderObject() as RenderBox;
+      final width = viewport.size.width;
+      final shift =
+          left.clamp(8.0, (width - 288 - 8).clamp(8.0, double.infinity)) - left;
+      if (shift != _panelShift) setState(() => _panelShift = shift);
+    });
+  }
+
+  @override
+  void dispose() {
+    _triggerFocus.dispose();
+    _panelFocus.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
+    _measurePanel();
     final scope = _ColorPickerScope(
       color: _color,
       alpha: widget.alpha,
-      enabled: widget.enabled,
+      enabled: widget.enabled && (widget.trigger == null || _open),
       reduce: MediaQuery.disableAnimationsOf(context),
       onColor: _setColor,
       chipKey: widget.trigger == null ? null : _chipKey,
@@ -213,13 +267,21 @@ class _BeuiColorPickerState extends State<BeuiColorPicker> {
               link: link,
               targetAnchor: Alignment.bottomLeft,
               followerAnchor: Alignment.topLeft,
-              offset: const Offset(0, 8),
+              offset: Offset(_panelShift, 8),
               child: IgnorePointer(
                 ignoring: !_open,
-                child: ExcludeSemantics(excluding: !_open, child: panel),
+                child: ExcludeFocus(
+                  excluding: !_open,
+                  child: ExcludeSemantics(
+                    excluding: !_open,
+                    child: FocusScope(node: _panelFocus, child: panel),
+                  ),
+                ),
               ),
             ),
         child: InkWell(
+          key: _triggerKey,
+          focusNode: _triggerFocus,
           onTap: widget.enabled ? () => _setOpen(!_open) : null,
           child: widget.trigger!,
         ),
@@ -426,7 +488,7 @@ class _BeuiColorPickerAreaState extends State<BeuiColorPickerArea> {
                             width: size.width,
                             height: size.height,
                             child: DecoratedBox(
-                            key: const ValueKey('color-picker-spectrum'),
+                              key: const ValueKey('color-picker-spectrum'),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: HSVColor.fromAHSV(
@@ -518,7 +580,7 @@ class _BeuiColorPickerAreaState extends State<BeuiColorPickerArea> {
                             ),
                           ),
                         ),
-                        if (_loupePosition != null)
+                        if (_loupePosition != null && !scope.reduce)
                           Positioned(
                             key: const ValueKey('color-picker-loupe'),
                             left: _loupePosition!.dx + 10,
@@ -1158,7 +1220,12 @@ class _PickerAreaMorphState extends State<_PickerAreaMorph> {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final target = Offset.zero & Size(constraints.maxWidth, 160);
-          if (_chip == null) return Opacity(opacity: 0, child: widget.child);
+          if (_chip == null) {
+            return Opacity(
+              opacity: scope.chipKey?.currentContext == null ? 1 : 0,
+              child: widget.child,
+            );
+          }
           return SingleMotionBuilder(
             value: scope.open ? 1 : 0,
             from: 0,
