@@ -465,8 +465,7 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
                       _setValues(values.copyWith(confirmPassword: value)),
                 ),
                 const SizedBox(height: 8),
-                Semantics(
-                  label: 'I agree to the Terms and Privacy Policy',
+                MergeSemantics(
                   child: Row(
                     children: [
                       BeuiCheckbox(

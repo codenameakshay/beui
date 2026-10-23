@@ -34,4 +34,28 @@ void main() {
     expect(find.bySemanticsLabel(RegExp(r'^Password')), findsOneWidget);
     semantics.dispose();
   });
+  testWidgets('signup terms name and toggle belong to one accessible control', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(beuiTestApp(const BeuiSignUpForm(), width: 420));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byType(BeuiCheckbox));
+    await tester.pumpAndSettle();
+    final node = tester.getSemantics(
+      find.bySemanticsLabel('I agree to the Terms and Privacy Policy'),
+    );
+    expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
+    tester
+        .renderObject(find.byType(BeuiCheckbox))
+        .owner!
+        .semanticsOwner!
+        .performAction(node.id, SemanticsAction.tap);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<BeuiCheckbox>(find.byType(BeuiCheckbox)).value,
+      isTrue,
+    );
+    semantics.dispose();
+  });
 }
