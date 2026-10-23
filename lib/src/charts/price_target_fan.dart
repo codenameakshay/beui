@@ -493,8 +493,14 @@ class BeuiPriceTargetSvg extends StatelessWidget {
             '${state.widget.label}, current ${state.widget.current}, mean target ${state.widget.targets[1].price}',
         child: MouseRegion(
           cursor: SystemMouseCursors.precise,
-          onHover: (event) => state._moveTo(event.localPosition),
-          onExit: (_) => state.setActiveId(null),
+          onHover: (event) {
+            if (event.kind != PointerDeviceKind.touch) {
+              state._moveTo(event.localPosition);
+            }
+          },
+          onExit: (event) {
+            if (event.kind != PointerDeviceKind.touch) state.setActiveId(null);
+          },
           child: GestureDetector(
             onHorizontalDragUpdate: (event) =>
                 state._moveTo(event.localPosition),
