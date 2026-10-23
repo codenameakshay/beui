@@ -1,0 +1,19 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: after touch-1 pin
+
+'false' !== 'true'
+
+    at state (file:///Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/docs/proof/v3-parity/charts/round4-bump/interactions.mjs:38:45)
+    at async file:///Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/docs/proof/v3-parity/charts/round4-bump/interactions.mjs:46:9 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'false',
+  expected: 'true',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.12.0

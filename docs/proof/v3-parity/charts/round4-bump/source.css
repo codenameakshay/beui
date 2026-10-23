@@ -1,0 +1,9 @@
+@import '/tmp/beui-charts-reference-20261023/app/globals.css';
+@source '/tmp/beui-charts-reference-20261023/components/charts/bump-chart';
+@source '/tmp/beui-charts-reference-20261023/components/charts/bump-chart.tsx';
+@source '/tmp/beui-charts-reference-20261023/components/motion/tooltip-surface.tsx';
+@source '/tmp/beui-charts-reference-20261023/components/motion/tooltip';
+body { margin:0; background:var(--background); color:var(--foreground); font-family:var(--font-sans); }
+@font-face {font-family:Geist; font-weight:100 900; src:url('geist-live.woff2') format('woff2');}
+@font-face {font-family:'Geist Mono'; font-weight:100 900; src:url('geist-mono-live.woff2') format('woff2');}
+:root {--font-geist-sans:Geist; --font-geist-mono:'Geist Mono';}

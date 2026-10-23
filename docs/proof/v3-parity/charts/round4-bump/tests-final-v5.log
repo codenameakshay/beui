@@ -1,0 +1,48 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_chart_test.dart
+00:00 +0: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: source legend has rank change grid geometry and viewport breakpoint
+00:00 +1: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: source legend has rank change grid geometry and viewport breakpoint
+00:00 +2: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: source legend has rank change grid geometry and viewport breakpoint
+00:00 +3: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_chart_test.dart: legend updates uncontrolled state and controlled callback
+00:00 +4: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: native Tab is plot then row-major rank dots, not geometric rank order
+00:00 +5: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: native Tab is plot then row-major rank dots, not geometric rank order
+00:00 +6: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: native Tab is plot then row-major rank dots, not geometric rank order
+00:00 +7: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: native Tab is plot then row-major rank dots, not geometric rank order
+00:00 +8: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_chart_test.dart: removing a hovered series does not restore stale highlight
+00:00 +9: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: legend click acquires native focus and Tab changes focus without pinning
+00:01 +10: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: legend click acquires native focus and Tab changes focus without pinning
+00:01 +11: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_chart_test.dart: hovering a rank node reveals the source static rank
+00:01 +12: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: held Enter repeats native activation on dots and legend buttons
+00:01 +13: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_chart_test.dart: Home preserves selection and Escape clears from focused dot
+00:01 +14: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: rank readout retains source intrinsic width instead of filling viewport
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: a value less than <240>
+  Actual: <244.0>
+   Which: is not a value less than <240>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart:166:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart line 166
+The test description was:
+  rank readout retains source intrinsic width instead of filling viewport
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +14 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: rank readout retains source intrinsic width instead of filling viewport [E]
+  Test failed. See exception logs above.
+  The test description was: rank readout retains source intrinsic width instead of filling viewport
+  
+00:01 +14 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: removed uncontrolled pinned identity does not revive after reinsertion
+00:01 +15 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: empty and all-missing source models render empty plot with surviving legend
+00:01 +16 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: touch toggles rank readout, mouse click dismisses and keyboard reopens at destination
+00:01 +17 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-bcc30549/test/charts/bump_source_parity_test.dart: rank readout retains source intrinsic width instead of filling viewport
