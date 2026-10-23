@@ -64,6 +64,10 @@ void main() {
     await tester.pump();
     expect(changes.last, isNull);
     await second.up();
+    // Flutter web follows touch-up with a touch-kind hover at the same point.
+    await tester.sendEventToBinding(
+      PointerHoverEvent(kind: PointerDeviceKind.touch, position: point),
+    );
     await tester.pumpAndSettle();
     expect(find.text('Analysts'), findsNothing);
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
