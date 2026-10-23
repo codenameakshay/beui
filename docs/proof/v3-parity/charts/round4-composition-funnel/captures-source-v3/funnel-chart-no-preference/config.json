@@ -1,0 +1,93 @@
+{
+  "url": "http://127.0.0.1:18116/source/?slug=funnel-chart",
+  "viewport": {
+    "width": 1000,
+    "height": 1400
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "requireFlutterProbe": false,
+  "loadWaitMs": 6000,
+  "backend": "screenshots",
+  "targets": {
+    "a": {
+      "x": 274.4,
+      "y": 619.5
+    },
+    "b": {
+      "x": 650.4,
+      "y": 763.5
+    },
+    "exit": {
+      "x": 20,
+      "y": 20
+    }
+  },
+  "servedJs": {
+    "url": "http://127.0.0.1:18116/source/source.js",
+    "sha256": "fbc0fa78ac7409c433013c88958375228109735296615de9344047e6cb670d81",
+    "revision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05"
+  },
+  "provenance": {
+    "phase": "source-v3",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "revision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "build": "/tmp/beui-round4-composition-funnel-source-v3-20261023",
+    "plot": {
+      "x": 124,
+      "y": 511.5,
+      "width": 752,
+      "height": 360,
+      "top": 511.5,
+      "right": 876,
+      "bottom": 871.5,
+      "left": 124
+    },
+    "sourceWrapper": "Untouched charts; consumer wrapper controls replace shared demo buttons."
+  },
+  "events": [
+    {
+      "atMs": 0,
+      "type": "move",
+      "target": "exit",
+      "caption": "source-v3: resting funnel-chart"
+    },
+    {
+      "atMs": 400,
+      "type": "move",
+      "target": "a",
+      "caption": "Native mouse inspects A"
+    },
+    {
+      "atMs": 1000,
+      "type": "move",
+      "target": "b",
+      "caption": "Native mouse inspects B"
+    },
+    {
+      "atMs": 1600,
+      "type": "click",
+      "target": "b",
+      "caption": "Mouse click retains keyboard inspection"
+    },
+    {
+      "atMs": 1800,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer leaves the plot"
+    },
+    {
+      "atMs": 2200,
+      "type": "key",
+      "key": "Tab",
+      "caption": "Native keyboard after pointer exit"
+    },
+    {
+      "atMs": 2800,
+      "type": "key",
+      "key": "Escape",
+      "caption": "Escape dismisses the readout"
+    }
+  ],
+  "finalHoldMs": 500
+}

@@ -1,0 +1,32 @@
+{
+  "cases": 16,
+  "passed": 11,
+  "failures": [
+    "candidate-funnel-chart-no-preference-mouse-keyboard click-dismiss: expected null, received \"Signed up\\n15,600 people\\n65.0% from previous stage\\n8,400 dropped\\n65.0% of starting total\"",
+    "candidate-funnel-chart-no-preference-touch tap-2: expected null, received \"Signed up\\n15,600 people\\n65.0% from previous stage\\n8,400 dropped\\n65.0% of starting total\"",
+    "candidate-composition-chart-reduce-touch tap-2: expected null, received \"Aug 8\\nOrganic search\\n4,771 visits\\n39.5%\\nDirect\\n3,564 visits\\n29.5%\\nReferrals\\n1,392 visits\\n11.5%\\nSocial\\n1,100 visits\\n9.1%\\nEmail\\n849 visits\\n7.0%\\nOther\\n388 visits\\n3.2%\"",
+    "candidate-composition-chart-reduce-touch tap-3: expected null, received \"Aug 8\\nOrganic search\\n4,771 visits\\n39.5%\\nDirect\\n3,564 visits\\n29.5%\\nReferrals\\n1,392 visits\\n11.5%\\nSocial\\n1,100 visits\\n9.1%\\nEmail\\n849 visits\\n7.0%\\nOther\\n388 visits\\n3.2%\"",
+    "candidate-composition-chart-reduce-touch touch-held-a: expected \"Aug 8\", received \"\"",
+    "candidate-composition-chart-reduce-touch touch-drag-b: expected \"Aug 26\", received \"\"",
+    "candidate-funnel-chart-reduce-mouse-keyboard click-dismiss: expected null, received \"Signed up\\n15,600 people\\n65.0% from previous stage\\n8,400 dropped\\n65.0% of starting total\"",
+    "candidate-funnel-chart-reduce-touch tap-2: expected null, received \"Signed up\\n15,600 people\\n65.0% from previous stage\\n8,400 dropped\\n65.0% of starting total\""
+  ]
+}
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+8 !== 0
+
+    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/docs/proof/v3-parity/charts/round4-composition-funnel/verify-native.mjs:143:8 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 8,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.12.1

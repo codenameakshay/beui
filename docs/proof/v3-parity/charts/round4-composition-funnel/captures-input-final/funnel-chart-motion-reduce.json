@@ -1,0 +1,116 @@
+{
+  "url": "http://127.0.0.1:18116/?slug=funnel-chart&previewWidth=752&captureProbe=1",
+  "viewport": {
+    "width": 1000,
+    "height": 1400
+  },
+  "theme": "dark",
+  "reducedMotion": "reduce",
+  "requireFlutterProbe": true,
+  "loadWaitMs": 6000,
+  "backend": "screenshots",
+  "targets": {
+    "a": {
+      "x": 274.4,
+      "y": 625.5
+    },
+    "b": {
+      "x": 650.4,
+      "y": 769.5
+    },
+    "exit": {
+      "x": 20,
+      "y": 20
+    },
+    "Next cohort": {
+      "x": 819.90966796875,
+      "y": 409
+    },
+    "Horizontal": {
+      "x": 239.95504760742188,
+      "y": 473.5
+    },
+    "Vertical": {
+      "x": 161.6171875,
+      "y": 473.5
+    }
+  },
+  "servedJs": {
+    "url": "http://127.0.0.1:18116/main.dart.js",
+    "sha256": "a6254365c821a5a45ead466266b109f0f59802a4ce717819f7f666189c85ce3e",
+    "revision": "71b6272b39c6ed49cbb5e009e881c594a2e63c4c"
+  },
+  "provenance": {
+    "phase": "final",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "revision": "71b6272b39c6ed49cbb5e009e881c594a2e63c4c",
+    "build": "/tmp/beui-round4-composition-funnel-final-20261023",
+    "plot": {
+      "x": 124,
+      "y": 517.5,
+      "width": 752,
+      "height": 360
+    },
+    "sourceWrapper": null,
+    "inputRound": "final",
+    "observedControls": {
+      "Next cohort": {
+        "x": 763.83154296875,
+        "y": 393,
+        "width": 112.15625,
+        "height": 32
+      },
+      "Horizontal": {
+        "x": 199.23629760742188,
+        "y": 457.5,
+        "width": 81.4375,
+        "height": 32
+      },
+      "Vertical": {
+        "x": 128,
+        "y": 457.5,
+        "width": 67.234375,
+        "height": 32
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 0,
+      "type": "move",
+      "target": "exit",
+      "caption": "Settled canonical funnel"
+    },
+    {
+      "atMs": 400,
+      "type": "click",
+      "target": "Next cohort",
+      "caption": "Native cohort replacement starts the 280ms path tween"
+    },
+    {
+      "atMs": 500,
+      "type": "click",
+      "target": "Next cohort",
+      "caption": "Second cohort interrupts the displayed path"
+    },
+    {
+      "atMs": 1300,
+      "type": "click",
+      "target": "Horizontal",
+      "caption": "Native direction change preserves stage identities"
+    },
+    {
+      "atMs": 2100,
+      "type": "click",
+      "target": "Vertical",
+      "caption": "Return to vertical geometry"
+    },
+    {
+      "atMs": 2800,
+      "type": "click",
+      "target": "Next cohort",
+      "caption": "Return to canonical cohort"
+    }
+  ],
+  "finalHoldMs": 500
+}

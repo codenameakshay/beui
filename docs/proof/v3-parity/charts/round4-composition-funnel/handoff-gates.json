@@ -1,0 +1,122 @@
+{
+  "revision": "692781f8a02df1ffb1591159abaa158bb62f5e10",
+  "servedJavascriptSha256": "dd9cc3cec03b17bd2ce2cc8ae2deb5d79172ca2d63bed98df58bae2c117a32b6",
+  "focusedTests": 33,
+  "chartBehaviorTests": 216,
+  "analyzer": "No issues",
+  "unchangedGoldens": {
+    "passed": 15,
+    "failed": 2
+  },
+  "native": {
+    "casesPassed": 12,
+    "cases": 16,
+    "statesPassed": 116,
+    "states": 120,
+    "failures": [
+      "candidate-funnel-chart-no-preference-mouse-keyboard click-dismiss",
+      "candidate-funnel-chart-no-preference-touch tap-2",
+      "candidate-funnel-chart-reduce-mouse-keyboard click-dismiss",
+      "candidate-funnel-chart-reduce-touch tap-2"
+    ]
+  },
+  "pixels": [
+    {
+      "theme": "dark",
+      "viewport": 1000,
+      "chart": "composition-chart",
+      "state": "bar",
+      "changed": 78640,
+      "meanError": 0.9308856937056738
+    },
+    {
+      "theme": "dark",
+      "viewport": 1000,
+      "chart": "composition-chart",
+      "state": "area",
+      "changed": 110984,
+      "meanError": 1.0319896941489362
+    },
+    {
+      "theme": "dark",
+      "viewport": 1000,
+      "chart": "funnel-chart",
+      "state": "vertical",
+      "changed": 6717,
+      "meanError": 0.6896978427895981
+    },
+    {
+      "theme": "dark",
+      "viewport": 1000,
+      "chart": "funnel-chart",
+      "state": "horizontal",
+      "changed": 6341,
+      "meanError": 0.7203383569739953
+    },
+    {
+      "theme": "light",
+      "viewport": 1000,
+      "chart": "composition-chart",
+      "state": "bar",
+      "changed": 153923,
+      "meanError": 0.8836865580673758
+    },
+    {
+      "theme": "light",
+      "viewport": 1000,
+      "chart": "composition-chart",
+      "state": "area",
+      "changed": 195412,
+      "meanError": 0.9819093528368794
+    },
+    {
+      "theme": "light",
+      "viewport": 1000,
+      "chart": "funnel-chart",
+      "state": "vertical",
+      "changed": 7780,
+      "meanError": 0.6015846631205674
+    },
+    {
+      "theme": "light",
+      "viewport": 1000,
+      "chart": "funnel-chart",
+      "state": "horizontal",
+      "changed": 7296,
+      "meanError": 0.7270463947990544
+    },
+    {
+      "theme": "dark",
+      "viewport": 600,
+      "chart": "composition-chart",
+      "state": "bar",
+      "changed": 46498,
+      "meanError": 1.1057761863425926
+    },
+    {
+      "theme": "dark",
+      "viewport": 600,
+      "chart": "composition-chart",
+      "state": "area",
+      "changed": 76612,
+      "meanError": 1.3419751364087302
+    },
+    {
+      "theme": "dark",
+      "viewport": 600,
+      "chart": "funnel-chart",
+      "state": "vertical",
+      "changed": 5901,
+      "meanError": 0.7901234567901234
+    },
+    {
+      "theme": "dark",
+      "viewport": 600,
+      "chart": "funnel-chart",
+      "state": "horizontal",
+      "changed": 5009,
+      "meanError": 0.6901777777777778
+    }
+  ],
+  "parity": "NOT_CERTIFIED"
+}

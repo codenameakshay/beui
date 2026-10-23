@@ -1,0 +1,93 @@
+{
+  "url": "http://127.0.0.1:18116/?slug=composition-chart&previewWidth=752&captureProbe=1",
+  "viewport": {
+    "width": 1000,
+    "height": 1400
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "requireFlutterProbe": true,
+  "loadWaitMs": 6000,
+  "backend": "screenshots",
+  "targets": {
+    "a": {
+      "x": 274.4,
+      "y": 291.5
+    },
+    "b": {
+      "x": 650.4,
+      "y": 419.5
+    },
+    "exit": {
+      "x": 20,
+      "y": 20
+    }
+  },
+  "servedJs": {
+    "url": "http://127.0.0.1:18116/main.dart.js",
+    "sha256": "b6527f0157297703e13efb51b271045c74077ed69fd081e35d0a3306fd20d1e5",
+    "revision": "13ae06ed4c92f7b96f4f675753061ae8c8f86424"
+  },
+  "provenance": {
+    "phase": "final-v8",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "revision": "13ae06ed4c92f7b96f4f675753061ae8c8f86424",
+    "build": "/tmp/beui-round4-composition-funnel-quick-final-20261023",
+    "plot": {
+      "x": 124,
+      "y": 195.5,
+      "width": 752,
+      "height": 320,
+      "top": 195.5,
+      "right": 876,
+      "bottom": 515.5,
+      "left": 124
+    },
+    "sourceWrapper": null
+  },
+  "events": [
+    {
+      "atMs": 0,
+      "type": "move",
+      "target": "exit",
+      "caption": "final-v8: resting composition-chart"
+    },
+    {
+      "atMs": 400,
+      "type": "move",
+      "target": "a",
+      "caption": "Native mouse inspects A"
+    },
+    {
+      "atMs": 1000,
+      "type": "move",
+      "target": "b",
+      "caption": "Native mouse inspects B"
+    },
+    {
+      "atMs": 1600,
+      "type": "click",
+      "target": "b",
+      "caption": "Mouse click retains keyboard inspection"
+    },
+    {
+      "atMs": 1800,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer leaves the plot"
+    },
+    {
+      "atMs": 2200,
+      "type": "key",
+      "key": "ArrowLeft",
+      "caption": "Native keyboard after pointer exit"
+    },
+    {
+      "atMs": 2800,
+      "type": "key",
+      "key": "Escape",
+      "caption": "Escape dismisses the readout"
+    }
+  ],
+  "finalHoldMs": 500
+}

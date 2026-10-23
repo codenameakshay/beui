@@ -1,0 +1,89 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart
+00:00 +0: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: pointer exit then consumed keyboard input reopens chart tooltip
+00:01 +1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: pointer exit then consumed keyboard input reopens chart tooltip
+00:01 +2: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: pointer exit then consumed keyboard input reopens chart tooltip
+00:01 +3: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: pointer exit then consumed keyboard input reopens chart tooltip
+00:01 +4: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/funnel_chart_test.dart: horizontal funnel and reduced motion render the same conversion
+00:01 +5: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: renders stacked chart and series legend
+00:01 +6: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/funnel_chart_test.dart: resting funnel matches its golden
+00:02 +7: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/funnel_chart_test.dart: resting funnel matches its golden
+00:02 +8: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/funnel_chart_test.dart: resting funnel matches its golden
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown while running async test code:
+Golden "goldens/beui_funnel_chart.png": Pixel test failed, 21.49%, 57773px diff detected.
+Failure feedback can be found at
+/Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/failures
+
+When the exception was thrown, this was the stack:
+#0      LocalFileComparator.compare (package:flutter_test/src/_goldens_io.dart:108:5)
+<asynchronous suspension>
+#1      MatchesGoldenFile.matchAsync.<anonymous closure> (package:flutter_test/src/_matchers_io.dart:124:32)
+<asynchronous suspension>
+<asynchronous suspension>
+#3      _expect.<anonymous closure> (package:matcher/src/expect/expect.dart:153:17)
+<asynchronous suspension>
+<asynchronous suspension>
+#5      expectLater.<anonymous closure> (package:flutter_test/src/widget_tester.dart:508:19)
+<asynchronous suspension>
+#6      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/funnel_chart_test.dart:111:5)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 3 frames from dart:async and package:stack_trace)
+
+The exception was caught asynchronously.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +8 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: tapping the plot takes keyboard focus from another control
+00:02 +8 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/funnel_chart_test.dart: resting funnel matches its golden [E]
+  Test failed. See exception logs above.
+  The test description was: resting funnel matches its golden
+  
+00:02 +9 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: Tab enters the composition plot keyboard controls
+00:02 +10 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: keyboard inspection opens tooltip and exposes period values
+00:03 +11 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: controlled period remains fixed and legend exposes pin state
+00:03 +12 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: hovering a period shows per-series value and share tickers
+00:03 +13 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: keyboard inspection wins over a stationary pointer hover
+00:03 +14 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: area view preserves missing periods as a gap and reduced motion renders
+00:03 +15 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: resting composition chart matches its golden
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown while running async test code:
+Golden "goldens/beui_composition_chart.png": Pixel test failed, image sizes do not match.
+Master Image: 640 X 420
+Test Image: 640 X 520
+Failure feedback can be found at
+/Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/failures
+
+When the exception was thrown, this was the stack:
+#0      LocalFileComparator.compare (package:flutter_test/src/_goldens_io.dart:108:5)
+<asynchronous suspension>
+#1      MatchesGoldenFile.matchAsync.<anonymous closure> (package:flutter_test/src/_matchers_io.dart:124:32)
+<asynchronous suspension>
+<asynchronous suspension>
+#3      _expect.<anonymous closure> (package:matcher/src/expect/expect.dart:153:17)
+<asynchronous suspension>
+<asynchronous suspension>
+#5      expectLater.<anonymous closure> (package:flutter_test/src/widget_tester.dart:508:19)
+<asynchronous suspension>
+#6      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart:434:5)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 3 frames from dart:async and package:stack_trace)
+
+The exception was caught asynchronously.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +15 -2: /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: resting composition chart matches its golden [E]
+  Test failed. See exception logs above.
+  The test description was: resting composition chart matches its golden
+  
+00:03 +15 -2: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_chart_test.dart: resting composition chart matches its golden
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/funnel_chart_test.dart: resting funnel matches its golden

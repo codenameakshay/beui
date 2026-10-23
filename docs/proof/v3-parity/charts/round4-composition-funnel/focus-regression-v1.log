@@ -1,0 +1,42 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_funnel_round4_test.dart
+00:00 +0: composition draws the keyboard outline outside the plot
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.6314, green: 0.6314, blue: 0.6667, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.8789, green: 0.8789, blue: 0.8789, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_funnel_round4_test.dart:83:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_funnel_round4_test.dart line 83
+The test description was:
+  composition draws the keyboard outline outside the plot
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: composition draws the keyboard outline outside the plot [E]
+  Test failed. See exception logs above.
+  The test description was: composition draws the keyboard outline outside the plot
+  
+00:00 +0 -1: composition touch-down, drag, and keyboard continue from the same selected period
+00:01 +1 -1: composition empty plot retains the source minimum height
+00:01 +2 -1: funnel zero and increasing data retain inspectable stages and undefined conversions
+00:01 +3 -1: composition bar geometry springs from its displayed rect and reduced motion snaps
+00:01 +4 -1: funnel path retargets at 280ms and suppresses geometric movement under reduced motion
+00:01 +5 -1: composition uses the last period and 256px below the viewport breakpoint
+00:01 +6 -1: isolated composition area samples occupy the full column and leave a real gap
+00:01 +7 -1: funnel preserves a later valid duplicate after an invalid count
+00:01 +8 -1: funnel curves encode the stage center, not only shared boundaries
+00:01 +9 -1: horizontal funnel keeps 110px stages and 300px plot in a narrow viewport
+00:01 +10 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9c42f0c0/test/charts/composition_funnel_round4_test.dart: composition draws the keyboard outline outside the plot
