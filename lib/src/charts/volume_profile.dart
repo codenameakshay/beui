@@ -719,6 +719,8 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                                         e.localPosition,
                                       );
                                       state._focus.requestFocus();
+                                      FocusManager.instance
+                                          .applyFocusChangesIfNeeded();
                                     },
                                     onPointerMove: (e) => state.hoverBin(
                                       state

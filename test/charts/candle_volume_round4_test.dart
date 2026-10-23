@@ -33,6 +33,47 @@ const bins = [
 ];
 
 void main() {
+  testWidgets('volume accepts Home immediately after native pointer focus', (
+    tester,
+  ) async {
+    String? selected;
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiVolumeProfile(data: bins, onActiveChange: (id) => selected = id),
+      ),
+    );
+    final plot = tester.getRect(find.byType(BeuiVolumeProfilePlot));
+    final point = Offset(plot.center.dx, plot.top + 10);
+    final focus = tester
+        .widget<FocusableActionDetector>(
+          find.descendant(
+            of: find.byType(BeuiVolumeProfilePlot),
+            matching: find.byType(FocusableActionDetector),
+          ),
+        )
+        .focusNode!;
+    tester.binding.handlePointerEvent(
+      PointerDownEvent(
+        pointer: 20,
+        position: point,
+        kind: PointerDeviceKind.mouse,
+        buttons: kPrimaryMouseButton,
+      ),
+    );
+    tester.binding.handlePointerEvent(
+      PointerUpEvent(
+        pointer: 20,
+        position: point,
+        kind: PointerDeviceKind.mouse,
+      ),
+    );
+    expect(focus.hasPrimaryFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.home);
+    await tester.pump();
+    expect(selected, 'a');
+    await tester.pumpAndSettle();
+  });
+
   testWidgets(
     'candle touch inspects only during movement, not a tap or hover',
     (tester) async {
