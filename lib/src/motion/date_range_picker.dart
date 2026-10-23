@@ -1341,9 +1341,12 @@ class BeuiDateRangePickerTrigger extends StatelessWidget {
     );
     final colors = BeuiColors.resolve(context);
     final value = state.value;
+    final sameYear =
+        value?.to != null &&
+        value!.from.substring(0, 4) == value.to!.substring(0, 4);
     final summary = value == null
         ? placeholder
-        : '${state.formatShort(value.from)} – ${value.to == null ? 'Select end' : state.formatShort(value.to!)}';
+        : '${sameYear ? MaterialLocalizations.of(context).formatShortMonthDay(_parseDate(value.from)) : state.formatShort(value.from)} – ${value.to == null ? 'Select end' : state.formatShort(value.to!)}';
     return Semantics(
       button: true,
       expanded: state.isOpen,

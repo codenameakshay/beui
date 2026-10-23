@@ -23,6 +23,28 @@ Widget _app(Widget child, {bool reduce = false}) => MaterialApp(
 );
 
 void main() {
+  testWidgets(
+    'trigger summarizes same-year, cross-year and incomplete ranges',
+    (tester) async {
+      for (final (range, expected) in <(BeuiDateRange, String)>[
+        (
+          const BeuiDateRange(from: '2026-10-17', to: '2026-10-23'),
+          'Oct 17 – Oct 23, 2026',
+        ),
+        (
+          const BeuiDateRange(from: '2025-12-30', to: '2026-01-02'),
+          'Dec 30, 2025 – Jan 2, 2026',
+        ),
+        (const BeuiDateRange(from: '2026-10-17'), 'Oct 17, 2026 – Select end'),
+      ]) {
+        await tester.pumpWidget(
+          _app(BeuiDateRangePickerDropdown(value: range)),
+        );
+        expect(find.text(expected), findsOneWidget);
+      }
+    },
+  );
+
   group('BeuiDateRangePicker selection', () {
     testWidgets('hovering an idle day paints the muted background', (
       tester,
