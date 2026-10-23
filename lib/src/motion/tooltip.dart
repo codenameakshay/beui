@@ -333,13 +333,6 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
 
   bool _onKeyboardModality(KeyEvent event) {
     _pointerFocus = false;
-    if (event is KeyDownEvent &&
-        event.logicalKey != LogicalKeyboardKey.escape &&
-        _triggerFocus.hasFocus) {
-      _focused = true;
-      _suppressed = false;
-      _show(immediate: true);
-    }
     return false;
   }
 

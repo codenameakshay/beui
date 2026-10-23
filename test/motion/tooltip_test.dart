@@ -430,6 +430,52 @@ void main() {
     expect(find.text('TIP'), findsOneWidget);
   });
 
+  testWidgets('dismissed focused tooltip waits for a new focus-in', (
+    tester,
+  ) async {
+    final trigger = FocusNode();
+    final outside = FocusNode();
+    addTearDown(trigger.dispose);
+    addTearDown(outside.dispose);
+    await tester.pumpWidget(
+      beuiTestApp(
+        Column(
+          children: [
+            BeuiTooltip(
+              content: const Text('Focus tip'),
+              child: TextButton(
+                focusNode: trigger,
+                onPressed: () {},
+                child: const Text('Trigger'),
+              ),
+            ),
+            TextButton(
+              focusNode: outside,
+              onPressed: () {},
+              child: const Text('Outside'),
+            ),
+          ],
+        ),
+      ),
+    );
+    trigger.requestFocus();
+    await tester.pumpAndSettle();
+    expect(find.text('Focus tip'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(trigger.hasFocus, isTrue);
+    expect(find.text('Focus tip'), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.keyA);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(find.text('Focus tip'), findsNothing);
+    outside.requestFocus();
+    await tester.pump();
+    trigger.requestFocus();
+    await tester.pumpAndSettle();
+    expect(find.text('Focus tip'), findsOneWidget);
+  });
+
   testWidgets('long-press reveals on touch, releases to hide', (tester) async {
     await tester.pumpWidget(_app());
     final gesture = await tester.startGesture(
