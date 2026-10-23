@@ -549,15 +549,22 @@ class _PocketDetails extends StatelessWidget {
             children: [
               Semantics(
                 container: true,
+                excludeSemantics: true,
                 button: true,
+                enabled: !disabled,
                 label: detailsVisible
                     ? 'Hide card details'
                     : 'Show card details',
                 toggled: detailsVisible,
+                onTap: disabled ? null : onToggle,
                 child: BeuiTooltip(
                   disabled: disabled,
-                  content: Text(
-                    detailsVisible ? 'Hide card details' : 'Show card details',
+                  content: ExcludeSemantics(
+                    child: Text(
+                      detailsVisible
+                          ? 'Hide card details'
+                          : 'Show card details',
+                    ),
                   ),
                   child: IconButton(
                     onPressed: disabled ? null : onToggle,
