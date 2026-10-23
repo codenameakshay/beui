@@ -2,6 +2,9 @@
 
 These changes improve specific behaviors. They do not establish exact visual or motion parity.
 
+The [round2 report](round2/README.md) adds source CSS gradient geometry, shared Card Folder privacy tooltip, pointer-to-keyboard focus, source-layer held press, actual zero-glyph metrics, native SVG decoding and sizing, independent feedback retry semantics and the Search Chips backdrop.
+The remaining-gap section below describes the round1 endpoint. Round2 fixes do not establish exact parity.
+
 | Change | User-visible effect | Owned files |
 | --- | --- | --- |
 | Card Folder | Source contour spacing and layer-relative opening transforms. No initial purse-opening animation. Enter and Space activate the card. Privacy changes also animate CVV digits. | `lib/src/motion/card_folder.dart`, `example/lib/demos/card_folder_demo.dart`, `test/motion/card_folder_test.dart` |
@@ -35,6 +38,6 @@ Original pixels are not resized. A black title band and bottom padding accommoda
 
 The local FFmpeg attempt failed with `[AVFilterGraph @ 0x7837403f80] No such filter: 'drawtext'` and `Error : Filter not found`. The final edit uses native AppKit-rendered title PNGs with FFmpeg overlay and VFR passthrough.
 
-## Remaining implementation gaps
+## Round1 remaining implementation gaps
 
 Card Folder's radial glow, typography, and Material privacy tooltip differ from the source. The reference live site reports Geist and Geist Mono fonts, while the porting spec describes Inter and JetBrains Mono. This slice does not change shared fonts. Native Flutter cannot decode the remote source SVGs through the same web HTML image strategy. Market tooltip and text timing depend on shared widgets owned elsewhere. The full required block catalog has not received a zero-diff layout or motion verdict.

@@ -1,0 +1,61 @@
+{
+  "name": "candidate-morphing-search-chips-dark",
+  "url": "http://127.0.0.1:8108/?slug=morphing-search-chips&theme=dark&previewWidth=592",
+  "checks": [
+    {
+      "label": "rest",
+      "checkedAt": "2026-10-23T08:49:09.135Z"
+    },
+    {
+      "label": "recents",
+      "checkedAt": "2026-10-23T08:49:09.914Z"
+    },
+    {
+      "label": "suggestions",
+      "checkedAt": "2026-10-23T08:49:10.293Z"
+    },
+    {
+      "label": "chip-added",
+      "checkedAt": "2026-10-23T08:49:11.057Z"
+    },
+    {
+      "label": "closed",
+      "checkedAt": "2026-10-23T08:49:11.801Z"
+    }
+  ],
+  "targets": {
+    "field": {
+      "x": 833.9520874023438,
+      "y": 715,
+      "measuredBounds": {
+        "x": 743.4520874023438,
+        "y": 700,
+        "width": 181,
+        "height": 30
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "field"
+    },
+    {
+      "atMs": 1500,
+      "type": "text",
+      "text": "dark mode"
+    },
+    {
+      "atMs": 2400,
+      "type": "key",
+      "key": "Enter"
+    },
+    {
+      "atMs": 3300,
+      "type": "key",
+      "key": "Escape"
+    }
+  ],
+  "pass": true
+}

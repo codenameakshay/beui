@@ -1,0 +1,12 @@
+file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/docs/proof/v3-parity/blocks/round2/run.mjs:51
+        if (!found) throw new Error(`Missing ${item.slug} ${label}`);
+                          ^
+
+Error: Missing card-folder Show card details
+    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/docs/proof/v3-parity/blocks/round2/run.mjs:51:27
+    at Array.forEach (<anonymous>)
+    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/docs/proof/v3-parity/blocks/round2/run.mjs:49:14
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:541:9)
+
+Node.js v26.12.0

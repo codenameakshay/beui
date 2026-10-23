@@ -2,6 +2,9 @@
 
 All 19 required routes have a hash-verified candidate screenshot recording. Every verdict remains unverified for exact parity. A dispatched action is not proof of the expected visible result. `scope.json` preserves the complete audit-derived route, public-widget, example, and state inventory.
 
+The [round2 video and flow report](round2/README.md) adds labeled repairs, paired card/feedback/chips flows, held down/move/up footage, observed Flutter reduced motion and secondary-example footage.
+It preserves the following round1 index and its failures. No original obligation is relabeled as complete.
+
 The first five rows use `recovered-dark`. Other rows use `recovered-expanded`. The final Market Card recording uses `recovered-focus-ring`. Each recording directory has `capture.mp4`, untouched `original-frames`, `timeline.json`, `environment.json`, and the actual config. Adjacent logs preserve failures. The MP4 is derived from timestamped PNGs without interpolation.
 
 | Required route | Public widgets covered by route | Candidate video | Exercised protocol | Remaining evidence gaps |

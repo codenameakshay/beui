@@ -2,6 +2,10 @@
 
 The following files remain unchanged. None certifies parity.
 
+Round2 retains its additional failed locator attempts, a merged feedback-semantics reproduction, a real native-SVG sizing failure and a reduced recording with missing icon glyphs.
+Their exact dispositions and repaired successors are in the [round2 report](round2/README.md#invalid-and-inconclusive-attempts).
+No foreign-build record below was removed or reclassified.
+
 | Directory | Status | Reason |
 | --- | --- | --- |
 | `after-width592` | Invalid foreign build | `localhost:8103` reached Dart PID 9455 in `t3-d825aa5b/example`, not this worker's frozen release. Old tab widths and fake market artwork were visible. |

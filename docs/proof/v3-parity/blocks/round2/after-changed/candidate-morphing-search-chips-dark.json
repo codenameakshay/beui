@@ -1,0 +1,59 @@
+{
+  "url": "http://127.0.0.1:8108/?slug=morphing-search-chips&theme=dark&previewWidth=592",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "theme": "dark",
+  "reference": false,
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 900,
+  "targets": {
+    "0": {
+      "x": 833.9520874023438,
+      "y": 715,
+      "measuredBounds": {
+        "role": null,
+        "label": "Search inspiration",
+        "text": "",
+        "x": 743.4520874023438,
+        "y": 700,
+        "width": 181,
+        "height": 30
+      }
+    },
+    "outside": {
+      "x": 1100,
+      "y": 100
+    }
+  },
+  "provenance": {
+    "batch": "after-changed",
+    "expectedJsSha256": "c570aba86cb77d21f7ad0afe81f497e40f36c1b015c629f88fcc268d31f8edbe",
+    "tool": "/Users/codenameakshay/.t3/worktrees/beui/t3-6e9ab891/tool/parity_capture.mjs",
+    "toolHash": "71a498d004c2f7a3a00d015d4dc13f0e4b1ef7966813e2b00c9fc06830fb00fb",
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "baselineWrapperApplied": false,
+    "candidatePreviewInnerWidth": 592,
+    "label": "Round2 observation, no native 60 FPS or exact-parity claim"
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "0"
+    },
+    {
+      "atMs": 1300,
+      "type": "key",
+      "key": "Escape"
+    },
+    {
+      "atMs": 2100,
+      "type": "move",
+      "target": "outside"
+    }
+  ]
+}

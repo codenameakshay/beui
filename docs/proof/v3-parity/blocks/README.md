@@ -4,6 +4,13 @@ This slice repairs Card Folder, Morphing Tabs, Prediction Market Card, Digit Swa
 
 See the [change manifest](CHANGES.md), [per-route video index and gaps](VIDEO-INDEX.md), [invalid capture list](INVALID-CAPTURES.md), and machine-readable [scope inventory](scope.json).
 
+## Round2 follow-up
+
+The [round2 report](round2/README.md) records source-backed card, glyph, SVG, feedback and Search Chips repairs.
+It includes native decoding and sizing regressions, source-layer held-press repair, effective Flutter reduced-motion flows, labeled viewing videos and new failed image diagnostics.
+Original round1 PNGs, frozen-before hashes and invalid foreign-build records remain unchanged.
+No exact-parity or native 60fps verdict changed.
+
 ## Integration commits
 
 The owned implementation commits are:

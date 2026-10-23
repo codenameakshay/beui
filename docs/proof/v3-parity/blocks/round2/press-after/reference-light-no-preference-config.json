@@ -1,0 +1,58 @@
+{
+  "url": "https://beui.dev/components/blocks/card-folder",
+  "viewport": {
+    "width": 1280,
+    "height": 1200
+  },
+  "theme": "light",
+  "reducedMotion": "no-preference",
+  "reference": true,
+  "requireFlutterProbe": false,
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 1500,
+  "targets": {
+    "upper": {
+      "x": 600,
+      "y": 470.50875
+    },
+    "held": {
+      "x": 602,
+      "y": 472.50875
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "move",
+      "target": "upper"
+    },
+    {
+      "atMs": 900,
+      "type": "down"
+    },
+    {
+      "atMs": 1800,
+      "type": "move",
+      "target": "held"
+    },
+    {
+      "atMs": 2600,
+      "type": "up"
+    },
+    {
+      "atMs": 3500,
+      "type": "key",
+      "key": "Enter"
+    }
+  ],
+  "provenance": {
+    "tool": "/Users/codenameakshay/.t3/worktrees/beui/t3-f7137276/tool/parity_capture.mjs",
+    "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "recorderCommit": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "wrapper": "d831524, source background, actual previewWidth592 and effective motion probe. Original 5ec78ac untouched.",
+    "assertionScope": "Assertions are a separate browser run. Actual recorded PNG states need inspection. No interpolation or native cadence claim."
+  }
+}

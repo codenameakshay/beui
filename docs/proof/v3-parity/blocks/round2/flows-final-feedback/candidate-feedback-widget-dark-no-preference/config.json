@@ -1,0 +1,97 @@
+{
+  "url": "http://127.0.0.1:8108/?slug=feedback-widget&theme=dark&previewWidth=592&captureProbe=1",
+  "viewport": {
+    "width": 1280,
+    "height": 1200
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "reference": false,
+  "requireFlutterProbe": true,
+  "servedJs": {
+    "url": "http://127.0.0.1:8108/main.dart.js",
+    "sha256": "542e923cd875c1834eca60c68e0ca8a6f508740307cc3bc24ad619430265ead7",
+    "revision": "82f12dbe002f3f588c97d7730592d49ae4dc3319 + owned round2 dirty diff"
+  },
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 1800,
+  "targets": {
+    "open": {
+      "x": 955.5,
+      "y": 596,
+      "measuredBounds": {
+        "x": 931.5,
+        "y": 572,
+        "width": 48,
+        "height": 48
+      }
+    },
+    "field": {
+      "x": 822.5,
+      "y": 486.5,
+      "measuredBounds": {
+        "x": 683.5,
+        "y": 452,
+        "width": 278,
+        "height": 69
+      }
+    },
+    "submit": {
+      "x": 895.5,
+      "y": 588,
+      "measuredBounds": {
+        "x": 823.5,
+        "y": 568,
+        "width": 144,
+        "height": 40
+      }
+    },
+    "retry": {
+      "x": 819.496337890625,
+      "y": 576,
+      "measuredBounds": {
+        "x": 781.933837890625,
+        "y": 560,
+        "width": 75.125,
+        "height": 32
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "open"
+    },
+    {
+      "atMs": 1500,
+      "type": "click",
+      "target": "field"
+    },
+    {
+      "atMs": 2400,
+      "type": "text",
+      "text": "The native SVG is visible"
+    },
+    {
+      "atMs": 3300,
+      "type": "click",
+      "target": "submit"
+    },
+    {
+      "atMs": 5400,
+      "type": "click",
+      "target": "retry"
+    }
+  ],
+  "provenance": {
+    "expectedJsSha256": "542e923cd875c1834eca60c68e0ca8a6f508740307cc3bc24ad619430265ead7",
+    "tool": "/Users/codenameakshay/.t3/worktrees/beui/t3-655688e6/tool/parity_capture.mjs",
+    "toolHash": "47995b4625b91fdec1c2f8d56b193a1049fa1dc22d97ce881987189a20658e48",
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "wrapper": "d831524 source background and opt-in capture probe, previewWidth592. Old baseline untouched.",
+    "note": "Flow assertions come from a separate observed run. Video states require independent PNG inspection. No interpolation."
+  }
+}

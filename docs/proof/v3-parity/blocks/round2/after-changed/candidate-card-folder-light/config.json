@@ -1,0 +1,87 @@
+{
+  "url": "http://127.0.0.1:8108/?slug=card-folder&theme=light&previewWidth=592",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "theme": "light",
+  "reference": false,
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 900,
+  "targets": {
+    "0": {
+      "x": 619.7000122070312,
+      "y": 500,
+      "measuredBounds": {
+        "role": "switch",
+        "label": "Show card details",
+        "text": "",
+        "x": 599.7000122070312,
+        "y": 480,
+        "width": 40,
+        "height": 40
+      }
+    },
+    "1": {
+      "x": 772.5,
+      "y": 463.99249267578125,
+      "measuredBounds": {
+        "role": "button",
+        "label": "Open Saurabh Chauhan, card ending in 0806, expires 08/29",
+        "text": "",
+        "x": 580.5,
+        "y": 353.53936767578125,
+        "width": 384,
+        "height": 220.90625
+      }
+    },
+    "outside": {
+      "x": 1100,
+      "y": 100
+    }
+  },
+  "provenance": {
+    "batch": "after-changed",
+    "expectedJsSha256": "c570aba86cb77d21f7ad0afe81f497e40f36c1b015c629f88fcc268d31f8edbe",
+    "tool": "/Users/codenameakshay/.t3/worktrees/beui/t3-6e9ab891/tool/parity_capture.mjs",
+    "toolHash": "71a498d004c2f7a3a00d015d4dc13f0e4b1ef7966813e2b00c9fc06830fb00fb",
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "baselineWrapperApplied": false,
+    "candidatePreviewInnerWidth": 592,
+    "label": "Round2 observation, no native 60 FPS or exact-parity claim"
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "move",
+      "target": "0"
+    },
+    {
+      "atMs": 1100,
+      "type": "click",
+      "target": "0"
+    },
+    {
+      "atMs": 2000,
+      "type": "click",
+      "target": "0"
+    },
+    {
+      "atMs": 2800,
+      "type": "click",
+      "target": "1"
+    },
+    {
+      "atMs": 3600,
+      "type": "key",
+      "key": "Enter"
+    },
+    {
+      "atMs": 4400,
+      "type": "move",
+      "target": "outside"
+    }
+  ]
+}

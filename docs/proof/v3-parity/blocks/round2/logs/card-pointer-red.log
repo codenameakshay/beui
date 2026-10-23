@@ -1,0 +1,31 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart
+00:00 +0: pointer activation transfers keyboard control to the folder
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: [true, false]
+  Actual: [true]
+   Which: at location [1] is [true] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:60:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 60
+The test description was:
+  pointer activation transfers keyboard control to the folder
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: pointer activation transfers keyboard control to the folder [E]
+  Test failed. See exception logs above.
+  The test description was: pointer activation transfers keyboard control to the folder
+  
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: pointer activation transfers keyboard control to the folder

@@ -1,0 +1,52 @@
+[
+  {
+    "name": "candidate-card-folder-dark-no-preference",
+    "pass": true
+  },
+  {
+    "name": "candidate-card-folder-light-no-preference",
+    "pass": true
+  },
+  {
+    "name": "candidate-feedback-widget-dark-no-preference",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(await page.locator('[aria-label^=\"Thanks!\"]').count())\n\n    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/docs/proof/v3-parity/blocks/round2/flow-check.mjs:98:28"
+  },
+  {
+    "name": "candidate-feedback-widget-light-no-preference",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(await page.locator('[aria-label^=\"Thanks!\"]').count())\n\n    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/docs/proof/v3-parity/blocks/round2/flow-check.mjs:98:28"
+  },
+  {
+    "name": "candidate-morphing-search-chips-dark-no-preference",
+    "pass": true
+  },
+  {
+    "name": "candidate-morphing-search-chips-light-no-preference",
+    "pass": true
+  },
+  {
+    "name": "reference-card-folder-dark-no-preference",
+    "pass": true
+  },
+  {
+    "name": "reference-card-folder-light-no-preference",
+    "pass": true
+  },
+  {
+    "name": "reference-feedback-widget-dark-no-preference",
+    "pass": true
+  },
+  {
+    "name": "reference-feedback-widget-light-no-preference",
+    "pass": true
+  },
+  {
+    "name": "reference-morphing-search-chips-dark-no-preference",
+    "pass": true
+  },
+  {
+    "name": "reference-morphing-search-chips-light-no-preference",
+    "pass": true
+  }
+]
