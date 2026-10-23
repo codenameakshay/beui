@@ -1,0 +1,389 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart
+00:00 +0: fractional declared widths remain supported
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: UnsupportedError:<Unsupported operation: Expected nonnegative finite 1/64 px input: 120.1>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart:13:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart line 13
+The test description was:
+  fractional declared widths remain supported
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: fractional declared widths remain supported [E]
+  Test failed. See exception logs above.
+  The test description was: fractional declared widths remain supported
+  
+00:00 +0 -1: nested horizontal flex must be rejected safely
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during performLayout():
+RenderFlex children have non-zero flex but incoming width constraints are unbounded.
+When a row is in a parent that does not provide a finite width constraint, for example if it is in a
+horizontal scrollable, it will try to shrink-wrap its children along the horizontal axis. Setting a
+flex on a child (e.g. using Expanded) indicates that the child is to expand to fill the remaining
+space in the horizontal direction.
+These two directives are mutually exclusive. If a parent is to shrink-wrap its child, the child
+cannot simultaneously expand to fit its parent.
+Consider setting mainAxisSize to MainAxisSize.min and using FlexFit.loose fits for the flexible
+children (using Flexible rather than Expanded). This will allow the flexible children to size
+themselves to less than the infinite remaining space they would otherwise be forced to take, and
+then will cause the RenderFlex to shrink-wrap the children rather than expanding to fit the maximum
+constraints provided by the parent.
+If this message did not help you determine the problem, consider using debugDumpRenderTree():
+  https://flutter.dev/to/debug-render-layer
+  https://api.flutter.dev/flutter/rendering/debugDumpRenderTree.html
+The affected RenderFlex is:
+  RenderFlex#ffb25 relayoutBoundary=up2 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE(creator: Row ← Row ← _FocusInheritedScope ← Focus ← ExcludeFocus ← SelectionRegistrarScope ← SelectionContainer ← KeyedSubtree-[<(null, 0, 0)>] ← _Measure ← IntrinsicMeasurement ← Semantics ← Builder ← ⋯, parentData: offset=Offset(0.0, 0.0); flex=null; fit=null (can use size), constraints: BoxConstraints(unconstrained), size: MISSING, direction: horizontal, mainAxisAlignment: start, mainAxisSize: max, crossAxisAlignment: center, textDirection: ltr, verticalDirection: down, spacing: 0.0)
+The creator information is set to:
+  Row ← Row ← _FocusInheritedScope ← Focus ← ExcludeFocus ← SelectionRegistrarScope ←
+  SelectionContainer ← KeyedSubtree-[<(null, 0, 0)>] ← _Measure ← IntrinsicMeasurement ← Semantics ←
+  Builder ← ⋯
+The nearest ancestor providing an unbounded width constraint is: RenderFlex#c4014 relayoutBoundary=up1 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE:
+  creator: Row ← _FocusInheritedScope ← Focus ← ExcludeFocus ← SelectionRegistrarScope ←
+    SelectionContainer ← KeyedSubtree-[<(null, 0, 0)>] ← _Measure ← IntrinsicMeasurement ← Semantics ←
+    Builder ← RepaintBoundary-[GlobalKey#d63c2] ← ⋯
+  parentData: offset=Offset(0.0, 0.0) (can use size)
+  constraints: BoxConstraints(0.0<=w<=288.0, 0.0<=h<=Infinity)
+  size: MISSING
+  direction: horizontal
+  mainAxisAlignment: start
+  mainAxisSize: max
+  crossAxisAlignment: center
+  textDirection: ltr
+  verticalDirection: down
+  spacing: 0.0
+See also: https://flutter.dev/unbounded-constraints
+If none of the above helps enough to fix this problem, please don't hesitate to file a bug:
+  https://github.com/flutter/flutter/issues/new?template=02_bug.yml
+
+The relevant error-causing widget was:
+  Row
+  Row:file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart:20:68
+
+When the exception was thrown, this was the stack:
+#0      RenderFlex.performLayout.<anonymous closure> (package:flutter/src/rendering/flex.dart:1324:9)
+#1      RenderFlex.performLayout (package:flutter/src/rendering/flex.dart:1327:6)
+#2      RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#3      ChildLayoutHelper.layoutChild (package:flutter/src/rendering/layout_helper.dart:62:11)
+#4      RenderFlex._computeSizes (package:flutter/src/rendering/flex.dart:1237:28)
+#5      RenderFlex.performLayout (package:flutter/src/rendering/flex.dart:1329:32)
+#6      RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#7      _RenderMeasure.performLayout (package:beui/src/motion/table/intrinsic_measurement.dart:243:15)
+#8      RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#9      RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#10     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#11     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#12     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#13     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#14     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#15     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#16     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#17     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#18     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#19     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#20     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#21     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#22     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#23     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#24     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#25     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#26     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#27     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#28     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#29     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#30     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#31     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#32     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#33     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#34     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#35     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#36     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#37     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#38     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#39     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#40     RenderOffstage.performLayout (package:flutter/src/rendering/proxy_box.dart:3923:13)
+#41     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#42     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#43     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#44     _RenderTheaterMixin.layoutChild (package:flutter/src/widgets/overlay.dart:1124:13)
+#45     _RenderTheater.performLayout (package:flutter/src/widgets/overlay.dart:1482:9)
+#46     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#47     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#48     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#49     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#50     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#51     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#52     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#53     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#54     RenderCustomPaint.performLayout (package:flutter/src/rendering/custom_paint.dart:574:11)
+#55     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#56     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#57     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#58     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#59     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#60     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#61     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#62     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#63     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#64     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#65     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#66     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#67     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#68     RenderView.performLayout (package:flutter/src/rendering/view.dart:292:12)
+#69     RenderObject._layoutWithoutResize (package:flutter/src/rendering/object.dart:2771:7)
+#70     PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1174:18)
+#71     PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1187:15)
+#72     AutomatedTestWidgetsFlutterBinding.drawFrame (package:flutter_test/src/binding.dart:2434:27)
+#73     RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:558:5)
+#74     SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1430:15)
+#75     SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1345:9)
+#76     AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:2261:9)
+#79     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#80     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:2250:27)
+#81     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:598:22)
+#84     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#85     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:595:27)
+#86     main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart:18:18)
+#87     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:29)
+<asynchronous suspension>
+#88     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The following RenderObject was being processed when the exception was fired: RenderFlex#ffb25 relayoutBoundary=up2 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE:
+  creator: Row ← Row ← _FocusInheritedScope ← Focus ← ExcludeFocus ← SelectionRegistrarScope ←
+    SelectionContainer ← KeyedSubtree-[<(null, 0, 0)>] ← _Measure ← IntrinsicMeasurement ← Semantics ←
+    Builder ← ⋯
+  parentData: offset=Offset(0.0, 0.0); flex=null; fit=null (can use size)
+  constraints: BoxConstraints(unconstrained)
+  size: MISSING
+  direction: horizontal
+  mainAxisAlignment: start
+  mainAxisSize: max
+  crossAxisAlignment: center
+  textDirection: ltr
+  verticalDirection: down
+  spacing: 0.0
+This RenderObject had the following descendants (showing up to depth 5):
+    child 1: RenderParagraph#173c9 NEEDS-LAYOUT NEEDS-PAINT
+      text: TextSpan
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during performLayout():
+RenderBox was not laid out: RenderFlex#ffb25 relayoutBoundary=up2 NEEDS-PAINT
+NEEDS-COMPOSITING-BITS-UPDATE
+'package:flutter/src/rendering/box.dart':
+Failed assertion: line 2251 pos 12: 'hasSize'
+
+Either the assertion indicates an error in the framework itself, or we should provide substantially
+more information in this error message to help you determine and fix the underlying cause.
+In either case, please report this assertion by filing a bug on GitHub:
+  https://github.com/flutter/flutter/issues/new?template=02_bug.yml
+
+The relevant error-causing widget was:
+  Row
+  Row:file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart:20:53
+
+When the exception was thrown, this was the stack:
+#2      RenderBox.size (package:flutter/src/rendering/box.dart:2251:12)
+#3      ChildLayoutHelper.layoutChild (package:flutter/src/rendering/layout_helper.dart:63:18)
+#4      RenderFlex._computeSizes (package:flutter/src/rendering/flex.dart:1237:28)
+#5      RenderFlex.performLayout (package:flutter/src/rendering/flex.dart:1329:32)
+#6      RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#7      _RenderMeasure.performLayout (package:beui/src/motion/table/intrinsic_measurement.dart:243:15)
+#8      RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#9      RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#10     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#11     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#12     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#13     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#14     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#15     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#16     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#17     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#18     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#19     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#20     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#21     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#22     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#23     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#24     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#25     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#26     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#27     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#28     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#29     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#30     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#31     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#32     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#33     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#34     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#35     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#36     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#37     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#38     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#39     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#40     RenderOffstage.performLayout (package:flutter/src/rendering/proxy_box.dart:3923:13)
+#41     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#42     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#43     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#44     _RenderTheaterMixin.layoutChild (package:flutter/src/widgets/overlay.dart:1124:13)
+#45     _RenderTheater.performLayout (package:flutter/src/widgets/overlay.dart:1482:9)
+#46     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#47     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#48     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#49     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#50     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#51     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#52     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#53     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#54     RenderCustomPaint.performLayout (package:flutter/src/rendering/custom_paint.dart:574:11)
+#55     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#56     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#57     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#58     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#59     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#60     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#61     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#62     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#63     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#64     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#65     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#66     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:118:18)
+#67     RenderObject.layout (package:flutter/src/rendering/object.dart:2923:7)
+#68     RenderView.performLayout (package:flutter/src/rendering/view.dart:292:12)
+#69     RenderObject._layoutWithoutResize (package:flutter/src/rendering/object.dart:2771:7)
+#70     PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1174:18)
+#71     PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1187:15)
+#72     AutomatedTestWidgetsFlutterBinding.drawFrame (package:flutter_test/src/binding.dart:2434:27)
+#73     RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:558:5)
+#74     SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1430:15)
+#75     SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1345:9)
+#76     AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:2261:9)
+#79     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#80     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:2250:27)
+#81     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:598:22)
+#84     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#85     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:595:27)
+#86     main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart:18:18)
+#87     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:29)
+<asynchronous suspension>
+#88     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 7 frames from class _AssertionError, dart:async, and package:stack_trace)
+
+The following RenderObject was being processed when the exception was fired: RenderFlex#c4014 relayoutBoundary=up1 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE:
+  creator: Row ← _FocusInheritedScope ← Focus ← ExcludeFocus ← SelectionRegistrarScope ←
+    SelectionContainer ← KeyedSubtree-[<(null, 0, 0)>] ← _Measure ← IntrinsicMeasurement ← Semantics ←
+    Builder ← RepaintBoundary-[GlobalKey#d63c2] ← ⋯
+  parentData: offset=Offset(0.0, 0.0) (can use size)
+  constraints: BoxConstraints(0.0<=w<=288.0, 0.0<=h<=Infinity)
+  size: MISSING
+  direction: horizontal
+  mainAxisAlignment: start
+  mainAxisSize: max
+  crossAxisAlignment: center
+  textDirection: ltr
+  verticalDirection: down
+  spacing: 0.0
+This RenderObject had the following descendants (showing up to depth 5):
+    child 1: RenderFlex#ffb25 relayoutBoundary=up2 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+      child 1: RenderParagraph#173c9 NEEDS-LAYOUT NEEDS-PAINT
+        text: TextSpan
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: null
+  Actual: 'Multiple exceptions (2) were detected during the running of the current test, and at
+least one was unexpected.'
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart:23:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart line 23
+The test description was:
+  nested horizontal flex must be rejected safely
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: nested horizontal flex must be rejected safely [E]
+  Test failed. See exception logs above.
+  The test description was: nested horizontal flex must be rejected safely
+  
+00:00 +0 -2: row height update samples current viewport
+OFFSET=2400.0 WINDOW=40..66
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: contains '100'
+  Actual: [
+            '40',
+            '41',
+            '42',
+            '43',
+            '44',
+            '45',
+            '46',
+            '47',
+            '48',
+            '49',
+            '50',
+            '51',
+            '52',
+            '53',
+            '54',
+            '55',
+            '56',
+            '57',
+            '58',
+            '59',
+            '60',
+            '61',
+            '62',
+            '63',
+            ...
+          ]
+   Which: does not contain '100'
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart:41:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart line 41
+The test description was:
+  row height update samples current viewport
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -3: row height update samples current viewport [E]
+  Test failed. See exception logs above.
+  The test description was: row height update samples current viewport
+  
+00:00 +0 -3: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart: fractional declared widths remain supported
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart: nested horizontal flex must be rejected safely
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/table_intrinsic_review_regressions_test.dart: row height update samples current viewport
