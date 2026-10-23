@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../motion/_scroll_geometry.dart';
 import '../motion/tooltip.dart';
@@ -122,9 +123,12 @@ class BeuiStatusBar extends StatefulWidget {
 }
 
 class _BeuiStatusBarState extends State<BeuiStatusBar>
-    with BeuiChartActiveState<BeuiStatusBar>, BeuiChartInspectorKeys {
+    with BeuiChartActiveState<BeuiStatusBar> {
   final FocusNode _inspectorFocusNode = FocusNode();
   bool _tooltipOpen = false;
+  bool _pointerDriven = false;
+  bool _keyboardFocus = false;
+  String? _lastPointerId;
   final _tooltipAnchor = GlobalKey();
   final _tooltipLink = LayerLink();
 
@@ -136,9 +140,6 @@ class _BeuiStatusBarState extends State<BeuiStatusBar>
   ValueChanged<String?>? get widgetOnActiveChange => null;
   @override
   Iterable<String> get knownIds => widget.data.map((datum) => datum.id);
-  @override
-  List<String> get inspectableIds =>
-      widget.data.map((datum) => datum.id).toList();
 
   @override
   void initState() {
@@ -161,6 +162,54 @@ class _BeuiStatusBarState extends State<BeuiStatusBar>
 
   void setTooltipOpen(bool open) {
     if (_tooltipOpen != open) setState(() => _tooltipOpen = open);
+  }
+
+  void setKeyboardFocus(bool keyboard) {
+    if (_keyboardFocus != keyboard) setState(() => _keyboardFocus = keyboard);
+  }
+
+  void inspectPointer(String id) {
+    setActiveId(id);
+    if (_lastPointerId != id) setTooltipOpen(true);
+    _lastPointerId = id;
+  }
+
+  void inspectorFocusChanged(bool focused) {
+    setKeyboardFocus(focused && !_pointerDriven);
+    if (!focused) {
+      _pointerDriven = false;
+      setTooltipOpen(false);
+    } else if (!_pointerDriven && widget.data.isNotEmpty) {
+      setActiveId(activeId ?? widget.data.first.id);
+      setTooltipOpen(true);
+    }
+  }
+
+  bool handleInspectorKey(KeyEvent event) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) return false;
+    if (widget.data.isEmpty) return false;
+    _pointerDriven = false;
+    setKeyboardFocus(true);
+    final key = event.logicalKey;
+    if (key == LogicalKeyboardKey.escape) {
+      setTooltipOpen(false);
+      return true;
+    }
+    final index = widget.data.indexWhere((datum) => datum.id == activeId);
+    final current = index < 0 ? 0 : index;
+    final next = switch (key) {
+      LogicalKeyboardKey.home => 0,
+      LogicalKeyboardKey.end => widget.data.length - 1,
+      LogicalKeyboardKey.arrowRight ||
+      LogicalKeyboardKey.arrowUp => current + 1,
+      LogicalKeyboardKey.arrowLeft ||
+      LogicalKeyboardKey.arrowDown => current - 1,
+      _ => null,
+    };
+    if (next == null) return false;
+    setActiveId(widget.data[next.clamp(0, widget.data.length - 1)].id);
+    setTooltipOpen(true);
+    return true;
   }
 
   @override
@@ -251,7 +300,7 @@ class BeuiStatusBarPlot extends StatelessWidget {
       children: [
         Focus(
           focusNode: state._inspectorFocusNode,
-          onFocusChange: state.setTooltipOpen,
+          onFocusChange: state.inspectorFocusChanged,
           onKeyEvent: (node, event) {
             return state.handleInspectorKey(event)
                 ? KeyEventResult.handled
@@ -267,178 +316,172 @@ class BeuiStatusBarPlot extends StatelessWidget {
                 data[(activeIndex + 1).clamp(0, data.length - 1)].label,
             decreasedValue:
                 data[(activeIndex - 1).clamp(0, data.length - 1)].label,
-            onIncrease: () => state.setActiveId(
-              data[(activeIndex + 1).clamp(0, data.length - 1)].id,
-            ),
-            onDecrease: () => state.setActiveId(
-              data[(activeIndex - 1).clamp(0, data.length - 1)].id,
-            ),
-            child: SizedBox(
-              height: 44,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) => Stack(
-                          children: [
-                            Positioned(
-                              left:
-                                  (activeIndex + .5) /
-                                  data.length *
-                                  constraints.maxWidth,
-                              top: 4.4,
-                              child: CompositedTransformTarget(
-                                key: state._tooltipAnchor,
-                                link: state._tooltipLink,
-                                child: const SizedBox(width: 1, height: 1),
+            onIncrease: () {
+              state.setActiveId(
+                data[(activeIndex + 1).clamp(0, data.length - 1)].id,
+              );
+              state.setTooltipOpen(true);
+            },
+            onDecrease: () {
+              state.setActiveId(
+                data[(activeIndex - 1).clamp(0, data.length - 1)].id,
+              );
+              state.setTooltipOpen(true);
+            },
+            child: _StatusInspectorPointer(
+              state: state,
+              child: SizedBox(
+                height: 44,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) => Stack(
+                            children: [
+                              Positioned(
+                                left:
+                                    (activeIndex + .5) /
+                                    data.length *
+                                    constraints.maxWidth,
+                                top: 4.4,
+                                child: CompositedTransformTarget(
+                                  key: state._tooltipAnchor,
+                                  link: state._tooltipLink,
+                                  child: const SizedBox(width: 1, height: 1),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      for (var i = 0; i < data.length; i++)
-                        Expanded(
-                          key: ValueKey(data[i].id),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 1.5,
-                            ),
-                            child: MouseRegion(
-                              onEnter: (_) {
-                                state.setActiveId(data[i].id);
-                                state.setTooltipOpen(true);
-                              },
-                              onExit: (_) => state.setTooltipOpen(false),
-                              child: GestureDetector(
-                                excludeFromSemantics: true,
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  state._inspectorFocusNode.requestFocus();
-                                  state.setActiveId(data[i].id);
+                    Row(
+                      spacing: MediaQuery.sizeOf(context).width >= 640 ? 4 : 2,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        for (var i = 0; i < data.length; i++)
+                          Expanded(
+                            key: ValueKey(data[i].id),
+                            child: Padding(
+                              padding: EdgeInsets.zero,
+                              child: MouseRegion(
+                                onEnter: (_) {
+                                  state.inspectPointer(data[i].id);
                                 },
-                                child: ExcludeSemantics(
-                                  child: Center(
-                                    child: _StatusEntrance(
-                                      height: barHeight,
-                                      child: BeuiChartTween(
-                                        key: ValueKey(data[i].id),
-                                        from: 0,
-                                        value: 1,
-                                        duration: Duration(
-                                          milliseconds:
-                                              MediaQuery.disableAnimationsOf(
-                                                context,
-                                              )
-                                              ? 150
-                                              : 240,
-                                        ),
-                                        delay: Duration(
-                                          microseconds:
-                                              (180000 *
-                                                      i /
-                                                      (data.length > 1
-                                                          ? data.length - 1
-                                                          : 1))
-                                                  .round(),
-                                        ),
-                                        builder: (context, opacity) => Opacity(
-                                          opacity: opacity.clamp(0, 1),
-                                          child: BeuiChartTween(
-                                            from: 0,
-                                            value: 1,
-                                            duration: const Duration(
-                                              milliseconds: 240,
-                                            ),
-                                            delay: Duration(
-                                              microseconds:
-                                                  (180000 *
-                                                          i /
-                                                          (data.length > 1
-                                                              ? data.length - 1
-                                                              : 1))
-                                                      .round(),
-                                            ),
-                                            motion: beuiSpringPress,
-                                            isMovement: true,
-                                            builder: (context, t) => Transform.translate(
-                                              offset: Offset(0, 4 * (1 - t)),
-                                              child: Transform.scale(
-                                                scaleY: .9 + .1 * t,
-                                                child: SizedBox(
-                                                  height: barHeight,
-                                                  child: Stack(
-                                                    fit: StackFit.expand,
-                                                    children: [
-                                                      AnimatedSwitcher(
-                                                        duration:
-                                                            const Duration(
-                                                              milliseconds: 160,
+                                child: GestureDetector(
+                                  excludeFromSemantics: true,
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    state._inspectorFocusNode.requestFocus();
+                                    state.setActiveId(data[i].id);
+                                  },
+                                  child: ExcludeSemantics(
+                                    child: Center(
+                                      child: _StatusEntrance(
+                                        height: barHeight,
+                                        child: BeuiChartTween(
+                                          key: ValueKey(data[i].id),
+                                          from: 0,
+                                          value: 1,
+                                          duration: Duration(
+                                            milliseconds:
+                                                MediaQuery.disableAnimationsOf(
+                                                  context,
+                                                )
+                                                ? 150
+                                                : 240,
+                                          ),
+                                          delay: Duration(
+                                            microseconds:
+                                                (180000 *
+                                                        i /
+                                                        (data.length > 1
+                                                            ? data.length - 1
+                                                            : 1))
+                                                    .round(),
+                                          ),
+                                          builder: (context, opacity) => Opacity(
+                                            opacity: opacity.clamp(0, 1),
+                                            child: BeuiChartTween(
+                                              from: 0,
+                                              value: 1,
+                                              duration: const Duration(
+                                                milliseconds: 240,
+                                              ),
+                                              delay: Duration(
+                                                microseconds:
+                                                    (180000 *
+                                                            i /
+                                                            (data.length > 1
+                                                                ? data.length -
+                                                                      1
+                                                                : 1))
+                                                        .round(),
+                                              ),
+                                              motion: beuiSpringPress,
+                                              isMovement: true,
+                                              builder: (context, t) => Transform.translate(
+                                                offset: Offset(0, 4 * (1 - t)),
+                                                child: Transform.scale(
+                                                  scaleY: .9 + .1 * t,
+                                                  child: SizedBox(
+                                                    height: barHeight,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      clipBehavior: Clip.none,
+                                                      children: [
+                                                        AnimatedSwitcher(
+                                                          duration:
+                                                              const Duration(
+                                                                milliseconds:
+                                                                    160,
+                                                              ),
+                                                          reverseDuration:
+                                                              const Duration(
+                                                                milliseconds:
+                                                                    120,
+                                                              ),
+                                                          switchInCurve:
+                                                              beuiEaseOut,
+                                                          switchOutCurve:
+                                                              beuiEaseOut,
+                                                          child: DecoratedBox(
+                                                            key: ValueKey(
+                                                              '${data[i].status}:${statusMap[data[i].status]!.color}',
                                                             ),
-                                                        reverseDuration:
-                                                            const Duration(
-                                                              milliseconds: 120,
-                                                            ),
-                                                        switchInCurve:
-                                                            beuiEaseOut,
-                                                        switchOutCurve:
-                                                            beuiEaseOut,
-                                                        child: DecoratedBox(
-                                                          key: ValueKey(
-                                                            '${data[i].status}:${statusMap[data[i].status]!.color}',
-                                                          ),
-                                                          decoration: BoxDecoration(
-                                                            color: beuiChartColor(
-                                                              statusMap[data[i]
-                                                                      .status]!
-                                                                  .color,
-                                                              colors,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  99,
-                                                                ),
-                                                          ),
-                                                          child:
-                                                              const SizedBox.expand(),
-                                                        ),
-                                                      ),
-                                                      AnimatedOpacity(
-                                                        opacity:
-                                                            state._tooltipOpen &&
-                                                                data[i].id ==
-                                                                    state
-                                                                        .activeId
-                                                            ? 1
-                                                            : 0,
-                                                        duration:
-                                                            const Duration(
-                                                              milliseconds: 100,
-                                                            ),
-                                                        curve: beuiEaseOut,
-                                                        child: DecoratedBox(
-                                                          decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  99,
-                                                                ),
-                                                            border: Border.all(
-                                                              color: colors
-                                                                  .foreground
-                                                                  .withValues(
-                                                                    alpha: .6,
+                                                            decoration: BoxDecoration(
+                                                              color: beuiChartColor(
+                                                                statusMap[data[i]
+                                                                        .status]!
+                                                                    .color,
+                                                                colors,
+                                                              ),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    99,
                                                                   ),
                                                             ),
+                                                            child:
+                                                                const SizedBox.expand(),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                        _StatusActiveRing(
+                                                          active:
+                                                              state
+                                                                  ._tooltipOpen &&
+                                                              data[i].id ==
+                                                                  state
+                                                                      .activeId,
+                                                          color: colors
+                                                              .foreground
+                                                              .withValues(
+                                                                alpha: .6,
+                                                              ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -452,31 +495,132 @@ class BeuiStatusBarPlot extends StatelessWidget {
                               ),
                             ),
                           ),
-                        ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
+        if (showLabels) const SizedBox(height: 6),
         if (showLabels)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 data.first.label,
-                style: TextStyle(color: colors.mutedForeground, fontSize: 11),
+                style: TextStyle(color: colors.mutedForeground, fontSize: 12),
               ),
               Text(
                 data.last.label,
-                style: TextStyle(color: colors.mutedForeground, fontSize: 11),
+                style: TextStyle(color: colors.mutedForeground, fontSize: 12),
               ),
             ],
           ),
       ],
     );
   }
+}
+
+class _StatusActiveRing extends StatelessWidget {
+  const _StatusActiveRing({required this.active, required this.color});
+  final bool active;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Positioned.fill(
+    left: -3,
+    right: -3,
+    top: -3,
+    bottom: -3,
+    child: AnimatedOpacity(
+      opacity: active ? 1 : 0,
+      duration: const Duration(milliseconds: 100),
+      curve: beuiEaseOut,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(color: color),
+        ),
+      ),
+    ),
+  );
+}
+
+class _StatusInspectorPointer extends StatelessWidget {
+  const _StatusInspectorPointer({required this.state, required this.child});
+  final _BeuiStatusBarState state;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      void inspect(Offset position) {
+        if (constraints.maxWidth <= 0 || state.widget.data.isEmpty) return;
+        final index =
+            (position.dx / constraints.maxWidth * state.widget.data.length)
+                .floor()
+                .clamp(0, state.widget.data.length - 1);
+        state.inspectPointer(state.widget.data[index].id);
+      }
+
+      return MouseRegion(
+        cursor: SystemMouseCursors.precise,
+        onEnter: (event) => inspect(event.localPosition),
+        onHover: (event) => inspect(event.localPosition),
+        onExit: (_) {
+          state._lastPointerId = null;
+          if (!state._inspectorFocusNode.hasFocus || state._pointerDriven) {
+            state.setTooltipOpen(false);
+          }
+        },
+        child: Listener(
+          behavior: HitTestBehavior.opaque,
+          onPointerDown: (event) {
+            state.setKeyboardFocus(false);
+            state._pointerDriven = true;
+            state._lastPointerId = null;
+            inspect(event.localPosition);
+            state._inspectorFocusNode.requestFocus();
+          },
+          onPointerMove: (event) {
+            if (event.buttons == 1) inspect(event.localPosition);
+          },
+          onPointerUp: (_) => state._pointerDriven = false,
+          onPointerCancel: (_) {
+            state._pointerDriven = false;
+            state.setTooltipOpen(false);
+          },
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              child,
+              if (state._keyboardFocus && state._inspectorFocusNode.hasFocus)
+                Positioned.fill(
+                  left: -6,
+                  right: -6,
+                  top: -6,
+                  bottom: -6,
+                  child: IgnorePointer(
+                    child: DecoratedBox(
+                      key: const ValueKey('status-focus-outline'),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: BeuiColors.resolve(context).ring,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 class _StatusEntrance extends StatefulWidget {
@@ -525,12 +669,38 @@ class BeuiStatusBarLegend extends StatelessWidget {
     return BeuiChartLegend(
       children: [
         for (final status in state.widget.statuses)
-          BeuiChartLegendItem(
-            color: beuiChartColor(status.color, colors),
-            label: status.label,
-            value: showCounts
-                ? '${state.widget.data.where((item) => item.status == status.id).length}'
-                : null,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 6,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: beuiChartColor(status.color, colors),
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                status.label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: colors.mutedForeground,
+                ),
+              ),
+              if (showCounts) ...[
+                const SizedBox(width: 6),
+                Text(
+                  '(${state.widget.data.where((item) => item.status == status.id).length})',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colors.mutedForeground,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ],
+            ],
           ),
       ],
     );

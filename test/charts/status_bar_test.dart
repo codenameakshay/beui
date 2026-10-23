@@ -32,6 +32,125 @@ const _data = [
 ];
 
 void main() {
+  testWidgets('Tab opens the first range period and Escape retains its value', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiStatusBar(data: _data, statuses: _statuses)),
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(find.text('All checks passed.'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(find.text('All checks passed.'), findsNothing);
+    expect(
+      tester
+          .getSemantics(find.bySemanticsLabel('Status history: inspect period'))
+          .value,
+      'Aug 21. Operational. All checks passed.',
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.pumpAndSettle();
+    expect(find.text('Aug 22'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(find.text('All checks passed.'), findsOneWidget);
+  });
+
+  testWidgets(
+    'pointer exit then native keyboard reopens without generic fallback',
+    (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(const BeuiStatusBar(data: _data, statuses: _statuses)),
+      );
+      await tester.pumpAndSettle();
+      final plot = tester.getRect(find.byType(BeuiStatusBarPlot));
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(Offset(plot.center.dx, plot.top + 22));
+      await tester.pumpAndSettle();
+      expect(find.text('Aug 22'), findsOneWidget);
+      await mouse.moveTo(Offset(plot.right + 20, plot.top));
+      await tester.pumpAndSettle();
+      expect(find.text('Aug 22'), findsNothing);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      expect(find.text('Aug 22'), findsOneWidget);
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      expect(find.text('Aug 22'), findsNothing);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      expect(find.text('Aug 23'), findsNWidgets(2));
+      await mouse.removePointer();
+    },
+  );
+
+  testWidgets(
+    'focused range survives exit and same-period hover respects dismissal',
+    (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(const BeuiStatusBar(data: _data, statuses: _statuses)),
+      );
+      await tester.pumpAndSettle();
+      final plot = tester.getRect(find.byType(BeuiStatusBarPlot));
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      final b = Offset(plot.center.dx, plot.top + 22);
+      await mouse.moveTo(b);
+      await mouse.down(b);
+      await mouse.up();
+      await tester.pumpAndSettle();
+      await mouse.moveTo(Offset(plot.right + 20, plot.top));
+      await tester.pumpAndSettle();
+      expect(find.text('Aug 22'), findsOneWidget);
+      await mouse.moveTo(b);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      await mouse.moveTo(b + const Offset(1, 0));
+      await tester.pumpAndSettle();
+      expect(find.text('Aug 22'), findsNothing);
+      await mouse.moveTo(Offset(plot.left + plot.width / 6, plot.top + 22));
+      await tester.pumpAndSettle();
+      expect(find.text('All checks passed.'), findsOneWidget);
+      await mouse.removePointer();
+    },
+  );
+
+  testWidgets('source active ring lies outside bars with four pixel gaps', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiStatusBar(data: _data, statuses: _statuses)),
+    );
+    await tester.pumpAndSettle();
+    Finder fill(String id) => find.descendant(
+      of: find.byKey(ValueKey(id)),
+      matching: find.byWidgetPredicate(
+        (widget) =>
+            widget is DecoratedBox &&
+            (widget.decoration as BoxDecoration).color != null,
+      ),
+    );
+    final first = tester.getRect(fill('a'));
+    final second = tester.getRect(fill('b'));
+    expect(second.left - first.right, 4);
+    final ring = find.descendant(
+      of: find.byKey(const ValueKey('a')),
+      matching: find.byWidgetPredicate(
+        (widget) =>
+            widget is DecoratedBox &&
+            (widget.decoration as BoxDecoration).border != null,
+      ),
+    );
+    final bounds = tester.getRect(ring);
+    expect(bounds.left, first.left - 3);
+    expect(bounds.top, closeTo(first.top - 3, .001));
+    expect(bounds.height, closeTo(38, .001));
+  });
+
   testWidgets('renders status segments, labels, and count legend', (
     tester,
   ) async {
@@ -60,7 +179,7 @@ void main() {
         ),
       ),
     );
-    expect(find.text('2'), findsOneWidget);
+    expect(find.text('(2)'), findsOneWidget);
   });
 
   testWidgets('uncontrolled selection responds to keyboard and calls back', (
