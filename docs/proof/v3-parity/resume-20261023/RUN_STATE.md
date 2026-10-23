@@ -30,3 +30,13 @@ These IDs cover the resumed parent work; earlier detailed defects remain in thei
 ## Next actions
 
 Finish final signup combinations and inspected native recordings, independently export Sankey proof, integrate existing owner results, run combined gates, push authorized branch updates, and continue unassigned coverage obligations. Do not treat archive integrity or passing behavior tests as pixel or motion certification.
+
+## Integration continuation
+
+- Pushed `2fb8348fc` to PR26. Subsequent candle/volume, bump, and agent repairs/archives are integrated through `a2b87643e` and awaiting the next push.
+- Their parent archive checks pass (candle/volume 9,077 frames; bump 2,754 frames; agents 14,628 PNGs / 68 videos). Clean-export checks remain pending for these three new archives.
+- Combined chart behavior excluding golden-named cases: 58 pass. The first run's volume rest-state failure was a real 57px overflow, not merely a golden mismatch; this correction supersedes the initial progress interpretation.
+- R009: default volume composition overflowed a 640x420 viewport because its plot retained full height beside a taller summary. Parent fix gives the plot a loose bounded flex allocation while retaining its 320px natural height. Dedicated geometry regression was red before, green after; affected batch 29 pass. No golden regenerated.
+- R010: bump rapid native Tab-burst focus loss remains open in worker proof. Source pressed metadata and shared typography/Tooltip differences also remain open.
+- Signup final source/candidate light normal and both reduced combinations pass. Candidate and source normal native recordings visibly reach Account created; reduced recordings require final frame inspection. Captures remain tied to c66a8825, not later unrelated chart commits.
+- Existing composition/funnel and component-example workers remain active. Candle/volume, bump and agent workers have completed; their remaining obligations stay open here.

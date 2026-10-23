@@ -227,6 +227,28 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'constrained profile keeps plot and summary inside the viewport',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(640, 420));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiVolumeProfile(data: _bins),
+          width: 640,
+          reduce: true,
+        ),
+      );
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+      final plot = tester.getRect(find.byType(BeuiVolumeProfilePlot));
+      final summary = tester.getRect(find.byType(BeuiVolumeProfileSummary));
+      expect(plot.bottom, lessThanOrEqualTo(summary.top));
+      expect(summary.bottom, lessThanOrEqualTo(420));
+      expect(plot.height, greaterThan(200));
+    },
+  );
+
   testWidgets('rest-state golden', (tester) async {
     await tester.binding.setSurfaceSize(const Size(640, 420));
     addTearDown(() => tester.binding.setSurfaceSize(null));

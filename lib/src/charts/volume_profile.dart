@@ -327,9 +327,19 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
       child:
           widget.child ??
           Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const BeuiVolumeProfilePlot(),
+              Flexible(
+                fit: FlexFit.loose,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => BeuiVolumeProfilePlot(
+                    height: constraints.hasBoundedHeight
+                        ? math.max(0, math.min(320, constraints.maxHeight - 24))
+                        : 320,
+                  ),
+                ),
+              ),
               const BeuiVolumeProfileTooltip(),
               const SizedBox(height: 20),
               const BeuiVolumeProfileSummary(),
