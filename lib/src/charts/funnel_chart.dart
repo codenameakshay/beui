@@ -328,6 +328,7 @@ class _FunnelStageButton extends StatefulWidget {
 
 class _FunnelStageButtonState extends State<_FunnelStageButton> {
   final _focus = FocusNode();
+  bool _pointerFocus = false;
 
   @override
   void dispose() {
@@ -339,43 +340,58 @@ class _FunnelStageButtonState extends State<_FunnelStageButton> {
   Widget build(BuildContext context) {
     final colors = widget.colors;
     return Listener(
-      onPointerDown: (_) => _focus.requestFocus(),
-      child: TextButton(
-        focusNode: _focus,
-        onPressed: () {},
-        style: ButtonStyle(
-          padding: const WidgetStatePropertyAll(EdgeInsets.zero),
-          minimumSize: const WidgetStatePropertyAll(Size.zero),
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
-          overlayColor: WidgetStateProperty.resolveWith(
-            (states) => states.contains(WidgetState.hovered)
-                ? colors.foreground.withValues(alpha: .05)
-                : Colors.transparent,
+      onPointerDown: (_) {
+        setState(() => _pointerFocus = true);
+        _focus.requestFocus();
+      },
+      child: Focus(
+        canRequestFocus: false,
+        skipTraversal: true,
+        onKeyEvent: (_, _) {
+          if (_pointerFocus) setState(() => _pointerFocus = false);
+          return KeyEventResult.ignored;
+        },
+        child: TextButton(
+          focusNode: _focus,
+          onFocusChange: (focused) {
+            if (!focused) setState(() => _pointerFocus = false);
+          },
+          onPressed: () {},
+          style: ButtonStyle(
+            padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+            minimumSize: const WidgetStatePropertyAll(Size.zero),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
+            overlayColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.hovered)
+                  ? colors.foreground.withValues(alpha: .05)
+                  : Colors.transparent,
+            ),
+            side: WidgetStateProperty.resolveWith(
+              (states) =>
+                  states.contains(WidgetState.focused) &&
+                      !_pointerFocus &&
+                      FocusManager.instance.highlightMode ==
+                          FocusHighlightMode.traditional
+                  ? BorderSide(color: colors.ring, width: 2)
+                  : BorderSide.none,
+            ),
           ),
-          side: WidgetStateProperty.resolveWith(
-            (states) =>
-                states.contains(WidgetState.focused) &&
-                    FocusManager.instance.highlightMode ==
-                        FocusHighlightMode.traditional
-                ? BorderSide(color: colors.ring, width: 2)
-                : BorderSide.none,
-          ),
-        ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: colors.background.withValues(alpha: .85),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            widget.value,
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 12,
-              height: 16 / 12,
-              fontWeight: FontWeight.w500,
-              color: colors.foreground,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: colors.background.withValues(alpha: .85),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              widget.value,
+              style: TextStyle(
+                fontFamily: 'monospace',
+                fontSize: 12,
+                height: 16 / 12,
+                fontWeight: FontWeight.w500,
+                color: colors.foreground,
+              ),
             ),
           ),
         ),
@@ -392,7 +408,12 @@ Widget _funnelTooltip(
 ) {
   final row = rows[index];
   return DefaultTextStyle(
-    style: TextStyle(fontSize: 12, height: 16 / 12, color: colors.foreground),
+    style: TextStyle(
+      fontSize: 12,
+      height: 16 / 12,
+      fontWeight: FontWeight.w500,
+      color: colors.foreground,
+    ),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,

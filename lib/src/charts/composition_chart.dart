@@ -520,7 +520,7 @@ class BeuiCompositionPlot extends StatelessWidget {
                                 child: CompositedTransformTarget(
                                   key: state._tooltipAnchor,
                                   link: state._tooltipLink,
-                                  child: const SizedBox(width: 1, height: 1),
+                                  child: const SizedBox.shrink(),
                                 ),
                               ),
                               Positioned.fill(
@@ -557,10 +557,11 @@ class BeuiCompositionPlot extends StatelessWidget {
                   onOpenChange: state._setTooltipOpen,
                   delay: Duration.zero,
                   followCursor: true,
+                  sideOffset: state._keyboard ? 8 : 12,
                   externalAnchor: state._tooltipAnchor,
                   anchorLink: state._tooltipLink,
                   content: SizedBox(
-                    width: math.min(288, MediaQuery.sizeOf(context).width - 40),
+                    width: math.min(288, MediaQuery.sizeOf(context).width - 38),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisSize: MainAxisSize.min,
