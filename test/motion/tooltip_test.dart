@@ -246,7 +246,7 @@ void main() {
     expect(find.text('A'), findsOneWidget);
   });
 
-  testWidgets('a pending hover does not warm a focused sibling', (
+  testWidgets('focus opens a sibling immediately and cancels pending hover', (
     tester,
   ) async {
     final focus = FocusNode();
@@ -281,15 +281,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(focus.hasPrimaryFocus, isTrue);
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pump();
-    expect(find.text('A'), findsNothing);
-    expect(find.text('B'), findsNothing);
-    await tester.pump(const Duration(milliseconds: 99));
-    await tester.pump();
-    expect(find.text('A'), findsNothing);
-    expect(find.text('B'), findsNothing);
-    await tester.pump(const Duration(milliseconds: 1));
+    await tester.pump(const Duration(milliseconds: 16));
     await tester.pump();
     expect(find.text('A'), findsNothing);
     expect(find.text('B'), findsOneWidget);
@@ -298,7 +290,7 @@ void main() {
     expect(find.text('B'), findsOneWidget);
   });
 
-  testWidgets('same pending trigger focus retries with a cold delay', (
+  testWidgets('focus opens the same pending trigger without the hover delay', (
     tester,
   ) async {
     final focus = FocusNode();
@@ -324,13 +316,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(focus.hasPrimaryFocus, isTrue);
-    await tester.pump(const Duration(milliseconds: 700));
-    await tester.pump();
-    expect(find.text('TIP'), findsNothing);
-    await tester.pump(const Duration(milliseconds: 99));
-    await tester.pump();
-    expect(find.text('TIP'), findsNothing);
-    await tester.pump(const Duration(milliseconds: 1));
+    await tester.pump(const Duration(milliseconds: 16));
     await tester.pump();
     expect(find.text('TIP'), findsOneWidget);
     await tester.pumpAndSettle();

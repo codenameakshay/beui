@@ -1,29 +1,13 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
 
 import 'package:clock/clock.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
-import '_engine.dart' show SingleMotionBuilder, SpringMotion;
-
-/// The source's bespoke tooltip enter spring for scale/offset:
-/// `{stiffness: 380, damping: 30, mass: 0.7}`.
-const _enterSpring = SpringMotion(
-  SpringDescription(mass: 0.7, stiffness: 380, damping: 30),
-);
-
-/// Per-channel enter windows on the overlay clock: opacity finishes at 140ms
-/// (source `opacity: { duration: 0.14 }`, EASE_OUT), blur at 180ms (source
-/// `filter: { duration: 0.18 }`, EASE_OUT); scale/offset ride [_enterSpring]
-/// independently. The overlay's enter duration spans the full spring settle
-/// (the longest window).
-const _enterMs = 300;
-const _opacityInMs = 140;
-const _blurInMs = 180;
 
 class _TooltipProviderScope extends InheritedWidget {
   const _TooltipProviderScope({required this.state, required super.child});
@@ -97,7 +81,7 @@ class _TooltipProviderState extends State<BeuiTooltipProvider> {
       _TooltipProviderScope(state: this, child: widget.child);
 }
 
-/// Optional compositional trigger wrapper.
+/// The trigger slot of [BeuiTooltip.composed]. Child handlers remain intact.
 class BeuiTooltipTrigger extends StatelessWidget {
   const BeuiTooltipTrigger({required this.child, super.key});
   final Widget child;
@@ -105,10 +89,21 @@ class BeuiTooltipTrigger extends StatelessWidget {
   Widget build(BuildContext context) => child;
 }
 
-/// Optional compositional content wrapper.
+/// Content and placement for [BeuiTooltip.composed].
 class BeuiTooltipContent extends StatelessWidget {
-  const BeuiTooltipContent({required this.child, super.key});
+  const BeuiTooltipContent({
+    required this.child,
+    this.side = BeuiTooltipSide.top,
+    this.align = BeuiTooltipAlign.center,
+    this.arrow = false,
+    this.sideOffset = 8,
+    super.key,
+  });
   final Widget child;
+  final BeuiTooltipSide side;
+  final BeuiTooltipAlign align;
+  final bool arrow;
+  final double sideOffset;
   @override
   Widget build(BuildContext context) => child;
 }
@@ -140,20 +135,12 @@ enum BeuiTooltipAlign {
   end,
 }
 
-/// A hover/focus tooltip with a spring spawn and blur enter/exit — the Flutter
-/// port of beUI's `tooltip`, built on [BeuiOverlay].
+/// A hover, keyboard-focus, and touch tooltip built on [BeuiOverlay].
 ///
-/// Opens on pointer hover (hover-capable only — `MouseRegion` never fires on
-/// touch) and on keyboard focus, after a short [delay]. A surrounding
-/// [BeuiTooltipProvider] shares timing and its warm window across siblings. On
-/// touch it reveals on long-press. The surface anchors to the trigger via the overlay
-/// [LayerLink] and rises into place from near the trigger: scale + offset ride
-/// the source's bespoke 380/30/0.7 spring, while opacity (140ms) and blur
-/// (180ms) run on their own `EASE_OUT` windows. The exit eases *forward* to its
-/// own targets (scale 0.94, 4.8px away, blur σ1.5, opacity 0) over 120ms
-/// (source `exit` `duration: 0.12`) — it is not a time-reversed entrance.
-/// Reduced motion fades opacity only
-/// (140ms in / 100ms out).
+/// Hover respects [delay]; keyboard focus and touch taps reveal immediately.
+/// The source's `TooltipSurface` scales from 0.94 and fades over 180ms, then
+/// exits over 120ms. Reduced motion keeps the fade without scaling. A pointer
+/// corridor lets the user cross the gap onto the label without closing it.
 class BeuiTooltip extends StatefulWidget {
   /// Creates a tooltip around [child].
   const BeuiTooltip({
@@ -164,10 +151,35 @@ class BeuiTooltip extends StatefulWidget {
     this.arrow = false,
     this.disabled = false,
     this.delay,
+    this.closeDelay,
+    this.sideOffset = 8,
+    this.open,
+    this.defaultOpen = false,
+    this.onOpenChange,
     this.followCursor = false,
     this.avoidCollisions = true,
     super.key,
   });
+
+  /// Composes typed trigger and content slots without painting content inline.
+  BeuiTooltip.composed({
+    required BeuiTooltipTrigger trigger,
+    required BeuiTooltipContent tooltip,
+    this.disabled = false,
+    this.delay,
+    this.closeDelay,
+    this.open,
+    this.defaultOpen = false,
+    this.onOpenChange,
+    this.followCursor = false,
+    this.avoidCollisions = true,
+    super.key,
+  }) : child = trigger,
+       content = tooltip.child,
+       side = tooltip.side,
+       align = tooltip.align,
+       arrow = tooltip.arrow,
+       sideOffset = tooltip.sideOffset;
 
   /// The tooltip body (usually a [Text]).
   final Widget content;
@@ -190,6 +202,21 @@ class BeuiTooltip extends StatefulWidget {
   /// Delay before opening on hover/focus (skipped within the warm window).
   final Duration? delay;
 
+  /// Delay after leaving both trigger and tooltip.
+  final Duration? closeDelay;
+
+  /// Gap between trigger and floating surface in logical pixels.
+  final double sideOffset;
+
+  /// Controlled visibility. Omit to let pointer and focus manage visibility.
+  final bool? open;
+
+  /// Initial uncontrolled visibility.
+  final bool defaultOpen;
+
+  /// Visibility requests from hover, focus, touch, Escape, or outside presses.
+  final ValueChanged<bool>? onOpenChange;
+
   /// Track the pointer while open; focus-triggered tooltips remain anchored.
   final bool followCursor;
 
@@ -204,9 +231,14 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   final Object _owner = Object();
   final GlobalKey _triggerKey = GlobalKey();
   final GlobalKey _surfaceKey = GlobalKey();
-  bool _open = false;
+  late bool _internalOpen = widget.defaultOpen;
+  bool get _open => !widget.disabled && (widget.open ?? _internalOpen);
   bool _focused = false;
-  bool _skipEnterAnimation = false;
+  bool _pointerFocus = false;
+  bool _suppressed = false;
+  Offset? _touchStart;
+  bool _touchWasOpen = false;
+  ({Path corridor, Rect source, Rect target})? _grace;
   Timer? _timer;
   Offset? _pointerGlobal;
   Offset _collisionShift = Offset.zero;
@@ -214,8 +246,15 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   _TooltipProviderState? _provider;
 
   @override
+  void initState() {
+    super.initState();
+    GestureBinding.instance.pointerRouter.addGlobalRoute(_onGlobalPointer);
+  }
+
+  @override
   void dispose() {
     _timer?.cancel();
+    GestureBinding.instance.pointerRouter.removeGlobalRoute(_onGlobalPointer);
     _provider?.release(_owner);
     super.dispose();
   }
@@ -226,7 +265,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     if (!oldWidget.disabled && widget.disabled) {
       _timer?.cancel();
       _timer = null;
-      if (_open) setState(() => _open = false);
+      if (widget.open == null) _internalOpen = false;
       _provider?.release(_owner, warm: false);
     }
     if (oldWidget.side != widget.side ||
@@ -243,7 +282,6 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     _timer = null;
     if (_open) return;
     final warm = _provider?.claim(_owner, _hideFromProvider) ?? false;
-    _skipEnterAnimation = warm;
     final delay = immediate || warm
         ? Duration.zero
         : widget.delay ??
@@ -253,7 +291,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       _timer = null;
       if (mounted && !widget.disabled) {
         _provider?.markVisible(_owner);
-        setState(() => _open = true);
+        _commit(true);
         _measureCollision();
       }
     });
@@ -262,13 +300,21 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   void _hideFromProvider() {
     _timer?.cancel();
     _timer = null;
-    if (_open && mounted) setState(() => _open = false);
+    if (_open && mounted) _commit(false);
+  }
+
+  void _commit(bool next) {
+    if (_open == next) return;
+    if (widget.open == null) setState(() => _internalOpen = next);
+    widget.onOpenChange?.call(next);
   }
 
   void _hide() {
     _timer?.cancel();
     _timer = null;
-    final closeDelay = _provider?.widget.closeDelay ?? Duration.zero;
+    _grace = null;
+    final closeDelay =
+        widget.closeDelay ?? _provider?.widget.closeDelay ?? Duration.zero;
     if (closeDelay > Duration.zero && _open) {
       _timer = Timer(closeDelay, _finishHide);
       return;
@@ -278,9 +324,59 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
 
   void _finishHide({bool warm = true}) {
     if (_open) {
-      setState(() => _open = false);
+      _commit(false);
     }
     _provider?.release(_owner, warm: warm);
+  }
+
+  Rect? _bounds(GlobalKey key) {
+    final box = key.currentContext?.findRenderObject() as RenderBox?;
+    return box == null || !box.hasSize
+        ? null
+        : box.localToGlobal(Offset.zero) & box.size;
+  }
+
+  void _startGrace(Offset exit, GlobalKey from, GlobalKey to) {
+    _timer?.cancel();
+    _timer = null;
+    final source = _bounds(from);
+    final target = _bounds(to);
+    if (!_open || widget.followCursor || source == null || target == null) {
+      _hide();
+      return;
+    }
+    final boundary = Offset(
+      exit.dx.clamp(source.left, source.right),
+      exit.dy.clamp(source.top, source.bottom),
+    );
+    final corridor = _graceCorridor(boundary, target);
+    if (!corridor.contains(exit) &&
+        !target.contains(exit) &&
+        !source.contains(exit)) {
+      _hide();
+      return;
+    }
+    _grace = (corridor: corridor, source: source, target: target);
+  }
+
+  void _onGlobalPointer(PointerEvent event) {
+    if (!_open) return;
+    final trigger = _bounds(_triggerKey);
+    final surface = _bounds(_surfaceKey);
+    if (event is PointerDownEvent &&
+        !(trigger?.contains(event.position) ?? false) &&
+        !(surface?.contains(event.position) ?? false)) {
+      _finishHide();
+    }
+    final grace = _grace;
+    if (grace != null &&
+        (event is PointerHoverEvent || event is PointerMoveEvent)) {
+      if (grace.source.contains(event.position) ||
+          grace.target.contains(event.position)) {
+        return;
+      }
+      if (!grace.corridor.contains(event.position)) _hide();
+    }
   }
 
   void _onPointerHover(PointerEvent event) {
@@ -324,8 +420,8 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       final needed =
           (BeuiTooltipSide.top == preferred ||
               preferred == BeuiTooltipSide.bottom)
-          ? size.height + 8
-          : size.width + 8;
+          ? size.height + widget.sideOffset
+          : size.width + widget.sideOffset;
       if (room[preferred]! < needed) {
         final opposite = switch (preferred) {
           BeuiTooltipSide.top => BeuiTooltipSide.bottom,
@@ -336,8 +432,8 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
         final oppositeNeeded =
             (opposite == BeuiTooltipSide.top ||
                 opposite == BeuiTooltipSide.bottom)
-            ? size.height + 8
-            : size.width + 8;
+            ? size.height + widget.sideOffset
+            : size.width + widget.sideOffset;
         if (room[opposite]! > room[preferred]! &&
             room[opposite]! >= oppositeNeeded) {
           side = opposite;
@@ -364,37 +460,70 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   Widget build(BuildContext context) {
     _provider = _TooltipProviderScope.maybeOf(context);
     final side = _resolvedSide ?? widget.side;
-    final reduce = MediaQuery.disableAnimationsOf(context);
     return BeuiOverlay(
       open: _open,
       barrier: false,
       trapFocus: false,
       onDismiss: _hide,
-      enterDuration: _skipEnterAnimation
-          ? Duration.zero
-          : Duration(milliseconds: reduce ? 140 : _enterMs),
-      exitDuration: Duration(milliseconds: reduce ? 100 : 120),
+      enterDuration: const Duration(milliseconds: 180),
+      exitDuration: const Duration(milliseconds: 120),
       overlayBuilder: (context, animation, link) =>
           _buildTooltip(context, animation, link, side),
       child: MouseRegion(
         onHover: _onPointerHover,
         onEnter: (event) {
+          _grace = null;
           _pointerGlobal = event.position;
-          _show();
+          if (!_suppressed) _show();
         },
-        onExit: (_) => _hide(),
+        onExit: (event) {
+          _suppressed = false;
+          if (!_focused) _startGrace(event.position, _triggerKey, _surfaceKey);
+        },
         child: Focus(
           key: _triggerKey,
           canRequestFocus: false,
           skipTraversal: true,
-          onFocusChange: (focused) {
-            _focused = focused;
-            focused ? _show() : _hide();
+          onKeyEvent: (_, event) {
+            _pointerFocus = false;
+            return KeyEventResult.ignored;
           },
-          child: GestureDetector(
-            onLongPressStart: (_) => _show(immediate: true),
-            onLongPressEnd: (_) => _hide(),
-            child: widget.child,
+          onFocusChange: (focused) {
+            _focused = focused && !_pointerFocus;
+            if (_focused) {
+              _show(immediate: true);
+            } else if (!focused) {
+              _pointerFocus = false;
+              _hide();
+            }
+          },
+          child: Listener(
+            onPointerDown: (event) {
+              _pointerFocus = true;
+              if (event.kind == PointerDeviceKind.mouse) {
+                _suppressed = true;
+                _finishHide();
+              } else {
+                _touchStart = event.position;
+                _touchWasOpen = _open;
+              }
+            },
+            onPointerCancel: (_) => _touchStart = null,
+            onPointerUp: (event) {
+              final start = _touchStart;
+              _touchStart = null;
+              if (start != null && (event.position - start).distance <= 18) {
+                _touchWasOpen ? _finishHide() : _show(immediate: true);
+              }
+            },
+            child: GestureDetector(
+              onLongPressStart: (_) => _show(immediate: true),
+              onLongPressEnd: (_) {
+                _touchStart = null;
+                _hide();
+              },
+              child: widget.child,
+            ),
           ),
         ),
       ),
@@ -434,94 +563,37 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       offset: actualOffset,
       child: KeyedSubtree(
         key: _surfaceKey,
-        child: IgnorePointer(
-          child: AnimatedBuilder(
-            animation: animation,
-            // PERF: the opaque surface is built once and threaded through the
-            // `child` slot; per-frame work is only the Transform / Opacity /
-            // ImageFiltered wrappers below.
-            child: _surface(colors, side),
-            builder: (context, surface) {
-              final t = animation.value.clamp(0.0, 1.0);
-              final exiting =
-                  animation.status == AnimationStatus.reverse ||
-                  animation.status == AnimationStatus.dismissed;
-              if (reduce) {
-                // Opacity-only: 140ms in / 100ms out, EASE_OUT forward in each
-                // direction.
-                final opacity = exiting
+        child: MouseRegion(
+          onEnter: (_) {
+            _grace = null;
+            _timer?.cancel();
+            _timer = null;
+          },
+          onExit: (event) {
+            if (!_focused) {
+              _startGrace(event.position, _surfaceKey, _triggerKey);
+            }
+          },
+          child: IgnorePointer(
+            ignoring: widget.followCursor || !_open,
+            child: AnimatedBuilder(
+              animation: animation,
+              child: _surface(colors, side),
+              builder: (context, surface) {
+                final t = animation.value.clamp(0.0, 1.0);
+                final exiting =
+                    animation.status == AnimationStatus.reverse ||
+                    animation.status == AnimationStatus.dismissed;
+                final progress = exiting
                     ? 1 - beuiEaseOut.transform(1 - t)
                     : beuiEaseOut.transform(t);
-                return Opacity(opacity: opacity, child: surface);
-              }
-              if (exiting) {
-                // Forward-eased exit with its OWN targets (not a reversed
-                // entrance): 120ms EASE_OUT to scale 0.94, 4.8px toward the
-                // trigger (0.6 × the 8px enter offset), source blur(3px) → σ1.5,
-                // opacity 0.
-                final p = beuiEaseOut.transform(1 - t); // exit progress 0 → 1
-                final blur = 1.5 * p;
-                Widget body = surface!;
-                if (blur > 0.05) {
-                  body = ImageFiltered(
-                    imageFilter: ImageFilter.blur(
-                      sigmaX: blur,
-                      sigmaY: blur,
-                      tileMode: TileMode.decal,
-                    ),
-                    child: body,
-                  );
-                }
-                return Transform.translate(
-                  offset: spec.away * (0.6 * p),
-                  child: Transform.scale(
-                    scale: 1 - 0.06 * p,
-                    alignment: spec.origin,
-                    child: Opacity(opacity: 1 - p, child: body),
-                  ),
+                return Transform.scale(
+                  scale: reduce ? 1 : 0.94 + 0.06 * progress,
+                  alignment: spec.origin,
+                  child: Opacity(opacity: progress, child: surface),
                 );
-              }
-              // Enter: opacity over the first 140ms of the clock, blur over the
-              // first 180ms — both EASE_OUT; scale/offset ride the 380/30/0.7
-              // spring on its own ticker.
-              final opacity = beuiEaseOut.transform(
-                (t * (_enterMs / _opacityInMs)).clamp(0.0, 1.0),
-              );
-              // Source enter blur(5px) → σ2.5, closed over the 180ms window.
-              final blur =
-                  2.5 *
-                  (1 -
-                      beuiEaseOut.transform(
-                        (t * (_enterMs / _blurInMs)).clamp(0.0, 1.0),
-                      ));
-              return SingleMotionBuilder(
-                value: 1.0,
-                from: 0.0,
-                motion: _enterSpring,
-                child: surface,
-                builder: (context, s, inner) {
-                  Widget body = inner!;
-                  if (blur > 0.05) {
-                    body = ImageFiltered(
-                      imageFilter: ImageFilter.blur(
-                        sigmaX: blur,
-                        sigmaY: blur,
-                        tileMode: TileMode.decal,
-                      ),
-                      child: body,
-                    );
-                  }
-                  return Transform.translate(
-                    offset: spec.away * (1 - s),
-                    child: Transform.scale(
-                      scale: 0.9 + 0.1 * s,
-                      alignment: spec.origin,
-                      child: Opacity(opacity: opacity, child: body),
-                    ),
-                  );
-                },
-              );
-            },
+              },
+            ),
           ),
         ),
       ),
@@ -529,9 +601,6 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   }
 
   Widget _surface(BeuiColors colors, BeuiTooltipSide side) {
-    // Source surface: `rounded-lg border border-border bg-background px-2.5 py-1
-    // text-xs font-medium text-foreground shadow-lg` — a SOLID OPAQUE pill, no
-    // backdrop blur.
     final bubble = DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background, // bg-background (opaque)
@@ -555,10 +624,12 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        // CSS border-box includes the one-pixel border outside px-2.5/py-1.
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
         child: DefaultTextStyle.merge(
           style: TextStyle(
             fontSize: 12,
+            height: 16 / 12,
             fontWeight: FontWeight.w500,
             color: colors.foreground, // text-foreground
           ),
@@ -568,34 +639,26 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     );
     if (!widget.arrow) return bubble;
     final pointer = CustomPaint(
-      size: switch (side) {
-        BeuiTooltipSide.left || BeuiTooltipSide.right => const Size(6, 10),
-        _ => const Size(10, 6),
-      },
+      size: const Size(12, 12),
       painter: _TooltipArrowPainter(
         fill: colors.background,
         border: colors.border,
         side: side,
       ),
     );
-    return switch (side) {
-      BeuiTooltipSide.top => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [bubble, pointer],
-      ),
-      BeuiTooltipSide.bottom => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [pointer, bubble],
-      ),
-      BeuiTooltipSide.left => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [bubble, pointer],
-      ),
-      BeuiTooltipSide.right => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [pointer, bubble],
-      ),
-    };
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.center,
+      children: [
+        bubble,
+        switch (side) {
+          BeuiTooltipSide.top => Positioned(bottom: -6, child: pointer),
+          BeuiTooltipSide.bottom => Positioned(top: -6, child: pointer),
+          BeuiTooltipSide.left => Positioned(right: -6, child: pointer),
+          BeuiTooltipSide.right => Positioned(left: -6, child: pointer),
+        },
+      ],
+    );
   }
 
   _TooltipSpec _spec(BeuiTooltipSide side, BeuiTooltipAlign align) {
@@ -613,8 +676,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
             : end
             ? Alignment.bottomRight
             : Alignment.bottomCenter,
-        gap: const Offset(0, -8),
-        away: const Offset(0, 8),
+        gap: Offset(0, -widget.sideOffset),
         origin: Alignment.bottomCenter,
       ),
       BeuiTooltipSide.bottom => _TooltipSpec(
@@ -628,8 +690,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
             : end
             ? Alignment.topRight
             : Alignment.topCenter,
-        gap: const Offset(0, 8),
-        away: const Offset(0, -8),
+        gap: Offset(0, widget.sideOffset),
         origin: Alignment.topCenter,
       ),
       BeuiTooltipSide.left => _TooltipSpec(
@@ -643,8 +704,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
             : end
             ? Alignment.bottomRight
             : Alignment.centerRight,
-        gap: const Offset(-8, 0),
-        away: const Offset(8, 0),
+        gap: Offset(-widget.sideOffset, 0),
         origin: Alignment.centerRight,
       ),
       BeuiTooltipSide.right => _TooltipSpec(
@@ -658,8 +718,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
             : end
             ? Alignment.bottomLeft
             : Alignment.centerLeft,
-        gap: const Offset(8, 0),
-        away: const Offset(-8, 0),
+        gap: Offset(widget.sideOffset, 0),
         origin: Alignment.centerLeft,
       ),
     };
@@ -698,22 +757,52 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     return switch (side) {
       BeuiTooltipSide.top => Offset(
         anchor.dx - size.width * cross,
-        anchor.dy - size.height - 8,
+        anchor.dy - size.height - widget.sideOffset,
       ),
       BeuiTooltipSide.bottom => Offset(
         anchor.dx - size.width * cross,
-        anchor.dy + 8,
+        anchor.dy + widget.sideOffset,
       ),
       BeuiTooltipSide.left => Offset(
-        anchor.dx - size.width - 8,
+        anchor.dx - size.width - widget.sideOffset,
         anchor.dy - size.height * cross,
       ),
       BeuiTooltipSide.right => Offset(
-        anchor.dx + 8,
+        anchor.dx + widget.sideOffset,
         anchor.dy - size.height * cross,
       ),
     };
   }
+}
+
+Path _graceCorridor(Offset exit, Rect target) {
+  final start = Rect.fromCircle(center: exit, radius: 5);
+  final points = [
+    start.topLeft,
+    start.topRight,
+    start.bottomRight,
+    start.bottomLeft,
+    target.topLeft,
+    target.topRight,
+    target.bottomRight,
+    target.bottomLeft,
+  ]..sort((a, b) => a.dx == b.dx ? a.dy.compareTo(b.dy) : a.dx.compareTo(b.dx));
+  double cross(Offset origin, Offset a, Offset b) =>
+      (a.dx - origin.dx) * (b.dy - origin.dy) -
+      (a.dy - origin.dy) * (b.dx - origin.dx);
+  List<Offset> half(Iterable<Offset> points) {
+    final hull = <Offset>[];
+    for (final point in points) {
+      while (hull.length >= 2 &&
+          cross(hull[hull.length - 2], hull.last, point) <= 0) {
+        hull.removeLast();
+      }
+      hull.add(point);
+    }
+    return hull..removeLast();
+  }
+
+  return Path()..addPolygon([...half(points), ...half(points.reversed)], true);
 }
 
 class _TooltipSpec {
@@ -721,13 +810,11 @@ class _TooltipSpec {
     required this.targetAnchor,
     required this.followerAnchor,
     required this.gap,
-    required this.away,
     required this.origin,
   });
   final Alignment targetAnchor;
   final Alignment followerAnchor;
   final Offset gap;
-  final Offset away;
   final Alignment origin;
 }
 
@@ -748,28 +835,27 @@ class _TooltipArrowPainter extends CustomPainter {
     switch (side) {
       case BeuiTooltipSide.top:
         path
-          ..moveTo(0, 0)
+          ..moveTo(0, size.height / 2)
           ..lineTo(size.width / 2, size.height)
-          ..lineTo(size.width, 0);
+          ..lineTo(size.width, size.height / 2);
       case BeuiTooltipSide.bottom:
         path
-          ..moveTo(0, size.height)
+          ..moveTo(0, size.height / 2)
           ..lineTo(size.width / 2, 0)
-          ..lineTo(size.width, size.height);
+          ..lineTo(size.width, size.height / 2);
       case BeuiTooltipSide.left:
         path
-          ..moveTo(0, 0)
+          ..moveTo(size.width / 2, 0)
           ..lineTo(size.width, size.height / 2)
-          ..lineTo(0, size.height);
+          ..lineTo(size.width / 2, size.height);
       case BeuiTooltipSide.right:
         path
-          ..moveTo(size.width, 0)
+          ..moveTo(size.width / 2, 0)
           ..lineTo(0, size.height / 2)
-          ..lineTo(size.width, size.height);
+          ..lineTo(size.width / 2, size.height);
     }
-    path.close();
     canvas.drawPath(
-      path,
+      Path.from(path)..close(),
       Paint()
         ..color = fill
         ..style = PaintingStyle.fill,

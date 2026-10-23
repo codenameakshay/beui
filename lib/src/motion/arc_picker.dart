@@ -99,8 +99,9 @@ class BeuiArcPicker extends StatefulWidget {
 }
 
 class _BeuiArcPickerState extends State<BeuiArcPicker>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final SingleMotionController _position;
+  late final SingleMotionController _expansion;
   late final FocusNode _focusNode = FocusNode(debugLabel: 'BeuiArcPicker');
   Timer? _wheelTimer;
   int? _internalIndex;
@@ -172,6 +173,11 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
       vsync: this,
       initialValue: _selectedIndex.toDouble(),
     )..addListener(_onPositionChanged);
+    _expansion = SingleMotionController(
+      motion: _glideSpring,
+      vsync: this,
+      initialValue: 0,
+    )..addListener(_onExpansionChanged);
   }
 
   @override
@@ -208,8 +214,23 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
     _position
       ..removeListener(_onPositionChanged)
       ..dispose();
+    _expansion
+      ..removeListener(_onExpansionChanged)
+      ..dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _onExpansionChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _activity(bool active) {
+    if (_reduce) {
+      _expansion.value = 0;
+    } else {
+      _expansion.animateTo(active ? 1 : 0);
+    }
   }
 
   void _onPositionChanged() {
@@ -255,6 +276,7 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
   }
 
   void _settle(double target, {double velocity = 0}) {
+    _activity(false);
     final interaction = ++_interaction;
     _wheelTimer?.cancel();
     _wheelTimer = null;
@@ -279,6 +301,7 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
 
   void _moveTo(int target) {
     if (widget.disabled || widget.options.isEmpty) return;
+    _activity(false);
     _interaction++;
     _position.stop(canceled: true);
     _wheelTimer?.cancel();
@@ -363,6 +386,7 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
       }
       _position.stop(canceled: true);
       _dragging = true;
+      _activity(true);
       final target = (current + delta / _spacing).clamp(
         _firstEnabled.toDouble(),
         _lastEnabled.toDouble(),
@@ -382,6 +406,7 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
     _wheelTarget = null;
     _dragging = true;
     _tracking = true;
+    _activity(true);
     _dragStartCoordinate = _horizontal ? event.position.dx : event.position.dy;
     _lastCoordinate = _dragStartCoordinate;
     _dragStartPosition = _position.value;
@@ -633,14 +658,22 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
                           isMovement: true,
                         );
                         Widget buildBracket(double animatedTextWidth) {
+                          final expansion = reduce
+                              ? 0.0
+                              : _expansion.value.clamp(0.0, 1.0);
+                          final gap = _bracketGap + 6 * expansion;
+                          Widget bracket(String text) => Transform.scale(
+                            scaleY: 1 - .08 * expansion,
+                            child: Text(
+                              text,
+                              style: textStyle.copyWith(color: colors.primary),
+                            ),
+                          );
                           final x = _horizontal
                               ? 0.0
                               : widget.side == BeuiArcPickerSide.right
-                              ? width! * anchor - 16 - _bracketGap
-                              : width! * anchor -
-                                    animatedTextWidth -
-                                    16 -
-                                    _bracketGap;
+                              ? width! * anchor - 16 - gap
+                              : width! * anchor - animatedTextWidth - 16 - gap;
                           return Positioned(
                             left: _horizontal ? 0 : x,
                             right: _horizontal ? 0 : null,
@@ -655,21 +688,11 @@ class _BeuiArcPickerState extends State<BeuiArcPicker>
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text(
-                                        '[',
-                                        style: textStyle.copyWith(
-                                          color: colors.primary,
-                                        ),
-                                      ),
-                                      const SizedBox(width: _bracketGap),
+                                      bracket('['),
+                                      SizedBox(width: gap),
                                       SizedBox(width: animatedTextWidth),
-                                      const SizedBox(width: _bracketGap),
-                                      Text(
-                                        ']',
-                                        style: textStyle.copyWith(
-                                          color: colors.primary,
-                                        ),
-                                      ),
+                                      SizedBox(width: gap),
+                                      bracket(']'),
                                     ],
                                   ),
                                 ),

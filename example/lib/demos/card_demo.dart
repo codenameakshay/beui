@@ -26,11 +26,11 @@ class _CardDemoState extends State<_CardDemo> {
         builder: (context, constraints) {
           final wide = constraints.maxWidth >= 600;
           final columnWidth = wide
-              ? (constraints.maxWidth - 12) / 2
+              ? (constraints.maxWidth - 16) / 2
               : constraints.maxWidth;
           return Wrap(
-            spacing: 12,
-            runSpacing: 12,
+            spacing: 16,
+            runSpacing: 16,
             children: [
               SizedBox(
                 width: columnWidth,
@@ -38,76 +38,88 @@ class _CardDemoState extends State<_CardDemo> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    BeuiCard(
-                      size: BeuiCardSize.compact,
-                      interactive: true,
-                      selected: _contract,
-                      child: BeuiCardHeader(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  BeuiCardTitle(child: Text('Signed contract')),
-                                  SizedBox(height: 4),
-                                  BeuiCardDescription(
-                                    child: Text(
-                                      'The final PDF with every signature and the audit trail.',
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      excludeFromSemantics: true,
+                      onTap: () => setState(() => _contract = !_contract),
+                      child: BeuiCard(
+                        size: BeuiCardSize.compact,
+                        interactive: true,
+                        selected: _contract,
+                        child: BeuiCardHeader(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    BeuiCardTitle(
+                                      child: Text('Signed contract'),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            MergeSemantics(
-                              child: Semantics(
-                                label: 'Signed contract',
-                                child: BeuiCheckbox(
-                                  value: _contract,
-                                  onChanged: (value) =>
-                                      setState(() => _contract = value),
+                                    SizedBox(height: 6),
+                                    BeuiCardDescription(
+                                      child: Text(
+                                        'The final PDF with every signature and the audit trail.',
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
+                              MergeSemantics(
+                                child: Semantics(
+                                  label: 'Signed contract',
+                                  child: BeuiCheckbox(
+                                    value: _contract,
+                                    onChanged: (value) =>
+                                        setState(() => _contract = value),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 12),
-                    BeuiCard(
-                      size: BeuiCardSize.compact,
-                      interactive: true,
-                      selected: _invoice,
-                      child: BeuiCardHeader(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  BeuiCardTitle(child: Text('Invoice')),
-                                  SizedBox(height: 4),
-                                  BeuiCardDescription(
-                                    child: Text(
-                                      'Itemised billing, ready for accounting.',
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      excludeFromSemantics: true,
+                      onTap: () => setState(() => _invoice = !_invoice),
+                      child: BeuiCard(
+                        size: BeuiCardSize.compact,
+                        interactive: true,
+                        selected: _invoice,
+                        child: BeuiCardHeader(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    BeuiCardTitle(child: Text('Invoice')),
+                                    SizedBox(height: 6),
+                                    BeuiCardDescription(
+                                      child: Text(
+                                        'Itemised billing for the period, ready for accounting.',
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            MergeSemantics(
-                              child: Semantics(
-                                label: 'Invoice',
-                                child: BeuiCheckbox(
-                                  value: _invoice,
-                                  onChanged: (value) =>
-                                      setState(() => _invoice = value),
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
+                              MergeSemantics(
+                                child: Semantics(
+                                  label: 'Invoice',
+                                  child: BeuiCheckbox(
+                                    value: _invoice,
+                                    onChanged: (value) =>
+                                        setState(() => _invoice = value),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -126,7 +138,7 @@ class _CardDemoState extends State<_CardDemo> {
                                   headingLevel: 3,
                                   child: Text('Notifications'),
                                 ),
-                                SizedBox(height: 4),
+                                SizedBox(height: 6),
                                 BeuiCardDescription(
                                   child: Text(
                                     'Choose what reaches your inbox.',
@@ -135,6 +147,7 @@ class _CardDemoState extends State<_CardDemo> {
                               ],
                             ),
                           ),
+                          const SizedBox(height: 16),
                           BeuiCardContent(
                             child: Column(
                               children: [
@@ -144,7 +157,7 @@ class _CardDemoState extends State<_CardDemo> {
                                   onChanged: (value) =>
                                       setState(() => _notifications = value),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 12),
                                 _SwitchRow(
                                   label: 'Weekly digest',
                                   value: _weeklyDigest,
@@ -183,7 +196,7 @@ class _CardDemoState extends State<_CardDemo> {
                                         headingLevel: 3,
                                         child: Text('Review order'),
                                       ),
-                                      SizedBox(height: 4),
+                                      SizedBox(height: 6),
                                       BeuiCardDescription(
                                         child: Text(
                                           'Check the details before you confirm.',
@@ -195,6 +208,7 @@ class _CardDemoState extends State<_CardDemo> {
                                 BeuiCardAction(
                                   child: BeuiButton(
                                     variant: BeuiButtonVariant.ghost,
+                                    size: BeuiButtonSize.sm,
                                     onPressed: () {},
                                     child: const Text('Edit'),
                                   ),
@@ -202,7 +216,7 @@ class _CardDemoState extends State<_CardDemo> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 24),
                           BeuiCardContent(
                             child: const Column(
                               children: [
@@ -218,18 +232,20 @@ class _CardDemoState extends State<_CardDemo> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 24),
                           BeuiCardFooter(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 BeuiButton(
                                   variant: BeuiButtonVariant.secondary,
+                                  size: BeuiButtonSize.sm,
                                   onPressed: () {},
                                   child: const Text('Back'),
                                 ),
                                 const SizedBox(width: 8),
                                 BeuiButton(
+                                  size: BeuiButtonSize.sm,
                                   onPressed: () {},
                                   child: const Text('Confirm order'),
                                 ),
@@ -239,7 +255,7 @@ class _CardDemoState extends State<_CardDemo> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     const _StudioCard(),
                   ],
                 ),
@@ -257,16 +273,18 @@ class _StudioCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BeuiCard(
-    interactive: true,
-    child: SizedBox(
-      height: 200,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+    padding: const EdgeInsets.only(bottom: 24),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
             child: Image.network(
-              'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85',
+              'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=720&q=80',
+              semanticLabel:
+                  'Bright open-plan studio with long desks and plants',
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => const ColoredBox(
                 color: Color(0xFFB8C6D1),
@@ -274,32 +292,57 @@ class _StudioCard extends StatelessWidget {
               ),
             ),
           ),
-          const Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Studio, Lisbon',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  shadows: [Shadow(color: Colors.black54, blurRadius: 8)],
+        ),
+        const SizedBox(height: 24),
+        const BeuiCardHeader(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BeuiCardTitle(headingLevel: 3, child: Text('Studio, Lisbon')),
+              SizedBox(height: 6),
+              BeuiCardDescription(
+                child: Text(
+                  'Desks for 12 people, booked for the March offsite.',
                 ),
               ),
-            ),
+            ],
           ),
-          BeuiCardTarget(
-            child: Semantics(
-              button: true,
-              label: 'Studio, Lisbon',
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {},
+        ),
+        const SizedBox(height: 24),
+        BeuiCardFooter(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '€1,840',
+                        style: TextStyle(
+                          color: BeuiColors.resolve(context).foreground,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const TextSpan(text: ' · 3 days'),
+                    ],
+                  ),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: BeuiColors.resolve(context).mutedForeground,
+                  ),
+                ),
               ),
-            ),
+              BeuiButton(
+                size: BeuiButtonSize.sm,
+                variant: BeuiButtonVariant.secondary,
+                onPressed: () {},
+                child: const Text('View booking'),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }
@@ -310,11 +353,40 @@ class _SummaryRow extends StatelessWidget {
   final String value;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8),
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      border: label == 'Billing email'
+          ? null
+          : Border(
+              bottom: BorderSide(color: BeuiColors.resolve(context).border),
+            ),
+    ),
+    padding: EdgeInsets.only(
+      top: label == 'Plan' ? 0 : 10,
+      bottom: label == 'Billing email' ? 0 : 10,
+    ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [Text(label), Text(value)],
+      children: [
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: BeuiColors.resolve(context).mutedForeground,
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Flexible(
+          child: Text(
+            value,
+            style: TextStyle(
+              color: BeuiColors.resolve(context).foreground,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }

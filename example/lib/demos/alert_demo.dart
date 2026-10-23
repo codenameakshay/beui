@@ -51,7 +51,12 @@ class _AlertDemoState extends State<_AlertDemo> {
         "We couldn't save your changes. Give it another try.",
       ),
     };
-    final variants = BeuiAlertVariant.values;
+    const variants = [
+      BeuiAlertVariant.info,
+      BeuiAlertVariant.success,
+      BeuiAlertVariant.warning,
+      BeuiAlertVariant.destructive,
+    ];
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 448),
@@ -60,7 +65,7 @@ class _AlertDemoState extends State<_AlertDemo> {
           children: [
             BeuiTabs<BeuiAlertVariant>(
               value: _variant,
-              variant: BeuiTabsVariant.segment,
+              variant: BeuiTabsVariant.pill,
               onChanged: (value) => setState(() {
                 _variant = value;
                 _open = true;
@@ -102,7 +107,7 @@ class _AlertDemoState extends State<_AlertDemo> {
                 const BeuiAlertClose(),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             BeuiButton(
               focusNode: _showFocus,
               variant: BeuiButtonVariant.ghost,
@@ -110,8 +115,6 @@ class _AlertDemoState extends State<_AlertDemo> {
               onPressed: _open ? null : () => setState(() => _open = true),
               child: const Text('Show alert'),
             ),
-            const SizedBox(height: 2),
-            Text(copy.$1, style: Theme.of(context).textTheme.labelSmall),
           ],
         ),
       ),

@@ -71,6 +71,35 @@ Rect _imageRect(WidgetTester tester, Color color) => tester.getRect(
 );
 
 void main() {
+  testWidgets('gallery fills three equal columns with the source gap', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    final first = tester.getRect(find.bySemanticsLabel('Open Red study'));
+    final second = tester.getRect(find.bySemanticsLabel('Open Blue study'));
+    expect(first.width, 112);
+    expect(second.width, 112);
+    expect(second.left - first.right, 12);
+  });
+
+  testWidgets('thumbnail hover does not invent travel or brightness', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    final thumbnail = find.bySemanticsLabel('Open Red study');
+    final before = _imageRect(tester, const Color(0xffc54d4d));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(thumbnail));
+    await tester.pumpAndSettle();
+    expect(_imageRect(tester, const Color(0xffc54d4d)), before);
+    expect(
+      find.descendant(of: thumbnail, matching: find.byType(ColorFiltered)),
+      findsNothing,
+    );
+  });
+
   group('BeuiImageViewer interaction', () {
     testWidgets('thumbnail opens and close dismisses', (tester) async {
       await tester.pumpWidget(_app());
@@ -260,7 +289,7 @@ void main() {
     );
 
     testWidgets(
-      'reduced motion thumbnail hover keeps brightness without movement',
+      'reduced motion thumbnail hover keeps the source image unchanged',
       (tester) async {
         await tester.pumpWidget(_app(reduce: true));
         final thumbnail = find.bySemanticsLabel('Open Red study');
@@ -279,38 +308,9 @@ void main() {
             expect(transform.transform, Matrix4.identity());
           }
         }
-        final filter = tester
-            .widget<ColorFiltered>(
-              find.descendant(
-                of: thumbnail,
-                matching: find.byType(ColorFiltered),
-              ),
-            )
-            .colorFilter;
         expect(
-          filter,
-          const ColorFilter.matrix([
-            1.04,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1.04,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1.04,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-          ]),
+          find.descendant(of: thumbnail, matching: find.byType(ColorFiltered)),
+          findsNothing,
         );
       },
     );

@@ -152,7 +152,9 @@ class BeuiBreadcrumbLink extends StatelessWidget {
               minimumSize: const Size(0, 32),
               padding: const EdgeInsets.symmetric(horizontal: 8),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              visualDensity: VisualDensity.compact,
+              visualDensity: VisualDensity.standard,
+              textStyle: const TextStyle(fontSize: 14, height: 20 / 14),
+              splashFactory: NoSplash.splashFactory,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6),
               ),

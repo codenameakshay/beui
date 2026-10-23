@@ -1,3 +1,5 @@
+import 'dart:ui' show Tristate;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,6 +52,135 @@ Widget _selector({
 );
 
 void main() {
+  testWidgets('disabled choices reject taps and arrows skip them', (
+    tester,
+  ) async {
+    final changes = <String>[];
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiColorSelector(
+          defaultValue: 'blue',
+          onChanged: changes.add,
+          children: const [
+            BeuiColorSelectorItem(
+              value: 'blue',
+              color: Colors.blue,
+              label: 'Blue',
+            ),
+            BeuiColorSelectorItem(
+              value: 'red',
+              color: Colors.red,
+              label: 'Red',
+              disabled: true,
+            ),
+            BeuiColorSelectorItem(
+              value: 'green',
+              color: Colors.green,
+              label: 'Green',
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Red'));
+    await tester.pumpAndSettle();
+    expect(changes, isEmpty);
+    await tester.tap(find.bySemanticsLabel('Blue'));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(changes, ['green']);
+    expect(
+      tester
+          .getSemantics(find.bySemanticsLabel('Red'))
+          .flagsCollection
+          .isEnabled,
+      Tristate.isFalse,
+    );
+  });
+
+  testWidgets('Tab enters the checked choice and then leaves the group', (
+    tester,
+  ) async {
+    final after = FocusNode();
+    addTearDown(after.dispose);
+    final changes = <String>[];
+    await tester.pumpWidget(
+      beuiTestApp(
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BeuiColorSelector(
+              defaultValue: 'red',
+              onChanged: changes.add,
+              children: _colors,
+            ),
+            TextButton(
+              focusNode: after,
+              onPressed: () {},
+              child: const Text('After'),
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(changes, ['blue']);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(after.hasPrimaryFocus, isTrue);
+  });
+
+  testWidgets('label sits above its swatch list', (tester) async {
+    await tester.pumpWidget(_selector());
+    await tester.pumpAndSettle();
+    expect(
+      tester.getBottomLeft(find.text('Accent')).dy + 12,
+      lessThanOrEqualTo(tester.getTopLeft(find.bySemanticsLabel('Blue')).dy),
+    );
+  });
+
+  testWidgets('selection ring hops above the row and settles on its swatch', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_selector());
+    await tester.pumpAndSettle();
+    final ring = find.byKey(const ValueKey('beui_color_selector_ring'));
+    final start = tester.getCenter(ring);
+    await tester.tap(find.bySemanticsLabel('Red'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 60));
+    final middle = tester.getCenter(ring);
+    expect(middle.dy, lessThan(start.dy - 1));
+    expect(middle.dx, greaterThan(start.dx));
+    await tester.pumpAndSettle();
+    expect(
+      tester.getCenter(ring),
+      tester.getCenter(find.bySemanticsLabel('Red')),
+    );
+  });
+
+  testWidgets('space activates a focused unselected swatch', (tester) async {
+    final changes = <String>[];
+    await tester.pumpWidget(
+      _selector(defaultValue: null, onChanged: changes.add),
+    );
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    await tester.pumpAndSettle();
+    expect(changes, ['blue']);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Blue')),
+      isSemantics(hasCheckedState: true, isChecked: true),
+    );
+  });
+
   testWidgets('tap selects an option', (tester) async {
     String? selected;
     await tester.pumpWidget(_selector(onChanged: (value) => selected = value));
@@ -448,20 +579,25 @@ void main() {
   });
 
   testWidgets(
-    'reduced motion positions ring directly and drops motion builder',
+    'reduced motion snaps the ring and never scales a pressed swatch',
     (tester) async {
       await tester.pumpWidget(_selector(value: 'red', reduce: true));
       await tester.pumpAndSettle();
-      expect(
-        find.byKey(const ValueKey('beui_color_selector_ring')),
-        findsOneWidget,
-      );
-      expect(
-        find.byWidgetPredicate(
-          (widget) => widget.runtimeType.toString().contains('MotionBuilder'),
-        ),
-        findsNothing,
-      );
+      final ring = find.byKey(const ValueKey('beui_color_selector_ring'));
+      final red = find.bySemanticsLabel('Red');
+      expect(tester.getRect(ring), tester.getRect(red).inflate(4));
+      final before = tester.getRect(red);
+      final press = await tester.startGesture(tester.getCenter(red));
+      for (var frame = 0; frame < 6; frame++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(tester.getRect(red), before);
+        for (final transform in tester.widgetList<Transform>(
+          find.descendant(of: red, matching: find.byType(Transform)),
+        )) {
+          expect(transform.transform, Matrix4.identity());
+        }
+      }
+      await press.up();
     },
   );
 

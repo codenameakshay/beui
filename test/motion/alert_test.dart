@@ -36,6 +36,21 @@ Widget _alert({
 );
 
 void main() {
+  testWidgets('variant replacement retains the outgoing icon for its exit', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_alert());
+    await tester.pumpAndSettle();
+    await tester.pumpWidget(_alert(variant: BeuiAlertVariant.success));
+    await tester.pump(const Duration(milliseconds: 40));
+    expect(find.byIcon(LucideIcons.info), findsOneWidget);
+    expect(find.byIcon(LucideIcons.circle_check), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 70));
+    await tester.pump();
+    expect(find.byIcon(LucideIcons.info), findsNothing);
+    expect(find.byIcon(LucideIcons.circle_check), findsOneWidget);
+  });
+
   testWidgets('initially closed alert has no visible body before opening', (
     tester,
   ) async {
@@ -116,7 +131,7 @@ void main() {
             )
             .transform
             .storage[13];
-        expect(translation, inExclusiveRange(0, 4));
+        expect(translation, inExclusiveRange(-6, 0));
         await tester.pumpAndSettle();
         expect(tester.getSize(alert).height, closeTo(openHeight, 0.01));
       }
@@ -201,7 +216,7 @@ void main() {
           find.descendant(of: alert, matching: find.byType(Opacity)),
         )
         .opacity;
-    expect(opacity, inExclusiveRange(0, 1));
+    expect(opacity, 1);
     await tester.pumpAndSettle();
     for (var i = 0; i < 2; i++) {
       update(() => open = false);
@@ -235,23 +250,25 @@ void main() {
     }
     final opacity = tester
         .widget<Opacity>(
-          find.descendant(of: icon, matching: find.byType(Opacity)),
+          find.descendant(of: icon, matching: find.byType(Opacity)).last,
         )
         .opacity;
     expect(opacity, inExclusiveRange(0, 1));
     expect(find.byIcon(LucideIcons.circle_check), findsOneWidget);
   });
 
-  testWidgets('open surface uses motor motion without AnimatedSwitcher', (
+  testWidgets('initially open alert mounts settled like initial=false', (
     tester,
   ) async {
     await tester.pumpWidget(_alert(open: true));
     final alert = find.byType(BeuiAlert);
-    expect(tester.getSize(alert).height, 0);
+    final initialHeight = tester.getSize(alert).height;
+    expect(initialHeight, greaterThan(32));
     await tester.pump(const Duration(milliseconds: 40));
     final enteringHeight = tester.getSize(alert).height;
     await tester.pumpAndSettle();
-    expect(enteringHeight, inExclusiveRange(0, tester.getSize(alert).height));
+    expect(enteringHeight, initialHeight);
+    expect(tester.getSize(alert).height, initialHeight);
     expect(
       find.descendant(of: alert, matching: find.byType(AnimatedSwitcher)),
       findsNothing,
@@ -268,7 +285,7 @@ void main() {
     final icon = find.byType(BeuiAlertIcon);
     final translation = tester
         .widget<Transform>(
-          find.descendant(of: icon, matching: find.byType(Transform)).first,
+          find.descendant(of: icon, matching: find.byType(Transform)).at(2),
         )
         .transform
         .storage[13];

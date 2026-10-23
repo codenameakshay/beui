@@ -37,6 +37,7 @@ class BeuiCard extends StatefulWidget {
     this.size = BeuiCardSize.defaultSize,
     this.interactive = false,
     this.selected = false,
+    this.padding,
     super.key,
   });
 
@@ -46,6 +47,9 @@ class BeuiCard extends StatefulWidget {
   final bool interactive;
   final bool selected;
 
+  /// Overrides the root's block padding for media cards, like source class overrides.
+  final EdgeInsetsGeometry? padding;
+
   @override
   State<BeuiCard> createState() => _BeuiCardState();
 }
@@ -54,11 +58,9 @@ class _BeuiCardState extends State<BeuiCard> {
   bool _pressed = false;
   bool _hovered = false;
   bool _descendantFocused = false;
-  double _scaleFrom = 1;
 
   void _setPressed(BuildContext context, bool value) {
     if (_pressed == value) return;
-    _scaleFrom = _pressed ? 0.985 : 1;
     setState(() => _pressed = value);
   }
 
@@ -73,6 +75,8 @@ class _BeuiCardState extends State<BeuiCard> {
         ? colors.primary
         : (_hovered && widget.interactive
               ? colors.borderStrong
+              : widget.variant == BeuiCardVariant.muted
+              ? Colors.transparent
               : colors.border);
     final targetScale = widget.interactive && _pressed && !reduce ? 0.985 : 1.0;
 
@@ -90,9 +94,11 @@ class _BeuiCardState extends State<BeuiCard> {
       child: _CardSizeScope(
         size: widget.size,
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: widget.size == BeuiCardSize.compact ? 16 : 24,
-          ),
+          padding:
+              widget.padding ??
+              EdgeInsets.symmetric(
+                vertical: widget.size == BeuiCardSize.compact ? 16 : 24,
+              ),
           child: widget.child,
         ),
       ),
@@ -119,9 +125,8 @@ class _BeuiCardState extends State<BeuiCard> {
           child: reduce
               ? surface
               : SingleMotionBuilder(
-                  key: ValueKey<bool>(_pressed),
                   value: targetScale,
-                  from: _scaleFrom,
+                  from: 1,
                   motion: motionFor(context, beuiSpringPress, isMovement: true),
                   builder: (context, scale, child) =>
                       Transform.scale(scale: scale, child: child),
@@ -171,7 +176,7 @@ class BeuiCardTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.titleMedium?.copyWith(
       fontSize: 15,
-      height: 1.25,
+      height: 1.375,
       fontWeight: FontWeight.w600,
       color: BeuiColors.resolve(context).foreground,
     );
@@ -190,7 +195,7 @@ class BeuiCardDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DefaultTextStyle.merge(
     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-      height: 1.45,
+      height: 1.625,
       color: BeuiColors.resolve(context).mutedForeground,
     ),
     child: child,

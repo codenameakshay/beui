@@ -21,7 +21,7 @@ class _ImageViewerDemo extends StatelessWidget {
       width: 4,
       height: 5,
       content: Image.network(
-        'https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=900&q=85',
+        'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1600&h=2000&q=85',
         fit: BoxFit.cover,
         errorBuilder: _photoFallback,
       ),
@@ -33,7 +33,7 @@ class _ImageViewerDemo extends StatelessWidget {
       width: 4,
       height: 5,
       content: Image.network(
-        'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85',
+        'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&h=2000&q=85',
         fit: BoxFit.cover,
         errorBuilder: _photoFallback,
       ),
@@ -45,7 +45,7 @@ class _ImageViewerDemo extends StatelessWidget {
       width: 4,
       height: 5,
       content: Image.network(
-        'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85',
+        'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&h=2000&q=85',
         fit: BoxFit.cover,
         errorBuilder: _photoFallback,
       ),
@@ -53,34 +53,83 @@ class _ImageViewerDemo extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) => Column(
-    mainAxisSize: MainAxisSize.min,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Look a little closer.',
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
-      const SizedBox(height: 18),
-      BeuiImageViewer(
-        images: _photos,
-        label: 'Collected photographs',
-        children: const Column(
-          mainAxisSize: MainAxisSize.min,
+  Widget build(BuildContext context) => ConstrainedBox(
+    constraints: const BoxConstraints(maxWidth: 576),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            BeuiImageViewerGallery(
-              children: [
-                BeuiImageViewerThumbnail(imageId: 'architecture'),
-                BeuiImageViewerThumbnail(imageId: 'landscape'),
-                BeuiImageViewerThumbnail(imageId: 'workspace'),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'COLLECTED MOMENTS',
+                    style: TextStyle(
+                      fontSize: 10,
+                      height: 1.5,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 1.8,
+                      color: BeuiColors.resolve(context).mutedForeground,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Look a little closer.',
+                    style: TextStyle(
+                      fontSize: 18,
+                      height: 28 / 18,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: -0.45,
+                      color: BeuiColors.resolve(context).foreground,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            BeuiImageViewerContent(),
+            Text(
+              '3 photographs',
+              style: TextStyle(
+                fontSize: 12,
+                height: 16 / 12,
+                color: BeuiColors.resolve(context).mutedForeground,
+              ),
+            ),
           ],
         ),
-      ),
-      const SizedBox(height: 14),
-      Text('3 photographs', style: Theme.of(context).textTheme.bodySmall),
-    ],
+        const SizedBox(height: 20),
+        BeuiImageViewer(
+          images: _photos,
+          label: 'Collected photographs',
+          children: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BeuiImageViewerGallery(
+                columns: 3,
+                children: [
+                  BeuiImageViewerThumbnail(imageId: 'architecture'),
+                  BeuiImageViewerThumbnail(imageId: 'landscape'),
+                  BeuiImageViewerThumbnail(imageId: 'workspace'),
+                ],
+              ),
+              BeuiImageViewerContent(),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Open a photograph. Swipe or use the arrows to explore.',
+          style: TextStyle(
+            fontSize: 12,
+            height: 16 / 12,
+            color: BeuiColors.resolve(context).mutedForeground,
+          ),
+        ),
+      ],
+    ),
   );
 }

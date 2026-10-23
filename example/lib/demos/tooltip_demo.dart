@@ -18,13 +18,13 @@ Widget tooltipDemo(BuildContext context) {
               _tooltip(BeuiTooltipSide.top, 'Top', LucideIcons.arrow_up),
               _emptyCell(),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             _row(
               _tooltip(BeuiTooltipSide.left, 'Left', LucideIcons.arrow_left),
               _emptyCell(),
               _tooltip(BeuiTooltipSide.right, 'Right', LucideIcons.arrow_right),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             _row(
               _emptyCell(),
               _tooltip(
@@ -36,7 +36,7 @@ Widget tooltipDemo(BuildContext context) {
             ),
           ],
         ),
-        const SizedBox(height: 48), // gap-12
+        const SizedBox(height: 32),
         Text(
           'Hover or focus. Press Esc to dismiss.',
           style: TextStyle(
@@ -55,9 +55,9 @@ Widget _row(Widget left, Widget middle, Widget right) => Row(
   mainAxisSize: MainAxisSize.min,
   children: [
     left,
-    const SizedBox(width: 16),
+    const SizedBox(width: 12),
     middle,
-    const SizedBox(width: 16),
+    const SizedBox(width: 12),
     right,
   ],
 );
@@ -70,9 +70,7 @@ Widget _tooltip(BeuiTooltipSide side, String label, IconData icon) =>
       child: _TooltipTrigger(icon: icon, semanticLabel: label, label: label),
     );
 
-/// The tooltip preview's trigger — preview chrome, not a beUI component:
-/// `h-10 w-10 rounded-full border border-border bg-card` around an `h-4 w-4`
-/// icon.
+/// The source preview's 80 by 40 trigger with a 14-pixel icon.
 class _TooltipTrigger extends StatelessWidget {
   const _TooltipTrigger({
     required this.icon,

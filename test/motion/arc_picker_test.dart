@@ -40,6 +40,28 @@ Widget _app({
 
 void main() {
   group('BeuiArcPicker selection', () {
+    testWidgets(
+      'selection brackets expand while dragging and settle on release',
+      (tester) async {
+        await tester.pumpWidget(_app(defaultValue: 'two'));
+        await tester.pumpAndSettle();
+        final brackets = find.ancestor(
+          of: find.text('['),
+          matching: find.byType(Row),
+        );
+        final rest = tester.getSize(brackets).width;
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.text('Dawn')),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 80));
+        expect(tester.getSize(brackets).width, greaterThan(rest + 6));
+        await gesture.up();
+        await tester.pumpAndSettle();
+        expect(tester.getSize(brackets).width, closeTo(rest, .01));
+      },
+    );
+
     testWidgets('uncontrolled selection starts at default and changes by tap', (
       tester,
     ) async {

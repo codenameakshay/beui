@@ -7,7 +7,8 @@ import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
-import '_engine.dart' show MotionBuilder, NoMotion, RectMotionConverter;
+import '_engine.dart'
+    show MotionBuilder, NoMotion, RectMotionConverter, SingleMotionBuilder;
 
 /// A gallery image and the content rendered for it in both gallery and viewer.
 @immutable
@@ -236,17 +237,47 @@ class _ImageViewerScope extends InheritedWidget {
 /// Gallery layout for [BeuiImageViewerThumbnail] children.
 class BeuiImageViewerGallery extends StatelessWidget {
   /// Creates a responsive thumbnail grid.
-  const BeuiImageViewerGallery({required this.children, super.key});
+  const BeuiImageViewerGallery({
+    required this.children,
+    this.columns,
+    this.gap = 12,
+    super.key,
+  }) : assert(columns == null || columns > 0),
+       assert(gap >= 0);
 
   /// Thumbnail widgets.
   final List<Widget> children;
+
+  /// Defaults to two columns below 640px and three above, like the source grid.
+  final int? columns;
+
+  /// Space between thumbnails on both axes.
+  final double gap;
 
   @override
   Widget build(BuildContext context) => Semantics(
     container: true,
     explicitChildNodes: true,
     label: _ImageViewerScope.of(context).label,
-    child: Wrap(spacing: 12, runSpacing: 12, children: children),
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final count =
+            columns ?? (MediaQuery.sizeOf(context).width < 640 ? 2 : 3);
+        final width = constraints.hasBoundedWidth
+            ? ((constraints.maxWidth - gap * (count - 1)) / count).clamp(
+                0.0,
+                double.infinity,
+              )
+            : 120.0;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (final child in children) SizedBox(width: width, child: child),
+          ],
+        );
+      },
+    ),
   );
 }
 
@@ -298,7 +329,7 @@ class _ImageViewerThumbnailButton extends StatefulWidget {
 
 class _ImageViewerThumbnailButtonState
     extends State<_ImageViewerThumbnailButton> {
-  bool _hovered = false;
+  bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -307,42 +338,29 @@ class _ImageViewerThumbnailButtonState
       button: true,
       expanded: widget.selected,
       label: 'Open ${widget.image.alt}',
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _hovered = true),
-        onExit: (_) => setState(() => _hovered = false),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          curve: Curves.easeOut,
-          transform: movement is NoMotion
-              ? null
-              : Matrix4.translationValues(0, _hovered ? -3 : 0, 0),
-          width: 120,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: _hovered
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.16),
-                      blurRadius: 14,
-                      offset: const Offset(0, 8),
-                    ),
-                  ]
-                : const [],
-          ),
+      child: SingleMotionBuilder(
+        value: _pressed ? 0.98 : 1.0,
+        motion: motionFor(context, beuiSpringPress, isMovement: true),
+        builder: (context, scale, child) => movement is NoMotion
+            ? child!
+            : Transform.scale(scale: scale, child: child),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
           child: Material(
             color: widget.color,
             borderRadius: BorderRadius.circular(16),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
               onTap: widget.onTap,
+              onTapDown: (_) => setState(() => _pressed = true),
+              onTapUp: (_) => setState(() => _pressed = false),
+              onTapCancel: () => setState(() => _pressed = false),
+              hoverColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
               child: AspectRatio(
                 aspectRatio: widget.image.width / widget.image.height,
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.matrix(
-                    _hovered ? _hoverBrightness : _normalBrightness,
-                  ),
-                  child: widget.image.content,
-                ),
+                child: widget.image.content,
               ),
             ),
           ),
@@ -351,51 +369,6 @@ class _ImageViewerThumbnailButtonState
     );
   }
 }
-
-const _normalBrightness = <double>[
-  1,
-  0,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-];
-const _hoverBrightness = <double>[
-  1.04,
-  0,
-  0,
-  0,
-  0,
-  0,
-  1.04,
-  0,
-  0,
-  0,
-  0,
-  0,
-  1.04,
-  0,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0,
-];
 
 /// Counter showing the selected image index and total.
 class BeuiImageViewerCounter extends StatelessWidget {

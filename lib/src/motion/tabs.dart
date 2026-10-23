@@ -6,12 +6,10 @@ import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 
-/// Weighty spring for the active-tab indicator — a one-to-one port of the
-/// source `tabs.tsx` `transition` const. A touch of overshoot (low damping,
-/// high mass) so the pill settles with life. Component-local: intentionally
-/// heavier than the shared `beuiSpringLayout`.
+/// Source `tabs.tsx` settles without overshoot so scrollable lists do not grow
+/// transient scrollbars. This is deliberately not the shared layout spring.
 const _indicatorSpring = SpringMotion(
-  SpringDescription(mass: 1.2, stiffness: 170, damping: 24),
+  SpringDescription(mass: 1.2, stiffness: 245, damping: 36),
 );
 
 /// Test handle on the gliding indicator, so motion tests can read its bounds.

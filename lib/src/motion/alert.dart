@@ -76,6 +76,7 @@ class BeuiAlert extends StatefulWidget {
 class _BeuiAlertState extends State<BeuiAlert> {
   final GlobalKey _surfaceKey = GlobalKey();
   late bool _internalOpen = widget.defaultOpen;
+  late final bool _initialOpen = _open;
 
   bool get _open => widget.open ?? _internalOpen;
 
@@ -158,14 +159,16 @@ class _BeuiAlertState extends State<BeuiAlert> {
   Widget _buildAlertSurface(Color color, Motion movement) {
     final fade = SingleMotionBuilder(
       value: _open ? 1 : 0,
-      from: 0,
+      from: _initialOpen ? 1 : 0,
       motion: CurvedMotion(
         Duration(milliseconds: _open ? 180 : 120),
         beuiEaseOut,
       ),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.06),
+          color: widget.variant == BeuiAlertVariant.default_
+              ? BeuiColors.resolve(context).background
+              : color.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Padding(
@@ -197,16 +200,19 @@ class _BeuiAlertState extends State<BeuiAlert> {
     }
     return SingleMotionBuilder(
       value: _open ? 1 : 0,
-      from: 0,
+      from: _initialOpen ? 1 : 0,
       motion: movement,
       child: SingleMotionBuilder(
         value: _open ? 1 : 0,
-        from: 0,
-        motion: CurvedMotion(const Duration(milliseconds: 200), beuiEaseOut),
+        from: _initialOpen ? 1 : 0,
+        motion: CurvedMotion(
+          Duration(milliseconds: _open ? 200 : 120),
+          beuiEaseOut,
+        ),
         child: fade,
         builder: (context, progress, child) => Transform.translate(
-          offset: Offset(0, 4 * (1 - progress)),
-          child: Transform.scale(scale: 0.98 + 0.02 * progress, child: child),
+          offset: Offset(0, -6 * (1 - progress)),
+          child: child,
         ),
       ),
       builder: (context, height, child) => ClipRect(
@@ -221,9 +227,37 @@ class _BeuiAlertState extends State<BeuiAlert> {
 }
 
 /// The variant icon, cross-faded whenever the alert tone changes.
-class BeuiAlertIcon extends StatelessWidget {
+class BeuiAlertIcon extends StatefulWidget {
   const BeuiAlertIcon({super.key, this.child});
   final Widget? child;
+
+  @override
+  State<BeuiAlertIcon> createState() => _BeuiAlertIconState();
+}
+
+class _BeuiAlertIconState extends State<BeuiAlertIcon> {
+  final _entries = <({int id, BeuiAlertVariant variant, bool initial})>[];
+  int _nextId = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final variant = _AlertScope.of(context, 'BeuiAlertIcon').variant;
+    if (_entries.isEmpty || _entries.last.variant != variant) {
+      _entries.add((
+        id: _nextId++,
+        variant: variant,
+        initial: _entries.isEmpty,
+      ));
+    }
+  }
+
+  void _removeExited(int id) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _entries.last.id == id) return;
+      setState(() => _entries.removeWhere((entry) => entry.id == id));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -235,36 +269,64 @@ class BeuiAlertIcon extends StatelessWidget {
       BeuiAlertVariant.warning => colors.warning,
       BeuiAlertVariant.destructive => colors.destructive,
     };
-    final icon =
-        child ??
-        Icon(switch (state.variant) {
-          BeuiAlertVariant.default_ ||
-          BeuiAlertVariant.info => LucideIcons.info,
-          BeuiAlertVariant.success => LucideIcons.circle_check,
-          BeuiAlertVariant.warning => LucideIcons.triangle_alert,
-          BeuiAlertVariant.destructive => LucideIcons.circle_alert,
-        });
     return Padding(
       padding: const EdgeInsets.only(top: 2, right: 12),
       child: IconTheme.merge(
         data: IconThemeData(color: color, size: 16),
-        child: SingleMotionBuilder(
-          key: ValueKey(state.variant),
-          value: 1,
-          from: 0,
-          motion: CurvedMotion(const Duration(milliseconds: 180), beuiEaseOut),
-          child: ExcludeSemantics(child: icon),
-          builder: (context, progress, child) => Opacity(
-            opacity: progress.clamp(0.0, 1.0),
-            child: state.reduce
-                ? child
-                : Transform.translate(
-                    offset: Offset(0, 4 * (1 - progress)),
-                    child: Transform.scale(
-                      scale: 0.9 + 0.1 * progress,
-                      child: child,
+        child: SizedBox(
+          width: 16,
+          height: 16,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              for (final entry in _entries)
+                SingleMotionBuilder(
+                  key: ValueKey(entry.id),
+                  value: entry.id == _entries.last.id ? 1 : 0,
+                  from: entry.initial ? 1 : 0,
+                  motion: CurvedMotion(
+                    Duration(
+                      milliseconds: entry.id == _entries.last.id ? 180 : 100,
                     ),
+                    beuiEaseOut,
                   ),
+                  onAnimationStatusChanged: (status) {
+                    if (status == AnimationStatus.completed &&
+                        entry.id != _entries.last.id) {
+                      _removeExited(entry.id);
+                    }
+                  },
+                  child: ExcludeSemantics(
+                    child:
+                        widget.child ??
+                        Icon(switch (entry.variant) {
+                          BeuiAlertVariant.default_ ||
+                          BeuiAlertVariant.info => LucideIcons.info,
+                          BeuiAlertVariant.success => LucideIcons.circle_check,
+                          BeuiAlertVariant.warning =>
+                            LucideIcons.triangle_alert,
+                          BeuiAlertVariant.destructive =>
+                            LucideIcons.circle_alert,
+                        }),
+                  ),
+                  builder: (context, progress, child) => Opacity(
+                    opacity: progress.clamp(0.0, 1.0),
+                    child: state.reduce
+                        ? child
+                        : Transform.translate(
+                            offset: Offset(
+                              0,
+                              (entry.id == _entries.last.id ? 4 : -4) *
+                                  (1 - progress),
+                            ),
+                            child: Transform.scale(
+                              scale: 0.9 + 0.1 * progress,
+                              child: child,
+                            ),
+                          ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
