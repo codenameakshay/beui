@@ -1,0 +1,66 @@
+{
+  "url": "http://127.0.0.1:18120/after/?example=editable&theme=light&captureProbe=1",
+  "theme": "light",
+  "reducedMotion": "reduce",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "loadWaitMs": 1500,
+  "backend": "screenshots",
+  "requireFlutterProbe": true,
+  "servedJs": {
+    "url": "http://127.0.0.1:18120/after/main.dart.js",
+    "sha256": "ff5f4bf1d9e3cc8de34a546580139545f4f2830a621fa54d5fe209ea6af5937d",
+    "revision": "4935b8de"
+  },
+  "provenance": {
+    "example": "example/table-editable/editable",
+    "origin": "after",
+    "recorderHash": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "sourceDeployment": "pinned-isolated-preview; live deployment revision unknown"
+  },
+  "targets": {
+    "p0": {
+      "x": 417,
+      "y": 178.5
+    },
+    "p1": {
+      "x": 364.2,
+      "y": 176
+    }
+  },
+  "events": [
+    {
+      "atMs": 481,
+      "type": "move",
+      "target": "p0"
+    },
+    {
+      "atMs": 617,
+      "type": "click",
+      "target": "p1"
+    },
+    {
+      "atMs": 1000,
+      "type": "key",
+      "key": "Escape"
+    },
+    {
+      "atMs": 1280,
+      "type": "key",
+      "key": "Enter"
+    },
+    {
+      "atMs": 1566,
+      "type": "key",
+      "key": "Tab"
+    },
+    {
+      "atMs": 1885,
+      "type": "key",
+      "key": "Enter"
+    }
+  ],
+  "finalHoldMs": 800
+}

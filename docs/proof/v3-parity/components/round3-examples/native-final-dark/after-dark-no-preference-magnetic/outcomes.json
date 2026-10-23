@@ -1,0 +1,1188 @@
+{
+  "example": {
+    "key": "magnetic",
+    "id": "example/button-magnetic/magnetic",
+    "preview": "button-magnetic",
+    "family": "button",
+    "seed": "primary .35, secondary .25, outline .5",
+    "flows": [
+      "follow",
+      "hold",
+      "release",
+      "exit-reset",
+      "keyboard",
+      "reduced-motion"
+    ]
+  },
+  "origin": "after",
+  "theme": "dark",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "exact preview control count",
+      "actual": 3,
+      "expected": 3,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 8.130415999999968,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLUTTER-VIEW",
+          "role": null,
+          "name": "Hover meSubtle pullStrong pullflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Hover me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.47845458984375,
+              "y": 160,
+              "width": 126.328125,
+              "height": 40,
+              "top": 160,
+              "right": 573.8065795898438,
+              "bottom": 200,
+              "left": 447.47845458984375
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Subtle pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.8201904296875,
+              "y": 160,
+              "width": 112.65625,
+              "height": 40,
+              "top": 160,
+              "right": 702.4764404296875,
+              "bottom": 200,
+              "left": 589.8201904296875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Strong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.4918212890625,
+              "y": 160,
+              "width": 114.015625,
+              "height": 40,
+              "top": 160,
+              "right": 832.5074462890625,
+              "bottom": 200,
+              "left": 718.4918212890625
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-0-held",
+      "atMs": 484.2407910000038,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Hover me"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Hover me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 456.31854248046875,
+              "y": 160,
+              "width": 126.328125,
+              "height": 40,
+              "top": 160,
+              "right": 582.6466674804688,
+              "bottom": 200,
+              "left": 456.31854248046875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Subtle pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.8201904296875,
+              "y": 160,
+              "width": 112.65625,
+              "height": 40,
+              "top": 160,
+              "right": 702.4764404296875,
+              "bottom": 200,
+              "left": 589.8201904296875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Strong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.4918212890625,
+              "y": 160,
+              "width": 114.015625,
+              "height": 40,
+              "top": 160,
+              "right": 832.5074462890625,
+              "bottom": 200,
+              "left": 718.4918212890625
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-0-semantics-geometry",
+      "rect": {
+        "x": 456.31854248046875,
+        "y": 160,
+        "width": 126.328125,
+        "height": 40,
+        "top": 160,
+        "right": 582.6466674804688,
+        "bottom": 200,
+        "left": 456.31854248046875
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-1-held",
+      "atMs": 1079.830541000003,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Subtle pull"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Hover me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.48028564453125,
+              "y": 160,
+              "width": 126.328125,
+              "height": 40,
+              "top": 160,
+              "right": 573.8084106445312,
+              "bottom": 200,
+              "left": 447.48028564453125
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Subtle pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595.4498901367188,
+              "y": 160,
+              "width": 112.65625,
+              "height": 40,
+              "top": 160,
+              "right": 708.1061401367188,
+              "bottom": 200,
+              "left": 595.4498901367188
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Strong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.4918212890625,
+              "y": 160,
+              "width": 114.015625,
+              "height": 40,
+              "top": 160,
+              "right": 832.5074462890625,
+              "bottom": 200,
+              "left": 718.4918212890625
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-1-semantics-geometry",
+      "rect": {
+        "x": 595.4498901367188,
+        "y": 160,
+        "width": 112.65625,
+        "height": 40,
+        "top": 160,
+        "right": 708.1061401367188,
+        "bottom": 200,
+        "left": 595.4498901367188
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-2-held",
+      "atMs": 1665.6045000000013,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Strong pull"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Hover me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.4783935546875,
+              "y": 160,
+              "width": 126.328125,
+              "height": 40,
+              "top": 160,
+              "right": 573.8065185546875,
+              "bottom": 200,
+              "left": 447.4783935546875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Subtle pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.822265625,
+              "y": 160,
+              "width": 112.65625,
+              "height": 40,
+              "top": 160,
+              "right": 702.478515625,
+              "bottom": 200,
+              "left": 589.822265625
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Strong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 729.8856201171875,
+              "y": 160,
+              "width": 114.015625,
+              "height": 40,
+              "top": 160,
+              "right": 843.9012451171875,
+              "bottom": 200,
+              "left": 729.8856201171875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-2-semantics-geometry",
+      "rect": {
+        "x": 729.8856201171875,
+        "y": 160,
+        "width": 114.015625,
+        "height": 40,
+        "top": 160,
+        "right": 843.9012451171875,
+        "bottom": 200,
+        "left": 729.8856201171875
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "exit-reset",
+      "atMs": 2342.414625000005,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Strong pull"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Hover me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.4783935546875,
+              "y": 160,
+              "width": 126.328125,
+              "height": 40,
+              "top": 160,
+              "right": 573.8065185546875,
+              "bottom": 200,
+              "left": 447.4783935546875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Subtle pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.8201293945312,
+              "y": 160,
+              "width": 112.65625,
+              "height": 40,
+              "top": 160,
+              "right": 702.4763793945312,
+              "bottom": 200,
+              "left": 589.8201293945312
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Strong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.4918212890625,
+              "y": 160,
+              "width": 114.015625,
+              "height": 40,
+              "top": 160,
+              "right": 832.5074462890625,
+              "bottom": 200,
+              "left": 718.4918212890625
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard",
+      "atMs": 2938.7823329999956,
+      "observed": {
+        "url": "http://127.0.0.1:18120/after/?example=magnetic&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "\n  \n  \n\n\nflutter typography measurementHover meSubtle pullStrong pullflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-view flt-semantics input,flutter-view flt-semantics textarea,flutter-view flt-semantics [contentEditable=\"true\"] {  caret-color: transparent;}flutter-view .flt-text-editing::placeholder {  opacity: 0;}flutter-view:focus { outline: rgb(0, 0, 0) none 0px;}flutter-view .transparentTextEditing:-webkit-autofill,flutter-view .transparentTextEditing:-webkit-autofill:hover,flutter-view .transparentTextEditing:-webkit-autofill:focus,flutter-view .transparentTextEditing:-webkit-autofill:active {  opacity: 0 !important;}"
+        },
+        "probe": {
+          "disableAnimations": false,
+          "platformDisableAnimations": false,
+          "motionOverride": null,
+          "backgroundArgb": 4279571733,
+          "constraints": {
+            "minWidth": 0,
+            "maxWidth": 592,
+            "minHeight": 0,
+            "maxHeight": null
+          },
+          "rect": {
+            "x": 344,
+            "y": 160,
+            "width": 592,
+            "height": 40
+          }
+        },
+        "stage": null,
+        "controls": [
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": null,
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1000,
+              "top": 0,
+              "right": 1280,
+              "bottom": 1000,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "group",
+            "name": "Hover me\nSubtle pull\nStrong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 360,
+              "top": 0,
+              "right": 1280,
+              "bottom": 360,
+              "left": 0
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Hover me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 447.4783935546875,
+              "y": 160,
+              "width": 126.328125,
+              "height": 40,
+              "top": 160,
+              "right": 573.8065185546875,
+              "bottom": 200,
+              "left": 447.4783935546875
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Subtle pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.8201293945312,
+              "y": 160,
+              "width": 112.65625,
+              "height": 40,
+              "top": 160,
+              "right": 702.4763793945312,
+              "bottom": 200,
+              "left": 589.8201293945312
+            }
+          },
+          {
+            "tag": "FLT-SEMANTICS",
+            "role": "button",
+            "name": "Strong pull",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 718.4918212890625,
+              "y": 160,
+              "width": 114.015625,
+              "height": 40,
+              "top": 160,
+              "right": 832.5074462890625,
+              "bottom": 200,
+              "left": 718.4918212890625
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

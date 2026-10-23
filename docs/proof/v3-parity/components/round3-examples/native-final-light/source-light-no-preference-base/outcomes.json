@@ -1,0 +1,3357 @@
+{
+  "example": {
+    "key": "base",
+    "id": "example/button-base/base",
+    "preview": "button-base",
+    "family": "button",
+    "seed": "4 variants, 4 sizes, Ripple, Tap me",
+    "flows": [
+      "variants",
+      "sizes",
+      "hover",
+      "hold",
+      "release",
+      "ripple",
+      "keyboard",
+      "reduced-motion"
+    ]
+  },
+  "origin": "source",
+  "theme": "light",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "exact preview control count",
+      "actual": 10,
+      "expected": 10,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 4.404457999999067,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "ContinueDownloadOutlineGhostSmallMediumLargeRippleTap me"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-0-held",
+      "atMs": 431.5961669999997,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Continue"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 414.4991455078125,
+              "y": 93.40074157714844,
+              "width": 114.501708984375,
+              "height": 37.198516845703125,
+              "top": 93.40074157714844,
+              "right": 529.0008544921875,
+              "bottom": 130.59925842285156,
+              "left": 414.4991455078125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-0-semantics-geometry",
+      "rect": {
+        "x": 414.4991455078125,
+        "y": 93.40074157714844,
+        "width": 114.501708984375,
+        "height": 37.198516845703125,
+        "top": 93.40074157714844,
+        "right": 529.0008544921875,
+        "bottom": 130.59925842285156,
+        "left": 414.4991455078125
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-1-held",
+      "atMs": 985.6725419999984,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Download"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 549.921142578125,
+              "y": 93.40021514892578,
+              "width": 122.43890380859375,
+              "height": 37.19957733154297,
+              "top": 93.40021514892578,
+              "right": 672.3600463867188,
+              "bottom": 130.59979248046875,
+              "left": 549.921142578125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-1-semantics-geometry",
+      "rect": {
+        "x": 549.921142578125,
+        "y": 93.40021514892578,
+        "width": 122.43890380859375,
+        "height": 37.19957733154297,
+        "top": 93.40021514892578,
+        "right": 672.3600463867188,
+        "bottom": 130.59979248046875,
+        "left": 549.921142578125
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-2-held",
+      "atMs": 1569.666041999999,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Outline"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 692.114990234375,
+              "y": 93.4017333984375,
+              "width": 83.48876953125,
+              "height": 37.196533203125,
+              "top": 93.4017333984375,
+              "right": 775.603759765625,
+              "bottom": 130.5982666015625,
+              "left": 692.114990234375
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-2-semantics-geometry",
+      "rect": {
+        "x": 692.114990234375,
+        "y": 93.4017333984375,
+        "width": 83.48876953125,
+        "height": 37.196533203125,
+        "top": 93.4017333984375,
+        "right": 775.603759765625,
+        "bottom": 130.5982666015625,
+        "left": 692.114990234375
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-3-held",
+      "atMs": 2132.316666999999,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Ghost"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 793.52001953125,
+              "y": 93.40172576904297,
+              "width": 73.5068359375,
+              "height": 37.19654083251953,
+              "top": 93.40172576904297,
+              "right": 867.02685546875,
+              "bottom": 130.5982666015625,
+              "left": 793.52001953125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-3-semantics-geometry",
+      "rect": {
+        "x": 793.52001953125,
+        "y": 93.40172576904297,
+        "width": 73.5068359375,
+        "height": 37.19654083251953,
+        "top": 93.40172576904297,
+        "right": 867.02685546875,
+        "bottom": 130.5982666015625,
+        "left": 793.52001953125
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-4-held",
+      "atMs": 2713.134374999998,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Small"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 488.51220703125,
+              "y": 165.12100219726562,
+              "width": 51.7568359375,
+              "height": 29.75799560546875,
+              "top": 165.12100219726562,
+              "right": 540.26904296875,
+              "bottom": 194.87899780273438,
+              "left": 488.51220703125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-4-semantics-geometry",
+      "rect": {
+        "x": 488.51220703125,
+        "y": 165.12100219726562,
+        "width": 51.7568359375,
+        "height": 29.75799560546875,
+        "top": 165.12100219726562,
+        "right": 540.26904296875,
+        "bottom": 194.87899780273438,
+        "left": 488.51220703125
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-5-held",
+      "atMs": 3317.8855829999993,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Medium"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 557.4595336914062,
+              "y": 161.40261840820312,
+              "width": 85.9403076171875,
+              "height": 37.19476318359375,
+              "top": 161.40261840820312,
+              "right": 643.3998413085938,
+              "bottom": 198.59738159179688,
+              "left": 557.4595336914062
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-5-semantics-geometry",
+      "rect": {
+        "x": 557.4595336914062,
+        "y": 161.40261840820312,
+        "width": 85.9403076171875,
+        "height": 37.19476318359375,
+        "top": 161.40261840820312,
+        "right": 643.3998413085938,
+        "bottom": 198.59738159179688,
+        "left": 557.4595336914062
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-6-held",
+      "atMs": 4100.960875000001,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Large"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 661.8173828125,
+              "y": 157.67999267578125,
+              "width": 84.41204833984375,
+              "height": 44.6400146484375,
+              "top": 157.67999267578125,
+              "right": 746.2294311523438,
+              "bottom": 202.32000732421875,
+              "left": 661.8173828125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-6-semantics-geometry",
+      "rect": {
+        "x": 661.8173828125,
+        "y": 157.67999267578125,
+        "width": 84.41204833984375,
+        "height": 44.6400146484375,
+        "top": 157.67999267578125,
+        "right": 746.2294311523438,
+        "bottom": 202.32000732421875,
+        "left": 661.8173828125
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-7-held",
+      "atMs": 4788.618624999999,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Delete"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 762.5240478515625,
+              "y": 165.11782836914062,
+              "width": 29.764404296875,
+              "height": 29.76434326171875,
+              "top": 165.11782836914062,
+              "right": 792.2884521484375,
+              "bottom": 194.88217163085938,
+              "left": 762.5240478515625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-7-semantics-geometry",
+      "rect": {
+        "x": 762.5240478515625,
+        "y": 165.11782836914062,
+        "width": 29.764404296875,
+        "height": 29.76434326171875,
+        "top": 165.11782836914062,
+        "right": 792.2884521484375,
+        "bottom": 194.88217163085938,
+        "left": 762.5240478515625
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-8-held",
+      "atMs": 5385.576792,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Ripple"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 551.3666381835938,
+              "y": 229.39968872070312,
+              "width": 76.1885986328125,
+              "height": 37.20062255859375,
+              "top": 229.39968872070312,
+              "right": 627.5552368164062,
+              "bottom": 266.6003112792969,
+              "left": 551.3666381835938
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-8-semantics-geometry",
+      "rect": {
+        "x": 551.3666381835938,
+        "y": 229.39968872070312,
+        "width": 76.1885986328125,
+        "height": 37.20062255859375,
+        "top": 229.39968872070312,
+        "right": 627.5552368164062,
+        "bottom": 266.6003112792969,
+        "left": 551.3666381835938
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "control-9-held",
+      "atMs": 5967.3788749999985,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Tap me"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 645.5364990234375,
+              "y": 229.3990936279297,
+              "width": 82.817626953125,
+              "height": 37.20179748535156,
+              "top": 229.3990936279297,
+              "right": 728.3541259765625,
+              "bottom": 266.60089111328125,
+              "left": 645.5364990234375
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "control-9-semantics-geometry",
+      "rect": {
+        "x": 645.5364990234375,
+        "y": 229.3990936279297,
+        "width": 82.817626953125,
+        "height": 37.20179748535156,
+        "top": 229.3990936279297,
+        "right": 728.3541259765625,
+        "bottom": 266.60089111328125,
+        "left": 645.5364990234375
+      },
+      "note": "Semantics bounds are not painted transform bounds. Compare native PNGs instead."
+    },
+    {
+      "label": "exit-reset",
+      "atMs": 6621.167083,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Tap me"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard",
+      "atMs": 6904.393375,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=base&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "ContinueDownloadOutlineGhostSmallMediumLargeRippleTap me"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Continue\nDownload\nOutline\nGhost\nSmall\nMedium\nLarge\nRipple\nTap me",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Continue",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 410.1875,
+              "y": 92,
+              "width": 123.125,
+              "height": 40,
+              "top": 92,
+              "right": 533.3125,
+              "bottom": 132,
+              "left": 410.1875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Download",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 545.3125,
+              "y": 92,
+              "width": 131.65625,
+              "height": 40,
+              "top": 92,
+              "right": 676.96875,
+              "bottom": 132,
+              "left": 545.3125
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Outline",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 688.96875,
+              "y": 92,
+              "width": 89.78125,
+              "height": 40,
+              "top": 92,
+              "right": 778.75,
+              "bottom": 132,
+              "left": 688.96875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ghost",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 790.75,
+              "y": 92,
+              "width": 79.046875,
+              "height": 40,
+              "top": 92,
+              "right": 869.796875,
+              "bottom": 132,
+              "left": 790.75
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Small",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 486.5625,
+              "y": 164,
+              "width": 55.65625,
+              "height": 32,
+              "top": 164,
+              "right": 542.21875,
+              "bottom": 196,
+              "left": 486.5625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Medium",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 554.21875,
+              "y": 160,
+              "width": 92.421875,
+              "height": 40,
+              "top": 160,
+              "right": 646.640625,
+              "bottom": 200,
+              "left": 554.21875
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Large",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 658.640625,
+              "y": 156,
+              "width": 90.765625,
+              "height": 48,
+              "top": 156,
+              "right": 749.40625,
+              "bottom": 204,
+              "left": 658.640625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Delete",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 761.40625,
+              "y": 164,
+              "width": 32,
+              "height": 32,
+              "top": 164,
+              "right": 793.40625,
+              "bottom": 196,
+              "left": 761.40625
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Ripple",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 548.5,
+              "y": 228,
+              "width": 81.921875,
+              "height": 40,
+              "top": 228,
+              "right": 630.421875,
+              "bottom": 268,
+              "left": 548.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Tap me",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 642.421875,
+              "y": 228,
+              "width": 89.046875,
+              "height": 40,
+              "top": 228,
+              "right": 731.46875,
+              "bottom": 268,
+              "left": 642.421875
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

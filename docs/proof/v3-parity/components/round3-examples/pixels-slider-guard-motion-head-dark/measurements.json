@@ -1,0 +1,732 @@
+{
+  "method": "First original frame requested after event dispatch. Exact RGB subtraction; no masks or tolerance.",
+  "statePairing": "Matching native release/Home/End event ordinal. Exposure intervals differ and remain explicit. No trajectory or native60 approval.",
+  "crop": [
+    344,
+    0,
+    936,
+    478
+  ],
+  "results": [
+    {
+      "example": "source-dark-no-preference-bubble",
+      "state": "0-release",
+      "timing": [
+        {
+          "event": {
+            "atMs": 829,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 774.4,
+              "y": 208
+            },
+            "requestedMs": 1756.8124579999999,
+            "dispatchBeforeMs": 1758.7410830000003,
+            "dispatchAfterMs": 1762.3071670000004
+          },
+          "frame": {
+            "index": 24,
+            "file": "original-frames/frame_000024.png",
+            "requestedMs": 1794.1227920000001,
+            "receivedMs": 1825.7757500000002,
+            "metadata": {
+              "timestamp": 1792758720.3367643,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "6a5dda2f104beab5cb052a071f8af8890cf3eae5d5b1f186a7bc2112c4134293"
+          },
+          "requestAfterDispatchMs": 31.815624999999727,
+          "exposureUncertaintyMs": 31.652958000000126
+        },
+        {
+          "event": {
+            "atMs": 821,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 774.4,
+              "y": 208
+            },
+            "requestedMs": 2457.443875,
+            "dispatchBeforeMs": 2461.271834,
+            "dispatchAfterMs": 2462.2932920000003
+          },
+          "frame": {
+            "index": 38,
+            "file": "original-frames/frame_000038.png",
+            "requestedMs": 2468.8865,
+            "receivedMs": 2501.5486250000004,
+            "metadata": {
+              "timestamp": 1792758688.4335408,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "3173d3483e3bcbbf56f219b98c3206d6d176f6f10e81a1b4a8dfeefe3e56612f"
+          },
+          "requestAfterDispatchMs": 6.593207999999777,
+          "exposureUncertaintyMs": 32.66212500000029
+        }
+      ],
+      "source": "slider-guard-head-dark/source-dark-no-preference-bubble/recording/original-frames/frame_000024.png",
+      "candidate": "slider-guard-head-dark/after-dark-no-preference-bubble/recording/original-frames/frame_000038.png",
+      "sourceSha256": "6a5dda2f104beab5cb052a071f8af8890cf3eae5d5b1f186a7bc2112c4134293",
+      "candidateSha256": "3173d3483e3bcbbf56f219b98c3206d6d176f6f10e81a1b4a8dfeefe3e56612f",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 4897,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 129157,
+        "maximumChannelDelta": 215,
+        "differenceBounds": [
+          449,
+          133,
+          816,
+          236
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-bubble-0-release-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4897,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 129157,
+        "maximumChannelDelta": 215,
+        "differenceBounds": [
+          105,
+          133,
+          472,
+          236
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-bubble-0-release-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-bubble",
+      "state": "1-Home",
+      "timing": [
+        {
+          "event": {
+            "atMs": 1320,
+            "type": "key",
+            "key": "Home",
+            "requestedMs": 2247.812458,
+            "dispatchBeforeMs": 2248.614167,
+            "dispatchAfterMs": 2250.1268750000004
+          },
+          "frame": {
+            "index": 38,
+            "file": "original-frames/frame_000038.png",
+            "requestedMs": 2275.281292,
+            "receivedMs": 2308.479792,
+            "metadata": {
+              "timestamp": 1792758720.8194673,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "742bd7140e955ca1cc41e387c93a69d4a15bc892634093f261c5e90a26215d09"
+          },
+          "requestAfterDispatchMs": 25.15441699999974,
+          "exposureUncertaintyMs": 33.19849999999997
+        },
+        {
+          "event": {
+            "atMs": 1313,
+            "type": "key",
+            "key": "Home",
+            "requestedMs": 2949.443875,
+            "dispatchBeforeMs": 2951.355167,
+            "dispatchAfterMs": 2953.982959
+          },
+          "frame": {
+            "index": 53,
+            "file": "original-frames/frame_000053.png",
+            "requestedMs": 2968.3108340000003,
+            "receivedMs": 3002.167334,
+            "metadata": {
+              "timestamp": 1792758688.9341586,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "02919a3171f41344fe36deb31ec67605907d05aa7ec23ec818bca848acf16c90"
+          },
+          "requestAfterDispatchMs": 14.327875000000404,
+          "exposureUncertaintyMs": 33.85649999999987
+        }
+      ],
+      "source": "slider-guard-head-dark/source-dark-no-preference-bubble/recording/original-frames/frame_000038.png",
+      "candidate": "slider-guard-head-dark/after-dark-no-preference-bubble/recording/original-frames/frame_000053.png",
+      "sourceSha256": "742bd7140e955ca1cc41e387c93a69d4a15bc892634093f261c5e90a26215d09",
+      "candidateSha256": "02919a3171f41344fe36deb31ec67605907d05aa7ec23ec818bca848acf16c90",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 4167,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 71973,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          449,
+          133,
+          815,
+          236
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-bubble-1-Home-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4167,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 71973,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          105,
+          133,
+          471,
+          236
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-bubble-1-Home-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-bubble",
+      "state": "2-End",
+      "timing": [
+        {
+          "event": {
+            "atMs": 1588,
+            "type": "key",
+            "key": "End",
+            "requestedMs": 2515.812458,
+            "dispatchBeforeMs": 2516.908875,
+            "dispatchAfterMs": 2519.25875
+          },
+          "frame": {
+            "index": 46,
+            "file": "original-frames/frame_000046.png",
+            "requestedMs": 2542.2239170000003,
+            "receivedMs": 2575.356875,
+            "metadata": {
+              "timestamp": 1792758721.0863442,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "8c9452ceef70f7d60a10118e1e2a282afd43e60888c3b25fd4ed2b3d2c6ac141"
+          },
+          "requestAfterDispatchMs": 22.965167000000292,
+          "exposureUncertaintyMs": 33.13295799999969
+        },
+        {
+          "event": {
+            "atMs": 1579,
+            "type": "key",
+            "key": "End",
+            "requestedMs": 3215.443875,
+            "dispatchBeforeMs": 3217.020292,
+            "dispatchAfterMs": 3218.129625
+          },
+          "frame": {
+            "index": 61,
+            "file": "original-frames/frame_000061.png",
+            "requestedMs": 3234.6592090000004,
+            "receivedMs": 3267.71725,
+            "metadata": {
+              "timestamp": 1792758689.1997063,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "b78fe3383f8afa7c8eb13828aaf56b566c367298e59713bc14b9c8ea70196101"
+          },
+          "requestAfterDispatchMs": 16.52958400000034,
+          "exposureUncertaintyMs": 33.058040999999776
+        }
+      ],
+      "source": "slider-guard-head-dark/source-dark-no-preference-bubble/recording/original-frames/frame_000046.png",
+      "candidate": "slider-guard-head-dark/after-dark-no-preference-bubble/recording/original-frames/frame_000061.png",
+      "sourceSha256": "8c9452ceef70f7d60a10118e1e2a282afd43e60888c3b25fd4ed2b3d2c6ac141",
+      "candidateSha256": "b78fe3383f8afa7c8eb13828aaf56b566c367298e59713bc14b9c8ea70196101",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 4917,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 469367,
+        "maximumChannelDelta": 221,
+        "differenceBounds": [
+          449,
+          133,
+          815,
+          236
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-bubble-2-End-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4917,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 469367,
+        "maximumChannelDelta": 221,
+        "differenceBounds": [
+          105,
+          133,
+          471,
+          236
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-bubble-2-End-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-bubble",
+      "state": "3-Home",
+      "timing": [
+        {
+          "event": {
+            "atMs": 2121,
+            "type": "key",
+            "key": "Home",
+            "requestedMs": 3048.812458,
+            "dispatchBeforeMs": 3049.685708,
+            "dispatchAfterMs": 3050.94075
+          },
+          "frame": {
+            "index": 61,
+            "file": "original-frames/frame_000061.png",
+            "requestedMs": 3076.9411250000003,
+            "receivedMs": 3112.1020000000003,
+            "metadata": {
+              "timestamp": 1792758721.623083,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "7eeb5bdcb75d7b805fd2cc5de742c108b698712c63dbd3ea2ca6dd07c9fd0023"
+          },
+          "requestAfterDispatchMs": 26.000375000000076,
+          "exposureUncertaintyMs": 35.16087500000003
+        },
+        {
+          "event": {
+            "atMs": 2113,
+            "type": "key",
+            "key": "Home",
+            "requestedMs": 3749.443875,
+            "dispatchBeforeMs": 3750.352292,
+            "dispatchAfterMs": 3751.540917
+          },
+          "frame": {
+            "index": 77,
+            "file": "original-frames/frame_000077.png",
+            "requestedMs": 3767.51075,
+            "receivedMs": 3801.168042,
+            "metadata": {
+              "timestamp": 1792758689.7331512,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "75f04d2750f5880b3bd83165f2b008837b7e214f23c707b59b774b64249283df"
+          },
+          "requestAfterDispatchMs": 15.969833000000108,
+          "exposureUncertaintyMs": 33.65729199999987
+        }
+      ],
+      "source": "slider-guard-head-dark/source-dark-no-preference-bubble/recording/original-frames/frame_000061.png",
+      "candidate": "slider-guard-head-dark/after-dark-no-preference-bubble/recording/original-frames/frame_000077.png",
+      "sourceSha256": "7eeb5bdcb75d7b805fd2cc5de742c108b698712c63dbd3ea2ca6dd07c9fd0023",
+      "candidateSha256": "75f04d2750f5880b3bd83165f2b008837b7e214f23c707b59b774b64249283df",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 4869,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 436697,
+        "maximumChannelDelta": 221,
+        "differenceBounds": [
+          449,
+          133,
+          815,
+          236
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-bubble-3-Home-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4869,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 436697,
+        "maximumChannelDelta": 221,
+        "differenceBounds": [
+          105,
+          133,
+          471,
+          236
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-bubble-3-Home-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-wave",
+      "state": "0-release",
+      "timing": [
+        {
+          "event": {
+            "atMs": 819,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 796.8,
+              "y": 194
+            },
+            "requestedMs": 1735.101,
+            "dispatchBeforeMs": 1746.8819589999998,
+            "dispatchAfterMs": 1748.588292
+          },
+          "frame": {
+            "index": 35,
+            "file": "original-frames/frame_000035.png",
+            "requestedMs": 1754.1661249999997,
+            "receivedMs": 1770.944042,
+            "metadata": {
+              "timestamp": 1792758709.1679366,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "210f2518d26cf904dbbca21cb77bbbe1bb6b0103111c74185174a387056f317a"
+          },
+          "requestAfterDispatchMs": 5.577832999999828,
+          "exposureUncertaintyMs": 16.777917000000343
+        },
+        {
+          "event": {
+            "atMs": 842,
+            "type": "up",
+            "button": "left",
+            "pointer": {
+              "x": 796.8,
+              "y": 194
+            },
+            "requestedMs": 2585.611375,
+            "dispatchBeforeMs": 2586.656542,
+            "dispatchAfterMs": 2587.8445420000003
+          },
+          "frame": {
+            "index": 36,
+            "file": "original-frames/frame_000036.png",
+            "requestedMs": 2599.907542,
+            "receivedMs": 2614.994125,
+            "metadata": {
+              "timestamp": 1792758676.5619855,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "ae2ba8cee7015905dcdad19a012e0590e74f61ad6ebc5370a916fa32e6bbe95b"
+          },
+          "requestAfterDispatchMs": 12.062999999999647,
+          "exposureUncertaintyMs": 15.086583000000246
+        }
+      ],
+      "source": "slider-guard-head-dark/source-dark-no-preference-wave/recording/original-frames/frame_000035.png",
+      "candidate": "slider-guard-head-dark/after-dark-no-preference-wave/recording/original-frames/frame_000036.png",
+      "sourceSha256": "210f2518d26cf904dbbca21cb77bbbe1bb6b0103111c74185174a387056f317a",
+      "candidateSha256": "ae2ba8cee7015905dcdad19a012e0590e74f61ad6ebc5370a916fa32e6bbe95b",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 7090,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 332736,
+        "maximumChannelDelta": 210,
+        "differenceBounds": [
+          412,
+          130,
+          868,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-wave-0-release-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 7090,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 332736,
+        "maximumChannelDelta": 210,
+        "differenceBounds": [
+          68,
+          130,
+          524,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-wave-0-release-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-wave",
+      "state": "1-Home",
+      "timing": [
+        {
+          "event": {
+            "atMs": 1313,
+            "type": "key",
+            "key": "Home",
+            "requestedMs": 2229.101,
+            "dispatchBeforeMs": 2230.5219589999997,
+            "dispatchAfterMs": 2238.146084
+          },
+          "frame": {
+            "index": 65,
+            "file": "original-frames/frame_000065.png",
+            "requestedMs": 2254.688334,
+            "receivedMs": 2269.62025,
+            "metadata": {
+              "timestamp": 1792758709.6666088,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "d32210cc183079b69c157863751df18c71c6e46ec1861770c3c3bc06ca8d9ba5"
+          },
+          "requestAfterDispatchMs": 16.542249999999967,
+          "exposureUncertaintyMs": 14.931916000000001
+        },
+        {
+          "event": {
+            "atMs": 1347,
+            "type": "key",
+            "key": "Home",
+            "requestedMs": 3090.611375,
+            "dispatchBeforeMs": 3092.219208,
+            "dispatchAfterMs": 3095.637875
+          },
+          "frame": {
+            "index": 51,
+            "file": "original-frames/frame_000051.png",
+            "requestedMs": 3116.488667,
+            "receivedMs": 3148.946833,
+            "metadata": {
+              "timestamp": 1792758677.0959337,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "e320f911bee782c08bfcd8abf56744712e1d98c75aab63f0a8714bfb91455143"
+          },
+          "requestAfterDispatchMs": 20.850792000000183,
+          "exposureUncertaintyMs": 32.45816599999989
+        }
+      ],
+      "source": "slider-guard-head-dark/source-dark-no-preference-wave/recording/original-frames/frame_000065.png",
+      "candidate": "slider-guard-head-dark/after-dark-no-preference-wave/recording/original-frames/frame_000051.png",
+      "sourceSha256": "d32210cc183079b69c157863751df18c71c6e46ec1861770c3c3bc06ca8d9ba5",
+      "candidateSha256": "e320f911bee782c08bfcd8abf56744712e1d98c75aab63f0a8714bfb91455143",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 11152,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 156081,
+        "maximumChannelDelta": 113,
+        "differenceBounds": [
+          412,
+          130,
+          868,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-wave-1-Home-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 11152,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 156081,
+        "maximumChannelDelta": 113,
+        "differenceBounds": [
+          68,
+          130,
+          524,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-wave-1-Home-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-wave",
+      "state": "2-End",
+      "timing": [
+        {
+          "event": {
+            "atMs": 1579,
+            "type": "key",
+            "key": "End",
+            "requestedMs": 2495.101,
+            "dispatchBeforeMs": 2495.60525,
+            "dispatchAfterMs": 2497.726
+          },
+          "frame": {
+            "index": 80,
+            "file": "original-frames/frame_000080.png",
+            "requestedMs": 2504.561917,
+            "receivedMs": 2521.742084,
+            "metadata": {
+              "timestamp": 1792758709.9187338,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "b2c13eaf58387002c50f7b2dbe98f375b5ff615a8ceefa12e59a53e5351733fd"
+          },
+          "requestAfterDispatchMs": 6.835916999999881,
+          "exposureUncertaintyMs": 17.180166999999983
+        },
+        {
+          "event": {
+            "atMs": 1632,
+            "type": "key",
+            "key": "End",
+            "requestedMs": 3375.611375,
+            "dispatchBeforeMs": 3376.7785000000003,
+            "dispatchAfterMs": 3382.083042
+          },
+          "frame": {
+            "index": 60,
+            "file": "original-frames/frame_000060.png",
+            "requestedMs": 3415.337917,
+            "receivedMs": 3448.472458,
+            "metadata": {
+              "timestamp": 1792758677.395461,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "86cde81d0c2b6353991b1b5d29261b8e7d9291aa57f873a6eccdafca2bb208c2"
+          },
+          "requestAfterDispatchMs": 33.25487499999963,
+          "exposureUncertaintyMs": 33.134541000000354
+        }
+      ],
+      "source": "slider-guard-head-dark/source-dark-no-preference-wave/recording/original-frames/frame_000080.png",
+      "candidate": "slider-guard-head-dark/after-dark-no-preference-wave/recording/original-frames/frame_000060.png",
+      "sourceSha256": "b2c13eaf58387002c50f7b2dbe98f375b5ff615a8ceefa12e59a53e5351733fd",
+      "candidateSha256": "86cde81d0c2b6353991b1b5d29261b8e7d9291aa57f873a6eccdafca2bb208c2",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 6249,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 424884,
+        "maximumChannelDelta": 221,
+        "differenceBounds": [
+          412,
+          130,
+          868,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-wave-2-End-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 6249,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 424884,
+        "maximumChannelDelta": 221,
+        "differenceBounds": [
+          68,
+          130,
+          524,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-wave-2-End-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-wave",
+      "state": "3-Home",
+      "timing": [
+        {
+          "event": {
+            "atMs": 2115,
+            "type": "key",
+            "key": "Home",
+            "requestedMs": 3031.101,
+            "dispatchBeforeMs": 3032.088584,
+            "dispatchAfterMs": 3038.422084
+          },
+          "frame": {
+            "index": 113,
+            "file": "original-frames/frame_000113.png",
+            "requestedMs": 3055.2875,
+            "receivedMs": 3070.846917,
+            "metadata": {
+              "timestamp": 1792758710.4678347,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "bf1bc3fc27f106e5dad10910c75eaa90103ce4bd5cf6447470332b8e27698f45"
+          },
+          "requestAfterDispatchMs": 16.865416000000096,
+          "exposureUncertaintyMs": 15.55941699999994
+        },
+        {
+          "event": {
+            "atMs": 2197,
+            "type": "key",
+            "key": "Home",
+            "requestedMs": 3940.611375,
+            "dispatchBeforeMs": 3941.9185420000003,
+            "dispatchAfterMs": 3943.2953749999997
+          },
+          "frame": {
+            "index": 76,
+            "file": "original-frames/frame_000076.png",
+            "requestedMs": 3948.6282499999998,
+            "receivedMs": 3980.7902919999997,
+            "metadata": {
+              "timestamp": 1792758677.9277818,
+              "timestampMeaning": "response receipt; exposure lies inside request-response interval"
+            },
+            "sha256": "196ae13e1e1e9badee591be974172184cfde366010909e463c704a90542d7181"
+          },
+          "requestAfterDispatchMs": 5.332875000000058,
+          "exposureUncertaintyMs": 32.16204199999993
+        }
+      ],
+      "source": "slider-guard-head-dark/source-dark-no-preference-wave/recording/original-frames/frame_000113.png",
+      "candidate": "slider-guard-head-dark/after-dark-no-preference-wave/recording/original-frames/frame_000076.png",
+      "sourceSha256": "bf1bc3fc27f106e5dad10910c75eaa90103ce4bd5cf6447470332b8e27698f45",
+      "candidateSha256": "196ae13e1e1e9badee591be974172184cfde366010909e463c704a90542d7181",
+      "viewport": {
+        "width": 1280,
+        "height": 913,
+        "differentPixels": 10350,
+        "totalPixels": 1168640,
+        "absoluteChannelSum": 157702,
+        "maximumChannelDelta": 221,
+        "differenceBounds": [
+          412,
+          130,
+          868,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-wave-3-Home-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 10350,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 157702,
+        "maximumChannelDelta": 221,
+        "differenceBounds": [
+          68,
+          130,
+          524,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-slider-guard-motion-head-dark/source-dark-no-preference-wave-3-Home-rawStage.png"
+      }
+    }
+  ]
+}

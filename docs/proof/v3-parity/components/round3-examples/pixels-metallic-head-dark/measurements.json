@@ -1,0 +1,252 @@
+{
+  "method": "Exact RGB subtraction. No masks, resizing, registration, interpolation, or pixel tolerance.",
+  "statePairing": "Same named interaction state, separate native runs. Not synchronized trajectory equivalence.",
+  "crop": [
+    344,
+    0,
+    936,
+    478
+  ],
+  "results": [
+    {
+      "example": "source-dark-no-preference-metallic",
+      "state": "control-0-held",
+      "source": "metallic-head-dark/source-dark-no-preference-metallic/control-0-held.png",
+      "candidate": "metallic-head-dark/after-dark-no-preference-metallic/control-0-held.png",
+      "sourceSha256": "f2168da497424aaa41eafd4c3149bf5779aeec464f40e385f6040cd182f13bdb",
+      "candidateSha256": "52f4ed7b32bf769ebdf2baacf419026ecfc16ae2b8704108269dec82117845bd",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 9381,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 1293852,
+        "maximumChannelDelta": 235,
+        "differenceBounds": [
+          492,
+          154,
+          787,
+          222
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-control-0-held-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 9381,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1293852,
+        "maximumChannelDelta": 235,
+        "differenceBounds": [
+          148,
+          154,
+          443,
+          222
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-control-0-held-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-metallic",
+      "state": "control-1-held",
+      "source": "metallic-head-dark/source-dark-no-preference-metallic/control-1-held.png",
+      "candidate": "metallic-head-dark/after-dark-no-preference-metallic/control-1-held.png",
+      "sourceSha256": "d81aaf35d001e0472fd5579af617b0ad74542b2eb8b0355319f9aee56c7d4ee5",
+      "candidateSha256": "d617b933b73c8892ed447c9072d073b0f7e46f80591aca8d0f2ab8a0376b2063",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 7460,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 855059,
+        "maximumChannelDelta": 233,
+        "differenceBounds": [
+          491,
+          154,
+          787,
+          223
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-control-1-held-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 7460,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 855059,
+        "maximumChannelDelta": 233,
+        "differenceBounds": [
+          147,
+          154,
+          443,
+          223
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-control-1-held-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-metallic",
+      "state": "control-2-held",
+      "source": "metallic-head-dark/source-dark-no-preference-metallic/control-2-held.png",
+      "candidate": "metallic-head-dark/after-dark-no-preference-metallic/control-2-held.png",
+      "sourceSha256": "7ac35c60b208342cf19524a4dfefb067d6c99a41b4caf5901193725fc20c5dd2",
+      "candidateSha256": "1b0d9302924b2d37007bc18a4642cc689c1881965cf71672c41075256ebf7310",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 5397,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 431397,
+        "maximumChannelDelta": 231,
+        "differenceBounds": [
+          491,
+          154,
+          787,
+          223
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-control-2-held-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 5397,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 431397,
+        "maximumChannelDelta": 231,
+        "differenceBounds": [
+          147,
+          154,
+          443,
+          223
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-control-2-held-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-metallic",
+      "state": "exit-reset",
+      "source": "metallic-head-dark/source-dark-no-preference-metallic/exit-reset.png",
+      "candidate": "metallic-head-dark/after-dark-no-preference-metallic/exit-reset.png",
+      "sourceSha256": "fadd346bc2a6ca99db60ecff55610f62a8dea183fba8a0013b8fecb51dee5497",
+      "candidateSha256": "0d822138c4dd6ffca895f11357b1b9f4e2225efb0bb3bb0896ddb0e907be3ea7",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 4860,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 238291,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          491,
+          154,
+          787,
+          223
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-exit-reset-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4860,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 238291,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          147,
+          154,
+          443,
+          223
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-exit-reset-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-metallic",
+      "state": "keyboard",
+      "source": "metallic-head-dark/source-dark-no-preference-metallic/keyboard.png",
+      "candidate": "metallic-head-dark/after-dark-no-preference-metallic/keyboard.png",
+      "sourceSha256": "8ec46fc04f69297501c2f65d0ddd91dc4ca3efa87ef253bbe2d887a269917c70",
+      "candidateSha256": "d9d39c1d8e8f5f75cfc9aeb61b84daa6705c3cb609104e4311b032c72cc17255",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 4861,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 234610,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          491,
+          154,
+          787,
+          223
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-keyboard-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4861,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 234610,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          147,
+          154,
+          443,
+          223
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-keyboard-rawStage.png"
+      }
+    },
+    {
+      "example": "source-dark-no-preference-metallic",
+      "state": "rest",
+      "source": "metallic-head-dark/source-dark-no-preference-metallic/rest.png",
+      "candidate": "metallic-head-dark/after-dark-no-preference-metallic/rest.png",
+      "sourceSha256": "74a48d05cc1debfd1c32194c504eb740dcf37f5e68fcfe02a587f904e845c8c5",
+      "candidateSha256": "0c45d3305399e103bdcb65f7d48141a5818657c1cc20a8cdee63e3ee7d0847cf",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 4705,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 233389,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          492,
+          154,
+          787,
+          222
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4705,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 233389,
+        "maximumChannelDelta": 168,
+        "differenceBounds": [
+          148,
+          154,
+          443,
+          222
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-metallic-head-dark/source-dark-no-preference-metallic-rest-rawStage.png"
+      }
+    }
+  ]
+}

@@ -1,0 +1,532 @@
+{
+  "method": "Exact RGB subtraction. No masks, resizing, registration, interpolation, or pixel tolerance.",
+  "statePairing": "Same named interaction state, separate native runs. Not synchronized trajectory equivalence.",
+  "crop": [
+    344,
+    0,
+    936,
+    478
+  ],
+  "results": [
+    {
+      "example": "source-light-no-preference-async",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-async/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-async/rest.png",
+      "sourceSha256": "a946bc6ac36058167cfddeb3e7c86ee7371334ec8a432a97c273fd66f2da5162",
+      "candidateSha256": "883daa29c389948dd74914549ae5e982ed5206624836d0846075f3f0723e459f",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 43885,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 4354554,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-async-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 43885,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 4354554,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-async-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-base",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-base/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-base/rest.png",
+      "sourceSha256": "c8e77d91ed5ea517904998e39fe9e53d8fef37a1caa74df773ebb4ea64201a5c",
+      "candidateSha256": "5046d7a9ca358be7d6e6cf9cb890432f357364b5cce1e5affd74cf676ead9045",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 5160,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 329927,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          410,
+          92,
+          850,
+          268
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-base-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 5160,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 329927,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          66,
+          92,
+          506,
+          268
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-base-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-bubble",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-bubble/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-bubble/rest.png",
+      "sourceSha256": "e98089db8468410b641d5c1c1173622a1b13f64b2c3cd4b0bdc909dbb7305a7a",
+      "candidateSha256": "6c8758c94a34b7036635841b31c5fae7aafd91006a9162f9b7e68dcb779a90cd",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 1455,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 50679,
+        "maximumChannelDelta": 81,
+        "differenceBounds": [
+          449,
+          133,
+          644,
+          224
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-bubble-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 1455,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 50679,
+        "maximumChannelDelta": 81,
+        "differenceBounds": [
+          105,
+          133,
+          300,
+          224
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-bubble-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-data",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-data/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-data/rest.png",
+      "sourceSha256": "6f7ec92927bdc2513ae6301489bf3ec909c38600e5787a7f094f2f7dc3a7a8ca",
+      "candidateSha256": "87bff0e71d6df13fc4802c802134df025e853d1a9e2739a86fa69077c8a21bfd",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 44505,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 7513302,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          360,
+          18,
+          920,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-data-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 44505,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 7513302,
+        "maximumChannelDelta": 252,
+        "differenceBounds": [
+          16,
+          18,
+          576,
+          462
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-data-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-editable",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-editable/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-editable/rest.png",
+      "sourceSha256": "eb33227f85d00d05e016e9c257dee7fa5aa76c33707ff94c18074c439699ad2f",
+      "candidateSha256": "9b7cdc37972efbb94df3f61fec93f629e3086f5d16e73408173444c25ab376db",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 44915,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 4804395,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          360,
+          40,
+          920,
+          319
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-editable-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 44915,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 4804395,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          16,
+          40,
+          576,
+          319
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-editable-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-fluid",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-fluid/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-fluid/rest.png",
+      "sourceSha256": "185d256db8f7d26d3cf927568246b50b3fb6baba584e2035cd806bb39e72f89e",
+      "candidateSha256": "d9dd807067c99e080b5a1fe32a895e463e1fd00a575439aae01eccf30a8172fb",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 694,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 74944,
+        "maximumChannelDelta": 185,
+        "differenceBounds": [
+          448,
+          156,
+          831,
+          204
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-fluid-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 694,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 74944,
+        "maximumChannelDelta": 185,
+        "differenceBounds": [
+          104,
+          156,
+          487,
+          204
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-fluid-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-inline",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-inline/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-inline/rest.png",
+      "sourceSha256": "af2dee85e44fa1807b0fb86151e1f2915ae8104d8595a21e0950fc0258d23486",
+      "candidateSha256": "dc5ec2d0e4f0a5851af0acca52dff81f25ead72d19685aff0805b0a7a71b91c7",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 679,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 69028,
+        "maximumChannelDelta": 216,
+        "differenceBounds": [
+          450,
+          160,
+          824,
+          200
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-inline-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 679,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 69028,
+        "maximumChannelDelta": 216,
+        "differenceBounds": [
+          106,
+          160,
+          480,
+          200
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-inline-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-magnetic",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-magnetic/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-magnetic/rest.png",
+      "sourceSha256": "6445c99e7f397e2126b72aaf4afad0dbb5583533255bc7566aa8bdd0cc077c5c",
+      "candidateSha256": "8393002a853be086e5b2713365851ac865824187f5810447166cafe2d3c6be57",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 5358,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 198125,
+        "maximumChannelDelta": 164,
+        "differenceBounds": [
+          447,
+          160,
+          833,
+          200
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-magnetic-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 5358,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 198125,
+        "maximumChannelDelta": 164,
+        "differenceBounds": [
+          103,
+          160,
+          489,
+          200
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-magnetic-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-metallic",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-metallic/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-metallic/rest.png",
+      "sourceSha256": "e59f1e5dbd336ae4b350c919b8a8462dd59fba6caf9b88e0561b6ccff7b64191",
+      "candidateSha256": "67e5cdb68d1e251d880ff03f8d703ffc16e181a0a30008843502f08a94724275",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 23525,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 1338456,
+        "maximumChannelDelta": 242,
+        "differenceBounds": [
+          471,
+          138,
+          808,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-metallic-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 23525,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 1338456,
+        "maximumChannelDelta": 242,
+        "differenceBounds": [
+          127,
+          138,
+          464,
+          238
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-metallic-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-ruler",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-ruler/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-ruler/rest.png",
+      "sourceSha256": "394bae4357cf8944035f6037d0fc777e19b61e73e822004cfabe2ce86470fcbd",
+      "candidateSha256": "bf135bb6b877b46cd62d59f50785680d6b4f3f49b8cbced084baf02b846b6151",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 1206,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 195507,
+        "maximumChannelDelta": 241,
+        "differenceBounds": [
+          454,
+          140,
+          826,
+          228
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-ruler-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 1206,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 195507,
+        "maximumChannelDelta": 241,
+        "differenceBounds": [
+          110,
+          140,
+          482,
+          228
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-ruler-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-stateful",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-stateful/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-stateful/rest.png",
+      "sourceSha256": "0d1fe75b5d805de4dd7fc3c87bff27ec46b40e13bf6f00b5dc09709faa7edc60",
+      "candidateSha256": "cb6c892cf143613f39218b492e9fabd2eb29d2cf7b80263018540d73396b94be",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 4150,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 236663,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          562,
+          134,
+          719,
+          226
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-stateful-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4150,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 236663,
+        "maximumChannelDelta": 250,
+        "differenceBounds": [
+          218,
+          134,
+          375,
+          226
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-stateful-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-stepped",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-stepped/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-stepped/rest.png",
+      "sourceSha256": "7881d771c40d1fa625915768d0a3466214ecfdb189ccff5fa595f0809f3381f9",
+      "candidateSha256": "d774246d2e55b0bba490c68a7566249b0b925d29c00af46e6ebd1eedd8a22cb0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 1706,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 163062,
+        "maximumChannelDelta": 232,
+        "differenceBounds": [
+          448,
+          148,
+          832,
+          216
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-stepped-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 1706,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 163062,
+        "maximumChannelDelta": 232,
+        "differenceBounds": [
+          104,
+          148,
+          488,
+          216
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-stepped-rest-rawStage.png"
+      }
+    },
+    {
+      "example": "source-light-no-preference-wave",
+      "state": "rest",
+      "source": "native-final-light/source-light-no-preference-wave/rest.png",
+      "candidate": "native-before-v3/before-light-no-preference-wave/rest.png",
+      "sourceSha256": "91ffa3b6bf6cfa3578576ca93838f4288c255298ee30b342db306e9cf0553d24",
+      "candidateSha256": "5b0e6a5d2f4a2a46e834df15b7d7e0a520b9752a14a133e2a7aae2466067f4a2",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "differentPixels": 4528,
+        "totalPixels": 1280000,
+        "absoluteChannelSum": 213147,
+        "maximumChannelDelta": 121,
+        "differenceBounds": [
+          416,
+          130,
+          864,
+          217
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-wave-rest-viewport.png"
+      },
+      "rawStage": {
+        "width": 592,
+        "height": 478,
+        "differentPixels": 4528,
+        "totalPixels": 282976,
+        "absoluteChannelSum": 213147,
+        "maximumChannelDelta": 121,
+        "differenceBounds": [
+          72,
+          130,
+          520,
+          217
+        ],
+        "exactZero": false,
+        "rawDifference": "pixels-before-light/source-light-no-preference-wave-rest-rawStage.png"
+      }
+    }
+  ]
+}

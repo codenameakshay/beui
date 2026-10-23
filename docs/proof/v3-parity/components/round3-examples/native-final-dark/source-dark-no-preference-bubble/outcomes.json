@@ -1,0 +1,939 @@
+{
+  "example": {
+    "key": "bubble",
+    "id": "example/range-slider-bubble/bubble",
+    "preview": "range-slider-bubble",
+    "family": "range-slider",
+    "seed": 28,
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "flows": [
+      "tap",
+      "fast-drag",
+      "hold",
+      "release",
+      "keyboard",
+      "bounds",
+      "reduced-motion"
+    ]
+  },
+  "origin": "source",
+  "theme": "dark",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "seed",
+      "actual": 28,
+      "expected": 28,
+      "pass": true
+    },
+    {
+      "name": "drag publishes value",
+      "actual": 89,
+      "expected": "different from seed",
+      "pass": true
+    },
+    {
+      "name": "key Home",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key End",
+      "actual": 100,
+      "expected": 100,
+      "pass": true
+    },
+    {
+      "name": "key ArrowLeft",
+      "actual": 99,
+      "expected": 99,
+      "pass": true
+    },
+    {
+      "name": "key Home",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key PageUp",
+      "actual": 10,
+      "expected": 10,
+      "pass": true
+    },
+    {
+      "name": "key PageDown",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key ArrowRight",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    },
+    {
+      "name": "key ArrowDown",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "name": "key ArrowUp",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 2.174083999998402,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Drag fast and the bubble leans"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "28",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "drag-held",
+      "atMs": 373.4770419999986,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans\n72",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "72",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "released",
+      "atMs": 1010.6191249999974,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "89",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-Home-3",
+      "atMs": 1300.4222089999967,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-End-4",
+      "atMs": 1579.3959170000016,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "100",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowLeft-5",
+      "atMs": 1845.8053749999963,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "99",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-Home-6",
+      "atMs": 2111.801999999996,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-PageUp-7",
+      "atMs": 2379.3826249999984,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "10",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-PageDown-8",
+      "atMs": 2644.9002499999915,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowRight-9",
+      "atMs": 2910.0447089999943,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "1",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowDown-10",
+      "atMs": 3177.9396669999987,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "0",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "key-ArrowUp-11",
+      "atMs": 3440.022874999995,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "1",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "exit",
+      "atMs": 3705.8281669999997,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=bubble&theme=dark&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BUTTON",
+          "role": "slider",
+          "name": "Value"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Drag fast and the bubble leans",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": "slider",
+            "name": "Value",
+            "value": "1",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 468,
+              "y": 184,
+              "width": 344,
+              "height": 48,
+              "top": 184,
+              "right": 812,
+              "bottom": 232,
+              "left": 468
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

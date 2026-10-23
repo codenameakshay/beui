@@ -1,0 +1,754 @@
+{
+  "example": {
+    "key": "stateful",
+    "id": "example/button-stateful/stateful",
+    "preview": "button-stateful",
+    "family": "button",
+    "seed": "Save changes, Submit",
+    "flows": [
+      "Saving",
+      "Saved",
+      "idle",
+      "Submitting",
+      "Failed",
+      "busy-lockout",
+      "keyboard",
+      "reduced-motion"
+    ]
+  },
+  "origin": "source",
+  "theme": "light",
+  "motion": "no-preference",
+  "checks": [
+    {
+      "name": "Save changes loading",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Save changes busy lockout",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Save changes result",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Save changes idle",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Submit loading",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Submit busy lockout",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Submit result",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "name": "Submit idle",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "label": "rest",
+      "atMs": 4.520292000001064,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Save changesSave changesSave changesSubmitSubmitSubmit"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Save changes\nSave changes\nSubmit\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Save changes\nSave changes",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 561.5,
+              "y": 134,
+              "width": 157,
+              "height": 40,
+              "top": 134,
+              "right": 718.5,
+              "bottom": 174,
+              "left": 561.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Submit\nSubmit",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595,
+              "y": 186,
+              "width": 90,
+              "height": 40,
+              "top": 186,
+              "right": 685,
+              "bottom": 226,
+              "left": 595
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "success-loading",
+      "atMs": 714.3883750000023,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "SavingSavingSavingSubmitSubmitSubmit"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Saving\nSaving\nSubmit\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Saving\nSaving",
+            "value": "",
+            "disabled": true,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 585.5,
+              "y": 134,
+              "width": 109,
+              "height": 40,
+              "top": 134,
+              "right": 694.5,
+              "bottom": 174,
+              "left": 585.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Submit\nSubmit",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595,
+              "y": 186,
+              "width": 90,
+              "height": 40,
+              "top": 186,
+              "right": 685,
+              "bottom": 226,
+              "left": 595
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "success-result",
+      "atMs": 2271.405083999998,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "SavedSavedSavedSubmitSubmitSubmit"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Saved\nSaved\nSubmit\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Saved\nSaved",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 587,
+              "y": 134,
+              "width": 106,
+              "height": 40,
+              "top": 134,
+              "right": 693,
+              "bottom": 174,
+              "left": 587
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Submit\nSubmit",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595,
+              "y": 186,
+              "width": 90,
+              "height": 40,
+              "top": 186,
+              "right": 685,
+              "bottom": 226,
+              "left": 595
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "success-idle",
+      "atMs": 4394.8105,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Save changesSave changesSave changesSubmitSubmitSubmit"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Save changes\nSave changes\nSubmit\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Save changes\nSave changes",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 561.5,
+              "y": 134,
+              "width": 157,
+              "height": 40,
+              "top": 134,
+              "right": 718.5,
+              "bottom": 174,
+              "left": 561.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Submit\nSubmit",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595,
+              "y": 186,
+              "width": 90,
+              "height": 40,
+              "top": 186,
+              "right": 685,
+              "bottom": 226,
+              "left": 595
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "error-loading",
+      "atMs": 6178.566666999999,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Save changesSave changesSave changesSubmittingSubmittingSubmitting"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Save changes\nSave changes\nSubmitting\nSubmitting",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Save changes\nSave changes",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 561.5,
+              "y": 134,
+              "width": 157,
+              "height": 40,
+              "top": 134,
+              "right": 718.5,
+              "bottom": 174,
+              "left": 561.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Submitting\nSubmitting",
+            "value": "",
+            "disabled": true,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 570,
+              "y": 186,
+              "width": 140,
+              "height": 40,
+              "top": 186,
+              "right": 710,
+              "bottom": 226,
+              "left": 570
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "error-result",
+      "atMs": 7712.940291999999,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Save changesSave changesSave changesFailedFailedFailed"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Save changes\nSave changes\nFailed\nFailed",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Save changes\nSave changes",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 561.5,
+              "y": 134,
+              "width": 157,
+              "height": 40,
+              "top": 134,
+              "right": 718.5,
+              "bottom": 174,
+              "left": 561.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Failed\nFailed",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 587,
+              "y": 186,
+              "width": 106,
+              "height": 40,
+              "top": 186,
+              "right": 693,
+              "bottom": 226,
+              "left": 587
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "error-idle",
+      "atMs": 9660.580209,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "Save changesSave changesSave changesSubmitSubmitSubmit"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Save changes\nSave changes\nSubmit\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Save changes\nSave changes",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 561.5,
+              "y": 134,
+              "width": 157,
+              "height": 40,
+              "top": 134,
+              "right": 718.5,
+              "bottom": 174,
+              "left": 561.5
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Submit\nSubmit",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595,
+              "y": 186,
+              "width": 90,
+              "height": 40,
+              "top": 186,
+              "right": 685,
+              "bottom": 226,
+              "left": 595
+            }
+          }
+        ]
+      }
+    },
+    {
+      "label": "keyboard-activation",
+      "atMs": 10017.90225,
+      "observed": {
+        "url": "http://127.0.0.1:18120/source/?example=stateful&theme=light&captureProbe=1",
+        "reduce": false,
+        "active": {
+          "tag": "BODY",
+          "role": null,
+          "name": "SavingSavingSave changesSavingSubmitSubmitSubmit"
+        },
+        "probe": null,
+        "stage": {
+          "x": 344,
+          "y": 0,
+          "width": 592,
+          "height": 360,
+          "top": 0,
+          "right": 936,
+          "bottom": 360,
+          "left": 344
+        },
+        "controls": [
+          {
+            "tag": "MAIN",
+            "role": null,
+            "name": "Saving\nSave changes\nSaving\nSubmit\nSubmit",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 592,
+              "height": 360,
+              "top": 0,
+              "right": 936,
+              "bottom": 360,
+              "left": 344
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Saving\nSave changes\nSaving",
+            "value": "",
+            "disabled": true,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 589.3150024414062,
+              "y": 135.39999389648438,
+              "width": 101.3699951171875,
+              "height": 37.20001220703125,
+              "top": 135.39999389648438,
+              "right": 690.6849975585938,
+              "bottom": 172.60000610351562,
+              "left": 589.3150024414062
+            }
+          },
+          {
+            "tag": "BUTTON",
+            "role": null,
+            "name": "Submit\nSubmit",
+            "value": "",
+            "disabled": false,
+            "checked": null,
+            "selected": null,
+            "sort": null,
+            "rect": {
+              "x": 595,
+              "y": 186,
+              "width": 90,
+              "height": 40,
+              "top": 186,
+              "right": 685,
+              "bottom": 226,
+              "left": 595
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
