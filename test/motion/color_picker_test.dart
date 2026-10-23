@@ -2,6 +2,7 @@ import 'package:beui/src/motion/color_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:beui/src/theme/beui_colors.dart';
 
@@ -11,6 +12,68 @@ Widget _app(Widget child) => MaterialApp(
 );
 
 void main() {
+  for (final control in ['Saturation and brightness', 'Hue', 'Opacity']) {
+    testWidgets(
+      '$control supports assistive adjustment and disabled ownership',
+      (tester) async {
+        final semantics = tester.ensureSemantics();
+        final changes = <String>[];
+        final commits = <String>[];
+        var enabled = true;
+        late StateSetter update;
+        await tester.pumpWidget(
+          _app(
+            StatefulBuilder(
+              builder: (context, setState) {
+                update = setState;
+                return SizedBox(
+                  width: 264,
+                  child: BeuiColorPicker(
+                    defaultValue: '#ff000080',
+                    enabled: enabled,
+                    onChanged: changes.add,
+                    onCommit: commits.add,
+                    child: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        BeuiColorPickerArea(),
+                        BeuiColorPickerHue(),
+                        BeuiColorPickerAlpha(),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+        final node = tester.getSemantics(find.bySemanticsLabel(control));
+        final action = control == 'Saturation and brightness'
+            ? SemanticsAction.decrease
+            : SemanticsAction.increase;
+        expect(node.getSemanticsData().hasAction(action), isTrue);
+        node.owner!.performAction(node.id, action);
+        await tester.pump();
+        final expected = switch (control) {
+          'Saturation and brightness' => '#ff030380',
+          'Hue' => '#ff040080',
+          _ => '#ff000082',
+        };
+        expect(changes, [expected]);
+        expect(commits, [expected]);
+        update(() => enabled = false);
+        await tester.pump();
+        expect(
+          tester
+              .getSemantics(find.bySemanticsLabel(control))
+              .getSemanticsData()
+              .hasAction(action),
+          isFalse,
+        );
+        semantics.dispose();
+      },
+    );
+  }
   testWidgets('default trigger preserves the source lowercase hex text', (
     tester,
   ) async {

@@ -417,11 +417,26 @@ class _BeuiColorPickerAreaState extends State<BeuiColorPickerArea> {
     return LayoutBuilder(
       builder: (context, box) {
         final size = Size(box.maxWidth, 160);
+        String describe(double saturation) =>
+            'Saturation ${(saturation * 100).round()}%, brightness ${(hsv.value * 100).round()}%';
+        void adjust(double delta) => scope.onColor(
+          HSVColor.fromAHSV(
+            scope.color.a,
+            hsv.hue,
+            (hsv.saturation + delta).clamp(0.0, 1.0),
+            hsv.value,
+          ).toColor(),
+          commit: true,
+        );
         return Semantics(
           label: widget.label,
-          value:
-              'Saturation ${(hsv.saturation * 100).round()}%, brightness ${(hsv.value * 100).round()}%',
+          value: describe(hsv.saturation),
           slider: true,
+          enabled: scope.enabled,
+          increasedValue: describe((hsv.saturation + .01).clamp(0.0, 1.0)),
+          decreasedValue: describe((hsv.saturation - .01).clamp(0.0, 1.0)),
+          onIncrease: scope.enabled ? () => adjust(.01) : null,
+          onDecrease: scope.enabled ? () => adjust(-.01) : null,
           child: Focus(
             onKeyEvent: (node, event) {
               if (!scope.enabled || event is! KeyDownEvent) {
@@ -675,18 +690,44 @@ class _ColorSliderState extends State<_ColorSlider> {
       scope.onColor(_gestureColor, commit: commit);
     }
 
+    final maximum = alpha ? 100.0 : 360.0;
+    final step = 1 / maximum;
+    String describe(double value) => alpha
+        ? '${(value * 100).round()}%'
+        : '${(value * 360).round()} degrees';
+    void adjust(double delta) {
+      final t = ((value * maximum).round() / maximum + delta).clamp(0.0, 1.0);
+      scope.onColor(
+        alpha
+            ? scope.color.withValues(alpha: t)
+            : HSVColor.fromAHSV(
+                scope.color.a,
+                t * 360,
+                hsv.saturation,
+                hsv.value,
+              ).toColor(),
+        commit: true,
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, box) => Semantics(
         label: widget.label,
         slider: true,
-        value: '${(value * 100).round()}%',
+        enabled: scope.enabled,
+        value: describe(value),
+        increasedValue: describe((value + step).clamp(0.0, 1.0)),
+        decreasedValue: describe((value - step).clamp(0.0, 1.0)),
+        onIncrease: scope.enabled ? () => adjust(step) : null,
+        onDecrease: scope.enabled ? () => adjust(-step) : null,
         child: Focus(
           onKeyEvent: (node, event) {
             if (!scope.enabled || event is! KeyDownEvent) {
               return KeyEventResult.ignored;
             }
-            final step = HardwareKeyboard.instance.isShiftPressed ? .1 : .01;
-            var next = value;
+            final step =
+                (HardwareKeyboard.instance.isShiftPressed ? 10 : 1) / maximum;
+            var next = (value * maximum).round() / maximum;
             switch (event.logicalKey) {
               case LogicalKeyboardKey.arrowLeft:
               case LogicalKeyboardKey.arrowDown:
@@ -699,9 +740,9 @@ class _ColorSliderState extends State<_ColorSlider> {
               case LogicalKeyboardKey.end:
                 next = 1;
               case LogicalKeyboardKey.pageDown:
-                next -= .1;
+                next -= 10 / maximum;
               case LogicalKeyboardKey.pageUp:
-                next += .1;
+                next += 10 / maximum;
               default:
                 return KeyEventResult.ignored;
             }
