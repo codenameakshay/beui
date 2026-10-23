@@ -1,0 +1,18 @@
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^Revenue\./. Input:
+
+'Q3'
+
+    at file:///Users/codenameakshay/.t3/worktrees/beui/t3-828b4918/test/charts/verify_sankey_gallery.mjs:20:12 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'Q3',
+  expected: /^Revenue\./,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v26.12.1
