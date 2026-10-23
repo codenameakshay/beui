@@ -6,8 +6,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support.dart';
+// ignore: avoid_relative_lib_imports
+import '../../example/lib/demos/voice_orb_demo.dart';
 
 void main() {
+  testWidgets(
+    'explicit orb error demo observes failure and paints the fallback',
+    (tester) async {
+      final semantics = tester.ensureSemantics();
+      await tester.pumpWidget(
+        beuiTestApp(
+          Builder(
+            builder: (context) =>
+                voiceOrbDemo(context, fixture: 'renderer-error'),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(find.text('Orb rendering unavailable'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel(RegExp('Renderer error observed')),
+        findsOneWidget,
+      );
+      await tester.pumpWidget(const SizedBox.shrink());
+      expect(BeuiVoiceOrb.debugLoadError, isNull);
+      semantics.dispose();
+    },
+  );
   testWidgets('orb retains source velocity through ramp release and repeat', (
     tester,
   ) async {

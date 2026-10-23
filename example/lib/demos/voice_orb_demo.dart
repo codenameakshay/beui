@@ -5,19 +5,59 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 /// Gallery route for [BeuiVoiceOrb], matching the source's simulated activity.
-Widget voiceOrbDemo(BuildContext context) => const _VoiceOrbDemo();
+Widget voiceOrbDemo(BuildContext context, {String? fixture}) =>
+    _VoiceOrbDemo(fixture: fixture ?? Uri.base.queryParameters['orbFixture']);
 
 class _VoiceOrbDemo extends StatelessWidget {
-  const _VoiceOrbDemo();
+  const _VoiceOrbDemo({this.fixture});
+
+  final String? fixture;
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: _SimulatedOrb(
-        size: MediaQuery.sizeOf(context).width < 640 ? 256 : 288,
-      ),
+      child: fixture == 'renderer-error'
+          ? const _OrbErrorPreview()
+          : _SimulatedOrb(
+              size: MediaQuery.sizeOf(context).width < 640 ? 256 : 288,
+            ),
     );
   }
+}
+
+class _OrbErrorPreview extends StatefulWidget {
+  const _OrbErrorPreview();
+
+  @override
+  State<_OrbErrorPreview> createState() => _OrbErrorPreviewState();
+}
+
+class _OrbErrorPreviewState extends State<_OrbErrorPreview> {
+  bool _observed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    BeuiVoiceOrb.debugLoadError = StateError(
+      'Explicit renderer-error demo fixture',
+    );
+  }
+
+  @override
+  void dispose() {
+    BeuiVoiceOrb.debugLoadError = null;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: _observed ? 'Renderer error observed' : 'Waiting for renderer error',
+    child: BeuiVoiceOrb(
+      size: MediaQuery.sizeOf(context).width < 640 ? 256 : 288,
+      semanticLabel: 'Voice visualization',
+      onError: (_) => setState(() => _observed = true),
+    ),
+  );
 }
 
 class _SimulatedOrb extends StatefulWidget {
