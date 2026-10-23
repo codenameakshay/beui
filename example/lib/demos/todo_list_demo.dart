@@ -93,6 +93,7 @@ class _TodoListDemoState extends State<_TodoListDemo> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 512), // max-w-lg
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(
@@ -115,51 +116,53 @@ class _TodoListDemoState extends State<_TodoListDemo> {
                 ],
               ),
             ),
-            const SizedBox(height: 8),
-            const SectionLabel('Empty · before the agent has planned'),
-            const SizedBox(height: 12),
-            // An empty task list is a normal state, not an error — the
-            // description says what will appear here and when, so the panel
-            // orients instead of shrugging.
-            const BeuiTodoList(
-              items: [],
-              title: Text('Implementation plan'),
-              emptyDescription:
-                  'The agent posts its plan here before it starts work, and '
-                  'ticks tasks off as it goes.',
-            ),
-            const SizedBox(height: 32),
-            const SectionLabel('Cancelled and pending rows'),
-            const SizedBox(height: 12),
-            const BeuiTodoList(
-              collapseOnComplete: false,
-              title: Text('Migration plan'),
-              items: [
-                BeuiTodoItem(
-                  id: 'a',
-                  title: Text('Inspect the current data flow'),
-                  status: BeuiTodoItemStatus.completed,
-                ),
-                BeuiTodoItem(
-                  id: 'b',
-                  title: Text('Update the response schema'),
-                  status: BeuiTodoItemStatus.inProgress,
-                  progress: 40,
-                  detail: Text('40%'),
-                ),
-                BeuiTodoItem(
-                  id: 'c',
-                  title: Text('Add coverage for edge cases'),
-                  status: BeuiTodoItemStatus.pending,
-                ),
-                BeuiTodoItem(
-                  id: 'd',
-                  title: Text('Backfill the legacy rows'),
-                  status: BeuiTodoItemStatus.cancelled,
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
+            if (Uri.base.queryParameters['example'] == 'api-specimens') ...[
+              const SizedBox(height: 8),
+              const SectionLabel('Empty · before the agent has planned'),
+              const SizedBox(height: 12),
+              // An empty task list is a normal state, not an error — the
+              // description says what will appear here and when, so the panel
+              // orients instead of shrugging.
+              const BeuiTodoList(
+                items: [],
+                title: Text('Implementation plan'),
+                emptyDescription:
+                    'The agent posts its plan here before it starts work, and '
+                    'ticks tasks off as it goes.',
+              ),
+              const SizedBox(height: 32),
+              const SectionLabel('Cancelled and pending rows'),
+              const SizedBox(height: 12),
+              const BeuiTodoList(
+                collapseOnComplete: false,
+                title: Text('Migration plan'),
+                items: [
+                  BeuiTodoItem(
+                    id: 'a',
+                    title: Text('Inspect the current data flow'),
+                    status: BeuiTodoItemStatus.completed,
+                  ),
+                  BeuiTodoItem(
+                    id: 'b',
+                    title: Text('Update the response schema'),
+                    status: BeuiTodoItemStatus.inProgress,
+                    progress: 40,
+                    detail: Text('40%'),
+                  ),
+                  BeuiTodoItem(
+                    id: 'c',
+                    title: Text('Add coverage for edge cases'),
+                    status: BeuiTodoItemStatus.pending,
+                  ),
+                  BeuiTodoItem(
+                    id: 'd',
+                    title: Text('Backfill the legacy rows'),
+                    status: BeuiTodoItemStatus.cancelled,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 40),
+            ],
           ],
         ),
       ),

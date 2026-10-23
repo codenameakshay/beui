@@ -145,21 +145,24 @@ class _StreamingResponseDemoState extends State<_StreamingResponseDemo> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ReplayButton(onPressed: _replay),
-                  const SizedBox(width: 12),
-                  for (final o in _Outcome.values)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(end: 6),
-                      child: _OutcomeChip(
-                        label: switch (o) {
-                          _Outcome.complete => 'Completes',
-                          _Outcome.error => 'Fails',
-                          _Outcome.stopped => 'Stopped',
-                        },
-                        selected: _outcome == o,
-                        colors: colors,
-                        onPressed: () => _replay(o),
+                  if (Uri.base.queryParameters['example'] ==
+                      'api-specimens') ...[
+                    const SizedBox(width: 12),
+                    for (final o in _Outcome.values)
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(end: 6),
+                        child: _OutcomeChip(
+                          label: switch (o) {
+                            _Outcome.complete => 'Completes',
+                            _Outcome.error => 'Fails',
+                            _Outcome.stopped => 'Stopped',
+                          },
+                          selected: _outcome == o,
+                          colors: colors,
+                          onPressed: () => _replay(o),
+                        ),
                       ),
-                    ),
+                  ],
                 ],
               ),
             ),

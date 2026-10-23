@@ -10,10 +10,7 @@ import '../explorer/widgets.dart';
 /// `relative h-[340px] w-full max-w-xl` frame, with the ghost `Replay` control
 /// pinned to `bottom-0 left-0`.
 ///
-/// The source preview ships that single card, so this route leads with it.
-/// Below it sits a second, static block exercising `wrap: true` — a widget
-/// option rather than a preview state, but worth modelling since it is the
-/// only way a wide line stays fully on screen.
+/// The wrapped API specimen is separate from the canonical source example.
 Widget codeBlockDemo(BuildContext context) => const _CodeBlockDemo();
 
 class _CodeBlockDemo extends StatefulWidget {
@@ -121,16 +118,18 @@ class _CodeBlockDemoState extends State<_CodeBlockDemo> {
                 ],
               ),
             ),
-            const SizedBox(height: 24),
-            // Static, non-streaming block demonstrating `wrap: true`: the long
-            // line soft-wraps instead of requiring horizontal scroll.
-            const BeuiCodeBlock(
-              code: _wrapCode,
-              filename: 'summarize.ts',
-              language: BeuiCodeLanguage.typescript,
-              wrap: true,
-              maxHeight: 160,
-            ),
+            if (Uri.base.queryParameters['example'] == 'api-specimens') ...[
+              const SizedBox(height: 24),
+              // Static, non-streaming block demonstrating `wrap: true`: the long
+              // line soft-wraps instead of requiring horizontal scroll.
+              const BeuiCodeBlock(
+                code: _wrapCode,
+                filename: 'summarize.ts',
+                language: BeuiCodeLanguage.typescript,
+                wrap: true,
+                maxHeight: 160,
+              ),
+            ],
           ],
         ),
       ),

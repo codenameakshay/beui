@@ -472,6 +472,7 @@ class _BeuiVoiceOrbState extends State<BeuiVoiceOrb>
     final child = reduce
         ? shell(0)
         : SingleMotionBuilder(
+            from: 0,
             value: live ? _target : 0,
             motion: motionFor(context, _glideSpring, isMovement: true),
             builder: (context, smooth, _) => shell(smooth),

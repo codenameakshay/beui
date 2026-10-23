@@ -56,6 +56,7 @@ class BeuiApprovalCardOption {
   const BeuiApprovalCardOption({
     required this.value,
     required this.label,
+    this.description,
     this.enabled = true,
   });
 
@@ -64,6 +65,9 @@ class BeuiApprovalCardOption {
 
   /// Human-readable label.
   final String label;
+
+  /// Supporting copy displayed below the choice label.
+  final String? description;
 
   /// Whether the option can be chosen. Source `disabled` inverted.
   final bool enabled;
@@ -1179,10 +1183,11 @@ class _QuestionOptions extends StatelessWidget {
                       for (var i = 0; i < options.length; i++) ...[
                         if (i > 0) const SizedBox(height: 2), // gap-0.5
                         _OptionRow(
-                          child: BeuiCheckbox(
+                          child: _ApprovalCheckboxOption(
                             value: answer.selected.contains(options[i].value),
                             enabled: !disabled && options[i].enabled,
                             label: options[i].label,
+                            description: options[i].description,
                             onChanged: (checked) {
                               final next = List<String>.from(answer.selected);
                               if (checked) {
@@ -1206,18 +1211,37 @@ class _QuestionOptions extends StatelessWidget {
                 // own insets — 8px above/below each 20px ring plus the
                 // `gap-0.5` between rows gives the source's 38px row pitch.
                 : Padding(
-                    padding: const EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                       horizontal: 6, // px-1.5
-                      vertical: 8, // min-h-9 around a 20px ring
+                      vertical: options.any((o) => o.description != null)
+                          ? 4
+                          : 8,
                     ),
                     child: BeuiRadioGroup<String>(
                       items: [
                         for (final o in options)
-                          BeuiRadioItem<String>(
-                            value: o.value,
-                            label: o.label,
-                            enabled: !disabled && o.enabled,
-                          ),
+                          if (o.description != null)
+                            _DescribedRadioItem(
+                              value: o.value,
+                              label: o.label,
+                              description: o.description!,
+                              enabled: !disabled && o.enabled,
+                              onSelected: () {
+                                onChange(
+                                  BeuiApprovalCardAnswer(
+                                    selected: [o.value],
+                                    custom: '',
+                                  ),
+                                );
+                                onSingleSelect();
+                              },
+                            )
+                          else
+                            BeuiRadioItem<String>(
+                              value: o.value,
+                              label: o.label,
+                              enabled: !disabled && o.enabled,
+                            ),
                       ],
                       // Empty string keeps the group controlled with no match
                       // (source `value={answer.selected[0] ?? ""}`).
@@ -1230,7 +1254,9 @@ class _QuestionOptions extends StatelessWidget {
                         );
                         onSingleSelect();
                       },
-                      spacing: 18, // 8 + gap-0.5 + 8
+                      spacing: options.any((o) => o.description != null)
+                          ? 10
+                          : 18,
                     ),
                   ),
           if (question.allowCustom)
@@ -1276,6 +1302,143 @@ class _QuestionOptions extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+class _DescribedRadioItem extends BeuiRadioItem<String> {
+  const _DescribedRadioItem({
+    required super.value,
+    required super.label,
+    required this.description,
+    required super.enabled,
+    required this.onSelected,
+  });
+
+  final String description;
+  final VoidCallback onSelected;
+
+  @override
+  State<BeuiRadioItem<String>> createState() => _DescribedRadioItemState();
+}
+
+class _DescribedRadioItemState extends State<BeuiRadioItem<String>> {
+  @override
+  Widget build(BuildContext context) {
+    final item = widget as _DescribedRadioItem;
+    return MergeSemantics(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: BeuiRadioItem<String>(
+              value: item.value,
+              enabled: item.enabled,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: item.enabled ? item.onSelected : null,
+              child: Opacity(
+                opacity: item.enabled ? 1 : 0.6,
+                child: _OptionCopy(
+                  label: item.label!,
+                  description: item.description,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ApprovalCheckboxOption extends StatelessWidget {
+  const _ApprovalCheckboxOption({
+    required this.value,
+    required this.enabled,
+    required this.label,
+    required this.description,
+    required this.onChanged,
+  });
+  final bool value;
+  final bool enabled;
+  final String label;
+  final String? description;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    if (description == null) {
+      return BeuiCheckbox(
+        value: value,
+        enabled: enabled,
+        label: label,
+        onChanged: onChanged,
+      );
+    }
+    return MergeSemantics(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: BeuiCheckbox(
+              value: value,
+              enabled: enabled,
+              onChanged: onChanged,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: enabled ? () => onChanged(!value) : null,
+              child: Opacity(
+                opacity: enabled ? 1 : 0.6,
+                child: _OptionCopy(label: label, description: description!),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OptionCopy extends StatelessWidget {
+  const _OptionCopy({required this.label, required this.description});
+  final String label;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = BeuiColors.resolve(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            height: 16 / 14,
+            color: colors.foreground,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          description,
+          style: TextStyle(
+            fontSize: 12,
+            height: 16 / 12,
+            color: colors.mutedForeground,
+          ),
+        ),
+      ],
     );
   }
 }

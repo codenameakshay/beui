@@ -31,6 +31,42 @@ class _ToolResultDemoState extends State<_ToolResultDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
+    final example = Uri.base.queryParameters['example'];
+    if (example != 'api-specimens') {
+      final request = example == 'request-result';
+      void replay() => setState(() {
+        if (request) {
+          _requestRun++;
+        } else {
+          _terminalRun++;
+        }
+      });
+      return Center(
+        child: SizedBox(
+          width: 512,
+          height: 330,
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: request
+                    ? _RequestRun(key: ValueKey(_requestRun), onReplay: replay)
+                    : _TerminalRun(
+                        key: ValueKey(_terminalRun),
+                        onReplay: replay,
+                      ),
+              ),
+              Positioned(
+                left: 0,
+                bottom: 0,
+                child: ReplayButton(onPressed: replay),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 512),
