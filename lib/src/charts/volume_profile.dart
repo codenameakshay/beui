@@ -981,22 +981,19 @@ class BeuiVolumeProfileTooltip extends StatelessWidget {
       fontFamily: 'monospace',
       fontSize: 12,
       height: 4 / 3,
+      fontWeight: FontWeight.w500,
     );
-    Widget number(
-      double value,
-      String Function(double) format, {
-      bool title = false,
-    }) => BeuiChartTicker(
-      value: value,
-      format: (value) => format(value.toDouble()),
-      style: numberStyle.copyWith(
-        fontWeight: title ? FontWeight.w500 : FontWeight.w400,
-      ),
-    );
+    Widget number(double value, String Function(double) format) =>
+        BeuiChartTicker(
+          value: value,
+          format: (value) => format(value.toDouble()),
+          style: numberStyle,
+        );
     return BeuiTooltip(
       externalAnchor: s._anchor,
       anchorLink: s._anchorLink,
       side: beuiChartToTooltipSide(side),
+      sideOffset: !s._keyboard && s._pointer != null ? 12 : 8,
       open: s._tooltipOpen && bin != null,
       onOpenChange: (open) {
         if (!open) s.setTooltipOpen(false);
@@ -1019,11 +1016,11 @@ class BeuiVolumeProfileTooltip extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        number(bin.priceLow, s.price, title: true),
+                        number(bin.priceLow, s.price),
                         const SizedBox(width: 4),
                         const Text('–'),
                         const SizedBox(width: 4),
-                        number(bin.priceHigh, s.price, title: true),
+                        number(bin.priceHigh, s.price),
                       ],
                     ),
                     const SizedBox(height: 6),

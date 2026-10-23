@@ -365,6 +365,15 @@ void main() {
       await mouse.addPointer(location: Offset.zero);
       await mouse.moveTo(Offset(plotBefore.center.dx, plotBefore.top + 30));
       await tester.pumpAndSettle();
+      expect(
+        tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).sideOffset,
+        12,
+      );
+      for (final ticker in tester.widgetList<BeuiChartTicker>(
+        find.byType(BeuiChartTicker),
+      )) {
+        expect(ticker.style!.fontWeight, FontWeight.w500);
+      }
       expect(find.byType(BeuiTooltip), findsOneWidget);
       expect(find.byType(BeuiChartTooltipCard), findsNothing);
       expect(tester.getRect(find.byType(BeuiVolumeProfilePlot)), plotBefore);
