@@ -401,8 +401,16 @@ class _BeuiCandlestickPlotState extends State<BeuiCandlestickPlot> {
                   value: candle == null ? null : describe(candle),
                   child: MouseRegion(
                     cursor: SystemMouseCursors.precise,
-                    onEnter: (event) => inspect(event.localPosition),
-                    onHover: (event) => inspect(event.localPosition),
+                    onEnter: (event) {
+                      if (event.kind != PointerDeviceKind.touch) {
+                        inspect(event.localPosition);
+                      }
+                    },
+                    onHover: (event) {
+                      if (event.kind != PointerDeviceKind.touch) {
+                        inspect(event.localPosition);
+                      }
+                    },
                     onExit: (_) {
                       state.setActiveId(null);
                       setState(() => _pointerY = null);
