@@ -92,6 +92,42 @@ class _ClipHostState extends State<_ClipHost> {
 void main() {
   _HostState host(WidgetTester t) => t.state<_HostState>(find.byType(_Host));
 
+  testWidgets('nonmodal descendants retain focus and Escape dismissal', (
+    tester,
+  ) async {
+    final focus = FocusNode();
+    var dismissed = 0;
+    var activated = 0;
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiOverlay(
+          open: true,
+          barrier: false,
+          trapFocus: false,
+          onDismiss: () => dismissed++,
+          overlayBuilder: (context, animation, link) => Center(
+            child: TextButton(
+              focusNode: focus,
+              onPressed: () => activated++,
+              child: const Text('Panel action'),
+            ),
+          ),
+          child: const Text('Trigger'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    focus.requestFocus();
+    await tester.pump();
+    expect(focus.hasPrimaryFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    expect(activated, 1);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(dismissed, 1);
+    await tester.pumpWidget(const SizedBox());
+    focus.dispose();
+  });
+
   testWidgets('mounts on open, unmounts after close', (tester) async {
     await tester.pumpWidget(const _Host());
     expect(find.byKey(_panel), findsNothing);
