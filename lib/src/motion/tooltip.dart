@@ -159,8 +159,10 @@ class BeuiTooltip extends StatefulWidget {
     this.onOpenChange,
     this.followCursor = false,
     this.avoidCollisions = true,
+    this.externalAnchor,
+    this.anchorLink,
     super.key,
-  });
+  }) : assert((externalAnchor == null) == (anchorLink == null));
 
   /// Composes typed trigger and content slots without painting content inline.
   BeuiTooltip.composed({
@@ -174,8 +176,11 @@ class BeuiTooltip extends StatefulWidget {
     this.onOpenChange,
     this.followCursor = false,
     this.avoidCollisions = true,
+    this.externalAnchor,
+    this.anchorLink,
     super.key,
-  }) : child = trigger,
+  }) : assert((externalAnchor == null) == (anchorLink == null)),
+       child = trigger,
        content = tooltip.child,
        side = tooltip.side,
        align = tooltip.align,
@@ -224,6 +229,15 @@ class BeuiTooltip extends StatefulWidget {
   /// Flip sides and shift the surface to keep it inside the viewport.
   final bool avoidCollisions;
 
+  /// Measurement key for an external [CompositedTransformTarget]. Supply with
+  /// [anchorLink]. Both must identify the same mounted target. An absent target
+  /// hides the surface without changing controlled [open] ownership.
+  final GlobalKey? externalAnchor;
+
+  /// Link of the external target identified by [externalAnchor]. The child
+  /// remains the local interaction slot and does not become a second target.
+  final LayerLink? anchorLink;
+
   @override
   State<BeuiTooltip> createState() => _BeuiTooltipState();
 }
@@ -248,6 +262,10 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   Offset _collisionShift = Offset.zero;
   BeuiTooltipSide? _resolvedSide;
   _TooltipProviderState? _provider;
+  bool _anchorWatchPending = false;
+  Rect? _lastAnchorBounds;
+
+  GlobalKey get _anchorKey => widget.externalAnchor ?? _triggerKey;
 
   @override
   void initState() {
@@ -288,7 +306,9 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       _provider?.release(_owner, warm: false);
     }
     if (oldWidget.side != widget.side ||
-        oldWidget.avoidCollisions != widget.avoidCollisions) {
+        oldWidget.avoidCollisions != widget.avoidCollisions ||
+        oldWidget.externalAnchor != widget.externalAnchor ||
+        oldWidget.anchorLink != widget.anchorLink) {
       _resolvedSide = null;
       _collisionShift = Offset.zero;
       if (widget.avoidCollisions && _open) _measureCollision();
@@ -350,7 +370,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
 
   Rect? _bounds(GlobalKey key) {
     final box = key.currentContext?.findRenderObject() as RenderBox?;
-    return box == null || !box.hasSize
+    return box == null || !box.attached || !box.hasSize
         ? null
         : box.localToGlobal(Offset.zero) & box.size;
   }
@@ -380,7 +400,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
 
   void _onGlobalPointer(PointerEvent event) {
     if (!_open) return;
-    final trigger = _bounds(_triggerKey);
+    final trigger = _bounds(_anchorKey);
     final surface = _bounds(_surfaceKey);
     if (event is PointerDownEvent &&
         !(trigger?.contains(event.position) ?? false) &&
@@ -410,7 +430,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_open || !widget.avoidCollisions) return;
       final trigger =
-          _triggerKey.currentContext?.findRenderObject() as RenderBox?;
+          _anchorKey.currentContext?.findRenderObject() as RenderBox?;
       final surface =
           _surfaceKey.currentContext?.findRenderObject() as RenderBox?;
       if (trigger == null ||
@@ -552,12 +572,15 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     LayerLink link,
     BeuiTooltipSide side,
   ) {
+    _watchExternalAnchor();
+    if (widget.externalAnchor != null && _bounds(_anchorKey) == null) {
+      return const SizedBox.shrink();
+    }
     final colors = BeuiColors.resolve(context);
     final reduce = MediaQuery.disableAnimationsOf(context);
     _measureCollision();
     final spec = _spec(side, widget.align);
-    final trigger =
-        _triggerKey.currentContext?.findRenderObject() as RenderBox?;
+    final trigger = _anchorKey.currentContext?.findRenderObject() as RenderBox?;
     final pointerOffset =
         widget.followCursor &&
             !_focused &&
@@ -570,7 +593,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     final actualOffset = spec.gap + _collisionShift + pointerOffset;
 
     return CompositedTransformFollower(
-      link: link,
+      link: widget.anchorLink ?? link,
       showWhenUnlinked: false,
       targetAnchor: widget.followCursor && !_focused && _pointerGlobal != null
           ? Alignment.center
@@ -614,6 +637,27 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
         ),
       ),
     );
+  }
+
+  void _watchExternalAnchor() {
+    if (widget.externalAnchor == null || _anchorWatchPending) return;
+    _anchorWatchPending = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _anchorWatchPending = false;
+      if (!mounted || !_open || widget.externalAnchor == null) return;
+      final bounds = _bounds(_anchorKey);
+      if (_lastAnchorBounds != bounds) {
+        setState(() {
+          _lastAnchorBounds = bounds;
+          _resolvedSide = null;
+          _collisionShift = Offset.zero;
+        });
+        _measureCollision();
+      }
+      // Observe frames already requested by the target's owner. Do not keep
+      // the application rendering just because a stationary tooltip is open.
+      _watchExternalAnchor();
+    });
   }
 
   Widget _surface(BeuiColors colors, BeuiTooltipSide side) {
