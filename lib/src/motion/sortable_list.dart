@@ -73,7 +73,7 @@ class _BeuiSortableListState<T extends Object>
   late List<T> _internalItems = List<T>.of(widget.defaultItems);
   List<String>? _previousIds;
   String _announcement = '';
-  String? _focusedId;
+  final _handles = _SortableHandleRegistry();
 
   bool get _controlled => widget.items != null;
   List<T> get _items => widget.items ?? _internalItems;
@@ -82,7 +82,8 @@ class _BeuiSortableListState<T extends Object>
   @override
   void didUpdateWidget(covariant BeuiSortableList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!_sameMembers(_previousIds, _ids)) _previousIds = null;
+    final ids = _ids;
+    if (!_sameMembers(_previousIds, ids)) _previousIds = null;
   }
 
   bool _sameMembers(List<String>? prior, List<String> current) =>
@@ -90,6 +91,13 @@ class _BeuiSortableListState<T extends Object>
       prior.length == current.length &&
       prior.toSet().length == current.length &&
       current.toSet().containsAll(prior);
+
+  bool get _canUndo {
+    final prior = _previousIds;
+    final ids = _ids;
+    return _sameMembers(prior, ids) &&
+        prior!.asMap().entries.any((entry) => entry.value != ids[entry.key]);
+  }
 
   void _publish(List<T> next) {
     if (!_controlled) setState(() => _internalItems = next);
@@ -122,7 +130,6 @@ class _BeuiSortableListState<T extends Object>
     final item = next.removeAt(from);
     next.insert(destination, item);
     _previousIds = ids;
-    _focusedId = id;
     _publish(next);
     setState(() {
       _announcement =
@@ -133,12 +140,16 @@ class _BeuiSortableListState<T extends Object>
   void _undo() {
     final prior = _previousIds;
     final current = _items;
-    if (widget.disabled || prior == null || !_sameMembers(prior, _ids)) return;
+    if (widget.disabled || prior == null || !_canUndo) return;
     final byId = {for (final item in current) widget.getItemId(item): item};
-    _focusedId = prior.firstWhere(
+    final restoredId = prior.firstWhere(
       (id) => prior.indexOf(id) != _ids.indexOf(id),
       orElse: () => prior.first,
     );
+    final node = _handles.eligibleNode(restoredId);
+    if (node != null) {
+      node.requestFocus();
+    }
     _publish(prior.map((id) => byId[id]!).toList());
     setState(() {
       _previousIds = null;
@@ -169,9 +180,9 @@ class _BeuiSortableListState<T extends Object>
       itemDecoration: widget.itemDecoration,
       move: _move,
       reorder: _reorder,
-      canUndo: _sameMembers(_previousIds, _ids) && _previousIds != _ids,
+      canUndo: _canUndo,
       undo: _undo,
-      focusedId: _focusedId,
+      handles: _handles,
     );
     final content =
         widget.children?.call(_items) ??
@@ -334,7 +345,7 @@ class BeuiSortableListItem extends StatelessWidget {
 }
 
 /// Keyboard- and pointer-accessible reorder grip.
-class BeuiSortableListHandle extends StatelessWidget {
+class BeuiSortableListHandle extends StatefulWidget {
   /// Creates a reorder handle.
   const BeuiSortableListHandle({
     this.child,
@@ -353,11 +364,53 @@ class BeuiSortableListHandle extends StatelessWidget {
   final bool enabled;
 
   @override
+  State<BeuiSortableListHandle> createState() => _BeuiSortableListHandleState();
+}
+
+class _BeuiSortableListHandleState extends State<BeuiSortableListHandle> {
+  final _focusNode = FocusNode(debugLabel: 'Sortable handle');
+  _SortableHandleRegistry? _registry;
+  String? _itemId;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final registry = _SortableListScopeHost.of(context).handles;
+    final id = _SortableItemScope.of(context).id;
+    if (!identical(_registry, registry) || _itemId != id) {
+      _unregister();
+      _registry = registry;
+      _itemId = id;
+    }
+    registry.register(id, _focusNode);
+  }
+
+  void _unregister() {
+    final id = _itemId;
+    if (id != null) _registry?.unregister(id, _focusNode);
+    _registry = null;
+    _itemId = null;
+  }
+
+  @override
+  void deactivate() {
+    _unregister();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _unregister();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final scope = _SortableListScopeHost.of(context);
     final item = _SortableItemScope.of(context);
     final colors = BeuiColors.resolve(context);
-    final active = enabled && !scope.disabled;
+    final active = widget.enabled && !scope.disabled;
     return ReorderableDragStartListener(
       index: item.index,
       enabled: active,
@@ -385,7 +438,6 @@ class BeuiSortableListHandle extends StatelessWidget {
         },
         child: Builder(
           builder: (context) {
-            final focused = Focus.of(context).hasFocus;
             return Semantics(
               button: true,
               enabled: active,
@@ -394,8 +446,10 @@ class BeuiSortableListHandle extends StatelessWidget {
                   'Drag to reorder. Use Up and Down to move; Home and End to move to the edges.',
               child: IconButton(
                 tooltip: 'Reorder ${item.label}',
-                onPressed: active ? (onPressed ?? () {}) : null,
-                icon: child ?? const Icon(LucideIcons.grip_vertical, size: 18),
+                onPressed: active ? (widget.onPressed ?? () {}) : null,
+                icon:
+                    widget.child ??
+                    const Icon(LucideIcons.grip_vertical, size: 18),
                 focusColor: colors.accent,
                 style:
                     IconButton.styleFrom(
@@ -416,7 +470,7 @@ class BeuiSortableListHandle extends StatelessWidget {
                             : Colors.transparent,
                       ),
                     ),
-                autofocus: focused && scope.focusedId == item.id,
+                focusNode: _focusNode,
               ),
             );
           },
@@ -473,6 +527,30 @@ class BeuiSortableListUndo extends StatelessWidget {
   }
 }
 
+class _SortableHandleRegistry {
+  final _idsByNode = Map<FocusNode, String>.identity();
+
+  void register(String id, FocusNode node) {
+    _idsByNode[node] = id;
+  }
+
+  void unregister(String id, FocusNode node) {
+    if (_idsByNode[node] == id) _idsByNode.remove(node);
+  }
+
+  FocusNode? eligibleNode(String id) {
+    for (final entry in _idsByNode.entries) {
+      if (entry.value == id &&
+          entry.key.context?.mounted == true &&
+          entry.key.parent != null &&
+          entry.key.canRequestFocus) {
+        return entry.key;
+      }
+    }
+    return null;
+  }
+}
+
 class _SortableListScope {
   const _SortableListScope({
     required this.ids,
@@ -484,7 +562,7 @@ class _SortableListScope {
     required this.reorder,
     required this.canUndo,
     required this.undo,
-    required this.focusedId,
+    required this.handles,
   });
 
   final List<String> ids;
@@ -496,7 +574,7 @@ class _SortableListScope {
   final ValueChanged<List<String>> reorder;
   final bool canUndo;
   final VoidCallback undo;
-  final String? focusedId;
+  final _SortableHandleRegistry handles;
 }
 
 class _SortableListScopeHost extends InheritedWidget {
@@ -541,6 +619,8 @@ class _SortableItemScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_SortableItemScope oldWidget) =>
+      id != oldWidget.id ||
+      label != oldWidget.label ||
       index != oldWidget.index;
 }
 

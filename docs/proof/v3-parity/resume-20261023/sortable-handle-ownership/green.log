@@ -1,0 +1,38 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/sortable_list_test.dart
+00:00 +0: handle transfers item owner and root=false without stale Undo target
+00:00 +1: handle transfers item owner and root=true without stale Undo target
+00:00 +2: Undo selects eligible second handle after first removed=false
+00:00 +3: Undo selects eligible second handle after first removed=true
+00:00 +4: Enter activates the requested first handle callback
+00:00 +5: two enabled handles preserve independent focus ownership
+00:00 +6: disabled second handle does not disable first handle
+00:00 +7: removing second handle leaves first usable
+00:00 +8: key remount keeps replacement handle usable
+00:00 +9: controlled Undo accept=true respects already focused external owner
+00:00 +10: controlled Undo accept=false respects already focused external owner
+00:00 +11: membership removes focused handle and reintroduces fresh usable handle
+00:00 +12: focused root reparent and disposal preserve external focus
+00:00 +13: disabled sole handle is not chosen by Undo
+00:00 +14: keyboard moves item and announces its new position
+00:00 +15: undo restores the prior order
+00:00 +16: pointer drag reorders from the explicit handle
+00:01 +17: hovering the handle paints the muted background
+00:01 +18: controlled list reports order without mutating its input
+00:01 +19: disabled handles cannot move items
+00:01 +20: reduced motion removes the drag lift scale
+00:01 +21: rejected controlled move keeps Undo disabled (false)
+00:01 +22: accepted controlled move and Undo restore once (false)
+00:01 +23: rejected controlled move keeps Undo disabled (true)
+00:01 +24: accepted controlled move and Undo restore once (true)
+00:01 +25: external saved-order reset disables Undo and guards a retained action
+00:01 +26: membership replacement permanently invalidates saved order
+00:01 +27: Home End and boundaries preserve uncontrolled Undo
+00:01 +28: disabling root guards a previously enabled Undo action
+00:01 +29: Undo transfers keyboard ownership to first restored item (false)
+00:01 +30: Undo transfers keyboard ownership to first restored item (true)
+00:01 +31: Undo respects focus chosen by the controlled owner
+00:01 +32: reparent retains handle ownership and never replays stale focus
+00:01 +33: removed and reintroduced handle does not reclaim external focus
+00:01 +34: disposal during Undo does not leave a deferred focus request
+00:01 +35: Undo never focuses a disabled handle
+00:01 +36: All tests passed!
