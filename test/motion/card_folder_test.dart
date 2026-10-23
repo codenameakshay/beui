@@ -53,6 +53,33 @@ Widget _app({
 );
 
 void main() {
+  for (final reduce in [false, true]) {
+    testWidgets(
+      'privacy 750ms mouse hold releases once and retains keyboard control, reduce=$reduce',
+      (tester) async {
+        final changes = <bool>[];
+        await tester.pumpWidget(
+          _app(reduce: reduce, onDetailsVisibleChange: changes.add),
+        );
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.bySemanticsLabel('Show card details')),
+          kind: PointerDeviceKind.mouse,
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 150));
+        await tester.pump(const Duration(milliseconds: 600));
+        expect(changes, isEmpty);
+        await gesture.up();
+        await tester.pumpAndSettle();
+        expect(changes, [true]);
+        expect(find.bySemanticsLabel('Hide card details'), findsOneWidget);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(changes, [true, false]);
+        expect(find.bySemanticsLabel('Show card details'), findsOneWidget);
+      },
+    );
+  }
   testWidgets('semantic action activation transfers keyboard control', (
     tester,
   ) async {
