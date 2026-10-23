@@ -1,0 +1,31 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-702449bd/test/motion/input_style_parity_test.dart
+00:00 +0: input defaults retain 16px text and bordered 14px insets
+00:00 +1: approval custom field renders source typography and insets
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <14>
+  Actual: <16.0>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-702449bd/test/motion/input_style_parity_test.dart:61:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-702449bd/test/motion/input_style_parity_test.dart line 61
+The test description was:
+  approval custom field renders source typography and insets
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +1 -1: approval custom field renders source typography and insets [E]
+  Test failed. See exception logs above.
+  The test description was: approval custom field renders source typography and insets
+  
+00:00 +1 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-702449bd/test/motion/input_style_parity_test.dart: approval custom field renders source typography and insets

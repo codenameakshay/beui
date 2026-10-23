@@ -1294,6 +1294,9 @@ class _QuestionOptions extends StatelessWidget {
                   style: BeuiInputStyle(
                     height: 40, // h-10
                     borderRadius: 12, // rounded-xl
+                    borderWidth: 0, // border-0
+                    textStyle: const TextStyle(fontSize: 14, height: 20 / 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                     borderColor: Colors.transparent,
                     focusedBorderColor: Colors.transparent,
                   ),

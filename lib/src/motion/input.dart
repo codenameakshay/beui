@@ -21,6 +21,9 @@ class BeuiInputStyle {
     this.successColor,
     this.height,
     this.borderRadius,
+    this.borderWidth,
+    this.textStyle,
+    this.contentPadding,
   });
 
   /// Idle field border. Defaults to `BeuiColors.border`.
@@ -42,6 +45,17 @@ class BeuiInputStyle {
   /// Corner radius. Defaults to half the [height] (source `rounded-full`).
   final double? borderRadius;
 
+  /// Field border width. Defaults to 1.
+  final double? borderWidth;
+
+  /// Overrides merged into the field's 16px, 1.5-height foreground text style.
+  /// Applies to entered text and the placeholder, which keeps its muted color.
+  final TextStyle? textStyle;
+
+  /// Padding around the editable text, inside the border and icon slots.
+  /// Defaults to 14px horizontally, or zero on a side with an icon slot.
+  final EdgeInsetsGeometry? contentPadding;
+
   /// Returns a copy with the given fields replaced.
   BeuiInputStyle copyWith({
     Color? borderColor,
@@ -50,6 +64,9 @@ class BeuiInputStyle {
     Color? successColor,
     double? height,
     double? borderRadius,
+    double? borderWidth,
+    TextStyle? textStyle,
+    EdgeInsetsGeometry? contentPadding,
   }) {
     return BeuiInputStyle(
       borderColor: borderColor ?? this.borderColor,
@@ -58,6 +75,9 @@ class BeuiInputStyle {
       successColor: successColor ?? this.successColor,
       height: height ?? this.height,
       borderRadius: borderRadius ?? this.borderRadius,
+      borderWidth: borderWidth ?? this.borderWidth,
+      textStyle: textStyle ?? this.textStyle,
+      contentPadding: contentPadding ?? this.contentPadding,
     );
   }
 }
@@ -309,7 +329,7 @@ class _BeuiInputState extends State<BeuiInput>
       fontSize: 16,
       height: 1.5,
       color: colors.foreground,
-    );
+    ).merge(s?.textStyle);
 
     final height = s?.height ?? 44.0;
     final radius = s?.borderRadius ?? height / 2;
@@ -345,7 +365,7 @@ class _BeuiInputState extends State<BeuiInput>
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: borderColor),
+        border: Border.all(color: borderColor, width: s?.borderWidth ?? 1),
       ),
       child: Row(
         children: [
@@ -362,10 +382,12 @@ class _BeuiInputState extends State<BeuiInput>
             ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(
-                left: hasLeft ? 0 : 14,
-                right: hasRight ? 0 : 14,
-              ),
+              padding:
+                  s?.contentPadding ??
+                  EdgeInsets.only(
+                    left: hasLeft ? 0 : 14,
+                    right: hasRight ? 0 : 14,
+                  ),
               // Full-strength `mutedForeground` (5.9:1) keeps the 4.5:1 AA
               // floor on placeholder text that is often the field's only
               // label.
