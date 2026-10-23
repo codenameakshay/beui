@@ -401,9 +401,13 @@ class BeuiCompositionPlot extends StatelessWidget {
                 child: Focus(
                   focusNode: state._inspectorFocusNode,
                   onFocusChange: (focus) {
-                    if (focus && !state._pointerFocus) state._keyboard = true;
-                    if (!focus) state._pointerFocus = false;
-                    state._setTooltipOpen(focus);
+                    if (!focus) {
+                      state._pointerFocus = false;
+                      state._setTooltipOpen(false);
+                    } else if (!state._pointerFocus) {
+                      state._keyboard = true;
+                      state._setTooltipOpen(true);
+                    }
                   },
                   onKeyEvent: (node, event) {
                     final handled = state.inspectKey(event);

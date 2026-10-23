@@ -55,6 +55,43 @@ Future<Color> _pixel(WidgetTester tester, Offset global) async {
 }
 
 void main() {
+  testWidgets(
+    'composition quick touch release cannot reopen from deferred focus',
+    (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiCompositionChart(
+            series: _series,
+            periods: ['Jan', 'Feb', 'Mar'],
+          ),
+          width: 600,
+        ),
+      );
+      final rect = tester.getRect(_paint('_CompositionPainter').first);
+      final point = rect.topLeft + const Offset(10, 20);
+      tester.binding.handlePointerEvent(
+        PointerDownEvent(
+          pointer: 7,
+          position: point,
+          kind: PointerDeviceKind.touch,
+          buttons: 1,
+        ),
+      );
+      tester.binding.handlePointerEvent(
+        PointerUpEvent(
+          pointer: 7,
+          position: point,
+          kind: PointerDeviceKind.touch,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Jan'), findsNWidgets(2));
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      expect(find.text('No complete data for this period.'), findsOneWidget);
+    },
+  );
+
   for (final (name, chart, height) in <(String, Widget, double)>[
     ('composition', const BeuiCompositionChart(series: [], periods: []), 256),
     ('funnel', const BeuiFunnelChart(stages: []), 148),
