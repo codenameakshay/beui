@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
-import '_engine.dart' show SingleMotionBuilder, CurvedMotion;
+import '_engine.dart'
+    show SingleMotionBuilder, SingleMotionController, CurvedMotion;
 
 /// A labelled navigation landmark for a path of [BeuiBreadcrumbItem]s.
 class BeuiBreadcrumb extends StatelessWidget {
@@ -63,9 +65,11 @@ class _BreadcrumbEntry {
   Timer? timer;
 }
 
-class _BreadcrumbListState extends State<BeuiBreadcrumbList> {
+class _BreadcrumbListState extends State<BeuiBreadcrumbList>
+    with TickerProviderStateMixin {
   final _listKey = GlobalKey();
   final _entries = <_BreadcrumbEntry>[];
+  _RenderBreadcrumbWrap? _layout;
 
   List<Widget> _visible() {
     final children = widget.children;
@@ -145,6 +149,7 @@ class _BreadcrumbListState extends State<BeuiBreadcrumbList> {
 
   @override
   void dispose() {
+    _layout?.disposePositions();
     for (final entry in _entries) {
       entry.timer?.cancel();
     }
@@ -190,10 +195,18 @@ class _BreadcrumbListState extends State<BeuiBreadcrumbList> {
       key: _listKey,
       clipBehavior: Clip.none,
       children: [
-        Wrap(
+        _BreadcrumbWrap(
+          vsync: this,
+          onCreated: (layout) => _layout = layout,
+          ids: [
+            for (final entry in _entries.where(
+              (entry) => entry.exitRect == null,
+            ))
+              entry.id,
+          ],
+          reduce: MediaQuery.disableAnimationsOf(context),
           spacing: widget.spacing,
           runSpacing: widget.runSpacing,
-          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             for (final entry in _entries.where(
               (entry) => entry.exitRect == null,
@@ -206,6 +219,136 @@ class _BreadcrumbListState extends State<BeuiBreadcrumbList> {
       ],
     ),
   );
+}
+
+class _BreadcrumbWrap extends MultiChildRenderObjectWidget {
+  const _BreadcrumbWrap({
+    required this.vsync,
+    required this.ids,
+    required this.reduce,
+    required this.spacing,
+    required this.runSpacing,
+    required this.onCreated,
+    required super.children,
+  });
+  final TickerProvider vsync;
+  final List<Key> ids;
+  final bool reduce;
+  final double spacing, runSpacing;
+  final ValueChanged<_RenderBreadcrumbWrap> onCreated;
+  @override
+  _RenderBreadcrumbWrap createRenderObject(BuildContext context) {
+    final layout = _RenderBreadcrumbWrap(
+      vsync,
+      ids,
+      reduce,
+      spacing,
+      runSpacing,
+      Directionality.of(context),
+    );
+    onCreated(layout);
+    return layout;
+  }
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderBreadcrumbWrap renderObject,
+  ) {
+    renderObject
+      ..configure(ids, reduce)
+      ..spacing = spacing
+      ..runSpacing = runSpacing
+      ..textDirection = Directionality.of(context);
+  }
+}
+
+class _BreadcrumbPosition {
+  _BreadcrumbPosition(this.target, TickerProvider vsync, VoidCallback changed)
+    : x = SingleMotionController(
+        motion: beuiSpringLayout,
+        vsync: vsync,
+        initialValue: target.dx,
+      ),
+      y = SingleMotionController(
+        motion: beuiSpringLayout,
+        vsync: vsync,
+        initialValue: target.dy,
+      ) {
+    x.addListener(changed);
+    y.addListener(changed);
+  }
+  Offset target;
+  final SingleMotionController x, y;
+  void move(Offset next) {
+    if (next.dx != target.dx) x.animateTo(next.dx);
+    if (next.dy != target.dy) y.animateTo(next.dy);
+    target = next;
+  }
+
+  void dispose() {
+    x.dispose();
+    y.dispose();
+  }
+}
+
+class _RenderBreadcrumbWrap extends RenderWrap {
+  _RenderBreadcrumbWrap(
+    this.vsync,
+    this.ids,
+    this.reduce,
+    double spacing,
+    double runSpacing,
+    TextDirection textDirection,
+  ) : super(
+        spacing: spacing,
+        runSpacing: runSpacing,
+        textDirection: textDirection,
+        crossAxisAlignment: WrapCrossAlignment.center,
+      );
+  final TickerProvider vsync;
+  List<Key> ids;
+  bool reduce;
+  final _positions = <Key, _BreadcrumbPosition>{};
+  void configure(List<Key> next, bool reduced) {
+    for (final key in _positions.keys.toList()) {
+      if (reduced || !next.contains(key)) _positions.remove(key)!.dispose();
+    }
+    ids = next;
+    reduce = reduced;
+    markNeedsLayout();
+  }
+
+  void disposePositions() {
+    for (final position in _positions.values) {
+      position.dispose();
+    }
+    _positions.clear();
+  }
+
+  @override
+  void dispose() {
+    disposePositions();
+    super.dispose();
+  }
+
+  @override
+  void performLayout() {
+    super.performLayout();
+    if (reduce) return;
+    RenderBox? child = firstChild;
+    var index = 0;
+    while (child != null) {
+      final data = child.parentData! as WrapParentData;
+      final position = _positions.putIfAbsent(
+        ids[index++],
+        () => _BreadcrumbPosition(data.offset, vsync, markNeedsLayout),
+      );
+      position.move(data.offset);
+      data.offset = Offset(position.x.value, position.y.value);
+      child = data.nextSibling;
+    }
+  }
 }
 
 /// One path segment. Use stable keys when replacing route segments.

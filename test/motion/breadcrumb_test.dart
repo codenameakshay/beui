@@ -24,6 +24,102 @@ Widget _app(Widget child, {bool reduce = false, double? width}) {
 }
 
 void main() {
+  testWidgets('surviving segments spring from their painted layout position', (
+    tester,
+  ) async {
+    var prepend = false;
+    late StateSetter update;
+    await tester.pumpWidget(
+      _app(
+        SizedBox(
+          width: 400,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              update = setState;
+              return BeuiBreadcrumbList(
+                children: [
+                  if (prepend)
+                    const BeuiBreadcrumbItem(
+                      key: ValueKey('new'),
+                      child: SizedBox(width: 100, height: 32),
+                    ),
+                  const BeuiBreadcrumbItem(
+                    key: ValueKey('kept'),
+                    child: SizedBox(
+                      key: ValueKey('kept-box'),
+                      width: 80,
+                      height: 32,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final box = find.byKey(const ValueKey('kept-box'));
+    final before = tester.getTopLeft(box);
+    update(() => prepend = true);
+    await tester.pump();
+    expect(tester.getTopLeft(box).dx, closeTo(before.dx, .01));
+    await tester.pump(const Duration(milliseconds: 80));
+    final travel = tester.getTopLeft(box).dx - before.dx;
+    expect(travel, inExclusiveRange(0, 104));
+    update(() => prepend = false);
+    await tester.pump();
+    expect(tester.getTopLeft(box).dx - before.dx, closeTo(travel, .01));
+    await tester.pump(const Duration(milliseconds: 80));
+    expect(tester.getTopLeft(box).dx - before.dx, lessThan(travel));
+    await tester.pumpAndSettle();
+    expect(tester.getTopLeft(box), before);
+    update(() => prepend = true);
+    await tester.pump();
+    await tester.pumpAndSettle();
+    expect(tester.getTopLeft(box).dx - before.dx, closeTo(104, .01));
+  });
+  testWidgets('reduced motion moves surviving segments without a spring', (
+    tester,
+  ) async {
+    var prepend = false;
+    late StateSetter update;
+    await tester.pumpWidget(
+      _app(
+        SizedBox(
+          width: 400,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              update = setState;
+              return BeuiBreadcrumbList(
+                children: [
+                  if (prepend)
+                    const BeuiBreadcrumbItem(
+                      key: ValueKey('new'),
+                      child: SizedBox(width: 100, height: 32),
+                    ),
+                  const BeuiBreadcrumbItem(
+                    key: ValueKey('kept'),
+                    child: SizedBox(
+                      key: ValueKey('kept-box'),
+                      width: 80,
+                      height: 32,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+        reduce: true,
+      ),
+    );
+    final box = find.byKey(const ValueKey('kept-box'));
+    final before = tester.getTopLeft(box);
+    update(() => prepend = true);
+    await tester.pump();
+    expect(tester.getTopLeft(box).dx - before.dx, 104);
+  });
   testWidgets('removed routes retain visual exit but cannot activate', (
     tester,
   ) async {
