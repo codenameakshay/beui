@@ -89,6 +89,34 @@ class BeuiReturnsCalendar extends StatefulWidget {
 
 class _BeuiReturnsCalendarState extends State<BeuiReturnsCalendar>
     with BeuiChartActiveState<BeuiReturnsCalendar>, BeuiChartInspectorKeys {
+  final _gridFocus = FocusNode(skipTraversal: true);
+  final _cellFocus = <((int, int), int), FocusNode>{};
+
+  List<(int, int)> _rowIdentities(List<int> years) {
+    final occurrences = <int, int>{};
+    return [
+      for (final year in years)
+        (
+          year,
+          occurrences.update(year, (count) => count + 1, ifAbsent: () => 0),
+        ),
+    ];
+  }
+
+  int? _removedRow;
+
+  void _removedFocusedCell(int row) {
+    if (row >= widget.years.length) return;
+    _removedRow = row;
+    _gridFocus.requestFocus();
+  }
+
+  @override
+  void dispose() {
+    _gridFocus.dispose();
+    super.dispose();
+  }
+
   BeuiReturnsCalendarCell? _rangeEnd;
   BeuiReturnsCalendarCell? _hover;
   BeuiReturnsCalendarCell? _dismissed;
@@ -136,6 +164,25 @@ class _BeuiReturnsCalendarState extends State<BeuiReturnsCalendar>
     super.initState();
     initActive();
     _rangeEnd = widget.defaultSelection?.end;
+  }
+
+  @override
+  void didUpdateWidget(covariant BeuiReturnsCalendar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final previousRows = _rowIdentities(oldWidget.years);
+    final currentRows = _rowIdentities(widget.years).toSet();
+    for (var row = 0; row < previousRows.length; row++) {
+      if (currentRows.contains(previousRows[row])) continue;
+      for (var month = 0; month <= 12; month++) {
+        final focus = _cellFocus[(previousRows[row], month)];
+        if (focus?.hasPrimaryFocus ?? false) {
+          // Clear scope history before detachment can restore an outside control.
+          focus!.unfocus();
+          _removedFocusedCell(row);
+        }
+      }
+    }
+    if (_hover != null && _hover!.year >= widget.years.length) _hover = null;
   }
 
   String? _id(BeuiReturnsCalendarCell? cell) =>
@@ -325,6 +372,7 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = _ReturnsCalendarScope.of(context);
     final colors = BeuiColors.resolve(context);
+    final rows = state._rowIdentities(state.widget.years);
     final selection = state._preview;
     final start = selection?.start;
     final end = selection?.end ?? start;
@@ -379,8 +427,22 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Focus(
-            canRequestFocus: false,
+            focusNode: state._gridFocus,
             onKeyEvent: (_, event) {
+              final row = state._removedRow;
+              if (event is KeyDownEvent &&
+                  event.logicalKey == LogicalKeyboardKey.tab &&
+                  row != null &&
+                  state._gridFocus.hasPrimaryFocus) {
+                state._removedRow = null;
+                final backwards = HardwareKeyboard.instance.isShiftPressed;
+                final nextRow = backwards ? row - 1 : row;
+                if (nextRow >= 0 && nextRow < state.widget.years.length) {
+                  state._cellFocus[(rows[nextRow], backwards ? 12 : 0)]
+                      ?.requestFocus();
+                  return KeyEventResult.handled;
+                }
+              }
               if (event is KeyDownEvent &&
                   const [
                     LogicalKeyboardKey.arrowRight,
@@ -425,6 +487,7 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
                 for (var y = 0; y < state.widget.years.length; y++) ...[
                   if (y > 0) const SizedBox(height: 4),
                   Row(
+                    key: ValueKey(rows[y]),
                     children: [
                       SizedBox(
                         width: 32,
@@ -439,6 +502,8 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
                       for (var m = 0; m <= 12; m++) ...[
                         const SizedBox(width: 4),
                         _ReturnsCell(
+                          focusNodes: state._cellFocus,
+                          identity: (rows[y], m),
                           width: m == 12 ? 52 : monthWidth,
                           height: monthWidth,
                           cellKey: 'beui-returns-cell-$y-$m',
@@ -535,6 +600,8 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
 
 class _ReturnsCell extends StatefulWidget {
   const _ReturnsCell({
+    required this.focusNodes,
+    required this.identity,
     required this.width,
     required this.height,
     required this.cellKey,
@@ -558,6 +625,8 @@ class _ReturnsCell extends StatefulWidget {
     required this.sweepDelay,
     required this.onDismiss,
   });
+  final Map<((int, int), int), FocusNode> focusNodes;
+  final ((int, int), int) identity;
   final double width;
   final double height;
   final String cellKey;
@@ -586,8 +655,30 @@ class _ReturnsCell extends StatefulWidget {
 
 class _ReturnsCellState extends State<_ReturnsCell> {
   final _focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    widget.focusNodes[widget.identity] = _focus;
+  }
+
+  @override
+  void didUpdateWidget(covariant _ReturnsCell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.focusNodes, widget.focusNodes) ||
+        oldWidget.identity != widget.identity) {
+      if (identical(oldWidget.focusNodes[oldWidget.identity], _focus)) {
+        oldWidget.focusNodes.remove(oldWidget.identity);
+      }
+      widget.focusNodes[widget.identity] = _focus;
+    }
+  }
+
   @override
   void dispose() {
+    if (identical(widget.focusNodes[widget.identity], _focus)) {
+      widget.focusNodes.remove(widget.identity);
+    }
     _focus.dispose();
     super.dispose();
   }
@@ -638,7 +729,6 @@ class _ReturnsCellState extends State<_ReturnsCell> {
             selected: pressed,
             label: semanticLabel,
             child: InkWell(
-              key: ValueKey(cellKey),
               focusNode: _focus,
               onTap: () {
                 _focus.requestFocus();
@@ -647,6 +737,7 @@ class _ReturnsCellState extends State<_ReturnsCell> {
               onHover: onHover,
               onFocusChange: onHover,
               child: BeuiFocusRing(
+                key: ValueKey(cellKey),
                 focused: hot,
                 borderRadius: BorderRadius.circular(4),
                 child: BeuiChartTween(
