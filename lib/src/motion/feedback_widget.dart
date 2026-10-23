@@ -261,10 +261,8 @@ class BeuiFeedbackWidget extends StatefulWidget {
   /// couple of sentences was written through a letterbox. It now grows.
   final int maxLines;
 
-  /// Shown under the field when Submit is pressed with nothing written.
-  ///
-  /// Submit stays enabled and explains itself rather than sitting greyed out
-  /// with no reason given.
+  /// Legacy empty-submission message, retained for constructor compatibility.
+  /// Empty and whitespace-only submissions are disabled.
   final String emptyMessage;
 
   @override
@@ -279,7 +277,6 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
   Timer? _closeTimer;
   Timer? _focusTimer;
   BeuiFeedbackSentiment? _sentiment;
-  bool _showEmptyError = false;
 
   bool get _open => _status != _Status.idle;
   bool get _busy => _status == _Status.sending;
@@ -325,12 +322,8 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
     _fieldFocus.unfocus();
     setState(() {
       _status = _Status.idle;
-      _showEmptyError = false;
-      // The draft is NOT cleared here. A stray outside tap used to destroy
-      // whatever had been typed, with no confirmation and no undo — and the
-      // error path already proved drafts can survive a state change. Text now
-      // survives every close and is cleared only by a successful submit, so
-      // reopening resumes where the user left off.
+      _text.clear();
+      _sentiment = null;
     });
   }
 
@@ -347,16 +340,8 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
   }
 
   Future<void> _submit() async {
-    if (_busy) return;
-    if (_text.text.trim().isEmpty) {
-      // Explain, rather than presenting a dead button and leaving the user to
-      // work out which of the two fields is the problem.
-      setState(() => _showEmptyError = true);
-      _fieldFocus.requestFocus();
-      return;
-    }
+    if (_busy || _text.text.trim().isEmpty) return;
     setState(() {
-      _showEmptyError = false;
       _status = _Status.sending;
     });
     try {
@@ -365,7 +350,6 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
       );
       if (!mounted) return;
       setState(() => _status = _Status.sent);
-      // The only place the draft is discarded: it actually went somewhere.
       _text.clear();
       _sentiment = null;
       _scheduleSuccessClose();
@@ -633,11 +617,7 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
                 minLines: widget.minLines,
                 maxLines: widget.maxLines,
                 cursorColor: colors.foreground,
-                onChanged: (_) => setState(() {
-                  if (_showEmptyError && _text.text.trim().isNotEmpty) {
-                    _showEmptyError = false;
-                  }
-                }),
+                onChanged: (_) => setState(() {}),
                 style: TextStyle(fontSize: 14, color: colors.foreground),
                 decoration: InputDecoration(
                   isCollapsed: true,
@@ -651,18 +631,6 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
                   ),
                 ),
               ),
-              if (_showEmptyError)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Semantics(
-                    liveRegion: true,
-                    container: true,
-                    child: Text(
-                      widget.emptyMessage,
-                      style: TextStyle(fontSize: 12, color: colors.destructive),
-                    ),
-                  ),
-                ),
             ],
           ),
         ),
@@ -683,9 +651,9 @@ class _BeuiFeedbackWidgetState extends State<BeuiFeedbackWidget> {
                   label: 'Submit',
                   loadingText: 'Sending',
                   state: _busy ? BeuiButtonState.loading : BeuiButtonState.idle,
-                  // Enabled even when empty: a disabled button explains
-                  // nothing, and pressing it now says what is missing.
-                  onPressed: _busy ? null : _submit,
+                  onPressed: _busy || _text.text.trim().isEmpty
+                      ? null
+                      : _submit,
                 ),
               ),
             ],
