@@ -1,0 +1,2201 @@
+{
+  "phase": "source-v2",
+  "revision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "plot": {
+    "x": 414.40625,
+    "y": 291.5,
+    "width": 513.59375,
+    "height": 320
+  },
+  "theme": "light",
+  "reducedMotion": "reduce",
+  "scripts": [
+    {
+      "url": "http://127.0.0.1:18114/source.js",
+      "sha256": "91efa14dca91279a59255519b75086c5b8f37d16eff82f5aa2c425c21253f77e",
+      "bytes": 1299532
+    }
+  ],
+  "states": [
+    {
+      "name": "rest",
+      "sha256": "0a7ce19e951348cd1a7cdccf6bd2e05663eea84b368323e1e4144ae2e9ef6c4b",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        }
+      ],
+      "focus": {
+        "tag": "BODY",
+        "label": null
+      },
+      "values": [
+        "$64,000 to $64,100. 18 BTC. 0.8% of total volume"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        }
+      ]
+    },
+    {
+      "name": "pointer-a",
+      "sha256": "17e438bf12c8b8397f01b29061014f85c0730885d4d63ce52ebed0e27eaddec5",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        }
+      ],
+      "focus": {
+        "tag": "BODY",
+        "label": null
+      },
+      "values": [
+        "$65,000 to $65,100. 278 BTC. 12.2% of total volume. Point of control"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "SPAN",
+          "slot": null,
+          "role": "tooltip",
+          "rect": {
+            "x": 551,
+            "y": 390,
+            "width": 137.796875,
+            "height": 70,
+            "top": 390,
+            "right": 688.796875,
+            "bottom": 460,
+            "left": 551
+          },
+          "marginBottom": "0px"
+        }
+      ]
+    },
+    {
+      "name": "pointer-b",
+      "sha256": "1f1dee694c717b4f65a51da215b8289cb9a3e2c2f5ded917006623e6f8e60676",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        }
+      ],
+      "focus": {
+        "tag": "BODY",
+        "label": null
+      },
+      "values": [
+        "$65,300 to $65,400. 146 BTC. 6.4% of total volume. Inside value area"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "SPAN",
+          "slot": null,
+          "role": "tooltip",
+          "rect": {
+            "x": 654,
+            "y": 350,
+            "width": 137.796875,
+            "height": 70,
+            "top": 350,
+            "right": 791.796875,
+            "bottom": 420,
+            "left": 654
+          },
+          "marginBottom": "0px"
+        }
+      ]
+    },
+    {
+      "name": "home",
+      "sha256": "44d00cf68bd3cba2b22857fea971d0bcb7cb32d0f41a8bbff5ff550bc4f8fca6",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        }
+      ],
+      "focus": {
+        "tag": "INPUT",
+        "label": "BTC volume profile: inspect price level"
+      },
+      "values": [
+        "$64,000 to $64,100. 18 BTC. 0.8% of total volume"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "SPAN",
+          "slot": null,
+          "role": "tooltip",
+          "rect": {
+            "x": 397,
+            "y": 549,
+            "width": 137.796875,
+            "height": 48,
+            "top": 549,
+            "right": 534.796875,
+            "bottom": 597,
+            "left": 397
+          },
+          "marginBottom": "0px"
+        }
+      ]
+    },
+    {
+      "name": "end",
+      "sha256": "86315dc39df8a2bd57424db953772a6a49072127fd2436e976e064cdbedc8377",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        }
+      ],
+      "focus": {
+        "tag": "INPUT",
+        "label": "BTC volume profile: inspect price level"
+      },
+      "values": [
+        "$66,300 to $66,400. 5 BTC. 0.2% of total volume"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "SPAN",
+          "slot": null,
+          "role": "tooltip",
+          "rect": {
+            "x": 397,
+            "y": 242,
+            "width": 137.796875,
+            "height": 48,
+            "top": 242,
+            "right": 534.796875,
+            "bottom": 290,
+            "left": 397
+          },
+          "marginBottom": "0px"
+        }
+      ]
+    },
+    {
+      "name": "escape",
+      "sha256": "808ad8aa4b71071996d01e233447b7b48da6b474690e83a31da3e3d5ac97c26d",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "isTrusted": true
+        }
+      ],
+      "focus": {
+        "tag": "INPUT",
+        "label": "BTC volume profile: inspect price level"
+      },
+      "values": [
+        "$66,300 to $66,400. 5 BTC. 0.2% of total volume"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        }
+      ]
+    },
+    {
+      "name": "replaced",
+      "sha256": "808ad8aa4b71071996d01e233447b7b48da6b474690e83a31da3e3d5ac97c26d",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "r",
+          "isTrusted": true
+        }
+      ],
+      "focus": {
+        "tag": "INPUT",
+        "label": "BTC volume profile: inspect price level"
+      },
+      "values": [
+        "$64,000 to $64,100. 18 BTC. 0.8% of total volume"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        }
+      ]
+    },
+    {
+      "name": "restored",
+      "sha256": "808ad8aa4b71071996d01e233447b7b48da6b474690e83a31da3e3d5ac97c26d",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "r",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        }
+      ],
+      "focus": {
+        "tag": "INPUT",
+        "label": "BTC volume profile: inspect price level"
+      },
+      "values": [
+        "$64,000 to $64,100. 18 BTC. 0.8% of total volume"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        }
+      ]
+    },
+    {
+      "name": "reopened",
+      "sha256": "4ec5f22adf6ceb67052f7c6f9b63b32cac38646069ec4885c9a4b214a7bd4454",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "r",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "ArrowUp",
+          "isTrusted": true
+        }
+      ],
+      "focus": {
+        "tag": "INPUT",
+        "label": "BTC volume profile: inspect price level"
+      },
+      "values": [
+        "$64,100 to $64,200. 27 BTC. 1.2% of total volume"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "SPAN",
+          "slot": null,
+          "role": "tooltip",
+          "rect": {
+            "x": 397,
+            "y": 536,
+            "width": 137.796875,
+            "height": 48,
+            "top": 536,
+            "right": 534.796875,
+            "bottom": 584,
+            "left": 397
+          },
+          "marginBottom": "0px"
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "sha256": "e25b728571eaacf44e4d34890fa1148f6b42eb47d060157ccce44fb4b335ea64",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "r",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "ArrowUp",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "e",
+          "isTrusted": true
+        }
+      ],
+      "focus": {
+        "tag": "BODY",
+        "label": null
+      },
+      "values": [],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 454,
+            "width": 576,
+            "height": 116,
+            "top": 454,
+            "right": 928,
+            "bottom": 570,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        }
+      ]
+    },
+    {
+      "name": "restored-empty",
+      "sha256": "caebab2bbd3568408cd0eb69cb34e050aacc84a3414cb9335f874d863f891364",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": true,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "r",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "ArrowUp",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "e",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        }
+      ],
+      "focus": {
+        "tag": "BODY",
+        "label": null
+      },
+      "values": [
+        "$64,000 to $64,100. 18 BTC. 0.8% of total volume"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        }
+      ]
+    },
+    {
+      "name": "touch-tap",
+      "sha256": "caebab2bbd3568408cd0eb69cb34e050aacc84a3414cb9335f874d863f891364",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": false,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "r",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "ArrowUp",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "e",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        }
+      ],
+      "focus": {
+        "tag": "BODY",
+        "label": null
+      },
+      "values": [
+        "$65,000 to $65,100. 278 BTC. 12.2% of total volume. Point of control"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        }
+      ]
+    },
+    {
+      "name": "touch-move",
+      "sha256": "59cdc1589ad1992d33a783eb096d1beb6c0f611506ded02d464fea043420bd61",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": false,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "r",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "ArrowUp",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "e",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 627.84375,
+          "y": 473.5
+        }
+      ],
+      "focus": {
+        "tag": "BODY",
+        "label": null
+      },
+      "values": [
+        "$65,000 to $65,100. 278 BTC. 12.2% of total volume. Point of control"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "SPAN",
+          "slot": null,
+          "role": "tooltip",
+          "rect": {
+            "x": 559,
+            "y": 392,
+            "width": 137.796875,
+            "height": 70,
+            "top": 392,
+            "right": 696.796875,
+            "bottom": 462,
+            "left": 559
+          },
+          "marginBottom": "0px"
+        }
+      ]
+    },
+    {
+      "name": "touch-release",
+      "sha256": "caebab2bbd3568408cd0eb69cb34e050aacc84a3414cb9335f874d863f891364",
+      "viewport": {
+        "width": 1280,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reduce": true,
+      "canHover": false,
+      "inputs": [
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 722.5625,
+          "y": 431.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "End",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "Home",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "r",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "ArrowUp",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "e",
+          "isTrusted": true
+        },
+        {
+          "type": "keydown",
+          "key": "i",
+          "isTrusted": true
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "mouse",
+          "isTrusted": true,
+          "x": 1100,
+          "y": 200
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointerdown",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 619.84375,
+          "y": 471.5
+        },
+        {
+          "type": "pointermove",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 627.84375,
+          "y": 473.5
+        },
+        {
+          "type": "pointerup",
+          "pointerType": "touch",
+          "isTrusted": true,
+          "x": 627.84375,
+          "y": 473.5
+        }
+      ],
+      "focus": {
+        "tag": "BODY",
+        "label": null
+      },
+      "values": [
+        "$65,000 to $65,100. 278 BTC. 12.2% of total volume. Point of control"
+      ],
+      "boxes": [
+        {
+          "tag": "SECTION",
+          "slot": "volume-profile",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 441,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "0px"
+        },
+        {
+          "tag": "DIV",
+          "slot": "volume-profile-plot",
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 291.5,
+            "width": 576,
+            "height": 344,
+            "top": 291.5,
+            "right": 928,
+            "bottom": 635.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        },
+        {
+          "tag": "DL",
+          "slot": null,
+          "role": null,
+          "rect": {
+            "x": 352,
+            "y": 655.5,
+            "width": 576,
+            "height": 77,
+            "top": 655.5,
+            "right": 928,
+            "bottom": 732.5,
+            "left": 352
+          },
+          "marginBottom": "20px"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "url": "http://127.0.0.1:18114/?chart=volume&theme=light&width=576",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "theme": "light",
+  "reducedMotion": "reduce",
+  "reference": false,
+  "requireFlutterProbe": true,
+  "backend": "screenshots",
+  "loadWaitMs": 500,
+  "targets": {
+    "A": {
+      "x": 619.84,
+      "y": 509.5
+    },
+    "B": {
+      "x": 722.56,
+      "y": 469.5
+    },
+    "exit": {
+      "x": 1100,
+      "y": 200
+    }
+  },
+  "events": [
+    {
+      "atMs": 500,
+      "type": "move",
+      "target": "A",
+      "caption": "Pointer A. Canonical candle 10 or price bin 10."
+    },
+    {
+      "atMs": 1300,
+      "type": "move",
+      "target": "B",
+      "caption": "Pointer B. Canonical candle 32 or price bin 13."
+    },
+    {
+      "atMs": 1420,
+      "type": "move",
+      "target": "A",
+      "caption": "Reverse to A during the readout transition."
+    },
+    {
+      "atMs": 2200,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer leaves the whole plot."
+    },
+    {
+      "atMs": 2500,
+      "type": "click",
+      "target": "A",
+      "caption": "Native mouse click establishes inspector focus."
+    },
+    {
+      "atMs": 2700,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer exits before keyboard input."
+    },
+    {
+      "atMs": 3000,
+      "type": "key",
+      "key": "Home",
+      "caption": "Native Home input. R replaces identities, E empties, I restores."
+    },
+    {
+      "atMs": 3500,
+      "type": "key",
+      "key": "ArrowRight",
+      "caption": "Native ArrowRight input. R replaces identities, E empties, I restores."
+    },
+    {
+      "atMs": 4000,
+      "type": "key",
+      "key": "End",
+      "caption": "Native End input. R replaces identities, E empties, I restores."
+    },
+    {
+      "atMs": 4400,
+      "type": "key",
+      "key": "Escape",
+      "caption": "Native Escape input. R replaces identities, E empties, I restores."
+    },
+    {
+      "atMs": 4800,
+      "type": "key",
+      "key": "r",
+      "caption": "Native r input. R replaces identities, E empties, I restores."
+    },
+    {
+      "atMs": 5200,
+      "type": "key",
+      "key": "i",
+      "caption": "Native i input. R replaces identities, E empties, I restores."
+    },
+    {
+      "atMs": 5600,
+      "type": "key",
+      "key": "ArrowUp",
+      "caption": "Native ArrowUp input. R replaces identities, E empties, I restores."
+    },
+    {
+      "atMs": 6000,
+      "type": "key",
+      "key": "e",
+      "caption": "Native e input. R replaces identities, E empties, I restores."
+    },
+    {
+      "atMs": 6500,
+      "type": "key",
+      "key": "i",
+      "caption": "Native i input. R replaces identities, E empties, I restores."
+    },
+    {
+      "atMs": 7000,
+      "type": "key",
+      "key": "Home",
+      "caption": "Native Home input. R replaces identities, E empties, I restores."
+    }
+  ],
+  "finalHoldMs": 600,
+  "servedJs": {
+    "url": "http://127.0.0.1:18114/main.dart.js",
+    "sha256": "e25a0b1a6b3ddd3ddf2d810ccf6df5490b2ca66b30bdf3340e3e6c333f31edc3",
+    "revision": "a2942181"
+  },
+  "provenance": {
+    "phase": "before",
+    "revision": "a2942181",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "plot": {
+      "x": 414.4,
+      "y": 329.5,
+      "width": 513.6,
+      "height": 320
+    },
+    "fixture": "fixture.dart and source.tsx",
+    "timerOverrides": "none",
+    "touch": false,
+    "transportSha256": "b684b3cbdf9442a55c1949940cf14abc9520a8040427cbb373f76f125e534495"
+  }
+}
