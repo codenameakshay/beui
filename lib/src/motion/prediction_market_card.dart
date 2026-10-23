@@ -99,7 +99,10 @@ class BeuiPredictionMarketCard extends StatefulWidget {
   /// Available market outcomes.
   final List<BeuiPredictionMarketCardOutcome> outcomes;
 
-  /// Called when a Yes or No CTA is selected.
+  /// Called when an outcome CTA is selected.
+  ///
+  /// Matches the source card. Every row selects `yes` for its outcome,
+  /// including rows whose alternate visual treatment displays "No" on hover.
   final ValueChanged<BeuiPredictionMarketCardSelection>? onOutcomeClick;
 
   /// Controlled bookmark state. When null, state is managed internally.
@@ -546,13 +549,21 @@ class _OddsButtonState extends State<_OddsButton> {
       type: MaterialType.transparency,
       child: FocusableActionDetector(
         onShowFocusHighlight: (focused) => setState(() => _focused = focused),
+        actions: {
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              widget.onPressed();
+              return null;
+            },
+          ),
+        },
         child: InkWell(
           onHover: (hovered) => setState(() => _hovered = hovered),
           onTapDown: (_) => setState(() => _pressed = true),
           onTapCancel: () => setState(() => _pressed = false),
           onTapUp: (_) => setState(() => _pressed = false),
           onTap: widget.onPressed,
-          canRequestFocus: true,
+          canRequestFocus: false,
           overlayColor: const WidgetStatePropertyAll(Colors.transparent),
           child: scaled,
         ),

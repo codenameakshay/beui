@@ -554,29 +554,36 @@ class _BeuiMorphingTabsState extends State<BeuiMorphingTabs> {
             active ? 0 : 8,
           ),
           child: LayoutBuilder(
-            builder: (context, constraints) => Row(
-              spacing: (constraints.maxWidth - 32).clamp(0, 8),
-              children: [
-                if (item.icon != null)
-                  SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: Icon(item.icon, size: 18, color: foreground),
-                  ),
-                Expanded(
-                  child: Text(
-                    item.label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: foreground,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: -0.4,
+            builder: (context, constraints) => ClipRect(
+              child: OverflowBox(
+                alignment: Alignment.centerLeft,
+                minWidth: math.max(40, constraints.maxWidth),
+                maxWidth: math.max(40, constraints.maxWidth),
+                child: Row(
+                  spacing: 8,
+                  children: [
+                    if (item.icon != null)
+                      SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: Icon(item.icon, size: 18, color: foreground),
+                      ),
+                    Expanded(
+                      child: Text(
+                        item.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: foreground,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: -0.4,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

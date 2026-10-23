@@ -3,6 +3,7 @@ import 'dart:ui' show Tristate;
 import 'package:beui/beui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support.dart';
@@ -48,6 +49,28 @@ Widget _app({
 );
 
 void main() {
+  testWidgets('keyboard visits each payout and CTA only once', (tester) async {
+    final selections = <BeuiPredictionMarketCardSelection>[];
+    await tester.pumpWidget(_app(onOutcomeClick: selections.add));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(find.text('Yes'), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(find.text('Yes'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    expect(selections.map((s) => (s.outcomeId, s.side)), [
+      ('celtics', BeuiPredictionMarketCardSide.yes),
+    ]);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(find.text('Yes'), findsNothing);
+    expect(find.text('No'), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(find.text('No'), findsOneWidget);
+  });
+
   testWidgets('renders title, volume and outcomes', (tester) async {
     await tester.pumpWidget(_app());
     expect(find.text('Boston Celtics vs. Los Angeles Lakers'), findsOneWidget);

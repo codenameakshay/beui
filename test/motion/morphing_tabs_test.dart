@@ -40,6 +40,23 @@ List<BeuiMorphingTabsItem> _items({bool disabledSearch = false}) => [
 
 void main() {
   group('BeuiMorphingTabs', () {
+    for (final width in [128.0, 170.0, 280.0, 528.0]) {
+      testWidgets('clips tab contents at an exact ${width}px root width', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          beuiTestApp(
+            SizedBox(
+              width: width,
+              child: BeuiMorphingTabs(items: _items(), onClose: (_) {}),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.getSize(find.byType(BeuiMorphingTabs)).width, width);
+        expect(tester.takeException(), isNull);
+      });
+    }
     testWidgets('fits equal width slots before sacrificing the source gap', (
       tester,
     ) async {
