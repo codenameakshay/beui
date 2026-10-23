@@ -55,6 +55,49 @@ Future<Color> _pixel(WidgetTester tester, Offset global) async {
 }
 
 void main() {
+  test('funnel formats finite extremes and decimal ties without overflow', () {
+    const chart = BeuiFunnelChart(stages: []);
+    expect(chart.format(0), '0');
+    expect(chart.format(1.005), '1.01');
+    expect(chart.format(9.995), '10');
+    expect(chart.format(1e-308), '0');
+    expect(chart.format(1e308).replaceAll(',', ''), '1${'0' * 308}');
+  });
+
+  testWidgets('composition draws the keyboard outline outside the plot', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const RepaintBoundary(
+          key: ValueKey('pixels'),
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: BeuiCompositionChart(
+              series: _series,
+              periods: ['Jan', 'Feb', 'Mar'],
+            ),
+          ),
+        ),
+        width: 600,
+        reduce: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+    final plot = tester.getRect(_paint('_CompositionPainter').first);
+    final point = Offset(plot.left - 5, plot.center.dy);
+    expect(await _pixel(tester, point), Colors.white);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect((await _pixel(tester, point)).toARGB32(), 0xffe0e0e0);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect((await _pixel(tester, point)).toARGB32(), 0xffe0e0e0);
+    await tester.tapAt(plot.center);
+    await tester.pumpAndSettle();
+    expect(await _pixel(tester, point), Colors.white);
+  });
+
   testWidgets(
     'composition touch-down, drag, and keyboard continue from the same selected period',
     (tester) async {

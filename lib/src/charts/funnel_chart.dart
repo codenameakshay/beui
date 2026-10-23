@@ -117,11 +117,7 @@ class BeuiFunnelChart extends StatelessWidget {
 
   /// Formats a stage count.
   String format(num value) =>
-      formatValue?.call(value) ??
-      beuiChartFormatNumber(
-        value,
-        maximumFractionDigits: 2,
-      ).replaceFirst(RegExp(r'\.?0+$'), '');
+      formatValue?.call(value) ?? _formatFunnelCount(value);
 
   @override
   Widget build(BuildContext context) => _FunnelScope(
@@ -140,6 +136,31 @@ class BeuiFunnelChart extends StatelessWidget {
           ),
     ),
   );
+}
+
+String _formatFunnelCount(num value) {
+  final parts = value.abs().toString().toLowerCase().split('e');
+  final decimal = parts.first.split('.');
+  final fraction = decimal.length > 1 ? decimal.last : '';
+  final exponent = parts.length > 1 ? int.parse(parts.last) : 0;
+  var rounded = BigInt.parse('${decimal.first}$fraction');
+  final shift = exponent - fraction.length + 2;
+  if (shift >= 0) {
+    rounded *= BigInt.from(10).pow(shift);
+  } else {
+    final divisor = BigInt.from(10).pow(-shift);
+    final remainder = rounded.remainder(divisor);
+    rounded ~/= divisor;
+    if (remainder * BigInt.two >= divisor) rounded += BigInt.one;
+  }
+  final digits = rounded.toString().padLeft(3, '0');
+  final whole = digits
+      .substring(0, digits.length - 2)
+      .replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
+  final cents = digits
+      .substring(digits.length - 2)
+      .replaceFirst(RegExp(r'0+$'), '');
+  return '${value.isNegative ? '-' : ''}$whole${cents.isEmpty ? '' : '.$cents'}';
 }
 
 class _FunnelScope extends InheritedWidget {
