@@ -92,11 +92,32 @@ Widget _combobox({
 
 void main() {
   group('BeuiCombobox interactions', () {
+    testWidgets('selected input stays editable and opens on keyboard focus', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_combobox(defaultValue: 'apple'));
+      await tester.pumpAndSettle();
+      final field = tester.widget<TextField>(find.byType(TextField));
+      expect(field.readOnly, isFalse);
+      expect(field.controller!.text, 'Apple');
+      field.focusNode!.requestFocus();
+      await tester.pumpAndSettle();
+      expect(field.controller!.text, '');
+      expect(find.text('Banana'), findsOneWidget);
+      await tester.enterText(find.byType(TextField), 'ban');
+      await tester.pumpAndSettle();
+      expect(find.text('Apple'), findsNothing);
+      expect(find.text('Banana'), findsOneWidget);
+    });
     testWidgets('opens and filters by subsequence', (tester) async {
       await tester.pumpWidget(_combobox());
       await tester.pumpAndSettle();
       await tester.tap(find.byType(BeuiComboboxInput));
       await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).readOnly,
+        isFalse,
+      );
       expect(find.text('Apple'), findsOneWidget);
       expect(find.text('Banana'), findsOneWidget);
       await tester.enterText(find.byType(TextField), 'apl');
@@ -171,6 +192,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(requestedQuery, 'red');
       expect(find.text('Apple'), findsOneWidget); // parent still owns query
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        '',
+      );
     });
 
     testWidgets('disabled option cannot be selected', (tester) async {

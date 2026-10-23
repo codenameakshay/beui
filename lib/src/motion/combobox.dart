@@ -152,9 +152,10 @@ class _BeuiComboboxState extends State<BeuiCombobox> {
   void _setQuery(String next) {
     if (widget.query == null) setState(() => _internalQuery = next);
     widget.onQueryChange?.call(next);
+    final text = _open ? _query : (_items[_value]?.label ?? '');
     _inputController.value = TextEditingValue(
-      text: next,
-      selection: TextSelection.collapsed(offset: next.length),
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
     );
     if (_open) _syncActive();
   }
@@ -339,7 +340,13 @@ class _BeuiComboboxState extends State<BeuiCombobox> {
           child: Stack(
             clipBehavior: Clip.none,
             children: <Widget>[
-              Focus(onKeyEvent: _onKey, child: widget.trigger),
+              Focus(
+                onKeyEvent: _onKey,
+                onFocusChange: (focused) {
+                  if (focused && !_open) _setOpen(true);
+                },
+                child: widget.trigger,
+              ),
               Positioned(
                 left: 0,
                 top: 0,
@@ -619,12 +626,11 @@ class BeuiComboboxInput extends StatelessWidget {
     final scope = _ComboboxScopeProvider.of(context);
     final state = scope.state;
     final selectedLabel = state._items[scope.value]?.label;
-    if (!scope.open && state._inputController.text != (selectedLabel ?? '')) {
+    final text = scope.open ? scope.query : (selectedLabel ?? '');
+    if (state._inputController.text != text) {
       state._inputController.value = TextEditingValue(
-        text: selectedLabel ?? '',
-        selection: TextSelection.collapsed(
-          offset: (selectedLabel ?? '').length,
-        ),
+        text: text,
+        selection: TextSelection.collapsed(offset: text.length),
       );
     }
     return Semantics(
@@ -635,9 +641,11 @@ class BeuiComboboxInput extends StatelessWidget {
         controller: state._inputController,
         focusNode: state._inputFocus,
         enabled: !state.widget.disabled,
-        readOnly: !scope.open,
         onTap: () => state._setOpen(true),
-        onChanged: state._setQuery,
+        onChanged: (query) {
+          if (!scope.open) state._setOpen(true);
+          state._setQuery(query);
+        },
         style: TextStyle(fontSize: 14, color: scope.colors.foreground),
         decoration: InputDecoration(
           isDense: true,
