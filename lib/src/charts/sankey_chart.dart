@@ -381,6 +381,7 @@ class _PlotState extends State<BeuiSankeyChartPlot> with ScrollGeometryMixin {
   bool shown = false;
   bool entered = false;
   Timer? entrance;
+  String? touchTarget;
   final plotKey = GlobalKey();
   bool get reduce =>
       motionFor(context, beuiSpringLayout, isMovement: true) is NoMotion;
@@ -588,6 +589,7 @@ class _PlotState extends State<BeuiSankeyChartPlot> with ScrollGeometryMixin {
                         onPointerDown: (e) {
                           final touch = e.kind == PointerDeviceKind.touch;
                           final id = hit(l, e.localPosition);
+                          if (touch) touchTarget = id;
                           if (visible && id != null) {
                             s.select(id, open: true, point: e.localPosition);
                             if (!touch && s.focus.containsKey(id)) {
@@ -605,11 +607,23 @@ class _PlotState extends State<BeuiSankeyChartPlot> with ScrollGeometryMixin {
                               e.buttons != 1) {
                             return;
                           }
-                          final id = hit(l, e.localPosition);
+                          final id = e.kind == PointerDeviceKind.touch
+                              ? touchTarget
+                              : hit(l, e.localPosition);
                           if (visible && id != null) {
                             s.select(id, open: true, point: e.localPosition);
                           } else if (s.tooltipOpen) {
                             s.select(s.requested, point: e.localPosition);
+                          }
+                        },
+                        onPointerUp: (e) {
+                          if (e.kind == PointerDeviceKind.touch) {
+                            touchTarget = null;
+                          }
+                        },
+                        onPointerCancel: (e) {
+                          if (e.kind == PointerDeviceKind.touch) {
+                            touchTarget = null;
                           }
                         },
                         child: SizedBox(

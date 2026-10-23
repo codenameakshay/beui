@@ -333,6 +333,15 @@ void main() {
       await t.tapAt(const Offset(1, 1));
       await t.pumpAndSettle();
       expect(changes.last, null);
+      final touch = await t.startGesture(t.getCenter(target('ads')));
+      await t.pumpAndSettle();
+      expect(changes.last, 'ads');
+      await touch.moveTo(t.getCenter(target('search')));
+      await t.pumpAndSettle();
+      expect(changes.last, 'ads');
+      await touch.up();
+      await t.pumpAndSettle();
+      expect(changes.last, 'ads');
       await mouse.removePointer();
     },
   );
