@@ -32,17 +32,23 @@ void main() {
       closeTo(40, .01),
     );
     final fields = find.byType(BeuiInput);
-    expect(
-      tester.getTopLeft(fields.at(1)).dy - tester.getTopLeft(fields.at(0)).dy,
-      closeTo(96, .01),
-    );
+    for (var i = 1; i < 4; i++) {
+      expect(
+        tester.getTopLeft(fields.at(i)).dy -
+            tester.getTopLeft(fields.at(i - 1)).dy,
+        closeTo(96, .01),
+      );
+    }
     await tester.ensureVisible(find.text('Create account'));
     await tester.tap(find.text('Create account'));
     await tester.pumpAndSettle();
-    expect(
-      tester.getTopLeft(fields.at(1)).dy - tester.getTopLeft(fields.at(0)).dy,
-      closeTo(96, .01),
-    );
+    for (var i = 1; i < 4; i++) {
+      expect(
+        tester.getTopLeft(fields.at(i)).dy -
+            tester.getTopLeft(fields.at(i - 1)).dy,
+        closeTo(96, .01),
+      );
+    }
   });
 
   testWidgets('signup footer exposes source Sign in button to keyboard', (

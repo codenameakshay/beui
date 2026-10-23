@@ -447,6 +447,7 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
                       ),
                     ),
                   ),
+                const SizedBox(height: 4),
                 textField(
                   keyName: 'confirmPassword',
                   label: 'Confirm password',
