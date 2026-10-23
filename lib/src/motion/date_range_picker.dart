@@ -1359,7 +1359,7 @@ class BeuiDateRangePickerTrigger extends StatelessWidget {
             OutlinedButton.styleFrom(
               minimumSize: const Size(0, 36),
               maximumSize: const Size(double.infinity, 36),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 13),
               visualDensity: VisualDensity.standard,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               foregroundColor: colors.foreground,
@@ -1368,7 +1368,7 @@ class BeuiDateRangePickerTrigger extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              textStyle: const TextStyle(
+              textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontSize: 13,
                 height: 1.5,
                 fontWeight: FontWeight.w500,
@@ -1391,7 +1391,12 @@ class BeuiDateRangePickerTrigger extends StatelessWidget {
                   color: colors.mutedForeground,
                 ),
                 const SizedBox(width: 8),
-                Text(summary),
+                Text(
+                  summary,
+                  style: const TextStyle(
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
                 const SizedBox(width: 8),
                 Icon(
                   LucideIcons.chevron_down,
