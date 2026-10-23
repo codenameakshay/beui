@@ -66,6 +66,40 @@ Future<List<int>?> _pixel(WidgetTester tester, Offset point) => tester.runAsync(
 );
 
 void main() {
+  testWidgets('reduced motion cancels an in-flight question exit', (
+    tester,
+  ) async {
+    Widget card(int step, {bool reduce = false}) => beuiTestApp(
+      BeuiApprovalCard(
+        step: step,
+        questions: const [
+          BeuiApprovalCardQuestion(
+            id: 'first',
+            title: 'First',
+            options: [BeuiApprovalCardOption(value: 'a', label: 'Outgoing')],
+          ),
+          BeuiApprovalCardQuestion(
+            id: 'second',
+            title: 'Second',
+            options: [BeuiApprovalCardOption(value: 'b', label: 'Incoming')],
+          ),
+        ],
+      ),
+      width: 512,
+      reduce: reduce,
+    );
+    await tester.pumpWidget(card(0));
+    await tester.pumpAndSettle();
+    await tester.pumpWidget(card(1));
+    await tester.pump(const Duration(milliseconds: 80));
+    expect(find.text('Outgoing'), findsOneWidget);
+    expect(find.text('Incoming'), findsNothing);
+    await tester.pumpWidget(card(1, reduce: true));
+    expect(find.text('Outgoing'), findsNothing);
+    expect(find.text('Incoming').hitTestable(), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('Incoming').hitTestable(), findsOneWidget);
+  });
   testWidgets('agent replay has the source 24px box and 6px icon gap', (
     tester,
   ) async {
