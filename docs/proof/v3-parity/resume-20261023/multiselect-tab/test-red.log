@@ -1,0 +1,148 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart
+00:00 +0: focus traversal reverse=false reject=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: [false]
+  Actual: []
+   Which: at location [0] is [] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:93:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 93
+The test description was:
+  focus traversal reverse=false reject=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: focus traversal reverse=false reject=false [E]
+  Test failed. See exception logs above.
+  The test description was: focus traversal reverse=false reject=false
+  
+00:00 +0 -1: focus traversal reverse=false reject=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: [false]
+  Actual: []
+   Which: at location [0] is [] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:93:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 93
+The test description was:
+  focus traversal reverse=false reject=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: focus traversal reverse=false reject=true [E]
+  Test failed. See exception logs above.
+  The test description was: focus traversal reverse=false reject=true
+  
+00:00 +0 -2: focus traversal reverse=true reject=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:92:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 92
+The test description was:
+  focus traversal reverse=true reject=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -3: focus traversal reverse=true reject=false [E]
+  Test failed. See exception logs above.
+  The test description was: focus traversal reverse=true reject=false
+  
+00:00 +0 -3: focus traversal reverse=true reject=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:92:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 92
+The test description was:
+  focus traversal reverse=true reject=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -4: focus traversal reverse=true reject=true [E]
+  Test failed. See exception logs above.
+  The test description was: focus traversal reverse=true reject=true
+  
+00:00 +0 -4: popup pointer selection retains open without close proposal
+00:00 +1 -4: later external pointer focus survives chip rebuild
+00:00 +2 -4: typing after Escape reopens without another click
+00:00 +3 -4: chip deferred focus respects owner dispose
+00:01 +4 -4: chip deferred focus respects owner replace
+00:01 +5 -4: chip deferred focus respects owner disable
+00:01 +6 -4: chip deferred focus respects owner close
+00:01 +7 -4: chip deferred focus respects owner focus
+00:01 +8 -4: BeuiMultiSelect selection trigger hover uses the strong border color
+00:01 +9 -4: BeuiMultiSelect selection hovering an unselected item highlights its background
+00:01 +10 -4: BeuiMultiSelect selection opens, picks multiple values, and keeps panel open
+00:01 +11 -4: BeuiMultiSelect selection controlled values report updates without changing tokens
+00:01 +12 -4: BeuiMultiSelect selection removes last token with Backspace when query is empty
+00:01 +13 -4: BeuiMultiSelect selection filters options and displays empty status
+00:01 +14 -4: BeuiMultiSelect selection disabled options cannot be selected
+00:01 +15 -4: chip removal keeps input usable reduce=false open=false reject=false
+00:01 +16 -4: chip removal keeps input usable reduce=false open=false reject=true
+00:01 +17 -4: chip removal keeps input usable reduce=false open=true reject=false
+00:01 +18 -4: chip removal keeps input usable reduce=false open=true reject=true
+00:01 +19 -4: chip removal keeps input usable reduce=true open=false reject=false
+00:01 +20 -4: chip removal keeps input usable reduce=true open=false reject=true
+00:01 +21 -4: chip removal keeps input usable reduce=true open=true reject=false
+00:01 +22 -4: chip removal keeps input usable reduce=true open=true reject=true
+00:01 +23 -4: chip respects rejecting controlled open and query owners
+00:01 +24 -4: disabled trigger and chip emit no callbacks
+00:02 +25 -4: rest-state golden with selected removable tokens
+00:02 +26 -4: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: focus traversal reverse=false reject=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: focus traversal reverse=false reject=true
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: focus traversal reverse=true reject=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: focus traversal reverse=true reject=true

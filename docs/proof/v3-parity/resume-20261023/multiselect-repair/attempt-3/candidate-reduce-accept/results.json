@@ -1,0 +1,3424 @@
+{
+  "target": "candidate",
+  "reducedMotion": "reduce",
+  "owner": "accept",
+  "browser": "156.0.8078.48",
+  "scripts": [
+    {
+      "url": "http://127.0.0.1:18164/flutter_bootstrap.js",
+      "sha256": "f7a99bb8b8b9313f443d91e76594033230ea62fd0e73ae36b9b96f6689832087",
+      "bytes": 13094
+    },
+    {
+      "url": "http://127.0.0.1:18164/main.dart.js",
+      "sha256": "129c10ebdcd160d34865b767830c6b6fcad6b99598a13df1e98f312b4e85a00a",
+      "bytes": 2388235
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.js",
+      "sha256": "6018b12bd8ed37e6952eee72d59c1cf7ad707ccdb74a0a45190010f77edd9068",
+      "bytes": 86226
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.wasm",
+      "sha256": "ba4024133403777f41c709b9e76e9f4bdb76c73d33adba8645527a59d815d824",
+      "bytes": 5428553
+    },
+    {
+      "url": "http://127.0.0.1:18164/flutter_bootstrap.js",
+      "sha256": "f7a99bb8b8b9313f443d91e76594033230ea62fd0e73ae36b9b96f6689832087",
+      "bytes": 13094
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.js",
+      "sha256": "6018b12bd8ed37e6952eee72d59c1cf7ad707ccdb74a0a45190010f77edd9068",
+      "bytes": 86226
+    },
+    {
+      "url": "https://www.gstatic.com/flutter-canvaskit/5d531788691ec3404cac0cee66ead4007b177363/chromium/canvaskit.wasm",
+      "sha256": "ba4024133403777f41c709b9e76e9f4bdb76c73d33adba8645527a59d815d824",
+      "bytes": 5428553
+    }
+  ],
+  "states": [
+    {
+      "fixture": {
+        "value": [
+          "alpha",
+          "beta",
+          "gamma"
+        ],
+        "calls": [],
+        "query": "",
+        "open": false,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "SPAN",
+        "role": null,
+        "label": null
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "rest",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta Gamma\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox",
+      "screenshot": {
+        "file": "rest.png",
+        "sha256": "4040cbb794681078ad24e5f5f5bcb35aab3cd8600db4231e79760ea149517ff1"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta",
+          "gamma"
+        ],
+        "calls": [
+          [
+            "beta",
+            "gamma"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta",
+        "Remove Gamma"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "initial-closed-pointer",
+      "aria": "- group \"Options\":\n  - group:\n    - button \"Alpha Alpha\"\n    - button \"Disabled Disabled\" [disabled]\n    - button \"Beta Beta\"\n    - button \"Gamma Gamma\"\n    - button \"Delta Delta\"\n- text: Supplemental MultiSelect accept owner\n- group \"Beta Gamma\":\n  - button \"Remove Beta Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox",
+      "screenshot": {
+        "file": "initial-closed-pointer.png",
+        "sha256": "b9bdac951453cd82180f18ce13f85fa2165cd92319b8b2c1224d71ee33b7ee50"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta",
+          "gamma"
+        ],
+        "calls": [
+          [
+            "beta",
+            "gamma"
+          ]
+        ],
+        "query": "zz",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": "zz"
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": "zz"
+        }
+      ],
+      "chips": [
+        "Remove Beta",
+        "Remove Gamma"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "closed-pointer-typing",
+      "aria": "- group \"Options\": No options found.\n- text: Supplemental MultiSelect accept owner\n- group \"Beta Gamma\":\n  - button \"Remove Beta Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox: zz",
+      "screenshot": {
+        "file": "closed-pointer-typing.png",
+        "sha256": "39027b1dd87f925e7bd1a500c8e59e25dada709835f8b1cc0a88fef0220c7149"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta",
+          "gamma"
+        ],
+        "calls": [
+          [
+            "beta",
+            "gamma"
+          ]
+        ],
+        "query": "",
+        "open": false,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta",
+        "Remove Gamma"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "closed-pointer-escape",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Beta Gamma\":\n  - button \"Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox",
+      "screenshot": {
+        "file": "closed-pointer-escape.png",
+        "sha256": "f791bf36cfc5d608011e4b0c755552d10741beac85dd687cc4044009924a9178"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta",
+          "gamma"
+        ],
+        "calls": [
+          [
+            "beta",
+            "gamma"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta",
+        "Remove Gamma"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "outside-start",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Beta Gamma\":\n  - button \"Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"",
+      "screenshot": {
+        "file": "outside-start.png",
+        "sha256": "dcb2e0fe137463f98978b318880ac869c64a9f24b644a9035c0d0b0f50d269f2"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta",
+          "gamma"
+        ],
+        "calls": [
+          [
+            "beta",
+            "gamma"
+          ]
+        ],
+        "query": "",
+        "open": false,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta",
+        "Remove Gamma"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "outside-dismiss",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Beta Gamma\":\n  - button \"Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox",
+      "screenshot": {
+        "file": "outside-dismiss.png",
+        "sha256": "95568dfa6751eb769cafb469359f5f54c083549f3b90646231b22f353d7d530f"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "alpha",
+          "beta",
+          "gamma"
+        ],
+        "calls": [],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "focused",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta Gamma\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"",
+      "screenshot": {
+        "file": "focused.png",
+        "sha256": "04a01cee88f876bd620943d14a7422e4205ab9e4b5d01e09659e02f7810a5ec2"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "alpha",
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Alpha",
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "empty-backspace",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"",
+      "screenshot": {
+        "file": "empty-backspace.png",
+        "sha256": "b0257e10d8b2ff0a246eed750bf6fd88d2304c4e0f07eba1e08b38d56de76d26"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "alpha",
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ]
+        ],
+        "query": "zz",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": "zz"
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": "zz"
+        }
+      ],
+      "chips": [
+        "Remove Alpha",
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "query-zz",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - textbox: zz\n  - group \"Options\": No options found.",
+      "screenshot": {
+        "file": "query-zz.png",
+        "sha256": "309eb2bd564228548575c1c26338f53741d57fbc1fa367adc4cd47906e35b8db"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "alpha",
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ]
+        ],
+        "query": "z",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": "z"
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": "z"
+        }
+      ],
+      "chips": [
+        "Remove Alpha",
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "nonempty-backspace",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - textbox: z\n  - group \"Options\": No options found.",
+      "screenshot": {
+        "file": "nonempty-backspace.png",
+        "sha256": "e1d6d4a1c79530ddfed3dee74d1ada198e5e327e8de721b365a2233942362318"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "alpha",
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Alpha",
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "query-cleared",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"",
+      "screenshot": {
+        "file": "query-cleared.png",
+        "sha256": "1d45a74679ceedf563d2d2c5631dc020292014139103a01e377b499b4ae6bb9f"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ],
+          [
+            "beta"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "pointer-remove-alpha",
+      "aria": "- group \"Options\":\n  - group:\n    - button \"Alpha Alpha\"\n    - button \"Disabled Disabled\" [disabled]\n    - button \"Beta Beta\"\n    - button \"Gamma Gamma\"\n    - button \"Delta Delta\"\n- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta Remove Beta\"\n  - textbox",
+      "screenshot": {
+        "file": "pointer-remove-alpha.png",
+        "sha256": "a4b9d7087ae02fd3520da82e43fc092f42ecc9c9bc250d147a1a900c0fadb0f1"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ],
+          [
+            "beta"
+          ]
+        ],
+        "query": "zz",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": "zz"
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": "zz"
+        }
+      ],
+      "chips": [
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "open-pointer-typing",
+      "aria": "- group \"Options\": No options found.\n- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta Remove Beta\"\n  - textbox: zz",
+      "screenshot": {
+        "file": "open-pointer-typing.png",
+        "sha256": "0d3da3953570e11a901aaf95dde4bcaff1f05daa88b6f8e44c48a95ec2d9b1fe"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ],
+          [
+            "beta"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "open-pointer-query-cleared",
+      "aria": "- group \"Options\":\n  - group:\n    - button \"Alpha Alpha\"\n    - button \"Disabled Disabled\" [disabled]\n    - button \"Beta Beta\"\n    - button \"Gamma Gamma\"\n    - button \"Delta Delta\"\n- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta Remove Beta\"\n  - textbox",
+      "screenshot": {
+        "file": "open-pointer-query-cleared.png",
+        "sha256": "65771dd0867aef8473acd6b23fb01c73ece9089d977024a12a120e248abf160a"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ],
+          [
+            "beta"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "FLUTTER-VIEW",
+        "role": null,
+        "label": null
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "disabled-pointer",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"",
+      "screenshot": {
+        "file": "disabled-pointer.png",
+        "sha256": "57687aaf469d2f87fc81e030b20bf1f7533b74c67ef1ce6eaa7790507ddddcc0"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ],
+          [
+            "beta"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "keyboard-start",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"",
+      "screenshot": {
+        "file": "keyboard-start.png",
+        "sha256": "0a07bae2682520a41d312bc979250ce3d0733195809657f034c959037ba9f14c"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ],
+          [
+            "beta"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "disabled-home",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"",
+      "screenshot": {
+        "file": "disabled-home.png",
+        "sha256": "44d25f9561fd7ddee6d2e3f5c4f9fc3df5c411f0ee7c03c4b2abf337705abf0f"
+      }
+    },
+    {
+      "fixture": {
+        "value": [
+          "beta"
+        ],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ],
+          [
+            "beta"
+          ]
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [
+        "Remove Beta"
+      ],
+      "popup": false,
+      "options": [],
+      "name": "disabled-down",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"",
+      "screenshot": {
+        "file": "disabled-down.png",
+        "sha256": "f355c98efff78403dcc522ef158d8df17552f33edd7b97f140667698b2bb85a0"
+      }
+    },
+    {
+      "fixture": {
+        "value": [],
+        "calls": [
+          [
+            "alpha",
+            "beta"
+          ],
+          [
+            "beta"
+          ],
+          []
+        ],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      },
+      "reduce": true,
+      "focus": {
+        "tag": "INPUT",
+        "role": null,
+        "label": "Search…",
+        "value": ""
+      },
+      "fields": [
+        {
+          "tag": "INPUT",
+          "value": ""
+        }
+      ],
+      "chips": [],
+      "popup": false,
+      "options": [],
+      "name": "disabled-keyboard-skip",
+      "aria": "- text: Supplemental MultiSelect accept owner\n- group:\n  - textbox \"Search…\":\n    - /placeholder: \"\"\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\"",
+      "screenshot": {
+        "file": "disabled-keyboard-skip.png",
+        "sha256": "c8d790b9a76058ba67dda499ecd2bf9022dbb462a5d5f9009cae10abfc17a474"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "initial-closed-pointer callbacks",
+      "pass": true,
+      "actual": [
+        [
+          "beta",
+          "gamma"
+        ]
+      ]
+    },
+    {
+      "name": "initial-closed-pointer owner values",
+      "pass": true,
+      "actual": [
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "name": "initial-closed-pointer visible chips",
+      "pass": true,
+      "actual": [
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "name": "initial-closed-pointer actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": ""
+          }
+        ],
+        "query": ""
+      }
+    },
+    {
+      "name": "initial-closed-pointer native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      }
+    },
+    {
+      "name": "initial-closed-pointer popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- group \"Options\":\n  - group:\n    - button \"Alpha Alpha\"\n    - button \"Disabled Disabled\" [disabled]\n    - button \"Beta Beta\"\n    - button \"Gamma Gamma\"\n    - button \"Delta Delta\"\n- text: Supplemental MultiSelect accept owner\n- group \"Beta Gamma\":\n  - button \"Remove Beta Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox"
+      }
+    },
+    {
+      "name": "closed-pointer-typing callbacks",
+      "pass": true,
+      "actual": [
+        [
+          "beta",
+          "gamma"
+        ]
+      ]
+    },
+    {
+      "name": "closed-pointer-typing owner values",
+      "pass": true,
+      "actual": [
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "name": "closed-pointer-typing visible chips",
+      "pass": true,
+      "actual": [
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "name": "closed-pointer-typing actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": "zz"
+          }
+        ],
+        "query": "zz"
+      }
+    },
+    {
+      "name": "closed-pointer-typing native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": "zz"
+      }
+    },
+    {
+      "name": "closed-pointer-typing popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- group \"Options\": No options found.\n- text: Supplemental MultiSelect accept owner\n- group \"Beta Gamma\":\n  - button \"Remove Beta Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox: zz"
+      }
+    },
+    {
+      "name": "Escape closes",
+      "pass": true,
+      "actual": {
+        "value": [
+          "beta",
+          "gamma"
+        ],
+        "calls": [
+          [
+            "beta",
+            "gamma"
+          ]
+        ],
+        "query": "",
+        "open": false,
+        "reject": false,
+        "disableAnimations": true
+      }
+    },
+    {
+      "name": "outside closes",
+      "pass": true,
+      "actual": {
+        "value": [
+          "beta",
+          "gamma"
+        ],
+        "calls": [
+          [
+            "beta",
+            "gamma"
+          ]
+        ],
+        "query": "",
+        "open": false,
+        "reject": false,
+        "disableAnimations": true
+      }
+    },
+    {
+      "name": "focused callbacks",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "focused owner values",
+      "pass": true,
+      "actual": [
+        "alpha",
+        "beta",
+        "gamma"
+      ]
+    },
+    {
+      "name": "focused visible chips",
+      "pass": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta",
+        "Remove Gamma"
+      ]
+    },
+    {
+      "name": "focused actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": ""
+          }
+        ],
+        "query": ""
+      }
+    },
+    {
+      "name": "focused native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      }
+    },
+    {
+      "name": "focused popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta Gamma\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - button \"Remove Gamma\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\""
+      }
+    },
+    {
+      "name": "motion preference",
+      "pass": true,
+      "actual": {
+        "value": [
+          "alpha",
+          "beta",
+          "gamma"
+        ],
+        "calls": [],
+        "query": "",
+        "open": true,
+        "reject": false,
+        "disableAnimations": true
+      }
+    },
+    {
+      "name": "empty-backspace callbacks",
+      "pass": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ]
+      ]
+    },
+    {
+      "name": "empty-backspace owner values",
+      "pass": true,
+      "actual": [
+        "alpha",
+        "beta"
+      ]
+    },
+    {
+      "name": "empty-backspace visible chips",
+      "pass": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta"
+      ]
+    },
+    {
+      "name": "empty-backspace actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": ""
+          }
+        ],
+        "query": ""
+      }
+    },
+    {
+      "name": "empty-backspace native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      }
+    },
+    {
+      "name": "empty-backspace popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\""
+      }
+    },
+    {
+      "name": "nonempty-backspace callbacks",
+      "pass": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ]
+      ]
+    },
+    {
+      "name": "nonempty-backspace owner values",
+      "pass": true,
+      "actual": [
+        "alpha",
+        "beta"
+      ]
+    },
+    {
+      "name": "nonempty-backspace visible chips",
+      "pass": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta"
+      ]
+    },
+    {
+      "name": "nonempty-backspace actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": "z"
+          }
+        ],
+        "query": "z"
+      }
+    },
+    {
+      "name": "nonempty-backspace native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": "z"
+      }
+    },
+    {
+      "name": "nonempty-backspace popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - textbox: z\n  - group \"Options\": No options found."
+      }
+    },
+    {
+      "name": "query-cleared callbacks",
+      "pass": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ]
+      ]
+    },
+    {
+      "name": "query-cleared owner values",
+      "pass": true,
+      "actual": [
+        "alpha",
+        "beta"
+      ]
+    },
+    {
+      "name": "query-cleared visible chips",
+      "pass": true,
+      "actual": [
+        "Remove Alpha",
+        "Remove Beta"
+      ]
+    },
+    {
+      "name": "query-cleared actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": ""
+          }
+        ],
+        "query": ""
+      }
+    },
+    {
+      "name": "query-cleared native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      }
+    },
+    {
+      "name": "query-cleared popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- text: Supplemental MultiSelect accept owner\n- group \"Alpha Beta\":\n  - button \"Remove Alpha\"\n  - button \"Remove Beta\"\n  - textbox\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\""
+      }
+    },
+    {
+      "name": "pointer-remove-alpha callbacks",
+      "pass": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta"
+        ]
+      ]
+    },
+    {
+      "name": "pointer-remove-alpha owner values",
+      "pass": true,
+      "actual": [
+        "beta"
+      ]
+    },
+    {
+      "name": "pointer-remove-alpha visible chips",
+      "pass": true,
+      "actual": [
+        "Remove Beta"
+      ]
+    },
+    {
+      "name": "pointer-remove-alpha actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": ""
+          }
+        ],
+        "query": ""
+      }
+    },
+    {
+      "name": "pointer-remove-alpha native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      }
+    },
+    {
+      "name": "pointer-remove-alpha popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- group \"Options\":\n  - group:\n    - button \"Alpha Alpha\"\n    - button \"Disabled Disabled\" [disabled]\n    - button \"Beta Beta\"\n    - button \"Gamma Gamma\"\n    - button \"Delta Delta\"\n- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta Remove Beta\"\n  - textbox"
+      }
+    },
+    {
+      "name": "open-pointer-typing callbacks",
+      "pass": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta"
+        ]
+      ]
+    },
+    {
+      "name": "open-pointer-typing owner values",
+      "pass": true,
+      "actual": [
+        "beta"
+      ]
+    },
+    {
+      "name": "open-pointer-typing visible chips",
+      "pass": true,
+      "actual": [
+        "Remove Beta"
+      ]
+    },
+    {
+      "name": "open-pointer-typing actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": "zz"
+          }
+        ],
+        "query": "zz"
+      }
+    },
+    {
+      "name": "open-pointer-typing native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": "zz"
+      }
+    },
+    {
+      "name": "open-pointer-typing popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- group \"Options\": No options found.\n- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta Remove Beta\"\n  - textbox: zz"
+      }
+    },
+    {
+      "name": "open-pointer-query-cleared callbacks",
+      "pass": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta"
+        ]
+      ]
+    },
+    {
+      "name": "open-pointer-query-cleared owner values",
+      "pass": true,
+      "actual": [
+        "beta"
+      ]
+    },
+    {
+      "name": "open-pointer-query-cleared visible chips",
+      "pass": true,
+      "actual": [
+        "Remove Beta"
+      ]
+    },
+    {
+      "name": "open-pointer-query-cleared actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": ""
+          }
+        ],
+        "query": ""
+      }
+    },
+    {
+      "name": "open-pointer-query-cleared native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": null,
+        "value": ""
+      }
+    },
+    {
+      "name": "open-pointer-query-cleared popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- group \"Options\":\n  - group:\n    - button \"Alpha Alpha\"\n    - button \"Disabled Disabled\" [disabled]\n    - button \"Beta Beta\"\n    - button \"Gamma Gamma\"\n    - button \"Delta Delta\"\n- text: Supplemental MultiSelect accept owner\n- group \"Beta\":\n  - button \"Remove Beta Remove Beta\"\n  - textbox"
+      }
+    },
+    {
+      "name": "disabled pointer no callback",
+      "pass": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta"
+        ]
+      ]
+    },
+    {
+      "name": "disabled pointer no chip",
+      "pass": true,
+      "actual": [
+        "Remove Beta"
+      ]
+    },
+    {
+      "name": "disabled-keyboard-skip callbacks",
+      "pass": true,
+      "actual": [
+        [
+          "alpha",
+          "beta"
+        ],
+        [
+          "beta"
+        ],
+        []
+      ]
+    },
+    {
+      "name": "disabled-keyboard-skip owner values",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "disabled-keyboard-skip visible chips",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "disabled-keyboard-skip actual query",
+      "pass": true,
+      "actual": {
+        "fields": [
+          {
+            "tag": "INPUT",
+            "value": ""
+          }
+        ],
+        "query": ""
+      }
+    },
+    {
+      "name": "disabled-keyboard-skip native input focus",
+      "pass": true,
+      "actual": {
+        "tag": "INPUT",
+        "role": null,
+        "label": "Search…",
+        "value": ""
+      }
+    },
+    {
+      "name": "disabled-keyboard-skip popup",
+      "pass": true,
+      "actual": {
+        "open": true,
+        "popup": false,
+        "aria": "- text: Supplemental MultiSelect accept owner\n- group:\n  - textbox \"Search…\":\n    - /placeholder: \"\"\n  - group \"Options\":\n    - group:\n      - button \"Alpha Alpha\"\n      - button \"Disabled Disabled\" [disabled]\n      - button \"Beta Beta\"\n      - button \"Gamma Gamma\"\n      - button \"Delta Delta\""
+      }
+    },
+    {
+      "name": "trusted input",
+      "pass": true,
+      "actual": [
+        {
+          "type": "click",
+          "isTrusted": false,
+          "x": 0,
+          "y": 0,
+          "time": 323.89999997615814,
+          "tag": "FLT-SEMANTICS-PLACEHOLDER",
+          "label": "Enable accessibility"
+        },
+        {
+          "type": "click",
+          "isTrusted": false,
+          "x": 0,
+          "y": 0,
+          "time": 124.79999995231628,
+          "tag": "FLT-SEMANTICS-PLACEHOLDER",
+          "label": "Enable accessibility"
+        }
+      ]
+    },
+    {
+      "name": "no page errors",
+      "pass": true,
+      "actual": []
+    },
+    {
+      "name": "video encode",
+      "pass": true,
+      "actual": 0
+    }
+  ],
+  "frames": [
+    {
+      "file": "original-frames/frame_000000.png",
+      "sha256": "0118b2a1885e589b8cbfd6db9275fd6be84f2c58198d4d7119dbeb0f90ceaf3c",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780047.672975,
+        "monotonicTimestamp": 596836.326784
+      }
+    },
+    {
+      "file": "original-frames/frame_000001.png",
+      "sha256": "0118b2a1885e589b8cbfd6db9275fd6be84f2c58198d4d7119dbeb0f90ceaf3c",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780048.200962,
+        "monotonicTimestamp": 596836.854764
+      }
+    },
+    {
+      "file": "original-frames/frame_000002.png",
+      "sha256": "4617c23f39b19ac00ef588799624194681b587d197d31fb7203c866b29cead0e",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780048.234294,
+        "monotonicTimestamp": 596836.888096
+      }
+    },
+    {
+      "file": "original-frames/frame_000003.png",
+      "sha256": "9958286dc4d3ce08c804543c51d973536e0e85473eba5ff832c38ea02f95d4a5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780048.25096,
+        "monotonicTimestamp": 596836.904762
+      }
+    },
+    {
+      "file": "original-frames/frame_000004.png",
+      "sha256": "f15d73cfa103bca102e96a0da325885d4aea091c9311dd9f478dab355d8b8cd8",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780048.267627,
+        "monotonicTimestamp": 596836.921428
+      }
+    },
+    {
+      "file": "original-frames/frame_000005.png",
+      "sha256": "f15d73cfa103bca102e96a0da325885d4aea091c9311dd9f478dab355d8b8cd8",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780048.717616,
+        "monotonicTimestamp": 596837.37141
+      }
+    },
+    {
+      "file": "original-frames/frame_000006.png",
+      "sha256": "0816fb73e8da88ec0ed68626c717181918ded6c1c9edd1e2c4fa81e76cfafa11",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780048.750948,
+        "monotonicTimestamp": 596837.404742
+      }
+    },
+    {
+      "file": "original-frames/frame_000007.png",
+      "sha256": "ada00859c46215abaefe16dc6f08bd8be5d42d17df0828c2014f0c2462807676",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780048.767615,
+        "monotonicTimestamp": 596837.421408
+      }
+    },
+    {
+      "file": "original-frames/frame_000008.png",
+      "sha256": "50937b238fddfe038b03c6d18ee9f5043ae21712cc686b34102171c50ee1f690",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.267602,
+        "monotonicTimestamp": 596837.921388
+      }
+    },
+    {
+      "file": "original-frames/frame_000009.png",
+      "sha256": "50937b238fddfe038b03c6d18ee9f5043ae21712cc686b34102171c50ee1f690",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.284269,
+        "monotonicTimestamp": 596837.938054
+      }
+    },
+    {
+      "file": "original-frames/frame_000010.png",
+      "sha256": "757a2f7c5dcc48422d5c73f2b9b36563df8ca215dd36d80662e4e69099df6459",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.3176,
+        "monotonicTimestamp": 596837.971386
+      }
+    },
+    {
+      "file": "original-frames/frame_000011.png",
+      "sha256": "9ae374b371f3446549f133009b685ddec12598b5bec360013b4659dde5551695",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.334267,
+        "monotonicTimestamp": 596837.988052
+      }
+    },
+    {
+      "file": "original-frames/frame_000012.png",
+      "sha256": "c9d449fd8f1e30eb575a673daa55b7adb75855dc3035a148ed57b47be29b3dce",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.750922,
+        "monotonicTimestamp": 596838.404702
+      }
+    },
+    {
+      "file": "original-frames/frame_000013.png",
+      "sha256": "c9d449fd8f1e30eb575a673daa55b7adb75855dc3035a148ed57b47be29b3dce",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.76759,
+        "monotonicTimestamp": 596838.421368
+      }
+    },
+    {
+      "file": "original-frames/frame_000014.png",
+      "sha256": "c9d449fd8f1e30eb575a673daa55b7adb75855dc3035a148ed57b47be29b3dce",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.817588,
+        "monotonicTimestamp": 596838.471366
+      }
+    },
+    {
+      "file": "original-frames/frame_000015.png",
+      "sha256": "c9d449fd8f1e30eb575a673daa55b7adb75855dc3035a148ed57b47be29b3dce",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.850921,
+        "monotonicTimestamp": 596838.504698
+      }
+    },
+    {
+      "file": "original-frames/frame_000016.png",
+      "sha256": "456c6a99b11967f547664152b5cc732ff98f9d040cd8b339b331855aa05c5755",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.867587,
+        "monotonicTimestamp": 596838.521364
+      }
+    },
+    {
+      "file": "original-frames/frame_000017.png",
+      "sha256": "df2b7a848fe63c52e827c5183e4c75cd649a90b7b387b66c65e9a3b1d4869424",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780049.884253,
+        "monotonicTimestamp": 596838.53803
+      }
+    },
+    {
+      "file": "original-frames/frame_000018.png",
+      "sha256": "8006883a54bf5693a2aa8d599d0dbb836e81a1713c3540c036ac33df70f68ade",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780050.250911,
+        "monotonicTimestamp": 596838.904682
+      }
+    },
+    {
+      "file": "original-frames/frame_000019.png",
+      "sha256": "8006883a54bf5693a2aa8d599d0dbb836e81a1713c3540c036ac33df70f68ade",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780050.350909,
+        "monotonicTimestamp": 596839.004678
+      }
+    },
+    {
+      "file": "original-frames/frame_000020.png",
+      "sha256": "55162cce368575a5d380ecf3cedfcc058fbc0a8bfee3fdc22c17c85ea2d1cfca",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780050.367574,
+        "monotonicTimestamp": 596839.021344
+      }
+    },
+    {
+      "file": "original-frames/frame_000021.png",
+      "sha256": "1c882bd0efbff0ce7f379f0e6804afd354516cf8045d0ea86989d2a7ecae717d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780050.38424,
+        "monotonicTimestamp": 596839.03801
+      }
+    },
+    {
+      "file": "original-frames/frame_000022.png",
+      "sha256": "1c882bd0efbff0ce7f379f0e6804afd354516cf8045d0ea86989d2a7ecae717d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780050.400907,
+        "monotonicTimestamp": 596839.054676
+      }
+    },
+    {
+      "file": "original-frames/frame_000023.png",
+      "sha256": "1c882bd0efbff0ce7f379f0e6804afd354516cf8045d0ea86989d2a7ecae717d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780050.867562,
+        "monotonicTimestamp": 596839.521324
+      }
+    },
+    {
+      "file": "original-frames/frame_000024.png",
+      "sha256": "b6324d53e60dc77119b73fb584acef0df70d9730a8259108f8cfee0885e12b8a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780050.900895,
+        "monotonicTimestamp": 596839.554656
+      }
+    },
+    {
+      "file": "original-frames/frame_000025.png",
+      "sha256": "0118b2a1885e589b8cbfd6db9275fd6be84f2c58198d4d7119dbeb0f90ceaf3c",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780051.000892,
+        "monotonicTimestamp": 596839.654652
+      }
+    },
+    {
+      "file": "original-frames/frame_000026.png",
+      "sha256": "0118b2a1885e589b8cbfd6db9275fd6be84f2c58198d4d7119dbeb0f90ceaf3c",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780051.017558,
+        "monotonicTimestamp": 596839.671318
+      }
+    },
+    {
+      "file": "original-frames/frame_000027.png",
+      "sha256": "94d9bb9fbffe79f526527bb5f962eed759a0a52e38126893fc27846a7b6adfaf",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780051.717541,
+        "monotonicTimestamp": 596840.37129
+      }
+    },
+    {
+      "file": "original-frames/frame_000028.png",
+      "sha256": "94d9bb9fbffe79f526527bb5f962eed759a0a52e38126893fc27846a7b6adfaf",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780051.734207,
+        "monotonicTimestamp": 596840.387956
+      }
+    },
+    {
+      "file": "original-frames/frame_000029.png",
+      "sha256": "97415caee20b42d7b6c4ad1acddd11631ac227756d8cb107d2fbcd2f196483b2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780051.750874,
+        "monotonicTimestamp": 596840.404622
+      }
+    },
+    {
+      "file": "original-frames/frame_000030.png",
+      "sha256": "876a9715fbc0eda10a8ae5ce22437bb4d35a9570f06349bb05446bd30067031f",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780052.217529,
+        "monotonicTimestamp": 596840.87127
+      }
+    },
+    {
+      "file": "original-frames/frame_000031.png",
+      "sha256": "876a9715fbc0eda10a8ae5ce22437bb4d35a9570f06349bb05446bd30067031f",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780052.250861,
+        "monotonicTimestamp": 596840.904602
+      }
+    },
+    {
+      "file": "original-frames/frame_000032.png",
+      "sha256": "4ea42774a5145abf2be881014f28291aab7e4dbc7033a3ea4efac04415a38176",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780052.267527,
+        "monotonicTimestamp": 596840.921268
+      }
+    },
+    {
+      "file": "original-frames/frame_000033.png",
+      "sha256": "3bba30b4ca0d7484a52e7445212d19f39ee531d43759658383c032a458683a38",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780052.717515,
+        "monotonicTimestamp": 596841.37125
+      }
+    },
+    {
+      "file": "original-frames/frame_000034.png",
+      "sha256": "3bba30b4ca0d7484a52e7445212d19f39ee531d43759658383c032a458683a38",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780052.767515,
+        "monotonicTimestamp": 596841.421248
+      }
+    },
+    {
+      "file": "original-frames/frame_000035.png",
+      "sha256": "211d6d9d42abd0c328a5339250ef9ac81ab9a965c1a37307e47956a011effca5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780052.784181,
+        "monotonicTimestamp": 596841.437914
+      }
+    },
+    {
+      "file": "original-frames/frame_000036.png",
+      "sha256": "211d6d9d42abd0c328a5339250ef9ac81ab9a965c1a37307e47956a011effca5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780052.800847,
+        "monotonicTimestamp": 596841.45458
+      }
+    },
+    {
+      "file": "original-frames/frame_000037.png",
+      "sha256": "1cb0fb8987134bd81cb7fc08a6b797e362247a11e2321a97e696d7fe9107e6f5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780053.267502,
+        "monotonicTimestamp": 596841.921228
+      }
+    },
+    {
+      "file": "original-frames/frame_000038.png",
+      "sha256": "1cb0fb8987134bd81cb7fc08a6b797e362247a11e2321a97e696d7fe9107e6f5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780053.284168,
+        "monotonicTimestamp": 596841.937894
+      }
+    },
+    {
+      "file": "original-frames/frame_000039.png",
+      "sha256": "1cb0fb8987134bd81cb7fc08a6b797e362247a11e2321a97e696d7fe9107e6f5",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780053.300835,
+        "monotonicTimestamp": 596841.95456
+      }
+    },
+    {
+      "file": "original-frames/frame_000040.png",
+      "sha256": "00d1edac3afd478faa29fc9226622287f0c3bc170d7e416cfe4b153072669ff2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780053.317501,
+        "monotonicTimestamp": 596841.971226
+      }
+    },
+    {
+      "file": "original-frames/frame_000041.png",
+      "sha256": "00d1edac3afd478faa29fc9226622287f0c3bc170d7e416cfe4b153072669ff2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780053.784156,
+        "monotonicTimestamp": 596842.437874
+      }
+    },
+    {
+      "file": "original-frames/frame_000042.png",
+      "sha256": "b0fc60018b022e3573c507fce004d0ef97555754659dbfe7a14405eedcc13fa2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780053.800822,
+        "monotonicTimestamp": 596842.45454
+      }
+    },
+    {
+      "file": "original-frames/frame_000043.png",
+      "sha256": "b0fc60018b022e3573c507fce004d0ef97555754659dbfe7a14405eedcc13fa2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780053.817488,
+        "monotonicTimestamp": 596842.471206
+      }
+    },
+    {
+      "file": "original-frames/frame_000044.png",
+      "sha256": "3bba30b4ca0d7484a52e7445212d19f39ee531d43759658383c032a458683a38",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780053.834153,
+        "monotonicTimestamp": 596842.487872
+      }
+    },
+    {
+      "file": "original-frames/frame_000045.png",
+      "sha256": "3bba30b4ca0d7484a52e7445212d19f39ee531d43759658383c032a458683a38",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780053.850821,
+        "monotonicTimestamp": 596842.504538
+      }
+    },
+    {
+      "file": "original-frames/frame_000046.png",
+      "sha256": "3bba30b4ca0d7484a52e7445212d19f39ee531d43759658383c032a458683a38",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780054.284143,
+        "monotonicTimestamp": 596842.937854
+      }
+    },
+    {
+      "file": "original-frames/frame_000047.png",
+      "sha256": "4ea42774a5145abf2be881014f28291aab7e4dbc7033a3ea4efac04415a38176",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780054.350808,
+        "monotonicTimestamp": 596843.004518
+      }
+    },
+    {
+      "file": "original-frames/frame_000048.png",
+      "sha256": "c87d4b7dc2ce83024fba836b0fe1ebdd5cf608ba61936098cc2517d681c8f1de",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780054.367474,
+        "monotonicTimestamp": 596843.021184
+      }
+    },
+    {
+      "file": "original-frames/frame_000049.png",
+      "sha256": "62a4e3aa3ed921bacbcf34ee8c22897510de911cdc36663644ad6418af978b52",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780054.384141,
+        "monotonicTimestamp": 596843.03785
+      }
+    },
+    {
+      "file": "original-frames/frame_000050.png",
+      "sha256": "d5e93868f12d666951aba893b7a3f6956bf7c9813a1755d3afd589f7f6e05b90",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780054.400807,
+        "monotonicTimestamp": 596843.054516
+      }
+    },
+    {
+      "file": "original-frames/frame_000051.png",
+      "sha256": "d5e93868f12d666951aba893b7a3f6956bf7c9813a1755d3afd589f7f6e05b90",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780054.867463,
+        "monotonicTimestamp": 596843.521164
+      }
+    },
+    {
+      "file": "original-frames/frame_000052.png",
+      "sha256": "43d83f0a639961d388a23d118b270281fa967f5ba7b8d6bd785e14d80e29998a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780054.884129,
+        "monotonicTimestamp": 596843.53783
+      }
+    },
+    {
+      "file": "original-frames/frame_000053.png",
+      "sha256": "43d83f0a639961d388a23d118b270281fa967f5ba7b8d6bd785e14d80e29998a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780054.900795,
+        "monotonicTimestamp": 596843.554496
+      }
+    },
+    {
+      "file": "original-frames/frame_000054.png",
+      "sha256": "a4269103fa5404e5a64b28b91490eb8a870a984a19022629b161fdb7253b0059",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780055.384116,
+        "monotonicTimestamp": 596844.03781
+      }
+    },
+    {
+      "file": "original-frames/frame_000055.png",
+      "sha256": "a4269103fa5404e5a64b28b91490eb8a870a984a19022629b161fdb7253b0059",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780055.400782,
+        "monotonicTimestamp": 596844.054476
+      }
+    },
+    {
+      "file": "original-frames/frame_000056.png",
+      "sha256": "2b76d65486858aa963388e13b6925a81439de53d10f3169cfb2c19726154d0ff",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780055.417448,
+        "monotonicTimestamp": 596844.071142
+      }
+    },
+    {
+      "file": "original-frames/frame_000057.png",
+      "sha256": "2b76d65486858aa963388e13b6925a81439de53d10f3169cfb2c19726154d0ff",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780055.434114,
+        "monotonicTimestamp": 596844.087808
+      }
+    },
+    {
+      "file": "original-frames/frame_000058.png",
+      "sha256": "2b76d65486858aa963388e13b6925a81439de53d10f3169cfb2c19726154d0ff",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780055.884104,
+        "monotonicTimestamp": 596844.53779
+      }
+    },
+    {
+      "file": "original-frames/frame_000059.png",
+      "sha256": "ec7588d5086135402c75c9eecd30739ed8c9c1625e9ba41b5bf7df95f7a1a1b8",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780055.90077,
+        "monotonicTimestamp": 596844.554456
+      }
+    },
+    {
+      "file": "original-frames/frame_000060.png",
+      "sha256": "ec7588d5086135402c75c9eecd30739ed8c9c1625e9ba41b5bf7df95f7a1a1b8",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780055.917436,
+        "monotonicTimestamp": 596844.571122
+      }
+    },
+    {
+      "file": "original-frames/frame_000061.png",
+      "sha256": "9e92e745459778bfcb605c7c9769110c35b8e58608375979d229e62b17088744",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780055.950768,
+        "monotonicTimestamp": 596844.604454
+      }
+    },
+    {
+      "file": "original-frames/frame_000062.png",
+      "sha256": "b0046d0fea7bb912662d21c2f277588899321659e253636a075b7ec8c2a74ec2",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780055.967435,
+        "monotonicTimestamp": 596844.62112
+      }
+    },
+    {
+      "file": "original-frames/frame_000063.png",
+      "sha256": "5970da500aa17345c8dc998e713633417d9e056de0d1a3b85957b7ccc9eda24a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780056.400757,
+        "monotonicTimestamp": 596845.054436
+      }
+    },
+    {
+      "file": "original-frames/frame_000064.png",
+      "sha256": "5970da500aa17345c8dc998e713633417d9e056de0d1a3b85957b7ccc9eda24a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780056.450756,
+        "monotonicTimestamp": 596845.104434
+      }
+    },
+    {
+      "file": "original-frames/frame_000065.png",
+      "sha256": "5970da500aa17345c8dc998e713633417d9e056de0d1a3b85957b7ccc9eda24a",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780056.467422,
+        "monotonicTimestamp": 596845.1211
+      }
+    },
+    {
+      "file": "original-frames/frame_000066.png",
+      "sha256": "8451bd9d3b3a64ef11b83943e03609cdf3f77c5b66a197dd74e829db8f842917",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780056.484088,
+        "monotonicTimestamp": 596845.137766
+      }
+    },
+    {
+      "file": "original-frames/frame_000067.png",
+      "sha256": "9e7224611f66ab67b3c7fea612095bd63ee283b81bb790435537bca1d3b0525b",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780056.900744,
+        "monotonicTimestamp": 596845.554416
+      }
+    },
+    {
+      "file": "original-frames/frame_000068.png",
+      "sha256": "9c6e519ede5dd6c767fbe1301a92c985b5b64b3dcee917d0a31d76e890025c0d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780056.967409,
+        "monotonicTimestamp": 596845.62108
+      }
+    },
+    {
+      "file": "original-frames/frame_000069.png",
+      "sha256": "9c6e519ede5dd6c767fbe1301a92c985b5b64b3dcee917d0a31d76e890025c0d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780056.984076,
+        "monotonicTimestamp": 596845.637746
+      }
+    },
+    {
+      "file": "original-frames/frame_000070.png",
+      "sha256": "f9bf1611aec38e2bb3a3563e087854941521a8cfcd93bb85cacf7755be2a1023",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780057.000742,
+        "monotonicTimestamp": 596845.654412
+      }
+    },
+    {
+      "file": "original-frames/frame_000071.png",
+      "sha256": "97d6344198b403f50cce237689a5da0c9bbe67d9ac531de39dd19d1f59a22ce3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780057.417398,
+        "monotonicTimestamp": 596846.071062
+      }
+    },
+    {
+      "file": "original-frames/frame_000072.png",
+      "sha256": "97d6344198b403f50cce237689a5da0c9bbe67d9ac531de39dd19d1f59a22ce3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780057.467397,
+        "monotonicTimestamp": 596846.12106
+      }
+    },
+    {
+      "file": "original-frames/frame_000073.png",
+      "sha256": "97d6344198b403f50cce237689a5da0c9bbe67d9ac531de39dd19d1f59a22ce3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780057.484064,
+        "monotonicTimestamp": 596846.137726
+      }
+    },
+    {
+      "file": "original-frames/frame_000074.png",
+      "sha256": "97d6344198b403f50cce237689a5da0c9bbe67d9ac531de39dd19d1f59a22ce3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780057.50073,
+        "monotonicTimestamp": 596846.154392
+      }
+    },
+    {
+      "file": "original-frames/frame_000075.png",
+      "sha256": "f9bf1611aec38e2bb3a3563e087854941521a8cfcd93bb85cacf7755be2a1023",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780057.90072,
+        "monotonicTimestamp": 596846.554376
+      }
+    },
+    {
+      "file": "original-frames/frame_000076.png",
+      "sha256": "f9bf1611aec38e2bb3a3563e087854941521a8cfcd93bb85cacf7755be2a1023",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780057.967385,
+        "monotonicTimestamp": 596846.62104
+      }
+    },
+    {
+      "file": "original-frames/frame_000077.png",
+      "sha256": "f9bf1611aec38e2bb3a3563e087854941521a8cfcd93bb85cacf7755be2a1023",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780058.017383,
+        "monotonicTimestamp": 596846.671038
+      }
+    },
+    {
+      "file": "original-frames/frame_000078.png",
+      "sha256": "9d8a707f1813cc9d97e7b3ab0f014ecff5b7624a7d9ab08249f97cb29dadf43d",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780058.03405,
+        "monotonicTimestamp": 596846.687704
+      }
+    },
+    {
+      "file": "original-frames/frame_000079.png",
+      "sha256": "c16f67eb8d727134c9799f7711ddcb3f2a286df3e99ed1d8e3f49352f43dbac3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780058.417373,
+        "monotonicTimestamp": 596847.071022
+      }
+    },
+    {
+      "file": "original-frames/frame_000080.png",
+      "sha256": "c16f67eb8d727134c9799f7711ddcb3f2a286df3e99ed1d8e3f49352f43dbac3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780058.467372,
+        "monotonicTimestamp": 596847.12102
+      }
+    },
+    {
+      "file": "original-frames/frame_000081.png",
+      "sha256": "c16f67eb8d727134c9799f7711ddcb3f2a286df3e99ed1d8e3f49352f43dbac3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780058.534037,
+        "monotonicTimestamp": 596847.187684
+      }
+    },
+    {
+      "file": "original-frames/frame_000082.png",
+      "sha256": "75698bf206d317609a9b9fab9ac222992307596b40a7444065f74f18724af3f3",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780058.56737,
+        "monotonicTimestamp": 596847.221016
+      }
+    },
+    {
+      "file": "original-frames/frame_000083.png",
+      "sha256": "8b86cbddd17b694fcf0c85c176632faa5886a9b10806b8f96d1c8b3901ce9773",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780058.900694,
+        "monotonicTimestamp": 596847.554336
+      }
+    },
+    {
+      "file": "original-frames/frame_000084.png",
+      "sha256": "8b86cbddd17b694fcf0c85c176632faa5886a9b10806b8f96d1c8b3901ce9773",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780058.96736,
+        "monotonicTimestamp": 596847.621
+      }
+    },
+    {
+      "file": "original-frames/frame_000085.png",
+      "sha256": "8b86cbddd17b694fcf0c85c176632faa5886a9b10806b8f96d1c8b3901ce9773",
+      "metadata": {
+        "offsetTop": 0,
+        "pageScaleFactor": 1,
+        "deviceWidth": 1000,
+        "deviceHeight": 713,
+        "scrollOffsetX": 0,
+        "scrollOffsetY": 0,
+        "timestamp": 1792780059.067357,
+        "monotonicTimestamp": 596847.720996
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 260.7999999523163,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": false,
+      "x": 0,
+      "y": 0,
+      "time": 323.89999997615814,
+      "tag": "FLT-SEMANTICS-PLACEHOLDER",
+      "label": "Enable accessibility"
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 331.7999999523163,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 331.89999997615814,
+      "tag": "SPAN",
+      "label": null
+    },
+    {
+      "type": "pointerdown",
+      "isTrusted": true,
+      "x": 319.5182189941406,
+      "y": 142,
+      "time": 1555.2999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1555.3999999761581,
+      "tag": "SPAN",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1555.7000000476837,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "pointerup",
+      "isTrusted": true,
+      "x": 319.5182189941406,
+      "y": 142,
+      "time": 1555.7999999523163,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": true,
+      "x": 319,
+      "y": 142,
+      "time": 1555.8999999761581,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1565.1000000238419,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1565.2000000476837,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 1600.1000000238419,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 1600.2999999523163,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "z",
+      "isTrusted": true,
+      "time": 2074,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 2074.5,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "z",
+      "isTrusted": true,
+      "time": 2086.600000023842,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "z",
+      "isTrusted": true,
+      "time": 2087.2999999523163,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 2087.5,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "z",
+      "isTrusted": true,
+      "time": 2088.100000023842,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Escape",
+      "isTrusted": true,
+      "time": 2634,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "pointerdown",
+      "isTrusted": true,
+      "x": 501.7064208984375,
+      "y": 145,
+      "time": 3175.100000023842,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "pointerup",
+      "isTrusted": true,
+      "x": 501.7064208984375,
+      "y": 145,
+      "time": 3176.100000023842,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": true,
+      "x": 501,
+      "y": 145,
+      "time": 3177.100000023842,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "pointerdown",
+      "isTrusted": true,
+      "x": 20,
+      "y": 20,
+      "time": 3703.7000000476837,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "pointerup",
+      "isTrusted": true,
+      "x": 20,
+      "y": 20,
+      "time": 3704.7000000476837,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": true,
+      "x": 20,
+      "y": 20,
+      "time": 3704.899999976158,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3715.7000000476837,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3715.7999999523163,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 93.19999992847443,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": false,
+      "x": 0,
+      "y": 0,
+      "time": 124.79999995231628,
+      "tag": "FLT-SEMANTICS-PLACEHOLDER",
+      "label": "Enable accessibility"
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 136,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 136.10000002384186,
+      "tag": "SPAN",
+      "label": null
+    },
+    {
+      "type": "pointerdown",
+      "isTrusted": true,
+      "x": 565.2246704101562,
+      "y": 145,
+      "time": 833.6999999284744,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 834.1999999284744,
+      "tag": "SPAN",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 835.1999999284744,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "pointerup",
+      "isTrusted": true,
+      "x": 565.2246704101562,
+      "y": 145,
+      "time": 835.3999999761581,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": true,
+      "x": 565,
+      "y": 145,
+      "time": 835.6999999284744,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Backspace",
+      "isTrusted": true,
+      "time": 1379.7999999523163,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "z",
+      "isTrusted": true,
+      "time": 1892.1999999284744,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 1892.3999999761581,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "z",
+      "isTrusted": true,
+      "time": 1893.1999999284744,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "z",
+      "isTrusted": true,
+      "time": 1893.3999999761581,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 1893.5,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "z",
+      "isTrusted": true,
+      "time": 1893.7999999523163,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Backspace",
+      "isTrusted": true,
+      "time": 2422.6999999284744,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 2422.899999976158,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Backspace",
+      "isTrusted": true,
+      "time": 2423.600000023842,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Backspace",
+      "isTrusted": true,
+      "time": 2940.6999999284744,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 2940.899999976158,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Backspace",
+      "isTrusted": true,
+      "time": 2941.600000023842,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "pointerdown",
+      "isTrusted": true,
+      "x": 319.5182189941406,
+      "y": 142,
+      "time": 3478.600000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3478.6999999284744,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3479,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "pointerup",
+      "isTrusted": true,
+      "x": 319.5182189941406,
+      "y": 142,
+      "time": 3479.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": true,
+      "x": 319,
+      "y": 142,
+      "time": 3479.100000023842,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3486.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3486.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 3503.5,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 3503.600000023842,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "z",
+      "isTrusted": true,
+      "time": 3992.7999999523163,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 3993.100000023842,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "z",
+      "isTrusted": true,
+      "time": 3993.899999976158,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "z",
+      "isTrusted": true,
+      "time": 3994.1999999284744,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 3994.2999999523163,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "z",
+      "isTrusted": true,
+      "time": 3994.7999999523163,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Backspace",
+      "isTrusted": true,
+      "time": 4523,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 4523.199999928474,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Backspace",
+      "isTrusted": true,
+      "time": 4523.799999952316,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keydown",
+      "key": "Backspace",
+      "isTrusted": true,
+      "time": 4524.199999928474,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "input",
+      "isTrusted": true,
+      "time": 4524.399999976158,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Backspace",
+      "isTrusted": true,
+      "time": 4524.899999976158,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "pointerdown",
+      "isTrusted": true,
+      "x": 500,
+      "y": 228.5,
+      "time": 5057.899999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 5058.299999952316,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 5058.299999952316,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "pointerup",
+      "isTrusted": true,
+      "x": 500,
+      "y": 228.5,
+      "time": 5058.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": true,
+      "x": 500,
+      "y": 228,
+      "time": 5058.399999976158,
+      "tag": "FLT-SEMANTICS",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Escape",
+      "isTrusted": true,
+      "time": 5573.699999928474,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "pointerdown",
+      "isTrusted": true,
+      "x": 427.3641357421875,
+      "y": 145,
+      "time": 6082.899999976158,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "focusout",
+      "isTrusted": true,
+      "time": 6083.600000023842,
+      "tag": "FLUTTER-VIEW",
+      "label": null
+    },
+    {
+      "type": "focusin",
+      "isTrusted": true,
+      "time": 6083.899999976158,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "pointerup",
+      "isTrusted": true,
+      "x": 427.3641357421875,
+      "y": 145,
+      "time": 6084.199999928474,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "click",
+      "isTrusted": true,
+      "x": 427,
+      "y": 145,
+      "time": 6084.899999976158,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Home",
+      "isTrusted": true,
+      "time": 6611,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "ArrowDown",
+      "isTrusted": true,
+      "time": 7145.699999928474,
+      "tag": "INPUT",
+      "label": null
+    },
+    {
+      "type": "keyup",
+      "key": "Enter",
+      "isTrusted": true,
+      "time": 7677,
+      "tag": "INPUT",
+      "label": "Search…"
+    }
+  ],
+  "errors": []
+}

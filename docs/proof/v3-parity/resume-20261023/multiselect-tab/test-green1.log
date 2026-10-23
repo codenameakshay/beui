@@ -1,0 +1,122 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart
+00:00 +0: focus traversal reverse=false reject=false
+00:00 +1: focus traversal reverse=false reject=true
+00:00 +2: focus traversal reverse=true reject=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:92:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 92
+The test description was:
+  focus traversal reverse=true reject=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +2 -1: focus traversal reverse=true reject=false [E]
+  Test failed. See exception logs above.
+  The test description was: focus traversal reverse=true reject=false
+  
+00:00 +2 -1: focus traversal reverse=true reject=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:92:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 92
+The test description was:
+  focus traversal reverse=true reject=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +2 -2: focus traversal reverse=true reject=true [E]
+  Test failed. See exception logs above.
+  The test description was: focus traversal reverse=true reject=true
+  
+00:00 +2 -2: popup pointer selection retains open without close proposal
+00:00 +3 -2: later external pointer focus survives chip rebuild
+00:00 +4 -2: typing after Escape reopens without another click
+00:00 +5 -2: chip deferred focus respects owner dispose
+00:00 +6 -2: chip deferred focus respects owner replace
+00:00 +7 -2: chip deferred focus respects owner disable
+00:00 +8 -2: chip deferred focus respects owner close
+00:00 +9 -2: chip deferred focus respects owner focus
+00:01 +10 -2: BeuiMultiSelect selection trigger hover uses the strong border color
+00:01 +11 -2: BeuiMultiSelect selection hovering an unselected item highlights its background
+00:01 +12 -2: BeuiMultiSelect selection opens, picks multiple values, and keeps panel open
+00:01 +13 -2: BeuiMultiSelect selection controlled values report updates without changing tokens
+00:01 +14 -2: BeuiMultiSelect selection removes last token with Backspace when query is empty
+00:01 +15 -2: BeuiMultiSelect selection filters options and displays empty status
+00:01 +16 -2: BeuiMultiSelect selection disabled options cannot be selected
+00:01 +17 -2: chip removal keeps input usable reduce=false open=false reject=false
+00:01 +18 -2: chip removal keeps input usable reduce=false open=false reject=true
+00:01 +19 -2: chip removal keeps input usable reduce=false open=true reject=false
+00:01 +20 -2: chip removal keeps input usable reduce=false open=true reject=true
+00:01 +21 -2: chip removal keeps input usable reduce=true open=false reject=false
+00:01 +22 -2: chip removal keeps input usable reduce=true open=false reject=true
+00:01 +23 -2: chip removal keeps input usable reduce=true open=true reject=false
+00:01 +24 -2: chip removal keeps input usable reduce=true open=true reject=true
+00:01 +25 -2: chip respects rejecting controlled open and query owners
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: [true]
+  Actual: [true, true]
+   Which: at location [1] is [true, true] which longer than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart:481:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart line 481
+The test description was:
+  chip respects rejecting controlled open and query owners
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +25 -3: chip respects rejecting controlled open and query owners [E]
+  Test failed. See exception logs above.
+  The test description was: chip respects rejecting controlled open and query owners
+  
+00:01 +25 -3: disabled trigger and chip emit no callbacks
+00:01 +26 -3: rest-state golden with selected removable tokens
+00:01 +27 -3: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: chip respects rejecting controlled open and query owners
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: focus traversal reverse=true reject=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/multi_select_test.dart: focus traversal reverse=true reject=true

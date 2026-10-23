@@ -1,0 +1,64 @@
+name: beui_example
+description: "Gallery app showcasing beUI components — one route per component."
+publish_to: 'none'
+version: 1.2.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  beui:
+    path: ../
+  url_launcher: ^6.3.1
+  flutter_svg: ^2.2.4
+  http: ^1.6.0
+  vector_graphics_compiler: ^1.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  # beui.dev serves Geist (its CSS declares `font-family: Geist`, weights
+  # 100-900). Bundling it here — in the gallery only, never in the published
+  # package — removes the systematic glyph-metric error from every visual diff
+  # the harness takes against the site. Only the four weights the source
+  # actually uses are vendored (Tailwind font-normal/medium/semibold/bold).
+  #
+  # Geist is (c) 2024 The Geist Project Authors, SIL Open Font License 1.1 —
+  # redistributable. Licence text: assets/fonts/OFL.txt.
+  fonts:
+    - family: Geist
+      fonts:
+        - asset: assets/fonts/Geist-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Geist-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Geist-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Geist-Bold.ttf
+          weight: 700
+    # BeuiTextTheme exposes the source name, Geist Mono. Existing code surfaces
+    # ask for `monospace`, so retain that alias for the same files. Flutter web
+    # cannot use the browser's generic font collection for CanvasKit text.
+    # Both registrations remain gallery-only, never in the published package.
+    #
+    # Geist Mono is (c) 2024 The Geist Project Authors, SIL OFL 1.1 —
+    # redistributable. Licence text: assets/fonts/OFL.txt.
+    - family: Geist Mono
+      fonts:
+        - asset: assets/fonts/GeistMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/GeistMono-Medium.ttf
+          weight: 500
+    - family: monospace
+      fonts:
+        - asset: assets/fonts/GeistMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/GeistMono-Medium.ttf
+          weight: 500

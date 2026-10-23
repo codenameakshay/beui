@@ -113,12 +113,15 @@ class BeuiMultiSelect extends StatefulWidget {
 class _BeuiMultiSelectState extends State<BeuiMultiSelect> {
   final LayerLink _link = LayerLink();
   final GlobalKey _triggerKey = GlobalKey();
+  final GlobalKey _contentKey = GlobalKey();
+  FocusNode? _lastPrimaryFocus;
   final FocusNode _inputFocus = FocusNode(debugLabel: 'beui_multi_select');
   late final TextEditingController _controller;
   late List<String> _internalValues;
   late bool _internalOpen;
   late String _internalQuery;
   int _activeIndex = -1;
+  int _focusIntent = 0;
 
   bool get _isOpen => widget.open ?? _internalOpen;
   String get _query => widget.query ?? _internalQuery;
@@ -145,11 +148,17 @@ class _BeuiMultiSelectState extends State<BeuiMultiSelect> {
     _internalOpen = widget.defaultOpen;
     _internalQuery = widget.defaultQuery;
     _controller = TextEditingController(text: widget.query ?? _internalQuery);
+    _lastPrimaryFocus = FocusManager.instance.primaryFocus;
+    FocusManager.instance.addListener(_onFocusChanged);
   }
 
   @override
   void didUpdateWidget(covariant BeuiMultiSelect oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.disabled ||
+        (oldWidget.open != widget.open && widget.open == false)) {
+      _focusIntent++;
+    }
     final next = widget.query ?? _internalQuery;
     if (_controller.text != next) {
       _controller.value = TextEditingValue(text: next);
@@ -158,26 +167,53 @@ class _BeuiMultiSelectState extends State<BeuiMultiSelect> {
 
   @override
   void dispose() {
+    FocusManager.instance.removeListener(_onFocusChanged);
     _controller.dispose();
     _inputFocus.dispose();
     super.dispose();
+  }
+
+  void _onFocusChanged() {
+    final focus = FocusManager.instance.primaryFocus;
+    if (focus == _lastPrimaryFocus) return;
+    _lastPrimaryFocus = focus;
+    if (focus == _inputFocus) {
+      _setOpen(true);
+      return;
+    }
+    if (focus == null || focus is FocusScopeNode) return;
+    var inside = false;
+    focus.context?.visitAncestorElements((element) {
+      inside =
+          element == _triggerKey.currentContext ||
+          element == _contentKey.currentContext;
+      return !inside;
+    });
+    if (!inside) {
+      _focusIntent++;
+      if (_isOpen) _setOpen(false);
+    }
   }
 
   void _setOpen(bool open, {bool restoreFocus = false}) {
     if (widget.disabled && open) return;
     if (widget.open == null) setState(() => _internalOpen = open);
     widget.onOpenChanged?.call(open);
-    if (!open) _setQuery('');
+    if (!open) {
+      _focusIntent++;
+      _setQuery('');
+    }
     if (restoreFocus) _inputFocus.requestFocus();
   }
 
   void _setQuery(String query) {
     if (widget.query == null) setState(() => _internalQuery = query);
     widget.onQueryChanged?.call(query);
-    if (_controller.text != query) {
+    final effectiveQuery = widget.query ?? query;
+    if (_controller.text != effectiveQuery) {
       _controller.value = TextEditingValue(
-        text: query,
-        selection: TextSelection.collapsed(offset: query.length),
+        text: effectiveQuery,
+        selection: TextSelection.collapsed(offset: effectiveQuery.length),
       );
     }
     _activeIndex = _firstEnabledIndex();
@@ -214,12 +250,43 @@ class _BeuiMultiSelectState extends State<BeuiMultiSelect> {
     _inputFocus.requestFocus();
   }
 
+  void _removeChip(String value) {
+    final previousFocus = FocusManager.instance.primaryFocus;
+    final externalFocus =
+        previousFocus != null &&
+        previousFocus is! FocusScopeNode &&
+        previousFocus != _inputFocus &&
+        previousFocus.context
+                ?.findAncestorStateOfType<_BeuiMultiSelectState>() !=
+            this;
+    // Make a same-node owner request observable before scheduling chip focus.
+    if (externalFocus) {
+      _inputFocus.requestFocus();
+      FocusManager.instance.applyFocusChangesIfNeeded();
+    }
+    final intent = ++_focusIntent;
+    _removeValue(value);
+    if (!externalFocus && !_isOpen && _inputFocus.hasFocus) _setOpen(true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.disabled || intent != _focusIntent) return;
+      final focus = FocusManager.instance.primaryFocus;
+      final focusWithinSelect =
+          focus?.context?.findAncestorStateOfType<_BeuiMultiSelectState>() ==
+          this;
+      final removedFocus =
+          focus == null || (focus is FocusScopeNode && focus == previousFocus);
+      if (!removedFocus && focus != _inputFocus && !focusWithinSelect) {
+        return;
+      }
+      _inputFocus.requestFocus();
+    });
+  }
+
   void _removeValue(String value) {
     if (widget.disabled || !_values.contains(value)) return;
     final next = _values.where((entry) => entry != value).toList();
     if (widget.value == null) setState(() => _internalValues = next);
     widget.onChanged?.call(List<String>.unmodifiable(next));
-    _inputFocus.requestFocus();
   }
 
   KeyEventResult _onKey(FocusNode node, KeyEvent event) {
@@ -275,40 +342,51 @@ class _BeuiMultiSelectState extends State<BeuiMultiSelect> {
       child: BeuiOverlay(
         open: _isOpen,
         onDismiss: () => _setOpen(false),
-        barrierColor: Colors.transparent,
+        barrier: false,
+        trapFocus: false,
         barrierBlur: 0,
         enterDuration: const Duration(milliseconds: 240),
         exitDuration: const Duration(milliseconds: 160),
-        overlayBuilder: (context, animation, link) =>
-            _MultiSelectContent(animation: animation, link: link),
-        child: BeuiMultiSelectTrigger(
-          key: _triggerKey,
-          link: _link,
-          child: Row(
-            children: [
-              Expanded(
-                child: Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    BeuiMultiSelectValue(placeholder: widget.placeholder),
-                    BeuiMultiSelectInput(
-                      controller: _controller,
-                      focusNode: _inputFocus,
-                      onKeyEvent: _onKey,
-                      hintText: widget.searchHint,
-                    ),
-                  ],
+        overlayBuilder: (context, animation, link) => _MultiSelectContent(
+          key: _contentKey,
+          animation: animation,
+          link: link,
+        ),
+        child: TapRegion(
+          groupId: this,
+          onTapOutside: (_) {
+            _focusIntent++;
+            if (_isOpen) _setOpen(false);
+          },
+          child: BeuiMultiSelectTrigger(
+            key: _triggerKey,
+            link: _link,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      BeuiMultiSelectValue(placeholder: widget.placeholder),
+                      BeuiMultiSelectInput(
+                        controller: _controller,
+                        focusNode: _inputFocus,
+                        onKeyEvent: _onKey,
+                        hintText: widget.searchHint,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Icon(
-                LucideIcons.chevron_down,
-                size: 16,
-                color: BeuiColors.resolve(context).mutedForeground,
-              ),
-            ],
+                const SizedBox(width: 8),
+                Icon(
+                  LucideIcons.chevron_down,
+                  size: 16,
+                  color: BeuiColors.resolve(context).mutedForeground,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -464,16 +542,25 @@ class _MultiSelectToken extends StatelessWidget {
                 ),
               ),
             ),
-            IconButton(
-              tooltip: 'Remove $label',
-              onPressed: state.widget.disabled
-                  ? null
-                  : () => state._removeValue(value),
-              icon: const Icon(LucideIcons.x, size: 12),
-              visualDensity: VisualDensity.compact,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints.tightFor(width: 22, height: 22),
-              color: colors.mutedForeground,
+            MergeSemantics(
+              child: Semantics(
+                label: 'Remove $label',
+                child: IconButton(
+                  onPressed: state.widget.disabled
+                      ? null
+                      : () {
+                          state._removeChip(value);
+                        },
+                  icon: const Icon(LucideIcons.x, size: 12),
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints.tightFor(
+                    width: 22,
+                    height: 22,
+                  ),
+                  color: colors.mutedForeground,
+                ),
+              ),
             ),
           ],
         ),
@@ -516,13 +603,18 @@ class BeuiMultiSelectInput extends StatelessWidget {
     return ConstrainedBox(
       constraints: const BoxConstraints(minWidth: 48, maxWidth: 190),
       child: Focus(
+        skipTraversal: true,
         onKeyEvent: onKeyEvent,
         child: TextField(
+          groupId: state,
           controller: controller ?? state._controller,
           focusNode: focusNode ?? state._inputFocus,
           enabled: !state.widget.disabled,
           onTap: () => state._setOpen(true),
-          onChanged: state._setQuery,
+          onChanged: (query) {
+            state._setQuery(query);
+            if (!state._isOpen) state._setOpen(true);
+          },
           textInputAction: TextInputAction.search,
           autocorrect: false,
           enableSuggestions: false,
@@ -567,7 +659,11 @@ class BeuiMultiSelectContent extends StatelessWidget {
 }
 
 class _MultiSelectContent extends StatelessWidget {
-  const _MultiSelectContent({required this.animation, required this.link});
+  const _MultiSelectContent({
+    super.key,
+    required this.animation,
+    required this.link,
+  });
   final Animation<double> animation;
   final LayerLink link;
 
@@ -584,33 +680,39 @@ class _MultiSelectContent extends StatelessWidget {
       link: state._link,
       showWhenUnlinked: false,
       offset: Offset(0, height + 6),
-      child: Material(
-        color: Colors.transparent,
-        child: SizedBox(
-          width: width,
-          child: AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              final t = animation.value;
-              final y = reduce ? 0.0 : 6 * (1 - t);
-              return Opacity(
-                opacity: t,
-                child: Transform.translate(offset: Offset(0, y), child: child),
-              );
-            },
-            child: Material(
-              elevation: 8,
-              color: colors.background,
-              clipBehavior: Clip.antiAlias,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(color: colors.border),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: BeuiMultiSelectContent(
-                child: BeuiMultiSelectList(
-                  items: state._visibleItems,
-                  activeIndex: state._activeIndex,
-                  emptyLabel: state.widget.emptyLabel,
+      child: TapRegion(
+        groupId: state,
+        child: Material(
+          color: Colors.transparent,
+          child: SizedBox(
+            width: width,
+            child: AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                final t = animation.value;
+                final y = reduce ? 0.0 : 6 * (1 - t);
+                return Opacity(
+                  opacity: t,
+                  child: Transform.translate(
+                    offset: Offset(0, y),
+                    child: child,
+                  ),
+                );
+              },
+              child: Material(
+                elevation: 8,
+                color: colors.background,
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: colors.border),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: BeuiMultiSelectContent(
+                  child: BeuiMultiSelectList(
+                    items: state._visibleItems,
+                    activeIndex: state._activeIndex,
+                    emptyLabel: state.widget.emptyLabel,
+                  ),
                 ),
               ),
             ),

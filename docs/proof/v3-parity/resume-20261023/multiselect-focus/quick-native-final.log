@@ -1,0 +1,31 @@
+Injecting <script> tag. Using callback.
+{
+  state: {
+    value: [ 'beta', 'gamma' ],
+    calls: [ [Array] ],
+    query: '',
+    open: true,
+    opens: [ true ],
+    queries: [],
+    alive: true,
+    reject: false,
+    controlled: false,
+    disableAnimations: false
+  },
+  active: 'FLUTTER-VIEW'
+}
+{
+  state: {
+    value: [ 'beta', 'gamma' ],
+    calls: [ [Array] ],
+    query: '',
+    open: false,
+    opens: [ true, false ],
+    queries: [ '' ],
+    alive: true,
+    reject: false,
+    controlled: false,
+    disableAnimations: false
+  },
+  active: 'FLUTTER-VIEW'
+}

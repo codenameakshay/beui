@@ -19,6 +19,11 @@ Widget _app({
   List<String> defaultValue = const [],
   ValueChanged<List<String>>? onChanged,
   bool reduce = false,
+  bool? open,
+  String? query,
+  bool disabled = false,
+  ValueChanged<bool>? onOpenChanged,
+  ValueChanged<String>? onQueryChanged,
 }) {
   final child = Scaffold(
     body: Center(
@@ -26,6 +31,11 @@ Widget _app({
         width: 340,
         child: BeuiMultiSelect(
           items: _items,
+          open: open,
+          query: query,
+          disabled: disabled,
+          onOpenChanged: onOpenChanged,
+          onQueryChanged: onQueryChanged,
           value: value,
           defaultValue: defaultValue,
           onChanged: onChanged,
@@ -48,6 +58,344 @@ Widget _app({
 }
 
 void main() {
+  for (final override in [false, true]) {
+    testWidgets('previous external focus owner override=$override', (
+      tester,
+    ) async {
+      final external = FocusNode(debugLabel: 'external');
+      addTearDown(external.dispose);
+      final selections = <List<String>>[];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                SizedBox(
+                  width: 340,
+                  child: BeuiMultiSelect(
+                    items: _items,
+                    defaultValue: const ['design'],
+                    onChanged: (values) {
+                      selections.add(values);
+                      if (override) external.requestFocus();
+                    },
+                  ),
+                ),
+                const SizedBox(height: 250),
+                TextField(focusNode: external),
+              ],
+            ),
+          ),
+        ),
+      );
+      external.requestFocus();
+      await tester.pump();
+      expect(external.hasFocus, isTrue);
+      await tester.tap(find.bySemanticsLabel('Remove Design'));
+      await tester.idle();
+      await tester.pumpAndSettle();
+      expect(external.hasFocus, override);
+      expect(
+        tester
+            .widget<TextField>(find.byType(TextField).first)
+            .focusNode!
+            .hasFocus,
+        !override,
+      );
+      expect(selections, [<String>[]]);
+    });
+  }
+
+  for (final reverse in [false, true]) {
+    for (final reject in [false, true]) {
+      testWidgets('focus traversal reverse=$reverse reject=$reject', (
+        tester,
+      ) async {
+        final before = FocusNode();
+        final after = FocusNode();
+        addTearDown(before.dispose);
+        addTearDown(after.dispose);
+        final opens = <bool>[];
+        final queries = <String>[];
+        final selections = <List<String>>[];
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Column(
+                children: [
+                  TextField(focusNode: before),
+                  SizedBox(
+                    width: 340,
+                    child: BeuiMultiSelect(
+                      items: _items,
+                      open: reject ? true : null,
+                      query: reject ? 'kept' : null,
+                      onOpenChanged: opens.add,
+                      onQueryChanged: queries.add,
+                      onChanged: selections.add,
+                    ),
+                  ),
+                  const SizedBox(height: 300),
+                  TextField(focusNode: after),
+                ],
+              ),
+            ),
+          ),
+        );
+        final input = find.descendant(
+          of: find.byType(BeuiMultiSelect),
+          matching: find.byType(TextField),
+        );
+        await tester.tap(input);
+        await tester.pumpAndSettle();
+        if (!reject) await tester.enterText(input, 'xy');
+        await tester.pumpAndSettle();
+        opens.clear();
+        queries.clear();
+        if (reverse) {
+          await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+        }
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        if (reverse) await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+        await tester.pumpAndSettle();
+        expect((reverse ? before : after).hasFocus, isTrue);
+        expect(opens, [false]);
+        expect(queries, ['']);
+        expect(
+          tester.widget<TextField>(input).controller!.text,
+          reject ? 'kept' : '',
+        );
+        expect(
+          find.byType(BeuiMultiSelectContent),
+          reject ? findsOneWidget : findsNothing,
+        );
+        opens.clear();
+        queries.clear();
+        if (!reverse) {
+          await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+        }
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        if (!reverse) await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+        await tester.pumpAndSettle();
+        expect(tester.widget<TextField>(input).focusNode!.hasFocus, isTrue);
+        expect(opens, [true]);
+        expect(queries, isEmpty);
+        expect(selections, isEmpty);
+        expect(find.byType(BeuiMultiSelectContent), findsOneWidget);
+      });
+    }
+  }
+
+  testWidgets('reverse traversal to a chip stays inside the select', (
+    tester,
+  ) async {
+    final opens = <bool>[];
+    final queries = <String>[];
+    final selections = <List<String>>[];
+    await tester.pumpWidget(
+      _app(
+        defaultValue: ['design'],
+        onOpenChanged: opens.add,
+        onQueryChanged: queries.add,
+        onChanged: selections.add,
+      ),
+    );
+    await tester.tap(find.byType(TextField));
+    await tester.enterText(find.byType(TextField), 'xy');
+    await tester.pumpAndSettle();
+    opens.clear();
+    queries.clear();
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+      isFalse,
+    );
+    expect(find.byType(BeuiMultiSelectContent), findsOneWidget);
+    expect(opens, isEmpty);
+    expect(queries, isEmpty);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+      isTrue,
+    );
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      'xy',
+    );
+    expect(opens, [true]);
+    expect(queries, isEmpty);
+    expect(selections, isEmpty);
+  });
+
+  testWidgets('popup pointer selection retains open without close proposal', (
+    tester,
+  ) async {
+    final opens = <bool>[];
+    final selections = <List<String>>[];
+    await tester.pumpWidget(
+      _app(onOpenChanged: opens.add, onChanged: selections.add),
+    );
+    await tester.tap(find.byType(TextField));
+    await tester.pumpAndSettle();
+    opens.clear();
+    await tester.tap(find.text('Engineering'));
+    await tester.pumpAndSettle();
+    expect(selections, [
+      ['engineering'],
+    ]);
+    expect(opens.where((open) => !open), isEmpty);
+    expect(find.byType(BeuiMultiSelectContent), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+      isTrue,
+    );
+  });
+
+  testWidgets('later external pointer focus survives chip rebuild', (
+    tester,
+  ) async {
+    final external = FocusNode();
+    addTearDown(external.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Column(
+            children: [
+              const SizedBox(
+                width: 340,
+                child: BeuiMultiSelect(items: _items, defaultValue: ['design']),
+              ),
+              const SizedBox(height: 250),
+              TextField(key: const Key('external'), focusNode: external),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.bySemanticsLabel('Remove Design'));
+    await tester.tap(find.byKey(const Key('external')));
+    await tester.idle();
+    expect(external.hasFocus, isTrue);
+    await tester.pumpAndSettle();
+    expect(external.hasFocus, isTrue);
+    expect(
+      tester
+          .widget<TextField>(find.byType(TextField).first)
+          .focusNode!
+          .hasFocus,
+      isFalse,
+    );
+  });
+
+  testWidgets('typing after Escape reopens without another click', (
+    tester,
+  ) async {
+    final opens = <bool>[];
+    final queries = <String>[];
+    await tester.pumpWidget(
+      _app(onOpenChanged: opens.add, onQueryChanged: queries.add),
+    );
+    await tester.tap(find.byType(TextField));
+    await tester.pumpAndSettle();
+    tester.testTextInput.enterText('zz');
+    await tester.pumpAndSettle();
+    opens.clear();
+    queries.clear();
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(opens, [false]);
+    expect(queries, ['']);
+    expect(find.byType(BeuiMultiSelectList), findsNothing);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+      isTrue,
+    );
+    tester.testTextInput.enterText('xy');
+    await tester.pumpAndSettle();
+    expect(opens, [false, true]);
+    expect(queries, ['', 'xy']);
+    expect(find.byType(BeuiMultiSelectList), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      'xy',
+    );
+  });
+
+  for (final action in ['dispose', 'replace', 'disable', 'close', 'focus']) {
+    testWidgets('chip deferred focus respects owner $action', (tester) async {
+      var alive = true;
+      var epoch = 0;
+      var disabled = false;
+      bool? open;
+      final external = FocusNode();
+      addTearDown(external.dispose);
+      late StateSetter update;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StatefulBuilder(
+            builder: (context, setOwner) {
+              update = setOwner;
+              return Scaffold(
+                body: Column(
+                  children: [
+                    if (alive)
+                      SizedBox(
+                        width: 340,
+                        child: BeuiMultiSelect(
+                          key: ValueKey(epoch),
+                          items: _items,
+                          defaultValue: const ['design'],
+                          disabled: disabled,
+                          open: open,
+                        ),
+                      ),
+                    const SizedBox(height: 250),
+                    TextField(focusNode: external),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+      await tester.tap(find.bySemanticsLabel('Remove Design'));
+      update(() {
+        switch (action) {
+          case 'dispose':
+            alive = false;
+          case 'replace':
+            epoch++;
+          case 'disable':
+            disabled = true;
+          case 'close':
+            open = false;
+          case 'focus':
+            external.requestFocus();
+        }
+      });
+      await tester.idle();
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      if (action == 'focus') expect(external.hasFocus, isTrue);
+      if (alive) {
+        expect(
+          tester
+              .widget<TextField>(find.byType(TextField).first)
+              .focusNode!
+              .hasFocus,
+          isFalse,
+        );
+      }
+      if (action != 'focus' && action != 'disable') {
+        expect(find.byType(BeuiMultiSelectList), findsNothing);
+      }
+    });
+  }
+
   group('BeuiMultiSelect selection', () {
     testWidgets('trigger hover uses the strong border color', (tester) async {
       await tester.pumpWidget(_app(reduce: true));
@@ -129,10 +477,10 @@ void main() {
         _app(value: const ['design'], onChanged: (v) => result = v),
       );
       expect(find.text('Design'), findsOneWidget);
-      await tester.tap(find.byTooltip('Remove Design'));
+      await tester.tap(find.bySemanticsLabel('Remove Design'));
       await tester.pumpAndSettle();
       expect(result, isEmpty);
-      expect(find.text('Design'), findsOneWidget);
+      expect(find.bySemanticsLabel('Remove Design'), findsOneWidget);
     });
 
     testWidgets('removes last token with Backspace when query is empty', (
@@ -170,6 +518,132 @@ void main() {
       await tester.pumpAndSettle();
       expect(result, isNull);
     });
+  });
+
+  for (final reduce in [false, true]) {
+    for (final initiallyOpen in [false, true]) {
+      for (final reject in [false, true]) {
+        testWidgets(
+          'chip removal keeps input usable reduce=$reduce open=$initiallyOpen reject=$reject',
+          (tester) async {
+            var values = <String>['design', 'product'];
+            final calls = <List<String>>[];
+            await tester.pumpWidget(
+              StatefulBuilder(
+                builder: (context, setOwner) => _app(
+                  reduce: reduce,
+                  value: values,
+                  onChanged: (next) => setOwner(() {
+                    calls.add(next);
+                    if (!reject) values = next;
+                  }),
+                ),
+              ),
+            );
+            if (initiallyOpen) {
+              await tester.tap(find.byType(TextField));
+              await tester.pumpAndSettle();
+            }
+            await tester.tap(find.bySemanticsLabel('Remove Design'));
+            await tester.pumpAndSettle();
+            expect(calls, [
+              ['product'],
+            ]);
+            expect(
+              find.bySemanticsLabel('Remove Design'),
+              reject ? findsOneWidget : findsNothing,
+            );
+            expect(find.byType(BeuiMultiSelectList), findsOneWidget);
+            expect(
+              tester
+                  .widget<TextField>(find.byType(TextField))
+                  .focusNode!
+                  .hasFocus,
+              isTrue,
+            );
+            tester.testTextInput.enterText('zz');
+            await tester.pumpAndSettle();
+            expect(find.text('No options found.'), findsOneWidget);
+            expect(calls, [
+              ['product'],
+            ]);
+            await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+            await tester.pumpAndSettle();
+            expect(find.byType(BeuiMultiSelectList), findsNothing);
+            tester.testTextInput.enterText('xy');
+            await tester.pumpAndSettle();
+            expect(find.byType(BeuiMultiSelectList), findsOneWidget);
+            expect(
+              tester.widget<TextField>(find.byType(TextField)).controller!.text,
+              'xy',
+            );
+            await tester.tapAt(const Offset(10, 10));
+            await tester.pumpAndSettle();
+            expect(find.byType(BeuiMultiSelectList), findsNothing);
+            expect(calls, [
+              ['product'],
+            ]);
+          },
+        );
+      }
+    }
+  }
+
+  testWidgets('chip respects rejecting controlled open and query owners', (
+    tester,
+  ) async {
+    final changes = <List<String>>[];
+    final opens = <bool>[];
+    final queries = <String>[];
+    await tester.pumpWidget(
+      StatefulBuilder(
+        builder: (context, rebuild) => _app(
+          value: const ['design'],
+          open: false,
+          query: 'kept',
+          onChanged: changes.add,
+          onOpenChanged: opens.add,
+          onQueryChanged: (q) => rebuild(() => queries.add(q)),
+        ),
+      ),
+    );
+    await tester.tap(find.bySemanticsLabel('Remove Design'));
+    await tester.pumpAndSettle();
+    expect(changes, [<String>[]]);
+    expect(opens, [true]);
+    expect(find.byType(BeuiMultiSelectList), findsNothing);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      'kept',
+    );
+    tester.testTextInput.enterText('attempt');
+    await tester.pumpAndSettle();
+    expect(queries, ['attempt']);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      'kept',
+    );
+    expect(changes, [<String>[]]);
+  });
+
+  testWidgets('disabled trigger and chip emit no callbacks', (tester) async {
+    final changes = <List<String>>[];
+    final opens = <bool>[];
+    await tester.pumpWidget(
+      _app(
+        value: const ['design'],
+        disabled: true,
+        onChanged: changes.add,
+        onOpenChanged: opens.add,
+      ),
+    );
+    await tester.tap(find.bySemanticsLabel('Remove Design'));
+    await tester.tap(find.byType(BeuiMultiSelectTrigger));
+    await tester.pumpAndSettle();
+    expect(changes, isEmpty);
+    expect(opens, isEmpty);
+    expect(find.byType(BeuiMultiSelectList), findsNothing);
+    expect(find.bySemanticsLabel('Remove Design'), findsOneWidget);
   });
 
   testWidgets('rest-state golden with selected removable tokens', (
