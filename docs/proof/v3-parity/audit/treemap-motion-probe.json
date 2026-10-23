@@ -1,0 +1,15 @@
+{
+  "probe": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"ref_energy\": 0,\n  \"cand_energy\": 0.00002,\n  \"energy_ratio\": 0,\n  \"temporal_corr\": null,\n  \"ref_moving\": false,\n  \"cand_moving\": false,\n  \"motion_status\": \"static\",\n  \"motion_score\": null,\n  \"ref_signature\": [\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0\n  ],\n  \"cand_signature\": [\n    0.0003,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0\n  ],\n  \"frames\": {\n    \"reference\": 12,\n    \"candidate\": 12\n  },\n  \"critique_rubric\": \"Motion comparison (neither side animates in these frames). `motion_status` is static. A null `motion_score` is inconclusive (static or capture_unreliable), not a perfect 100. `temporal_corr` is the rhythm match (null for steady motion with no profile). Inspect the `motion_signature` chart (green=reference, blue=candidate): compare the curves' height (animation intensity) and shape (timing). Note this samples frames at a fixed cadence — a one-shot animation may have finished before capture, so a low score can mean 'not captured' as well as 'not faithful'.\",\n  \"stub\": false,\n  \"visuals\": []\n}"
+      }
+    ]
+  },
+  "input": {
+    "reference": ".github/screenshots/charts/src-treemap-hover",
+    "candidate": ".github/screenshots/charts/flt-treemap-hover"
+  },
+  "verdict": "INCONCLUSIVE: no captured point transition on reference; not a motion pass"
+}
