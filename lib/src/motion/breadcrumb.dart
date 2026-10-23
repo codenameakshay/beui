@@ -7,7 +7,7 @@ import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/icons.dart';
 import '../tokens/motion.dart';
-import '_engine.dart' show SingleMotionBuilder;
+import '_engine.dart' show SingleMotionBuilder, CurvedMotion;
 
 /// A labelled navigation landmark for a path of [BeuiBreadcrumbItem]s.
 class BeuiBreadcrumb extends StatelessWidget {
@@ -30,7 +30,7 @@ class BeuiBreadcrumb extends StatelessWidget {
 }
 
 /// A wrapping path. Set [maxItems] to collapse middle items into an ellipsis.
-class BeuiBreadcrumbList extends StatelessWidget {
+class BeuiBreadcrumbList extends StatefulWidget {
   const BeuiBreadcrumbList({
     required this.children,
     super.key,
@@ -50,10 +50,29 @@ class BeuiBreadcrumbList extends StatelessWidget {
   final double runSpacing;
 
   @override
-  Widget build(BuildContext context) {
+  State<BeuiBreadcrumbList> createState() => _BreadcrumbListState();
+}
+
+class _BreadcrumbEntry {
+  _BreadcrumbEntry(this.id, this.child, this.initial);
+  final Key id;
+  Widget child;
+  final bool initial;
+  final measure = GlobalKey();
+  Rect? exitRect;
+  Timer? timer;
+}
+
+class _BreadcrumbListState extends State<BeuiBreadcrumbList> {
+  final _listKey = GlobalKey();
+  final _entries = <_BreadcrumbEntry>[];
+
+  List<Widget> _visible() {
+    final children = widget.children;
+    final maxItems = widget.maxItems;
     final finiteLimit = maxItems == null
         ? children.length
-        : (maxItems! < 3 ? 3 : maxItems!);
+        : (maxItems < 3 ? 3 : maxItems);
     final collapse = maxItems != null && children.length > finiteLimit;
     final tailCount = finiteLimit - 2;
     final visible = collapse
@@ -66,7 +85,7 @@ class BeuiBreadcrumbList extends StatelessWidget {
                 children: [
                   const BeuiBreadcrumbSeparator(),
                   BeuiBreadcrumbEllipsis(
-                    label: overflowLabel,
+                    label: widget.overflowLabel,
                     children: children.sublist(1, children.length - tailCount),
                   ),
                 ],
@@ -76,16 +95,117 @@ class BeuiBreadcrumbList extends StatelessWidget {
           ]
         : children;
 
-    return Semantics(
-      explicitChildNodes: true,
-      child: Wrap(
-        spacing: spacing,
-        runSpacing: runSpacing,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: visible,
-      ),
-    );
+    return visible;
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _reconcile(initial: true);
+  }
+
+  @override
+  void didUpdateWidget(BeuiBreadcrumbList old) {
+    super.didUpdateWidget(old);
+    _reconcile();
+  }
+
+  void _reconcile({bool initial = false}) {
+    final visible = _visible();
+    final next = <_BreadcrumbEntry>[];
+    for (var i = 0; i < visible.length; i++) {
+      final child = visible[i];
+      final id = child.key ?? ValueKey(i);
+      final entry =
+          _entries.where((entry) => entry.id == id).firstOrNull ??
+          _BreadcrumbEntry(id, child, initial);
+      entry.child = child;
+      entry.exitRect = null;
+      entry.timer?.cancel();
+      next.add(entry);
+    }
+    final list = _listKey.currentContext?.findRenderObject() as RenderBox?;
+    for (final entry in _entries.where((entry) => !next.contains(entry))) {
+      if (entry.exitRect == null) {
+        final box =
+            entry.measure.currentContext?.findRenderObject() as RenderBox?;
+        if (list == null || box == null || !box.hasSize) continue;
+        entry.exitRect =
+            list.globalToLocal(box.localToGlobal(Offset.zero)) & box.size;
+        entry.timer = Timer(const Duration(milliseconds: 200), () {
+          if (mounted) setState(() => _entries.remove(entry));
+        });
+      }
+      next.add(entry);
+    }
+    _entries
+      ..clear()
+      ..addAll(next);
+  }
+
+  @override
+  void dispose() {
+    for (final entry in _entries) {
+      entry.timer?.cancel();
+    }
+    super.dispose();
+  }
+
+  Widget _item(_BreadcrumbEntry entry) => KeyedSubtree(
+    key: entry.measure,
+    child: IgnorePointer(
+      ignoring: entry.exitRect != null,
+      child: ExcludeFocus(
+        excluding: entry.exitRect != null,
+        child: ExcludeSemantics(
+          excluding: entry.exitRect != null,
+          child: SingleMotionBuilder(
+            value: entry.exitRect == null ? 1 : 0,
+            from: entry.initial ? 1 : 0,
+            motion: const CurvedMotion(
+              Duration(milliseconds: 200),
+              beuiEaseOut,
+            ),
+            child: entry.child,
+            builder: (context, p, child) => Opacity(
+              opacity: p.clamp(0, 1),
+              child: Transform.translate(
+                offset: Offset(
+                  0,
+                  MediaQuery.disableAnimationsOf(context) ? 0 : 6 * (1 - p),
+                ),
+                child: child,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    explicitChildNodes: true,
+    child: Stack(
+      key: _listKey,
+      clipBehavior: Clip.none,
+      children: [
+        Wrap(
+          spacing: widget.spacing,
+          runSpacing: widget.runSpacing,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            for (final entry in _entries.where(
+              (entry) => entry.exitRect == null,
+            ))
+              _item(entry),
+          ],
+        ),
+        for (final entry in _entries.where((entry) => entry.exitRect != null))
+          Positioned.fromRect(rect: entry.exitRect!, child: _item(entry)),
+      ],
+    ),
+  );
 }
 
 /// One path segment. Use stable keys when replacing route segments.
@@ -96,32 +216,7 @@ class BeuiBreadcrumbItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movement = motionFor(context, beuiSpringLayout, isMovement: true);
-    final fade = motionFor(context, beuiSpringSwap, isMovement: false);
-    return Semantics(
-      container: true,
-      explicitChildNodes: true,
-      child: SingleMotionBuilder(
-        value: 1,
-        from: 0,
-        motion: movement,
-        builder: (context, position, child) => Opacity(
-          opacity: position.clamp(0.0, 1.0),
-          child: Transform.translate(
-            offset: Offset(0, 6 * (1 - position)),
-            child: child,
-          ),
-        ),
-        child: SingleMotionBuilder(
-          value: 1,
-          from: 0,
-          motion: fade,
-          builder: (context, opacity, child) =>
-              Opacity(opacity: opacity.clamp(0.0, 1.0), child: child),
-          child: child,
-        ),
-      ),
-    );
+    return Semantics(container: true, explicitChildNodes: true, child: child);
   }
 }
 
@@ -246,6 +341,12 @@ class BeuiBreadcrumbEllipsis extends StatefulWidget {
 
 class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
   bool _open = false;
+  final _triggerKey = GlobalKey();
+  final _panelKey = GlobalKey();
+  final _triggerFocus = FocusNode();
+  final _panelFocus = FocusScopeNode();
+  Offset _panelOffset = const Offset(0, 38);
+  bool _above = false;
   Timer? _closeTimer;
   final FocusNode _firstLinkFocus = FocusNode(
     debugLabel: 'Breadcrumb overflow first link',
@@ -255,13 +356,62 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
   void dispose() {
     _closeTimer?.cancel();
     _firstLinkFocus.dispose();
+    _triggerFocus.dispose();
+    _panelFocus.dispose();
     super.dispose();
   }
 
   void _openAndFocus() {
     setState(() => _open = true);
+    _focusFirst();
+  }
+
+  void _focusFirst([int attempt = 0]) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && _open) _firstLinkFocus.requestFocus();
+      if (mounted && _open) {
+        final link = _panelFocus.traversalDescendants
+            .where((node) => node.canRequestFocus && !node.skipTraversal)
+            .firstOrNull;
+        link?.requestFocus();
+        if (link == null && attempt < 3) _focusFirst(attempt + 1);
+      }
+    });
+  }
+
+  void _close() {
+    final returnFocus = _panelFocus.hasFocus;
+    setState(() => _open = false);
+    if (returnFocus) _triggerFocus.requestFocus();
+  }
+
+  void _measurePanel() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_open) return;
+      final trigger =
+          _triggerKey.currentContext?.findRenderObject() as RenderBox?;
+      final panel = _panelKey.currentContext?.findRenderObject() as RenderBox?;
+      if (trigger == null || panel == null || !panel.hasSize) return;
+      final rect = trigger.localToGlobal(Offset.zero) & trigger.size;
+      final viewport = MediaQuery.sizeOf(context);
+      final above =
+          rect.bottom + 6 + panel.size.height > viewport.height - 8 &&
+          rect.top > viewport.height - rect.bottom;
+      final x =
+          rect.left.clamp(
+            8.0,
+            (viewport.width - panel.size.width - 8).clamp(8.0, double.infinity),
+          ) -
+          rect.left;
+      final offset = Offset(
+        x,
+        above ? -panel.size.height - 6 : rect.height + 6,
+      );
+      if (_panelOffset != offset || _above != above) {
+        setState(() {
+          _panelOffset = offset;
+          _above = above;
+        });
+      }
     });
   }
 
@@ -273,20 +423,21 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
   void _scheduleClose() {
     _cancelClose();
     _closeTimer = Timer(const Duration(milliseconds: 160), () {
-      if (mounted && !_firstLinkFocus.hasFocus) setState(() => _open = false);
+      if (mounted && !_panelFocus.hasFocus) _close();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
+    _measurePanel();
     return BeuiOverlay(
       open: _open,
       barrier: true,
       barrierColor: Colors.transparent,
-      onDismiss: () => setState(() => _open = false),
-      enterDuration: const Duration(milliseconds: 200),
-      exitDuration: const Duration(milliseconds: 150),
+      onDismiss: _close,
+      enterDuration: const Duration(milliseconds: 500),
+      exitDuration: const Duration(milliseconds: 500),
       overlayBuilder: (context, animation, link) => Stack(
         children: [
           Positioned.fill(
@@ -295,42 +446,78 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
               child: CompositedTransformFollower(
                 link: link,
                 showWhenUnlinked: false,
-                offset: const Offset(0, 38),
+                offset: _panelOffset,
                 child: MouseRegion(
                   onEnter: (_) => _cancelClose(),
                   onExit: (_) => _scheduleClose(),
-                  child: FadeTransition(
-                    opacity: animation,
-                    child: Material(
-                      color: colors.background,
-                      elevation: 8,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: colors.border),
-                        borderRadius: BorderRadius.circular(10),
+                  child: SingleMotionBuilder(
+                    value: _open ? 1 : 0,
+                    from: 0,
+                    motion: motionFor(
+                      context,
+                      beuiSpringPanel,
+                      isMovement: true,
+                      reducedFallback: const CurvedMotion(
+                        Duration(milliseconds: 120),
                       ),
-                      clipBehavior: Clip.antiAlias,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxWidth: 224,
-                          maxHeight: 256,
-                        ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              for (
-                                var index = 0;
-                                index < widget.children.length;
-                                index++
-                              )
-                                Focus(
-                                  focusNode: index == 0
-                                      ? _firstLinkFocus
-                                      : null,
-                                  child: widget.children[index],
+                    ),
+                    builder: (context, p, child) => Opacity(
+                      opacity: p.clamp(0, 1),
+                      child: MediaQuery.disableAnimationsOf(context)
+                          ? child
+                          : Transform.scale(
+                              scale: .96 + .04 * p,
+                              alignment: _above
+                                  ? Alignment.bottomLeft
+                                  : Alignment.topLeft,
+                              child: ClipPath(
+                                clipper: _BreadcrumbMorphClip(
+                                  p.clamp(0, 1),
+                                  _above,
                                 ),
-                            ],
+                                child: child,
+                              ),
+                            ),
+                    ),
+                    child: FocusScope(
+                      node: _panelFocus,
+                      child: Material(
+                        key: _panelKey,
+                        color: colors.background,
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: colors.border),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxWidth: 224,
+                            maxHeight: 256,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  for (
+                                    var index = 0;
+                                    index < widget.children.length;
+                                    index++
+                                  )
+                                    Focus(
+                                      skipTraversal: true,
+                                      canRequestFocus: false,
+                                      focusNode: index == 0
+                                          ? _firstLinkFocus
+                                          : null,
+                                      child: widget.children[index],
+                                    ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -358,10 +545,21 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
           },
           onExit: (_) => _scheduleClose(),
           child: IconButton(
+            key: _triggerKey,
+            focusNode: _triggerFocus,
             tooltip: widget.label,
             visualDensity: VisualDensity.compact,
             constraints: const BoxConstraints.tightFor(width: 32, height: 32),
-            onPressed: () => setState(() => _open = !_open),
+            onPressed: () {
+              if (_open) {
+                _close();
+              } else if (FocusManager.instance.highlightMode ==
+                  FocusHighlightMode.traditional) {
+                _openAndFocus();
+              } else {
+                setState(() => _open = true);
+              }
+            },
             style: IconButton.styleFrom(foregroundColor: colors.mutedForeground)
                 .copyWith(
                   backgroundColor: WidgetStateProperty.resolveWith((states) {
@@ -381,4 +579,26 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
       ),
     );
   }
+}
+
+class _BreadcrumbMorphClip extends CustomClipper<Path> {
+  const _BreadcrumbMorphClip(this.progress, this.above);
+  final double progress;
+  final bool above;
+  @override
+  Path getClip(Size size) {
+    final hidden = .92 * (1 - progress);
+    final rect = Rect.fromLTRB(
+      0,
+      above ? size.height * hidden : 0,
+      size.width * (1 - hidden),
+      above ? size.height : size.height * (1 - hidden),
+    );
+    return Path()
+      ..addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(10)));
+  }
+
+  @override
+  bool shouldReclip(_BreadcrumbMorphClip old) =>
+      old.progress != progress || old.above != above;
 }

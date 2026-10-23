@@ -22,13 +22,17 @@ class _BreadcrumbDemoState extends State<_BreadcrumbDemo> {
     'Breadcrumb',
   ];
   int _depth = 5;
-  final FocusNode _currentFocus = FocusNode(
-    debugLabel: 'Current breadcrumb page',
+  final _pageFocus = <int, FocusNode>{};
+  FocusNode get _currentFocus => _pageFocus.putIfAbsent(
+    _depth,
+    () => FocusNode(debugLabel: 'Current breadcrumb page $_depth'),
   );
 
   @override
   void dispose() {
-    _currentFocus.dispose();
+    for (final focus in _pageFocus.values) {
+      focus.dispose();
+    }
     super.dispose();
   }
 

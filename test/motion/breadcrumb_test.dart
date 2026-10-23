@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:beui/src/motion/breadcrumb.dart';
@@ -23,6 +24,81 @@ Widget _app(Widget child, {bool reduce = false, double? width}) {
 }
 
 void main() {
+  testWidgets('removed routes retain visual exit but cannot activate', (
+    tester,
+  ) async {
+    var removed = false;
+    var activations = 0;
+    late StateSetter update;
+    await tester.pumpWidget(
+      _app(
+        StatefulBuilder(
+          builder: (context, setState) {
+            update = setState;
+            return BeuiBreadcrumbList(
+              maxItems: null,
+              children: [
+                const BeuiBreadcrumbItem(
+                  key: ValueKey('home'),
+                  child: BeuiBreadcrumbPage(child: Text('Home')),
+                ),
+                if (!removed)
+                  BeuiBreadcrumbItem(
+                    key: const ValueKey('old'),
+                    child: BeuiBreadcrumbLink(
+                      onPressed: () => activations++,
+                      child: const Text('Old route'),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+    final old = tester.getRect(find.text('Old route'));
+    update(() => removed = true);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 80));
+    expect(find.text('Old route'), findsOneWidget);
+    expect(tester.getTopLeft(find.text('Old route')).dy, greaterThan(old.top));
+    await tester.tapAt(old.center);
+    expect(activations, 0);
+    await tester.pumpAndSettle();
+    expect(find.text('Old route'), findsNothing);
+    expect(find.text('Home'), findsOneWidget);
+  });
+
+  testWidgets(
+    'overflow keyboard open focuses an actual link and Escape returns',
+    (tester) async {
+      var activations = 0;
+      await tester.pumpWidget(
+        _app(
+          BeuiBreadcrumbEllipsis(
+            children: [
+              BeuiBreadcrumbLink(
+                onPressed: () => activations++,
+                child: const Text('Projects'),
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(activations, 1);
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+      expect(find.text('Projects'), findsNothing);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(find.text('Projects'), findsOneWidget);
+    },
+  );
   testWidgets('ancestor link reports activation', (tester) async {
     var activated = false;
     await tester.pumpWidget(
