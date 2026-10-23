@@ -1,0 +1,58 @@
+00:00 +0: loading /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart
+00:00 +0: pending-build reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+owner outside request must win; actual=collapsible trigger
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart:40:84)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart line 40
+The test description was:
+  pending-build reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: pending-build reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: pending-build reduce=false
+  
+00:00 +0 -1: pending-build reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+owner outside request must win; actual=collapsible trigger
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart:40:84)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart line 40
+The test description was:
+  pending-build reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: pending-build reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: pending-build reduce=true
+  
+00:00 +0 -2: Some tests failed.
+
+Failing tests:
+  /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=false
+  /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=true

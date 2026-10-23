@@ -64,11 +64,33 @@ class _BeuiCollapsibleState extends State<BeuiCollapsible> {
 
   void setOpen(bool next) {
     if (widget.disabled || next == isOpen) return;
-    if (isOpen && !next && _contentFocusScope.hasFocus) {
+    if (widget.open == null && !next && _contentOwnsFocus) {
       _triggerFocusNode.requestFocus();
     }
     if (widget.open == null) setState(() => _internalOpen = next);
     widget.onOpenChange?.call(next);
+  }
+
+  @override
+  void didUpdateWidget(BeuiCollapsible oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final wasOpen = oldWidget.open ?? _internalOpen;
+    if (wasOpen && !isOpen && _contentOwnsFocus) {
+      _triggerFocusNode.requestFocus();
+    }
+  }
+
+  bool get _contentOwnsFocus {
+    if (!_contentFocusScope.hasFocus) return false;
+    // Focus requests update scope history before primary-focus notifications.
+    // A newer request outside this path takes precedence over restoration.
+    FocusScopeNode scope = _contentFocusScope;
+    while (scope.enclosingScope != null) {
+      final parent = scope.enclosingScope!;
+      if (parent.focusedChild != scope) return false;
+      scope = parent;
+    }
+    return true;
   }
 
   void reportContentHeight(double height) {

@@ -1,0 +1,152 @@
+diff --git a/docs/proof/v3-parity/resume-20261024/collapsible-focus-precedence/originals/collapsible_test.dart b/test/motion/collapsible_test.dart
+index e975c91b0..5462ef080 100644
+--- a/docs/proof/v3-parity/resume-20261024/collapsible-focus-precedence/originals/collapsible_test.dart
++++ b/test/motion/collapsible_test.dart
+@@ -446,6 +446,147 @@ void main() {
+     });
+   }
+ 
++  for (final reduce in [false, true]) {
++    for (final scenario in [
++      'outside',
++      'nested outside',
++      'removed',
++      'reparented',
++      'disabled',
++      'second control',
++      'later callback',
++      'uncontrolled pending',
++    ]) {
++      testWidgets('pending rebuild focus $scenario reduce=$reduce', (
++        tester,
++      ) async {
++        final inside = FocusNode(debugLabel: 'inside');
++        final outside = FocusNode(debugLabel: 'outside');
++        addTearDown(inside.dispose);
++        addTearDown(outside.dispose);
++        final key = GlobalKey();
++        var open = true;
++        var pending = false;
++        var alive = true;
++        var moved = false;
++        final calls = <bool>[];
++        late StateSetter update;
++        await tester.pumpWidget(
++          beuiTestApp(
++            StatefulBuilder(
++              builder: (context, setState) {
++                update = setState;
++                if (pending) {
++                  pending = false;
++                  outside.requestFocus();
++                  expect(inside.hasFocus, isTrue);
++                }
++                final panel = BeuiCollapsible(
++                  key: key,
++                  open: scenario == 'uncontrolled pending' ? null : open,
++                  defaultOpen: true,
++                  disabled: scenario == 'disabled',
++                  onOpenChange: (value) {
++                    calls.add(value);
++                    if (scenario == 'later callback') {
++                      update(() => open = value);
++                      outside.requestFocus();
++                    }
++                  },
++                  child: Column(
++                    mainAxisSize: MainAxisSize.min,
++                    children: [
++                      const BeuiCollapsibleTrigger(
++                        child: Text('Pending toggle'),
++                      ),
++                      BeuiCollapsibleContent(
++                        child: Focus(
++                          focusNode: inside,
++                          child: const Text('Inside'),
++                        ),
++                      ),
++                    ],
++                  ),
++                );
++                Widget target = Focus(
++                  focusNode: outside,
++                  child: const Text('Outside'),
++                );
++                if (scenario == 'nested outside') {
++                  target = FocusScope(child: target);
++                }
++                if (scenario == 'second control') {
++                  target = BeuiCollapsible(
++                    defaultOpen: true,
++                    child: Column(
++                      mainAxisSize: MainAxisSize.min,
++                      children: [
++                        const BeuiCollapsibleTrigger(
++                          child: Text('Second toggle'),
++                        ),
++                        BeuiCollapsibleContent(child: target),
++                      ],
++                    ),
++                  );
++                }
++                return Column(
++                  mainAxisSize: MainAxisSize.min,
++                  children: [
++                    if (alive)
++                      Row(
++                        children: [
++                          Expanded(child: moved ? const SizedBox() : panel),
++                          Expanded(child: moved ? panel : const SizedBox()),
++                        ],
++                      ),
++                    target,
++                  ],
++                );
++              },
++            ),
++            reduce: reduce,
++            width: 600,
++          ),
++        );
++        await tester.pumpAndSettle();
++        inside.requestFocus();
++        await tester.pump();
++        if (scenario == 'later callback') {
++          await tester.tap(find.text('Pending toggle'));
++        } else if (scenario == 'uncontrolled pending') {
++          outside.requestFocus();
++          // Invoke the public semantics action before focus notifications run.
++          tester
++              .widgetList<Semantics>(
++                find.descendant(
++                  of: find.byType(BeuiCollapsibleTrigger),
++                  matching: find.byType(Semantics),
++                ),
++              )
++              .singleWhere((widget) => widget.properties.onTap != null)
++              .properties
++              .onTap!();
++        } else {
++          update(() {
++            open = false;
++            pending = true;
++            alive = scenario != 'removed';
++            moved = scenario == 'reparented';
++          });
++        }
++        await tester.pumpAndSettle();
++        expect(outside.hasPrimaryFocus, isTrue);
++        expect(
++          calls,
++          scenario == 'later callback' || scenario == 'uncontrolled pending'
++              ? [false]
++              : isEmpty,
++        );
++        expect(tester.takeException(), isNull);
++      });
++    }
++  }
++
+   testWidgets('rest-state golden (closed and open)', (tester) async {
+     await tester.pumpWidget(
+       beuiTestApp(

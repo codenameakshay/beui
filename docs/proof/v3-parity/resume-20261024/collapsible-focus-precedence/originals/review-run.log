@@ -1,0 +1,89 @@
+00:00 +0: loading /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart
+00:00 +0: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: BeuiCollapsible interaction hovering the trigger paints muted at 60% opacity
+00:00 +1: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: accepted reduce=false
+00:00 +2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: BeuiCollapsible interaction tap toggles open and closed
+00:00 +3: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: rejected reduce=false
+00:00 +4: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: BeuiCollapsible interaction controlled state reports change without changing itself
+00:00 +5: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=false
+00:00 +6: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=false
+00:00 +7: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+owner outside request must win
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart:40:84)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart line 40
+The test description was:
+  pending-build reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +7 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: BeuiCollapsible interaction closing returns focus from content to the trigger
+00:00 +7 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: pending-build reduce=false
+  
+00:00 +8 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: BeuiCollapsible interaction closing returns focus from content to the trigger
+00:00 +9 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: BeuiCollapsible interaction closing returns focus from content to the trigger
+00:00 +10 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: BeuiCollapsible interaction closing returns focus from content to the trigger
+00:00 +11 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: BeuiCollapsible interaction closing returns focus from content to the trigger
+00:00 +12 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: multiple reduce=false
+00:00 +13 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: multiple reduce=false
+00:00 +14 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: multiple reduce=false
+00:00 +15 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle external close restores descendant focus false
+00:00 +16 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle external close restores descendant focus false
+00:00 +17 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle external close restores descendant focus false
+00:00 +17 -1: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+owner outside request must win
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart:40:84)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart line 40
+The test description was:
+  pending-build reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +17 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle external close restores descendant focus false
+00:00 +17 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: pending-build reduce=true
+  
+00:00 +18 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle external close restores descendant focus false
+00:00 +19 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: dispose reduce=true
+00:00 +20 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle rejected close keeps child focus false
+00:00 +21 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle rejected close keeps child focus false
+00:00 +22 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: disabled reduce=true
+00:00 +23 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle reparent close later focus and disposal false
+00:00 +24 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle reparent close later focus and disposal false
+00:00 +25 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle stable nested size and width changes false
+00:00 +26 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle external close restores descendant focus true
+00:00 +27 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle rejected close keeps child focus true
+00:00 +28 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle reparent close later focus and disposal true
+00:00 +29 -2: /private/tmp/collapsible-independent-review-20261024/test/motion/collapsible_test.dart: lifecycle stable nested size and width changes true
+00:00 +30 -2: Some tests failed.
+
+Failing tests:
+  /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=false
+  /private/tmp/collapsible-independent-review-20261024/test/motion/independent_review_test.dart: pending-build reduce=true

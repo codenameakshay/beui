@@ -1,3 +1,53 @@
+## 2026-10-24 Collapsible r2 accepted within scope
+
+Original pending-owner-focus finding resolved at production `298d69810e2a002fc96518e62cc81fc33fa49c6f4df7cc7bcbc633e3df414f53`. Independent original 16/16 and final 32/32 pass; analysis and saved-native verification pass. Review retained at `../resume-20261024/collapsible-review-r2/`.
+
+Distinct enclosing FocusScope reparenting during close can still lose Outside focus; plain Flutter control reproduces it. This is a documented composition limitation, not a proven introduced regression. Minimum SDK APIs source-checked only. Scheduler/Combobox recovery tasks remain active.
+
+## 2026-10-24 resumed recovery checkpoint
+
+Collapsible focus-precedence parent verifier completed with exit 0. Log: `/tmp/beui-collapsible-precedence-parent-verify.log`; 2,717 manifest files, 363 PNGs, eight videos, 267 RGB-exact replay frames, 27 checks per source/candidate motion run. Independent r2 review remains running; no acceptance inferred.
+
+Fresh Combobox recovery r2 and Scheduler initial task ended with provider errors. Existing edits and evidence remain preserved. Recovery tasks now running, each with disjoint owned paths:
+- `v3-combobox-exit-final-recovery-20261024-r3`
+- `v3-scheduler-copy-recovery-20261024-r2`
+
+Collapsible independent review task remains `v3-collapsible-focus-review-20261024-r2`. All use the existing delegated-task ID prefix. Disk had 2.6 GiB available at restart. No new commit/push or parity claim in this checkpoint.
+
+## Collapsible review blocks acceptance on rebuild-time owner focus
+
+Independent r1 review:16 existing tests pass, additional14 pass/2 fail. When owner requests outside focus during rebuild that closes focused content, didUpdateWidget trigger restoration overrides it. Both motion preferences reproduce; pre-pump pending-focus tests miss ordering. Reviewed productione4a3fbf525e2534ebff073919d07e367b3d3c6bbae0ed3a13d2a7d12150d1614. Repro/logs copied to resume-20261024/collapsible-review-r1.9677 saved hash entries verified independently, no video re-decode by reviewer.
+
+Active `v3-collapsible-focus-precedence-repair-20261024-r3` owns original component/tests and NEW collapsible-focus-precedence evidence, ports18189-18190. Must preserve controlled close behavior and later owner intent using supported APIs; no shared focus patches. Scheduler and Combobox fresh recovery continue. No Collapsible acceptance/commit/push yet.
+
+## Disk pressure relieved; Collapsible parent verifier passed
+
+Parent documented verify-recovery.py completed exit0. Historical unfinished verify.py failure retained separately. Independent Collapsible review still active.
+
+Disk had299MiB free. Removed only four parent-created tracked-only export copies after checking their delivery commits are ancestors of HEAD: sortable-staged-rhrqqbb6,filetree-staged-fih6r03c,multiselect-staged-d9o78u18,integrated-native-staged-v38cth7w. All contents remain committed canonical archives and prior verifier logs remain. These temporary export paths are now intentionally absent. No original captures, worker scratch or unrelated files removed. Available space now2.9GiB.
+
+## Collapsible recovery complete; independent review underway
+
+Productione4a3fbf525e2534ebff073919d07e367b3d3c6bbae0ed3a13d2a7d12150d1614 restores controlled-close focus only on effective owner acceptance.16 non-golden tests pass. Native both preferences plus separate supplemental disposal checks support bounded repair; recovery5 disposal failure remains recorded. Autonomous content growth/shrink/width/hidden reopening already work, no measurement fix. Archive2844 PNGs/43 videos/2546 RGB frames verified by recovery worker regular export. Timing120vs180ms/closed1vs0px differences remain.
+
+Active `v3-collapsible-independent-review-20261024-r1`. Parent initially invoked historical unfinished verify.py, failed exit1; log retained /tmp/beui-collapsible-parent-verify.log. Correct documented verify-recovery.py now running /tmp/beui-collapsible-parent-recovery-verify.log. Do not mistake historical verifier failure for artifact loss. Recovery report discloses earlier ENOSPC; check available disk before additional full exports. Scheduler/Combobox workers remain separate. No acceptance/commit yet.
+
+## Collapsible recovery moved to fresh worker
+
+Same-thread Collapsible retry failed again at provider level. Fresh `v3-collapsible-fresh-recovery-20261024-r2` exclusively owns original component/test/evidence and will audit saved checkpoint before completing missing verification. All prior artifacts preserved; failed original task is not active. Combobox fresh recovery and Scheduler remain independent. No acceptance, commit or push of these partial repairs.
+
+## Combobox recovery moved to fresh worker
+
+Same-thread recovery also failed Provider turn failed. Parent inspected saved work:21 production lines/139 test lines, red/green/analyzer logs, native-1 four context frame counts323/69/261/49. No matching Combobox/server process found. Active fresh `v3-combobox-exit-fresh-recovery-20261024-r2` now exclusively owns original files/evidence, audits saved outputs and finishes missing portable verification; must preserve every prior artifact and avoid duplicate capture. Original failed worker is not active. No code acceptance inferred from partial logs.
+
+## Collapsible provider failure recovery
+
+Original Collapsible r1 failed at provider level with no live child runs. Partial component/test changes and before/after/native capture artifacts are preserved in collapsible-lifecycle/. Resumed same worker via v3-collapsible-provider-recovery-20261024-r1, requiring audit of prior logs/processes before continuing without duplicate capture or lost evidence. Combobox recovery and Scheduler task remain separate. No acceptance or code-failure inference; latest delivered1c980497a.
+
+## Combobox provider failure recovery
+
+Original v3-combobox-exit-filter-repair-20261024-r1 failed at provider level, no live child runs. Partial component/test edits and red/green/analyzer/native-1 evidence exist in combobox-exit/ and /tmp/beui-combobox-exit-20261024. Resumed same worker conversation through idempotent v3-combobox-exit-provider-recovery-20261024-r1; must audit saved process/evidence state before continuing, preserve originals and avoid duplicate captures. No acceptance or code-failure conclusion from provider error. Scheduler and Collapsible remain active separately. Latest pushed1c980497a, integrated-gallery archive delivered and PR updated.
+
 ## Combined gallery archive verified for delivery
 
 Parent and independent tracked-only export verifiers pass (exit0),1678 archive files. Export `/var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/beui-integrated-native-staged-v38cth7w`, logs `/tmp/beui-components-native-parent-verify.log` and `/tmp/beui-integrated-native-staged-verify.log`. Evidence preserves known failures and gallery traversal limits, not exact parity. Ready for archive commit/push.

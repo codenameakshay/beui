@@ -1,0 +1,130 @@
+00:00 +0: loading /private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart
+00:00 +0: stale history reduce=false
+00:00 +1: pending inside reduce=false
+00:00 +2: outside then inside reduce=false
+00:00 +3: controlled to uncontrolled reduce=false
+00:00 +4: uncontrolled to controlled reduce=false
+00:00 +5: cross-scope reparent pending reduce=false
+R2 cross-scope reparent pending focus=FocusScopeNode#9663d([PRIMARY FOCUS])(context: FocusScope, PRIMARY FOCUS)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'outside'
+  Actual: <null>
+   Which: not an <Instance of 'String'>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart:26:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart line 26
+The test description was:
+  cross-scope reparent pending reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +5 -1: cross-scope reparent pending reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: cross-scope reparent pending reduce=false
+  
+00:00 +5 -1: cross-scope reparent open reduce=false
+R2 cross-scope reparent open focus=FocusNode#550e1(outside [PRIMARY FOCUS])(context: Focus, PRIMARY FOCUS)
+00:00 +6 -1: plain focus reparent reduce=false
+R2 plain focus reparent focus=FocusScopeNode#2a58e([PRIMARY FOCUS])(context: FocusScope-[GlobalKey#dc3c6], PRIMARY FOCUS)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'outside'
+  Actual: <null>
+   Which: not an <Instance of 'String'>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart:26:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart line 26
+The test description was:
+  plain focus reparent reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +6 -2: plain focus reparent reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: plain focus reparent reduce=false
+  
+00:00 +6 -2: stale history reduce=true
+00:00 +7 -2: pending inside reduce=true
+00:00 +8 -2: outside then inside reduce=true
+00:00 +9 -2: controlled to uncontrolled reduce=true
+00:00 +10 -2: uncontrolled to controlled reduce=true
+00:00 +11 -2: cross-scope reparent pending reduce=true
+R2 cross-scope reparent pending focus=FocusScopeNode#14329([PRIMARY FOCUS])(context: FocusScope, PRIMARY FOCUS)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'outside'
+  Actual: <null>
+   Which: not an <Instance of 'String'>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart:26:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart line 26
+The test description was:
+  cross-scope reparent pending reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +11 -3: cross-scope reparent pending reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: cross-scope reparent pending reduce=true
+  
+00:00 +11 -3: cross-scope reparent open reduce=true
+R2 cross-scope reparent open focus=FocusNode#379f3(outside [PRIMARY FOCUS])(context: Focus, PRIMARY FOCUS)
+00:00 +12 -3: plain focus reparent reduce=true
+R2 plain focus reparent focus=FocusScopeNode#15896([PRIMARY FOCUS])(context: FocusScope-[GlobalKey#8d04f], PRIMARY FOCUS)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'outside'
+  Actual: <null>
+   Which: not an <Instance of 'String'>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart:26:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart line 26
+The test description was:
+  plain focus reparent reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +12 -4: plain focus reparent reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: plain focus reparent reduce=true
+  
+00:00 +12 -4: Some tests failed.
+
+Failing tests:
+  /private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart: cross-scope reparent pending reduce=false
+  /private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart: cross-scope reparent pending reduce=true
+  /private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart: plain focus reparent reduce=false
+  /private/tmp/collapsible-r2-review-20261024/test/motion/r2_isolation_test.dart: plain focus reparent reduce=true

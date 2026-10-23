@@ -1,0 +1,36 @@
+00:00 +0: loading /private/tmp/collapsible-focus-precedence-20261024/tests/test/motion/independent_review_test.dart
+lib/src/motion/collapsible.dart:86:18: Error: A value of type 'FocusScopeNode?' can't be assigned to a variable of type 'bool'.
+ - 'FocusScopeNode' is from 'package:flutter/src/widgets/focus_manager.dart' ('/Users/codenameakshay/fvm/versions/stable/packages/flutter/lib/src/widgets/focus_manager.dart').
+    while (scope.enclosingScope case final parent?) {
+                 ^
+lib/src/motion/collapsible.dart:87:11: Error: The getter 'parent' isn't defined for the type '_BeuiCollapsibleState'.
+ - '_BeuiCollapsibleState' is from 'package:beui/src/motion/collapsible.dart' ('lib/src/motion/collapsible.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'parent'.
+      if (parent.focusedChild != scope) return false;
+          ^^^^^^
+lib/src/motion/collapsible.dart:88:15: Error: The getter 'parent' isn't defined for the type '_BeuiCollapsibleState'.
+ - '_BeuiCollapsibleState' is from 'package:beui/src/motion/collapsible.dart' ('lib/src/motion/collapsible.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'parent'.
+      scope = parent;
+              ^^^^^^
+00:00 +0 -1: loading /private/tmp/collapsible-focus-precedence-20261024/tests/test/motion/independent_review_test.dart [E]
+  Failed to load "/private/tmp/collapsible-focus-precedence-20261024/tests/test/motion/independent_review_test.dart":
+  Compilation failed for testPath=/private/tmp/collapsible-focus-precedence-20261024/tests/test/motion/independent_review_test.dart: lib/src/motion/collapsible.dart:86:18: Error: A value of type 'FocusScopeNode?' can't be assigned to a variable of type 'bool'.
+   - 'FocusScopeNode' is from 'package:flutter/src/widgets/focus_manager.dart' ('/Users/codenameakshay/fvm/versions/stable/packages/flutter/lib/src/widgets/focus_manager.dart').
+      while (scope.enclosingScope case final parent?) {
+                   ^
+  lib/src/motion/collapsible.dart:87:11: Error: The getter 'parent' isn't defined for the type '_BeuiCollapsibleState'.
+   - '_BeuiCollapsibleState' is from 'package:beui/src/motion/collapsible.dart' ('lib/src/motion/collapsible.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'parent'.
+        if (parent.focusedChild != scope) return false;
+            ^^^^^^
+  lib/src/motion/collapsible.dart:88:15: Error: The getter 'parent' isn't defined for the type '_BeuiCollapsibleState'.
+   - '_BeuiCollapsibleState' is from 'package:beui/src/motion/collapsible.dart' ('lib/src/motion/collapsible.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'parent'.
+        scope = parent;
+                ^^^^^^
+  .
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /private/tmp/collapsible-focus-precedence-20261024/tests/test/motion/independent_review_test.dart: loading /private/tmp/collapsible-focus-precedence-20261024/tests/test/motion/independent_review_test.dart
