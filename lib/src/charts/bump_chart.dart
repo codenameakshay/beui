@@ -875,7 +875,10 @@ class _BumpDotState extends State<_BumpDot> {
         },
         child: Semantics(
           key: ValueKey('bump-node-${row.series.id}-${widget.period}'),
+          container: true,
+          explicitChildNodes: true,
           button: true,
+          onTap: select,
           selected: scope.activeId == row.series.id,
           label:
               '${row.series.name}, ${scope.periods[widget.period]}: rank $rank',
@@ -905,69 +908,78 @@ class _BumpDotState extends State<_BumpDot> {
               onOpenChange: (open) => setState(() => _tooltipOpen = open),
               content: ConstrainedBox(
                 constraints: const BoxConstraints(minWidth: 132),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          row.series.name,
-                          style: TextStyle(
-                            fontSize: 10,
-                            height: 1.5,
-                            color: BeuiColors.resolve(context).mutedForeground,
+                child: IntrinsicWidth(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            row.series.name,
+                            style: TextStyle(
+                              fontSize: 10,
+                              height: 1.5,
+                              color: BeuiColors.resolve(
+                                context,
+                              ).mutedForeground,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          scope.periods[widget.period],
-                          style: TextStyle(
-                            fontSize: 10,
-                            height: 1.5,
-                            color: BeuiColors.resolve(context).mutedForeground,
+                          const SizedBox(width: 16),
+                          Text(
+                            scope.periods[widget.period],
+                            style: TextStyle(
+                              fontSize: 10,
+                              height: 1.5,
+                              color: BeuiColors.resolve(
+                                context,
+                              ).mutedForeground,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '#$rank',
-                          style: TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 18,
-                            height: 28 / 18,
-                            fontWeight: FontWeight.w500,
-                            color: row.color,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          changeText,
-                          style: const TextStyle(fontSize: 12, height: 16 / 12),
-                        ),
-                      ],
-                    ),
-                    if (previous != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        'Previously #$previous in ${scope.periods[widget.period - 1]}',
-                        style: TextStyle(
-                          fontSize: 10,
-                          height: 1.5,
-                          color: BeuiColors.resolve(context).mutedForeground,
-                        ),
+                        ],
                       ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '#$rank',
+                            style: TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: 18,
+                              height: 28 / 18,
+                              fontWeight: FontWeight.w500,
+                              color: row.color,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Text(
+                            changeText,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              height: 16 / 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (previous != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          'Previously #$previous in ${scope.periods[widget.period - 1]}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            height: 1.5,
+                            color: BeuiColors.resolve(context).mutedForeground,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
               child: Listener(
@@ -980,6 +992,7 @@ class _BumpDotState extends State<_BumpDot> {
                   _focus.requestFocus();
                 },
                 child: GestureDetector(
+                  excludeFromSemantics: true,
                   onTap: () {
                     if (_touch) setState(() => _tooltipOpen = !_touchWasOpen);
                     select();
@@ -1186,10 +1199,11 @@ class _BumpLegendButtonState extends State<_BumpLegendButton> {
         mouseCursor: SystemMouseCursors.click,
         child: Semantics(
           key: ValueKey('bump-legend-${row.series.id}'),
+          container: true,
+          explicitChildNodes: true,
           button: true,
           selected: scope.activeId == row.series.id,
           label: 'Highlight ${row.series.name}',
-          excludeSemantics: true,
           onTap: select,
           child: MouseRegion(
             onEnter: (event) {
@@ -1204,6 +1218,7 @@ class _BumpLegendButtonState extends State<_BumpLegendButton> {
               }
             },
             child: GestureDetector(
+              excludeFromSemantics: true,
               behavior: HitTestBehavior.opaque,
               onTapDown: (_) {
                 _pointerFocus = true;

@@ -154,6 +154,21 @@ void main() {
       expect(changes, ['studio', null, 'studio', 'canvas', null, 'canvas']);
     },
   );
+
+  testWidgets(
+    'rank readout retains source intrinsic width instead of filling viewport',
+    (tester) async {
+      await tester.pumpWidget(surface());
+      await tester.tap(dot('studio', 0));
+      await tester.pumpAndSettle();
+      final content = find.text('No previous rank');
+      final columns = find.ancestor(of: content, matching: find.byType(Column));
+      expect(tester.getSize(columns.first).width, 244);
+      final rank = tester.widget<Semantics>(dot('studio', 0));
+      expect(rank.container, isTrue);
+      expect(rank.explicitChildNodes, isTrue);
+    },
+  );
   testWidgets(
     'removed uncontrolled pinned identity does not revive after reinsertion',
     (tester) async {
