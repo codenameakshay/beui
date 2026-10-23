@@ -1,3 +1,155 @@
+## Latest delivered head:8fdc8cb5f
+
+Push confirmed successful through FileTree a4bbd37ee and MultiSelect8fdc8cb5f. Both reviewed repairs, all preserved evidence and integrated test logs are on PR26. Root2609 passes/56 unchanged golden failure identities; gallery66 passes. PR description updated with scoped acceptance and limits.
+
+Active: `v3-components-integrated-native-20261024-r1` checks combined actual gallery build, and read-only `v3-next-obligations-after-components-20261024-r4` reconciles next work at /tmp/beui-next-after-components-20261024.md. No other production worker active. Sortable Flutter semantics-move focus blocker194550, FileTree tree-role/current-state mismatch, exact pixels/native60 and broader coverage remain unresolved. No hosted-CI/merge/deployment claim. Preserve .impeccable.
+
+## FileTree and MultiSelect delivery
+
+FileTree a4bbd37ee and MultiSelect8fdc8cb5f are committed, with all originals, review artifacts and integrated logs. All four MultiSelect portable verifiers exited0 from tracked-only export30436 evidence files; both FileTree verifiers exited0 from tracked-only export10292 evidence files. Push completed to akshay/v3-ship at8fdc8cb5f. FileTree a4bbd37ee and MultiSelect8fdc8cb5f are delivered.
+
+Final scoped independent reviews accept both production hashes. Integrated root2609 passes/56 unchanged golden failures and gallery66 passes. Combined native task `v3-components-integrated-native-20261024-r1` remains active; no complete native integration or hosted-CI claim. Sortable engine move-focus blocker194550, FileTree roles/current-vs-selected limitations, exact pixels and native60 remain unresolved. PR body update prepared `/tmp/beui-pr26-components-final.md`; publish after push success. No merge authorized.
+
+## Delivery queue and combined-gallery native task
+
+FileTree commit a4bbd37ee is local, not yet pushed. MultiSelect staging holds30438 paths: code/tests plus30436 evidence/integration files, no file over100MB. Tracked-only export `/var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/beui-multiselect-staged-d9o78u18`; four verifiers run in session54272, logs `/tmp/beui-multiselect-staged-multiselect-{native,repair,focus,tab}.log`. After all pass commit and push both deliveries, then update PR26.
+
+Active `v3-components-integrated-native-20261024-r1` owns new components-integrated-native/ only, builds exact reviewed combined gallery snapshot and tests actual demo interactions. No production editor active. Preserves known Sortable native focus failure, no invented demo controls. Root2609 passes56 unchanged golden failures and gallery66 passes already complete; no repeat broad tests needed without new findings.
+
+## Integrated suites complete; MultiSelect accepted and archive staged
+
+Root2609 passes/56 golden failures; exact same56 failure identities as calendar baseline, zero new/removed. Gallery66 passes. All6 source/test input hashes unchanged. Logs/summary copied to components-integration-20261024/. No goldens updated. FileTree code and full evidence committed after both tracked-export verifiers passed.
+
+Independent MultiSelect r3 accepts productionb58e5bfb3c254357da25ae3af77ff22a0b5526160d77e8c3ec2e7496e87c95bb:32 final tests,5 r2 controls,5 r1 controls,4 extra checks pass;804 archived native checks and3749 frames verified. Same-node/same-frame precedence remains widget-only. Review artifacts copied to multiselect-review-r3/. Staged only MultiSelect code/tests, all4 native archives,3 review directories and integration logs. Tracked-only export path recorded /tmp/beui-multiselect-staged-path;4 portable verifiers running. Wait all exits0 before commit/push.
+
+Combined native gallery build remains separate unverified layer; native fixtures were isolated. Sortable engine focus blocker and FileTree role differences remain explicit. No merge authorized.
+
+## FileTree review accepted; staged export verification underway
+
+Independent FileTree review accepts bounded code,12 focused checks pass on current/minimum SDK; exact selectable-tree roles still unavailable and aria-current not equivalent to aria-selected. Review logs/probes copied to `filetree-review-r1/`. Staged only FileTree code/tests and filetree-native/semantics/review-r1 archives including ignored dependencies. Tracked-only export/verifiers running session78387, export path recorded `/tmp/beui-filetree-staged-path`. Wait for both verifier exits0 and integrated root outcomes before committing. MultiSelect remains unstaged awaiting final review.
+
+Gallery integrated suite completed exit0. Root session50350 still running. MultiSelect Tab archive parent verifier completed exit0. No full-suite conclusion until root summary/failure identities compared.
+
+## MultiSelect final implementation and integrated gates in progress
+
+R3 productionb58e5bfb3c254357da25ae3af77ff22a0b5526160d77e8c3ec2e7496e87c95bb passes32 focused tests plus5 prior review controls, analysis and804 native checks across8 runs. Tab policy follows focus destinations, controlled query rejection remains effective; same-node owner focus is made observable before selection callback. New archive `multiselect-tab/` retains3749 frames. Active final independent review `v3-multiselect-final-review-20261024-r3`; parent archive verifier session76188 log `/tmp/beui-multiselect-tab-parent-verify.log`. No acceptance yet.
+
+With both FileTree and MultiSelect implementations idle awaiting reviews, parent started fresh unsuppressed root and gallery suites. Logs `/tmp/beui-components-integration-{root,gallery}-20261024.jsonl` and `.stderr`; exact six source/test hashes recorded `/tmp/beui-components-integration-inputs-20261024.json`. Must compare failure identities against prior56 golden failures. No baselines changed. Review findings may require fresh targeted gates and invalidate parts of this run; do not infer exact final-head pass early.
+
+## FileTree semantics repair awaiting independent review
+
+Production06da09b01f4636df4c14d35f8ad0ee3863d7ab9921bc0e028c2d4d7f7fcd6105 adds child button semantics carrying disabled/selected state while outer list item retains focus/expansion. Native mapping is aria-current, not source aria-selected; Flutter3.44.2 public roles lack tree/treeitem. Exact semantics parity remains unavailable.10 non-golden tests and analysis pass on current and minimum SDK.96 original native checkpoints plus disabled folder/content controls pass both preferences. Immediate-collapse focus unchanged.3385 original frames preserved, one intermediate MP4 count loss disclosed.
+
+Active `v3-filetree-semantics-review-20261024-r1` independently checks semantics meaning, lifecycle and disabled focusability. Parent independently reran the semantics archive verifier successfully (exit 0), `/tmp/beui-filetree-semantics-parent-verify.log`. Recorded role/state differences remain explicit. No acceptance or commit yet. MultiSelect r3 continues with same-owner-focus finding included. Last pushed941bd9229.
+
+## MultiSelect r2 review: same external owner focus still overridden
+
+Independent immutable-input review found P2: already-focused external TextField explicitly retained by onChanged.requestFocus is overridden by deferred chip callback because focus equals previousFocus. Reproduced twice on dba8218b7d836f7a7d48994417a7573ca3682ef2daf5f62a27058aa49beafa12.29 supplied/prior tests plus4 extra controls pass; all374 archived candidate native checks independently verified. Same-node precedence is widget-proven, not native. Review/repro/log copied into `multiselect-review-r2/`.
+
+Steered active `v3-multiselect-tab-repair-20261024-r3` to include this exact failing case before its final build and preserve normal chip focus behavior without owner override. No concurrent production editor added. Acceptance remains withheld. FileTree semantics task remains active. Latest pushed941bd9229.
+
+## MultiSelect focus repair complete; review and Tab follow-up active
+
+R2 production dba8218b7d836f7a7d48994417a7573ca3682ef2daf5f62a27058aa49beafa12 passes24 tests/analysis and374 candidate native checks. Guarded focus intent respects later external/owner decisions; chip tooltip absent from source caused ancestor DOM movement and was replaced by accessible label; typing reopens after Escape. Evidence `multiselect-focus/` retains5008 original frames and all failures, including one source chip-count discrepancy that passed exact-build rerun. Same-frame external click is widget-proven, not native timing-proven. Parent independently reran the focus archive verifier successfully (exit 0), `/tmp/beui-multiselect-focus-parent-verify.log`. This verifies archived outcomes; the disclosed Tab difference remains unresolved.
+
+Active immutable-input review `v3-multiselect-focus-review-20261024-r2`. Active implementation `v3-multiselect-tab-repair-20261024-r3` addresses known remaining Tab close/clear and Shift+Tab reopen-empty difference, owns MultiSelect files and new `multiselect-tab/`. FileTree semantics work continues. Sortable archive941bd9229 pushed and PR26 description updated; native move-focus dependency remains open. No MultiSelect acceptance/commit yet.
+
+## Sortable archive committed941bd9229
+
+All three staged-export verifiers exited0: sortable-undo, sortable-focus, sortable-dependency. Commit941bd9229 archives12408 files preserving rejected captures, original PNGs/videos, exact inputs and upstream research. Push to akshay/v3-ship completed at941bd9229. No parity pass: native reorder focus blocker194550 remains. Production91819aa8e is already pushed; no merge.
+
+MultiSelect/FileTree worker edits remain separate and uncommitted. State file itself pending consolidation.
+
+## Sortable archive staged; tracked-only export verification running
+
+Explicitly staged all files, including ignored dependencies, from sortable-undo, sortable-focus and sortable-dependency:12408 files total. Independent regular-file index export is `/var/folders/nd/g6xnd2650d5444zpkr29ppgm0000gn/T/beui-sortable-staged-rhrqqbb6`. Sequential portable verifiers running in session49547 with logs `/tmp/beui-sortable-staged-sortable-{undo,focus,dependency}.log`. Must confirm all exits0 before archive commit/push. Existing ownership evidence already delivered91819aa8e. Native focus remains failed; this is archival integrity only.
+
+Other worker production edits are unstaged and excluded. Preserve .impeccable. Next after verification: archive commit, authorized push, record exact remote head. No new capture or encoding.
+
+## FileTree native comparison complete; semantics repair active
+
+`filetree-native/` preserves96 final checkpoints across both preferences and1663 original frames. Navigation, disabled activation blocking, callbacks and post-collapse Tab/selection match bounded source. Disabled rows are focusable in source; do not skip them. Immediate collapse focus differs (source BODY/candidate Parent) while tested continuation agrees. Candidate list/listitem markup lacks source tree/treeitem selected/disabled states; no accessible parity acceptance.
+
+Active `v3-filetree-semantics-repair-20261024-r1` owns FileTree component/test and new `filetree-semantics/`. Requires minimum-SDK-supported roles/states, failing-first semantics tests, native exact-build markup plus keyboard controls, no shared edits or speculative collapse-focus change. Parent independently reran the baseline archive verifier successfully (exit 0), `/tmp/beui-filetree-parent-verify.log`. This confirms preserved evidence and bounded outcomes, not accessible-role parity. MultiSelect r2 remains running; Sortable archive preparation active. Last pushed head91819aa8e.
+
+## Sortable archival consolidation active
+
+`v3-sortable-archive-consolidation-20261024-r1` prepares new `sortable-dependency/` from preserved /tmp topology/upstream/reviewer evidence, exact originals and portable export verification. No staging/commit or old proof edits. Parent still needs to commit/push large existing sortable-undo and sortable-focus archives plus this new dependency archive after verification. Reviewed production91819aa8e is already pushed.
+
+## Reviewed Sortable fixes committed91819aa8e
+
+Independent ownership review r2 accepts exact production083f0b5b6a479d249c14050713186b23418ce449710d4e7f03f715a834994c98: original10 probes,36 focused tests,1 additional reactivation test pass; broken-input control29 pass/7 fail. Commit91819aa8e contains code/tests and ownership evidence/review logs. Push completed to akshay/v3-ship at91819aa8e. Raw logs/patches retain original trailing whitespace intentionally; production diff checks passed.
+
+Upstream research found no supported fix in Flutter3.47.1–3.47.8 or main457d49bc600142ecb927f382cf20a728af186ea7. Issue flutter/flutter#194550 matches the semantics-move blur mechanism. Native move retention remains a runtime blocker. Report/raw sources106 hashes remain `/tmp/beui-sortable-upstream-20261024`; topology diagnostics remain `/tmp/beui-sortable-topology-20261024`. These and the large Sortable native archives still need durable archival delivery. No SDK upgrade, guard expansion or upstream posting performed.
+
+MultiSelect r2 and FileTree native work continue. No complete parity, broad integrated gate or hosted-CI claim.
+
+## Sortable handle ownership repair complete, independent recheck active
+
+Production SHA083f0b5b6a479d249c14050713186b23418ce449710d4e7f03f715a834994c98 and test SHA1480670bd61883ef1a7deb14eb6add4050cf72b161767a4fe04ba06bae3666ad use per-mounted-handle nodes and identity-keyed registry.36 focused tests pass; identical tests have7 failures against broken input; analysis/diff checks clean. Evidence is `sortable-handle-ownership/`. Active `v3-sortable-handle-ownership-review-20261024-r2` independently rechecks original four probes and lifecycle transfer/cleanup/Undo controls.
+
+Native reorder focus remains unresolved; upstream research active. MultiSelect r2 and FileTree native task remain active. No production acceptance, new commits or pushes yet.
+
+## Sortable topology diagnostics rejected; upstream dependency research active
+
+/tmp/beui-sortable-topology-20261024/REPORT.md records no safe fix: removing OrdinalSortKey still loses ArrowDown focus; diagnostic keyed Column preserves ArrowDown/End but loses Home focus on same-parent DOM move, and removes drag support. Do not land either diff.409 original frames/traces retained and hashed in that directory. Dependency includes index-dependent framework semantics wrappers plus engine DOM reconciliation; accessibility/removal/external-focus acceptance remains unproven.
+
+Active `v3-sortable-upstream-dependency-20261024-r1` checks official released/main fixes read-only, no SDK changes. Sortable per-mounted-handle repair and MultiSelect r2 remain active. Independent next obligation `v3-filetree-native-states-20261024-r1` verifies nested traversal/collapse on isolated HEAD1254bfa63 in new `filetree-native/`, ports18173-18174; no production edits. Parent Sortable focus archive integrity verified5051 hashes, strict behavior still FAIL. No new commit/push.
+
+## Sortable independent review: duplicate handle ownership regression
+
+Review r1 demonstrated one introduced P2 with four probes: item-keyed shared FocusNode makes first handle activate second, disabled second suppresses first, and removing second breaks surviving focus. Candidate6 pass/4 fail versus baseline10 pass; existing22 pass. Repros/logs in `/tmp/sortable-independent-review-20261024`. These are widget proofs, separate from native move-focus loss.
+
+Active `v3-sortable-handle-ownership-repair-20261024-r3` owns Sortable production/test and new `sortable-handle-ownership/` evidence. Requires per-mounted-handle lifecycle ownership with item-ID registry for eligible Undo focus, identity-guarded cleanup/transfer, failing-first reviewer cases and controls. /tmp-only semantics design remains independent. MultiSelect r2 repair continues. No acceptance, commits or push.
+
+## Sortable Undo focus repaired; uninterrupted keyboard movement still blocked
+
+R2 component SHA2ba3a4643a7fdeccc7521380a3749fb7ec9a4317f96ed2da3e2c24905a1068c4 owns handle FocusNodes and focuses restored B before publishing Undo.22 focused tests/analysis pass. Native original sequence300/316 candidate vs316/316 source; both preferences pass Home-to-Undo focus. Accepted moves still reparent the focused semantics subtree, causing BODY focusout and Flutter root-scope focus. Uninterrupted subsequent End/Home fail. Archive `sortable-focus/` retains2062 original frames and all failures; strict parity exits1. Parent integrity verification running at `/tmp/beui-sortable-focus-parent-verify.log`.
+
+Active independent tasks:
+- `v3-sortable-owned-focus-review-20261024-r1`: read-only lifecycle/API review of the narrow Undo patch.
+- `v3-sortable-semantics-design-20261024-r3`: /tmp-only design/proof, testing supported stable semantics topology before concluding an engine fix is required. No production/shared guard/SDK edits.
+
+MultiSelect r2 repair remains active. No new commit/push or parity acceptance. Earlier archives remain unchanged.
+
+## MultiSelect review found focus ownership and Escape continuation failures
+
+Independent r1 review demonstrated two P2s. Deferred chip focus steals a later external field click before the next frame (baseline passes, patch fails widget repro). Native accepting normal-motion chip removal then typing, Escape and typing loses subsequent input on BODY. Three other owner/motion controls retain input. Direct-input Escape then typing also fails to reopen popup in baseline and patch, unlike source. Existing17 tests pass but do not cover these failures. Full review/repros retained in `/tmp/multiselect-independent-review`; review report copied to `multiselect-review-r1/`.
+
+Active `v3-multiselect-focus-lifecycle-repair-20261024-r2` owns MultiSelect production/test and new `multiselect-focus/` evidence only. Requires failing-first lifecycle tests, root-cause repair preserving later external intent, native full typing continuation, exact hashes and complete originals. No shared overlay or old evidence edits. Parent repair archive integrity has passed, but production acceptance remains blocked. Sortable native focus task remains active. No new commit/push.
+
+## MultiSelect pointer repair awaiting independent review
+
+Worker repair is complete, uncommitted. Component SHA `5965a2e74edb3c9fd88f5bf80ee9463924b1c9a6064b0d04fde93bd178061cd9`: removes component barrier/focus trap, groups trigger/input/popup tap regions, defers chip input focus until after rebuild. Eight failing-first regressions;17 focused tests and analysis pass. Final eight native runs pass548 bounded checks for removal and subsequent typing. Archive `multiselect-repair/` retains24 runs,5638 original frames and480 checkpoints; two timestamp losses disclosed with complete RGB replays.
+
+Escape still leaves candidate native focus on BODY while source retains INPUT. Acceptance remains open. Active independent `v3-multiselect-repair-review-20261024-r1` checks deferred-focus ownership/lifecycle, controlled state, outside dismissal and the Escape continuation gap. Parent independently reran the repair archive verifier successfully (exit 0), log `/tmp/beui-multiselect-repair-parent-verify.log`. This verifies preserved artifacts and bounded assertions, not Escape focus parity.
+
+Parent Sortable r1 archive verifier completed successfully, including documented focus failures and media loss. Sortable r2 native-focus repair remains active. No new commit/push, exact parity or golden acceptance.
+
+## Sortable Undo passes bounded order checks; native focus repair active
+
+The r1 order-based `_canUndo` and action guard pass 15 targeted tests and analysis. Source/candidate native order, callbacks, Undo, reset, membership and disabled checks pass both motion preferences. Native acceptance remains blocked by 20 candidate focus failures: accepted moves lose DOM focus and Home then Undo focuses A where source focuses B. Evidence is immutable in `sortable-undo/`; one 11/12 timestamp video has a verified complete RGB replay. Parent integrity verification started at `/tmp/beui-sortable-parent-verify.log`.
+
+Active `v3-sortable-native-focus-repair-20261023-r2` owns only Sortable production/test and new `sortable-focus/` evidence. Must diagnose focus mechanism, preserve prior Undo patch, verify supported component-owned correction and native retention without recorder focus recovery. Shared DOM/overlay edits are excluded. MultiSelect repair continues independently. No acceptance, new commit or push yet.
+
+## MultiSelect native findings and repair in progress
+
+Native verification completed in `multiselect-native/`: open-popup chip X clicks dismiss without a removal callback for accepting/rejecting owners under both motion preferences. Closed-popup removal emits the callback but differs from source input focus/popup behavior. Subsequent typing needs verification. Backspace/query editing, controlled ownership and disabled exclusion passed within the recorded slice.
+
+Active `v3-multiselect-pointer-repair-20261023-r1` owns only multi_select.dart, its widget test and new `multiselect-repair/` evidence. Requires failing-first regression, component-owned correction, native removal plus subsequent typing/outside/Escape controls, exact hashes and preserved originals. No shared overlay edits authorized to worker. Baseline archive has 4,761 original frames and 340 checkpoints; one timestamp video omits a frame, complete replay preserved separately. Parent independently reran the archive verifier successfully (exit 0), log `/tmp/beui-multiselect-parent-verify.log`. This confirms archive integrity and recorded outcomes, including the failures; it does not establish repaired behavior.
+
+Sortable repair task remains in progress. No new commits or pushes yet; latest delivered head remains1254bfa63. Parent review/integration remains required, no parity certification.
+
+## Active follow-up: Sortable Undo and MultiSelect native states
+
+Returns Calendar production and archive are pushed through `1254bfa63` to `akshay/v3-ship`. PR26 remains open; no merge or parity certification.
+
+Two scoped asynchronous tasks are running:
+- `v3-sortable-undo-repair-20261023-r1`: failing-first reproduction, order-based Undo repair, and source/candidate native verification. Owns Sortable production/test files and new `sortable-undo/` evidence only.
+- `v3-multiselect-native-states-20261023-r1`: source/candidate native token removal and controlled rejection verification. Owns new `multiselect-native/` evidence only; no production edits.
+
+Parent will review results, verify archives and integrate before pushing. Current baseline retains 56 golden failures; no baselines are to be regenerated. FileTree nested collapse/focus continuation remains next. Detailed acceptance is in `/tmp/beui-next-after-calendars-20261023.md`. Existing `.impeccable/` is unrelated and preserved.
+
 # Continued parity run — 2026-10-23
 
 Done means the scoped source behaviors, appearance and motion are implemented and verified with preserved source/candidate evidence, integrated gates, and pushed PR26 updates. No merge is authorized. Exact parity remains incomplete.
