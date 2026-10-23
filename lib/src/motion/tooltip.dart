@@ -602,6 +602,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
           if (!_suppressed) _show();
         },
         onExit: (event) {
+          _pointerKind = null;
           _suppressed = false;
           if (!_focused) _startGrace(event.position, _triggerKey, _surfaceKey);
         },
