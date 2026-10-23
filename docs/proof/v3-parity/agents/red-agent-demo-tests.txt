@@ -1,0 +1,71 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-1ddbcce2/test/motion/agents_parity_demo_test.dart
+00:00 +0: prompt preview starts without unsourced attachments
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: no matching candidates
+  Actual: _TextWidgetFinder:<Found 1 widget with text "architecture.png": [
+            Text("architecture.png", inherit: true, color: Color(alpha: 1.0000, red: 0.0431, green:
+0.0431, blue: 0.0431, colorSpace: ColorSpace.sRGB), size: 12.0, letterSpacing: 0.0, softWrap: no
+wrapping except at line break characters, overflow: ellipsis, maxLines: 1, dependencies:
+[DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+          ]>
+   Which: means one was found but none were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-1ddbcce2/test/motion/agents_parity_demo_test.dart:20:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-1ddbcce2/test/motion/agents_parity_demo_test.dart line 20
+The test description was:
+  prompt preview starts without unsourced attachments
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -1: prompt preview starts without unsourced attachments [E]
+  Test failed. See exception logs above.
+  The test description was: prompt preview starts without unsourced attachments
+  
+00:01 +0 -1: shared chat preview hides completion actions like source
+00:01 +1 -1: reduced-motion chat delivers its full reply without a delay
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "I’d include composing a prompt, following a
+streamed answer, recovering from an error, and returning to the latest response without losing the
+reader’s place.": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-1ddbcce2/test/motion/agents_parity_demo_test.dart:57:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-1ddbcce2/test/motion/agents_parity_demo_test.dart line 57
+The test description was:
+  reduced-motion chat delivers its full reply without a delay
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +1 -2: reduced-motion chat delivers its full reply without a delay [E]
+  Test failed. See exception logs above.
+  The test description was: reduced-motion chat delivers its full reply without a delay
+  
+00:02 +1 -2: voice preview matches source at 390.0px
+00:02 +2 -2: voice preview matches source at 639.0px
+00:02 +3 -2: voice preview matches source at 640.0px
+00:02 +4 -2: voice preview matches source at 1440.0px
+00:02 +5 -2: orb failure stays stationary at full activity
+00:02 +6 -2: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-1ddbcce2/test/motion/agents_parity_demo_test.dart: prompt preview starts without unsourced attachments
+  /Users/codenameakshay/.t3/worktrees/beui/t3-1ddbcce2/test/motion/agents_parity_demo_test.dart: reduced-motion chat delivers its full reply without a delay

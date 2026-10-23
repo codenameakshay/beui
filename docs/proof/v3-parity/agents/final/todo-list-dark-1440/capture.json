@@ -1,0 +1,22 @@
+{
+  "spec": {
+    "slug": "todo-list",
+    "theme": "dark",
+    "width": 1440,
+    "height": 1000
+  },
+  "facts": {
+    "url": "http://localhost:8104/agents-final/?slug=todo-list&theme=dark",
+    "viewport": {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1
+    },
+    "dark": false,
+    "reduced": false,
+    "text": "2 of 4 tasks completed. Collapse task list Implementation plan 1 2 /4\nCompleted: Inspect the current data flow\nCompleted: Update the response schema\nIn progress: Add coverage for edge cases 25%\nPending: Run checks and prepare the result\nReplay\nEMPTY · BEFORE THE AGENT HAS PLANNED\n0 of 0 tasks completed. Collapse task list Implementation plan 0 /0\nNo tasks yet\nThe agent posts its plan here before it starts work, and ticks tasks off as it goes.\nCANCELLED AND PENDING ROWS\n1 of 4 tasks completed. Collapse task list Migration plan 1 /4\nCompleted: Inspect the current data flow\nIn progress: Update the response schema 40%\nPending: Add coverage for edge cases\nCancelled: Backfill the legacy rows",
+    "slots": []
+  },
+  "failures": [],
+  "capturedAt": "2026-10-23T07:44:24.132Z"
+}

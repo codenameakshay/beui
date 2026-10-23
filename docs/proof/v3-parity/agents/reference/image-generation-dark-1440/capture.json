@@ -1,0 +1,88 @@
+{
+  "spec": {
+    "slug": "image-generation",
+    "theme": "dark",
+    "width": 1440,
+    "height": 1000
+  },
+  "facts": {
+    "url": "https://beui.dev/components/agents/image-generation",
+    "viewport": {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1
+    },
+    "dark": true,
+    "reduced": false,
+    "text": "beUI Native is free — Pro mobile blocks and screens are in presale from $99\n\nReserve\nbeUI Pro for mobile\nbeUI\nComponents\nBlocks\nAgents\nCharts\nPlayground\nSponsors\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\n1.9k\nGet Pro\nAll\nAgents\nComponents\nBlocks\n\nINTRO\n\nHome\nChangelog\n\nGUIDES\n\nMotion Guides\nAgent Guide\nOpenUI\nReact Native Setup\nAI AGENTS\n18\nVoice Orb\nMessage Bubble\nMessage\nMessage Scroller\nPrompt Input\nTodo List\nCode Block\nApproval Card\nFile Diff\nTool Result\nStreaming Response\nImage Generation\nTool Approval\nCitations\nAgent Activity\nAgent Loading States\nAI Sidebar\nChat App\nCOMPONENTS\n54\nTimeline\nNEW\nAnimated Alert\nAnimated Collapsible\nAspect Ratio\nArc Picker\nSortable List\nImage Viewer\nDate Range Picker\nCard\nColor Picker\nAnimated Color Selector\nAnimated Breadcrumb\nTilt Card\nButton\nAnimated CTA Buttons\nExpandable Control\nAdaptive Stepper\nMarquee\nTabs\nSwitch\nInput\nSelect\nCombobox\nMulti Select\nCheckbox\nRadio Group\nBottom Sheet\nPull to Refresh\nShared Layout Background\nBounce Sidebar\nAnimated Sidebar\nFile Tree\nPreview Rail\nDock\nTooltip\nAnimated Context Menu\nPopover\nMorphing Modal\nCenter Morph Modal\nText Animation\nNumber Animation\nAnimated Badge\nAction Swap\nAnimated Toast Stack\nTheme Toggle\nBouncy Accordion\nDrawer\nScroll Animation\nRange Slider\nWheel Picker\nTable\nShader Background\nCylinder Carousel\nLoader\nBLOCKS\n23\nInfinite Masonry\nNotification Stack\nProject Folder\nCard Folder\nFixtures\nAvailability Scheduler\nMulti-chain Swap\nDynamic Island\nCommand Palette\nMorphing Search\nExpandable Action Bar\nOverflow Actions\nExpandable Tabs\nMorphing Tabs\nSwipeable List\nFile Upload\nPrediction Market\nWallet Card\nOTP Input\nSign Up Form\nBloom Menu\nFeedback Widget\n404 / Not Found\nAI Agents\nImage Generation\nImage Generation\nCopy Page\n\nA stable generated-image surface that moves from queued work through progressive refinement to a completed result without layout shift.\n\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\n1024 × 1024\nRefining details\n\n“a quiet mountain landscape at sunset”\n\nReplay\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\nimage-generation\nimage-generation\nAPI Reference\nchildren?\nReactNode\n\nThe completed media. Pass an img, Next Image, canvas, video, or custom preview.\n\n—\nstatus?\n\"complete\" | \"queued\" | \"generating\" | \"refining\" | \"error\"\ngenerating\nlabel?\nstring\n\nAccessible description. Defaults to a description derived from prompt.\n\n—\nprompt?\nstring\n—\nresolution?\nstring\n1024 × 1024\naspectRatio?\nAspectRatio\n\nCSS aspect ratio reserved before generated media is available.\n\n1 / 1\nsize?\n\"compact\" | \"fluid\"\ncompact\ninteractive?\nboolean\n\nLets the active dither cluster follow fine-pointer movement.\n\ntrue\nstatusText?\nstring\n—\nshowStatus?\nboolean\ntrue\nonRetry?\n(() => void)\n—\nclassName?\nstring\n—\nmediaClassName?\nstring\n—\nstatusClassName?\nstring\n—\nComposition\n\nPlace generated media inside the response row that owns its prompt and completion state.\n\nMessage\n└── MessageContent\n    └── ImageGeneration\n        └── GeneratedMedia\n\nNote: Message keeps the generated result attached to its assistant turn. Streaming Response carries accompanying text before or after the media result. Prompt Input collects the instruction that starts generation.\n\nHow it works\n\nGenerated media should occupy its final space before pixels are ready. The surface keeps one stable canvas while generation state progressively reveals the result, then settles into an ordinary image that remains easy to inspect.\n\nAlso on React Native. A dot field you can steer while the image forms.\nRelated components\nChat App\n\nA complete agent conversation workspace composing navigation, messages, streaming, planning, approvals, tools, code, diffs, generated media, sources, and prompt input.\n\nAgent Loading States\n\nThree thoughtful loading states for AI interfaces: shimmering status text, live agent progress, and cycling reasoning phrases.\n\nCode Block\n\nA syntax-highlighted code surface with stable streaming updates, line numbers, focused lines, smooth following, and copy feedback.\n\nAbout Image Generation\n\nImage Generation is a React canvas for media that an AI model is still producing. It reserves the final aspect ratio up front, shows an animated dither field while the job is queued or generating, partly reveals the image while refining, and resolves to the finished media when complete, without remounting or shifting the surrounding conversation. An error state dims the media and can show a Try again button. It is built with Framer Motion and Tailwind CSS.\n\nWhen to use it\nA chat assistant generates images from a prompt and the reply should hold its space while the job runs.\nA design or marketing tool shows several renders in progress, each with its prompt and resolution.\nA generation queue needs a clear failed state with a one-click retry.\nAccessibility\n\nThe canvas has the img role with an aria-label built from the status text and the prompt, or from your own label, and the root sets aria-busy while the job is active. The status line underneath is a polite live region, so a change such as \"Generating image\" to \"Image ready\" is announced. The dither field is decorative and hidden from assistive technology. With reduced motion enabled, the dither field is drawn once as a still pattern, the media fades in without blur or scale, and the status mark stops spinning.\n\nFAQ\nHow do I show an AI image generation loading state in React?\nRender ImageGeneration with status set to \"queued\", \"generating\", \"refining\", \"complete\" or \"error\", and pass the finished media as children. Set aspectRatio so the frame reserves the right space before the image exists.\nDoes it work with the Next.js Image component?\nYes. children accepts an img, a Next.js Image, a canvas, a video or any custom preview, and the component sizes it to cover the frame.\nCan I change the status text and retry behavior?\nUse statusText to replace the default message, showStatus to hide the status line, and resolution to change or remove the size badge. Pass onRetry to show a Try again button in the error state, and set interactive to false to stop the dither cluster following the pointer.\n\nUpdated Oct 18, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+    "slots": [
+      {
+        "slot": "image-generation",
+        "rect": {
+          "x": 392,
+          "y": 384,
+          "width": 576,
+          "height": 258,
+          "top": 384,
+          "right": 968,
+          "bottom": 642,
+          "left": 392
+        }
+      },
+      {
+        "slot": "collapsible",
+        "rect": {
+          "x": 304,
+          "y": 3238.5625,
+          "width": 752,
+          "height": 41,
+          "top": 3238.5625,
+          "right": 1056,
+          "bottom": 3279.5625,
+          "left": 304
+        }
+      },
+      {
+        "slot": "collapsible-trigger",
+        "rect": {
+          "x": 292,
+          "y": 3238.5625,
+          "width": 776,
+          "height": 40,
+          "top": 3238.5625,
+          "right": 1068,
+          "bottom": 3278.5625,
+          "left": 292
+        }
+      },
+      {
+        "slot": "collapsible-indicator",
+        "rect": {
+          "x": 1040,
+          "y": 3250.5625,
+          "width": 16,
+          "height": 16,
+          "top": 3250.5625,
+          "right": 1056,
+          "bottom": 3266.5625,
+          "left": 1040
+        }
+      },
+      {
+        "slot": "collapsible-content",
+        "rect": {
+          "x": 304,
+          "y": 3278.5625,
+          "width": 752,
+          "height": 1,
+          "top": 3278.5625,
+          "right": 1056,
+          "bottom": 3279.5625,
+          "left": 304
+        }
+      }
+    ]
+  },
+  "failures": [],
+  "capturedAt": "2026-10-23T07:25:11.941Z"
+}

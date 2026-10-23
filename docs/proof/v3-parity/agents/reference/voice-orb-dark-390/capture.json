@@ -1,0 +1,88 @@
+{
+  "spec": {
+    "slug": "voice-orb",
+    "theme": "dark",
+    "width": 390,
+    "height": 844
+  },
+  "facts": {
+    "url": "https://beui.dev/components/agents/voice-orb",
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "dpr": 1
+    },
+    "dark": true,
+    "reduced": false,
+    "text": "beUI Native is free · Pro presale\n\nReserve\nbeUI Pro for mobile\nbeUI\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\nAI Agents\nVoice Orb\nVoice Orb\n\nBreathing liquid voice visualization with flowing highlights, custom pigments and a soft, voice-reactive silhouette. Accepts a normalized level, MotionValue or caller-owned audio analyser, pauses offscreen and supports reduced motion.\n\nWeb\nWeb\nReact Native\nReact Native\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\nvoice-orb\nvoice-orb\nAPI Reference\nclassName?\nstring\n—\nAlso on React Native. A liquid sphere that moves with your voice.\nRelated components\nApproval Card\n\nA human-in-the-loop decision surface for approvals, single or multiple-choice questions, custom responses, and multi-step review flows.\n\nAgent Activity\n\nOne adaptive activity stream for reasoning, searches, tool calls, structured execution traces, or a chronological mix.\n\nMessage Bubble\n\nA focused conversational surface with visual tones, independent alignment, grouped messages, expandable content, and interactive link or button support.\n\nAbout Voice Orb\n\nVoice Orb is a React voice visualizer for AI voice assistants: a breathing liquid sphere drawn with a WebGL shader, with flowing highlights and three custom pigments. Its silhouette swells with a spring as activity rises, driven by a number, a Framer Motion MotionValue or an audio analyser you provide. The orb pauses when it is offscreen or the tab is hidden, and shows a fallback with an onError callback if WebGL is unavailable.\n\nWhen to use it\nA voice AI assistant needs a visual that reacts while the agent listens or speaks.\nA realtime voice chat or call screen wants a calm idle state that comes alive with audio levels.\nA landing page for a voice product needs a branded, animated hero element in its own colors.\nAccessibility\n\nThe orb renders with the img role when you pass an aria-label and is hidden from assistive technology when you do not, so a decorative orb adds no noise. It never requests microphone access itself. With reduced motion enabled, the surface stops animating and the silhouette no longer reacts to activity, so the orb stays visible but still.\n\nFAQ\nHow do I make a voice reactive orb in React?\nRender VoiceOrb and pass activity as a number from 0 to 1, or as a MotionValue to update it without re-rendering React. For live audio, pass an AnalyserNode through the analyser prop.\nDoes it need access to the microphone?\nNo. The component never asks for the microphone. If you want it to react to audio, create the AudioContext and AnalyserNode in your app and pass the analyser in.\nHow do I change its colors and speed?\nPass colors as three hex values for base pigment, highlight and shadow, and set speed. Set active to false to pause the material while keeping the current surface visible.\n\nUpdated Oct 18, 2026",
+    "slots": [
+      {
+        "slot": "voice-orb",
+        "rect": {
+          "x": 67,
+          "y": 520,
+          "width": 256,
+          "height": 256,
+          "top": 520,
+          "right": 323,
+          "bottom": 776,
+          "left": 67
+        }
+      },
+      {
+        "slot": "collapsible",
+        "rect": {
+          "x": 16,
+          "y": 2146.5625,
+          "width": 358,
+          "height": 41,
+          "top": 2146.5625,
+          "right": 374,
+          "bottom": 2187.5625,
+          "left": 16
+        }
+      },
+      {
+        "slot": "collapsible-trigger",
+        "rect": {
+          "x": 4,
+          "y": 2146.5625,
+          "width": 382,
+          "height": 40,
+          "top": 2146.5625,
+          "right": 386,
+          "bottom": 2186.5625,
+          "left": 4
+        }
+      },
+      {
+        "slot": "collapsible-indicator",
+        "rect": {
+          "x": 358,
+          "y": 2158.5625,
+          "width": 16,
+          "height": 16,
+          "top": 2158.5625,
+          "right": 374,
+          "bottom": 2174.5625,
+          "left": 358
+        }
+      },
+      {
+        "slot": "collapsible-content",
+        "rect": {
+          "x": 16,
+          "y": 2186.5625,
+          "width": 358,
+          "height": 1,
+          "top": 2186.5625,
+          "right": 374,
+          "bottom": 2187.5625,
+          "left": 16
+        }
+      }
+    ]
+  },
+  "failures": [],
+  "capturedAt": "2026-10-23T07:22:22.777Z"
+}

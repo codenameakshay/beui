@@ -1,0 +1,75 @@
+{
+  "spec": {
+    "slug": "todo-list",
+    "theme": "dark",
+    "width": 1440,
+    "height": 1000
+  },
+  "facts": {
+    "url": "https://beui.dev/components/agents/todo-list",
+    "viewport": {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1
+    },
+    "dark": true,
+    "reduced": false,
+    "text": "beUI Native is free — Pro mobile blocks and screens are in presale from $99\n\nReserve\nbeUI Pro for mobile\nbeUI\nComponents\nBlocks\nAgents\nCharts\nPlayground\nSponsors\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\n1.9k\nGet Pro\nAll\nAgents\nComponents\nBlocks\n\nINTRO\n\nHome\nChangelog\n\nGUIDES\n\nMotion Guides\nAgent Guide\nOpenUI\nReact Native Setup\nAI AGENTS\n18\nVoice Orb\nMessage Bubble\nMessage\nMessage Scroller\nPrompt Input\nTodo List\nCode Block\nApproval Card\nFile Diff\nTool Result\nStreaming Response\nImage Generation\nTool Approval\nCitations\nAgent Activity\nAgent Loading States\nAI Sidebar\nChat App\nCOMPONENTS\n54\nTimeline\nNEW\nAnimated Alert\nAnimated Collapsible\nAspect Ratio\nArc Picker\nSortable List\nImage Viewer\nDate Range Picker\nCard\nColor Picker\nAnimated Color Selector\nAnimated Breadcrumb\nTilt Card\nButton\nAnimated CTA Buttons\nExpandable Control\nAdaptive Stepper\nMarquee\nTabs\nSwitch\nInput\nSelect\nCombobox\nMulti Select\nCheckbox\nRadio Group\nBottom Sheet\nPull to Refresh\nShared Layout Background\nBounce Sidebar\nAnimated Sidebar\nFile Tree\nPreview Rail\nDock\nTooltip\nAnimated Context Menu\nPopover\nMorphing Modal\nCenter Morph Modal\nText Animation\nNumber Animation\nAnimated Badge\nAction Swap\nAnimated Toast Stack\nTheme Toggle\nBouncy Accordion\nDrawer\nScroll Animation\nRange Slider\nWheel Picker\nTable\nShader Background\nCylinder Carousel\nLoader\nBLOCKS\n23\nInfinite Masonry\nNotification Stack\nProject Folder\nCard Folder\nFixtures\nAvailability Scheduler\nMulti-chain Swap\nDynamic Island\nCommand Palette\nMorphing Search\nExpandable Action Bar\nOverflow Actions\nExpandable Tabs\nMorphing Tabs\nSwipeable List\nFile Upload\nPrediction Market\nWallet Card\nOTP Input\nSign Up Form\nBloom Menu\nFeedback Widget\n404 / Not Found\nAI Agents\nTodo List\nTodo List\nCopy Page\n\nA collapsible agent task plan with morphing status marks, a completion count, compact metadata, and smooth list updates.\n\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\nImplementation plan\n3 of 4 tasks completed\n3\n/\n4\nCompleted:\nInspect the current data flow\nCompleted:\nUpdate the response schema\nCompleted:\nAdd coverage for edge cases\nIn progress:\nRun checks and prepare the result\n75%\nReplay\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\ntodo-list\ntodo-list\nAPI Reference\nitems\nTodoItem[]\n—\ntitle?\nReactNode\nTo-dos\nopen?\nboolean\n—\ndefaultOpen?\nboolean\ntrue\nonOpenChange?\n((open: boolean) => void)\n—\ncollapseOnComplete?\nboolean\ntrue\nmaxHeight?\nnumber\n248\nclassName?\nstring\n—\nComposition\n\nRender the plan as message content when it belongs to a conversational agent run.\n\nMessage\n└── MessageContent\n    └── TodoList\n\nNote: Agent Activity shows the chronological events occurring between tasks. Agent Loading States covers work before a durable plan is available. Tool Result presents the evidence produced by an active task.\n\nHow it works\n\nAn agent plan should explain what remains without pretending every internal thought is a task. Use a todo list for durable work items whose state matters to the person following the run.\n\nAlso on React Native. A plan whose marks morph as tasks finish.\nRelated components\nCode Block\n\nA syntax-highlighted code surface with stable streaming updates, line numbers, focused lines, smooth following, and copy feedback.\n\nFile Diff\n\nA syntax-highlighted file change disclosure with progressive rows, line numbers, live change counts, smooth following, and completion collapse.\n\nTool Result\n\nA lightweight execution disclosure for syntax-highlighted terminal output and request responses that collapses into a compact completed state.\n\nAbout Todo List\n\nTodo List is a React task plan for AI agents that shows what the agent is working on and what remains. Each task is pending, in progress, completed or cancelled, and its mark morphs between a dashed circle, a progress ring, a check and a cross with Framer Motion. The header shows a rolling completion count, new tasks slide in while the list follows the newest one inside a capped height, and the list collapses on its own once every task is done.\n\nWhen to use it\nA coding agent shows its multi-step plan while it edits files and runs tests.\nA research or browsing agent lists the steps it will take and marks each one as it finishes.\nA workflow or onboarding checklist needs live status for each step with optional progress.\nAccessibility\n\nThe list is a labeled section whose header is a button with aria-expanded and aria-controls, and the tasks sit in a region labeled by that header. Each task includes a visually hidden status such as \"In progress:\", the count reads \"3 of 5 tasks completed\" for screen readers, and the ordered list is a polite live region. While collapsed, the content is hidden from assistive technology and made inert. With reduced motion enabled, tasks appear without sliding, marks draw instantly and the indeterminate ring stops spinning.\n\nFAQ\nHow do I show an AI agent's plan in React?\nPass TodoList an items array where each task has an id, a title and a status. Add progress from 0 to 100 for an in progress ring, and detail for short metadata such as a file name.\nCan I stop it from collapsing when all tasks are done?\nYes. Set collapseOnComplete to false. When it is on, the list also reopens if a task becomes incomplete again.\nCan I control whether it is open?\nYes. Use open with onOpenChange, or defaultOpen. maxHeight caps the scrolling area, which follows the newest task.\n\nUpdated Oct 18, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+    "slots": [
+      {
+        "slot": "collapsible",
+        "rect": {
+          "x": 304,
+          "y": 2580.5625,
+          "width": 752,
+          "height": 41,
+          "top": 2580.5625,
+          "right": 1056,
+          "bottom": 2621.5625,
+          "left": 304
+        }
+      },
+      {
+        "slot": "collapsible-trigger",
+        "rect": {
+          "x": 292,
+          "y": 2580.5625,
+          "width": 776,
+          "height": 40,
+          "top": 2580.5625,
+          "right": 1068,
+          "bottom": 2620.5625,
+          "left": 292
+        }
+      },
+      {
+        "slot": "collapsible-indicator",
+        "rect": {
+          "x": 1040,
+          "y": 2592.5625,
+          "width": 16,
+          "height": 16,
+          "top": 2592.5625,
+          "right": 1056,
+          "bottom": 2608.5625,
+          "left": 1040
+        }
+      },
+      {
+        "slot": "collapsible-content",
+        "rect": {
+          "x": 304,
+          "y": 2620.5625,
+          "width": 752,
+          "height": 1,
+          "top": 2620.5625,
+          "right": 1056,
+          "bottom": 2621.5625,
+          "left": 304
+        }
+      }
+    ]
+  },
+  "failures": [],
+  "capturedAt": "2026-10-23T07:24:11.108Z"
+}

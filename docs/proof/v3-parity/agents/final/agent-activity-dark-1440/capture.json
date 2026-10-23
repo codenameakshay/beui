@@ -1,0 +1,22 @@
+{
+  "spec": {
+    "slug": "agent-activity",
+    "theme": "dark",
+    "width": 1440,
+    "height": 1000
+  },
+  "facts": {
+    "url": "http://localhost:8104/agents-final/?slug=agent-activity&theme=dark",
+    "viewport": {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1
+    },
+    "dark": false,
+    "reduced": false,
+    "text": "MIXED STREAM\nReading the launch brief\nindependent coffee roasters in Portland\nHeart Coffee\nheartroasters.com\nCoava Coffee\ncoavacoffee.com\nUpper Left Roasters\nupperleftroasters.com\n+5 more\nReplay\nCOMPLETED · STEP SUMMARY\nThought for 5s\nParse the request\nDraft the outline\n1.2s\nPolish the answer\nTRACE ROWS\n1 tool call, 2 messages\nPlan\noutline response structure\nShell\nrg \"agent-activity\" lib/\nReply\nFAILED · THE RUN CRASHED\nFailed · bun test exited 1 after 2 tools\nRead\ncampaign-notes.md\nRun\nbun test launch\nCANCELLED · STOPPED PART-WAY\nCancelled · Thought for 12s\nReading the launch brief\nDrafting the campaign plan",
+    "slots": []
+  },
+  "failures": [],
+  "capturedAt": "2026-10-23T07:45:21.620Z"
+}

@@ -1,0 +1,1979 @@
+{
+  "baseline": "5ec78ac30e1274727ddd185a883346e4d908e6c8",
+  "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "auditCommit": "fe9213f",
+  "auditInventorySha256": "e01a2dc310538b04170df0a8e81705764d7ab9d39c0704472db0663c0810cb84",
+  "auditStatesSha256": "39be5b37da12a603f707aad62ecde9c981920dc6230a5fb9aabd81f9ae013006",
+  "routeCount": 19,
+  "obligationCount": 152,
+  "routes": [
+    {
+      "id": "agents/prompt-input",
+      "family": "agents",
+      "slug": "prompt-input",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/prompt_input_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "9fb2fef97ce8e5dd57be6090820854ab40d346d081c0dd3abe70dd75952f0d76",
+      "sourceSlug": "prompt-input",
+      "sourceUrl": "https://beui.dev/components/agents/prompt-input",
+      "sourceFiles": [
+        {
+          "path": "components/agents/prompt-input.tsx",
+          "sha256": "48c73c0901d8a360c6e97d607df4e13b4e2b70fdf72a425a27b6d6c3b405f23b"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/prompt-input.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiPromptInput",
+          "file": "lib/src/motion/prompt_input.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "92f6d7277adce5f68b9cb29af6606495d625f0e2e127050ae511ee5c4637e2d8",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/prompt-input.preview.tsx",
+          "sha256": "989da50e3baceb36171be5912d235c069109b2f3e61390bb25980ed7035ab8d6"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "empty typed multiline autosize and attachment chips",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "model picker filter choose keyboard close",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "Enter submit Shift Enter newline send stop disabled",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/message",
+      "family": "agents",
+      "slug": "message",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/message_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "3fac8c5816392f85de2dde17b374e69d6111a60883e1f4fd1032e191b8c1e616",
+      "sourceSlug": "message",
+      "sourceUrl": "https://beui.dev/components/agents/message",
+      "sourceFiles": [
+        {
+          "path": "components/agents/message.tsx",
+          "sha256": "39f616501ef4e7f3d928ee4f0d4730a96b7ec83a65ad4d1eff4db6d5aec2b7b9"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/message.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiMessageSideScope",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageScope",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessage",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageGroup",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageAvatar",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageContent",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageHeader",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageFooter",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageMarker",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageTyping",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "9c3819ce08fc4be165bd98dde9c8f4ab7eae8b58fca178c27bf6f8d90e123166",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/message.preview.tsx",
+          "sha256": "3b7c9848f4b04a3348b4891a7672f57eef364da3254bf238857605fd1ea89454"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "row avatar group bubble metadata and live markers",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "user assistant grouping and hover actions exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "loading streaming completed error stopped",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/message-bubble",
+      "family": "agents",
+      "slug": "message-bubble",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/message_bubble_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "0256e4afbe1fad9937dc3a018cfe15f7a1ceb5c81890dce2cb69cadf49e8fff8",
+      "sourceSlug": "message-bubble",
+      "sourceUrl": "https://beui.dev/components/agents/message-bubble",
+      "sourceFiles": [
+        {
+          "path": "components/agents/message-bubble.tsx",
+          "sha256": "0e21cd5a02b5bd98d39b1e4c5415a570f6e0e2b26db82444d691dc97492fc78a"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "surfaces",
+          "installSlug": "message-bubble",
+          "preview": "components/previews/agents/message-bubble.preview.tsx"
+        },
+        {
+          "slug": "avatars",
+          "installSlug": "message-bubble",
+          "preview": "components/previews/agents/message-bubble-avatars.preview.tsx"
+        },
+        {
+          "slug": "show-more",
+          "installSlug": "message-bubble",
+          "preview": "components/previews/agents/message-bubble-collapsible.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/message-bubble.preview.tsx",
+        "components/previews/agents/message-bubble-avatars.preview.tsx",
+        "components/previews/agents/message-bubble-collapsible.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiMessageBubble",
+          "file": "lib/src/motion/message_bubble.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageBubbleContent",
+          "file": "lib/src/motion/message_bubble.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageBubbleGroup",
+          "file": "lib/src/motion/message_bubble.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageBubbleCollapsible",
+          "file": "lib/src/motion/message_bubble.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "015c6a7a8bf3686a74311d0276e266496a4c3bb0a852b1fd548cfab33b590982",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/message-bubble.preview.tsx",
+          "sha256": "d2366168b3674bbf195b4432ba80003dd3cba363c1cb152c009c430ba75dd085"
+        },
+        {
+          "path": "components/previews/agents/message-bubble-avatars.preview.tsx",
+          "sha256": "60602e05ec5bcff4022f09f70e1854e5f41f26dbcfe3011826999682d4d049bd"
+        },
+        {
+          "path": "components/previews/agents/message-bubble-collapsible.preview.tsx",
+          "sha256": "aad6aaf4f6632ff1317003a33fb7acade61d26cc429f5657cc5a665457844576"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "all tones alignments grouped first middle last",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover actions keyboard focus blur",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "streaming text growth and attachments",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/message-bubble/surfaces",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/message-bubble/avatars",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/message-bubble/show-more",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/message-scroller",
+      "family": "agents",
+      "slug": "message-scroller",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/message_scroller_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "cb761c8a1099751b2b2028e0ab495b58122f9c066324e155b715c71dde6a19f6",
+      "sourceSlug": "message-scroller",
+      "sourceUrl": "https://beui.dev/components/agents/message-scroller",
+      "sourceFiles": [
+        {
+          "path": "components/agents/message-scroller.tsx",
+          "sha256": "bf6105eecd904be5022d75e9c66be9d3bdb4d439b9097db3b422d9ed5edab0e0"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/message-scroller.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiMessageScrollerAnchor",
+          "file": "lib/src/motion/message_scroller.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageScroller",
+          "file": "lib/src/motion/message_scroller.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "a76fb72f3e35b110b5530b1c58a26e6ed10e2cbdcfd8c08b3c102f0e68635f2e",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/message-scroller.preview.tsx",
+          "sha256": "b3d1a85d852c227f1516aa75ce11128c285cb75a21e9f8044f297e05c6dc411b"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "at live edge append and follow",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "scroll away unread count jump-to-bottom",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "resize content and completed stream anchor retention",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/streaming-response",
+      "family": "agents",
+      "slug": "streaming-response",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/streaming_response_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "c6ad66bf41ade524ce6a73c75a14537db708b022e834a1d8ee0c4292448ed405",
+      "sourceSlug": "streaming-response",
+      "sourceUrl": "https://beui.dev/components/agents/streaming-response",
+      "sourceFiles": [
+        {
+          "path": "components/agents/streaming-response.tsx",
+          "sha256": "c026f908d4f1a48e9684918da012c89036cbbcff1a4d841a4912e9022ab15ab0"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/streaming-response.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiStreamingResponse",
+          "file": "lib/src/motion/streaming_response.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "0b28bd2b325fad49f8a86bda719255ab59a19e836659e37de8ecb601aab2049c",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/streaming-response.preview.tsx",
+          "sha256": "97014cf6cd356f1e7bba49bb21798b8c4676a22a0537423f9bb4e2aaa2202d1d"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "idle streaming complete actions sources expansion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "error retry stopped continue and cancellation",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "text layout during incremental chunks and hover actions exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/image-generation",
+      "family": "agents",
+      "slug": "image-generation",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/image_generation_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "0d6300a8e28ea7ca65e808a42e967ae07440e1758310db11d57186440cf8d5fe",
+      "sourceSlug": "image-generation",
+      "sourceUrl": "https://beui.dev/components/agents/image-generation",
+      "sourceFiles": [
+        {
+          "path": "components/agents/image-generation.tsx",
+          "sha256": "e76c8940a791ee3637f29cf7cbd49a224f263dd004e92c6771782ef5f99d6025"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/image-generation.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiImageGeneration",
+          "file": "lib/src/motion/image_generation.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "a21f5131b224d0b87144ec26b08de8e26952e9c9bf720ce8558e5d69335c55fa",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/image-generation.preview.tsx",
+          "sha256": "5125e6a81e41ef352495e78d3a4be75e572d270995334785e84fcf5dcdb44519"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "idle determinate progress preview completed",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "cancel error retry and no-layout-shift",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "download open media keyboard controls",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/citations",
+      "family": "agents",
+      "slug": "citations",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/citations_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "74a4b98f55767f60b9c1bacb85b87e7c007f7b68ea62b0541f7264971653a4a3",
+      "sourceSlug": "citations",
+      "sourceUrl": "https://beui.dev/components/agents/citations",
+      "sourceFiles": [
+        {
+          "path": "components/agents/citations.tsx",
+          "sha256": "fa9a9b637709c0403f0e2014662de09020df6e6e9136e97427deb8c28aa38a07"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/citations.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiCitation",
+          "file": "lib/src/motion/citations.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiCitationFavicon",
+          "file": "lib/src/motion/citations.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiCitationStack",
+          "file": "lib/src/motion/citations.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiCitationList",
+          "file": "lib/src/motion/citations.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiCitations",
+          "file": "lib/src/motion/citations.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "37bfa328f05d96b04ecfd25cef3477cd4e3e03a5cf1b922deedd4c524e5d49e5",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/citations.preview.tsx",
+          "sha256": "c42f3713fc6948609ed3d779473a675193fbeb2365a73e0bce81446307689b7b"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "inline marker hover focus reveal and exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "expand collapse reference collection progressive rows",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "source link keyboard activation and truncation",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/loading-states",
+      "family": "agents",
+      "slug": "loading-states",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/loading_states_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "73a50011e5b7fd1d554f5c4cdce381ac5cf30b1d4ab36cc068485f4fd6ee20ae",
+      "sourceSlug": "loading-states",
+      "sourceUrl": "https://beui.dev/components/agents/loading-states",
+      "sourceFiles": [
+        {
+          "path": "components/agents/loading-states/index.ts",
+          "sha256": "a002cf0346ec5fb2b5e4f42752b689edb1e8fbfcd8f3069c9c2dc1b83c496aaa"
+        },
+        {
+          "path": "components/agents/loading-states/thinking-shimmer.tsx",
+          "sha256": "2879bd5fd406c014610be6f304bb4b71e1aac0ac6eec531de4cd3eba4827b7bf"
+        },
+        {
+          "path": "components/agents/loading-states/agent-progress.tsx",
+          "sha256": "8b291da859fec2c00fee0cd200c126953fa4aa7d2ea5a7ab7c67c53ea3e2f3f4"
+        },
+        {
+          "path": "components/agents/loading-states/reasoning-text.tsx",
+          "sha256": "751fe0b05fdb68453ff748e50f5a10fc65d9c73b9c79813796f8a9371589b62d"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "reasoning-text",
+          "installSlug": "reasoning-text",
+          "preview": "components/previews/agents/reasoning-text.preview.tsx"
+        },
+        {
+          "slug": "thinking-shimmer",
+          "installSlug": "thinking-shimmer",
+          "preview": "components/previews/agents/thinking-shimmer.preview.tsx"
+        },
+        {
+          "slug": "agent-progress",
+          "installSlug": "agent-progress",
+          "preview": "components/previews/agents/agent-progress.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/reasoning-text.preview.tsx",
+        "components/previews/agents/thinking-shimmer.preview.tsx",
+        "components/previews/agents/agent-progress.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiThinkingShimmer",
+          "file": "lib/src/motion/loading_states.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiAgentProgress",
+          "file": "lib/src/motion/loading_states.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiReasoningText",
+          "file": "lib/src/motion/loading_states.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "f2426cae8b78189235673b3b1593b6d13ac7b2c9fb189388d43e8abca32f288d",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/reasoning-text.preview.tsx",
+          "sha256": "3fe4f30e6eeefd827ca996289407a300105b4576ab0a07cbf735581d12563fc4"
+        },
+        {
+          "path": "components/previews/agents/thinking-shimmer.preview.tsx",
+          "sha256": "43451550e2901efd281091ab79c2170c8da801285d51ad92c7a6021de97e4f11"
+        },
+        {
+          "path": "components/previews/agents/agent-progress.preview.tsx",
+          "sha256": "b23dd405fb719737e2abe50b2cc1b4ae9713af22df29d08b5270552d70823cdc"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "thinking-shimmer agent-progress reasoning-text",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "progress labels completion and phrase cycles",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion no moving shimmer or text transform",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/reasoning-text/reasoning-text",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/thinking-shimmer/thinking-shimmer",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/agent-progress/agent-progress",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/todo-list",
+      "family": "agents",
+      "slug": "todo-list",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/todo_list_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "d4e1f2228d0f2642c1f4e6d378497ea14b86f4e9253ed2cf8f72cb778ca26bb6",
+      "sourceSlug": "todo-list",
+      "sourceUrl": "https://beui.dev/components/agents/todo-list",
+      "sourceFiles": [
+        {
+          "path": "components/agents/todo-list.tsx",
+          "sha256": "ee3b0baabf79fb941f0affbc21e9043c93cd02e59f71ed3f37d55702912cd210"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/todo-list.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiTodoList",
+          "file": "lib/src/motion/todo_list.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "95bdf1ce303de5ffe06cf182436d70f32c1d5a1ebe7d99f303f5a253f32ec27e",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/todo-list.preview.tsx",
+          "sha256": "476b1486ed421bf94766832bde280df2368b0df39d243be81e0d73c36be623c1"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "expand collapse pending active completed failed",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "task insertion removal reorder count update",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "status mark morph text and metadata",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/agent-activity",
+      "family": "agents",
+      "slug": "agent-activity",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/agent_activity_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "7c0a66affd54c0a6eeec350f109f595173d242fbd62f87d425a82d2afaada945",
+      "sourceSlug": "agent-activity",
+      "sourceUrl": "https://beui.dev/components/agents/agent-activity",
+      "sourceFiles": [
+        {
+          "path": "components/agents/agent-activity/index.tsx",
+          "sha256": "e8a825f83a4540801730591e5b736c4f7e0db58f3b4721010966580fc46b7265"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "streaming-text",
+          "installSlug": "agent-activity",
+          "preview": "components/previews/agents/agent-activity-text.preview.tsx"
+        },
+        {
+          "slug": "reasoning-steps",
+          "installSlug": "agent-activity",
+          "preview": "components/previews/agents/agent-activity-steps.preview.tsx"
+        },
+        {
+          "slug": "web-search",
+          "installSlug": "agent-activity",
+          "preview": "components/previews/agents/agent-activity-search.preview.tsx"
+        },
+        {
+          "slug": "tool-calls",
+          "installSlug": "agent-activity",
+          "preview": "components/previews/agents/agent-activity-tools.preview.tsx"
+        },
+        {
+          "slug": "mixed-activity",
+          "installSlug": "agent-activity",
+          "preview": "components/previews/agents/agent-activity.preview.tsx"
+        },
+        {
+          "slug": "agent-trace",
+          "installSlug": "agent-activity",
+          "preview": "components/previews/agents/agent-trace.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/agent-activity.preview.tsx",
+        "components/previews/agents/agent-activity-text.preview.tsx",
+        "components/previews/agents/agent-activity-steps.preview.tsx",
+        "components/previews/agents/agent-activity-search.preview.tsx",
+        "components/previews/agents/agent-activity-tools.preview.tsx",
+        "components/previews/agents/agent-trace.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiAgentActivity",
+          "file": "lib/src/motion/agent_activity.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "4429feb864f0569c85583afc647e80845b414ac43c23a79abffa10359705c0e9",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/agent-activity.preview.tsx",
+          "sha256": "b658f2aa9e27a31cc572d4a28e78917918a9b5b722b80cc144682117f0d9c8f2"
+        },
+        {
+          "path": "components/previews/agents/agent-activity-text.preview.tsx",
+          "sha256": "e74a491bd56fd8646620373909a275f348a7f118c62de10ae79affe5ef3c3fdf"
+        },
+        {
+          "path": "components/previews/agents/agent-activity-steps.preview.tsx",
+          "sha256": "62bf8add6e71339fd0d69c24782fb78627884bd7fca06935f2b37a2042d1bde3"
+        },
+        {
+          "path": "components/previews/agents/agent-activity-search.preview.tsx",
+          "sha256": "51656ff9089ef3799a2e6bdcbc6025eba2e7adfcaebe32f98a92ac66741ae7ce"
+        },
+        {
+          "path": "components/previews/agents/agent-activity-tools.preview.tsx",
+          "sha256": "86f08fb672120fbb78438a241800f2a82c1da3c6dc46318fbb11c9e04f3ef7c7"
+        },
+        {
+          "path": "components/previews/agents/agent-trace.preview.tsx",
+          "sha256": "65468e4428f99b7c97c544cbd8879baf4553b2d9fc63fa49afb5b3f67fab8923"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "text reasoning steps search tool trace examples",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "pending running completed failed cancelled",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "expand collapse progressive results and overflow count",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/agent-activity/streaming-text",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/agent-activity/reasoning-steps",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/agent-activity/web-search",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/agent-activity/tool-calls",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/agent-activity/mixed-activity",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/agent-activity/agent-trace",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/tool-result",
+      "family": "agents",
+      "slug": "tool-result",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/tool_result_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "4476fa031687731661d2bf9880ac292b66650d718641d0db48182a0cf4928d89",
+      "sourceSlug": "tool-result",
+      "sourceUrl": "https://beui.dev/components/agents/tool-result",
+      "sourceFiles": [
+        {
+          "path": "components/agents/tool-result.tsx",
+          "sha256": "49a12c3a6db2ba4f75021eaf3e7310f1697d405f8e1c46c912e01671a8a20f0f"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "terminal-output",
+          "installSlug": "tool-result",
+          "preview": "components/previews/agents/tool-result-terminal.preview.tsx"
+        },
+        {
+          "slug": "request-result",
+          "installSlug": "tool-result",
+          "preview": "components/previews/agents/tool-result-request.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/tool-result-terminal.preview.tsx",
+        "components/previews/agents/tool-result-request.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiToolResultOutput",
+          "file": "lib/src/motion/tool_result.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiToolResult",
+          "file": "lib/src/motion/tool_result.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "a1bf14bbe2f2663139fa7529cf174c5fb38412d616e97058ec568b625ac255b0",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/tool-result-terminal.preview.tsx",
+          "sha256": "efe1a47603bf2d3eb179434cbc9d25c9fca7e9261bb215421ae9270b0d7dbda8"
+        },
+        {
+          "path": "components/previews/agents/tool-result-request.preview.tsx",
+          "sha256": "f2121c4668f5a958e55121b2e2fe0aaaddc41d29945140431998ea69b26a5491"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "running terminal chunks success auto-collapse",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "failed cancelled expand details copy",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "long output scroll and focus",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/tool-result/terminal-output",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/tool-result/request-result",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/code-block",
+      "family": "agents",
+      "slug": "code-block",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/code_block_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "b53fd04a0ca6f9dc944dcf0c1b6db88568c67916a47eb1b3ae2a57c05e02661a",
+      "sourceSlug": "code-block",
+      "sourceUrl": "https://beui.dev/components/agents/code-block",
+      "sourceFiles": [
+        {
+          "path": "components/agents/code-block.tsx",
+          "sha256": "d4b6689f49a15c9790270aea8067411b6579dd1abb89505c8b1ea56c8bbe144b"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/code-block.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiCodeBlock",
+          "file": "lib/src/motion/code_block.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "fa258e33505d697524808bb7ac8c72b59789ea76198ec92e0da0b1149c5d057a",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/code-block.preview.tsx",
+          "sha256": "26fc3cab4e02b094876df96deb935584fd51cc61aeb4c1b329d2d8ecbd8d5f0e"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "static streaming stable lines and highlighting",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "copy feedback wrap horizontal scroll",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "language switch and line number alignment",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/file-diff",
+      "family": "agents",
+      "slug": "file-diff",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/file_diff_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "6a819ad14ef1c4a83221c9d2ac3808e05cb9aa2a1a2fb3cb6bc6185e367ea317",
+      "sourceSlug": "file-diff",
+      "sourceUrl": "https://beui.dev/components/agents/file-diff",
+      "sourceFiles": [
+        {
+          "path": "components/agents/file-diff.tsx",
+          "sha256": "f2280fc2238a6228244de84a4e98e5c4b430fb7798124ff9d0deb9b6db94664d"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/file-diff.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiFileDiff",
+          "file": "lib/src/motion/file_diff.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "d2881ad89dad6d5ff4fbd05dcb5ea6a404accfbbdacfffcf3f9b8dd9255069f8",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/file-diff.preview.tsx",
+          "sha256": "02e315e928ef8ba54feebfebd1b676fae2517a8e29c14e78243c269756b5eeca"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "collapsed expanded added removed context and gaps",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "streaming counts wrap scroll and copy",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "long line narrow view and keyboard disclosure",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/tool-approval",
+      "family": "agents",
+      "slug": "tool-approval",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/tool_approval_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "716016fc65cb3284dd01ddff0a9bc14ed97f7e5b7e4112ef8a9ca02b66fec399",
+      "sourceSlug": "tool-approval",
+      "sourceUrl": "https://beui.dev/components/agents/tool-approval",
+      "sourceFiles": [
+        {
+          "path": "components/agents/tool-approval.tsx",
+          "sha256": "faa3e8c933c62c30ac40b279918ce12267d37ca19c7c8e9f11bbdc81b49b5dee"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/tool-approval.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiToolApprovalCode",
+          "file": "lib/src/motion/tool_approval.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiToolApproval",
+          "file": "lib/src/motion/tool_approval.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "f6c231e97b0a3f3b1827df2e6f226b815f23b7b2b7425cb8ea04e1fd345d8d7a",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/tool-approval.preview.tsx",
+          "sha256": "f64e02f8d97cbc2972e8eb25adb66aedceacea5612483bb50b3cc1b414c084a3"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "normal destructive allow once remember deny",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "pending busy accepted denied error",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard activation focus order and outcome collapse",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/approval-card",
+      "family": "agents",
+      "slug": "approval-card",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/approval_card_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "aac931932afcebc1816969ac4f2dbbf4745d7c7e48b3427be022e3d14bee5cfb",
+      "sourceSlug": "approval-card",
+      "sourceUrl": "https://beui.dev/components/agents/approval-card",
+      "sourceFiles": [
+        {
+          "path": "components/agents/approval-card/index.tsx",
+          "sha256": "faabfb28dbe1e5a38b0e0b2715248f09f22444ee2ad9aed1a79a7a63bc67187b"
+        },
+        {
+          "path": "components/agents/approval-card/types.ts",
+          "sha256": "2aad9a1bf86c3d5427075654323239a1279a415744c0a72ad1f5b44022e173f3"
+        }
+      ],
+      "sourceExamples": [
+        {
+          "slug": "questions",
+          "installSlug": "approval-card",
+          "preview": "components/previews/agents/approval-card-question.preview.tsx"
+        },
+        {
+          "slug": "review",
+          "installSlug": "approval-card",
+          "preview": "components/previews/agents/approval-card-review.preview.tsx"
+        }
+      ],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/approval-card-question.preview.tsx",
+        "components/previews/agents/approval-card-review.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiApprovalCard",
+          "file": "lib/src/motion/approval_card.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "8471f99c2c7ef01d9049b96b62e6c21d452946bc0dead00cd300a4df9a38aadb",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/approval-card-question.preview.tsx",
+          "sha256": "d80675199b1fc55ab4b2ca7741a4ac470f8d002d8bd965589f1d686e26c2e365"
+        },
+        {
+          "path": "components/previews/agents/approval-card-review.preview.tsx",
+          "sha256": "ee08f90a4b9b268f0f158eac1f2fb37f8667d2ced9d344319356205a949884b6"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "approve reject revision outcomes",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "single multi freeform multistep question answer flow",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "controlled answer rejection back next submit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "collapsed submitted and additive expanded editor composition",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/approval-card/questions",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "example/approval-card/review",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/ai-sidebar",
+      "family": "agents",
+      "slug": "ai-sidebar",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/ai_sidebar_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "a8ec959a3e35a6ad6816b6b4ff7c3d7da5379f606f476bff473e5342c36f0f9e",
+      "sourceSlug": "ai-sidebar",
+      "sourceUrl": "https://beui.dev/components/agents/ai-sidebar",
+      "sourceFiles": [
+        {
+          "path": "components/agents/ai-sidebar.tsx",
+          "sha256": "19c0611acb6265d6dd7ec5758c9750dbd7ce5f10b064a4523600289f97741228"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/ai-sidebar.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiAiSidebar",
+          "file": "lib/src/motion/ai_sidebar.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "e038604c8018a79ec8c336dcd142d6ddf875a098e4cf5d4c4531250452f127a6",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/ai-sidebar.preview.tsx",
+          "sha256": "980535471c87a59b9a694646a4193f6e0b7e84c273d67d6adabd14ab280ef928"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "collapse expand nested folders and project selection",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard tree nav inline rename cancel commit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "optimistic move rollback delete affordance without real deletion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/chat-app",
+      "family": "agents",
+      "slug": "chat-app",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/chat_app_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "aefa5e74b6e46732bca07f74393aecc2c5fea11de5507e95c674d5ecfed312af",
+      "sourceSlug": "chat-app",
+      "sourceUrl": "https://beui.dev/components/agents/chat-app",
+      "sourceFiles": [
+        {
+          "path": "components/agents/chat-app.tsx",
+          "sha256": "1cdd61e981ec04933357997277d99a2a5b918be1cb71c38b360bbd8b0ce8c45e"
+        },
+        {
+          "path": "components/agents/agent-activity/index.tsx",
+          "sha256": "e8a825f83a4540801730591e5b736c4f7e0db58f3b4721010966580fc46b7265"
+        },
+        {
+          "path": "components/agents/ai-sidebar.tsx",
+          "sha256": "19c0611acb6265d6dd7ec5758c9750dbd7ce5f10b064a4523600289f97741228"
+        },
+        {
+          "path": "components/agents/approval-card/index.tsx",
+          "sha256": "faabfb28dbe1e5a38b0e0b2715248f09f22444ee2ad9aed1a79a7a63bc67187b"
+        },
+        {
+          "path": "components/agents/code-block.tsx",
+          "sha256": "d4b6689f49a15c9790270aea8067411b6579dd1abb89505c8b1ea56c8bbe144b"
+        },
+        {
+          "path": "components/agents/file-diff.tsx",
+          "sha256": "f2280fc2238a6228244de84a4e98e5c4b430fb7798124ff9d0deb9b6db94664d"
+        },
+        {
+          "path": "components/agents/image-generation.tsx",
+          "sha256": "e76c8940a791ee3637f29cf7cbd49a224f263dd004e92c6771782ef5f99d6025"
+        },
+        {
+          "path": "components/agents/loading-states/thinking-shimmer.tsx",
+          "sha256": "2879bd5fd406c014610be6f304bb4b71e1aac0ac6eec531de4cd3eba4827b7bf"
+        },
+        {
+          "path": "components/agents/message.tsx",
+          "sha256": "39f616501ef4e7f3d928ee4f0d4730a96b7ec83a65ad4d1eff4db6d5aec2b7b9"
+        },
+        {
+          "path": "components/agents/message-bubble.tsx",
+          "sha256": "0e21cd5a02b5bd98d39b1e4c5415a570f6e0e2b26db82444d691dc97492fc78a"
+        },
+        {
+          "path": "components/agents/message-scroller.tsx",
+          "sha256": "bf6105eecd904be5022d75e9c66be9d3bdb4d439b9097db3b422d9ed5edab0e0"
+        },
+        {
+          "path": "components/agents/prompt-input.tsx",
+          "sha256": "48c73c0901d8a360c6e97d607df4e13b4e2b70fdf72a425a27b6d6c3b405f23b"
+        },
+        {
+          "path": "components/agents/streaming-response.tsx",
+          "sha256": "c026f908d4f1a48e9684918da012c89036cbbcff1a4d841a4912e9022ab15ab0"
+        },
+        {
+          "path": "components/agents/todo-list.tsx",
+          "sha256": "ee3b0baabf79fb941f0affbc21e9043c93cd02e59f71ed3f37d55702912cd210"
+        },
+        {
+          "path": "components/agents/tool-approval.tsx",
+          "sha256": "faa3e8c933c62c30ac40b279918ce12267d37ca19c7c8e9f11bbdc81b49b5dee"
+        },
+        {
+          "path": "components/agents/tool-result.tsx",
+          "sha256": "49a12c3a6db2ba4f75021eaf3e7310f1697d405f8e1c46c912e01671a8a20f0f"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/chat-app.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiAgentActivity",
+          "file": "lib/src/motion/agent_activity.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiAiSidebar",
+          "file": "lib/src/motion/ai_sidebar.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiApprovalCard",
+          "file": "lib/src/motion/approval_card.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiChatApp",
+          "file": "lib/src/motion/chat_app.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiCodeBlock",
+          "file": "lib/src/motion/code_block.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiFileDiff",
+          "file": "lib/src/motion/file_diff.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiImageGeneration",
+          "file": "lib/src/motion/image_generation.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageSideScope",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageScope",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessage",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageGroup",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageAvatar",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageContent",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageHeader",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageFooter",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageMarker",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageTyping",
+          "file": "lib/src/motion/message.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageBubble",
+          "file": "lib/src/motion/message_bubble.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageBubbleContent",
+          "file": "lib/src/motion/message_bubble.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageBubbleGroup",
+          "file": "lib/src/motion/message_bubble.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageBubbleCollapsible",
+          "file": "lib/src/motion/message_bubble.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageScrollerAnchor",
+          "file": "lib/src/motion/message_scroller.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiMessageScroller",
+          "file": "lib/src/motion/message_scroller.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiPromptInput",
+          "file": "lib/src/motion/prompt_input.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiStreamingResponse",
+          "file": "lib/src/motion/streaming_response.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiTodoList",
+          "file": "lib/src/motion/todo_list.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiToolApprovalCode",
+          "file": "lib/src/motion/tool_approval.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiToolApproval",
+          "file": "lib/src/motion/tool_approval.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiToolResultOutput",
+          "file": "lib/src/motion/tool_result.dart",
+          "change": "unchanged"
+        },
+        {
+          "symbol": "BeuiToolResult",
+          "file": "lib/src/motion/tool_result.dart",
+          "change": "unchanged"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "9c0aeecb928476d2098563904dcd21833066b9fa5e507eb3ef62c912ad9efb69",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/chat-app.preview.tsx",
+          "sha256": "8af0aff9c7a3db2b26528136a2b05563bb490d89adeeec68098f9093e479cd39"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "navigation new conversation load and send",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "stream plan approval tool code diff image citation integration",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "stop retry continue error and scroll-away unread",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "mobile collapse focus return and composer keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/voice-orb",
+      "family": "agents",
+      "slug": "voice-orb",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/voice_orb_demo.dart",
+      "demoExists": true,
+      "demoChanged": true,
+      "demoSha256": "be4a47f20b2103f062d8d0719cda79e55c09d254f8a1ff48e0b61d0a983506e2",
+      "sourceSlug": "voice-orb",
+      "sourceUrl": "https://beui.dev/components/agents/voice-orb",
+      "sourceFiles": [
+        {
+          "path": "components/agents/voice-orb.tsx",
+          "sha256": "a7c595e94fe4a3efeb222d6f558e92a1621e3159b98450a44558226840abf4b3"
+        }
+      ],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [
+        "components/previews/agents/voice-orb.preview.tsx"
+      ],
+      "publicWidgets": [
+        {
+          "symbol": "BeuiVoiceOrb",
+          "file": "lib/src/motion/voice_orb.dart",
+          "change": "added"
+        }
+      ],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "f5950b7370672dcfd1bf342e9dde5813db87b31063d5969b915f000a443cbb38",
+      "sourcePreviewHashes": [
+        {
+          "path": "components/previews/agents/voice-orb.preview.tsx",
+          "sha256": "4053880000eda5910da5e5dfb57b89dca6524561ebedc2d5dd074303bb27f878"
+        }
+      ],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "idle breathing field and continuous silhouette",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "scripted level zero ramp peak release repeated",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "custom pigments size offscreen pause resume",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        },
+        {
+          "state": "renderer error and reduced-motion fallback",
+          "verdict": "unverified",
+          "reason": "Matched state-specific visual and temporal review is not complete."
+        }
+      ]
+    },
+    {
+      "id": "agents/agent-theme",
+      "family": "agents",
+      "slug": "agent-theme",
+      "galleryNewBadge": true,
+      "demo": "example/lib/demos/agent_theme_demo.dart",
+      "demoExists": true,
+      "demoChanged": false,
+      "demoSha256": "1c49b91f24c9f565e9b5ecd38741edec6e7daf983842779e1e0359599abca9b9",
+      "sourceSlug": null,
+      "sourceUrl": null,
+      "sourceFiles": [],
+      "sourceExamples": [],
+      "sourcePreviewCandidates": [],
+      "publicWidgets": [],
+      "requiresEvidence": true,
+      "verdict": "unverified",
+      "candidateDemoSha256": "da72385bc047d193c820b2f2a6d58e88fcaba1d324b66804bd5a3b32df7f8c00",
+      "sourcePreviewHashes": [],
+      "states": [
+        {
+          "state": "rest",
+          "verdict": "unverified",
+          "reason": "Local-only composition. No source route exists."
+        },
+        {
+          "state": "hover-exit",
+          "verdict": "unverified",
+          "reason": "Local-only composition. No source route exists."
+        },
+        {
+          "state": "keyboard",
+          "verdict": "unverified",
+          "reason": "Local-only composition. No source route exists."
+        },
+        {
+          "state": "reduced-motion",
+          "verdict": "unverified",
+          "reason": "Local-only composition. No source route exists."
+        },
+        {
+          "state": "default and custom typography radii spacing icons glass",
+          "verdict": "unverified",
+          "reason": "Local-only composition. No source route exists."
+        },
+        {
+          "state": "all agent status color mappings light dark",
+          "verdict": "unverified",
+          "reason": "Local-only composition. No source route exists."
+        },
+        {
+          "state": "no source page additive gallery composition",
+          "verdict": "unverified",
+          "reason": "Local-only composition. No source route exists."
+        }
+      ]
+    }
+  ]
+}
