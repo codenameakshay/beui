@@ -317,6 +317,7 @@ class BeuiStatusBarPlot extends StatelessWidget {
                               },
                               onExit: (_) => state.setTooltipOpen(false),
                               child: GestureDetector(
+                                excludeFromSemantics: true,
                                 behavior: HitTestBehavior.opaque,
                                 onTap: () {
                                   state._inspectorFocusNode.requestFocus();
