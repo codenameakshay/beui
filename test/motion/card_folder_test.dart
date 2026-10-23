@@ -1,3 +1,5 @@
+import 'dart:ui' show Tristate;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
@@ -51,6 +53,190 @@ Widget _app({
 );
 
 void main() {
+  testWidgets(
+    'noninteractive pocket copy passes pointer input through to folder',
+    (tester) async {
+      final opens = <bool>[];
+      await tester.pumpWidget(_app(onOpenChange: opens.add));
+      await tester.tap(find.text('Travel Card'));
+      await tester.pumpAndSettle();
+      expect(opens, [true]);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('08/29'));
+      await tester.pumpAndSettle();
+      expect(opens, [true, false, true]);
+    },
+  );
+  testWidgets('disabled card dims source layers and disables every action', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    var callbacks = 0;
+    await tester.pumpWidget(
+      _app(
+        disabled: true,
+        onAction: () => callbacks++,
+        onOpenChange: (_) => callbacks++,
+        onDetailsVisibleChange: (_) => callbacks++,
+      ),
+    );
+    final card = find.byType(BeuiCardFolder);
+    expect(
+      find.descendant(
+        of: card,
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Opacity && widget.opacity == 0.5,
+        ),
+      ),
+      findsNWidgets(3),
+    );
+    for (final label in ['Show card details', 'Open actions for Travel Card']) {
+      final control = find.bySemanticsLabel(label);
+      final node = tester.getSemantics(control).getSemanticsData();
+      expect(node.flagsCollection.isEnabled, Tristate.isFalse);
+      expect(node.hasAction(SemanticsAction.tap), isFalse);
+      await tester.tap(control);
+    }
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(callbacks, 0);
+    semantics.dispose();
+  });
+
+  for (final reduce in [false, true]) {
+    testWidgets(
+      'privacy short held press scales only its own target, reduce=$reduce',
+      (tester) async {
+        final changes = <bool>[];
+        await tester.pumpWidget(
+          _app(reduce: reduce, onDetailsVisibleChange: changes.add),
+        );
+        final privacy = find.bySemanticsLabel('Show card details');
+        final card = find.byType(ClipRRect).first;
+        final cardBefore = tester.getRect(card);
+        final gesture = await tester.startGesture(
+          tester.getCenter(privacy),
+          kind: PointerDeviceKind.mouse,
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 150));
+        await tester.pump(const Duration(milliseconds: 200));
+        final scale = tester
+            .widget<Transform>(
+              find
+                  .descendant(of: privacy, matching: find.byType(Transform))
+                  .first,
+            )
+            .transform
+            .storage[0];
+        expect(scale, closeTo(reduce ? 1 : 0.96, 0.002));
+        expect(tester.getRect(card), cardBefore);
+        expect(changes, isEmpty);
+        await gesture.up();
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(changes, [true, false]);
+      },
+    );
+  }
+  for (final reduce in [false, true]) {
+    testWidgets(
+      'privacy eye crossfade follows source spring or reduced fade, reduce=$reduce',
+      (tester) async {
+        await tester.pumpWidget(_app(reduce: reduce));
+        double opacity(IconData icon) => tester
+            .widget<Opacity>(
+              find
+                  .ancestor(
+                    of: find.byIcon(icon),
+                    matching: find.byType(Opacity),
+                  )
+                  .first,
+            )
+            .opacity;
+        expect(opacity(LucideIcons.eye), 1);
+        expect(opacity(LucideIcons.eye_off), 0);
+        expect(
+          tester.getSize(find.bySemanticsLabel('Show card details')),
+          const Size(40, 40),
+        );
+        await tester.tap(find.bySemanticsLabel('Show card details'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 60));
+        expect(
+          opacity(LucideIcons.eye_off),
+          closeTo(reduce ? 0.5 : 0.5509083741195555, 0.002),
+        );
+        expect(
+          opacity(LucideIcons.eye),
+          closeTo(reduce ? 0.5 : 0.4490916258804445, 0.002),
+        );
+        final filters = find.ancestor(
+          of: find.byIcon(LucideIcons.eye_off),
+          matching: find.byType(ImageFiltered),
+        );
+        if (reduce) {
+          expect(filters, findsNothing);
+        } else {
+          final sigma = double.parse(
+            RegExp(r'blur\(([\d.]+)').firstMatch(
+              tester
+                  .widget<ImageFiltered>(filters.first)
+                  .imageFilter
+                  .toString(),
+            )![1]!,
+          );
+          expect(sigma, closeTo(0.898183251760889, 0.002));
+          final scale = tester
+              .widget<Transform>(
+                find
+                    .ancestor(
+                      of: find.byIcon(LucideIcons.eye_off),
+                      matching: find.byType(Transform),
+                    )
+                    .first,
+              )
+              .transform
+              .storage[0];
+          expect(scale, closeTo(0.6631812805896666, 0.002));
+        }
+        final beforeReverse = opacity(LucideIcons.eye_off);
+        await tester.tap(find.bySemanticsLabel('Hide card details'));
+        await tester.pump();
+        expect(opacity(LucideIcons.eye_off), closeTo(beforeReverse, 0.002));
+        await tester.pumpAndSettle();
+        expect(opacity(LucideIcons.eye), 1);
+        expect(opacity(LucideIcons.eye_off), 0);
+      },
+    );
+  }
+
+  testWidgets(
+    'optional action has source hit target and independent pointer keyboard callbacks',
+    (tester) async {
+      var actions = 0;
+      final opens = <bool>[];
+      await tester.pumpWidget(
+        _app(onAction: () => actions++, onOpenChange: opens.add),
+      );
+      final action = find.bySemanticsLabel('Open actions for Travel Card');
+      expect(tester.getSize(action), const Size(40, 40));
+      await tester.tap(action);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(actions, 2);
+      expect(opens, isEmpty);
+      await tester.pumpWidget(_app());
+      expect(
+        find.bySemanticsLabel('Open actions for Travel Card'),
+        findsNothing,
+      );
+    },
+  );
   testWidgets('privacy has one accessible toggle node after reveal', (
     tester,
   ) async {
@@ -79,13 +265,10 @@ void main() {
       nodes.single.getSemanticsData().hasAction(SemanticsAction.tap),
       isTrue,
     );
+    expect(nodes.single.getSemanticsData().flagsCollection.isButton, isTrue);
     expect(
-      nodes.single.getSemanticsData().hasFlag(SemanticsFlag.isButton),
-      isTrue,
-    );
-    expect(
-      nodes.single.getSemanticsData().hasFlag(SemanticsFlag.isToggled),
-      isTrue,
+      nodes.single.getSemanticsData().flagsCollection.isToggled,
+      Tristate.isTrue,
     );
     expect(nodes.single.getSemanticsData().tooltip, isEmpty);
     expect(changes, [true]);
@@ -150,7 +333,7 @@ void main() {
         );
         await tester.pumpAndSettle();
         final privacy = find.bySemanticsLabel('Show card details');
-        final action = find.byTooltip('Open actions for Travel Card');
+        final action = find.bySemanticsLabel('Open actions for Travel Card');
         final card = find.byType(ClipRRect).first;
         final privacyBefore = tester.getTopLeft(privacy);
         final actionBefore = tester.getTopLeft(action);
@@ -393,7 +576,7 @@ void main() {
       _app(onAction: () => actions++, onOpenChange: (_) => opens++),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('Open actions for Travel Card'));
+    await tester.tap(find.bySemanticsLabel('Open actions for Travel Card'));
     await tester.pump();
     expect(actions, 1);
     expect(opens, 0);
