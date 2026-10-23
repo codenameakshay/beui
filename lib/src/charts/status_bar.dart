@@ -3,7 +3,10 @@ library;
 
 import 'package:flutter/material.dart';
 
+import '../motion/_scroll_geometry.dart';
+import '../motion/tooltip.dart';
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
 import '_shared.dart';
 
 /// A period in a status history.
@@ -122,6 +125,8 @@ class _BeuiStatusBarState extends State<BeuiStatusBar>
     with BeuiChartActiveState<BeuiStatusBar>, BeuiChartInspectorKeys {
   final FocusNode _inspectorFocusNode = FocusNode();
   bool _tooltipOpen = false;
+  final _tooltipAnchor = GlobalKey();
+  final _tooltipLink = LayerLink();
 
   @override
   String? get widgetActiveId => widget.activeId;
@@ -180,6 +185,7 @@ class _BeuiStatusBarState extends State<BeuiStatusBar>
         child:
             widget.child ??
             const Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 BeuiStatusBarPlot(),
@@ -214,7 +220,7 @@ class BeuiStatusBarPlot extends StatelessWidget {
   const BeuiStatusBarPlot({
     super.key,
     this.showLabels = true,
-    this.barHeight = 28,
+    this.barHeight = 32,
   });
 
   /// Whether to show the first and last period labels.
@@ -259,6 +265,28 @@ class BeuiStatusBarPlot extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) => Stack(
+                          children: [
+                            Positioned(
+                              left:
+                                  (activeIndex + .5) /
+                                  data.length *
+                                  constraints.maxWidth,
+                              top: 4.4,
+                              child: CompositedTransformTarget(
+                                key: state._tooltipAnchor,
+                                link: state._tooltipLink,
+                                child: const SizedBox(width: 1, height: 1),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   Semantics(
                     container: true,
                     slider: true,
@@ -300,6 +328,7 @@ class BeuiStatusBarPlot extends StatelessWidget {
                     children: [
                       for (var i = 0; i < data.length; i++)
                         Expanded(
+                          key: ValueKey(data[i].id),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 1.5,
@@ -322,45 +351,127 @@ class BeuiStatusBarPlot extends StatelessWidget {
                                   label:
                                       '${data[i].label}, ${statusMap[data[i].status]!.label}${data[i].description == null ? '' : ', ${data[i].description}'}',
                                   child: Center(
-                                    child: TweenAnimationBuilder<double>(
-                                      key: ValueKey(data[i].id),
-                                      tween: Tween(begin: 0.72, end: 1),
-                                      duration: Duration(
-                                        milliseconds: 180 + i * 8,
-                                      ),
-                                      curve: Curves.easeOutCubic,
-                                      builder: (context, t, _) =>
-                                          Transform.translate(
-                                            offset: Offset(0, 3 * (1 - t)),
-                                            child: BeuiChartFade(
-                                              opacity: t,
-                                              child: AnimatedContainer(
-                                                duration: const Duration(
-                                                  milliseconds: 180,
-                                                ),
-                                                curve: Curves.easeOut,
-                                                height: barHeight,
-                                                decoration: BoxDecoration(
-                                                  color: beuiChartColor(
-                                                    statusMap[data[i].status]!
-                                                        .color,
-                                                    colors,
+                                    child: _StatusEntrance(
+                                      height: barHeight,
+                                      child: BeuiChartTween(
+                                        key: ValueKey(data[i].id),
+                                        from: 0,
+                                        value: 1,
+                                        duration: Duration(
+                                          milliseconds:
+                                              MediaQuery.disableAnimationsOf(
+                                                context,
+                                              )
+                                              ? 150
+                                              : 240,
+                                        ),
+                                        delay: Duration(
+                                          microseconds:
+                                              (180000 *
+                                                      i /
+                                                      (data.length > 1
+                                                          ? data.length - 1
+                                                          : 1))
+                                                  .round(),
+                                        ),
+                                        builder: (context, opacity) => Opacity(
+                                          opacity: opacity.clamp(0, 1),
+                                          child: BeuiChartTween(
+                                            from: 0,
+                                            value: 1,
+                                            duration: const Duration(
+                                              milliseconds: 240,
+                                            ),
+                                            delay: Duration(
+                                              microseconds:
+                                                  (180000 *
+                                                          i /
+                                                          (data.length > 1
+                                                              ? data.length - 1
+                                                              : 1))
+                                                      .round(),
+                                            ),
+                                            motion: beuiSpringPress,
+                                            isMovement: true,
+                                            builder: (context, t) => Transform.translate(
+                                              offset: Offset(0, 4 * (1 - t)),
+                                              child: Transform.scale(
+                                                scaleY: .9 + .1 * t,
+                                                child: SizedBox(
+                                                  height: barHeight,
+                                                  child: Stack(
+                                                    fit: StackFit.expand,
+                                                    children: [
+                                                      AnimatedSwitcher(
+                                                        duration:
+                                                            const Duration(
+                                                              milliseconds: 160,
+                                                            ),
+                                                        reverseDuration:
+                                                            const Duration(
+                                                              milliseconds: 120,
+                                                            ),
+                                                        switchInCurve:
+                                                            beuiEaseOut,
+                                                        switchOutCurve:
+                                                            beuiEaseOut,
+                                                        child: DecoratedBox(
+                                                          key: ValueKey(
+                                                            '${data[i].status}:${statusMap[data[i].status]!.color}',
+                                                          ),
+                                                          decoration: BoxDecoration(
+                                                            color: beuiChartColor(
+                                                              statusMap[data[i]
+                                                                      .status]!
+                                                                  .color,
+                                                              colors,
+                                                            ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  99,
+                                                                ),
+                                                          ),
+                                                          child:
+                                                              const SizedBox.expand(),
+                                                        ),
+                                                      ),
+                                                      AnimatedOpacity(
+                                                        opacity:
+                                                            state._tooltipOpen &&
+                                                                data[i].id ==
+                                                                    state
+                                                                        .activeId
+                                                            ? 1
+                                                            : 0,
+                                                        duration:
+                                                            const Duration(
+                                                              milliseconds: 100,
+                                                            ),
+                                                        curve: beuiEaseOut,
+                                                        child: DecoratedBox(
+                                                          decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  99,
+                                                                ),
+                                                            border: Border.all(
+                                                              color: colors
+                                                                  .foreground
+                                                                  .withValues(
+                                                                    alpha: .6,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(99),
-                                                  border:
-                                                      data[i].id ==
-                                                          state.activeId
-                                                      ? Border.all(
-                                                          color:
-                                                              colors.foreground,
-                                                          width: 1.5,
-                                                        )
-                                                      : null,
                                                 ),
                                               ),
                                             ),
                                           ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -392,6 +503,37 @@ class BeuiStatusBarPlot extends StatelessWidget {
       ],
     );
   }
+}
+
+class _StatusEntrance extends StatefulWidget {
+  const _StatusEntrance({required this.height, required this.child});
+  final double height;
+  final Widget child;
+  @override
+  State<_StatusEntrance> createState() => _StatusEntranceState();
+}
+
+class _StatusEntranceState extends State<_StatusEntrance>
+    with ScrollGeometryMixin {
+  bool _shown = false;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_shown && Scrollable.maybeOf(context) == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_shown) setState(() => _shown = true);
+      });
+    }
+  }
+
+  @override
+  void onScrollGeometryChanged() {
+    if (!_shown && (visibleFraction ?? 0) > 0) setState(() => _shown = true);
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      SizedBox(height: widget.height, child: _shown ? widget.child : null);
 }
 
 /// Legend for statuses present in the configured status set.
@@ -432,23 +574,51 @@ class BeuiStatusBarTooltip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = _StatusScope.of(context);
-    if (!state._tooltipOpen) return const SizedBox.shrink();
-    final datum = state.widget.data
+    final active = state.widget.data
         .where((item) => item.id == state.activeId)
         .firstOrNull;
+    final datum = active ?? state.widget.data.firstOrNull;
     if (datum == null) return const SizedBox.shrink();
     final status = state.widget.statuses.firstWhere(
       (item) => item.id == datum.status,
     );
-    return BeuiChartTooltipCard(
-      title: datum.label,
-      lines: [
-        status.label,
-        if (datum.duration != null)
-          'Duration: ${datum.duration!.inMinutes} minutes',
-        if (datum.description != null) datum.description!,
-      ],
-      swatch: beuiChartColor(status.color, BeuiColors.resolve(context)),
+    final colors = BeuiColors.resolve(context);
+    return BeuiTooltip(
+      open: state._tooltipOpen && active != null,
+      onOpenChange: state.setTooltipOpen,
+      externalAnchor: state._tooltipAnchor,
+      anchorLink: state._tooltipLink,
+      side: beuiChartToTooltipSide(side),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 256),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(datum.label, style: TextStyle(color: colors.mutedForeground)),
+            const SizedBox(height: 4),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BeuiChartSwatch(color: beuiChartColor(status.color, colors)),
+                const SizedBox(width: 8),
+                Text(
+                  status.label,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+            if (datum.description != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                datum.description!,
+                style: TextStyle(color: colors.mutedForeground),
+              ),
+            ],
+          ],
+        ),
+      ),
+      child: const SizedBox.shrink(),
     );
   }
 }

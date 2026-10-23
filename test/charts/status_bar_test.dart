@@ -189,11 +189,11 @@ void main() {
     final position = Offset(plot.left + plot.width * .5, plot.top + 22);
     await mouse.addPointer(location: position);
     await mouse.moveTo(position);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Aug 22'), findsWidgets);
     expect(find.text('Degraded'), findsWidgets);
-    expect(find.text('Duration: 12 minutes'), findsOneWidget);
+    expect(find.text('Duration: 12 minutes'), findsNothing);
     expect(find.byType(BeuiNumberTicker), findsNothing);
     await mouse.removePointer();
   });
@@ -208,18 +208,18 @@ void main() {
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await mouse.addPointer(location: Offset.zero);
     await mouse.moveTo(Offset(plot.left + plot.width * .1, plot.top + 22));
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(find.text('Aug 21'), findsWidgets);
 
     await mouse.moveTo(Offset(plot.left + plot.width * .5, plot.top + 22));
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(find.text('Aug 22'), findsWidgets);
-    expect(find.text('Duration: 12 minutes'), findsOneWidget);
+    expect(find.text('Aug 22'), findsOneWidget);
 
     await mouse.moveTo(Offset(plot.right + 20, plot.bottom + 20));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(find.text('Duration: 12 minutes'), findsNothing);
+    expect(find.text('Aug 22'), findsNothing);
     await mouse.removePointer();
   });
 
@@ -241,13 +241,13 @@ void main() {
     final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await mouse.addPointer(location: Offset.zero);
     await mouse.moveTo(Offset(plot.left + plot.width * .5, plot.top + 22));
-    await tester.pump();
-    expect(find.text('Duration: 12 minutes'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('Aug 22'), findsOneWidget);
 
     await mouse.moveTo(Offset(plot.right + 20, plot.bottom + 20));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(find.text('Duration: 12 minutes'), findsNothing);
+    expect(find.text('Aug 22'), findsNothing);
     expect(changes, ['b']);
     expect(
       tester

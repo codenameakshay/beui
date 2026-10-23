@@ -175,6 +175,22 @@ class BeuiTreemap extends StatefulWidget {
 
 class _BeuiTreemapState extends State<BeuiTreemap>
     with BeuiChartActiveState<BeuiTreemap> {
+  final _focus = <String, FocusNode>{};
+  String? _focusedTile;
+  @override
+  void dispose() {
+    for (final node in _focus.values) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  void _focusTile(String id) {
+    _focusedTile = id;
+    _focus[id]?.requestFocus();
+    setActiveId(id);
+  }
+
   @override
   String? get widgetActiveId => widget.activeId;
   @override
@@ -481,8 +497,26 @@ class BeuiTreemapPlot extends StatelessWidget {
         builder: (context, constraints) {
           final size = Size(constraints.maxWidth, height);
           final tiles = _layoutTiles(state._layout.nodes, size);
+          for (final id
+              in state._focus.keys
+                  .where((id) => !tiles.any((tile) => tile.id == id))
+                  .toList()) {
+            state._focus.remove(id)!.dispose();
+          }
+          for (final tile in tiles) {
+            state._focus.putIfAbsent(tile.id, FocusNode.new);
+            state._focus[tile.id]!.skipTraversal =
+                tile.id != (state._focusedTile ?? tiles.first.id);
+          }
+          if (!tiles.any((tile) => tile.id == state._focusedTile)) {
+            state._focusedTile = tiles.firstOrNull?.id;
+          }
+          for (final tile in tiles) {
+            state._focus[tile.id]!.skipTraversal =
+                tile.id != state._focusedTile;
+          }
           return Focus(
-            autofocus: true,
+            canRequestFocus: false,
             onKeyEvent: (node, event) {
               if (_handleTileKeys(state, tiles, event)) {
                 return KeyEventResult.handled;
@@ -493,6 +527,7 @@ class BeuiTreemapPlot extends StatelessWidget {
               children: [
                 for (final tile in tiles)
                   BeuiChartSpringRect(
+                    key: ValueKey(tile.id),
                     value: tile.rect,
                     builder: (context, rect) {
                       return Positioned(
@@ -508,7 +543,13 @@ class BeuiTreemapPlot extends StatelessWidget {
                           ),
                           format: state._format,
                           active: state.activeId == tile.id,
-                          onActive: state.setActiveId,
+                          onActive: (id) {
+                            if (id != null || state.activeId == tile.id) {
+                              state.setActiveId(id);
+                            }
+                          },
+                          focusNode: state._focus[tile.id]!,
+                          onFocus: () => state._focusedTile = tile.id,
                           renderTile: renderTile,
                         ),
                       );
@@ -560,11 +601,11 @@ bool _handleTileKeys(
     return true;
   }
   if (key == LogicalKeyboardKey.home) {
-    state.setActiveId(tiles.first.id);
+    state._focusTile(tiles.first.id);
     return true;
   }
   if (key == LogicalKeyboardKey.end) {
-    state.setActiveId(tiles.last.id);
+    state._focusTile(tiles.last.id);
     return true;
   }
   final dir = switch (key) {
@@ -576,7 +617,7 @@ bool _handleTileKeys(
   };
   if (dir == Offset.zero) return false;
   final current = tiles.cast<BeuiTreemapTile?>().firstWhere(
-    (t) => t!.id == state.activeId,
+    (t) => t!.id == (state._focusedTile ?? state.activeId),
     orElse: () => tiles.first,
   )!;
   BeuiTreemapTile? best;
@@ -586,7 +627,7 @@ bool _handleTileKeys(
     if (tile.id == current.id) continue;
     final delta = tile.rect.center - origin;
     final along = delta.dx * dir.dx + delta.dy * dir.dy;
-    if (along <= 0) continue;
+    if (along <= .01) continue;
     final across = (delta.dx * dir.dy - delta.dy * dir.dx).abs();
     final score = along + across * 2;
     if (score < bestScore) {
@@ -594,7 +635,7 @@ bool _handleTileKeys(
       best = tile;
     }
   }
-  state.setActiveId((best ?? current).id);
+  state._focusTile((best ?? current).id);
   return true;
 }
 
@@ -605,6 +646,8 @@ class _Tile extends StatelessWidget {
     required this.format,
     required this.active,
     required this.onActive,
+    required this.focusNode,
+    required this.onFocus,
     this.renderTile,
   });
 
@@ -613,6 +656,8 @@ class _Tile extends StatelessWidget {
   final String Function(double) format;
   final bool active;
   final ValueChanged<String?> onActive;
+  final FocusNode focusNode;
+  final VoidCallback onFocus;
   final Widget Function(BeuiTreemapTile tile)? renderTile;
 
   @override
@@ -659,33 +704,48 @@ class _Tile extends StatelessWidget {
               : const SizedBox.shrink(),
         );
     return BeuiChartTooltip(
+      open: active,
+      onOpenChange: (open) {
+        if (!open) onActive(null);
+      },
+      followCursor: true,
       content: BeuiChartTooltipCard(
         title: tile.label,
-        titleWidget: Text.rich(
-          TextSpan(
-            children: [
-              if (tile.path.length > 1)
-                TextSpan(
-                  text:
-                      '${tile.path.sublist(0, tile.path.length - 1).join(' / ')} / ',
+        titleWidget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (tile.path.length > 1)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(
+                  tile.path.sublist(0, tile.path.length - 1).join(' / '),
                   style: TextStyle(
                     color: BeuiColors.resolve(context).mutedForeground,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-              TextSpan(text: tile.label),
-            ],
-          ),
+              ),
+            Text(tile.label),
+          ],
         ),
-        swatch: tile.color,
         details: [
-          BeuiChartTicker(
-            value: tile.value,
-            format: (v) => format(v.toDouble()),
-          ),
-          BeuiChartTicker(
-            value: tile.share * 100,
-            format: (v) => '${v.toStringAsFixed(1)}%',
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BeuiChartTicker(
+                value: tile.value,
+                format: (v) => format(v.toDouble()),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Text('·'),
+              ),
+              BeuiChartTicker(
+                value: tile.share * 100,
+                format: (v) => '${v.toStringAsFixed(1)}%',
+              ),
+            ],
           ),
           if (tile.description != null) Text(tile.description!),
         ],
@@ -699,8 +759,16 @@ class _Tile extends StatelessWidget {
           child: MouseRegion(
             onEnter: (_) => onActive(tile.id),
             onExit: (_) => onActive(null),
-            child: GestureDetector(
-              onTap: () => onActive(active ? null : tile.id),
+            child: InkWell(
+              focusNode: focusNode,
+              onFocusChange: (focused) {
+                if (focused) onFocus();
+                onActive(focused ? tile.id : null);
+              },
+              onTap: () {
+                focusNode.requestFocus();
+                onActive(tile.id);
+              },
               child: Padding(
                 padding: const EdgeInsets.all(1.5),
                 child: ClipRRect(

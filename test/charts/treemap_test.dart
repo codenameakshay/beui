@@ -83,6 +83,7 @@ void main() {
         _app(defaultActiveId: 'aapl', onActiveChange: (id) => active = id),
       );
       await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pump();
       expect(active, isNull);
@@ -134,8 +135,10 @@ void main() {
             (tooltip) =>
                 (tooltip.content as BeuiChartTooltipCard).title == 'AAPL',
           );
-      final tickers = (tooltip.content as BeuiChartTooltipCard).details!
-          .whereType<BeuiChartTicker>();
+      final tickers =
+          ((tooltip.content as BeuiChartTooltipCard).details!.first as Row)
+              .children
+              .whereType<BeuiChartTicker>();
       expect(tickers.map((ticker) => ticker.format(ticker.value)), [
         r'$210K',
         '43.8%',
@@ -150,6 +153,7 @@ void main() {
         _app(defaultActiveId: 'aapl', onActiveChange: (id) => active = id),
       );
       await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
       await tester.pump();
       expect(active, isNotNull);
@@ -162,6 +166,42 @@ void main() {
       expect(find.text('AAPL'), findsOneWidget);
       expect(find.byType(BeuiTreemapPlot), findsOneWidget);
     });
+
+    testWidgets(
+      'roving focus retains ownership after pointer exit and Escape',
+      (tester) async {
+        String? active;
+        await tester.pumpWidget(_app(onActiveChange: (id) => active = id));
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pumpAndSettle();
+        expect(active, 'aapl');
+        final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await mouse.addPointer();
+        await mouse.moveTo(tester.getCenter(find.text('AAPL').first));
+        await tester.pump();
+        await mouse.moveTo(Offset.zero);
+        await tester.pump();
+        expect(active, isNull);
+        await tester.sendKeyEvent(LogicalKeyboardKey.end);
+        await tester.pumpAndSettle();
+        expect(active, 'energy');
+        final energy = tester.widget<InkWell>(
+          find.descendant(
+            of: find.byKey(const ValueKey('energy')),
+            matching: find.byType(InkWell),
+          ),
+        );
+        expect(energy.focusNode!.hasFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+        await tester.pumpAndSettle();
+        expect(active, isNull);
+        expect(energy.focusNode!.hasFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.home);
+        await tester.pumpAndSettle();
+        expect(active, 'aapl');
+        await mouse.removePointer();
+      },
+    );
 
     testWidgets('exposes an accessible name', (tester) async {
       final handle = tester.ensureSemantics();
