@@ -103,8 +103,9 @@ enum _DetailTab { preview, usage, code }
 
 /// The component/block detail page: breadcrumb, heading, tabs and a right rail.
 class DetailPage extends StatefulWidget {
-  const DetailPage({super.key, required this.entry});
+  const DetailPage({super.key, required this.entry, this.previewWidth});
   final ExploreEntry entry;
+  final double? previewWidth;
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -156,7 +157,7 @@ class _DetailPageState extends State<DetailPage> {
         const SizedBox(height: 24),
         _SegmentedTabs(value: _tab, onChanged: (t) => setState(() => _tab = t)),
         const SizedBox(height: 20),
-        _TabBody(entry: entry, tab: _tab),
+        _TabBody(entry: entry, tab: _tab, previewWidth: widget.previewWidth),
       ],
     );
 
@@ -256,14 +257,16 @@ class _Segment extends StatelessWidget {
 }
 
 class _TabBody extends StatelessWidget {
-  const _TabBody({required this.entry, required this.tab});
+  const _TabBody({required this.entry, required this.tab, this.previewWidth});
   final ExploreEntry entry;
   final _DetailTab tab;
+  final double? previewWidth;
 
   @override
   Widget build(BuildContext context) {
     return switch (tab) {
       _DetailTab.preview => PreviewSurface(
+        innerWidth: previewWidth,
         child: Builder(builder: entry.builder),
       ),
       _DetailTab.usage => const _UsageBlock(),

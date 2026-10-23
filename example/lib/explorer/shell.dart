@@ -74,7 +74,9 @@ class ExplorerController extends InheritedWidget {
 
 /// The root shell widget.
 class ExplorerShell extends StatefulWidget {
-  const ExplorerShell({super.key, this.initialRoute});
+  const ExplorerShell({super.key, this.initialRoute, this.previewWidth});
+
+  final double? previewWidth;
 
   /// Destination shown on the first frame. Defaults to the Components index.
   ///
@@ -157,7 +159,11 @@ class _ExplorerShellState extends State<ExplorerShell> {
                       ),
                     ],
                     Expanded(
-                      child: _Content(route: _route, scroll: _contentScroll),
+                      child: _Content(
+                        route: _route,
+                        scroll: _contentScroll,
+                        previewWidth: widget.previewWidth,
+                      ),
                     ),
                   ],
                 ),
@@ -172,9 +178,14 @@ class _ExplorerShellState extends State<ExplorerShell> {
 
 /// Renders the routed content region.
 class _Content extends StatelessWidget {
-  const _Content({required this.route, required this.scroll});
+  const _Content({
+    required this.route,
+    required this.scroll,
+    this.previewWidth,
+  });
   final ExplorerRoute route;
   final ScrollController scroll;
+  final double? previewWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +197,7 @@ class _Content extends StatelessWidget {
       DetailRoute(:final entry) => DetailPage(
         key: ValueKey('detail-${entry.slug}'),
         entry: entry,
+        previewWidth: previewWidth,
       ),
       GuidesRoute() => const GuidesPage(key: ValueKey('guides')),
     };
