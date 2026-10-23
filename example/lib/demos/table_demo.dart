@@ -130,20 +130,21 @@ class _TableDemoState extends State<_TableDemo> {
         'invited' => colors.warning,
         _ => colors.destructive,
       };
-      return Container(
-        // rounded-full px-2 py-0.5 font-medium text-xs capitalize
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      return DecoratedBox(
         decoration: BoxDecoration(
           color: tint.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(999),
         ),
-        child: Text(
-          status[0].toUpperCase() + status.substring(1),
-          style: TextStyle(
-            fontSize: 12,
-            height: 16 / 12,
-            fontWeight: FontWeight.w500,
-            color: tint,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          child: Text(
+            status[0].toUpperCase() + status.substring(1),
+            style: TextStyle(
+              fontSize: 12,
+              height: 16 / 12,
+              fontWeight: FontWeight.w500,
+              color: tint,
+            ),
           ),
         ),
       );
@@ -154,7 +155,6 @@ class _TableDemoState extends State<_TableDemo> {
         key: 'name',
         header: 'Name',
         sortable: true,
-        flex: 1.4,
         value: (r) => r.name,
         cell: (r) => Text(
           r.name,
@@ -162,12 +162,7 @@ class _TableDemoState extends State<_TableDemo> {
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
-      BeuiTableColumn(
-        key: 'email',
-        header: 'Email',
-        flex: 1.8,
-        value: (r) => r.email,
-      ),
+      BeuiTableColumn(key: 'email', header: 'Email', value: (r) => r.email),
       BeuiTableColumn(
         key: 'role',
         header: 'Role',
@@ -233,6 +228,75 @@ class _TableDemoState extends State<_TableDemo> {
             BeuiTable<_Person>(
               data: _data,
               columns: columns,
+              sizing: BeuiTableSizing.intrinsic,
+              intrinsicSamples: (context, rows) => [
+                // Header label reserves 24px around the 20px checkbox.
+                const BeuiTableIntrinsicSample.selectionWidths(24, 24),
+                for (final column in columns)
+                  BeuiTableIntrinsicSample(
+                    column.key,
+                    Row(
+                      children: [
+                        // The 14px reorder icon is centered in a 24px grip.
+                        const SizedBox(width: 24),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    column.header,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                if (column.sortable) ...[
+                                  const SizedBox(width: 4),
+                                  const SizedBox(width: 14),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                for (final row in rows)
+                  for (final column in columns)
+                    BeuiTableIntrinsicSample(
+                      column.key,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: switch (column.key) {
+                          'status' => statusBadge(row.status),
+                          'name' => Text(
+                            row.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          'mrr' => Text(
+                            column.value!(row),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontFeatures: [FontFeature.tabularFigures()],
+                            ),
+                          ),
+                          _ => Text(
+                            column.value!(row),
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        },
+                      ),
+                    ),
+              ],
               getRowId: (r, _) => r.id,
               selectable: true,
               resizable: true,

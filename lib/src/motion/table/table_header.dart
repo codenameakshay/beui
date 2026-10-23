@@ -67,10 +67,23 @@ class _TableHeader<T> extends StatelessWidget {
               color: colors.muted,
               border: Border(bottom: BorderSide(color: _collapsedRule(colors))),
             ),
-            child: BeuiCheckbox(
-              value: allSelected,
-              indeterminate: !allSelected && someSelected,
-              onChanged: (_) => onToggleAll(),
+            child: SizedBox(
+              width: state.widget.sizing == BeuiTableSizing.intrinsic
+                  ? 24
+                  : null,
+              height: state.widget.sizing == BeuiTableSizing.intrinsic
+                  ? 24
+                  : null,
+              child: Align(
+                widthFactor: 1,
+                heightFactor: 1,
+                alignment: Alignment.centerLeft,
+                child: BeuiCheckbox(
+                  value: allSelected,
+                  indeterminate: !allSelected && someSelected,
+                  onChanged: (_) => onToggleAll(),
+                ),
+              ),
             ),
           ),
         for (var i = 0; i < columns.length; i++)
@@ -169,7 +182,14 @@ class _HeaderCell<T> extends StatelessWidget {
                 onHorizontalDragEnd: (_) => state._endReorder(),
                 onHorizontalDragCancel: state._endReorder,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 8),
+                  padding: EdgeInsets.only(
+                    left: state.widget.sizing == BeuiTableSizing.intrinsic
+                        ? 5
+                        : 8,
+                    right: state.widget.sizing == BeuiTableSizing.intrinsic
+                        ? 5
+                        : 0,
+                  ),
                   child: Icon(
                     LucideIcons.grip_vertical,
                     size: 14,
