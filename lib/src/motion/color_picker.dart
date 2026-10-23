@@ -179,9 +179,12 @@ class _BeuiColorPickerState extends State<BeuiColorPicker> {
       final trigger =
           _triggerKey.currentContext?.findRenderObject() as RenderBox?;
       if (trigger == null || !trigger.hasSize) return;
-      final left = trigger.localToGlobal(Offset.zero).dx;
       final viewport =
-          Overlay.of(context).context.findRenderObject() as RenderBox;
+          Overlay.of(context, rootOverlay: true).context.findRenderObject()
+              as RenderBox;
+      final left = viewport
+          .globalToLocal(trigger.localToGlobal(Offset.zero))
+          .dx;
       final width = viewport.size.width;
       final shift =
           left.clamp(8.0, (width - 288 - 8).clamp(8.0, double.infinity)) - left;
