@@ -70,7 +70,7 @@ class _ButtonDemoState extends State<_ButtonDemo> {
                 size: BeuiButtonSize.sm,
                 onPressed: () {},
                 child: _row(const [
-                  Icon(LucideIcons.sparkles),
+                  Icon(LucideIcons.sparkles, size: 14),
                   Text('Generate'),
                 ]),
               ),
