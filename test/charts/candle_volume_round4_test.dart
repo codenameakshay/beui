@@ -93,7 +93,7 @@ void main() {
           (widget) => widget is Semantics && widget.properties.slider == true,
         );
         final node = tester.getSemantics(slider);
-        tester.binding.pipelineOwner.semanticsOwner!.performAction(
+        tester.binding.renderViews.single.owner!.semanticsOwner!.performAction(
           node.id,
           SemanticsAction.focus,
         );
