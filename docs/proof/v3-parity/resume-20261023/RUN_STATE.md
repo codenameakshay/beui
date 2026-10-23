@@ -87,3 +87,9 @@ Finish final signup combinations and inspected native recordings, independently 
 - Evidence under bump-semantics-guard. Original failures and failed test/copy attempts retained. WebKit additionally passes 240 contract cases and 21 real Flutter states. Firefox launch is unavailable after macOS sandbox extension errors/timeouts; actual screen-reader checks remain open. Private Flutter DOM integration remains version-sensitive. Other parity obligations are not waived.
 
 - Next read-only diagnosis running: `v3-table-outcomes-followup-20261023-r1`, Table resize and Editable deletion/recovery. No shared production edits delegated.
+
+## Table outcome diagnosis and supplemental recovery
+
+- Resize proof corrected: source handle moves24px on pointer-down as checkbox width changes24to48, then49.546875px during50px drag. Name ends162px after rounded-width freeze. Historical total-handle50px assertion is invalid; original sealed evidence unchanged. Source intrinsic widths versus Flutter flex remains unresolved, with read-only design task `v3-table-intrinsic-layout-design-20261023-r1` active.
+- 5749bdc20 adds separately labeled editable-recovery composition with240px floor/header allowance. Original editable/default heights unchanged. Native source supplemental240px composition and candidate recovery pass24 observed states across both motion prefs, including last-row deletion and empty restoration. Actual hit-tests and focused candidate field values checked. No original-preview or pixel parity claim.
+- Six gallery tests, scoped analysis and release pass. table-followup archives original diagnosis, rejected locators, successful observations and served hashes. No shared Table/golden changes.
