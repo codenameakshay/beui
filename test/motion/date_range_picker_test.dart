@@ -65,8 +65,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('6 days selected'), findsOneWidget);
-      expect(find.text('Thu, Jan 15'), findsOneWidget);
-      expect(find.text('Tue, Jan 20'), findsOneWidget);
+      expect(find.text('Jan 15, 2026'), findsOneWidget);
+      expect(find.text('Jan 20, 2026'), findsOneWidget);
       expect(
         changed,
         const BeuiDateRange(from: '2026-01-15', to: '2026-01-20'),

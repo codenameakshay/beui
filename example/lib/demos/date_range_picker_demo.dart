@@ -26,33 +26,12 @@ class _DateRangePickerDemoState extends State<_DateRangePickerDemo> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-    mainAxisSize: MainAxisSize.min,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: <Widget>[
-      BeuiDateRangePickerDropdown(
-        value: _range,
-        onChanged: (value) => setState(() => _range = value),
-        defaultMonth: _today,
-        max: _today,
-        label: 'Reporting period',
-        presets: <BeuiDateRangePreset>[
-          BeuiDateRangePreset(
-            label: 'Last 7 days',
-            value: BeuiDateRange(from: _weekStart, to: _today),
-          ),
-          BeuiDateRangePreset(
-            label: 'Last 30 days',
-            value: BeuiDateRange(
-              from: _iso(DateTime.now().subtract(const Duration(days: 29))),
-              to: _today,
-            ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 16),
-      const Text('Choose a reporting window or select custom dates.'),
-    ],
+  Widget build(BuildContext context) => BeuiDateRangePickerDropdown(
+    value: _range,
+    onChanged: (value) => setState(() => _range = value),
+    defaultMonth: _today,
+    max: _today,
+    label: 'Reporting period',
   );
 
   String _iso(DateTime value) =>

@@ -528,13 +528,23 @@ class _ComboboxScopeProvider extends InheritedWidget {
 /// Trigger layout for a combobox. Tapping it opens and focuses the input.
 class BeuiComboboxTrigger extends StatefulWidget {
   /// Creates a trigger around [child].
-  const BeuiComboboxTrigger({required this.child, this.placeholder, super.key});
+  const BeuiComboboxTrigger({
+    required this.child,
+    this.placeholder,
+    this.height = 40,
+    this.radius = 12,
+    this.padding = const EdgeInsets.symmetric(horizontal: 12),
+    super.key,
+  });
 
   /// Content, usually a [BeuiComboboxInput].
   final Widget child;
 
   /// Optional trailing widget; defaults to a dropdown chevron.
   final Widget? placeholder;
+  final double height;
+  final double radius;
+  final EdgeInsetsGeometry padding;
 
   @override
   State<BeuiComboboxTrigger> createState() => _BeuiComboboxTriggerState();
@@ -559,14 +569,14 @@ class _BeuiComboboxTriggerState extends State<BeuiComboboxTrigger> {
             ? null
             : () => scope.state._setOpen(true),
         child: Container(
-          constraints: const BoxConstraints(minHeight: 44, minWidth: 208),
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          constraints: BoxConstraints(minHeight: widget.height, minWidth: 208),
+          padding: widget.padding,
           decoration: BoxDecoration(
-            color: scope.colors.background,
+            color: Colors.transparent,
             border: Border.all(
               color: _hovered ? scope.colors.borderStrong : scope.colors.border,
             ),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(widget.radius),
           ),
           child: Row(
             children: <Widget>[
@@ -574,7 +584,7 @@ class _BeuiComboboxTriggerState extends State<BeuiComboboxTrigger> {
               widget.placeholder ??
                   Icon(
                     Icons.unfold_more,
-                    size: 18,
+                    size: 16,
                     color: scope.colors.mutedForeground,
                   ),
             ],
@@ -636,11 +646,11 @@ class BeuiComboboxInput extends StatelessWidget {
           hintStyle: TextStyle(color: scope.colors.mutedForeground),
           prefixIcon: Icon(
             Icons.search,
-            size: 18,
+            size: 16,
             color: scope.colors.mutedForeground,
           ),
-          prefixIconConstraints: const BoxConstraints(minWidth: 28),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+          prefixIconConstraints: const BoxConstraints(minWidth: 24),
+          contentPadding: const EdgeInsets.symmetric(vertical: 10),
         ),
       ),
     );

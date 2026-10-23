@@ -1547,8 +1547,12 @@ abstract final class DateFormatters {
     'November',
     'December',
   ][month - 1];
-  static String short(BuildContext context, String date) =>
-      MaterialLocalizations.of(context).formatMediumDate(_parseDate(date));
+  static String short(BuildContext context, String date) {
+    final day = _parseDate(date);
+    final locale = MaterialLocalizations.of(context);
+    return '${locale.formatShortMonthDay(day)}, ${locale.formatYear(day)}';
+  }
+
   static String full(BuildContext context, String date) =>
       MaterialLocalizations.of(context).formatFullDate(_parseDate(date));
   static String weekday(BuildContext context, int index) =>
