@@ -178,6 +178,7 @@ class _VolumeProfileDemoState extends State<_VolumeProfileDemo> {
                   const BeuiVolumeProfileTooltip(),
                   const SizedBox(height: 20),
                   const BeuiVolumeProfileSummary(),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),

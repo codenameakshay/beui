@@ -126,12 +126,12 @@ class _BeuiCandlestickChartState extends State<BeuiCandlestickChart>
       label: widget.label,
       child:
           widget.child ??
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              BeuiCandlestickLegend(),
-              SizedBox(height: 12),
-              BeuiCandlestickPlot(),
+              const BeuiCandlestickLegend(),
+              if (widget.candles.isNotEmpty) const SizedBox(height: 12),
+              const BeuiCandlestickPlot(),
             ],
           ),
     ),

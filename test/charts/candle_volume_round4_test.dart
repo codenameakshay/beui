@@ -98,6 +98,28 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('volume touch release closes the readout but keeps its value', (
+    tester,
+  ) async {
+    String? selected;
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiVolumeProfile(data: bins, onActiveChange: (id) => selected = id),
+      ),
+    );
+    final plot = tester.getRect(find.byType(BeuiVolumeProfilePlot));
+    final touch = await tester.startGesture(
+      Offset(plot.center.dx, plot.top + 10),
+    );
+    await tester.pumpAndSettle();
+    expect(selected, 'c');
+    expect(tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open, isTrue);
+    await touch.up();
+    await tester.pumpAndSettle();
+    expect(selected, 'c');
+    expect(tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open, isFalse);
+  });
+
   testWidgets('candle source palette, foreground volume, and minus glyph', (
     tester,
   ) async {
@@ -264,6 +286,66 @@ void main() {
     expect(poc.dy, total.dy);
     expect(area.dy, total.dy);
     expect(poc.dx - total.dx, closeTo(209.333, 1));
+  });
+
+  testWidgets('volume narrow summary spans value area across two columns', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(375, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      beuiTestApp(const BeuiVolumeProfile(data: bins, unit: 'BTC'), width: 343),
+    );
+    await tester.pumpAndSettle();
+    final total = tester.getTopLeft(find.text('Total volume'));
+    final control = tester.getTopLeft(find.text('Point of control'));
+    final area = tester.getTopLeft(find.text('Value area · 70% target'));
+    expect(control.dy, total.dy);
+    expect(area.dx, total.dx + 12);
+    expect(area.dy, greaterThan(total.dy + 40));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('candle reduced opacity retargets without the index delay', (
+    tester,
+  ) async {
+    String? active;
+    late StateSetter update;
+    await tester.pumpWidget(
+      beuiTestApp(
+        StatefulBuilder(
+          builder: (context, setState) {
+            update = setState;
+            return BeuiCandlestickChart(candles: candles, activeId: active);
+          },
+        ),
+        reduce: true,
+      ),
+    );
+    double opacity() => tester
+        .widget<Opacity>(
+          find
+              .descendant(
+                of: find.byKey(const ValueKey('b')),
+                matching: find.byType(Opacity),
+              )
+              .first,
+        )
+        .opacity;
+    expect(opacity(), 1);
+    update(() => active = 'a');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(opacity(), lessThan(.9));
+    final interrupted = opacity();
+    update(() => active = 'b');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(opacity(), greaterThan(interrupted));
+    await tester.pumpAndSettle();
+    expect(opacity(), 1);
   });
 
   testWidgets(

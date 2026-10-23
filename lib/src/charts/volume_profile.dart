@@ -326,13 +326,14 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
       label: widget.label,
       child:
           widget.child ??
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              BeuiVolumeProfilePlot(),
-              BeuiVolumeProfileTooltip(),
-              SizedBox(height: 20),
-              BeuiVolumeProfileSummary(),
+              const BeuiVolumeProfilePlot(),
+              const BeuiVolumeProfileTooltip(),
+              const SizedBox(height: 20),
+              const BeuiVolumeProfileSummary(),
+              if (bins.isNotEmpty) const SizedBox(height: 20),
             ],
           ),
     ),
@@ -395,12 +396,14 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
       color: colors.mutedForeground,
     );
     final priceTicks = List.generate(5, (i) => state.price(hi - span * i / 4));
+    double cssPixel(double value) => (value * 64).floorToDouble() / 64;
     double barTop(int index) =>
-        (hi - state.bins[index].bin.priceHigh) / span * height;
-    double barHeight(int index) =>
-        (state.bins[index].bin.priceHigh - state.bins[index].bin.priceLow) /
-        span *
-        height;
+        cssPixel((hi - state.bins[index].bin.priceHigh) / span * height);
+    double barHeight(int index) => cssPixel(
+      (state.bins[index].bin.priceHigh - state.bins[index].bin.priceLow) /
+          span *
+          height,
+    );
 
     int binIndexAt(double y) {
       var closestIndex = 0;
@@ -439,6 +442,7 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
             child: Row(
               children: [
                 IntrinsicWidth(
+                  stepWidth: 1 / 64,
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -485,7 +489,9 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                         Positioned.fill(
                           child: CustomPaint(
                             painter: _ProfileLines(
-                              color: colors.border.withValues(alpha: .6),
+                              color: colors.border.withValues(
+                                alpha: colors.border.a * .6,
+                              ),
                             ),
                           ),
                         ),
@@ -529,7 +535,7 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                                             color: isPoc ? pocColor : barColor,
                                             borderRadius:
                                                 const BorderRadius.horizontal(
-                                                  right: Radius.circular(2),
+                                                  right: Radius.circular(4),
                                                 ),
                                           ),
                                         ),
@@ -715,8 +721,13 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                                           .id,
                                       e.localPosition,
                                     ),
-                                    onPointerUp: (_) =>
-                                        state._pointerDriven = false,
+                                    onPointerUp: (event) {
+                                      if (event.kind ==
+                                          PointerDeviceKind.touch) {
+                                        state.setTooltipOpen(false);
+                                      }
+                                      state._pointerDriven = false;
+                                    },
                                     onPointerCancel: (_) {
                                       state._pointerDriven = false;
                                       state.setTooltipOpen(false);
@@ -784,16 +795,15 @@ class _ProfileLines extends CustomPainter {
     final paint = Paint()..color = color;
     if (poc) {
       for (var x = 0.0; x < size.width; x += 6) {
-        canvas.drawLine(
-          Offset(x, 0),
-          Offset(math.min(x + 3, size.width), 0),
+        canvas.drawRect(
+          Rect.fromLTWH(x, 0, math.min(3, size.width - x), 1),
           paint,
         );
       }
     } else {
       for (var i = 0; i <= 4; i++) {
-        final x = size.width * i / 4;
-        canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+        final x = (size.width * i / 4 * 64).floorToDouble() / 64;
+        canvas.drawRect(Rect.fromLTWH(x, 0, 1, size.height), paint);
       }
     }
   }
