@@ -259,7 +259,20 @@ class BeuiStatusBarPlot extends StatelessWidget {
           },
           child: Semantics(
             container: true,
-            label: '${active.label}, ${statusMap[active.status]!.label}',
+            slider: true,
+            label: '${state.widget.label}: inspect period',
+            value:
+                '${active.label}. ${statusMap[active.status]!.label}${active.description == null ? '' : '. ${active.description}'}',
+            increasedValue:
+                data[(activeIndex + 1).clamp(0, data.length - 1)].label,
+            decreasedValue:
+                data[(activeIndex - 1).clamp(0, data.length - 1)].label,
+            onIncrease: () => state.setActiveId(
+              data[(activeIndex + 1).clamp(0, data.length - 1)].id,
+            ),
+            onDecrease: () => state.setActiveId(
+              data[(activeIndex - 1).clamp(0, data.length - 1)].id,
+            ),
             child: SizedBox(
               height: 44,
               child: Stack(
@@ -287,42 +300,6 @@ class BeuiStatusBarPlot extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Semantics(
-                    container: true,
-                    slider: true,
-                    label: 'Status history period',
-                    value:
-                        '${active.label}, ${statusMap[active.status]!.label}',
-                    increasedValue:
-                        '${data[(activeIndex + 1).clamp(0, data.length - 1)].label}, ${statusMap[data[(activeIndex + 1).clamp(0, data.length - 1)].status]!.label}',
-                    decreasedValue:
-                        '${data[(activeIndex - 1).clamp(0, data.length - 1)].label}, ${statusMap[data[(activeIndex - 1).clamp(0, data.length - 1)].status]!.label}',
-                    onIncrease: () => state.setActiveId(
-                      data[(activeIndex + 1).clamp(0, data.length - 1)].id,
-                    ),
-                    onDecrease: () => state.setActiveId(
-                      data[(activeIndex - 1).clamp(0, data.length - 1)].id,
-                    ),
-                    child: Opacity(
-                      opacity: 0,
-                      alwaysIncludeSemantics: true,
-                      child: Slider(
-                        value: activeIndex.toDouble(),
-                        min: 0,
-                        max: (data.length - 1).toDouble().clamp(
-                          1,
-                          double.infinity,
-                        ),
-                        divisions: data.length > 1 ? data.length - 1 : null,
-                        semanticFormatterCallback: (_) =>
-                            '${active.label}, ${statusMap[active.status]!.label}',
-                        onChanged: data.length < 2
-                            ? null
-                            : (value) =>
-                                  state.setActiveId(data[value.round()].id),
-                      ),
-                    ),
-                  ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -345,11 +322,7 @@ class BeuiStatusBarPlot extends StatelessWidget {
                                   state._inspectorFocusNode.requestFocus();
                                   state.setActiveId(data[i].id);
                                 },
-                                child: Semantics(
-                                  button: true,
-                                  selected: data[i].id == state.activeId,
-                                  label:
-                                      '${data[i].label}, ${statusMap[data[i].status]!.label}${data[i].description == null ? '' : ', ${data[i].description}'}',
+                                child: ExcludeSemantics(
                                   child: Center(
                                     child: _StatusEntrance(
                                       height: barHeight,

@@ -41,7 +41,11 @@ void main() {
     expect(find.text('Aug 21'), findsOneWidget);
     expect(find.text('Aug 23'), findsOneWidget);
     expect(find.text('Operational'), findsOneWidget);
-    expect(find.byType(Slider), findsOneWidget);
+    expect(
+      find.bySemanticsLabel('Status history: inspect period'),
+      findsOneWidget,
+    );
+    expect(find.byType(Slider), findsNothing);
     expect(
       tester.getSize(find.byType(BeuiStatusBarPlot)).height,
       lessThan(80),
@@ -256,13 +260,13 @@ void main() {
                 .byWidgetPredicate(
                   (widget) =>
                       widget is Semantics &&
-                      widget.properties.label?.startsWith('Aug 22, Degraded') ==
-                          true,
+                      widget.properties.label ==
+                          'Status history: inspect period',
                 )
                 .first,
           )
-          .label,
-      'Aug 22, Degraded',
+          .value,
+      'Aug 22. Degraded',
     );
     await mouse.removePointer();
   });
@@ -285,11 +289,11 @@ void main() {
       find.byWidgetPredicate(
         (widget) =>
             widget is Semantics &&
-            widget.properties.label == 'Status history period',
+            widget.properties.label == 'Status history: inspect period',
       ),
     );
 
-    expect(semantics.value, 'Aug 21, Operational');
+    expect(semantics.value, 'Aug 21. Operational. All checks passed.');
     expect(
       semantics.getSemanticsData().hasAction(SemanticsAction.increase),
       isTrue,
@@ -349,7 +353,8 @@ void main() {
       find.byWidgetPredicate(
         (widget) =>
             widget is Semantics &&
-            widget.properties.label?.startsWith('Aug 22, Degraded') == true,
+            widget.properties.label == 'API status: inspect period' &&
+            widget.properties.slider == true,
       ),
       findsOneWidget,
     );
