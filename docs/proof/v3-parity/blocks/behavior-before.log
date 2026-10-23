@@ -1,0 +1,303 @@
+Resolving dependencies...
+Downloading packages...
++ async 2.13.1
++ boolean_selector 2.1.2
++ characters 1.4.1
++ clock 1.1.3
++ collection 1.19.1
++ equatable 2.1.0 (3.0.0 available)
++ fake_async 1.3.3
++ flutter 0.0.0 from sdk flutter
++ flutter_lints 6.0.0
++ flutter_lucide 1.61.0
++ flutter_test 0.0.0 from sdk flutter
++ leak_tracker 11.0.2
++ leak_tracker_flutter_testing 3.0.10
++ leak_tracker_testing 3.0.2
++ lints 6.1.0
++ matcher 0.12.20
++ material_color_utilities 0.13.0 (0.13.1 available)
++ meta 1.19.0
++ motor 1.1.0
++ path 1.9.1
++ sky_engine 0.0.0 from sdk flutter
++ source_span 1.10.2
++ stack_trace 1.12.2
++ stream_channel 2.1.4
++ string_scanner 1.4.1
++ term_glyph 1.2.2
++ test_api 0.7.12 (0.7.15 available)
++ vector_math 2.4.3
++ vm_service 15.4.0
+Changed 29 dependencies!
+3 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart
+00:00 +0: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/text_scramble_test.dart: settles within its duration from the update, not a later tick
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "N##": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/text_scramble_test.dart:12:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/text_scramble_test.dart line 12
+The test description was:
+  settles within its duration from the update, not a later tick
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart: outgoing glyph rolls away opposite the incoming glyph
+00:00 +0 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/text_scramble_test.dart: settles within its duration from the update, not a later tick [E]
+  Test failed. See exception logs above.
+  The test description was: settles within its duration from the update, not a later tick
+  
+00:00 +0 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart: outgoing glyph rolls away opposite the incoming glyph
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: a value less than <0>
+  Actual: <0.002784749865531899>
+   Which: is not a value less than <0>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart:15:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart line 15
+The test description was:
+  outgoing glyph rolls away opposite the incoming glyph
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs fits equal width slots before sacrificing the source gap
+00:00 +0 -2: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart: outgoing glyph rolls away opposite the incoming glyph [E]
+  Test failed. See exception logs above.
+  The test description was: outgoing glyph rolls away opposite the incoming glyph
+  
+00:01 +1 -2: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs fits equal width slots before sacrificing the source gap
+00:01 +1 -2: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart: unchanged staggered glyph receives new styling
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: MaterialColor:<MaterialColor(primary value: Color(alpha: 1.0000, red: 0.1294, green:
+0.5882, blue: 0.9529, colorSpace: ColorSpace.sRGB))>
+  Actual: MaterialColor:<MaterialColor(primary value: Color(alpha: 1.0000, red: 0.9569, green:
+0.2627, blue: 0.2118, colorSpace: ColorSpace.sRGB))>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart:25:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart line 25
+The test description was:
+  unchanged staggered glyph receives new styling
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +1 -3: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs fits equal width slots before sacrificing the source gap
+00:01 +1 -3: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart: unchanged staggered glyph receives new styling [E]
+  Test failed. See exception logs above.
+  The test description was: unchanged staggered glyph receives new styling
+  
+00:01 +1 -3: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs fits equal width slots before sacrificing the source gap
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <154>
+  Actual: <132.0>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart:48:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart line 48
+The test description was:
+  fits equal width slots before sacrificing the source gap
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +1 -4: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +1 -4: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs fits equal width slots before sacrificing the source gap [E]
+  Test failed. See exception logs above.
+  The test description was: fits equal width slots before sacrificing the source gap
+  
+00:01 +2 -4: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +3 -4: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +3 -4: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs panel content determines the root height
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <500>
+  Actual: <336.0>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart:55:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart line 55
+The test description was:
+  panel content determines the root height
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +3 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +3 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs panel content determines the root height [E]
+  Test failed. See exception logs above.
+  The test description was: panel content determines the root height
+  
+00:01 +4 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +5 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +6 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +7 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +8 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +9 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +10 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +11 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+00:01 +12 -5: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: [true]
+  Actual: []
+   Which: at location [0] is [] which shorter than expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart:58:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart line 58
+The test description was:
+  keyboard opens and closes the folder before privacy control
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +12 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs arrow keys wrap between enabled tabs
+00:01 +12 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard opens and closes the folder before privacy control
+  
+00:01 +13 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: closed rest state masks details and retains last four
+00:01 +14 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs Alt+arrow reorders and reports the completed order
+00:01 +15 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: folder tap reports open state
+00:02 +16 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs pointer drag reorders and notifies once on release
+00:02 +17 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: details toggle reveals number and CVV
+00:02 +18 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: details toggle reveals number and CVV
+00:02 +19 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs controlled value does not change internally
+00:02 +20 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: closed eye toggle reveals CVV and keeps expiry static
+00:02 +21 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: closed eye toggle reveals CVV and keeps expiry static
+00:02 +22 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: closed eye toggle reveals CVV and keeps expiry static
+00:02 +23 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs chrome is charcoal and the selected surface is cream
+00:02 +24 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: details toggle is active while the folder is closed
+00:02 +25 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: details toggle is active while the folder is closed
+00:02 +26 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: details toggle is active while the folder is closed
+00:02 +27 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs inactive tab paints a hover fill
+00:02 +28 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: CVV reveal retains outgoing glyphs and rolls incoming glyphs
+00:02 +29 -6: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs rest state matches the reference golden
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown while running async test code:
+Golden "goldens/beui_morphing_tabs.png": Pixel test failed, 47.43%, 227686px diff detected.
+Failure feedback can be found at
+/Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/failures
+
+When the exception was thrown, this was the stack:
+#0      LocalFileComparator.compare (package:flutter_test/src/_goldens_io.dart:108:5)
+<asynchronous suspension>
+#1      MatchesGoldenFile.matchAsync.<anonymous closure> (package:flutter_test/src/_matchers_io.dart:124:32)
+<asynchronous suspension>
+<asynchronous suspension>
+#3      _expect.<anonymous closure> (package:matcher/src/expect/expect.dart:153:17)
+<asynchronous suspension>
+<asynchronous suspension>
+#5      expectLater.<anonymous closure> (package:flutter_test/src/widget_tester.dart:508:19)
+<asynchronous suspension>
+#6      main.<anonymous closure>.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart:296:7)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 3 frames from dart:async and package:stack_trace)
+
+The exception was caught asynchronously.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +29 -7: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: action fires without toggling the folder
+00:02 +29 -7: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/morphing_tabs_test.dart: BeuiMorphingTabs rest state matches the reference golden [E]
+  Test failed. See exception logs above.
+  The test description was: rest state matches the reference golden
+  
+00:02 +30 -7: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: disabled folder ignores tap and detail toggle
+00:02 +31 -7: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: reduced motion does not lift the card
+00:02 +32 -7: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: rest-state golden
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown while running async test code:
+Golden "goldens/beui_card_folder.png": Pixel test failed, 0.54%, 2611px diff detected.
+Failure feedback can be found at
+/Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/failures
+
+When the exception was thrown, this was the stack:
+#0      LocalFileComparator.compare (package:flutter_test/src/_goldens_io.dart:108:5)
+<asynchronous suspension>
+#1      MatchesGoldenFile.matchAsync.<anonymous closure> (package:flutter_test/src/_matchers_io.dart:124:32)
+<asynchronous suspension>
+<asynchronous suspension>
+#3      _expect.<anonymous closure> (package:matcher/src/expect/expect.dart:153:17)
+<asynchronous suspension>
+<asynchronous suspension>
+#5      expectLater.<anonymous closure> (package:flutter_test/src/widget_tester.dart:508:19)
+<asynchronous suspension>
+#6      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart:239:5)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 3 frames from dart:async and package:stack_trace)
+
+The exception was caught asynchronously.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +32 -8: /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: rest-state golden [E]
+  Test failed. See exception logs above.
+  The test description was: rest-state golden
+  
+00:03 +32 -8: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: keyboard opens and closes the folder before privacy control
+  /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/card_folder_test.dart: rest-state golden
+  /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart: outgoing glyph rolls away opposite the incoming glyph
+  /Users/codenameakshay/.t3/worktrees/beui/t3-2358628c/test/motion/digit_swap_test.dart: unchanged staggered glyph receives new styling
+  ... and 4 more

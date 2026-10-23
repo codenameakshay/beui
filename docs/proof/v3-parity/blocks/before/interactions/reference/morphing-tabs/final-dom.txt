@@ -1,0 +1,278 @@
+beUI Native is free — Pro mobile blocks and screens are in presale from $99
+
+Reserve
+beUI Pro for mobile
+beUI
+Components
+Blocks
+Agents
+Charts
+Playground
+Sponsors
+Light theme
+Light theme
+Dark theme
+Dark theme
+System theme
+System theme
+1.9k
+Get Pro
+All
+Agents
+Components
+Blocks
+
+INTRO
+
+Home
+Changelog
+
+GUIDES
+
+Motion Guides
+Agent Guide
+OpenUI
+React Native Setup
+AI AGENTS
+18
+Voice Orb
+Message Bubble
+Message
+Message Scroller
+Prompt Input
+Todo List
+Code Block
+Approval Card
+File Diff
+Tool Result
+Streaming Response
+Image Generation
+Tool Approval
+Citations
+Agent Activity
+Agent Loading States
+AI Sidebar
+Chat App
+COMPONENTS
+54
+Timeline
+NEW
+Animated Alert
+Animated Collapsible
+Aspect Ratio
+Arc Picker
+Sortable List
+Image Viewer
+Date Range Picker
+Card
+Color Picker
+Animated Color Selector
+Animated Breadcrumb
+Tilt Card
+Button
+Animated CTA Buttons
+Expandable Control
+Adaptive Stepper
+Marquee
+Tabs
+Switch
+Input
+Select
+Combobox
+Multi Select
+Checkbox
+Radio Group
+Bottom Sheet
+Pull to Refresh
+Shared Layout Background
+Bounce Sidebar
+Animated Sidebar
+File Tree
+Preview Rail
+Dock
+Tooltip
+Animated Context Menu
+Popover
+Morphing Modal
+Center Morph Modal
+Text Animation
+Number Animation
+Animated Badge
+Action Swap
+Animated Toast Stack
+Theme Toggle
+Bouncy Accordion
+Drawer
+Scroll Animation
+Range Slider
+Wheel Picker
+Table
+Shader Background
+Cylinder Carousel
+Loader
+BLOCKS
+23
+Infinite Masonry
+Notification Stack
+Project Folder
+Card Folder
+Fixtures
+Availability Scheduler
+Multi-chain Swap
+Dynamic Island
+Command Palette
+Morphing Search
+Expandable Action Bar
+Overflow Actions
+Expandable Tabs
+Morphing Tabs
+Swipeable List
+File Upload
+Prediction Market
+Wallet Card
+OTP Input
+Sign Up Form
+Bloom Menu
+Feedback Widget
+404 / Not Found
+Blocks
+Morphing Tabs
+Morphing Tabs
+Copy Page
+
+Reorderable tabs whose selected item grows into a white content surface, with the active shape gliding as tabs move and a shared morph between rooms.
+
+Preview
+Preview
+Preview
+Usage
+Usage
+Code
+Code
+Room 2
+General
+
+QUIET FOCUS
+
+Room 2
+
+A small space for the work that needs a little more air around it.
+
+drag any room to reorder
+Install
+
+Add it with the shadcn CLI, or copy the source manually.
+
+CLI
+CLI
+Manual
+Manual
+bun
+bun
+npm
+npm
+pnpm
+pnpm
+yarn
+yarn
+$ bunx --bun shadcn add @beui/
+morphing-tabs
+morphing-tabs
+API Reference
+items
+MorphingTabsItem[]
+—
+value?
+string | null
+—
+defaultValue?
+string | null
+—
+onValueChange?
+((id: string | null) => void)
+—
+onOrderChange?
+((ids: string[]) => void)
+
+Called once after a pointer drag or keyboard reorder completes.
+
+—
+onClose?
+((id: string) => void)
+
+Enables the close affordance on every tab when provided.
+
+—
+ariaLabel?
+string
+Tabs
+className?
+string
+—
+classNames?
+MorphingTabsClassNames
+—
+Related components
+Expandable Tabs
+
+Icon tab bar where the active tab expands to a labelled pill, with a panel above that morphs height and slides content direction-aware on switch.
+
+Morphing Search
+
+Search field or compact icon that morphs into a glass results surface, whether opened by click or keyboard shortcut.
+
+Expandable Action Bar
+
+Compact icon actions that expand into labeled controls on hover or focus with shared layout motion.
+
+About Morphing Tabs
+
+Morphing Tabs is a browser-style tab strip for React whose selected tab grows into the content surface below it, built with Framer Motion and Tailwind CSS. The active shape glides as you switch tabs, tabs can be reordered by dragging or from the keyboard, and each tab can show a close button. Content cross-fades with a short blur when the selection changes.
+
+When to use it
+A workspace or editor app shows open documents as tabs that users rearrange and close.
+A dashboard groups views into rooms or sections that should feel like one connected surface.
+A settings or profile page wants tabs that read as part of the panel instead of a separate control.
+Accessibility
+
+Tabs sit in a tablist with an ariaLabel, each tab has the tab role, aria-selected and aria-controls pointing at a single tabpanel, and only the selected tab is in the tab order. Arrow Left and Arrow Right select and focus the previous or next tab with wrap-around, and Alt with an arrow key moves the focused tab. Close buttons are labelled "Close" plus the tab name. With reduced motion enabled, the active shape moves instantly and content fades without the slide and blur.
+
+FAQ
+How do I make reorderable tabs in React?
+Install the block and render MorphingTabs with items that each have an id, label and content. Listen to onOrderChange, which reports the new id order once after a drag or keyboard move, and store it.
+How do I add closable tabs?
+Pass an onClose callback. Every tab then shows a close button, and onClose receives the tab id so you can remove it from items.
+Can I control the selected tab?
+Yes. Pass value and onValueChange for controlled use, or defaultValue for uncontrolled use. Items can also set disabled and an optional icon.
+Keep in mind
+
+Some components on this site are inspired by or recreated from existing work across the web. I'm not here to take credit; just to learn, experiment, and sometimes push things a bit further. If something looks familiar and I forgot to mention you, reach out and I'll fix that right away.
+
+Updated Oct 18, 2026
+
+Web
+Web
+React Native
+React Native
+beUI
+Pro
+Limited Offer
+
+300+ blocks and premium motion components for React and Next.js.
+
+$179 lifetime access
+
+Explore beUI Pro
+Sponsors
+
+DIAMOND
+
+Tracwell
+
+Visitor insights for growth
+
+Illos
+
+Animated illustrations for product sites
+
+Become a sponsor

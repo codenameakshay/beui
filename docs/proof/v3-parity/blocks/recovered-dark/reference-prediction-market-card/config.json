@@ -1,0 +1,124 @@
+{
+  "url": "https://beui.dev/components/blocks/prediction-market",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "theme": "dark",
+  "reference": true,
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 800,
+  "provenance": {
+    "target": "reference",
+    "expectedCandidateJsSha256": "aea97a92218d9462a95d601dde72b6bc9e4fee1c060ea4730967aa05fdaf1bbb",
+    "sourceCheckout": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "baselineWrapperApplied": false,
+    "candidatePreviewInnerWidth": null,
+    "limitations": "Route first example only. Coordinates measured from rest screenshot. Inspect observed states and actual captured dimensions. No 60 FPS or parity certification."
+  },
+  "targets": {
+    "0": {
+      "x": 840,
+      "y": 676,
+      "measuredBounds": {
+        "tag": "BUTTON",
+        "role": null,
+        "slot": null,
+        "label": "Trade Celtics at 51%",
+        "text": "51%51%",
+        "x": 808,
+        "y": 656,
+        "width": 64,
+        "height": 40
+      }
+    },
+    "1": {
+      "x": 840,
+      "y": 734,
+      "measuredBounds": {
+        "tag": "BUTTON",
+        "role": null,
+        "slot": null,
+        "label": "Trade Lakers at 49%",
+        "text": "49%49%",
+        "x": 808,
+        "y": 714,
+        "width": 64,
+        "height": 40
+      }
+    },
+    "2": {
+      "x": 786.671875,
+      "y": 676,
+      "measuredBounds": {
+        "tag": "BUTTON",
+        "role": null,
+        "slot": null,
+        "label": "Potential payout for Celtics",
+        "text": "2.0×",
+        "x": 773.34375,
+        "y": 658,
+        "width": 26.65625,
+        "height": 36
+      }
+    },
+    "3": {
+      "x": 847.4140625,
+      "y": 532,
+      "measuredBounds": {
+        "tag": "BUTTON",
+        "role": null,
+        "slot": null,
+        "label": null,
+        "text": "Update odds",
+        "x": 798.828125,
+        "y": 516,
+        "width": 97.171875,
+        "height": 32
+      }
+    },
+    "outside": {
+      "x": 1100,
+      "y": 100
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "move",
+      "target": "0"
+    },
+    {
+      "atMs": 1200,
+      "type": "move",
+      "target": "1"
+    },
+    {
+      "atMs": 1800,
+      "type": "move",
+      "target": "2"
+    },
+    {
+      "atMs": 2400,
+      "type": "move",
+      "target": "outside"
+    },
+    {
+      "atMs": 3000,
+      "type": "click",
+      "target": "1"
+    },
+    {
+      "atMs": 3400,
+      "type": "key",
+      "key": "Enter"
+    },
+    {
+      "atMs": 4000,
+      "type": "click",
+      "target": "3"
+    }
+  ]
+}

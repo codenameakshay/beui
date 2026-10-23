@@ -1,0 +1,273 @@
+beUI Native is free — Pro mobile blocks and screens are in presale from $99
+
+Reserve
+beUI Pro for mobile
+beUI
+Components
+Blocks
+Agents
+Charts
+Playground
+Sponsors
+Light theme
+Light theme
+Dark theme
+Dark theme
+System theme
+System theme
+1.9k
+Get Pro
+All
+Agents
+Components
+Blocks
+
+INTRO
+
+Home
+Changelog
+
+GUIDES
+
+Motion Guides
+Agent Guide
+OpenUI
+React Native Setup
+AI AGENTS
+18
+Voice Orb
+Message Bubble
+Message
+Message Scroller
+Prompt Input
+Todo List
+Code Block
+Approval Card
+File Diff
+Tool Result
+Streaming Response
+Image Generation
+Tool Approval
+Citations
+Agent Activity
+Agent Loading States
+AI Sidebar
+Chat App
+COMPONENTS
+54
+Timeline
+NEW
+Animated Alert
+Animated Collapsible
+Aspect Ratio
+Arc Picker
+Sortable List
+Image Viewer
+Date Range Picker
+Card
+Color Picker
+Animated Color Selector
+Animated Breadcrumb
+Tilt Card
+Button
+Animated CTA Buttons
+Expandable Control
+Adaptive Stepper
+Marquee
+Tabs
+Switch
+Input
+Select
+Combobox
+Multi Select
+Checkbox
+Radio Group
+Bottom Sheet
+Pull to Refresh
+Shared Layout Background
+Bounce Sidebar
+Animated Sidebar
+File Tree
+Preview Rail
+Dock
+Tooltip
+Animated Context Menu
+Popover
+Morphing Modal
+Center Morph Modal
+Text Animation
+Number Animation
+Animated Badge
+Action Swap
+Animated Toast Stack
+Theme Toggle
+Bouncy Accordion
+Drawer
+Scroll Animation
+Range Slider
+Wheel Picker
+Table
+Shader Background
+Cylinder Carousel
+Loader
+BLOCKS
+23
+Infinite Masonry
+Notification Stack
+Project Folder
+Card Folder
+Fixtures
+Availability Scheduler
+Multi-chain Swap
+Dynamic Island
+Command Palette
+Morphing Search
+Expandable Action Bar
+Overflow Actions
+Expandable Tabs
+Morphing Tabs
+Swipeable List
+File Upload
+Prediction Market
+Wallet Card
+OTP Input
+Sign Up Form
+Bloom Menu
+Feedback Widget
+404 / Not Found
+Blocks
+Notification Stack
+Notification Stack
+Copy Page
+
+Compact notification cards that spring from a stacked summary into a readable list on hover, focus or tap.
+
+Preview
+Preview
+Preview
+Usage
+Usage
+Code
+Code
+Orders import failed
+2
+42s · TimeoutError at Step 2
+3
+Notifications
+Install
+
+Add it with the shadcn CLI, or copy the source manually.
+
+CLI
+CLI
+Manual
+Manual
+bun
+bun
+npm
+npm
+pnpm
+pnpm
+yarn
+yarn
+$ bunx --bun shadcn add @beui/
+notification-stack
+notification-stack
+API Reference
+items
+NotificationStackItem[]
+—
+expanded?
+boolean
+—
+defaultExpanded?
+boolean
+false
+onExpandedChange?
+((expanded: boolean) => void)
+—
+onViewAll?
+(() => void)
+—
+maxVisible?
+number
+3
+collapsedLabel?
+string
+Notifications
+expandedLabel?
+string
+View all
+emptyLabel?
+string
+All caught up
+className?
+string
+—
+classNames?
+NotificationStackClassNames
+—
+Related components
+Expandable Action Bar
+
+Compact icon actions that expand into labeled controls on hover or focus with shared layout motion.
+
+Project Folder
+
+An interactive project folder that opens its file fan on hover or focus, expands into a focus-managed overlay, then retraces the complete path when closed.
+
+Morphing Search
+
+Search field or compact icon that morphs into a glass results surface, whether opened by click or keyboard shortcut.
+
+About Notification Stack
+
+Notification Stack is a React notification summary built with Framer Motion where cards sit stacked behind one another and spring apart into a readable list on hover, focus or tap. Collapsed, only the newest card is shown with the others peeking out beneath it, and a footer shows the count and a label that rolls to "View all" when the list opens. A second activation calls your view-all handler, and an empty state shows when there are no items.
+
+When to use it
+A dashboard header or sidebar needs a compact preview of recent notifications that expands on demand.
+A home screen or widget wants to show the latest alerts, messages or activity without a full notification center.
+A mobile layout needs a tap-to-expand summary that leads to a full notifications page.
+Accessibility
+
+The whole stack is a single button with aria-expanded and an accessible name that states the notification count and the next action. Keyboard focus expands it, Escape collapses it while keeping focus in place, and tabbing away collapses it. On touch, the first tap expands the stack and a tap outside collapses it. With reduced motion enabled, the cards and footer move between states instantly.
+
+FAQ
+How do I make a stacked notification card list in React?
+Install the block and pass items to NotificationStack, each with an id, a title and optionally a description and trailing content. maxVisible sets how many cards appear in the stack.
+Can I control whether the stack is expanded?
+Yes. Pass expanded with onExpandedChange for controlled use, or defaultExpanded for uncontrolled use.
+How do I link to a full notifications page?
+Pass onViewAll. When the stack is already expanded, activating it calls onViewAll. collapsedLabel, expandedLabel and emptyLabel change the footer and empty-state text.
+Keep in mind
+
+Some components on this site are inspired by or recreated from existing work across the web. I'm not here to take credit; just to learn, experiment, and sometimes push things a bit further. If something looks familiar and I forgot to mention you, reach out and I'll fix that right away.
+
+Updated Oct 18, 2026
+
+Web
+Web
+React Native
+React Native
+beUI
+Pro
+Limited Offer
+
+300+ blocks and premium motion components for React and Next.js.
+
+$179 lifetime access
+
+Explore beUI Pro
+Sponsors
+
+DIAMOND
+
+Tracwell
+
+Visitor insights for growth
+
+Illos
+
+Animated illustrations for product sites
+
+Become a sponsor
