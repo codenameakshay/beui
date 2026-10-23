@@ -2,6 +2,13 @@
 
 Done means the scoped source behaviors, appearance and motion are implemented and verified with preserved source/candidate evidence, integrated gates, and pushed PR26 updates. No merge is authorized. Exact parity remains incomplete.
 
+## Latest continuation: chart mono measurements
+
+- The current candle/volume narrowing did not reproduce in a fresh fixture or actual gallery. Actual advances exactly match the named Geist Mono and registered monospace controls. Source DOM and candidate advances differ by less than 0.019px across six labels; source Canvas2D advances differ by less than 0.00055px. Baselines differ by 0.26px. No typography change is supported.
+- Parent verified the chart-mono-diagnosis archive from an independent staged regular-file export: 623 hashes, six recomputed label comparisons, and untouched crop comparisons. Exact raster differences remain nonzero. The historical narrowing cause remains unresolved.
+- Original input manifest contains an initial diagnostic fixture hash superseded by final-inputs.json. Final fixture bytes are retained; initial fixture bytes were not recovered. All other initial hashes match. This limitation is explicit in ARCHIVE.md and verifier.
+- Mono diagnosis task is completed. Active child `v3-heat-calendar-native-states-20261023-r1` owns only new heat-calendar-native proof paths and /tmp, port18149. It checks blank/filter/refresh and focused identity with trusted native input under both motion preferences. No production repair or parity claim is assumed.
+
 ## Current delivery and next diagnosis
 
 - Pushed Order Book evidence `41a4f7bb0` and SDK/raster evidence with effective minimum correction `7a17c6621` to PR26. No merge.
