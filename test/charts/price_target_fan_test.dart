@@ -48,6 +48,37 @@ BeuiPriceTargetFan _chart({
 );
 
 void main() {
+  testWidgets('touch toggles on down while mouse activation keeps hover', (
+    tester,
+  ) async {
+    final changes = <BeuiPriceTargetFanActive?>[];
+    await _pumpChart(tester, _chart(onActiveChange: changes.add));
+    final high = find.byKey(const ValueKey('price-target-target-High'));
+    final point = tester.getCenter(high);
+    final touch = await tester.startGesture(point);
+    await tester.pump();
+    expect(changes.last, const BeuiPriceTargetFanActive.target('High'));
+    await touch.up();
+    await tester.pumpAndSettle();
+    final second = await tester.startGesture(point);
+    await tester.pump();
+    expect(changes.last, isNull);
+    await second.up();
+    await tester.pumpAndSettle();
+    expect(find.text('Analysts'), findsNothing);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(point);
+    await tester.pumpAndSettle();
+    expect(changes.last, const BeuiPriceTargetFanActive.target('High'));
+    await mouse.down(point);
+    await mouse.up();
+    await tester.pumpAndSettle();
+    expect(changes.last, const BeuiPriceTargetFanActive.target('High'));
+    expect(find.text('Analysts'), findsOneWidget);
+    await mouse.removePointer();
+  });
+
   testWidgets(
     'target labels start ten pixels after dots and dim with projections',
     (tester) async {

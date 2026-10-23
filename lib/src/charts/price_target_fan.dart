@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 import 'package:flutter/services.dart';
 
 import '../motion/number_ticker.dart';
@@ -155,6 +156,7 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
   static const double top = 16;
   static const double bottom = 28;
   final _historyFocus = FocusNode();
+  PointerDeviceKind? _targetPointerKind;
 
   @override
   void dispose() {
@@ -678,33 +680,50 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                         onFocusChange: (focused) => state.setActiveId(
                           focused ? 't:${target.key}' : null,
                         ),
-                        child: TextButton(
-                          key: ValueKey('price-target-target-${target.key}'),
-                          onPressed: () => state.setActiveId('t:${target.key}'),
-                          style: TextButton.styleFrom(
-                            overlayColor: Colors.transparent,
-                            padding: const EdgeInsets.only(left: 18),
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            alignment: Alignment.centerLeft,
-                          ),
-                          child: BeuiChartTween(
-                            value:
-                                state._resolvedActive?.type == 'target' &&
-                                    state._resolvedActive?.key != target.key
-                                ? .3
-                                : 1,
-                            duration: const Duration(milliseconds: 250),
-                            snapWhenReduced: true,
-                            builder: (context, opacity) => Opacity(
-                              opacity: opacity.clamp(0, 1),
-                              child: Text(
-                                target.price.toStringAsFixed(0),
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontFamily: 'monospace',
-                                  fontWeight: FontWeight.w600,
-                                  color: _targetColor(state, target, colors),
+                        child: Listener(
+                          onPointerDown: (event) {
+                            state._targetPointerKind = event.kind;
+                            if (event.kind == PointerDeviceKind.touch) {
+                              state.setActiveId(
+                                state.activeId == 't:${target.key}'
+                                    ? null
+                                    : 't:${target.key}',
+                              );
+                            }
+                          },
+                          child: TextButton(
+                            key: ValueKey('price-target-target-${target.key}'),
+                            onPressed: () {
+                              if (state._targetPointerKind !=
+                                  PointerDeviceKind.touch) {
+                                state.setActiveId('t:${target.key}');
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                              overlayColor: Colors.transparent,
+                              padding: const EdgeInsets.only(left: 18),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              alignment: Alignment.centerLeft,
+                            ),
+                            child: BeuiChartTween(
+                              value:
+                                  state._resolvedActive?.type == 'target' &&
+                                      state._resolvedActive?.key != target.key
+                                  ? .3
+                                  : 1,
+                              duration: const Duration(milliseconds: 250),
+                              snapWhenReduced: true,
+                              builder: (context, opacity) => Opacity(
+                                opacity: opacity.clamp(0, 1),
+                                child: Text(
+                                  target.price.toStringAsFixed(0),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontFamily: 'monospace',
+                                    fontWeight: FontWeight.w600,
+                                    color: _targetColor(state, target, colors),
+                                  ),
                                 ),
                               ),
                             ),
