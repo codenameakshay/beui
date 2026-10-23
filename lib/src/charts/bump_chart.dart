@@ -694,13 +694,15 @@ class _BumpPathLayer extends StatelessWidget {
                 top: last.dy - 6 * scale,
                 child: MouseRegion(
                   onEnter: (event) {
-                    if (event.kind != PointerDeviceKind.touch)
+                    if (event.kind != PointerDeviceKind.touch) {
                       scope.onHover(row.series.id);
+                    }
                   },
                   onExit: (event) {
                     if (event.kind != PointerDeviceKind.touch &&
-                        scope.hoveredId == row.series.id)
+                        scope.hoveredId == row.series.id) {
                       scope.onHover(null);
+                    }
                   },
                   child: Text(
                     row.series.name.length > 12
