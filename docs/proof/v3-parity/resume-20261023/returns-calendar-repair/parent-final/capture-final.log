@@ -1,0 +1,28 @@
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  pass: true,
+  checks: 5,
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  pass: true,
+  checks: 5,
+  failures: []
+}
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  pass: true,
+  checks: 10,
+  failures: []
+}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  pass: true,
+  checks: 10,
+  failures: []
+}
