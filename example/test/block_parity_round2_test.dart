@@ -293,6 +293,13 @@ void main() {
         find.byType(TextField),
         'The native SVG is visible',
       );
+      await tester.pump();
+      expect(
+        tester
+            .widget<BeuiStatefulButton>(find.byType(BeuiStatefulButton))
+            .onPressed,
+        isNotNull,
+      );
       await tester.tap(find.byType(BeuiStatefulButton));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 901));
