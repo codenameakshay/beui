@@ -3,6 +3,7 @@ library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show OverflowBoxFit;
 import 'package:flutter/services.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
@@ -386,15 +387,21 @@ class _BeuiDonutCenterState extends State<BeuiDonutCenter> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            BeuiDigitSwap(
-              value: state.format(value),
-              direction: _direction,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-                letterSpacing: -.6,
-                color: BeuiColors.resolve(context).foreground,
-                fontFeatures: const [FontFeature.tabularFigures()],
+            // Source caps the caption, but its inline-flex digits never wrap.
+            OverflowBox(
+              minWidth: 0,
+              maxWidth: double.infinity,
+              fit: OverflowBoxFit.deferToChild,
+              child: BeuiDigitSwap(
+                value: state.format(value),
+                direction: _direction,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: -.6,
+                  color: BeuiColors.resolve(context).foreground,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
               ),
             ),
             const SizedBox(height: 4),
