@@ -795,11 +795,9 @@ class _HeaderRow extends StatelessWidget {
           Text(
             strings.stepCounter(currentStep + 1, questionCount),
             style: agent.typography.status.copyWith(
+              height: 16 / 12,
               fontFeatures: const [FontFeature.tabularFigures()],
-              // The step counter tells you where you are in the flow —
-              // information, not chrome. It no longer gets alpha-multiplied
-              // down to 3:1.
-              color: colors.mutedForeground,
+              color: colors.mutedForeground.withValues(alpha: 0.65),
             ),
           )
         else
@@ -944,6 +942,7 @@ class _StatusBadge extends StatelessWidget {
       child: Text(
         label,
         style: agent.typography.metadata.copyWith(
+          height: 20 / 14,
           fontWeight: FontWeight.w500,
           color: palette.foreground,
         ),

@@ -66,6 +66,50 @@ Future<List<int>?> _pixel(WidgetTester tester, Offset point) => tester.runAsync(
 );
 
 void main() {
+  testWidgets('approval badge retains the source card line height', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiApprovalCard(
+          status: BeuiApprovalCardStatus.approved,
+          title: 'Publish the component update?',
+          result: Text('Publishing was approved.'),
+        ),
+        width: 512,
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.widget<Text>(find.text('Approved')).style!.height, 20 / 14);
+    expect(tester.getSize(find.text('Approved')).height, 16);
+    expect(tester.getSize(find.byType(BeuiApprovalCard)).height, 78);
+  });
+
+  testWidgets('approval counter uses source line height and muted alpha', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const BeuiApprovalCard(
+          questions: [
+            BeuiApprovalCardQuestion(id: 'one', title: 'One'),
+            BeuiApprovalCardQuestion(id: 'two', title: 'Two'),
+          ],
+        ),
+        width: 512,
+      ),
+    );
+    await tester.pumpAndSettle();
+    final counter = find.text('1/2');
+    expect(tester.getSize(counter).height, 16);
+    final colors = BeuiColors.resolve(
+      tester.element(find.byType(BeuiApprovalCard)),
+    );
+    expect(
+      tester.widget<Text>(counter).style!.color,
+      colors.mutedForeground.withValues(alpha: 0.65),
+    );
+  });
   testWidgets('reduced motion cancels an in-flight question exit', (
     tester,
   ) async {

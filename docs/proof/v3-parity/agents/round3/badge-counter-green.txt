@@ -1,0 +1,76 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart
+00:00 +0: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: approval badge retains the source card line height
+00:00 +1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: approval badge retains the source card line height
+00:00 +2: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: approval badge retains the source card line height
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: a numeric value within <0.001> of <15.714285714285714>
+  Actual: <16.0>
+   Which:  differs by <0.2857142857142865>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart:83:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart line 83
+The test description was:
+  approval badge retains the source card line height
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +2 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — simple approval approve / reject / request-changes fire callbacks
+00:00 +2 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: approval badge retains the source card line height [E]
+  Test failed. See exception logs above.
+  The test description was: approval badge retains the source card line height
+  
+00:00 +3 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: approval counter uses source line height and muted alpha
+00:00 +4 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — simple approval submitting disables actions and shows badge
+00:00 +5 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: reduced motion cancels an in-flight question exit
+00:01 +6 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: reduced motion cancels an in-flight question exit
+00:01 +7 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: reduced motion cancels an in-flight question exit
+00:01 +8 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow renders first question with counter and options
+00:01 +9 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow renders first question with counter and options
+00:01 +10 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: approval waits for outgoing question before entering the latest step
+00:01 +11 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow next disabled until answered; advances on select + next
+00:01 +12 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow next disabled until answered; advances on select + next
+00:01 +13 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: copy belongs to the disclosure and survives reopen, reduce=false
+00:01 +14 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow auto-advances single-select after 240ms
+00:01 +15 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: copy belongs to the disclosure and survives reopen, reduce=true
+00:01 +16 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: copy belongs to the disclosure and survives reopen, reduce=true
+00:01 +17 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow previous navigates back
+00:02 +18 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow previous navigates back
+00:02 +19 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: source diff row washes and gutter offsets, dark=true
+00:02 +20 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow submit on last step reports answers
+00:02 +21 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow controlled answers report onAnswersChange
+00:02 +22 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — question flow answered status collapses and shows result
+00:02 +23 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — visual fidelity heading and action labels keep the ambient font family
+00:02 +24 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — visual fidelity question nav buttons are circular (source rounded-full)
+00:02 +25 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — visual fidelity custom-response field sits in a 2px p-0.5 gutter
+00:02 +26 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — compact-to-expanded shows compact content until expanded
+00:03 +27 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — compact-to-expanded header action renders without toggling expansion
+00:03 +28 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — compact-to-expanded controlled expansion updates
+00:03 +29 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — compact-to-expanded uncontrolled toggle reveals expanded content
+00:03 +30 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — compact-to-expanded reversing expansion mid-motion does not throw
+00:03 +31 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — compact-to-expanded reduced motion snaps expanded content
+00:03 +32 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard — compact-to-expanded expand control exposes semantics and keyboard activation
+00:03 +33 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard header trigger invariant the whole header row toggles expansion, not just a chevron
+00:03 +34 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard header trigger invariant a card with only child + headerAction has an inert header
+00:03 +35 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard header trigger invariant showExpandToggle:false makes the header inert too
+00:03 +36 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard header trigger invariant headerAction stays independent while the header IS a trigger
+00:03 +37 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard header trigger invariant the header trigger clears the 48px touch floor
+00:03 +38 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard expandable body an expandedChild with nothing to collapse to asserts
+00:03 +39 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard expandable body a stateful expandedChild is instantiated exactly once
+00:03 +40 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard expandable body text typed into the expanded body survives a collapse
+00:04 +41 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard theming reject and request-changes labels come from the theme
+00:04 +42 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard theming per-instance labels beat the theme strings
+00:04 +43 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard theming the status badge reads the themed status role
+00:04 +44 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/approval_card_test.dart: BeuiApprovalCard theming a terminal outcome is announced through the live region
+00:04 +45 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: approval badge retains the source card line height
