@@ -1,0 +1,40 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/treemap_test.dart
+test/charts/treemap_test.dart:135:60: Error: The argument type 'num' can't be assigned to the parameter type 'int'.
+      expect(tickers.map((ticker) => ticker.format!(ticker.value)), [
+                                                           ^
+00:00 +0 -1: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/treemap_test.dart [E]
+  Failed to load "/Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/treemap_test.dart":
+  Compilation failed for testPath=/Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/treemap_test.dart: test/charts/treemap_test.dart:135:60: Error: The argument type 'num' can't be assigned to the parameter type 'int'.
+        expect(tickers.map((ticker) => ticker.format!(ticker.value)), [
+                                                             ^
+  .
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:00 +0 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/returns_calendar_test.dart: renders month labels, gain/loss cells, and compounded year totals
+00:00 +1 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/returns_calendar_test.dart: half-away month labels follow JS Math.round
+00:00 +2 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/returns_calendar_test.dart: formats short numeric years with a two-digit label
+00:00 +3 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/returns_calendar_test.dart: uncontrolled range selection toggles cells
+00:00 +4 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/returns_calendar_test.dart: hovering a month reveals and settles its signed ticker
+00:00 +5 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/returns_calendar_test.dart: month tooltips use unambiguous month names
+00:00 +6 -1: /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/returns_calendar_test.dart: controlled selection reports selection and keyboard Escape clears
+00:00 +7 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/treemap_test.dart: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/treemap_test.dart

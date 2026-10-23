@@ -1,0 +1,106 @@
+[
+  {
+    "source": true,
+    "key": "Tab",
+    "expected": true,
+    "visibleTuesday": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": true,
+    "key": "r",
+    "expected": false,
+    "visibleTuesday": false,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailWednesdayOperationalWednesday detailVisible periods: a c"
+    ]
+  },
+  {
+    "source": true,
+    "key": "i",
+    "expected": false,
+    "visibleTuesday": false,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": true,
+    "key": "ArrowRight",
+    "expected": true,
+    "visibleTuesday": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": true,
+    "key": "Escape",
+    "expected": false,
+    "visibleTuesday": false,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": false,
+    "key": "Tab",
+    "expected": true,
+    "visibleTuesday": false,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data",
+      "Tuesday\nDegraded\nTuesday detail",
+      "Tuesday\nDegraded\nTuesday detail"
+    ]
+  }
+]

@@ -1,0 +1,101 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart
+00:00 +0: renders accessible plot, history, and target buttons
+00:00 +1: header prices and percentage use animated tickers
+00:00 +2: history points sit left of the plot midpoint
+00:00 +3: plot width cap remains inside Center
+00:00 +4: current guide repaints when current changes in a boundary
+00:00 +5: axes repaint when current changes the price domain
+00:00 +6: history path repaints when history changes in a boundary
+00:00 +7: target fan repaints when current changes in a boundary
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: a value greater than <1>
+  Actual: <1>
+   Which: is not a value greater than <1>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart:228:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart line 228
+The test description was:
+  target fan repaints when current changes in a boundary
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +7 -1: target fan repaints when current changes in a boundary [E]
+  Test failed. See exception logs above.
+  The test description was: target fan repaints when current changes in a boundary
+  
+00:00 +7 -1: history points can be inspected by hover and keyboard
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: at least one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Tue, Oct 14": []>
+   Which: means none were found but some were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart:245:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart line 245
+The test description was:
+  history points can be inspected by hover and keyboard
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +7 -2: history points can be inspected by hover and keyboard [E]
+  Test failed. See exception logs above.
+  The test description was: history points can be inspected by hover and keyboard
+  
+00:01 +7 -2: dragging from a history point selects the last history date
+00:01 +8 -2: target hover exit restores the mean header
+00:01 +9 -2: history hover exit clears active history
+00:01 +10 -2: history focus blur clears active history
+00:01 +11 -2: axis painter repaints when theme changes on the same chart
+00:01 +12 -2: target buttons report the selected projection
+00:01 +13 -2: arrow keys step the uncontrolled active date
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: at least one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Sun, Sep 14": []>
+   Which: means none were found but some were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart:383:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart line 383
+The test description was:
+  arrow keys step the uncontrolled active date
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +13 -3: arrow keys step the uncontrolled active date [E]
+  Test failed. See exception logs above.
+  The test description was: arrow keys step the uncontrolled active date
+  
+00:01 +13 -3: keyboard inspector selects an endpoint and Escape clears
+00:01 +14 -3: rejects repeated or nonpositive targets and unsorted ISO history
+00:01 +15 -3: rejects a nonpositive or non-finite current price
+00:01 +16 -3: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart: arrow keys step the uncontrolled active date
+  /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart: history points can be inspected by hover and keyboard
+  /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/price_target_fan_test.dart: target fan repaints when current changes in a boundary

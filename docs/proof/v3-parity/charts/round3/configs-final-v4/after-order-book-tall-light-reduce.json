@@ -1,0 +1,148 @@
+{
+  "url": "http://127.0.0.1:8109/?slug=order-book&theme=light&previewWidth=592&captureProbe=1",
+  "viewport": {
+    "width": 1280,
+    "height": 1500
+  },
+  "theme": "light",
+  "reducedMotion": "reduce",
+  "reference": false,
+  "requireFlutterProbe": true,
+  "backend": "screenshots",
+  "loadWaitMs": 3000,
+  "servedJs": {
+    "url": "http://127.0.0.1:8109/main.dart.js",
+    "sha256": "b3d20ce0ba067a7346435853266c1483da60a99607bf0c607e5fa629eb54c546",
+    "revision": "a87eb75339ac88467ebb6a026c1a4f22e6f32cfb"
+  },
+  "provenance": {
+    "slug": "order-book",
+    "revision": "a87eb75339ac88467ebb6a026c1a4f22e6f32cfb",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "chartRevision": "a87eb753",
+    "effectiveDependencies": [
+      "11ee280",
+      "8ccb169",
+      "1dde262aa3ab172e4255233a524d712a48952f0a",
+      "62d8ab9",
+      "a88d982",
+      "d831524",
+      "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+      "7dfd8bd8"
+    ],
+    "recorderRevision": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+    "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "wrapperRevision": "d831524",
+    "observedProbeTargets": [
+      {
+        "name": "247.20",
+        "rect": {
+          "x": 529.5,
+          "y": 398,
+          "width": 44.015625,
+          "height": 20,
+          "top": 398,
+          "right": 573.515625,
+          "bottom": 418,
+          "left": 529.5
+        }
+      },
+      {
+        "name": "247.05",
+        "rect": {
+          "x": 529.5,
+          "y": 430,
+          "width": 44.15625,
+          "height": 20,
+          "top": 430,
+          "right": 573.65625,
+          "bottom": 450,
+          "left": 529.5
+        }
+      }
+    ],
+    "timerOverrides": "none",
+    "keyboardMethod": "click A, exit, native key, native Tab. No direct focus injection."
+  },
+  "targets": {
+    "A": {
+      "x": 551.5078125,
+      "y": 408
+    },
+    "B": {
+      "x": 551.578125,
+      "y": 440
+    },
+    "exit": {
+      "x": 1120,
+      "y": 250
+    },
+    "pause": {
+      "x": 952.8782958984375,
+      "y": 333
+    }
+  },
+  "events": [
+    {
+      "atMs": 50,
+      "type": "click",
+      "target": "pause",
+      "caption": "Pause actual live updates. Tick differs between runs."
+    },
+    {
+      "atMs": 300,
+      "type": "move",
+      "target": "A",
+      "caption": "A. Exact datum recorded in provenance."
+    },
+    {
+      "atMs": 1100,
+      "type": "move",
+      "target": "B",
+      "caption": "B. Retarget the visible readout."
+    },
+    {
+      "atMs": 1220,
+      "type": "move",
+      "target": "A",
+      "caption": "A. Reverse during the source ticker duration."
+    },
+    {
+      "atMs": 2100,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer exit."
+    },
+    {
+      "atMs": 2500,
+      "type": "click",
+      "target": "A",
+      "caption": "Native click establishes focus."
+    },
+    {
+      "atMs": 2700,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer leaves before keyboard input."
+    },
+    {
+      "atMs": 3000,
+      "type": "key",
+      "key": "Tab",
+      "caption": "Actual keyboard input after pointer exit."
+    },
+    {
+      "atMs": 3550,
+      "type": "key",
+      "key": "Tab",
+      "caption": "Actual Tab traversal."
+    },
+    {
+      "atMs": 3900,
+      "type": "key",
+      "key": "Escape",
+      "caption": "Dismiss."
+    }
+  ],
+  "finalHoldMs": 500
+}

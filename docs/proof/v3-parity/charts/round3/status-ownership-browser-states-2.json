@@ -1,0 +1,470 @@
+[
+  {
+    "source": true,
+    "preference": "reduce",
+    "key": "Tab",
+    "expected": true,
+    "visibleTuesday": true,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": true,
+    "preference": "reduce",
+    "key": "r",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailWednesdayOperationalWednesday detailVisible periods: a c"
+    ]
+  },
+  {
+    "source": true,
+    "preference": "reduce",
+    "key": "i",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": true,
+    "preference": "reduce",
+    "key": "ArrowRight",
+    "expected": true,
+    "visibleTuesday": true,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": true,
+    "preference": "reduce",
+    "key": "Escape",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "reduce",
+    "key": "Tab",
+    "expected": true,
+    "visibleTuesday": true,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data",
+      "Tuesday\nDegraded\nTuesday detail",
+      "Tuesday\nDegraded\nTuesday detail"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "reduce",
+    "key": "r",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "reduce",
+    "key": "i",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "reduce",
+    "key": "ArrowRight",
+    "expected": true,
+    "visibleTuesday": true,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data",
+      "Tuesday\nDegraded\nTuesday detail",
+      "Tuesday\nDegraded\nTuesday detail"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "reduce",
+    "key": "Escape",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data"
+    ]
+  },
+  {
+    "source": true,
+    "preference": "no-preference",
+    "key": "Tab",
+    "expected": true,
+    "visibleTuesday": true,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": true,
+    "preference": "no-preference",
+    "key": "r",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailWednesdayOperationalWednesday detailVisible periods: a c"
+    ]
+  },
+  {
+    "source": true,
+    "preference": "no-preference",
+    "key": "i",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": true,
+    "preference": "no-preference",
+    "key": "ArrowRight",
+    "expected": true,
+    "visibleTuesday": true,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": true,
+    "preference": "no-preference",
+    "key": "Escape",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "INPUT",
+      "role": null,
+      "label": "Status history: inspect period",
+      "id": ""
+    },
+    "text": [
+      "Status identity ownership fixtureTab focuses Tuesday. R removes it. I reinserts it.Focus stays on the native inspector throughout.MondayWednesdayOperationalDegradedOutageMaintenanceNo dataStatus history dataPeriodStatusDetailsMondayOperationalMonday detailTuesdayDegradedTuesday detailWednesdayOperationalWednesday detailVisible periods: a b c"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "no-preference",
+    "key": "Tab",
+    "expected": true,
+    "visibleTuesday": true,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data",
+      "Tuesday\nDegraded\nTuesday detail",
+      "Tuesday\nDegraded\nTuesday detail"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "no-preference",
+    "key": "r",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "no-preference",
+    "key": "i",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "no-preference",
+    "key": "ArrowRight",
+    "expected": true,
+    "visibleTuesday": true,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo dataTuesday\nDegraded\nTuesday detail",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data",
+      "Tuesday\nDegraded\nTuesday detail",
+      "Tuesday\nDegraded\nTuesday detail"
+    ]
+  },
+  {
+    "source": false,
+    "preference": "no-preference",
+    "key": "Escape",
+    "expected": false,
+    "visibleTuesday": false,
+    "focusRetained": true,
+    "focused": {
+      "tag": "FLT-SEMANTICS",
+      "role": null,
+      "label": null,
+      "id": "flt-semantic-node-6"
+    },
+    "text": [
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "MondayWednesdayOperationalDegradedOutageMaintenanceNo data",
+      "Monday",
+      "Wednesday",
+      "Operational",
+      "Degraded",
+      "Outage",
+      "Maintenance",
+      "No data"
+    ]
+  }
+]

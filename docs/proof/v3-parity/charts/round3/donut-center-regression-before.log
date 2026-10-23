@@ -1,0 +1,70 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/donut_chart_test.dart
+00:00 +0: center keeps full-size intrinsic digits outside its caption cap
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during layout:
+A RenderFlex overflowed by 56 pixels on the right.
+
+The relevant error-causing widget was:
+  Row
+  Row:file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/lib/src/motion/digit_swap.dart:88:16
+
+The overflowing RenderFlex has an orientation of Axis.horizontal.
+The edge of the RenderFlex that is overflowing has been marked in the rendering with a yellow and
+black striped pattern. This is usually caused by the contents being too big for the RenderFlex.
+Consider applying a flex factor (e.g. using an Expanded widget) to force the children of the
+RenderFlex to fit within the available space instead of being sized to their natural size.
+This is considered an error condition because it indicates that there is content that cannot be
+seen. If the content is legitimately bigger than the available space, consider clipping it with a
+ClipRect widget before putting it in the flex, or using a scrollable container rather than a Flex,
+like a ListView.
+The specific RenderFlex in question is: RenderFlex#b638c relayoutBoundary=up5 OVERFLOWING:
+  needs compositing
+  creator: Row ← DefaultTextStyle ← Semantics ← BeuiDigitSwap ← Column ← Semantics ←
+    FractionallySizedBox ← BeuiDonutCenter ← Center ← SizedBox.expand ← Stack ← Semantics ← ⋯
+  parentData: <none> (can use size)
+  constraints: BoxConstraints(0.0<=w<=134.4, 0.0<=h<=Infinity)
+  size: Size(134.4, 26.4)
+  direction: horizontal
+  mainAxisAlignment: start
+  mainAxisSize: min
+  crossAxisAlignment: baseline
+  textDirection: ltr
+  verticalDirection: down
+  textBaseline: alphabetic
+  spacing: 0.0
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: a value greater than <134.40000000000003>
+  Actual: <134.40000000000003>
+   Which: is not a value greater than <134.40000000000003>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/donut_chart_test.dart:60:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/donut_chart_test.dart line 60
+The test description was:
+  center keeps full-size intrinsic digits outside its caption cap
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following message was thrown:
+Multiple exceptions (2) were detected during the running of the current test, and at least one was
+unexpected.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: center keeps full-size intrinsic digits outside its caption cap [E]
+  Test failed. See exception logs above.
+  The test description was: center keeps full-size intrinsic digits outside its caption cap
+  
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/donut_chart_test.dart: center keeps full-size intrinsic digits outside its caption cap

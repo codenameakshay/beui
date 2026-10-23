@@ -1,0 +1,137 @@
+{
+  "url": "https://beui.dev/charts/donut-chart",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "theme": "light",
+  "reducedMotion": "reduce",
+  "reference": true,
+  "requireFlutterProbe": false,
+  "backend": "screenshots",
+  "loadWaitMs": 3000,
+  "provenance": {
+    "slug": "donut-chart",
+    "revision": "live deployment unknown",
+    "pinnedSource": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "chartRevision": "6585cf33e87f7e50c0140247c2f4451355fa9279",
+    "effectiveDependencies": [],
+    "recorderRevision": "d53695ffca9e4c9d1403e75712a9ff8e2ceed8ed",
+    "recorderSha256": "2aa405da2051b7a59a3010f7b0e3291108e3c51c65f6e1e76bf73bca120709ca",
+    "wrapperRevision": "live deployment unknown",
+    "observedProbeTargets": [
+      {
+        "name": "Team37.3%$42,900",
+        "rect": {
+          "x": 576,
+          "y": 378,
+          "width": 312,
+          "height": 48,
+          "top": 378,
+          "right": 888,
+          "bottom": 426,
+          "left": 576
+        }
+      },
+      {
+        "name": "Business27.1%$31,250",
+        "rect": {
+          "x": 576,
+          "y": 430,
+          "width": 312,
+          "height": 48,
+          "top": 430,
+          "right": 888,
+          "bottom": 478,
+          "left": 576
+        }
+      }
+    ],
+    "timerOverrides": "none",
+    "keyboardMethod": "click A, exit, native key, native Tab. No direct focus injection.",
+    "effectiveDependencyCopies": []
+  },
+  "targets": {
+    "A": {
+      "x": 732,
+      "y": 402
+    },
+    "B": {
+      "x": 732,
+      "y": 454
+    },
+    "exit": {
+      "x": 1120,
+      "y": 250
+    }
+  },
+  "events": [
+    {
+      "atMs": 300,
+      "type": "move",
+      "target": "A",
+      "caption": "A. Exact datum recorded in provenance."
+    },
+    {
+      "atMs": 1100,
+      "type": "move",
+      "target": "B",
+      "caption": "B. Retarget the visible readout."
+    },
+    {
+      "atMs": 1220,
+      "type": "move",
+      "target": "A",
+      "caption": "A. Reverse during the source ticker duration."
+    },
+    {
+      "atMs": 2100,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer exit."
+    },
+    {
+      "atMs": 2500,
+      "type": "click",
+      "target": "A",
+      "caption": "Native click establishes focus."
+    },
+    {
+      "atMs": 2700,
+      "type": "move",
+      "target": "exit",
+      "caption": "Pointer leaves before keyboard input."
+    },
+    {
+      "atMs": 3000,
+      "type": "key",
+      "key": "ArrowUp",
+      "caption": "Actual keyboard input after pointer exit."
+    },
+    {
+      "atMs": 3250,
+      "type": "key",
+      "key": "ArrowDown",
+      "caption": "Native row focus wraps from last to first."
+    },
+    {
+      "atMs": 3400,
+      "type": "key",
+      "key": "ArrowDown",
+      "caption": "Native row focus advances to Business."
+    },
+    {
+      "atMs": 3550,
+      "type": "key",
+      "key": "Tab",
+      "caption": "Actual Tab traversal."
+    },
+    {
+      "atMs": 3900,
+      "type": "key",
+      "key": "Escape",
+      "caption": "Dismiss."
+    }
+  ],
+  "finalHoldMs": 500
+}

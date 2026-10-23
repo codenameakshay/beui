@@ -1,0 +1,36 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_round3_test.dart
+lib/src/charts/heat_calendar.dart:344:17: Error: Constant evaluation error:
+                const {
+                ^
+lib/src/charts/heat_calendar.dart:345:38: Context: The element 'LogicalKeyboardKey {keyId: 4294968067}' does not have a primitive equality.
+ - 'LogicalKeyboardKey' is from 'package:flutter/src/services/keyboard_key.g.dart' ('../../../../fvm/versions/stable/packages/flutter/lib/src/services/keyboard_key.g.dart').
+                  LogicalKeyboardKey.arrowRight,
+                                     ^
+lib/src/charts/returns_calendar.dart:382:19: Error: Constant evaluation error:
+                  const {
+                  ^
+lib/src/charts/returns_calendar.dart:383:40: Context: The element 'LogicalKeyboardKey {keyId: 4294968067}' does not have a primitive equality.
+ - 'LogicalKeyboardKey' is from 'package:flutter/src/services/keyboard_key.g.dart' ('../../../../fvm/versions/stable/packages/flutter/lib/src/services/keyboard_key.g.dart').
+                    LogicalKeyboardKey.arrowRight,
+                                       ^
+00:00 +0 -1: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_round3_test.dart [E]
+  Failed to load "/Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_round3_test.dart":
+  Compilation failed for testPath=/Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_round3_test.dart: lib/src/charts/heat_calendar.dart:344:17: Error: Constant evaluation error:
+                  const {
+                  ^
+  lib/src/charts/heat_calendar.dart:345:38: Context: The element 'LogicalKeyboardKey {keyId: 4294968067}' does not have a primitive equality.
+   - 'LogicalKeyboardKey' is from 'package:flutter/src/services/keyboard_key.g.dart' ('../../../../fvm/versions/stable/packages/flutter/lib/src/services/keyboard_key.g.dart').
+                    LogicalKeyboardKey.arrowRight,
+                                       ^
+  lib/src/charts/returns_calendar.dart:382:19: Error: Constant evaluation error:
+                    const {
+                    ^
+  lib/src/charts/returns_calendar.dart:383:40: Context: The element 'LogicalKeyboardKey {keyId: 4294968067}' does not have a primitive equality.
+   - 'LogicalKeyboardKey' is from 'package:flutter/src/services/keyboard_key.g.dart' ('../../../../fvm/versions/stable/packages/flutter/lib/src/services/keyboard_key.g.dart').
+                      LogicalKeyboardKey.arrowRight,
+                                         ^
+  .
+00:00 +0 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_round3_test.dart: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/chart_round3_test.dart

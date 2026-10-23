@@ -1,0 +1,38 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/donut_chart_test.dart
+00:00 +0: round caps leave the source gap open at twelve oclock
+00:00 +1: renders ring, center total and legend
+00:00 +2: supports controlled and uncontrolled active ids and selection
+00:00 +3: native legend Up and Down wrap actual focus and Tab visits each row once
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'enterprise'
+  Actual: <null>
+   Which: not an <Instance of 'String'>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/donut_chart_test.dart:158:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/donut_chart_test.dart line 158
+The test description was:
+  native legend Up and Down wrap actual focus and Tab visits each row once
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +3 -1: native legend Up and Down wrap actual focus and Tab visits each row once [E]
+  Test failed. See exception logs above.
+  The test description was: native legend Up and Down wrap actual focus and Tab visits each row once
+  
+00:00 +3 -1: hovering legend rows updates the center ticker and caption
+00:00 +4 -1: outgoing center caption exits upward without jumping
+00:00 +5 -1: reduced motion snaps center ticker to active value
+00:00 +6 -1: reduced motion keeps the ring in its final state
+00:00 +7 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-b46210a7/test/charts/donut_chart_test.dart: native legend Up and Down wrap actual focus and Tab visits each row once
