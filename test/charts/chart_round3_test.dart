@@ -46,6 +46,95 @@ double _traceY(WidgetTester tester) {
 }
 
 void main() {
+  testWidgets('returns keeps the source 480px width inside a wider host', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        const Center(
+          child: BeuiReturnsCalendar(
+            years: [2021],
+            returns: [
+              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            ],
+          ),
+        ),
+      ),
+    );
+    expect(tester.getSize(find.byType(BeuiReturnsCalendarGrid)).width, 480);
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets(
+    'fan whole plot hover selects nearest curve and clears the now gap',
+    (tester) async {
+      BeuiPriceTargetFanActive? active;
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiPriceTargetFan(
+            current: 100,
+            targets: const [
+              BeuiPriceTarget(key: 'High', price: 140),
+              BeuiPriceTarget(key: 'Mean', price: 120),
+              BeuiPriceTarget(key: 'Low', price: 80),
+            ],
+            history: const [
+              BeuiPriceHistoryPoint(date: '2026-10-01', price: 90),
+              BeuiPriceHistoryPoint(date: '2026-10-03', price: 95),
+            ],
+            onActiveChange: (value) => active = value,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final plot = tester.getTopLeft(find.byType(BeuiPriceTargetSvg));
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(plot + const Offset(380, 10));
+      await tester.pump();
+      expect(active?.key, 'High');
+      await mouse.moveTo(plot + const Offset(380, 210));
+      await tester.pump();
+      expect(active?.key, 'Low');
+      await mouse.moveTo(plot + const Offset(246.56, 10));
+      await tester.pump();
+      expect(active, isNull);
+      await mouse.moveTo(plot + const Offset(100, 210));
+      await tester.pump();
+      expect(active?.date, '2026-10-01');
+      await mouse.moveTo(plot + const Offset(550, 10));
+      await tester.pumpAndSettle();
+      expect(active, isNull);
+      await mouse.removePointer();
+    },
+  );
+
+  testWidgets('heat sorts reversed range labels and omits a one-day span', (
+    tester,
+  ) async {
+    Widget chart(int start, int end) => beuiTestApp(
+      BeuiHeatCalendar(
+        weeks: 1,
+        endDate: DateTime.utc(2026, 10, 4),
+        values: const [
+          [1, 0, 1, 0, 0, 0, 0],
+        ],
+        selection: BeuiHeatCalendarSelection(
+          start: BeuiHeatCalendarCell(week: 0, day: start),
+          end: BeuiHeatCalendarCell(week: 0, day: end),
+        ),
+      ),
+    );
+    await tester.pumpWidget(chart(2, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('Sep 28 – Sep 30'), findsOneWidget);
+    expect(find.text('3 days'), findsOneWidget);
+    await tester.pumpWidget(chart(0, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('Mon, Sep 28'), findsOneWidget);
+    expect(find.text('1 days'), findsNothing);
+  });
+
   testWidgets('order depth springs and quantity tint retarget in flight', (
     tester,
   ) async {

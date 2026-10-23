@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../motion/number_ticker.dart';
+import '../motion/_engine.dart' show SpringMotion;
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
 import '_shared.dart';
@@ -305,7 +306,33 @@ class _BeuiPriceTargetFanState extends State<BeuiPriceTargetFan>
   }
 
   void _moveTo(Offset local) {
-    if (widget.history.isEmpty) return;
+    if (local.dx > _nowX + 6) {
+      final t = ((local.dx - _nowX) / (width - right - _nowX)).clamp(0.0, 1.0);
+      final nowY = _y(widget.current);
+      final ys = widget.targets.map((target) {
+        final targetY = _y(target.price);
+        final controlY = nowY + (targetY - nowY) * .15;
+        return (1 - t) * (1 - t) * nowY +
+            2 * (1 - t) * t * controlY +
+            t * t * targetY;
+      }).toList();
+      if (ys.reduce(math.max) - ys.reduce(math.min) < 24) {
+        setActiveId(null);
+        return;
+      }
+      var nearest = 0;
+      for (var i = 1; i < ys.length; i++) {
+        if ((ys[i] - local.dy).abs() < (ys[nearest] - local.dy).abs()) {
+          nearest = i;
+        }
+      }
+      setActiveId('t:${widget.targets[nearest].key}');
+      return;
+    }
+    if (widget.history.isEmpty || local.dx > _nowX - 6) {
+      setActiveId(null);
+      return;
+    }
     var index = 0;
     for (var i = 1; i < widget.history.length; i++) {
       if ((_historyX(i) - local.dx).abs() <
@@ -461,29 +488,35 @@ class BeuiPriceTargetSvg extends StatelessWidget {
         explicitChildNodes: true,
         label:
             '${state.widget.label}, current ${state.widget.current}, mean target ${state.widget.targets[1].price}',
-        child: GestureDetector(
-          onHorizontalDragUpdate: (event) => state._moveTo(event.localPosition),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned.fill(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTapDown: (event) => state._moveTo(event.localPosition),
-                  onHorizontalDragUpdate: (event) =>
-                      state._moveTo(event.localPosition),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.precise,
+          onHover: (event) => state._moveTo(event.localPosition),
+          onExit: (_) => state.setActiveId(null),
+          child: GestureDetector(
+            onHorizontalDragUpdate: (event) =>
+                state._moveTo(event.localPosition),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTapDown: (event) => state._moveTo(event.localPosition),
+                    onHorizontalDragUpdate: (event) =>
+                        state._moveTo(event.localPosition),
+                  ),
                 ),
-              ),
-              ...(children ??
-                  const [
-                    IgnorePointer(child: BeuiPriceTargetAxes()),
-                    IgnorePointer(child: BeuiPriceTargetHistory()),
-                    IgnorePointer(child: BeuiPriceTargetNow()),
-                    IgnorePointer(child: BeuiPriceTargetCursor()),
-                    BeuiPriceTargetHistoryPoints(),
-                    BeuiPriceTargetTargets(),
-                  ]),
-            ],
+                ...(children ??
+                    const [
+                      IgnorePointer(child: BeuiPriceTargetAxes()),
+                      IgnorePointer(child: BeuiPriceTargetHistory()),
+                      IgnorePointer(child: BeuiPriceTargetNow()),
+                      IgnorePointer(child: BeuiPriceTargetCursor()),
+                      BeuiPriceTargetHistoryPoints(),
+                      BeuiPriceTargetTargets(),
+                    ]),
+              ],
+            ),
           ),
         ),
       ),
@@ -621,6 +654,25 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                           '${target.key} target ${target.price}, ${target.analysts} analysts',
                       child: Focus(
                         canRequestFocus: false,
+                        onKeyEvent: (_, event) {
+                          if (event is! KeyDownEvent) {
+                            return KeyEventResult.ignored;
+                          }
+                          if (event.logicalKey == LogicalKeyboardKey.escape) {
+                            state.setActiveId(null);
+                          } else if (event.logicalKey ==
+                                  LogicalKeyboardKey.enter ||
+                              event.logicalKey == LogicalKeyboardKey.space) {
+                            state.setActiveId(
+                              state.activeId == 't:${target.key}'
+                                  ? null
+                                  : 't:${target.key}',
+                            );
+                          } else {
+                            return KeyEventResult.ignored;
+                          }
+                          return KeyEventResult.handled;
+                        },
                         onFocusChange: (focused) => state.setActiveId(
                           focused ? 't:${target.key}' : null,
                         ),
@@ -827,14 +879,24 @@ class BeuiPriceTargetCursor extends StatelessWidget {
     final point = state._activeHistory;
     if (point == null) return const SizedBox.expand();
     final index = state.widget.history.indexOf(point);
-    return BeuiChartSpring(
-      value: state._y(point.price),
-      builder: (context, y) => BeuiChartFade(
-        opacity: 1,
-        child: CustomPaint(
+    const glide = SpringMotion(
+      SpringDescription(stiffness: 700, damping: 50, mass: .5),
+    );
+    return BeuiChartTween(
+      value: state._historyX(index),
+      duration: const Duration(milliseconds: 200),
+      motion: glide,
+      isMovement: true,
+      builder: (context, x) => BeuiChartTween(
+        value: state._y(point.price),
+        duration: const Duration(milliseconds: 200),
+        motion: glide,
+        isMovement: true,
+        builder: (context, y) => CustomPaint(
           painter: _PriceCursorPainter(
             state,
             index,
+            x,
             y,
             BeuiColors.resolve(context),
           ),
@@ -1209,18 +1271,23 @@ class _PriceNowPainter extends CustomPainter {
 }
 
 class _PriceCursorPainter extends CustomPainter {
-  _PriceCursorPainter(this.state, this.index, this.cursorY, this.colors)
-    : widget = state.widget;
+  _PriceCursorPainter(
+    this.state,
+    this.index,
+    this.cursorX,
+    this.cursorY,
+    this.colors,
+  ) : widget = state.widget;
   final _BeuiPriceTargetFanState state;
   final int index;
+  final double cursorX;
   final double cursorY;
   final BeuiColors colors;
   final BeuiPriceTargetFan widget;
   @override
   void paint(Canvas canvas, Size size) {
     if (index < 0 || index >= state.widget.history.length) return;
-    final point = state.widget.history[index];
-    final x = state._historyX(index);
+    final x = cursorX;
     final y = cursorY;
     canvas.drawLine(
       Offset(x, _BeuiPriceTargetFanState.top),
@@ -1232,22 +1299,21 @@ class _PriceCursorPainter extends CustomPainter {
         ..color = colors.foreground.withValues(alpha: .25)
         ..strokeWidth = 1,
     );
-    canvas.drawCircle(Offset(x, y), 5, Paint()..color = colors.background);
-    canvas.drawCircle(Offset(x, y), 3, Paint()..color = colors.accent);
-    _drawText(
-      canvas,
-      '\$${point.price.toStringAsFixed(2)}',
-      Offset(x - 34, y - 21),
-      colors.foreground,
-      10,
-      width: 68,
-      align: TextAlign.center,
+    canvas.drawCircle(Offset(x, y), 3.2, Paint()..color = colors.foreground);
+    canvas.drawCircle(
+      Offset(x, y),
+      3.2,
+      Paint()
+        ..color = colors.background
+        ..strokeWidth = 1.5
+        ..style = PaintingStyle.stroke,
     );
   }
 
   @override
   bool shouldRepaint(_PriceCursorPainter oldDelegate) =>
       oldDelegate.index != index ||
+      oldDelegate.cursorX != cursorX ||
       oldDelegate.cursorY != cursorY ||
       oldDelegate.widget != widget ||
       oldDelegate.colors != colors;
