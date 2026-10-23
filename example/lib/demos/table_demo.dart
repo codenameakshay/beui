@@ -247,7 +247,13 @@ class _TableDemoState extends State<_TableDemo> {
               rowHeight: 52,
             ),
           ],
-          if (widget.example == null || widget.example == 'editable') ...[
+          if (widget.example == null ||
+              widget.example == 'editable' ||
+              widget.example == 'editable-recovery') ...[
+            if (widget.example == 'editable-recovery') ...[
+              _sectionLabel(colors, 'Editable recovery example'),
+              const SizedBox(height: 8),
+            ],
             if (widget.example == null) ...[
               const SizedBox(height: 32),
               _sectionLabel(colors, 'Editable Table'),
@@ -286,7 +292,9 @@ class _TableDemoState extends State<_TableDemo> {
               ],
               getRowId: (r, _) => r.id,
               rowHeight: 48,
-              height: _editRows.length.clamp(1, 6) * 48,
+              height: widget.example == 'editable-recovery'
+                  ? (_editRows.length + 1).clamp(5, 7) * 48
+                  : _editRows.length.clamp(1, 6) * 48,
               borderRadius: BorderRadius.zero,
               onCellEdit: _editable
                   ? (rowId, key, value) {
