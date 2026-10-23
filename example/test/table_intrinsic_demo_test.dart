@@ -102,6 +102,84 @@ void main() {
     },
   );
 
+  for (final scale in [1.0, 2.0]) {
+    testWidgets('inline badge shares regular cell baseline at scale $scale', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          Builder(
+            builder: (context) => MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(scale)),
+              child: Builder(
+                builder: (context) => tableDemo(context, example: 'data'),
+              ),
+            ),
+          ),
+          width: 592,
+          fontFamily: 'actualGeist',
+          reduce: true,
+        ),
+      );
+      final row = tester.widget<Row>(_bodyRows().first);
+      double baseline(int cell) {
+        final text = find
+            .descendant(
+              of: find.byWidget(row.children[cell]),
+              matching: find.byType(RichText),
+            )
+            .last;
+        final paragraph = tester.renderObject<RenderParagraph>(text);
+        return paragraph
+            .localToGlobal(
+              Offset(
+                0,
+                paragraph.getDryBaseline(
+                  paragraph.constraints,
+                  TextBaseline.alphabetic,
+                )!,
+              ),
+            )
+            .dy;
+      }
+
+      expect(
+        baseline(4),
+        closeTo(baseline(2), scale / 64),
+        reason: 'the padded badge participates in the regular cell baseline',
+      );
+      expect(tester.takeException(), isNull);
+      await _dispose(tester);
+    });
+  }
+
+  testWidgets('inline badge honors its cell width under ambient tracking', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData(
+          fontFamily: 'actualGeist',
+          extensions: [BeuiColors.dark()],
+        ),
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: SizedBox(
+              width: 696,
+              child: Builder(
+                builder: (context) => tableDemo(context, example: 'data'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    await _dispose(tester);
+  });
+
   testWidgets('first layout measures bounded sorted DATA with real fonts', (
     tester,
   ) async {

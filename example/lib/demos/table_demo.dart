@@ -124,13 +124,13 @@ class _TableDemoState extends State<_TableDemo> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<BeuiColors>()!;
 
-    Widget statusBadge(String status) {
+    Widget statusBadge(String status, {bool inline = true}) {
       final tint = switch (status) {
         'active' => colors.success,
         'invited' => colors.warning,
         _ => colors.destructive,
       };
-      return DecoratedBox(
+      final badge = DecoratedBox(
         decoration: BoxDecoration(
           color: tint.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(999),
@@ -146,6 +146,28 @@ class _TableDemoState extends State<_TableDemo> {
               color: tint,
             ),
           ),
+        ),
+      );
+      if (!inline) return badge;
+      // The source span shares the 14px/20px cell line's alphabetic baseline.
+      // Its vertical padding paints outside that line without enlarging it.
+      return SizedBox(
+        height: MediaQuery.textScalerOf(context).scale(14) * 20 / 14,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            const ExcludeSemantics(
+              child: SelectionContainer.disabled(
+                child: Text(
+                  '\u200b',
+                  style: TextStyle(fontSize: 14, height: 20 / 14),
+                ),
+              ),
+            ),
+            Flexible(child: badge),
+          ],
         ),
       );
     }
@@ -272,7 +294,7 @@ class _TableDemoState extends State<_TableDemo> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: switch (column.key) {
-                          'status' => statusBadge(row.status),
+                          'status' => statusBadge(row.status, inline: false),
                           'name' => Text(
                             row.name,
                             overflow: TextOverflow.ellipsis,
