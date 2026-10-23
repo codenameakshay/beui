@@ -603,7 +603,7 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
   void _scheduleClose() {
     _cancelClose();
     _closeTimer = Timer(const Duration(milliseconds: 160), () {
-      if (mounted && !_panelFocus.hasFocus) _close();
+      if (mounted && !_panelFocus.hasFocus && !_triggerFocus.hasFocus) _close();
     });
   }
 
@@ -611,103 +611,114 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
   Widget build(BuildContext context) {
     final colors = BeuiColors.resolve(context);
     _measurePanel();
-    return BeuiOverlay(
-      open: _open,
-      barrier: true,
-      barrierColor: Colors.transparent,
-      onDismiss: _close,
-      enterDuration: const Duration(milliseconds: 500),
-      exitDuration: const Duration(milliseconds: 500),
-      overlayBuilder: (context, animation, link) => IgnorePointer(
-        ignoring: !_open,
-        child: ExcludeFocus(
-          excluding: !_open,
-          child: ExcludeSemantics(
+    return TapRegion(
+      groupId: _triggerKey,
+      onTapOutside: (_) {
+        if (_open) _close();
+      },
+      child: BeuiOverlay(
+        open: _open,
+        barrier: false,
+        trapFocus: false,
+        onDismiss: _close,
+        enterDuration: const Duration(milliseconds: 500),
+        exitDuration: const Duration(milliseconds: 500),
+        overlayBuilder: (context, animation, link) => IgnorePointer(
+          ignoring: !_open,
+          child: ExcludeFocus(
             excluding: !_open,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: CompositedTransformFollower(
-                      link: link,
-                      showWhenUnlinked: false,
-                      offset: _panelOffset,
-                      child: MouseRegion(
-                        onEnter: (_) => _cancelClose(),
-                        onExit: (_) => _scheduleClose(),
-                        child: SingleMotionBuilder(
-                          value: _open ? 1 : 0,
-                          from: 0,
-                          motion: motionFor(
-                            context,
-                            beuiSpringPanel,
-                            isMovement: true,
-                            reducedFallback: const CurvedMotion(
-                              Duration(milliseconds: 120),
-                            ),
-                          ),
-                          builder: (context, p, child) => Opacity(
-                            opacity: p.clamp(0, 1),
-                            child: MediaQuery.disableAnimationsOf(context)
-                                ? child
-                                : Transform.scale(
-                                    scale: .96 + .04 * p,
-                                    alignment: _above
-                                        ? Alignment.bottomLeft
-                                        : Alignment.topLeft,
-                                    child: ClipPath(
-                                      clipper: _BreadcrumbMorphClip(
-                                        p.clamp(0, 1),
-                                        _above,
-                                      ),
-                                      child: child,
-                                    ),
-                                  ),
-                          ),
-                          child: _BreadcrumbInteraction(
-                            isEnabled: () =>
-                                mounted &&
-                                _open &&
-                                _BreadcrumbInteraction.enabledOf(this.context),
-                            child: FocusScope(
-                              node: _panelFocus,
-                              child: Material(
-                                key: _panelKey,
-                                color: colors.background,
-                                elevation: 8,
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(color: colors.border),
-                                  borderRadius: BorderRadius.circular(10),
+            child: ExcludeSemantics(
+              excluding: !_open,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: CompositedTransformFollower(
+                        link: link,
+                        showWhenUnlinked: false,
+                        offset: _panelOffset,
+                        child: TapRegion(
+                          groupId: _triggerKey,
+                          child: MouseRegion(
+                            onEnter: (_) => _cancelClose(),
+                            onExit: (_) => _scheduleClose(),
+                            child: SingleMotionBuilder(
+                              value: _open ? 1 : 0,
+                              from: 0,
+                              motion: motionFor(
+                                context,
+                                beuiSpringPanel,
+                                isMovement: true,
+                                reducedFallback: const CurvedMotion(
+                                  Duration(milliseconds: 120),
                                 ),
-                                clipBehavior: Clip.antiAlias,
-                                child: ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 224,
-                                    maxHeight: 256,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(6),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          for (
-                                            var index = 0;
-                                            index < widget.children.length;
-                                            index++
-                                          )
-                                            Focus(
-                                              skipTraversal: true,
-                                              canRequestFocus: false,
-                                              focusNode: index == 0
-                                                  ? _firstLinkFocus
-                                                  : null,
-                                              child: widget.children[index],
-                                            ),
-                                        ],
+                              ),
+                              builder: (context, p, child) => Opacity(
+                                opacity: p.clamp(0, 1),
+                                child: MediaQuery.disableAnimationsOf(context)
+                                    ? child
+                                    : Transform.scale(
+                                        scale: .96 + .04 * p,
+                                        alignment: _above
+                                            ? Alignment.bottomLeft
+                                            : Alignment.topLeft,
+                                        child: ClipPath(
+                                          clipper: _BreadcrumbMorphClip(
+                                            p.clamp(0, 1),
+                                            _above,
+                                          ),
+                                          child: child,
+                                        ),
+                                      ),
+                              ),
+                              child: _BreadcrumbInteraction(
+                                isEnabled: () =>
+                                    mounted &&
+                                    _open &&
+                                    _BreadcrumbInteraction.enabledOf(
+                                      this.context,
+                                    ),
+                                child: FocusScope(
+                                  node: _panelFocus,
+                                  child: Material(
+                                    key: _panelKey,
+                                    color: colors.background,
+                                    elevation: 8,
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(color: colors.border),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 224,
+                                        maxHeight: 256,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6),
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              for (
+                                                var index = 0;
+                                                index < widget.children.length;
+                                                index++
+                                              )
+                                                Focus(
+                                                  skipTraversal: true,
+                                                  canRequestFocus: false,
+                                                  focusNode: index == 0
+                                                      ? _firstLinkFocus
+                                                      : null,
+                                                  child: widget.children[index],
+                                                ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -719,63 +730,63 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      child: Focus(
-        onKeyEvent: (node, event) {
-          if (event is KeyDownEvent &&
-              event.logicalKey == LogicalKeyboardKey.arrowDown) {
-            _openAndFocus();
-            return KeyEventResult.handled;
-          }
-          return KeyEventResult.ignored;
-        },
-        child: MouseRegion(
-          onEnter: (_) {
-            _cancelClose();
-            setState(() => _open = true);
+        child: Focus(
+          onKeyEvent: (node, event) {
+            if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.arrowDown) {
+              _openAndFocus();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
           },
-          onExit: (_) => _scheduleClose(),
-          child: IconButton(
-            key: _triggerKey,
-            focusNode: _triggerFocus,
-            tooltip: widget.label,
-            visualDensity: VisualDensity.standard,
-            constraints: const BoxConstraints.tightFor(width: 32, height: 32),
-            onPressed: () {
-              if (_open) {
-                _close();
-              } else if (FocusManager.instance.highlightMode ==
-                  FocusHighlightMode.traditional) {
-                _openAndFocus();
-              } else {
-                setState(() => _open = true);
-              }
+          child: MouseRegion(
+            onEnter: (_) {
+              _cancelClose();
+              setState(() => _open = true);
             },
-            style:
-                IconButton.styleFrom(
-                  foregroundColor: colors.mutedForeground,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  minimumSize: const Size(32, 32),
-                  maximumSize: const Size(32, 32),
-                  padding: EdgeInsets.zero,
-                ).copyWith(
-                  backgroundColor: WidgetStateProperty.resolveWith((states) {
-                    return states.contains(WidgetState.hovered)
-                        ? colors.muted.withValues(alpha: 0.6)
-                        : Colors.transparent;
-                  }),
-                  foregroundColor: WidgetStateColor.resolveWith((states) {
-                    return states.contains(WidgetState.hovered)
-                        ? colors.foreground
-                        : colors.mutedForeground;
-                  }),
-                ),
-            icon: const Icon(LucideIcons.ellipsis, size: 16),
+            onExit: (_) => _scheduleClose(),
+            child: IconButton(
+              key: _triggerKey,
+              focusNode: _triggerFocus,
+              tooltip: widget.label,
+              visualDensity: VisualDensity.standard,
+              constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+              onPressed: () {
+                if (_open) {
+                  _close();
+                } else if (FocusManager.instance.highlightMode ==
+                    FocusHighlightMode.traditional) {
+                  _openAndFocus();
+                } else {
+                  setState(() => _open = true);
+                }
+              },
+              style:
+                  IconButton.styleFrom(
+                    foregroundColor: colors.mutedForeground,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    minimumSize: const Size(32, 32),
+                    maximumSize: const Size(32, 32),
+                    padding: EdgeInsets.zero,
+                  ).copyWith(
+                    backgroundColor: WidgetStateProperty.resolveWith((states) {
+                      return states.contains(WidgetState.hovered)
+                          ? colors.muted.withValues(alpha: 0.6)
+                          : Colors.transparent;
+                    }),
+                    foregroundColor: WidgetStateColor.resolveWith((states) {
+                      return states.contains(WidgetState.hovered)
+                          ? colors.foreground
+                          : colors.mutedForeground;
+                    }),
+                  ),
+              icon: const Icon(LucideIcons.ellipsis, size: 16),
+            ),
           ),
         ),
       ),

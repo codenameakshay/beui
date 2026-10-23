@@ -25,6 +25,62 @@ Widget _app(Widget child, {bool reduce = false, double? width}) {
 
 void main() {
   for (final reduce in [false, true]) {
+    testWidgets('overflow stays open while hovering its trigger, RM=$reduce', (
+      tester,
+    ) async {
+      var activations = 0;
+      await tester.pumpWidget(
+        _app(
+          BeuiBreadcrumbEllipsis(
+            children: [
+              BeuiBreadcrumbLink(
+                onPressed: () => activations++,
+                child: const Text('Hidden route'),
+              ),
+            ],
+          ),
+          reduce: reduce,
+        ),
+      );
+      await tester.pumpAndSettle();
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(tester.getCenter(find.byType(IconButton)));
+      await tester.pump();
+      for (var frame = 0; frame < 90; frame++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      expect(find.text('Hidden route'), findsOneWidget);
+      expect(
+        tester
+            .widget<IgnorePointer>(
+              find
+                  .ancestor(
+                    of: find.text('Hidden route'),
+                    matching: find.byType(IgnorePointer),
+                  )
+                  .first,
+            )
+            .ignoring,
+        isFalse,
+      );
+      await mouse.moveTo(tester.getCenter(find.text('Hidden route')));
+      await tester.pumpAndSettle();
+      await tester.tapAt(tester.getCenter(find.text('Hidden route')));
+      expect(activations, 1);
+      await mouse.moveTo(const Offset(10, 10));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 1000));
+      await tester.pumpAndSettle();
+      expect(find.text('Hidden route'), findsNothing);
+      await mouse.moveTo(tester.getCenter(find.byType(IconButton)));
+      await tester.pumpAndSettle();
+      expect(find.text('Hidden route'), findsOneWidget);
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
+      expect(find.text('Hidden route'), findsNothing);
+      await mouse.removePointer();
+    });
     testWidgets(
       'reflow extent settles after rapid resize and removal, RM=$reduce',
       (tester) async {
