@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:beui/beui.dart';
 import 'package:beui/src/motion/tabs.dart' show beuiTabsIndicatorKey;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -36,6 +38,29 @@ Widget _alertTabs() => BeuiTabs<String>(
       ),
   ],
 );
+
+Future<List<int>> _pixelColumn(WidgetTester tester, Key key, int x) async {
+  final boundary = tester.renderObject<RenderRepaintBoundary>(find.byKey(key));
+  return (await tester.runAsync(() async {
+    final image = await boundary.toImage(pixelRatio: 1);
+    try {
+      final bytes = (await image.toByteData(
+        format: ui.ImageByteFormat.rawRgba,
+      ))!;
+      return [
+        for (var y = 42; y <= 44; y++)
+          Color.fromARGB(
+            bytes.getUint8((y * image.width + x) * 4 + 3),
+            bytes.getUint8((y * image.width + x) * 4),
+            bytes.getUint8((y * image.width + x) * 4 + 1),
+            bytes.getUint8((y * image.width + x) * 4 + 2),
+          ).toARGB32(),
+      ];
+    } finally {
+      image.dispose();
+    }
+  }))!;
+}
 
 void main() {
   setUpAll(() async {
@@ -161,7 +186,90 @@ void main() {
         if (previous != null) expect(rect.left - previous.right, gap);
         previous = rect;
       }
+      if (variant == BeuiTabsVariant.underline) {
+        final indicator = tester.getRect(find.byKey(beuiTabsIndicatorKey));
+        expect(indicator.top, 43);
+        expect(indicator.bottom, 44);
+      }
     });
+  }
+
+  for (final dark in [false, true]) {
+    for (final reduce in [false, true]) {
+      testWidgets('underline paints final pixel dark=$dark reduce=$reduce', (
+        tester,
+      ) async {
+        const capture = ValueKey('underline-paint');
+        final colors = dark ? BeuiColors.dark() : BeuiColors.light();
+        await tester.pumpWidget(
+          _host(
+            RepaintBoundary(
+              key: capture,
+              child: ColoredBox(
+                color: colors.background,
+                child: SizedBox(
+                  width: 240,
+                  height: 64,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      BeuiTabs<String>(
+                        variant: BeuiTabsVariant.underline,
+                        tabs: const [
+                          BeuiTab(value: 'all', label: Text('All')),
+                          BeuiTab(value: 'open', label: Text('Open')),
+                          BeuiTab(value: 'closed', label: Text('Closed')),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            dark: dark,
+            reduce: reduce,
+          ),
+        );
+        await tester.pumpAndSettle();
+        final origin = tester.getTopLeft(find.byKey(capture));
+        final all = _triggerRect(tester, 'All');
+        final open = _triggerRect(tester, 'Open');
+        final allX = (all.left - origin.dx + 6).floor();
+        final openX = (open.left - origin.dx + 6).floor();
+        final selected = [
+          colors.background.toARGB32(),
+          colors.primary.toARGB32(),
+          colors.background.toARGB32(),
+        ];
+        final unselected = [
+          colors.background.toARGB32(),
+          composite(colors.border, colors.background).toARGB32(),
+          colors.background.toARGB32(),
+        ];
+        expect(await _pixelColumn(tester, capture, allX), selected);
+        expect(await _pixelColumn(tester, capture, openX), unselected);
+
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+        expect(await _pixelColumn(tester, capture, allX), unselected);
+        expect(await _pixelColumn(tester, capture, openX), selected);
+
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.sendKeyEvent(LogicalKeyboardKey.end);
+        await tester.pumpAndSettle();
+        expect(Focus.of(tester.element(find.text('Closed'))).hasFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+        await tester.pumpAndSettle();
+        expect(Focus.of(tester.element(find.text('Open'))).hasFocus, isTrue);
+        expect(
+          tester.getRect(find.byKey(beuiTabsIndicatorKey)),
+          rectMoreOrLessEquals(
+            Rect.fromLTWH(open.left, open.bottom - 1, open.width, 1),
+            epsilon: 0.001,
+          ),
+        );
+      });
+    }
   }
 
   testWidgets('shader caller padding keeps its larger 36px trigger', (
