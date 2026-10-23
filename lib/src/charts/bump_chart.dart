@@ -1078,34 +1078,34 @@ class _BumpDotState extends State<_BumpDot> {
                                         math.min(widget.seriesIndex, 4) * 15,
                                   ),
                                   isMovement: true,
-                                  builder: (context, innerScale) =>
-                                      Transform.scale(
-                                        scale: innerScale,
-                                        child: Container(
-                                          width: 20,
-                                          height: 20,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: BeuiColors.resolve(
-                                              context,
-                                            ).background,
-                                            border: Border.all(
-                                              color: row.color,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            '$rank',
-                                            style: TextStyle(
-                                              fontFamily: 'monospace',
-                                              fontSize: 9,
-                                              fontWeight: FontWeight.w500,
-                                              color: row.color,
-                                            ),
-                                          ),
+                                  builder: (context, innerScale) => Transform.scale(
+                                    scale: innerScale,
+                                    child: Container(
+                                      width: 20,
+                                      height: 20,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: BeuiColors.resolve(
+                                          context,
+                                        ).background,
+                                        border: Border.all(
+                                          color: row.color,
+                                          // Chromium computes the source's 1.5px CSS border as 1px.
+                                          width: 1,
                                         ),
                                       ),
+                                      child: Text(
+                                        '$rank',
+                                        style: TextStyle(
+                                          fontFamily: 'monospace',
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w500,
+                                          color: row.color,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

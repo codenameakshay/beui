@@ -38,6 +38,30 @@ bool pinned(WidgetTester tester, String id) =>
     tester.widget<Semantics>(legend(id)).properties.selected!;
 
 void main() {
+  testWidgets('rank dot borders match source computed CSS width', (
+    tester,
+  ) async {
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetPhysicalSize);
+    tester.view.physicalSize = const Size(1600, 1200);
+    for (final ratio in [1.0, 1.25, 2.0]) {
+      tester.view.devicePixelRatio = ratio;
+      await tester.pumpWidget(surface());
+      final circle = tester.widget<Container>(
+        find.descendant(
+          of: dot('studio', 0),
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Container &&
+                widget.decoration is BoxDecoration &&
+                (widget.decoration! as BoxDecoration).border != null,
+          ),
+        ),
+      );
+      expect((circle.decoration! as BoxDecoration).border!.top.width, 1);
+    }
+  });
+
   testWidgets(
     'source legend has rank change grid geometry and viewport breakpoint',
     (tester) async {
