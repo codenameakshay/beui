@@ -216,14 +216,24 @@ Widget _tooltip(BeuiTooltipSide side, String label, IconData icon) =>
     );
 
 /// The source preview's 80 by 40 trigger with a 14-pixel icon.
-class _TooltipTrigger extends StatelessWidget {
-  const _TooltipTrigger({
-    required this.icon,
-    required this.label,
-  });
+class _TooltipTrigger extends StatefulWidget {
+  const _TooltipTrigger({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
+
+  @override
+  State<_TooltipTrigger> createState() => _TooltipTriggerState();
+}
+
+class _TooltipTriggerState extends State<_TooltipTrigger> {
+  final _focus = FocusNode();
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +246,8 @@ class _TooltipTrigger extends StatelessWidget {
           color: colors.card,
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
-            onTap: () {},
+            focusNode: _focus,
+            onTap: _focus.requestFocus,
             hoverColor: colors.muted,
             borderRadius: BorderRadius.circular(8),
             child: Container(
@@ -250,10 +261,10 @@ class _TooltipTrigger extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 14, color: colors.mutedForeground),
+                  Icon(widget.icon, size: 14, color: colors.mutedForeground),
                   const SizedBox(width: 6),
                   Text(
-                    label,
+                    widget.label,
                     style: TextStyle(
                       fontSize: 12,
                       height: 16 / 12,

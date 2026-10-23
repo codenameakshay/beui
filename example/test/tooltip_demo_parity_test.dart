@@ -1,5 +1,6 @@
 import 'package:beui_example/demos/tooltip_demo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../test/support.dart';
@@ -23,6 +24,17 @@ void main() {
       expect(hint.style!.height, 16 / 12);
       final semantics = tester.ensureSemantics();
       expect(find.bySemanticsLabel('Top'), findsOneWidget);
+      await tester.tap(find.text('Top'));
+      await tester.pump();
+      final topButton = tester.widget<InkWell>(top);
+      expect(topButton.focusNode!.hasFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      final left = find.ancestor(
+        of: find.text('Left'),
+        matching: find.byType(InkWell),
+      );
+      expect(tester.widget<InkWell>(left).focusNode!.hasFocus, isTrue);
       semantics.dispose();
     },
   );
