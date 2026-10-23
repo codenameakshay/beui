@@ -44,6 +44,7 @@ Widget tooltipDemo(BuildContext context) {
           'Hover or focus. Press Esc to dismiss.',
           style: TextStyle(
             fontSize: 12, // text-xs
+            height: 16 / 12,
             color: colors.mutedForeground,
           ),
         ),
@@ -211,19 +212,17 @@ Widget _tooltip(BeuiTooltipSide side, String label, IconData icon) =>
       side: side,
       arrow: true,
       content: const Text('More context'),
-      child: _TooltipTrigger(icon: icon, semanticLabel: label, label: label),
+      child: _TooltipTrigger(icon: icon, label: label),
     );
 
 /// The source preview's 80 by 40 trigger with a 14-pixel icon.
 class _TooltipTrigger extends StatelessWidget {
   const _TooltipTrigger({
     required this.icon,
-    required this.semanticLabel,
     required this.label,
   });
 
   final IconData icon;
-  final String semanticLabel;
   final String label;
 
   @override
@@ -231,7 +230,6 @@ class _TooltipTrigger extends StatelessWidget {
     final colors = Theme.of(context).extension<BeuiColors>()!;
     return Semantics(
       button: true,
-      label: semanticLabel,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Material(
@@ -258,6 +256,7 @@ class _TooltipTrigger extends StatelessWidget {
                     label,
                     style: TextStyle(
                       fontSize: 12,
+                      height: 16 / 12,
                       fontWeight: FontWeight.w500,
                       color: colors.foreground,
                     ),
