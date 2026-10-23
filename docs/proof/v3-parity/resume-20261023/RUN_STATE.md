@@ -62,3 +62,13 @@ Finish final signup combinations and inspected native recordings, independently 
 - R013: Native Tooltip mouse-click and second-tap dismissal fail in funnel under both motion preferences. Read-only diagnosis active: `node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-tooltip-native-dismiss-diagnosis-20261023`; owns only /tmp and port18125. No production edits delegated.
 - Bump focus race remains open. Rejected sort-key experiment was reverted and archived as d6a2e5c27. Do not reapply or report as fixed.
 - Existing composition/funnel worker is completed. Remaining table, typography, coverage, pixel and fast-motion obligations remain open. No parity certification.
+
+## Tooltip native repair at f59e909b2
+
+- R013 repaired: nonmodal overlay wrapper no longer acquires focus or exposes a full-viewport focus target. Scoped semantic tap observation preserves the child callback and handles semantic-only activation. Mouse dismisses/cancels pending hover; touch toggles; keyboard focus-in remains intact. c89fcbcd7 adds nonmodal descendant focus/Enter/Escape verification.
+- Final served gallery JS `0ecc85d34b1f1665818065ea54bd6d8d580a725f73bde77299d9c5de41de6f9e`. Four native dismissal contexts pass, including repeated touch, repeated mouse click, Tab and Escape. Sankey's original pointer variant now passes all 12 source/candidate contexts. Exact hashes and effective motion probes are in tooltip-native-dismissal.
+- Root f59e909b2: 2,454 pass / 56 golden failures. No non-golden failures. Gallery 56 pass; lib/test analysis clean; release passes. Focused Tooltip/overlay/charts 317 pass with goldens disabled; additional overlay descendant suite eight pass. Golden baselines unchanged.
+- Bump retest: burst1 and reduced1 pass 16 states; burst2 and burst3 again lose native focus at legend-tab. The dismissal repair does not fix the engine ancestor-reordering race. Original failures retained.
+- Read-only design active: `node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-bump-semantics-boundary-repair-design-20261023`. Owns /tmp and optional18129; parent retains18127 fixture server for it.
+- Independent read-only review active: `node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-tooltip-semantic-independent-review-20261023`. No repo writes delegated.
+- No parity or timing certification. Remaining coverage/table/font/pixel obligations unchanged.

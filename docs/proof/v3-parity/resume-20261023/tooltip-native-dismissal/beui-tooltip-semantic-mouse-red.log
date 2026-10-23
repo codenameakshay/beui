@@ -1,0 +1,36 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart
+00:00 +0: semantic taps toggle tooltip and preserve child action, reduce=false
+00:00 +1: semantic taps toggle tooltip and preserve child action, reduce=true
+00:00 +2: semantic mouse activation cancels pending hover and keeps child action
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: no matching candidates
+  Actual: _TextWidgetFinder:<Found 1 widget with text "Context": [
+            Text("Context", dependencies: [DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+          ]>
+   Which: means one was found but none were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart:85:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart line 85
+The test description was:
+  semantic mouse activation cancels pending hover and keeps child action
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +2 -1: semantic mouse activation cancels pending hover and keeps child action [E]
+  Test failed. See exception logs above.
+  The test description was: semantic mouse activation cancels pending hover and keeps child action
+  
+00:00 +2 -1: nonmodal overlay wrapper cannot acquire focus
+00:00 +3 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-df4b55e2/test/motion/tooltip_semantic_activation_test.dart: semantic mouse activation cancels pending hover and keeps child action
