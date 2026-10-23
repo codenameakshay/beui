@@ -1,0 +1,982 @@
+[
+  {
+    "label": "rest",
+    "file": "00-rest.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.",
+    "focus": {
+      "tag": "FLT-SEMANTICS",
+      "label": null,
+      "text": "More context\nTop"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  },
+  {
+    "label": "top-hover",
+    "file": "01-top-hover.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.\nMore context",
+    "focus": {
+      "tag": "FLT-SEMANTICS",
+      "label": null,
+      "text": "More context\nTop"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  },
+  {
+    "label": "held-mouse-800ms",
+    "file": "02-held-mouse-800ms.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.\nMore context",
+    "focus": {
+      "tag": "FLUTTER-VIEW",
+      "label": null,
+      "text": "More context\nTopMore context\nLeftMore context\nRightMore context\nBottomHover or focus. Press Esc to dismiss.More contextflutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparen"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  },
+  {
+    "label": "held-mouse-release",
+    "file": "03-held-mouse-release.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.",
+    "focus": {
+      "tag": "FLUTTER-VIEW",
+      "label": null,
+      "text": "More context\nTopMore context\nLeftMore context\nRightMore context\nBottomHover or focus. Press Esc to dismiss.flutter-view flt-scene-host {  font: normal normal 14px sans-serif;}flutter-view flt-semantics input[type=range] {  appearance: none;  -webkit-appearance: none;  width: 100%;  position: absolute;  border: none;  top: 0;  right: 0;  bottom: 0;  left: 0;}flutter-view input::selection {  background-color: transparent;}flutter-view textarea::selection {  background-color: transparent;}flutter-v"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  },
+  {
+    "label": "click-dismissed",
+    "file": "04-click-dismissed.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.",
+    "focus": {
+      "tag": "FLT-SEMANTICS",
+      "label": null,
+      "text": "More context\nTop"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  },
+  {
+    "label": "tab-after-click",
+    "file": "05-tab-after-click.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.\nMore context",
+    "focus": {
+      "tag": "FLT-SEMANTICS",
+      "label": null,
+      "text": "More context\nLeft"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  },
+  {
+    "label": "escape",
+    "file": "06-escape.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.",
+    "focus": {
+      "tag": "FLT-SEMANTICS",
+      "label": null,
+      "text": "More context\nLeft"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  },
+  {
+    "label": "no-generic-reopen",
+    "file": "07-no-generic-reopen.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.",
+    "focus": {
+      "tag": "FLT-SEMANTICS",
+      "label": null,
+      "text": "More context\nLeft"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  },
+  {
+    "label": "exit",
+    "file": "08-exit.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.",
+    "focus": {
+      "tag": "FLT-SEMANTICS",
+      "label": null,
+      "text": "More context\nLeft"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  },
+  {
+    "label": "right-hover",
+    "file": "09-right-hover.png",
+    "text": "More context Top\nMore context Left\nMore context Right\nMore context Bottom\nHover or focus. Press Esc to dismiss.\nMore context",
+    "focus": {
+      "tag": "FLT-SEMANTICS",
+      "label": null,
+      "text": "More context\nLeft"
+    },
+    "probe": {
+      "disableAnimations": false,
+      "platformDisableAnimations": false,
+      "motionOverride": null,
+      "backgroundArgb": 4294769916,
+      "constraints": {
+        "minWidth": 0,
+        "maxWidth": 592,
+        "minHeight": 0,
+        "maxHeight": 904
+      },
+      "rect": {
+        "x": 508,
+        "y": 396,
+        "width": 264,
+        "height": 208
+      }
+    },
+    "controls": [
+      {
+        "role": "button",
+        "label": "More context\nTop",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 396,
+          "width": 80,
+          "height": 40,
+          "top": 396,
+          "right": 680,
+          "bottom": 436,
+          "left": 600
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nLeft",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 508,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 588,
+          "bottom": 496,
+          "left": 508
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nRight",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 692,
+          "y": 456,
+          "width": 80,
+          "height": 40,
+          "top": 456,
+          "right": 772,
+          "bottom": 496,
+          "left": 692
+        }
+      },
+      {
+        "role": "button",
+        "label": "More context\nBottom",
+        "value": null,
+        "checked": null,
+        "transform": "none",
+        "rect": {
+          "x": 600,
+          "y": 516,
+          "width": 80,
+          "height": 40,
+          "top": 516,
+          "right": 680,
+          "bottom": 556,
+          "left": 600
+        }
+      }
+    ]
+  }
+]

@@ -78,3 +78,43 @@ These videos expose failed gallery focus parity. After clicking Top, source Tab 
 - Tooltip light reference and repaired original PNGs are committed. Other original PNGs remain locally at the exact run directories and are hashed by their timelines.
 - Additional examples, reduced-motion branches, complete drag flows, focus traps, and interruption sequences remain incomplete.
 - The five unsuppressed golden failures remain open. See `VERIFICATION.md`.
+
+## Round2 labeled before and after
+
+The Round1 entries above remain historical. The following36 videos add current
+functional recordings for repaired components and default footage for every
+other new-badged widget. Each caption gives the actual after build. Original
+before dimensions remain unchanged inside padding. Fast-motion parity is
+inconclusive, not certified by the videos. [Round2 limits and verification](round2/README.md)
+separate behavioral, geometry, pixel, and cadence gates.
+
+| Route | Light before/after | Dark before/after | Coverage |
+|---|---|---|---|
+| adaptive-stepper | [video](round2/presentations/adaptive-stepper-light-before-after.mp4) | [video](round2/presentations/adaptive-stepper-dark-before-after.mp4) | Observed min/max and reversals |
+| alert | [video](round2/presentations/alert-light-before-after.mp4) | [video](round2/presentations/alert-dark-before-after.mp4) | Variant changes, dismiss, reopen |
+| breadcrumb | [video](round2/presentations/breadcrumb-light-before-after.mp4) | [video](round2/presentations/breadcrumb-dark-before-after.mp4) | Final stable hover, held Escape, navigation |
+| color-picker | [video](round2/presentations/color-picker-light-before-after.mp4) | [video](round2/presentations/color-picker-dark-before-after.mp4) | Measured spectrum drag, formats, Escape |
+| color-selector | [video](round2/presentations/color-selector-light-before-after.mp4) | [video](round2/presentations/color-selector-dark-before-after.mp4) | Held selected ring, pointer and keyboard choice |
+| combobox | [video](round2/presentations/combobox-light-before-after.mp4) | [video](round2/presentations/combobox-dark-before-after.mp4) | Final native Product query, filtering, selection |
+| date-range-picker | [video](round2/presentations/date-range-picker-light-before-after.mp4) | [video](round2/presentations/date-range-picker-dark-before-after.mp4) | Keyboard range selection and trigger copy |
+| image-viewer | [video](round2/presentations/image-viewer-light-before-after.mp4) | [video](round2/presentations/image-viewer-dark-before-after.mp4) | Zoom, held pan, swipe, ArrowLeft, held Escape |
+| tooltip | [video](round2/presentations/tooltip-light-before-after.mp4) | [video](round2/presentations/tooltip-dark-before-after.mp4) | 800ms mouse hold, click/Tab focus, Escape |
+| timeline | [video](round2/presentations/timeline-light-before-after.mp4) | [video](round2/presentations/timeline-dark-before-after.mp4) | Default only |
+| collapsible | [video](round2/presentations/collapsible-light-before-after.mp4) | [video](round2/presentations/collapsible-dark-before-after.mp4) | Default only |
+| aspect-ratio | [video](round2/presentations/aspect-ratio-light-before-after.mp4) | [video](round2/presentations/aspect-ratio-dark-before-after.mp4) | Default only |
+| arc-picker | [video](round2/presentations/arc-picker-light-before-after.mp4) | [video](round2/presentations/arc-picker-dark-before-after.mp4) | Default only |
+| sortable-stack | [video](round2/presentations/sortable-stack-light-before-after.mp4) | [video](round2/presentations/sortable-stack-dark-before-after.mp4) | Default only |
+| card | [video](round2/presentations/card-light-before-after.mp4) | [video](round2/presentations/card-dark-before-after.mp4) | Default only |
+| expandable-control | [video](round2/presentations/expandable-control-light-before-after.mp4) | [video](round2/presentations/expandable-control-dark-before-after.mp4) | Default only |
+| multi-select | [video](round2/presentations/multi-select-light-before-after.mp4) | [video](round2/presentations/multi-select-dark-before-after.mp4) | Default only |
+| file-tree | [video](round2/presentations/file-tree-light-before-after.mp4) | [video](round2/presentations/file-tree-dark-before-after.mp4) | Default only |
+
+Each repaired route also has a light reduced-motion sequence with actual browser
+and Flutter preference probes. [Browser outcomes](round2/verification/browser-outcomes.json)
+links all27 light, dark, and reduced-motion functional observations. Its
+presentation records link the corresponding actual after clips. Source clips
+and failed before attempts remain in their labeled capture directories.
+
+[Presentation manifest](round2/presentations/index.json) retains source dimensions,
+revision labels, and decoded-frame counts. [Original integrity](round2/original-integrity.json)
+confirms the300 before files and74 original videos remain unchanged.

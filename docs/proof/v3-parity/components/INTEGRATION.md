@@ -69,3 +69,29 @@ each release build. The final port 8102 server is a release build of `8ccb169`.
   demo recording.
 
 The parent must not describe this handoff as exact one-to-one parity.
+
+## Round2 superseding status
+
+The historical gaps above describe Round1 and remain unchanged as its record.
+[Round2 repairs and evidence](round2/README.md) supersede that implementation
+status. All named owned gaps have implementation repairs and focused tests.
+The final browser-driven fixes are `1ba461a9` for native Combobox editing and
+`dc564bd7` for stable nonmodal Breadcrumb hover.
+
+The external-anchor API is the small `1dde262a` commit. Both
+`externalAnchor: GlobalKey` and `anchorLink: LayerLink` must refer to the same
+mounted target, with existing controlled `open` and `onOpenChange` ownership.
+The parent integrated the chart adapter independently. `7dfd8bd8` narrows generic
+keyboard reopening to focus-in. Adapter, composition, and bump tests pass with
+that fallback actually removed. Chart-owned files were not edited here.
+
+Final verification separates149 focused component passes,37 DateRange/chart
+compatibility passes, three owned gallery passes,27 asserted browser sequences,
+and36 labeled before/after videos. Tests with goldens disabled are not a pixel
+gate. The final unsuppressed selection has139 passes and eight golden failures.
+Baselines remain unchanged. Native60fps and the shared visible icon-font
+rendering defect remain unresolved. Do not describe this as exact parity.
+
+No shared Tabs default changed. Alert uses the existing caller-only padding and
+Text style APIs. The recorder and wrapper are unchanged and their provenance
+is recorded per capture. The original300 files and74 videos retain their hashes.

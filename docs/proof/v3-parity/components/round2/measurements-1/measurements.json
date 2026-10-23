@@ -1,0 +1,1268 @@
+[
+  {
+    "slug": "alert",
+    "sourceUrl": "https://beui.dev/components/motion/alert",
+    "diskHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "servedHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "reference": {
+      "url": "https://beui.dev/components/motion/alert",
+      "stage": {
+        "x": 304,
+        "y": 320,
+        "width": 592,
+        "height": 320,
+        "top": 320,
+        "right": 896,
+        "bottom": 640,
+        "left": 304
+      },
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": "tab",
+          "name": "InfoInfo",
+          "disabled": false,
+          "x": 380,
+          "y": 386.625,
+          "width": 45.65625,
+          "height": 28,
+          "top": 386.625,
+          "right": 425.65625,
+          "bottom": 414.625,
+          "left": 380
+        },
+        {
+          "tag": "BUTTON",
+          "role": "tab",
+          "name": "SuccessSuccess",
+          "disabled": false,
+          "x": 429.65625,
+          "y": 386.625,
+          "width": 71.59375,
+          "height": 28,
+          "top": 386.625,
+          "right": 501.25,
+          "bottom": 414.625,
+          "left": 429.65625
+        },
+        {
+          "tag": "BUTTON",
+          "role": "tab",
+          "name": "WarningWarning",
+          "disabled": false,
+          "x": 505.25,
+          "y": 386.625,
+          "width": 70.484375,
+          "height": 28,
+          "top": 386.625,
+          "right": 575.734375,
+          "bottom": 414.625,
+          "left": 505.25
+        },
+        {
+          "tag": "BUTTON",
+          "role": "tab",
+          "name": "ErrorError",
+          "disabled": false,
+          "x": 579.734375,
+          "y": 386.625,
+          "width": 51.53125,
+          "height": 28,
+          "top": 386.625,
+          "right": 631.265625,
+          "bottom": 414.625,
+          "left": 579.734375
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Dismiss alert",
+          "disabled": false,
+          "x": 782,
+          "y": 452.625,
+          "width": 32,
+          "height": 32,
+          "top": 452.625,
+          "right": 814,
+          "bottom": 484.625,
+          "left": 782
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Show alert",
+          "disabled": true,
+          "x": 557.796875,
+          "y": 545.375,
+          "width": 84.390625,
+          "height": 32,
+          "top": 545.375,
+          "right": 642.1875,
+          "bottom": 577.375,
+          "left": 557.796875
+        }
+      ],
+      "body": " changes, and dismissing it plays a quick exit before it unmounts.\n\nWhen to use it\nA settings page needs to confirm that changes were saved, or warn that a billing method is about to expire.\nA form or dashboard should show an error banner that the user can dismiss once they have read it.\nA status message changes over time, for example from uploading to success, and the swap should animate instead of jumping.\nAccessibility\n\nWarning and destructive alerts render with the alert role so screen readers announce them immediately, and the other variants use the status role for polite announcements; you can override this with the role prop. AlertClose is a real button labelled \"Dismiss alert\", and returnFocusRef moves focus to an element you choose when closing hides the focused control. During the exit the alert is removed from pointer events, focus order and the accessibility tree. With reduced motion enabled, the alert and icon only fade, without sliding, scaling or layout springs.\n\nFAQ\nHow do I make a dismissible alert in React?\nRender Alert with AlertIcon, AlertContent (holding AlertTitle and AlertDescription) and AlertClose. Clicking AlertClose calls dismiss, which closes the alert and fires onOpenChange(false).\nCan I control whether the alert is visible?\nYes. Pass open and onOpenChange for controlled visibility, or defaultOpen for uncontrolled use. Custom children can read and change the state through the useAlert hook, which returns open, variant, setOpen and dismiss.\nHow do I add buttons or links to an alert?\nPlace them inside AlertAction. It is a plain layout container, so your own buttons or links render inside it without creating nested interactive elements.\n\nUpdated Oct 18, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable light"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:8110/?slug=alert&theme=light&color=blue&previewWidth=592&captureProbe=1",
+      "stage": null,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "group",
+          "name": "InfoSuccessWarningError",
+          "disabled": false,
+          "x": 416,
+          "y": 400.5,
+          "width": 448,
+          "height": 40,
+          "top": 400.5,
+          "right": 864,
+          "bottom": 440.5,
+          "left": 416
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Info",
+          "disabled": false,
+          "x": 420,
+          "y": 404.5,
+          "width": 53.25,
+          "height": 32,
+          "top": 404.5,
+          "right": 473.25,
+          "bottom": 436.5,
+          "left": 420
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Success",
+          "disabled": false,
+          "x": 477.2558898925781,
+          "y": 404.5,
+          "width": 83.51559448242188,
+          "height": 32,
+          "top": 404.5,
+          "right": 560.771484375,
+          "bottom": 436.5,
+          "left": 477.2558898925781
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Warning",
+          "disabled": false,
+          "x": 564.7796630859375,
+          "y": 404.5,
+          "width": 82.1875,
+          "height": 32,
+          "top": 404.5,
+          "right": 646.9671630859375,
+          "bottom": 436.5,
+          "left": 564.7796630859375
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Error",
+          "disabled": false,
+          "x": 650.9734497070312,
+          "y": 404.5,
+          "width": 60.09375,
+          "height": 32,
+          "top": 404.5,
+          "right": 711.0671997070312,
+          "bottom": 436.5,
+          "left": 650.9734497070312
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "status",
+          "name": "A little heads up\nYour changes are saved automatically as you work.",
+          "disabled": false,
+          "x": 416,
+          "y": 464.5,
+          "width": 448,
+          "height": 79,
+          "top": 464.5,
+          "right": 864,
+          "bottom": 543.5,
+          "left": 416
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Dismiss alert",
+          "disabled": false,
+          "x": 816,
+          "y": 480.5,
+          "width": 32,
+          "height": 32,
+          "top": 480.5,
+          "right": 848,
+          "bottom": 512.5,
+          "left": 816
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Show alert",
+          "disabled": true,
+          "x": 597.8017578125,
+          "y": 567.5,
+          "width": 84.390625,
+          "height": 32,
+          "top": 567.5,
+          "right": 682.1923828125,
+          "bottom": 599.5,
+          "left": 597.8017578125
+        }
+      ],
+      "body": "Info\nSuccess\nWarning\nError\nDismiss alert\nShow alert",
+      "htmlClass": ""
+    }
+  },
+  {
+    "slug": "image-viewer",
+    "sourceUrl": "https://beui.dev/components/motion/image-viewer",
+    "diskHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "servedHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "reference": {
+      "url": "https://beui.dev/components/motion/image-viewer",
+      "stage": {
+        "x": 304,
+        "y": 520,
+        "width": 592,
+        "height": 409,
+        "top": 520,
+        "right": 896,
+        "bottom": 929,
+        "left": 304
+      },
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Open Sculptural architecture",
+          "disabled": false,
+          "x": 312,
+          "y": 627,
+          "width": 184,
+          "height": 230,
+          "top": 627,
+          "right": 496,
+          "bottom": 857,
+          "left": 312
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Open Open landscape",
+          "disabled": false,
+          "x": 508,
+          "y": 627,
+          "width": 184,
+          "height": 230,
+          "top": 627,
+          "right": 692,
+          "bottom": 857,
+          "left": 508
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Open Light-filled workspace",
+          "disabled": false,
+          "x": 704,
+          "y": 627,
+          "width": 184,
+          "height": 230,
+          "top": 627,
+          "right": 888,
+          "bottom": 857,
+          "left": 704
+        }
+      ],
+      "body": "creen without losing the sense of where they came from.\nA chat or ticketing app shows attachment previews that should expand into a zoomable viewer.\nA real estate, travel or ecommerce listing needs swipeable full-size photos on mobile with captions and a counter.\nAccessibility\n\nThumbnails are buttons labelled \"Open\" plus the image alt text, with aria-haspopup and aria-expanded. The viewer is a modal dialog rendered in a portal: focus moves inside, Tab is trapped, the rest of the page becomes inert and scroll-locked, Escape closes it, and focus returns to the thumbnail. Arrow Left and Arrow Right page between images, the zoom toggle reports its pressed state and pans with arrow keys while zoomed, and the counter and caption are polite live regions. With reduced motion enabled, the thumbnail morph is dropped and images change with a short fade instead of sliding.\n\nFAQ\nHow do I make an image lightbox gallery in React?\nInstall the component and pass an images array to ImageViewer, where each image has id, src, alt, width and height. The default layout renders a thumbnail grid and the viewer, so no other setup is needed.\nCan I control which image is open?\nYes. Pass value and onValueChange to control the open image id, or defaultValue for uncontrolled use. A value of null means the viewer is closed.\nCan I customize the thumbnails and viewer controls?\nPass children to ImageViewer and compose ImageViewerGallery, ImageViewerThumbnail, ImageViewerContent, ImageViewerCaption, ImageViewerCounter, ImageViewerPrevious, ImageViewerNext and ImageViewerClose yourself, or build custom controls with useImageViewer. It uses plain img elements, so it works in Next.js and outside it.\n\nUpdated Oct 23, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable dark"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:8110/?slug=image-viewer&theme=light&color=blue&previewWidth=592&captureProbe=1",
+      "stage": null,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 352,
+          "y": 335.5,
+          "width": 576,
+          "height": 329
+        }
+      },
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "group",
+          "name": "Collected photographs",
+          "disabled": false,
+          "x": 352,
+          "y": 402.5,
+          "width": 576,
+          "height": 230,
+          "top": 402.5,
+          "right": 928,
+          "bottom": 632.5,
+          "left": 352
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Open Sculptural architecture",
+          "disabled": false,
+          "x": 352,
+          "y": 402.5,
+          "width": 184,
+          "height": 230,
+          "top": 402.5,
+          "right": 536,
+          "bottom": 632.5,
+          "left": 352
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Open Open landscape",
+          "disabled": false,
+          "x": 548,
+          "y": 402.5,
+          "width": 184,
+          "height": 230,
+          "top": 402.5,
+          "right": 732,
+          "bottom": 632.5,
+          "left": 548
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Open Light-filled workspace",
+          "disabled": false,
+          "x": 744,
+          "y": 402.5,
+          "width": 184,
+          "height": 230,
+          "top": 402.5,
+          "right": 928,
+          "bottom": 632.5,
+          "left": 744
+        }
+      ],
+      "body": "COLLECTED MOMENTS\nLook a little closer.\n3 photographs\nOpen Sculptural architecture\nOpen Open landscape\nOpen Light-filled workspace\nOpen a photograph. Swipe or use the arrows to explore.",
+      "htmlClass": ""
+    }
+  },
+  {
+    "slug": "date-range-picker",
+    "sourceUrl": "https://beui.dev/components/motion/date-range-picker",
+    "diskHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "servedHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "reference": {
+      "url": "https://beui.dev/components/motion/date-range-picker",
+      "stage": {
+        "x": 304,
+        "y": 392,
+        "width": 592,
+        "height": 320,
+        "top": 392,
+        "right": 896,
+        "bottom": 712,
+        "left": 304
+      },
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Reporting period: Oct 17 – Oct 23, 2026",
+          "disabled": false,
+          "x": 497.859375,
+          "y": 534,
+          "width": 204.28125,
+          "height": 36,
+          "top": 534,
+          "right": 702.140625,
+          "bottom": 570,
+          "left": 497.859375
+        }
+      ],
+      "body": "t is built with Framer Motion and styled with Tailwind CSS.\n\nWhen to use it\nA hotel, rental or travel booking flow needs check-in and check-out dates.\nAn analytics dashboard filters charts and reports by a date range, with presets like the last 7 or 30 days.\nA leave request, invoice or report form needs a bounded range with blocked dates.\nAccessibility\n\nThe month is a grid of date buttons with a single tab stop, and the visible month is announced in a polite live heading. Arrow keys move between dates, Home and End move within the week, Page Up and Page Down change the month, and Shift with Page Up or Page Down changes the year, while Enter or Space selects a date; in the month and year choices, arrow keys move and Escape returns. Hidden help text describes these keys, and selection changes are announced through a status region. When the dropdown opens, focus moves to the active date. With reduced motion enabled, month changes fade without sliding and press scaling is removed.\n\nFAQ\nHow do I make a date range picker in React?\nRender DateRangePicker with no children for an inline calendar, or DateRangePickerDropdown for a trigger that opens the calendar in a popover. Both take value and onValueChange, or defaultValue, with a range shaped like { from, to }.\nCan I limit which dates can be selected?\nYes. Use min and max as YYYY-MM-DD strings to bound the range, and isDateDisabled to block individual dates such as weekends or holidays.\nCan I add preset ranges like Last 7 days?\nYes. Pass a presets array of label and value pairs, or compose DateRangePickerPresets with DateRangePickerPreset buttons. Set closeOnSelect to close the popover after a complete range or preset.\n\nUpdated Oct 23, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable dark"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:8110/?slug=date-range-picker&theme=light&color=blue&previewWidth=592&captureProbe=1",
+      "stage": null,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 505.88134765625,
+          "y": 484,
+          "width": 268.2373046875,
+          "height": 32
+        }
+      },
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Reporting period: Oct 17, 2026 – Oct 23, 2026",
+          "disabled": false,
+          "x": 505.88134765625,
+          "y": 484,
+          "width": 268.234375,
+          "height": 32,
+          "top": 484,
+          "right": 774.11572265625,
+          "bottom": 516,
+          "left": 505.88134765625
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Oct 17, 2026 – Oct 23, 2026",
+          "disabled": false,
+          "x": 505.88134765625,
+          "y": 484,
+          "width": 268.234375,
+          "height": 32,
+          "top": 484,
+          "right": 774.11572265625,
+          "bottom": 516,
+          "left": 505.88134765625
+        }
+      ],
+      "body": "Oct 17, 2026 – Oct 23, 2026",
+      "htmlClass": ""
+    }
+  },
+  {
+    "slug": "color-picker",
+    "sourceUrl": "https://beui.dev/components/motion/color-picker",
+    "diskHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "servedHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "reference": {
+      "url": "https://beui.dev/components/motion/color-picker",
+      "stage": {
+        "x": 304,
+        "y": 392,
+        "width": 592,
+        "height": 540,
+        "top": 392,
+        "right": 896,
+        "bottom": 932,
+        "left": 304
+      },
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "#3478f6",
+          "disabled": false,
+          "x": 540.5,
+          "y": 440,
+          "width": 119,
+          "height": 40,
+          "top": 440,
+          "right": 659.5,
+          "bottom": 480,
+          "left": 540.5
+        }
+      ],
+      "body": "value is a lowercase hex string that can include alpha.\n\nWhen to use it\nA design tool, theme editor or brand settings page lets users pick a custom color.\nA form needs a color field, for example a tag, label or calendar color, that submits a hex value.\nA whiteboard or drawing app needs presets and an eye dropper for sampling colors from the screen.\nAccessibility\n\nThe color area is a 2D slider with a value text such as \"Saturation 60%, brightness 80%\", and the hue and opacity tracks are sliders too. Arrow keys move the thumbs, Shift moves in larger steps, Page Up and Page Down jump, and Home and End go to the bounds. The hex input commits on Enter and reverts on Escape, presets are toggle buttons named after their color, and the eye dropper only renders where the browser supports it. The popover is a dialog that receives focus when it opens, closes on Escape or an outside click, and returns focus to the trigger. With reduced motion enabled, the thumb glide, loupe, shake and chip morph are turned off.\n\nFAQ\nHow do I add a color picker to a React app?\nInstall ColorPicker and compose the parts you need, such as ColorPickerArea, ColorPickerHue, ColorPickerAlpha and ColorPickerHexInput. For a popover, put them in ColorPickerContent next to a ColorPickerTrigger.\nCan I control the color value?\nYes. Pass value and onValueChange for controlled use, or defaultValue for uncontrolled use. onValueChange fires during dragging and typing, and onValueCommit fires once an interaction settles.\nCan I hide the opacity slider?\nSet alpha={false} to keep every value opaque, and leave out ColorPickerAlpha. ColorPickerChannels also takes format=\"rgb\" or format=\"hsl\" for the number fields.\n\nUpdated Oct 18, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable light"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:8110/?slug=color-picker&theme=light&color=blue&previewWidth=592&captureProbe=1",
+      "stage": null,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 584.7997970581055,
+          "y": 480,
+          "width": 110.40040588378906,
+          "height": 40
+        }
+      },
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "#3478F6",
+          "disabled": false,
+          "x": 584.7998046875,
+          "y": 480,
+          "width": 110.390625,
+          "height": 40,
+          "top": 480,
+          "right": 695.1904296875,
+          "bottom": 520,
+          "left": 584.7998046875
+        }
+      ],
+      "body": "#3478F6",
+      "htmlClass": ""
+    }
+  },
+  {
+    "slug": "color-selector",
+    "sourceUrl": "https://beui.dev/components/motion/color-selector",
+    "diskHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "servedHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "reference": {
+      "url": "https://beui.dev/components/motion/color-selector",
+      "stage": {
+        "x": 304,
+        "y": 344,
+        "width": 592,
+        "height": 320,
+        "top": 344,
+        "right": 896,
+        "bottom": 664,
+        "left": 304
+      },
+      "controls": [],
+      "body": "or\n\nAnimated Color Selector is a composable color swatch picker for React built on native radio inputs. ColorSelector, ColorSelectorLabel, ColorSelectorList and ColorSelectorItem render a row of swatches, and a selection ring hops between them on a low Framer Motion arc, with a small press scale on each swatch. Each swatch accepts any CSS color, including a custom property, and the value can be controlled or uncontrolled.\n\nWhen to use it\nA product page lets shoppers choose a product color, such as a phone case or shirt finish.\nA settings page lets users pick an accent color or theme color for their workspace.\nA form needs a small set of label or tag colors that submit like any other radio field.\nAccessibility\n\nEvery swatch is a native radio input inside a fieldset, so arrow keys move between swatches the way the browser handles radio groups, and focus shows an outline around the visible swatch. Each item requires a label prop that becomes its accessible name, so selection never relies on color alone, and ColorSelectorLabel renders a legend for the group. With reduced motion enabled, the ring jumps to the new swatch without the hop and the press scale is removed.\n\nFAQ\nHow do I make a color swatch picker in React?\nRender ColorSelector with a ColorSelectorLabel and a ColorSelectorList of ColorSelectorItem elements, each with a value, a color and a label.\nCan I control which color is selected?\nYes. Pass value and onValueChange for controlled use, or defaultValue for uncontrolled use.\nDoes the color selector work with forms?\nYes. The swatches are real radio inputs, so they submit under the name you pass, and required, disabled and form are supported on ColorSelector.\n\nUpdated Oct 18, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable dark"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:8110/?slug=color-selector&theme=light&color=blue&previewWidth=592&captureProbe=1",
+      "stage": null,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 418,
+          "y": 460,
+          "width": 444,
+          "height": 80
+        }
+      },
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "name": "Blue",
+          "disabled": false,
+          "x": 422,
+          "y": 492,
+          "width": 44,
+          "height": 44,
+          "top": 492,
+          "right": 466,
+          "bottom": 536,
+          "left": 422
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "name": "Purple",
+          "disabled": false,
+          "x": 478,
+          "y": 492,
+          "width": 44,
+          "height": 44,
+          "top": 492,
+          "right": 522,
+          "bottom": 536,
+          "left": 478
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "name": "Pink",
+          "disabled": false,
+          "x": 534,
+          "y": 492,
+          "width": 44,
+          "height": 44,
+          "top": 492,
+          "right": 578,
+          "bottom": 536,
+          "left": 534
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "name": "Red",
+          "disabled": false,
+          "x": 590,
+          "y": 492,
+          "width": 44,
+          "height": 44,
+          "top": 492,
+          "right": 634,
+          "bottom": 536,
+          "left": 590
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "name": "Orange",
+          "disabled": false,
+          "x": 646,
+          "y": 492,
+          "width": 44,
+          "height": 44,
+          "top": 492,
+          "right": 690,
+          "bottom": 536,
+          "left": 646
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "name": "Amber",
+          "disabled": false,
+          "x": 702,
+          "y": 492,
+          "width": 44,
+          "height": 44,
+          "top": 492,
+          "right": 746,
+          "bottom": 536,
+          "left": 702
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "name": "Green",
+          "disabled": false,
+          "x": 758,
+          "y": 492,
+          "width": 44,
+          "height": 44,
+          "top": 492,
+          "right": 802,
+          "bottom": 536,
+          "left": 758
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "radio",
+          "name": "Teal",
+          "disabled": false,
+          "x": 814,
+          "y": 492,
+          "width": 44,
+          "height": 44,
+          "top": 492,
+          "right": 858,
+          "bottom": 536,
+          "left": 814
+        }
+      ],
+      "body": "Accent",
+      "htmlClass": ""
+    }
+  },
+  {
+    "slug": "breadcrumb",
+    "sourceUrl": "https://beui.dev/components/motion/breadcrumb",
+    "diskHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "servedHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "reference": {
+      "url": "https://beui.dev/components/motion/breadcrumb",
+      "stage": {
+        "x": 304,
+        "y": 344,
+        "width": 592,
+        "height": 320,
+        "top": 344,
+        "right": 896,
+        "bottom": 664,
+        "left": 304
+      },
+      "controls": [
+        {
+          "tag": "A",
+          "role": null,
+          "name": "Workspace",
+          "disabled": false,
+          "x": 360,
+          "y": 432,
+          "width": 109.40625,
+          "height": 32,
+          "top": 432,
+          "right": 469.40625,
+          "bottom": 464,
+          "left": 360
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Show hidden paths",
+          "disabled": false,
+          "x": 491.40625,
+          "y": 432,
+          "width": 32,
+          "height": 32,
+          "top": 432,
+          "right": 523.40625,
+          "bottom": 464,
+          "left": 491.40625
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Breadcrumb",
+          "disabled": false,
+          "x": 360,
+          "y": 517,
+          "width": 480,
+          "height": 46,
+          "top": 517,
+          "right": 840,
+          "bottom": 563,
+          "left": 360
+        }
+      ],
+      "body": "s behind an ellipsis that opens a dropdown of the hidden paths on hover, click or keyboard, and links can render through your router's Link component.\n\nWhen to use it\nA file manager or document app shows a deep folder path that needs to stay on one line.\nAn ecommerce site shows category trails such as Home, Men, Shoes, Running above a product.\nA dashboard or admin panel with nested pages needs breadcrumbs that animate as users navigate.\nAccessibility\n\nBreadcrumb renders a nav landmark labelled \"Breadcrumb\" with an ordered list, BreadcrumbPage marks the current page with aria-current, and separators are hidden from screen readers. The ellipsis is a button labelled \"Show hidden paths\" by default; Arrow Down or a keyboard activation opens the dropdown and moves focus to the first hidden link, and it closes on Escape, an outside click or when focus leaves. Items that are leaving are made inert and hidden from assistive technology during their exit. With reduced motion enabled, items fade without sliding and layout movement is turned off.\n\nFAQ\nHow do I make breadcrumbs in React?\nWrap a BreadcrumbList in Breadcrumb and add a keyed BreadcrumbItem per path segment, with a BreadcrumbLink for ancestors and BreadcrumbPage for the current page. Put a BreadcrumbSeparator inside each item after the first.\nHow do I collapse long breadcrumb trails?\nSet maxItems on BreadcrumbList. When there are more items, the middle ones move into a BreadcrumbEllipsis dropdown. The minimum is 3, and Infinity turns collapsing off.\nDoes it work with Next.js links?\nYes. Pass a render function to BreadcrumbLink that spreads its props onto your router's Link, for example the Next.js Link component.\n\nUpdated Oct 23, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable dark"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:8110/?slug=breadcrumb&theme=light&color=blue&previewWidth=592&captureProbe=1",
+      "stage": null,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "group",
+          "name": "Breadcrumb",
+          "disabled": false,
+          "x": 400,
+          "y": 428,
+          "width": 480,
+          "height": 32,
+          "top": 428,
+          "right": 880,
+          "bottom": 460,
+          "left": 400
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Workspace",
+          "disabled": false,
+          "x": 400,
+          "y": 428,
+          "width": 105.453125,
+          "height": 32,
+          "top": 428,
+          "right": 505.453125,
+          "bottom": 460,
+          "left": 400
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Show hidden paths",
+          "disabled": false,
+          "x": 527.4599609375,
+          "y": 432,
+          "width": 32,
+          "height": 24,
+          "top": 432,
+          "right": 559.4599609375,
+          "bottom": 456,
+          "left": 527.4599609375
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Breadcrumb",
+          "disabled": false,
+          "x": 400,
+          "y": 513,
+          "width": 480,
+          "height": 59,
+          "top": 513,
+          "right": 880,
+          "bottom": 572,
+          "left": 400
+        }
+      ],
+      "body": "Workspace\nShow hidden paths\nCurrent page Navigation\nBreadcrumb",
+      "htmlClass": ""
+    }
+  },
+  {
+    "slug": "adaptive-stepper",
+    "sourceUrl": "https://beui.dev/components/motion/adaptive-stepper",
+    "diskHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "servedHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "reference": {
+      "url": "https://beui.dev/components/motion/adaptive-stepper",
+      "stage": {
+        "x": 304,
+        "y": 344,
+        "width": 592,
+        "height": 400,
+        "top": 344,
+        "right": 896,
+        "bottom": 744,
+        "left": 304
+      },
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Decrease value",
+          "disabled": false,
+          "x": 492,
+          "y": 520,
+          "width": 48,
+          "height": 48,
+          "top": 520,
+          "right": 540,
+          "bottom": 568,
+          "left": 492
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Increase value",
+          "disabled": false,
+          "x": 660,
+          "y": 520,
+          "width": 48,
+          "height": 48,
+          "top": 520,
+          "right": 708,
+          "bottom": 568,
+          "left": 660
+        }
+      ],
+      "body": ", AdaptiveStepperValue and AdaptiveStepperIncrement. Its footprint stays fixed: when the value reaches the minimum or maximum, the unavailable button exits and the value surface expands into its space on a gooey liquid surface. The number rolls up or down between steps with Framer Motion, and min, max and step set the range.\n\nWhen to use it\nA shopping cart or checkout needs a quantity selector that cannot go below one.\nA booking form asks for the number of guests, rooms or tickets within a fixed limit.\nA settings panel adjusts a small whole number, such as font size or retry count, with clear bounds.\nAccessibility\n\nThe stepper is a fieldset with a hidden legend that reads its label and current value, and the buttons are labelled \"Decrease value\" and \"Increase value\" by default. The value is an output element announced through a polite live region, and formatValueText changes what screen readers hear. When a bound hides a button, that button is disabled, removed from the tab order and hidden from assistive technology, and if it was activated from the keyboard, focus moves to the remaining button. With reduced motion enabled, the number changes without rolling and the press and fade effects are instant.\n\nFAQ\nHow do I make a quantity stepper in React?\nRender AdaptiveStepper with AdaptiveStepperDecrement, AdaptiveStepperValue and AdaptiveStepperIncrement as children, and set min, max and step.\nCan I control the stepper value?\nYes. Pass value and onValueChange for controlled use, or defaultValue for uncontrolled use. Values outside min and max are clamped.\nCan the stepper submit with a form?\nYes. Set the name prop and it renders a hidden input with the current value.\n\nUpdated Oct 18, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable dark"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:8110/?slug=adaptive-stepper&theme=light&color=blue&previewWidth=592&captureProbe=1",
+      "stage": null,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "group",
+          "name": "Guests 2",
+          "disabled": false,
+          "x": 532,
+          "y": 476,
+          "width": 216,
+          "height": 48,
+          "top": 476,
+          "right": 748,
+          "bottom": 524,
+          "left": 532
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Decrease value",
+          "disabled": false,
+          "x": 532,
+          "y": 476,
+          "width": 48,
+          "height": 48,
+          "top": 476,
+          "right": 580,
+          "bottom": 524,
+          "left": 532
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "",
+          "disabled": false,
+          "x": 532,
+          "y": 476,
+          "width": 48,
+          "height": 48,
+          "top": 476,
+          "right": 580,
+          "bottom": 524,
+          "left": 532
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "Increase value",
+          "disabled": false,
+          "x": 700,
+          "y": 476,
+          "width": 48,
+          "height": 48,
+          "top": 476,
+          "right": 748,
+          "bottom": 524,
+          "left": 700
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "",
+          "disabled": false,
+          "x": 700,
+          "y": 476,
+          "width": 48,
+          "height": 48,
+          "top": 476,
+          "right": 748,
+          "bottom": 524,
+          "left": 700
+        }
+      ],
+      "body": "2\n2 2",
+      "htmlClass": ""
+    }
+  },
+  {
+    "slug": "combobox",
+    "sourceUrl": "https://beui.dev/components/motion/combobox",
+    "diskHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "servedHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "reference": {
+      "url": "https://beui.dev/components/motion/combobox",
+      "stage": {
+        "x": 304,
+        "y": 344,
+        "width": 592,
+        "height": 320,
+        "top": 344,
+        "right": 896,
+        "bottom": 664,
+        "left": 304
+      },
+      "controls": [
+        {
+          "tag": "INPUT",
+          "role": "combobox",
+          "name": "Search workspaces",
+          "disabled": false,
+          "x": 491,
+          "y": 496,
+          "width": 214,
+          "height": 40,
+          "top": 496,
+          "right": 705,
+          "bottom": 536,
+          "left": 491
+        }
+      ],
+      "body": "typing to filter is faster than scrolling.\nA project or repository switcher needs grouped results that narrow down from a search query.\nAn app needs autocomplete over known values with custom matching, such as searching by aliases or keywords.\nAccessibility\n\nComboboxInput has the combobox role with aria-autocomplete, aria-expanded, aria-controls and aria-activedescendant pointing at the highlighted option, so focus stays in the field while screen readers follow the active row. Arrow Down and Arrow Up open the list and move through options, Home and End jump to the ends, Enter selects, and Escape closes and returns focus to the input. ComboboxEmpty uses the status role so a no-results message is announced. With reduced motion enabled, the list opens without the morph and the highlight jumps between rows.\n\nFAQ\nHow do I build a searchable select or autocomplete in React?\nCompose Combobox with ComboboxTrigger containing ComboboxInput, then ComboboxContent with a ComboboxList of ComboboxItem elements. Add ComboboxEmpty for a no-results message and ComboboxGroup with ComboboxLabel to group options.\nCan I customize how options are filtered?\nYes. Pass a filter function to Combobox, and give items extra search terms with the keywords prop or a textValue. You can also own the search text with query, defaultQuery and onQueryChange.\nCan I control the selected value?\nYes. Combobox takes value with onValueChange or defaultValue, and open with onOpenChange or defaultOpen. ComboboxContent accepts side, align, sideOffset and avoidCollisions for placement.\n\nUpdated Oct 18, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor\nRECENT\nDesign studio\n12 projects\nProduct team\n8 projects\nWORKSPACES\nPlayground\n24 experiments\nComponent archive\n41 components",
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable dark"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:8110/?slug=combobox&theme=light&color=blue&previewWidth=592&captureProbe=1",
+      "stage": null,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 344,
+          "y": 48,
+          "width": 592,
+          "height": 904
+        }
+      },
+      "controls": [
+        {
+          "tag": "INPUT",
+          "role": null,
+          "name": "Search workspaces",
+          "disabled": true,
+          "x": 496,
+          "y": 488,
+          "width": 296,
+          "height": 54,
+          "top": 488,
+          "right": 792,
+          "bottom": 542,
+          "left": 496
+        },
+        {
+          "tag": "INPUT",
+          "role": null,
+          "name": "",
+          "disabled": false,
+          "x": 507,
+          "y": 495.5,
+          "width": 258,
+          "height": 39,
+          "top": 495.5,
+          "right": 765,
+          "bottom": 534.5,
+          "left": 507
+        }
+      ],
+      "body": "Workspace",
+      "htmlClass": ""
+    }
+  },
+  {
+    "slug": "tooltip",
+    "sourceUrl": "https://beui.dev/components/motion/tooltip",
+    "diskHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "servedHash": "5efbe93a4d479767c442514c748a2289e90e49320f17129c7608792698b2150a",
+    "reference": {
+      "url": "https://beui.dev/components/motion/tooltip",
+      "stage": {
+        "x": 304,
+        "y": 480,
+        "width": 592,
+        "height": 336,
+        "top": 480,
+        "right": 896,
+        "bottom": 816,
+        "left": 304
+      },
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Top",
+          "disabled": false,
+          "x": 560,
+          "y": 544,
+          "width": 80,
+          "height": 40,
+          "top": 544,
+          "right": 640,
+          "bottom": 584,
+          "left": 560
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Left",
+          "disabled": false,
+          "x": 468,
+          "y": 604,
+          "width": 80,
+          "height": 40,
+          "top": 604,
+          "right": 548,
+          "bottom": 644,
+          "left": 468
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Right",
+          "disabled": false,
+          "x": 652,
+          "y": 604,
+          "width": 80,
+          "height": 40,
+          "top": 604,
+          "right": 732,
+          "bottom": 644,
+          "left": 652
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "name": "Bottom",
+          "disabled": false,
+          "x": 560,
+          "y": 664,
+          "width": 80,
+          "height": 40,
+          "top": 664,
+          "right": 640,
+          "bottom": 704,
+          "left": 560
+        }
+      ],
+      "body": "amer Motion and Tailwind CSS. It opens with a subtle scale and fade, places itself on any side and alignment while avoiding the viewport edges, and can draw an arrow toward its trigger. It works with hover, keyboard focus and touch taps, keeps a pointer corridor so you can move onto the tooltip, shows one tooltip at a time, and can follow the cursor for charts.\n\nWhen to use it\nAn icon-only toolbar or dock needs labels that appear on hover and keyboard focus.\nA form or settings page needs short hints next to fields or controls.\nA chart or heatmap needs a readout that follows the cursor or anchors to a hovered cell.\nAccessibility\n\nThe tooltip surface has the tooltip role and is linked to its trigger through aria-describedby. For icon-only controls, asLabel makes the tooltip the trigger's accessible name instead. It opens immediately on keyboard focus but not on mouse focus, toggles on a touch tap, and closes on Escape, blur, a mouse press or a tap elsewhere. With reduced motion enabled, the scale is removed and the tooltip only fades.\n\nFAQ\nHow do I add a tooltip in React?\nWrap the trigger element in Tooltip and pass the text through the content prop. For more control, compose Tooltip with TooltipTrigger and TooltipContent instead.\nHow do I change the tooltip position or add an arrow?\nSet side and align on TooltipContent or the Tooltip shorthand, use sideOffset for the gap, and set arrow to draw a pointer toward the trigger.\nCan I change the tooltip delay?\nYes. Pass delay and closeDelay in milliseconds to a Tooltip, or wrap several tooltips in TooltipProvider to share delay, closeDelay and skipDelay, which lets neighbouring tooltips open instantly after one closes.\n\nUpdated Oct 18, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable dark"
+    },
+    "candidate": {
+      "url": "http://127.0.0.1:8110/?slug=tooltip&theme=light&color=blue&previewWidth=592&captureProbe=1",
+      "stage": null,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4294769916,
+        "constraints": {
+          "minWidth": 0,
+          "maxWidth": 592,
+          "minHeight": 0,
+          "maxHeight": 904
+        },
+        "rect": {
+          "x": 508,
+          "y": 395.5,
+          "width": 264,
+          "height": 209
+        }
+      },
+      "controls": [
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "More context\nTop\nTop",
+          "disabled": false,
+          "x": 600,
+          "y": 395.5,
+          "width": 80,
+          "height": 40,
+          "top": 395.5,
+          "right": 680,
+          "bottom": 435.5,
+          "left": 600
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "More context\nLeft\nLeft",
+          "disabled": false,
+          "x": 508,
+          "y": 455.5,
+          "width": 80,
+          "height": 40,
+          "top": 455.5,
+          "right": 588,
+          "bottom": 495.5,
+          "left": 508
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "More context\nRight\nRight",
+          "disabled": false,
+          "x": 692,
+          "y": 455.5,
+          "width": 80,
+          "height": 40,
+          "top": 455.5,
+          "right": 772,
+          "bottom": 495.5,
+          "left": 692
+        },
+        {
+          "tag": "FLT-SEMANTICS",
+          "role": "button",
+          "name": "More context\nBottom\nBottom",
+          "disabled": false,
+          "x": 600,
+          "y": 515.5,
+          "width": 80,
+          "height": 40,
+          "top": 515.5,
+          "right": 680,
+          "bottom": 555.5,
+          "left": 600
+        }
+      ],
+      "body": "More context Top Top\nMore context Left Left\nMore context Right Right\nMore context Bottom Bottom\nHover or focus. Press Esc to dismiss.",
+      "htmlClass": ""
+    }
+  }
+]
