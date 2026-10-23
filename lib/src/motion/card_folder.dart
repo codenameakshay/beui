@@ -553,6 +553,12 @@ class _FolderControlState extends State<_FolderControl> {
   bool _pressed = false;
   bool _focusVisible = false;
 
+  void _activate() {
+    if (widget.onPressed == null) return;
+    _focusNode.requestFocus();
+    widget.onPressed!();
+  }
+
   @override
   void dispose() {
     _focusNode.dispose();
@@ -594,12 +600,7 @@ class _FolderControlState extends State<_FolderControl> {
         onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
         onTapUp: enabled ? (_) => setState(() => _pressed = false) : null,
         onTapCancel: () => setState(() => _pressed = false),
-        onTap: enabled
-            ? () {
-                _focusNode.requestFocus();
-                widget.onPressed!();
-              }
-            : null,
+        onTap: enabled ? _activate : null,
         child: SingleMotionBuilder(
           value: _pressed && enabled && !reduce ? _pressScale : 1,
           from: 1,
@@ -616,7 +617,7 @@ class _FolderControlState extends State<_FolderControl> {
                   color: widget.action && _hovered && enabled
                       ? Colors.white.withValues(alpha: 0.1)
                       : null,
-                  border: _focusVisible && enabled
+                  border: _focusVisible && enabled && !widget.action
                       ? Border.all(
                           color: widget.action
                               ? Colors.white
@@ -625,10 +626,15 @@ class _FolderControlState extends State<_FolderControl> {
                         )
                       : null,
                 ),
-                child: Center(
-                  child: IconTheme(
-                    data: IconThemeData(color: foreground),
-                    child: widget.child,
+                child: CustomPaint(
+                  foregroundPainter: _focusVisible && enabled && widget.action
+                      ? const _ActionFocusPainter()
+                      : null,
+                  child: Center(
+                    child: IconTheme(
+                      data: IconThemeData(color: foreground),
+                      child: widget.child,
+                    ),
                   ),
                 ),
               ),
@@ -652,10 +658,27 @@ class _FolderControlState extends State<_FolderControl> {
       focusable: enabled,
       label: widget.label,
       toggled: widget.toggled,
-      onTap: widget.onPressed,
+      onTap: enabled ? _activate : null,
       child: control,
     );
   }
+}
+
+class _ActionFocusPainter extends CustomPainter {
+  const _ActionFocusPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) => canvas.drawCircle(
+    size.center(Offset.zero),
+    size.shortestSide / 2 + 1,
+    Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+
+  @override
+  bool shouldRepaint(_ActionFocusPainter oldDelegate) => false;
 }
 
 class _PrivacyIcon extends StatelessWidget {

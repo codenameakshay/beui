@@ -53,6 +53,22 @@ Widget _app({
 );
 
 void main() {
+  testWidgets('semantic action activation transfers keyboard control', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    var actions = 0;
+    await tester.pumpWidget(_app(onAction: () => actions++));
+    final action = tester.getSemantics(
+      find.bySemanticsLabel('Open actions for Travel Card'),
+    );
+    action.owner!.performAction(action.id, SemanticsAction.tap);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(actions, 2);
+    semantics.dispose();
+  });
   testWidgets(
     'noninteractive pocket copy passes pointer input through to folder',
     (tester) async {
@@ -230,6 +246,24 @@ void main() {
       await tester.pumpAndSettle();
       expect(actions, 2);
       expect(opens, isEmpty);
+      final ring = find.descendant(
+        of: action,
+        matching: find.byWidgetPredicate(
+          (widget) => widget is CustomPaint && widget.foregroundPainter != null,
+        ),
+      );
+      expect(
+        tester.renderObject(ring),
+        paints..something((method, arguments) {
+          if (method != #drawCircle) return false;
+          final paint = arguments[2] as Paint;
+          return arguments[0] == const Offset(20, 20) &&
+              arguments[1] == 21 &&
+              paint.strokeWidth == 2 &&
+              paint.color == Colors.white &&
+              paint.style == PaintingStyle.stroke;
+        }),
+      );
       await tester.pumpWidget(_app());
       expect(
         find.bySemanticsLabel('Open actions for Travel Card'),
