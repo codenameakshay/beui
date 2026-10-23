@@ -329,6 +329,7 @@ class _FunnelStageButton extends StatefulWidget {
 class _FunnelStageButtonState extends State<_FunnelStageButton> {
   final _focus = FocusNode();
   bool _pointerFocus = false;
+  bool _hovered = false;
 
   @override
   void dispose() {
@@ -339,58 +340,60 @@ class _FunnelStageButtonState extends State<_FunnelStageButton> {
   @override
   Widget build(BuildContext context) {
     final colors = widget.colors;
-    return Listener(
-      onPointerDown: (_) {
-        setState(() => _pointerFocus = true);
-        _focus.requestFocus();
-      },
-      child: Focus(
-        canRequestFocus: false,
-        skipTraversal: true,
-        onKeyEvent: (_, _) {
-          if (_pointerFocus) setState(() => _pointerFocus = false);
-          return KeyEventResult.ignored;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      curve: const Cubic(.4, 0, .2, 1),
+      color: colors.foreground.withValues(alpha: _hovered ? .05 : 0),
+      child: Listener(
+        onPointerDown: (_) {
+          setState(() => _pointerFocus = true);
+          _focus.requestFocus();
         },
-        child: TextButton(
-          focusNode: _focus,
-          onFocusChange: (focused) {
-            if (!focused) setState(() => _pointerFocus = false);
+        child: Focus(
+          canRequestFocus: false,
+          skipTraversal: true,
+          onKeyEvent: (_, _) {
+            if (_pointerFocus) setState(() => _pointerFocus = false);
+            return KeyEventResult.ignored;
           },
-          onPressed: () {},
-          style: ButtonStyle(
-            padding: const WidgetStatePropertyAll(EdgeInsets.zero),
-            minimumSize: const WidgetStatePropertyAll(Size.zero),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
-            overlayColor: WidgetStateProperty.resolveWith(
-              (states) => states.contains(WidgetState.hovered)
-                  ? colors.foreground.withValues(alpha: .05)
-                  : Colors.transparent,
+          child: TextButton(
+            focusNode: _focus,
+            onHover: (hovered) => setState(() => _hovered = hovered),
+            onFocusChange: (focused) {
+              if (!focused) setState(() => _pointerFocus = false);
+            },
+            onPressed: () {},
+            style: ButtonStyle(
+              padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+              minimumSize: const WidgetStatePropertyAll(Size.zero),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
+              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+              side: WidgetStateProperty.resolveWith(
+                (states) =>
+                    states.contains(WidgetState.focused) &&
+                        !_pointerFocus &&
+                        FocusManager.instance.highlightMode ==
+                            FocusHighlightMode.traditional
+                    ? BorderSide(color: colors.ring, width: 2)
+                    : BorderSide.none,
+              ),
             ),
-            side: WidgetStateProperty.resolveWith(
-              (states) =>
-                  states.contains(WidgetState.focused) &&
-                      !_pointerFocus &&
-                      FocusManager.instance.highlightMode ==
-                          FocusHighlightMode.traditional
-                  ? BorderSide(color: colors.ring, width: 2)
-                  : BorderSide.none,
-            ),
-          ),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: colors.background.withValues(alpha: .85),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              widget.value,
-              style: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 12,
-                height: 16 / 12,
-                fontWeight: FontWeight.w500,
-                color: colors.foreground,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: colors.background.withValues(alpha: .85),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                widget.value,
+                style: TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 12,
+                  height: 16 / 12,
+                  fontWeight: FontWeight.w500,
+                  color: colors.foreground,
+                ),
               ),
             ),
           ),

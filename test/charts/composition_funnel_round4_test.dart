@@ -55,6 +55,41 @@ Future<Color> _pixel(WidgetTester tester, Offset global) async {
 }
 
 void main() {
+  for (final reduce in [false, true]) {
+    testWidgets(
+      'funnel hover tint follows the source 150ms curve, reduce=$reduce',
+      (tester) async {
+        await tester.pumpWidget(
+          beuiTestApp(
+            const RepaintBoundary(
+              key: ValueKey('pixels'),
+              child: BeuiFunnelChart(stages: _stages),
+            ),
+            width: 600,
+            reduce: reduce,
+          ),
+        );
+        await tester.pumpAndSettle();
+        final plot = tester.getRect(_paint('_FunnelPainter').first);
+        final point = plot.topLeft + const Offset(5, 20);
+        expect(await _pixel(tester, point), Colors.white);
+        final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await mouse.addPointer(location: Offset.zero);
+        await mouse.moveTo(point);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 75));
+        expect((await _pixel(tester, point)).toARGB32(), 0xfff5f5f5);
+        await tester.pump(const Duration(milliseconds: 75));
+        expect((await _pixel(tester, point)).toARGB32(), 0xfff3f3f3);
+        await mouse.moveTo(Offset.zero);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 150));
+        expect(await _pixel(tester, point), Colors.white);
+        await mouse.removePointer();
+      },
+    );
+  }
+
   test('funnel formats finite extremes and decimal ties without overflow', () {
     const chart = BeuiFunnelChart(stages: []);
     expect(chart.format(0), '0');
