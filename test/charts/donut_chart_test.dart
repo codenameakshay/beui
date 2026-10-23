@@ -25,6 +25,42 @@ const _segments = [
 ];
 
 void main() {
+  testWidgets(
+    'source legend rows are 48px with inset four-pixel share tracks',
+    (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(const BeuiDonutChart(segments: _segments), reduce: true),
+      );
+      await tester.pumpAndSettle();
+      final team = find.byKey(const ValueKey('donut-legend-team'));
+      final business = find.byKey(const ValueKey('donut-legend-business'));
+      final row = tester.getRect(team);
+      expect(row.height, 48);
+      expect(tester.getRect(business).top - row.bottom, 4);
+      expect(tester.widget<Text>(find.text('Team')).style!.fontSize, 14);
+      final swatch = find.descendant(
+        of: team,
+        matching: find.byType(BeuiChartSwatch),
+      );
+      expect(tester.getSize(swatch), const Size(10, 10));
+      final track = find
+          .descendant(
+            of: team,
+            matching: find.byWidgetPredicate(
+              (widget) =>
+                  widget is Container && widget.constraints?.maxHeight == 4,
+            ),
+          )
+          .first;
+      expect(tester.getRect(track).left - row.left, 34);
+      expect(tester.getSize(track).height, 4);
+      expect(
+        tester.getSize(find.byType(BeuiDonutCenter)).width,
+        closeTo(143.36, .001),
+      );
+    },
+  );
+
   testWidgets('round caps leave the source gap open at twelve oclock', (
     tester,
   ) async {
@@ -130,21 +166,46 @@ void main() {
     );
   });
 
-  testWidgets('legend arrows move the active segment', (tester) async {
-    String? changed;
-    await tester.pumpWidget(
-      beuiTestApp(
-        BeuiDonutChart(
-          segments: _segments,
-          onActiveChange: (id) => changed = id,
+  testWidgets(
+    'native legend Up and Down wrap actual focus and Tab visits each row once',
+    (tester) async {
+      String? changed;
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiDonutChart(
+            segments: _segments,
+            onActiveChange: (id) => changed = id,
+          ),
         ),
-      ),
-    );
-    await tester.pump();
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.pump();
-    expect(changed, 'team');
-  });
+      );
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(changed, 'team');
+      FocusNode focus(String id) => tester
+          .widget<TextButton>(find.byKey(ValueKey('donut-legend-$id')))
+          .focusNode!;
+      expect(focus('team').hasPrimaryFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pump();
+      expect(focus('team').hasPrimaryFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pump();
+      expect(changed, 'enterprise');
+      expect(focus('enterprise').hasPrimaryFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pump();
+      expect(changed, 'team');
+      expect(focus('team').hasPrimaryFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(changed, 'business');
+      expect(focus('business').hasPrimaryFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(changed, 'business');
+    },
+  );
 
   testWidgets('hovering legend rows updates the center ticker and caption', (
     tester,

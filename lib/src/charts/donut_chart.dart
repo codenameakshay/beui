@@ -94,6 +94,27 @@ class BeuiDonutChart extends StatefulWidget {
 
 class _BeuiDonutChartState extends State<BeuiDonutChart>
     with BeuiChartActiveState<BeuiDonutChart> {
+  final _legendFocus = <String, FocusNode>{};
+  FocusNode focusFor(String id) => _legendFocus.putIfAbsent(id, FocusNode.new);
+
+  @override
+  void didUpdateWidget(covariant BeuiDonutChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final ids = widget.segments.map((segment) => segment.id).toSet();
+    for (final id
+        in _legendFocus.keys.where((id) => !ids.contains(id)).toList()) {
+      _legendFocus.remove(id)!.dispose();
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final focus in _legendFocus.values) {
+      focus.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   String? get widgetActiveId => widget.activeId;
   @override
@@ -353,86 +374,92 @@ class _BeuiDonutCenterState extends State<BeuiDonutCenter> {
           : BeuiDigitSwapDirection.down;
     }
     _previous = value;
-    return Semantics(
-      liveRegion: true,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BeuiDigitSwap(
-            value: state.format(value),
-            direction: _direction,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-              letterSpacing: -.6,
-              color: BeuiColors.resolve(context).foreground,
-              fontFeatures: const [FontFeature.tabularFigures()],
+    final captionStyle = TextStyle(
+      fontSize: 12,
+      height: 16 / 12,
+      color: BeuiColors.resolve(context).mutedForeground,
+    );
+    return FractionallySizedBox(
+      widthFactor: .56,
+      child: Semantics(
+        liveRegion: true,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BeuiDigitSwap(
+              value: state.format(value),
+              direction: _direction,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+                letterSpacing: -.6,
+                color: BeuiColors.resolve(context).foreground,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          SizedBox(
-            height: 16,
-            child: ClipRect(
-              child: AnimatedSwitcher(
-                duration: MediaQuery.disableAnimationsOf(context)
-                    ? const Duration(milliseconds: 120)
-                    : const Duration(milliseconds: 220),
-                switchInCurve: beuiEaseOut,
-                switchOutCurve: beuiEaseOut,
-                transitionBuilder: (child, animation) {
-                  if (MediaQuery.disableAnimationsOf(context)) {
-                    return FadeTransition(opacity: animation, child: child);
-                  }
-                  final isIncoming =
-                      child.key == ValueKey(active?.id ?? 'total');
-                  final offset = Tween<Offset>(
-                    begin: Offset(0, isIncoming ? 1 : -1),
-                    end: Offset.zero,
-                  ).animate(animation);
-                  return FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(position: offset, child: child),
-                  );
-                },
-                child: SizedBox(
-                  key: ValueKey(active?.id ?? 'total'),
-                  height: 16,
-                  child: active == null
-                      ? Center(
-                          child: Text(
-                            widget.totalLabel,
-                            style: Theme.of(context).textTheme.bodySmall,
+            const SizedBox(height: 4),
+            SizedBox(
+              height: 16,
+              child: ClipRect(
+                child: AnimatedSwitcher(
+                  duration: MediaQuery.disableAnimationsOf(context)
+                      ? const Duration(milliseconds: 120)
+                      : const Duration(milliseconds: 220),
+                  switchInCurve: beuiEaseOut,
+                  switchOutCurve: beuiEaseOut,
+                  transitionBuilder: (child, animation) {
+                    if (MediaQuery.disableAnimationsOf(context)) {
+                      return FadeTransition(opacity: animation, child: child);
+                    }
+                    final isIncoming =
+                        child.key == ValueKey(active?.id ?? 'total');
+                    final offset = Tween<Offset>(
+                      begin: Offset(0, isIncoming ? 1 : -1),
+                      end: Offset.zero,
+                    ).animate(animation);
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(position: offset, child: child),
+                    );
+                  },
+                  child: SizedBox(
+                    key: ValueKey(active?.id ?? 'total'),
+                    height: 16,
+                    child: active == null
+                        ? Center(
+                            child: Text(widget.totalLabel, style: captionStyle),
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              BeuiChartSwatch(
+                                size: 8,
+                                color: beuiChartColor(
+                                  active.color,
+                                  BeuiColors.resolve(context),
+                                  fallback:
+                                      beuiChartPalette[state.widget.segments
+                                              .indexOf(active) %
+                                          beuiChartPalette.length],
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  '${active.label} · ${state.total <= 0 ? '0.0%' : beuiChartPercent(active.value / state.total)}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: captionStyle,
+                                ),
+                              ),
+                            ],
                           ),
-                        )
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            BeuiChartSwatch(
-                              color: beuiChartColor(
-                                active.color,
-                                BeuiColors.resolve(context),
-                                fallback:
-                                    beuiChartPalette[state.widget.segments
-                                            .indexOf(active) %
-                                        beuiChartPalette.length],
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Flexible(
-                              child: Text(
-                                '${active.label} · ${state.total <= 0 ? '0.0%' : beuiChartPercent(active.value / state.total)}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ),
-                          ],
-                        ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -449,58 +476,34 @@ class BeuiDonutLegend extends StatelessWidget {
     final segments = state.widget.segments
         .where((s) => s.value.isFinite && s.value > 0)
         .toList();
-    return Focus(
-      autofocus: true,
-      onKeyEvent: (_, event) {
-        if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
-            segments.isEmpty) {
-          return KeyEventResult.ignored;
-        }
-        final key = event.logicalKey;
-        final index = segments.indexWhere((s) => s.id == state.activeId);
-        if (key == LogicalKeyboardKey.escape) {
-          state.setActiveId(null);
-          return KeyEventResult.handled;
-        }
-        var next = index;
-        if (key == LogicalKeyboardKey.home) {
-          next = 0;
-        } else if (key == LogicalKeyboardKey.end) {
-          next = segments.length - 1;
-        } else if (key == LogicalKeyboardKey.arrowDown ||
-            key == LogicalKeyboardKey.arrowRight) {
-          next = (index + 1).clamp(0, segments.length - 1);
-        } else if (key == LogicalKeyboardKey.arrowUp ||
-            key == LogicalKeyboardKey.arrowLeft) {
-          next = (index < 0 ? segments.length - 1 : index - 1).clamp(
-            0,
-            segments.length - 1,
-          );
-        } else {
-          return KeyEventResult.ignored;
-        }
-        state.setActiveId(segments[next].id);
-        return KeyEventResult.handled;
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < segments.length; i++)
-            Builder(
-              builder: (context) {
-                final segment = segments[i];
-                final active = state.activeId == segment.id;
-                final selected = state.widget.selectedId == segment.id;
-                final color = beuiChartColor(
-                  segment.color,
-                  colors,
-                  fallback: beuiChartPalette[i % beuiChartPalette.length],
-                );
-                final description = segment.description == null
-                    ? ''
-                    : ', ${segment.description!}';
-                return Semantics(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < segments.length; i++)
+          Builder(
+            builder: (context) {
+              final segment = segments[i];
+              final active = state.activeId == segment.id;
+              final selected = state.widget.selectedId == segment.id;
+              final color = beuiChartColor(
+                segment.color,
+                colors,
+                fallback: beuiChartPalette[i % beuiChartPalette.length],
+              );
+              final description = segment.description == null
+                  ? ''
+                  : ', ${segment.description!}';
+              final focus = state.focusFor(segment.id);
+              final focusVisible =
+                  focus.hasFocus &&
+                  FocusManager.instance.highlightMode ==
+                      FocusHighlightMode.traditional;
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: i == segments.length - 1 ? 0 : 4,
+                ),
+                child: Semantics(
                   button: true,
                   selected: selected,
                   label:
@@ -509,40 +512,88 @@ class BeuiDonutLegend extends StatelessWidget {
                     onEnter: (_) => state.setActiveId(segment.id),
                     onExit: (_) => state.setActiveId(null),
                     child: Focus(
-                      onFocusChange: (focused) =>
-                          state.setActiveId(focused ? segment.id : null),
-                      child: GestureDetector(
-                        onTap: () {
-                          state.setActiveId(active ? null : segment.id);
+                      canRequestFocus: false,
+                      onFocusChange: (focused) {
+                        if (focused) {
+                          state.setActiveId(segment.id);
+                        } else if (state.activeId == segment.id) {
+                          state.setActiveId(null);
+                        }
+                      },
+                      onKeyEvent: (_, event) {
+                        if (event is! KeyDownEvent &&
+                            event is! KeyRepeatEvent) {
+                          return KeyEventResult.ignored;
+                        }
+                        final step =
+                            event.logicalKey == LogicalKeyboardKey.arrowDown
+                            ? 1
+                            : event.logicalKey == LogicalKeyboardKey.arrowUp
+                            ? -1
+                            : 0;
+                        if (step == 0) return KeyEventResult.ignored;
+                        state
+                            .focusFor(
+                              segments[(i + step + segments.length) %
+                                      segments.length]
+                                  .id,
+                            )
+                            .requestFocus();
+                        return KeyEventResult.handled;
+                      },
+                      child: TextButton(
+                        focusNode: focus,
+                        key: ValueKey('donut-legend-${segment.id}'),
+                        onPressed: () {
+                          focus.requestFocus();
                           state.widget.onSelect?.call(segment.id);
                         },
-                        behavior: HitTestBehavior.opaque,
-                        child: Container(
+                        style: TextButton.styleFrom(
+                          overlayColor: Colors.transparent,
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 150),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
+                            horizontal: 12,
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: active
-                                ? colors.muted.withValues(alpha: .35)
-                                : Colors.transparent,
+                            color: active ? colors.muted : Colors.transparent,
                             borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              if (focusVisible || selected)
+                                BoxShadow(
+                                  color: focusVisible
+                                      ? colors.ring
+                                      : colors.border,
+                                  spreadRadius: focusVisible ? 2 : 1,
+                                ),
+                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
                                 children: [
-                                  BeuiChartSwatch(color: color),
-                                  const SizedBox(width: 8),
+                                  BeuiChartSwatch(color: color, size: 10),
+                                  const SizedBox(width: 12),
                                   Expanded(
                                     child: Text(
                                       segment.label,
                                       style: TextStyle(
-                                        fontWeight: active
-                                            ? FontWeight.w600
-                                            : FontWeight.w400,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        height: 20 / 14,
+                                        color: colors.foreground,
                                       ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   Text(
@@ -553,7 +604,11 @@ class BeuiDonutLegend extends StatelessWidget {
                                           ),
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 12,
+                                      fontSize: 14,
+                                      height: 20 / 14,
+                                      fontFeatures: const [
+                                        FontFeature.tabularFigures(),
+                                      ],
                                       color: colors.foreground,
                                     ),
                                   ),
@@ -562,32 +617,56 @@ class BeuiDonutLegend extends StatelessWidget {
                                     state.format(segment.value),
                                     style: TextStyle(
                                       color: colors.mutedForeground,
-                                      fontSize: 12,
+                                      fontSize: 14,
+                                      height: 20 / 14,
+                                      fontWeight: FontWeight.w400,
+                                      fontFeatures: const [
+                                        FontFeature.tabularFigures(),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: BeuiChartSpring(
-                                  value: state.total <= 0
-                                      ? 0
-                                      : segment.value / state.total,
-                                  builder: (context, share) =>
-                                      FractionallySizedBox(
-                                        widthFactor: share.clamp(0.0, 1.0),
-                                        alignment: Alignment.centerLeft,
-                                        child: Container(
-                                          height: 3,
-                                          decoration: BoxDecoration(
-                                            color: color,
-                                            borderRadius: BorderRadius.circular(
-                                              99,
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 22),
+                                child: Container(
+                                  height: 4,
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: BoxDecoration(
+                                    color: colors.muted,
+                                    borderRadius: BorderRadius.circular(99),
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: BeuiChartTween(
+                                      from: 0,
+                                      duration: const Duration(
+                                        milliseconds: 300,
+                                      ),
+                                      delay: Duration(
+                                        milliseconds: 200 + i * 60,
+                                      ),
+                                      motion: beuiSpringLayout,
+                                      isMovement: true,
+                                      value: state.total <= 0
+                                          ? 0
+                                          : segment.value / state.total,
+                                      builder: (context, share) =>
+                                          FractionallySizedBox(
+                                            widthFactor: share.clamp(0.0, 1.0),
+                                            alignment: Alignment.centerLeft,
+                                            child: Container(
+                                              height: 4,
+                                              decoration: BoxDecoration(
+                                                color: color,
+                                                borderRadius:
+                                                    BorderRadius.circular(99),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -596,11 +675,11 @@ class BeuiDonutLegend extends StatelessWidget {
                       ),
                     ),
                   ),
-                );
-              },
-            ),
-        ],
-      ),
+                ),
+              );
+            },
+          ),
+      ],
     );
   }
 }
