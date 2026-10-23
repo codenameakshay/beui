@@ -24,6 +24,9 @@ class BeuiInputStyle {
     this.borderWidth,
     this.textStyle,
     this.contentPadding,
+    this.placeholderColor,
+    this.backgroundColor,
+    this.focusedBackgroundColor,
   });
 
   /// Idle field border. Defaults to `BeuiColors.border`.
@@ -56,6 +59,15 @@ class BeuiInputStyle {
   /// Defaults to 14px horizontally, or zero on a side with an icon slot.
   final EdgeInsetsGeometry? contentPadding;
 
+  /// Placeholder color. Defaults to the full-strength muted foreground.
+  final Color? placeholderColor;
+
+  /// Field fill, including in the disabled field's opacity. Defaults to none.
+  final Color? backgroundColor;
+
+  /// Focused field fill. Defaults to [backgroundColor].
+  final Color? focusedBackgroundColor;
+
   /// Returns a copy with the given fields replaced.
   BeuiInputStyle copyWith({
     Color? borderColor,
@@ -67,6 +79,9 @@ class BeuiInputStyle {
     double? borderWidth,
     TextStyle? textStyle,
     EdgeInsetsGeometry? contentPadding,
+    Color? placeholderColor,
+    Color? backgroundColor,
+    Color? focusedBackgroundColor,
   }) {
     return BeuiInputStyle(
       borderColor: borderColor ?? this.borderColor,
@@ -78,6 +93,10 @@ class BeuiInputStyle {
       borderWidth: borderWidth ?? this.borderWidth,
       textStyle: textStyle ?? this.textStyle,
       contentPadding: contentPadding ?? this.contentPadding,
+      placeholderColor: placeholderColor ?? this.placeholderColor,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      focusedBackgroundColor:
+          focusedBackgroundColor ?? this.focusedBackgroundColor,
     );
   }
 }
@@ -364,6 +383,9 @@ class _BeuiInputState extends State<BeuiInput>
       curve: Curves.ease,
       height: height,
       decoration: BoxDecoration(
+        color: _focused && widget.enabled
+            ? s?.focusedBackgroundColor ?? s?.backgroundColor
+            : s?.backgroundColor,
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(color: borderColor, width: s?.borderWidth ?? 1),
       ),
@@ -388,9 +410,6 @@ class _BeuiInputState extends State<BeuiInput>
                     left: hasLeft ? 0 : 14,
                     right: hasRight ? 0 : 14,
                   ),
-              // Full-strength `mutedForeground` (5.9:1) keeps the 4.5:1 AA
-              // floor on placeholder text that is often the field's only
-              // label.
               child: TextField(
                 controller: _controller,
                 focusNode: _focusNode,
@@ -418,7 +437,7 @@ class _BeuiInputState extends State<BeuiInput>
                   focusedBorder: InputBorder.none,
                   hintText: widget.placeholder,
                   hintStyle: fieldTextStyle.copyWith(
-                    color: colors.mutedForeground,
+                    color: s?.placeholderColor ?? colors.mutedForeground,
                   ),
                   // Material would append a character counter under the
                   // field when `maxLength` is set. The pill is a

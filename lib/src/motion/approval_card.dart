@@ -1265,41 +1265,35 @@ class _QuestionOptions extends StatelessWidget {
               // gutter around the 40px field — the source passes
               // `className={cn("p-0.5", …)}`, so the slot is 44px tall.
               padding: EdgeInsets.fromLTRB(2, hasOptions ? 8 : 2, 2, 2),
-              // source field classes: `h-10 rounded-xl border-0
-              // bg-background/70`. BeuiInputStyle has no fill, so the capsule
-              // is painted behind the (transparent-bordered) field.
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: colors.background.withValues(alpha: 0.7),
-                  borderRadius: BeuiAgentTheme.of(context).shapes.nested,
-                ),
-                child: BeuiInput(
-                  value: custom,
-                  enabled: !disabled,
-                  placeholder:
-                      question.customPlaceholder ??
-                      BeuiAgentTheme.of(
-                        context,
-                      ).strings.customAnswerPlaceholder,
-                  onChanged: (value) {
-                    onChange(
-                      BeuiApprovalCardAnswer(
-                        selected: question.multiple
-                            ? answer.selected
-                            : const [],
-                        custom: value,
-                      ),
-                    );
-                  },
-                  style: BeuiInputStyle(
-                    height: 40, // h-10
-                    borderRadius: 12, // rounded-xl
-                    borderWidth: 0, // border-0
-                    textStyle: const TextStyle(fontSize: 14, height: 20 / 14),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    borderColor: Colors.transparent,
-                    focusedBorderColor: Colors.transparent,
+              child: BeuiInput(
+                value: custom,
+                enabled: !disabled,
+                placeholder:
+                    question.customPlaceholder ??
+                    BeuiAgentTheme.of(context).strings.customAnswerPlaceholder,
+                onChanged: (value) {
+                  onChange(
+                    BeuiApprovalCardAnswer(
+                      selected: question.multiple ? answer.selected : const [],
+                      custom: value,
+                    ),
+                  );
+                },
+                style: BeuiInputStyle(
+                  height: 40, // h-10
+                  borderRadius: 12, // rounded-xl
+                  borderWidth: 0, // border-0
+                  textStyle: const TextStyle(fontSize: 14, height: 20 / 14),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  placeholderColor: colors.mutedForeground.withValues(
+                    alpha: colors.mutedForeground.a * 0.6,
                   ),
+                  backgroundColor: colors.background.withValues(
+                    alpha: colors.background.a * 0.7,
+                  ),
+                  focusedBackgroundColor: colors.background,
+                  borderColor: Colors.transparent,
+                  focusedBorderColor: Colors.transparent,
                 ),
               ),
             ),

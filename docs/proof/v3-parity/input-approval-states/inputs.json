@@ -1,0 +1,38 @@
+{
+  "baseCommit": "819ae5350c1b1773411b8d58f92ab70178cb831f",
+  "sourceCommit": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+  "sourceCheckoutClean": true,
+  "sourceCheckout": "/tmp/beui-v3-parity-components-source",
+  "sourceSha256": {
+    "components/motion/input.tsx": "4dd774bbada7f1c9ec283905586a4306593792ea570ae81caa71874d5bdb0b3d",
+    "components/agents/approval-card/index.tsx": "faabfb28dbe1e5a38b0e0b2715248f09f22444ee2ad9aed1a79a7a63bc67187b",
+    "lib/themes.ts": "0e7925ac5846bcf9486f4365afee0974721d3069b25f3b77431378258410aa62",
+    "lib/theme-css.ts": "a12e5a4a1ef47d195fd642308bcdbe00afafa7a4d725eb412559d1937d398919",
+    "app/globals.css": "e0db1ba39a084d56f5a701732722bff0ea42d761905f3bfcf17ecb2a09611a40"
+  },
+  "candidateSha256": {
+    "lib/src/motion/input.dart": "eff837f037959f42053c13b137418a365634562622a444f5576fbc43f9a7af69",
+    "lib/src/motion/approval_card.dart": "663b4ef26e744b23773b5132826da3fa2cabddba4dcecb575d816105a234e273",
+    "example/lib/demos/agents_capture.dart": "3293abbfa24271d6a5e8a46cf5a3b3e0034b102bc0d87cebbb08c9e8a7c0f30c",
+    "test/motion/input_approval_states_test.dart": "9e1c52543b26bfcc4271c3384d112c9084198a5c85a814cf62a0abc938ae96a5",
+    "example/test/approval_capture_palette_test.dart": "c57175927bd2af8c3d7bc9803253ff604f27bdb73017ff45bf22cb7bc03ed65f"
+  },
+  "recorderSha256": "08e59a5324bba6582c06303f5ac4129d84a7e8a45a038f75e1b2b007cda2f800",
+  "comparatorSha256": "e79b42af412c126e3853e65013d9326e8d8c85c2d0e5a07c4c0807ed5f28b3ef",
+  "servedMainDartJsSha256": "9dd359ffdc981feba598b9d613b0e3afcaac8ba26472d495d7eaa8e3675964bf",
+  "actualBrowserLoadedMainDartJsSha256": "9dd359ffdc981feba598b9d613b0e3afcaac8ba26472d495d7eaa8e3675964bf",
+  "wrapperProvenance": "Agent-owned capture-only opt-in source-default palette. No public theme edits. Not the Blue preset.",
+  "sourceUrl": "http://127.0.0.1:18128/components/agents/approval-card",
+  "candidateUrl": "http://127.0.0.1:18127/approval-states-a76/?slug=approval-card&theme=dark&previewWidth=752&captureProbe=1&palette=source-default-a76e57c9",
+  "sourceTheme": {"brightness": "dark", "dataTheme": null, "primary": "#0285f7"},
+  "candidateFlags": {"slug": "approval-card", "theme": "dark", "previewWidth": 752, "captureProbe": 1, "palette": "source-default-a76e57c9"},
+  "viewport": {"width": 1440, "height": 1000, "deviceScaleFactor": 1},
+  "nativeRaster": {"width": 1440, "height": 913},
+  "candidateProbe": {"rect": {"x": 344, "y": 0, "width": 752, "height": 1000}, "disableAnimations": false, "platformDisableAnimations": false, "motionOverride": null, "backgroundArgb": 4279571733},
+  "states": ["idle", "focus", "text-entry"],
+  "literalKeyboardText": "Keep the release focused.",
+  "finalRun": "matched-run3",
+  "finalComparison": "matched-run3-comparison-final/results.json",
+  "originalsUnchangedAgainstBase": ["test/motion/goldens", "docs/proof/v3-parity/agents", "docs/proof/v3-parity/input-approval-followup"],
+  "exactParity": false
+}

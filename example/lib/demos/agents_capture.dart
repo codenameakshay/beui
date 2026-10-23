@@ -8,6 +8,28 @@ import 'agents_capture_probe.dart';
 /// Capture-only entrypoint. Reports actual constraints and effective motion.
 void main() => runApp(const AgentsCaptureApp());
 
+/// Opt-in capture palette from source `a76e57c9`'s full default token set.
+/// The mono base already matches its non-primary tokens at 8-bit precision.
+ThemeData agentsCaptureTheme(Brightness brightness, {String? palette}) {
+  final base = beuiGalleryTheme(BeuiColorTheme.defaultMono, brightness);
+  if (palette != 'source-default-a76e57c9') return base;
+  final colors = base.extension<BeuiColors>()!.copyWith(
+    primary: const Color(0xFF0285F7),
+    primaryForeground: Colors.white,
+  );
+  return base.copyWith(
+    extensions: [colors],
+    colorScheme: base.colorScheme.copyWith(
+      primary: colors.primary,
+      onPrimary: colors.primaryForeground,
+    ),
+    textSelectionTheme: base.textSelectionTheme.copyWith(
+      selectionHandleColor: colors.primary,
+      selectionColor: colors.accent.withValues(alpha: 0.3),
+    ),
+  );
+}
+
 class AgentsCaptureApp extends StatelessWidget {
   const AgentsCaptureApp({super.key});
 
@@ -17,7 +39,11 @@ class AgentsCaptureApp extends StatelessWidget {
     final brightness = params['theme'] == 'light'
         ? Brightness.light
         : Brightness.dark;
-    final theme = beuiGalleryTheme(BeuiColorTheme.defaultMono, brightness);
+    final palette = params['palette'];
+    final theme = agentsCaptureTheme(brightness, palette: palette);
+    final paletteLabel = palette == 'source-default-a76e57c9'
+        ? palette!
+        : 'defaultMono';
     final entry = kAllEntries.firstWhere(
       (entry) => entry.slug == params['slug'],
     );
@@ -44,7 +70,7 @@ class AgentsCaptureApp extends StatelessWidget {
                       container: true,
                       explicitChildNodes: true,
                       label:
-                          'Capture stage width ${constraints.maxWidth} height ${constraints.maxHeight} reduced $reduced',
+                          'Capture stage width ${constraints.maxWidth} height ${constraints.maxHeight} reduced $reduced palette $paletteLabel',
                       child: params['captureProbe'] == '1'
                           ? AgentsCaptureProbe(
                               background: background,

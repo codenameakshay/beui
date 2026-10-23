@@ -1,0 +1,1097 @@
+[
+  {
+    "phase": "source",
+    "url": "http://127.0.0.1:18128/components/agents/approval-card",
+    "sourceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "expectedJs": null,
+    "loaded": [],
+    "environment": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reducedMotion": false,
+      "probe": null,
+      "colors": {
+        "background": "#151515",
+        "foreground": "lab(95.36% 0 0)",
+        "card": "#1c1c1c",
+        "card-foreground": "lab(95.36% 0 0)",
+        "popover": "#1c1c1c",
+        "popover-foreground": "lab(95.36% 0 0)",
+        "primary": "#0285f7",
+        "primary-foreground": "#fff",
+        "secondary": "#1c1c1c",
+        "secondary-foreground": "lab(95.36% 0 0)",
+        "muted": "#1c1c1c",
+        "muted-foreground": "lab(55.92% -.0000298023 0)",
+        "accent": "lab(78.6917% -58.9604 -17.5221)",
+        "accent-foreground": "#151515",
+        "destructive": "lab(53.6853% 69.6775 43.7724)",
+        "border": "#ffffff0d",
+        "input": "#ffffff0d",
+        "ring": "#ffffff1a"
+      },
+      "htmlClass": "geist_f7004b8b-module__XrSICW__variable geist_mono_eb127541-module__XIXyIG__variable dark",
+      "dataTheme": null,
+      "fonts": [
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist",
+          "status": "loaded"
+        },
+        {
+          "family": "Geist Fallback",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "status": "loaded"
+        },
+        {
+          "family": "Geist Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "status": "loaded"
+        },
+        {
+          "family": "Geist Mono Fallback",
+          "status": "unloaded"
+        },
+        {
+          "family": "__nextjs-Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "__nextjs-Geist Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "__nextjs-Geist",
+          "status": "unloaded"
+        },
+        {
+          "family": "__nextjs-Geist Mono",
+          "status": "unloaded"
+        }
+      ]
+    },
+    "errors": [],
+    "snapshots": [
+      {
+        "state": "idle",
+        "stage": {
+          "x": 424,
+          "y": 265,
+          "width": 512,
+          "height": 470,
+          "top": 265,
+          "right": 936,
+          "bottom": 735,
+          "left": 424
+        },
+        "inputBounds": {
+          "x": 474,
+          "y": 451,
+          "width": 444,
+          "height": 40
+        },
+        "observed": {
+          "value": "",
+          "focused": false,
+          "placeholder": "oklab(0.619999 -0.00000613928 0.0000144839 / 0.6)",
+          "fieldBackground": "oklab(0.195734 0.00000893325 0.0000039041 / 0.7)",
+          "fieldOpacity": "1",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "field": {
+            "x": 474,
+            "y": 451,
+            "width": 444,
+            "height": 40,
+            "top": 451,
+            "right": 918,
+            "bottom": 491,
+            "left": 474
+          },
+          "stage": {
+            "x": 424,
+            "y": 265,
+            "width": 512,
+            "height": 470,
+            "top": 265,
+            "right": 936,
+            "bottom": 735,
+            "left": 424
+          }
+        },
+        "requestedMs": 4738.87325,
+        "receivedMs": 4820.218041,
+        "sha256": "a6563b2323c5ba76810f935c8c1ac742ba5d26618f4ef6cc7c281a9b21835510",
+        "file": "idle.png"
+      },
+      {
+        "state": "focus",
+        "stage": {
+          "x": 424,
+          "y": 265,
+          "width": 512,
+          "height": 470,
+          "top": 265,
+          "right": 936,
+          "bottom": 735,
+          "left": 424
+        },
+        "inputBounds": {
+          "x": 474,
+          "y": 451,
+          "width": 444,
+          "height": 40
+        },
+        "observed": {
+          "value": "",
+          "focused": true,
+          "placeholder": "oklab(0.619999 -0.00000613928 0.0000144839 / 0.6)",
+          "fieldBackground": "rgb(21, 21, 21)",
+          "fieldOpacity": "1",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "field": {
+            "x": 474,
+            "y": 451,
+            "width": 444,
+            "height": 40,
+            "top": 451,
+            "right": 918,
+            "bottom": 491,
+            "left": 474
+          },
+          "stage": {
+            "x": 424,
+            "y": 265,
+            "width": 512,
+            "height": 470,
+            "top": 265,
+            "right": 936,
+            "bottom": 735,
+            "left": 424
+          }
+        },
+        "requestedMs": 5135.870291,
+        "receivedMs": 5220.636708,
+        "sha256": "f4d501525c57830273a9095d35678e3d27b12ce637b047e8d06437dfa8f826ed",
+        "file": "focus.png"
+      },
+      {
+        "state": "text-entry",
+        "stage": {
+          "x": 424,
+          "y": 265,
+          "width": 512,
+          "height": 470,
+          "top": 265,
+          "right": 936,
+          "bottom": 735,
+          "left": 424
+        },
+        "inputBounds": {
+          "x": 474,
+          "y": 451,
+          "width": 444,
+          "height": 40
+        },
+        "observed": {
+          "value": "Keep the release focused.",
+          "focused": true,
+          "placeholder": "oklab(0.619999 -0.00000613928 0.0000144839 / 0.6)",
+          "fieldBackground": "rgb(21, 21, 21)",
+          "fieldOpacity": "1",
+          "fontSize": "14px",
+          "lineHeight": "20px",
+          "field": {
+            "x": 474,
+            "y": 451,
+            "width": 444,
+            "height": 40,
+            "top": 451,
+            "right": 918,
+            "bottom": 491,
+            "left": 474
+          },
+          "stage": {
+            "x": 424,
+            "y": 265,
+            "width": 512,
+            "height": 470,
+            "top": 265,
+            "right": 936,
+            "bottom": 735,
+            "left": 424
+          }
+        },
+        "requestedMs": 6685.912041,
+        "receivedMs": 6755.913625,
+        "sha256": "6e545e825769069ed186c131fed74b8d81e6c077ae2e7a2c49af09eb4572e6fc",
+        "file": "text-entry.png"
+      }
+    ],
+    "frames": [
+      {
+        "file": "frames/frame_000000.png",
+        "requestedMs": 4461.228541,
+        "receivedMs": 4540.518958,
+        "sha256": "0d6b391673ac6bf7eb71b2fc901f316cb60f29885a54eedc6414c24bd1984a30"
+      },
+      {
+        "file": "frames/frame_000001.png",
+        "requestedMs": 4541.24125,
+        "receivedMs": 4602.925708,
+        "sha256": "6e4fd437173d0c0893c9cfe6800dee746be8d603ad96d0aaa58117b6c755753f"
+      },
+      {
+        "file": "frames/frame_000002.png",
+        "requestedMs": 4603.369583,
+        "receivedMs": 4669.937666,
+        "sha256": "806e60881766cfe3e4970c98830b11e511c233a08b33c44cc2b1484bd7102882"
+      },
+      {
+        "file": "frames/frame_000003.png",
+        "requestedMs": 4670.788708,
+        "receivedMs": 4737.355333,
+        "sha256": "6a4ed769cfc8c9e11baa769a105d25fdaa963bf7fdf08170bf8c87c16dc56e15"
+      },
+      {
+        "file": "frames/frame_000004.png",
+        "requestedMs": 4737.771791,
+        "receivedMs": 4801.516583,
+        "sha256": "a6563b2323c5ba76810f935c8c1ac742ba5d26618f4ef6cc7c281a9b21835510"
+      },
+      {
+        "file": "frames/frame_000005.png",
+        "requestedMs": 4802.112333,
+        "receivedMs": 4867.35925,
+        "sha256": "c2b67ec27c1720d892fdcff563274b4a2227e224235c79cd2a99d73fe549ca46"
+      },
+      {
+        "file": "frames/frame_000006.png",
+        "requestedMs": 4867.906,
+        "receivedMs": 4934.046125,
+        "sha256": "2fcad6240af3a867e85c4810708e72de86ade3603f691fde3d16b201d289e6d4"
+      },
+      {
+        "file": "frames/frame_000007.png",
+        "requestedMs": 4934.485,
+        "receivedMs": 5000.41,
+        "sha256": "f8e5cc02ac031448fd3b830bce1190d218d54586b21e7de08a7be2e3753b6acd"
+      },
+      {
+        "file": "frames/frame_000008.png",
+        "requestedMs": 5001.303458,
+        "receivedMs": 5068.23875,
+        "sha256": "94107f7551c7f85d0207999b52890dab964ac6ed51467155079dfaea8bd7102e"
+      },
+      {
+        "file": "frames/frame_000009.png",
+        "requestedMs": 5069.088916,
+        "receivedMs": 5134.611541,
+        "sha256": "ed61a32bd0f2c4586d94dd2ec1920e71ae4bf3dda3e99cec86a657ba405a5497"
+      },
+      {
+        "file": "frames/frame_000010.png",
+        "requestedMs": 5135.167833,
+        "receivedMs": 5201.792583,
+        "sha256": "f4d501525c57830273a9095d35678e3d27b12ce637b047e8d06437dfa8f826ed"
+      },
+      {
+        "file": "frames/frame_000011.png",
+        "requestedMs": 5202.192125,
+        "receivedMs": 5267.777958,
+        "sha256": "5db69ac6a4cb8b89e618cf54a8d9baca469f52515feed3a9d79c949b5c046d6a"
+      },
+      {
+        "file": "frames/frame_000012.png",
+        "requestedMs": 5268.227416,
+        "receivedMs": 5334.906833,
+        "sha256": "d44c8a426bb5f03a1f1e586ce11a44ea1a1528d3ac5a225cb108441596c563f3"
+      },
+      {
+        "file": "frames/frame_000013.png",
+        "requestedMs": 5335.45425,
+        "receivedMs": 5400.953625,
+        "sha256": "e63b5607e04d153d587fea2473758083b359be80de0634cd121b9af5b79bf91f"
+      },
+      {
+        "file": "frames/frame_000014.png",
+        "requestedMs": 5401.36825,
+        "receivedMs": 5467.359041,
+        "sha256": "6818b9852301037baabd2a9912e68783409cbbcc299db1c3430c21745500f08a"
+      },
+      {
+        "file": "frames/frame_000015.png",
+        "requestedMs": 5467.764416,
+        "receivedMs": 5535.200625,
+        "sha256": "a14076dedba89bca308b01c50c64b374546801baff8aa8523598d9e975033f29"
+      },
+      {
+        "file": "frames/frame_000016.png",
+        "requestedMs": 5535.776541,
+        "receivedMs": 5600.218541,
+        "sha256": "0a89a6daf4e2f8da6436177b5e64ad7da333db612b35dcb94a852ec2e4e82c8c"
+      },
+      {
+        "file": "frames/frame_000017.png",
+        "requestedMs": 5600.637875,
+        "receivedMs": 5668.141,
+        "sha256": "c79807549ff124347fec0b427efecd8864ac69726c18bf956ab2be1c973991cb"
+      },
+      {
+        "file": "frames/frame_000018.png",
+        "requestedMs": 5668.559625,
+        "receivedMs": 5736.715916,
+        "sha256": "4a36ec9ba9891b9e69e4d3d5e58cf77482cd378fc6d1fe6882f2cda7fd75fa4c"
+      },
+      {
+        "file": "frames/frame_000019.png",
+        "requestedMs": 5737.246125,
+        "receivedMs": 5800.355791,
+        "sha256": "e9a8697b5c3ee30d3a3d6e5dc74d93211cedf195155198be4822756e76324a4a"
+      },
+      {
+        "file": "frames/frame_000020.png",
+        "requestedMs": 5800.873416,
+        "receivedMs": 5867.712666,
+        "sha256": "d650e7ed70b3077e5410ca37476342c7f1243e934200c2a58b75a1c72b170ff0"
+      },
+      {
+        "file": "frames/frame_000021.png",
+        "requestedMs": 5868.210958,
+        "receivedMs": 5934.637166,
+        "sha256": "b5b829cf876bf9a6e2f5e6865e0f7649374f2709eb050bb85d4dea8f018fa0fd"
+      },
+      {
+        "file": "frames/frame_000022.png",
+        "requestedMs": 5935.236416,
+        "receivedMs": 6000.043583,
+        "sha256": "a1659b6b9d41b107ae628c57becb67653347b7f02fba2b2721a14d2d6b73f4f0"
+      },
+      {
+        "file": "frames/frame_000023.png",
+        "requestedMs": 6004.449208,
+        "receivedMs": 6067.76975,
+        "sha256": "8573a1e689e25715dbb5fdf151e2cc7d1c1bf5eb125ec905b0c8214a0f08246b"
+      },
+      {
+        "file": "frames/frame_000024.png",
+        "requestedMs": 6068.421541,
+        "receivedMs": 6134.960166,
+        "sha256": "6ad09b5d091c53c1ef029fd8fcf2f9dde6465df88e989d145673e9f9df294031"
+      },
+      {
+        "file": "frames/frame_000025.png",
+        "requestedMs": 6135.682458,
+        "receivedMs": 6200.560458,
+        "sha256": "62c3bdec55efd4305f2a1fc36ec2a4588d5647e5090f97343bd6533b5df94560"
+      },
+      {
+        "file": "frames/frame_000026.png",
+        "requestedMs": 6201.050583,
+        "receivedMs": 6267.87675,
+        "sha256": "252c05949901c6fbf359d8089aeefd86a341e713af490d7508f9af919c20d204"
+      },
+      {
+        "file": "frames/frame_000027.png",
+        "requestedMs": 6268.296333,
+        "receivedMs": 6335.272041,
+        "sha256": "77b74f279a33e79759a45dd66cfefbe220165245ebd56b7a7a9e73b3e3e3a8fe"
+      },
+      {
+        "file": "frames/frame_000028.png",
+        "requestedMs": 6335.79975,
+        "receivedMs": 6401.436958,
+        "sha256": "7f2bd9a5d1a50c6f537902498a82125d7146aedf0842b0148435c0a07232596a"
+      },
+      {
+        "file": "frames/frame_000029.png",
+        "requestedMs": 6401.937958,
+        "receivedMs": 6469.442916,
+        "sha256": "f060168ed6950fc33145103826c8672cffc16d49d6143f819440d78eb359de07"
+      },
+      {
+        "file": "frames/frame_000030.png",
+        "requestedMs": 6469.923333,
+        "receivedMs": 6535.821458,
+        "sha256": "5cf3ee81563add32ca1f1fd8bd8d221104be2ec96345eaf98a02ba9aeddcbe0d"
+      },
+      {
+        "file": "frames/frame_000031.png",
+        "requestedMs": 6536.433416,
+        "receivedMs": 6602.157458,
+        "sha256": "adb9bebf796443ba2189b42a418865a856e078354efe27655d7e2f466c0610d2"
+      },
+      {
+        "file": "frames/frame_000032.png",
+        "requestedMs": 6602.559666,
+        "receivedMs": 6669.784958,
+        "sha256": "df2b5eb0f0a7af4c58de0f45ea5629303ae856ca07cf3ec5e3e2069330072325"
+      },
+      {
+        "file": "frames/frame_000033.png",
+        "requestedMs": 6670.335208,
+        "receivedMs": 6735.551291,
+        "sha256": "1e477ce9480b250e861251866226c1e54037822c4dfde7643ae87aedc077b868"
+      },
+      {
+        "file": "frames/frame_000034.png",
+        "requestedMs": 6735.930916,
+        "receivedMs": 6800.405333,
+        "sha256": "52c857e518bcfbca2c8e7817a5bf26d52c6d80e1d6a618716d9fa4b36f773a21"
+      }
+    ],
+    "cadence": {
+      "samples": 35,
+      "decodedFrames": 35,
+      "width": 1440,
+      "height": 913,
+      "measuredFps": 15.045004198496484,
+      "maxGapMs": 68.57491600000048,
+      "noInterpolation": true,
+      "temporalEquivalence": false
+    }
+  },
+  {
+    "phase": "candidate",
+    "url": "http://127.0.0.1:18127/approval-states-a76/?slug=approval-card&theme=dark&previewWidth=752&captureProbe=1&palette=source-default-a76e57c9",
+    "sourceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "expectedJs": "9dd359ffdc981feba598b9d613b0e3afcaac8ba26472d495d7eaa8e3675964bf",
+    "loaded": [
+      {
+        "url": "http://127.0.0.1:18127/approval-states-a76/main.dart.js",
+        "sha256": "9dd359ffdc981feba598b9d613b0e3afcaac8ba26472d495d7eaa8e3675964bf"
+      }
+    ],
+    "environment": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "dpr": 1
+      },
+      "reducedMotion": false,
+      "probe": {
+        "disableAnimations": false,
+        "platformDisableAnimations": false,
+        "motionOverride": null,
+        "backgroundArgb": 4279571733,
+        "constraints": {
+          "minWidth": 752,
+          "maxWidth": 752,
+          "minHeight": 0,
+          "maxHeight": 1000
+        },
+        "rect": {
+          "x": 344,
+          "y": 0,
+          "width": 752,
+          "height": 1000
+        }
+      },
+      "colors": {
+        "background": "",
+        "foreground": "",
+        "card": "",
+        "card-foreground": "",
+        "popover": "",
+        "popover-foreground": "",
+        "primary": "",
+        "primary-foreground": "",
+        "secondary": "",
+        "secondary-foreground": "",
+        "muted": "",
+        "muted-foreground": "",
+        "accent": "",
+        "accent-foreground": "",
+        "destructive": "",
+        "border": "",
+        "input": "",
+        "ring": ""
+      },
+      "htmlClass": "",
+      "dataTheme": null,
+      "fonts": []
+    },
+    "errors": [],
+    "snapshots": [
+      {
+        "state": "idle",
+        "stage": {
+          "x": 464,
+          "y": 265,
+          "width": 512,
+          "height": 470
+        },
+        "inputBounds": {
+          "x": 514,
+          "y": 451,
+          "width": 452,
+          "height": 46
+        },
+        "observed": {
+          "active": {
+            "tag": "FLT-SEMANTICS"
+          },
+          "probe": {
+            "disableAnimations": false,
+            "platformDisableAnimations": false,
+            "motionOverride": null,
+            "backgroundArgb": 4279571733,
+            "constraints": {
+              "minWidth": 752,
+              "maxWidth": 752,
+              "minHeight": 0,
+              "maxHeight": 1000
+            },
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 752,
+              "height": 1000
+            }
+          }
+        },
+        "requestedMs": 9696.861583,
+        "receivedMs": 9737.077125,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617",
+        "file": "idle.png"
+      },
+      {
+        "state": "focus",
+        "stage": {
+          "x": 464,
+          "y": 265,
+          "width": 512,
+          "height": 470
+        },
+        "inputBounds": {
+          "x": 514,
+          "y": 451,
+          "width": 452,
+          "height": 46
+        },
+        "observed": {
+          "active": {
+            "tag": "INPUT",
+            "value": ""
+          },
+          "probe": {
+            "disableAnimations": false,
+            "platformDisableAnimations": false,
+            "motionOverride": null,
+            "backgroundArgb": 4279571733,
+            "constraints": {
+              "minWidth": 752,
+              "maxWidth": 752,
+              "minHeight": 0,
+              "maxHeight": 1000
+            },
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 752,
+              "height": 1000
+            }
+          }
+        },
+        "requestedMs": 10070.242083,
+        "receivedMs": 10087.263916,
+        "sha256": "c0b39bf46c9832b5613ad71817dc46890f4f70655ccde8a8e57c058a8f8d4745",
+        "file": "focus.png"
+      },
+      {
+        "state": "text-entry",
+        "stage": {
+          "x": 464,
+          "y": 265,
+          "width": 512,
+          "height": 470
+        },
+        "inputBounds": {
+          "x": 514,
+          "y": 451,
+          "width": 452,
+          "height": 46
+        },
+        "observed": {
+          "active": {
+            "tag": "INPUT",
+            "value": "Keep the release focused."
+          },
+          "probe": {
+            "disableAnimations": false,
+            "platformDisableAnimations": false,
+            "motionOverride": null,
+            "backgroundArgb": 4279571733,
+            "constraints": {
+              "minWidth": 752,
+              "maxWidth": 752,
+              "minHeight": 0,
+              "maxHeight": 1000
+            },
+            "rect": {
+              "x": 344,
+              "y": 0,
+              "width": 752,
+              "height": 1000
+            }
+          }
+        },
+        "requestedMs": 11337.13825,
+        "receivedMs": 11356.699416,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59",
+        "file": "text-entry.png"
+      }
+    ],
+    "frames": [
+      {
+        "file": "frames/frame_000000.png",
+        "requestedMs": 9431.048791,
+        "receivedMs": 9457.899625,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000001.png",
+        "requestedMs": 9458.2775,
+        "receivedMs": 9489.887333,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000002.png",
+        "requestedMs": 9490.232708,
+        "receivedMs": 9522.00625,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000003.png",
+        "requestedMs": 9522.576,
+        "receivedMs": 9555.039,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000004.png",
+        "requestedMs": 9555.690916,
+        "receivedMs": 9588.744875,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000005.png",
+        "requestedMs": 9589.076,
+        "receivedMs": 9622.477208,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000006.png",
+        "requestedMs": 9622.755916,
+        "receivedMs": 9653.804041,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000007.png",
+        "requestedMs": 9654.10625,
+        "receivedMs": 9687.753625,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000008.png",
+        "requestedMs": 9688.163041,
+        "receivedMs": 9721.2655,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000009.png",
+        "requestedMs": 9721.674125,
+        "receivedMs": 9754.505625,
+        "sha256": "d83c7fd5728cfc172c0fabce9ea1d4ecdfe3e5865bb6ef6c4cac220b514ff617"
+      },
+      {
+        "file": "frames/frame_000010.png",
+        "requestedMs": 9754.782375,
+        "receivedMs": 9786.182208,
+        "sha256": "fa231b547464b8ec1002302570a15b2f8547a1e3e89fd76bb064dfb25587f28e"
+      },
+      {
+        "file": "frames/frame_000011.png",
+        "requestedMs": 9786.674625,
+        "receivedMs": 9830.391958,
+        "sha256": "faeb2ddfa25b5de4fffacead351a2e458c5d16ecd66fa7c9c06714a8e5410b3f"
+      },
+      {
+        "file": "frames/frame_000012.png",
+        "requestedMs": 9830.699083,
+        "receivedMs": 9855.322083,
+        "sha256": "587b8c1b6f8c3af0f308a4d5d427ba733d5f80b0de74759820450240f6515f69"
+      },
+      {
+        "file": "frames/frame_000013.png",
+        "requestedMs": 9855.594583,
+        "receivedMs": 9871.269416,
+        "sha256": "9ba67d7af1856573bf9740f27680250a1ed9adb0063ebe28bbf2faf9267e528f"
+      },
+      {
+        "file": "frames/frame_000014.png",
+        "requestedMs": 9871.820875,
+        "receivedMs": 9888.677458,
+        "sha256": "c32f81b755ca0e054df3b375d496d89cde20236989a2d259ddcf118490e8165a"
+      },
+      {
+        "file": "frames/frame_000015.png",
+        "requestedMs": 9888.939166,
+        "receivedMs": 9904.540458,
+        "sha256": "39e4f451b56524224387e61d62e0f77b052b56901f20199b27107cb1fc16b24c"
+      },
+      {
+        "file": "frames/frame_000016.png",
+        "requestedMs": 9904.805791,
+        "receivedMs": 9923.629541,
+        "sha256": "460f97cf3f35920a1052019104673e4abf590fbfc2f1d64a0f3596f0d4dc8487"
+      },
+      {
+        "file": "frames/frame_000017.png",
+        "requestedMs": 9923.900625,
+        "receivedMs": 9938.630583,
+        "sha256": "6e0145793854520f94b140dd4640c02c9907a555a6a6e7f6828f4e36204588f8"
+      },
+      {
+        "file": "frames/frame_000018.png",
+        "requestedMs": 9938.892416,
+        "receivedMs": 9957.626666,
+        "sha256": "4a01cbcdf4fc82251bb7643b8f4448289b9544289aec3b69b427069217c70a5c"
+      },
+      {
+        "file": "frames/frame_000019.png",
+        "requestedMs": 9957.976,
+        "receivedMs": 9972.116708,
+        "sha256": "c383f5ab0e8705dad5c72e558505066d69a7fe4a0d82e2312349586f2ddc6157"
+      },
+      {
+        "file": "frames/frame_000020.png",
+        "requestedMs": 9972.475291,
+        "receivedMs": 9988.829708,
+        "sha256": "c383f5ab0e8705dad5c72e558505066d69a7fe4a0d82e2312349586f2ddc6157"
+      },
+      {
+        "file": "frames/frame_000021.png",
+        "requestedMs": 9989.2405,
+        "receivedMs": 10005.84125,
+        "sha256": "c0b39bf46c9832b5613ad71817dc46890f4f70655ccde8a8e57c058a8f8d4745"
+      },
+      {
+        "file": "frames/frame_000022.png",
+        "requestedMs": 10006.108458,
+        "receivedMs": 10019.939166,
+        "sha256": "c0b39bf46c9832b5613ad71817dc46890f4f70655ccde8a8e57c058a8f8d4745"
+      },
+      {
+        "file": "frames/frame_000023.png",
+        "requestedMs": 10020.455875,
+        "receivedMs": 10037.352333,
+        "sha256": "c0b39bf46c9832b5613ad71817dc46890f4f70655ccde8a8e57c058a8f8d4745"
+      },
+      {
+        "file": "frames/frame_000024.png",
+        "requestedMs": 10037.633458,
+        "receivedMs": 10054.158833,
+        "sha256": "c0b39bf46c9832b5613ad71817dc46890f4f70655ccde8a8e57c058a8f8d4745"
+      },
+      {
+        "file": "frames/frame_000025.png",
+        "requestedMs": 10054.441041,
+        "receivedMs": 10069.963208,
+        "sha256": "c0b39bf46c9832b5613ad71817dc46890f4f70655ccde8a8e57c058a8f8d4745"
+      },
+      {
+        "file": "frames/frame_000026.png",
+        "requestedMs": 10070.380375,
+        "receivedMs": 10094.313291,
+        "sha256": "c0b39bf46c9832b5613ad71817dc46890f4f70655ccde8a8e57c058a8f8d4745"
+      },
+      {
+        "file": "frames/frame_000027.png",
+        "requestedMs": 10094.575916,
+        "receivedMs": 10131.147625,
+        "sha256": "c0b39bf46c9832b5613ad71817dc46890f4f70655ccde8a8e57c058a8f8d4745"
+      },
+      {
+        "file": "frames/frame_000028.png",
+        "requestedMs": 10131.452083,
+        "receivedMs": 10167.430583,
+        "sha256": "d05db04c37841776ae1b6d021d04e26e9c51152b45e62d2c12db092d74e83ac4"
+      },
+      {
+        "file": "frames/frame_000029.png",
+        "requestedMs": 10167.722125,
+        "receivedMs": 10202.695583,
+        "sha256": "3ffc2350cc142d620cc66b3ee6d47915efd5bc6630ee82b9c3ac16e2fb2e42a1"
+      },
+      {
+        "file": "frames/frame_000030.png",
+        "requestedMs": 10203.5015,
+        "receivedMs": 10236.040375,
+        "sha256": "54b79721c3a5f46e2450b0787fe68898a17fd7c840350146288a49e97268bffd"
+      },
+      {
+        "file": "frames/frame_000031.png",
+        "requestedMs": 10236.347,
+        "receivedMs": 10269.261125,
+        "sha256": "bd242e11b964d18e833dc838f549ad10fe84c226a79b833941618a371a7e4d06"
+      },
+      {
+        "file": "frames/frame_000032.png",
+        "requestedMs": 10269.729041,
+        "receivedMs": 10303.804458,
+        "sha256": "bbb64c283db170e410e28426b4f523384432718d4d83ceaef81ce1d1bda547d7"
+      },
+      {
+        "file": "frames/frame_000033.png",
+        "requestedMs": 10304.056458,
+        "receivedMs": 10339.582166,
+        "sha256": "04e65d690eafa3ed0e1c02515a863fa657102ed626ce89ff8a437143193c6759"
+      },
+      {
+        "file": "frames/frame_000034.png",
+        "requestedMs": 10340.040333,
+        "receivedMs": 10370.134541,
+        "sha256": "7abd5515306b8390bc2159cb279cc81ac65fd28f9cfb5228642d686f8f6f49f2"
+      },
+      {
+        "file": "frames/frame_000035.png",
+        "requestedMs": 10370.741583,
+        "receivedMs": 10403.552875,
+        "sha256": "7f44c325fa0e510eebf013eef099ba11b0375655934319b2111442bccfa2049a"
+      },
+      {
+        "file": "frames/frame_000036.png",
+        "requestedMs": 10404.105625,
+        "receivedMs": 10436.478458,
+        "sha256": "00fa989ad1ac0d3d921d1144a914e22ab242840d88ce7b2c571e34f0317ae123"
+      },
+      {
+        "file": "frames/frame_000037.png",
+        "requestedMs": 10436.863416,
+        "receivedMs": 10470.672833,
+        "sha256": "b080ee8971353fa6c89928c484abac06b06c863aa0bc705f0e3e6536ce478a24"
+      },
+      {
+        "file": "frames/frame_000038.png",
+        "requestedMs": 10471.154791,
+        "receivedMs": 10508.619958,
+        "sha256": "d7ee58763595952f38e2c7f705e146d579117517c91ce59344d5dd8675352fe7"
+      },
+      {
+        "file": "frames/frame_000039.png",
+        "requestedMs": 10509.152833,
+        "receivedMs": 10554.758208,
+        "sha256": "d7ee58763595952f38e2c7f705e146d579117517c91ce59344d5dd8675352fe7"
+      },
+      {
+        "file": "frames/frame_000040.png",
+        "requestedMs": 10554.974083,
+        "receivedMs": 10590.309458,
+        "sha256": "91a16f86b676844d30dfde771f626ac38ff9ad37ef27cfbf672b7d0278fb928c"
+      },
+      {
+        "file": "frames/frame_000041.png",
+        "requestedMs": 10590.596166,
+        "receivedMs": 10625.582458,
+        "sha256": "a0fbcbe65c154a3c62f0ae111aed57a3cffdf0a3192cc20ff8a2ca84da7f56fd"
+      },
+      {
+        "file": "frames/frame_000042.png",
+        "requestedMs": 10626.004625,
+        "receivedMs": 10655.364708,
+        "sha256": "a0fbcbe65c154a3c62f0ae111aed57a3cffdf0a3192cc20ff8a2ca84da7f56fd"
+      },
+      {
+        "file": "frames/frame_000043.png",
+        "requestedMs": 10655.656125,
+        "receivedMs": 10688.319708,
+        "sha256": "5109da78bd44bdb1096151183400adc07db26ccd9e7a5e5cf95878e2b4cd35a2"
+      },
+      {
+        "file": "frames/frame_000044.png",
+        "requestedMs": 10688.630875,
+        "receivedMs": 10720.908,
+        "sha256": "3be0ca264571ebbe21bbdf25a41b2adaec9f9331960d123f0ab75229ac0142a5"
+      },
+      {
+        "file": "frames/frame_000045.png",
+        "requestedMs": 10721.208791,
+        "receivedMs": 10754.9805,
+        "sha256": "674312e723853fd2b12d06d16d6684e8aa862da98b21f9c1e40d91cc08228e99"
+      },
+      {
+        "file": "frames/frame_000046.png",
+        "requestedMs": 10755.298916,
+        "receivedMs": 10788.017833,
+        "sha256": "2fc7e8394f7cf10480fc00e5f6821b6418600049eec41609f658832c51307987"
+      },
+      {
+        "file": "frames/frame_000047.png",
+        "requestedMs": 10788.324708,
+        "receivedMs": 10820.53325,
+        "sha256": "d86b1837ecf672a6e993a360f5b436807ddd77dd97af66890d2c5d02aea176cb"
+      },
+      {
+        "file": "frames/frame_000048.png",
+        "requestedMs": 10820.843291,
+        "receivedMs": 10856.758541,
+        "sha256": "9276ed082f6694abcfc38aab6f3293cc64caa357021a9966d9bd49c9c3505cbb"
+      },
+      {
+        "file": "frames/frame_000049.png",
+        "requestedMs": 10857.16025,
+        "receivedMs": 10888.577333,
+        "sha256": "9276ed082f6694abcfc38aab6f3293cc64caa357021a9966d9bd49c9c3505cbb"
+      },
+      {
+        "file": "frames/frame_000050.png",
+        "requestedMs": 10889.047208,
+        "receivedMs": 10920.729666,
+        "sha256": "4bf7c6615536b4b6d9a2aea7a28d560fe25c4064d085b887aae43d5ca5a83a12"
+      },
+      {
+        "file": "frames/frame_000051.png",
+        "requestedMs": 10921.073083,
+        "receivedMs": 10953.718291,
+        "sha256": "0b06733e677fa731a3c304db2412715f5df087046a4a2df6bb619220e4c4d350"
+      },
+      {
+        "file": "frames/frame_000052.png",
+        "requestedMs": 10954.032041,
+        "receivedMs": 10987.422125,
+        "sha256": "b3cf78dbe063e8ac3aa682f5ba31fb5e3371fc50a23053f9c7deb2b47c10ce7e"
+      },
+      {
+        "file": "frames/frame_000053.png",
+        "requestedMs": 10987.690416,
+        "receivedMs": 11020.672,
+        "sha256": "fcd52c3a47aacbc00d5e0423714ca9d5cae123b27fb88936e2839f6c5f8748f4"
+      },
+      {
+        "file": "frames/frame_000054.png",
+        "requestedMs": 11020.959416,
+        "receivedMs": 11052.716333,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000055.png",
+        "requestedMs": 11053.520333,
+        "receivedMs": 11086.348583,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000056.png",
+        "requestedMs": 11086.818875,
+        "receivedMs": 11121.306458,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000057.png",
+        "requestedMs": 11121.612208,
+        "receivedMs": 11153.968291,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000058.png",
+        "requestedMs": 11154.268416,
+        "receivedMs": 11186.988958,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000059.png",
+        "requestedMs": 11187.314958,
+        "receivedMs": 11221.345916,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000060.png",
+        "requestedMs": 11221.716,
+        "receivedMs": 11259.738875,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000061.png",
+        "requestedMs": 11260.178541,
+        "receivedMs": 11288.422833,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000062.png",
+        "requestedMs": 11288.752333,
+        "receivedMs": 11305.690458,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000063.png",
+        "requestedMs": 11306.009083,
+        "receivedMs": 11321.695833,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000064.png",
+        "requestedMs": 11322.001333,
+        "receivedMs": 11336.825541,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000065.png",
+        "requestedMs": 11337.28325,
+        "receivedMs": 11364.36775,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      },
+      {
+        "file": "frames/frame_000066.png",
+        "requestedMs": 11364.911083,
+        "receivedMs": 11387.365125,
+        "sha256": "b7aa61bdb25586b42ed9b727f13fbecb7baecf2c94c31d2bf24202d9f5b05b59"
+      }
+    ],
+    "cadence": {
+      "samples": 67,
+      "decodedFrames": 67,
+      "width": 1440,
+      "height": 913,
+      "measuredFps": 34.206364405064505,
+      "maxGapMs": 46.13824999999997,
+      "noInterpolation": true,
+      "temporalEquivalence": false
+    }
+  }
+]
