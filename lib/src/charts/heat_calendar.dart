@@ -405,6 +405,17 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
                               (cell == selected.start || cell == selected.end);
                           final date = state._date(cell);
                           final count = (level * state.widget.maxCount).round();
+                          final first = selected == null
+                              ? date
+                              : state._date(selected.start);
+                          final last = selected?.end == null
+                              ? first
+                              : state._date(selected!.end!);
+                          final days = first.difference(last).inDays.abs() + 1;
+                          final rangeStart = first.isBefore(last)
+                              ? first
+                              : last;
+                          final rangeEnd = first.isBefore(last) ? last : first;
                           return SizedBox(
                             width: cellSize,
                             height: cellSize,
@@ -420,9 +431,7 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   BeuiChartTicker(
-                                    value: selected?.end != null
-                                        ? state._rangeTotal
-                                        : count,
+                                    value: days > 1 ? state._rangeTotal : count,
                                     duration: const Duration(milliseconds: 350),
                                     format: (value) => value.round().toString(),
                                   ),
@@ -430,18 +439,18 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
                                   Text(state.widget.unit),
                                   const SizedBox(width: 6),
                                   Text(
-                                    selected?.end != null
-                                        ? '${_month[state._date(selected!.start).month - 1]} ${state._date(selected.start).day} – ${_month[state._date(selected.end!).month - 1]} ${state._date(selected.end!).day}'
+                                    days > 1
+                                        ? '${_month[rangeStart.month - 1]} ${rangeStart.day} – ${_month[rangeEnd.month - 1]} ${rangeEnd.day}'
                                         : '${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}',
                                     style: TextStyle(
                                       color: colors.mutedForeground,
                                     ),
                                   ),
-                                  if (selected?.end != null)
+                                  if (days > 1)
                                     Padding(
                                       padding: const EdgeInsets.only(left: 6),
                                       child: Text(
-                                        '${((selected!.start.week * 7 + selected.start.day) - (selected.end!.week * 7 + selected.end!.day)).abs() + 1} days',
+                                        '$days days',
                                         style: TextStyle(
                                           color: colors.mutedForeground,
                                         ),

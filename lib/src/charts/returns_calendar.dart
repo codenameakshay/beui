@@ -285,10 +285,13 @@ class _BeuiReturnsCalendarState extends State<BeuiReturnsCalendar>
   @override
   Widget build(BuildContext context) => _ReturnsCalendarScope(
     state: this,
-    child: Semantics(
-      container: true,
-      label: 'Returns calendar',
-      child: widget.child ?? const BeuiReturnsCalendarGrid(),
+    child: SizedBox(
+      width: 480,
+      child: Semantics(
+        container: true,
+        label: 'Returns calendar',
+        child: widget.child ?? const BeuiReturnsCalendarGrid(),
+      ),
     ),
   );
 }
