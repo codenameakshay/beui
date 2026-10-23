@@ -16,6 +16,7 @@ const button = document.querySelector('button');
 const input = document.querySelector('input');
 const output = document.querySelector('output');
 const report = value => { output.textContent = value; fetch('/observed', {method:'POST', body:value}); };
+report('motion:' + matchMedia('(prefers-reduced-motion: reduce)').matches);
 button.addEventListener('mouseenter', () => report('pointer entered'));
 button.addEventListener('click', () => report('advanced'));
 input.addEventListener('input', () => report('value:' + input.value));
@@ -35,9 +36,11 @@ const server = createServer(async (request, response) => {
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const directory = await mkdtemp(join(tmpdir(), 'beui-capture-events-'));
 try {
+  for (const reducedMotion of ['no-preference', 'reduce']) {
+  observed.length = 0;
   const config = {
     url: `http://127.0.0.1:${server.address().port}/`, viewport: { width: 640, height: 480 },
-    theme: 'light', backend: 'screenshots', loadWaitMs: 300, finalHoldMs: 500,
+    theme: 'light', reducedMotion, backend: 'screenshots', loadWaitMs: 300, finalHoldMs: 500,
     targets: { button: { role: 'button', name: 'Advance' }, input: { role: 'textbox', name: 'Search' } },
     events: [
       { atMs: 200, target: 'button' },
@@ -49,13 +52,16 @@ try {
       { atMs: 1400, type: 'key', key: 'Enter' },
     ],
   };
-  const configPath = join(directory, 'config.json');
+  const configPath = join(directory, `${reducedMotion}.json`);
   await writeFile(configPath, JSON.stringify(config));
-  const output = join(directory, 'capture');
+  const output = join(directory, `capture-${reducedMotion}`);
   const child = spawn(process.execPath, ['tool/parity_capture.mjs', configPath, output], { stdio: 'inherit' });
   const exit = await new Promise((resolve, reject) => { child.on('error', reject); child.on('exit', resolve); });
   assert.equal(exit, 0);
-  assert.deepEqual(observed, ['pointer entered', 'advanced', 'value:hello', 'value:Search phrase', 'submitted:Search phrase']);
+  assert.deepEqual(observed, [`motion:${reducedMotion === 'reduce'}`, 'pointer entered', 'advanced', 'value:hello', 'value:Search phrase', 'submitted:Search phrase']);
+  const environment = JSON.parse(await readFile(join(output, 'environment.json'), 'utf8'));
+  assert.equal(environment.reducedMotion, reducedMotion === 'reduce');
+  assert.equal(environment.requestedReducedMotion, reducedMotion);
   const timeline = JSON.parse(await readFile(join(output, 'timeline.json'), 'utf8'));
   assert.deepEqual(timeline.events.map(event => event.type), ['move', 'click', 'click', 'text', 'key', 'text', 'key']);
   timeline.events.forEach((event, index) => {
@@ -67,7 +73,8 @@ try {
   });
   assert.deepEqual(timeline.events[1].pointer, { x: 130, y: 65, width: 180, height: 50 });
   assert.equal(timeline.events[3].pointer, undefined);
-  console.log(JSON.stringify({ result: 'passed', observed, preservedCapture: output }));
+  console.log(JSON.stringify({ result: 'passed', reducedMotion, observed, preservedCapture: output }));
+  }
 } finally {
   await new Promise(resolve => server.close(resolve));
 }

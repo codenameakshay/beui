@@ -5,12 +5,14 @@ import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { performance } from 'node:perf_hooks';
 import { createHash } from 'node:crypto';
+import { captureReducedMotion, assertMotionEnvironment, assertServedJavascript } from './parity_capture_config.mjs';
 
 const [configPath, outputPath] = process.argv.slice(2);
 if (!configPath || !outputPath || !process.env.PARITY_PLAYWRIGHT) {
   throw new Error('Usage: PARITY_PLAYWRIGHT=/absolute/playwright-core/index.mjs node tool/parity_capture.mjs CONFIG NEW_OUTPUT_DIRECTORY');
 }
 const config = JSON.parse(await readFile(configPath, 'utf8'));
+const reducedMotion = captureReducedMotion(config);
 const output = resolve(outputPath);
 await mkdir(output);
 await mkdir(join(output, 'original-frames'));
@@ -30,10 +32,19 @@ const elapsed = () => performance.now() - origin;
 try {
   const context = await browser.newContext({
     viewport: config.viewport, deviceScaleFactor: 1,
-    colorScheme: config.theme, reducedMotion: 'no-preference',
+    colorScheme: config.theme, reducedMotion,
     locale: 'en-US', timezoneId: 'Asia/Kolkata',
   });
   const page = await context.newPage();
+  const scripts = [];
+  const scriptReads = [];
+  page.on('response', response => {
+    if (!/\.m?js(?:\?|$)/.test(response.url())) return;
+    scriptReads.push(response.body().then(bytes => scripts.push({
+      url: response.url(), status: response.status(), bytes: bytes.length,
+      sha256: createHash('sha256').update(bytes).digest('hex'),
+    })).catch(error => errors.push(`JavaScript response ${response.url()}: ${error}`)));
+  });
   page.setDefaultTimeout(20000);
   console.log('Navigating', config.url);
   await page.goto(config.url, { waitUntil: 'domcontentloaded', timeout: 60000 });
@@ -52,7 +63,10 @@ try {
       targets[name] = { ...box, x: box.x + box.width / 2, y: box.y + box.height / 2 };
     } else targets[name] = target;
   }
-  const environment = await page.evaluate(() => ({
+  await Promise.all(scriptReads);
+  await writeFile(join(output, 'scripts.json'), JSON.stringify(scripts, null, 2));
+  assertServedJavascript(config, scripts);
+  const environment = await page.evaluate(stageSelector => ({
     viewport: { width: innerWidth, height: innerHeight }, dpr: devicePixelRatio,
     scroll: { x: scrollX, y: scrollY }, locale: navigator.language,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -61,10 +75,21 @@ try {
     background: getComputedStyle(document.body).backgroundColor,
     fonts: [...document.fonts].map(f => ({ family: f.family, status: f.status })),
     flutter: !!document.querySelector('flutter-view'),
-  }));
+    flutterCapture: globalThis.__beuiCapture ?? null,
+    stage: stageSelector ? [...document.querySelectorAll(stageSelector)].map(stage => ({
+      rect: stage.getBoundingClientRect().toJSON(),
+      background: getComputedStyle(stage).backgroundColor,
+      ancestors: [stage, stage.parentElement, document.body].map(element => ({
+        background: getComputedStyle(element).backgroundColor,
+      })),
+    })) : null,
+  }), config.stageSelector ?? null);
   await writeFile(join(output, 'environment.json'), JSON.stringify({
-    ...environment, browser: browser.version(), targets, provenance: config.provenance,
+    ...environment, requestedReducedMotion: reducedMotion,
+    browser: browser.version(), targets, provenance: config.provenance,
+    servedJs: config.servedJs ?? null,
   }, null, 2));
+  assertMotionEnvironment(config, environment);
   await page.mouse.move(10, 10);
   const cdp = await context.newCDPSession(page);
   let sampling = true;
