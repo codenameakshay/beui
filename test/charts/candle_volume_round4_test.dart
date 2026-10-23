@@ -1,3 +1,5 @@
+import 'dart:ui' show SemanticsAction;
+
 import 'package:beui/beui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +35,82 @@ const bins = [
 ];
 
 void main() {
+  testWidgets('volume readout cannot take focus from its native inspector', (
+    tester,
+  ) async {
+    String? selected;
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiVolumeProfile(data: bins, onActiveChange: (id) => selected = id),
+      ),
+    );
+    final plot = tester.getRect(find.byType(BeuiVolumeProfilePlot));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(Offset(plot.center.dx, plot.top + 20));
+    await tester.pumpAndSettle();
+    final readoutFocus = tester
+        .widgetList<Focus>(find.byWidgetPredicate((w) => w is Focus))
+        .map((w) => w.focusNode)
+        .whereType<FocusNode>()
+        .singleWhere((n) => n.debugLabel == 'BeuiOverlay');
+    await mouse.down(Offset(plot.center.dx, plot.top + 20));
+    await mouse.up();
+    readoutFocus.requestFocus();
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.home);
+    await tester.pumpAndSettle();
+    expect(selected, 'a');
+    await mouse.removePointer();
+  });
+
+  for (final candle in [false, true]) {
+    testWidgets(
+      '${candle ? 'candle' : 'volume'} semantic focus keeps native inspector keyboard ownership',
+      (tester) async {
+        final semantics = tester.ensureSemantics();
+        final parentFocus = FocusNode();
+        String? selected;
+        await tester.pumpWidget(
+          beuiTestApp(
+            Focus(
+              focusNode: parentFocus,
+              autofocus: true,
+              child: candle
+                  ? BeuiCandlestickChart(
+                      candles: candles,
+                      onActiveIdChange: (id) => selected = id,
+                    )
+                  : BeuiVolumeProfile(
+                      data: bins,
+                      onActiveChange: (id) => selected = id,
+                    ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final slider = find.byWidgetPredicate(
+          (widget) => widget is Semantics && widget.properties.slider == true,
+        );
+        final node = tester.getSemantics(slider);
+        tester.binding.pipelineOwner.semanticsOwner!.performAction(
+          node.id,
+          SemanticsAction.focus,
+        );
+        await tester.pump();
+        await tester.sendKeyEvent(LogicalKeyboardKey.home);
+        await tester.pumpAndSettle();
+        expect(selected, 'a');
+        await tester.sendKeyEvent(LogicalKeyboardKey.end);
+        await tester.pumpAndSettle();
+        expect(selected, candle ? 'b' : 'c');
+        await tester.pumpWidget(const SizedBox.shrink());
+        parentFocus.dispose();
+        semantics.dispose();
+      },
+    );
+  }
+
   testWidgets('volume accepts Home immediately after native pointer focus', (
     tester,
   ) async {
@@ -416,6 +494,10 @@ void main() {
         expect(ticker.style!.fontWeight, FontWeight.w500);
       }
       expect(find.byType(BeuiTooltip), findsOneWidget);
+      expect(
+        tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).followCursor,
+        isTrue,
+      );
       expect(find.byType(BeuiChartTooltipCard), findsNothing);
       expect(tester.getRect(find.byType(BeuiVolumeProfilePlot)), plotBefore);
       expect(

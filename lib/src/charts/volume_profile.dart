@@ -645,6 +645,7 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                                 slider: true,
                                 focusable: true,
                                 focused: state._focus.hasFocus,
+                                onFocus: state._focus.requestFocus,
                                 increasedValue: state.describe(
                                   math.min(index + 1, state.bins.length - 1),
                                 ),
@@ -996,81 +997,84 @@ class BeuiVolumeProfileTooltip extends StatelessWidget {
           format: (value) => format(value.toDouble()),
           style: numberStyle,
         );
-    return BeuiTooltip(
-      externalAnchor: s._anchor,
-      anchorLink: s._anchorLink,
-      side: beuiChartToTooltipSide(side),
-      sideOffset: !s._keyboard && s._pointer != null ? 12 : 8,
-      open: s._tooltipOpen && bin != null,
-      onOpenChange: (open) {
-        if (!open) s.setTooltipOpen(false);
-      },
-      delay: Duration.zero,
-      content: bin == null
-          ? const SizedBox.shrink()
-          : ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 256),
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 4 / 3,
-                  color: colors.foreground,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        number(bin.priceLow, s.price),
-                        const SizedBox(width: 4),
-                        const Text('–'),
-                        const SizedBox(width: 4),
-                        number(bin.priceHigh, s.price),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        number(bin.volume, s.volume),
-                        const SizedBox(width: 4),
-                        Text(s.widget.unit),
-                        const SizedBox(width: 4),
-                        DefaultTextStyle.merge(
-                          style: TextStyle(color: colors.mutedForeground),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('·'),
-                              const SizedBox(width: 4),
-                              number(
-                                s.total > 0 ? bin.volume / s.total * 100 : 0,
-                                (v) => '${v.toStringAsFixed(1)}%',
-                              ),
-                            ],
+    return ExcludeFocus(
+      child: BeuiTooltip(
+        externalAnchor: s._anchor,
+        anchorLink: s._anchorLink,
+        followCursor: true,
+        side: beuiChartToTooltipSide(side),
+        sideOffset: !s._keyboard && s._pointer != null ? 12 : 8,
+        open: s._tooltipOpen && bin != null,
+        onOpenChange: (open) {
+          if (!open) s.setTooltipOpen(false);
+        },
+        delay: Duration.zero,
+        content: bin == null
+            ? const SizedBox.shrink()
+            : ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 256),
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 4 / 3,
+                    color: colors.foreground,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          number(bin.priceLow, s.price),
+                          const SizedBox(width: 4),
+                          const Text('–'),
+                          const SizedBox(width: 4),
+                          number(bin.priceHigh, s.price),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          number(bin.volume, s.volume),
+                          const SizedBox(width: 4),
+                          Text(s.widget.unit),
+                          const SizedBox(width: 4),
+                          DefaultTextStyle.merge(
+                            style: TextStyle(color: colors.mutedForeground),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text('·'),
+                                const SizedBox(width: 4),
+                                number(
+                                  s.total > 0 ? bin.volume / s.total * 100 : 0,
+                                  (v) => '${v.toStringAsFixed(1)}%',
+                                ),
+                              ],
+                            ),
                           ),
+                        ],
+                      ),
+                      if (index == s.pocIndex ||
+                          s.lowArea >= 0 &&
+                              index >= s.lowArea &&
+                              index <= s.highArea) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          index == s.pocIndex
+                              ? 'Point of control'
+                              : 'Inside value area',
+                          style: TextStyle(color: colors.mutedForeground),
                         ),
                       ],
-                    ),
-                    if (index == s.pocIndex ||
-                        s.lowArea >= 0 &&
-                            index >= s.lowArea &&
-                            index <= s.highArea) ...[
-                      const SizedBox(height: 6),
-                      Text(
-                        index == s.pocIndex
-                            ? 'Point of control'
-                            : 'Inside value area',
-                        style: TextStyle(color: colors.mutedForeground),
-                      ),
                     ],
-                  ],
+                  ),
                 ),
               ),
-            ),
-      child: const SizedBox.shrink(),
+        child: const SizedBox.shrink(),
+      ),
     );
   }
 }

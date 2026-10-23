@@ -379,6 +379,7 @@ class _BeuiCandlestickPlotState extends State<BeuiCandlestickPlot> {
                   slider: true,
                   focusable: true,
                   focused: _focus.hasFocus,
+                  onFocus: _focus.requestFocus,
                   increasedValue: candle == null
                       ? null
                       : describe(
