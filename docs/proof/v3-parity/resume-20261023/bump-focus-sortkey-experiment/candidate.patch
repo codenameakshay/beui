@@ -1,0 +1,26 @@
+diff --git a/lib/src/motion/tooltip.dart b/lib/src/motion/tooltip.dart
+index 54c1fa7a8..a01aae4b3 100644
+--- a/lib/src/motion/tooltip.dart
++++ b/lib/src/motion/tooltip.dart
+@@ -5,6 +5,7 @@ import 'package:clock/clock.dart';
+ import 'package:flutter/gestures.dart';
+ import 'package:flutter/material.dart';
+ import 'package:flutter/services.dart';
++import 'package:flutter/semantics.dart' show OrdinalSortKey;
+ 
+ import '../overlay/beui_overlay.dart';
+ import '../theme/beui_colors.dart';
+@@ -553,8 +554,11 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
+       onDismiss: _hide,
+       enterDuration: const Duration(milliseconds: 180),
+       exitDuration: const Duration(milliseconds: 120),
+-      overlayBuilder: (context, animation, link) =>
+-          _buildTooltip(context, animation, link, side),
++      overlayBuilder: (context, animation, link) => Semantics(
++        container: true,
++        sortKey: const OrdinalSortKey(0, name: 'beui-tooltip-overlay'),
++        child: _buildTooltip(context, animation, link, side),
++      ),
+       child: MouseRegion(
+         onHover: _onPointerHover,
+         onEnter: (event) {
