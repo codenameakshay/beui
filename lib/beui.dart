@@ -186,7 +186,9 @@ export 'src/motion/table/table.dart'
         BeuiTable,
         BeuiTableAlign,
         BeuiTableColumn,
-        BeuiTableInsertPosition;
+        BeuiTableInsertPosition,
+        BeuiTableSizing,
+        BeuiTableIntrinsicSample;
 export 'src/motion/tabs.dart'
     show BeuiTab, BeuiTabs, BeuiTabsIcons, BeuiTabsVariant;
 export 'src/motion/text_cascade.dart' show BeuiTextCascade;

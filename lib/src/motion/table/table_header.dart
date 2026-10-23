@@ -33,7 +33,7 @@ class _TableHeader<T> extends StatelessWidget {
   final List<BeuiTableColumn<T>> columns;
   final BeuiColors colors;
   final bool reduce;
-  final Map<String, double> resolved;
+  final _ResolvedTableLayout resolved;
   final bool allSelected;
   final bool someSelected;
   final VoidCallback onToggleAll;
@@ -48,7 +48,7 @@ class _TableHeader<T> extends StatelessWidget {
     // edge of the last column when dropping at the end).
     double? indicatorX;
     if (dragKey != null && dropIndex != null) {
-      var x = state.widget.selectable ? _checkboxWidth : 0.0;
+      var x = resolved.selectionWidth;
       final clamped = dropIndex.clamp(0, columns.length);
       for (var i = 0; i < clamped; i++) {
         x += resolved[columns[i].key]!;
@@ -60,7 +60,7 @@ class _TableHeader<T> extends StatelessWidget {
       children: [
         if (state.widget.selectable)
           Container(
-            width: _checkboxWidth,
+            width: resolved.selectionWidth,
             height: state.widget.rowHeight,
             alignment: Alignment.center,
             decoration: BoxDecoration(

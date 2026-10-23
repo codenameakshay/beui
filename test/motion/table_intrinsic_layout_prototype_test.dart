@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../fixtures/table_intrinsic_layout/resolver.dart';
+import 'package:beui/src/motion/table/intrinsic_layout.dart';
 
 const _fixture = 'test/fixtures/table_intrinsic_layout';
 
