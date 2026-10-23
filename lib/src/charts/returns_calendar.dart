@@ -494,6 +494,17 @@ class BeuiReturnsCalendarGrid extends StatelessWidget {
                                     10 /
                                     10,
                                 duration: const Duration(milliseconds: 350),
+                                style: TextStyle(
+                                  color:
+                                      (state._spanValue(state._cell(y, m)) ??
+                                              state._value(
+                                                state._cell(y, m),
+                                              )) >=
+                                          0
+                                      ? colors.success
+                                      : colors.destructive,
+                                  fontFamily: 'monospace',
+                                ),
                                 format: (value) {
                                   final signed =
                                       state._spanValue(state._cell(y, m)) ??

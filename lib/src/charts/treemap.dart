@@ -709,9 +709,12 @@ class _Tile extends StatelessWidget {
         if (!open) onActive(null);
       },
       followCursor: true,
-      content: BeuiChartTooltipCard(
-        title: tile.label,
-        titleWidget: Column(
+      content: DefaultTextStyle.merge(
+        style: TextStyle(
+          fontSize: 12,
+          color: BeuiColors.resolve(context).foreground,
+        ),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -726,29 +729,52 @@ class _Tile extends StatelessWidget {
                   ),
                 ),
               ),
-            Text(tile.label),
-          ],
-        ),
-        details: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BeuiChartTicker(
-                value: tile.value,
-                format: (v) => format(v.toDouble()),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Text('·'),
-              ),
-              BeuiChartTicker(
-                value: tile.share * 100,
-                format: (v) => '${v.toStringAsFixed(1)}%',
+            Text(
+              tile.label,
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 6),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BeuiChartTicker(
+                  value: tile.value,
+                  format: (v) => format(v.toDouble()),
+                  style: TextStyle(
+                    fontFamily: 'monospace',
+                    color: BeuiColors.resolve(context).foreground,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    '·',
+                    style: TextStyle(
+                      color: BeuiColors.resolve(context).mutedForeground,
+                    ),
+                  ),
+                ),
+                BeuiChartTicker(
+                  value: tile.share * 100,
+                  format: (v) => '${v.toStringAsFixed(1)}%',
+                  style: TextStyle(
+                    fontFamily: 'monospace',
+                    color: BeuiColors.resolve(context).mutedForeground,
+                  ),
+                ),
+              ],
+            ),
+            if (tile.description != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                tile.description!,
+                style: TextStyle(
+                  color: BeuiColors.resolve(context).mutedForeground,
+                ),
               ),
             ],
-          ),
-          if (tile.description != null) Text(tile.description!),
-        ],
+          ],
+        ),
       ),
       child: BeuiFocusRing(
         focused: active,

@@ -129,20 +129,15 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 250));
       expect(activeId, 'aapl');
-      final tooltip = tester
-          .widgetList<BeuiChartTooltip>(find.byType(BeuiChartTooltip))
-          .singleWhere(
-            (tooltip) =>
-                (tooltip.content as BeuiChartTooltipCard).title == 'AAPL',
-          );
-      final tickers =
-          ((tooltip.content as BeuiChartTooltipCard).details!.first as Row)
-              .children
-              .whereType<BeuiChartTicker>();
-      expect(tickers.map((ticker) => ticker.format(ticker.value)), [
+      final tickers = tester.widgetList<BeuiNumberTicker>(
+        find.byType(BeuiNumberTicker),
+      );
+      expect(tickers.map((ticker) => ticker.format!(ticker.value.round())), [
         r'$210K',
         '43.8%',
       ]);
+      expect(tickers.first.style!.color, BeuiColors.light().foreground);
+      expect(tickers.last.style!.color, BeuiColors.light().mutedForeground);
       await mouse.removePointer();
       semantics.dispose();
     });
