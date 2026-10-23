@@ -93,6 +93,8 @@ class _BeuiBumpChartState extends State<BeuiBumpChart> {
     widget.onActiveChange?.call(id);
   }
 
+  void _toggle(String id) => _select(activeId == id ? null : id);
+
   @override
   void initState() {
     super.initState();
@@ -170,6 +172,7 @@ class _BeuiBumpChartState extends State<BeuiBumpChart> {
       hoveredId: _hoveredId,
       focusedId: _focusedId,
       onActive: _select,
+      onToggle: _toggle,
       onHover: _setHoveredId,
       onFocus: _setFocusedId,
       onNodeFocus: _nodeFocus,
@@ -216,6 +219,7 @@ class _BumpScope extends InheritedWidget {
     required this.hoveredId,
     required this.focusedId,
     required this.onActive,
+    required this.onToggle,
     required this.onHover,
     required this.onFocus,
     required this.onNodeFocus,
@@ -230,6 +234,7 @@ class _BumpScope extends InheritedWidget {
   final String? hoveredId;
   final String? focusedId;
   final ValueChanged<String?> onActive;
+  final ValueChanged<String> onToggle;
   final ValueChanged<String?> onHover;
   final ValueChanged<String?> onFocus;
   final void Function(String, FocusNode) onNodeFocus;
@@ -820,8 +825,7 @@ class _BumpDotState extends State<_BumpDot> {
         : change == 0
         ? 'No change'
         : '${change > 0 ? 'Up' : 'Down'} ${change.abs()} ${change.abs() == 1 ? 'place' : 'places'}';
-    void select() =>
-        scope.onActive(scope.activeId == row.series.id ? null : row.series.id);
+    void select() => scope.onToggle(row.series.id);
     return Focus(
       canRequestFocus: false,
       onKeyEvent: (_, event) {
@@ -1136,8 +1140,7 @@ class _BumpLegendButtonState extends State<_BumpLegendButton> {
     final gain = first == null || last == null ? null : first - last;
     final dimmed =
         scope.highlightedId != null && scope.highlightedId != row.series.id;
-    void select() =>
-        scope.onActive(scope.activeId == row.series.id ? null : row.series.id);
+    void select() => scope.onToggle(row.series.id);
     return Focus(
       canRequestFocus: false,
       onKeyEvent: (_, event) {
