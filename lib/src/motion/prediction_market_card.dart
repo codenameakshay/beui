@@ -486,9 +486,16 @@ class _OddsButton extends StatefulWidget {
 }
 
 class _OddsButtonState extends State<_OddsButton> {
+  final _focusNode = FocusNode();
   bool _hovered = false;
   bool _focused = false;
   bool _pressed = false;
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -501,6 +508,7 @@ class _OddsButtonState extends State<_OddsButton> {
     final targetScale = _pressed && !reduce ? .96 : 1.0;
     final face = Semantics(
       button: true,
+      excludeSemantics: true,
       label: 'Trade ${widget.outcomeLabel} at ${widget.percent}%',
       child: Container(
         constraints: const BoxConstraints(minWidth: 64),
@@ -548,6 +556,7 @@ class _OddsButtonState extends State<_OddsButton> {
     return Material(
       type: MaterialType.transparency,
       child: FocusableActionDetector(
+        focusNode: _focusNode,
         onShowFocusHighlight: (focused) => setState(() => _focused = focused),
         actions: {
           ActivateIntent: CallbackAction<ActivateIntent>(
@@ -562,7 +571,10 @@ class _OddsButtonState extends State<_OddsButton> {
           onTapDown: (_) => setState(() => _pressed = true),
           onTapCancel: () => setState(() => _pressed = false),
           onTapUp: (_) => setState(() => _pressed = false),
-          onTap: widget.onPressed,
+          onTap: () {
+            _focusNode.requestFocus();
+            widget.onPressed();
+          },
           canRequestFocus: false,
           overlayColor: const WidgetStatePropertyAll(Colors.transparent),
           child: scaled,

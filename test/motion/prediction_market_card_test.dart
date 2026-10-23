@@ -49,6 +49,20 @@ Widget _app({
 );
 
 void main() {
+  testWidgets('pointer activation moves the keyboard target to that outcome', (
+    tester,
+  ) async {
+    final selections = <BeuiPredictionMarketCardSelection>[];
+    await tester.pumpWidget(_app(onOutcomeClick: selections.add));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('49%'));
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    expect(selections.map((s) => s.outcomeId), ['lakers', 'lakers']);
+  });
+
   testWidgets('keyboard visits each payout and CTA only once', (tester) async {
     final selections = <BeuiPredictionMarketCardSelection>[];
     await tester.pumpWidget(_app(onOutcomeClick: selections.add));
