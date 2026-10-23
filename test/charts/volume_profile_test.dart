@@ -19,7 +19,8 @@ void main() {
     await tester.pumpWidget(
       beuiTestApp(const BeuiVolumeProfile(data: _bins), reduce: true),
     );
-    expect(find.text('Value area 10.50 – 11.50 (40.0%)'), findsOneWidget);
+    expect(find.text('10.5 – 11.5'), findsOneWidget);
+    expect(find.text('40.0% of volume'), findsOneWidget);
   });
 
   testWidgets('a full value area includes empty edge bins', (tester) async {
@@ -36,7 +37,8 @@ void main() {
         reduce: true,
       ),
     );
-    expect(find.text('Value area 9.50 – 12.50 (100.0%)'), findsOneWidget);
+    expect(find.text('9.5 – 12.5'), findsOneWidget);
+    expect(find.text('100.0% of volume'), findsOneWidget);
   });
 
   testWidgets('renders profile, summary, tooltip data and slider semantics', (
@@ -57,7 +59,7 @@ void main() {
     expect(find.byType(BeuiVolumeProfilePlot), findsOneWidget);
     expect(find.byType(BeuiVolumeProfileSummary), findsOneWidget);
     expect(find.text('POC'), findsOneWidget);
-    expect(find.text('POC 11.00'), findsOneWidget);
+    expect(find.text('11'), findsOneWidget);
     expect(
       find.bySemanticsLabel('Test volume profile: inspect price level'),
       findsOneWidget,
@@ -156,10 +158,12 @@ void main() {
       BeuiVolumeProfileBin(price: 12, volume: 1),
       BeuiVolumeProfileBin(price: 100, volume: 1),
     ];
+    String? inspected;
     await tester.pumpWidget(
       beuiTestApp(
         BeuiVolumeProfile(
           data: data,
+          onActiveChange: (id) => inspected = id,
           formatPrice: (price) => 'P${price.toStringAsFixed(0)}',
           child: const Column(
             children: [
@@ -175,7 +179,7 @@ void main() {
     await mouse.addPointer(location: Offset(plot.left + 100, plot.top + 262.5));
     await mouse.moveTo(Offset(plot.left + 100, plot.top + 262.5));
     await tester.pump();
-    expect(find.textContaining('P12 · 1'), findsOneWidget);
+    expect(inspected, '2');
     await mouse.removePointer();
   });
 
@@ -199,7 +203,7 @@ void main() {
     await mouse.addPointer(location: Offset(plot.center.dx, plot.top + 1));
     await mouse.moveTo(Offset(plot.center.dx, plot.top + 1));
     await tester.pump();
-    expect(find.byType(BeuiChartTooltipCard), findsOneWidget);
+    expect(tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open, isTrue);
 
     updateData!([]);
     await tester.pump();
@@ -208,7 +212,7 @@ void main() {
         BeuiVolumeProfileBin(price: 30.0 + index, volume: 1.0 + index),
     ]);
     await tester.pump();
-    expect(find.byType(BeuiChartTooltipCard), findsNothing);
+    expect(tester.widget<BeuiTooltip>(find.byType(BeuiTooltip)).open, isFalse);
     await mouse.removePointer();
   });
 

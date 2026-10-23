@@ -113,13 +113,33 @@ class _VolumeProfileDemoState extends State<_VolumeProfileDemo> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 12,
               children: [
-                const Expanded(
-                  child: Text(
-                    'BTC / USD',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'BTC / USD',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Volume by price · Demo data',
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 4 / 3,
+                        color: BeuiColors.resolve(context).mutedForeground,
+                      ),
+                    ),
+                  ],
                 ),
                 BeuiTabs<String>(
                   value: _session,
@@ -139,11 +159,6 @@ class _VolumeProfileDemoState extends State<_VolumeProfileDemo> {
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              'Volume by price · Demo data',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
             const SizedBox(height: 24),
             BeuiVolumeProfile(
               data: data,
@@ -154,12 +169,15 @@ class _VolumeProfileDemoState extends State<_VolumeProfileDemo> {
                 v,
                 maximumFractionDigits: v == v.roundToDouble() ? 0 : 2,
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  BeuiVolumeProfilePlot(height: 320),
-                  BeuiVolumeProfileTooltip(),
-                  BeuiVolumeProfileSummary(),
+                  BeuiVolumeProfilePlot(
+                    height: MediaQuery.sizeOf(context).width < 640 ? 288 : 320,
+                  ),
+                  const BeuiVolumeProfileTooltip(),
+                  const SizedBox(height: 20),
+                  const BeuiVolumeProfileSummary(),
                 ],
               ),
             ),

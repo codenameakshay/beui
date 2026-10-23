@@ -2,8 +2,10 @@
 library;
 
 import 'dart:math' as math;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../motion/tooltip.dart';
 import '../theme/beui_colors.dart';
 import '_shared.dart';
 
@@ -60,7 +62,7 @@ class BeuiVolumeProfile extends StatefulWidget {
     required this.data,
     super.key,
     this.label = 'Volume profile',
-    this.unit = '',
+    this.unit = 'units',
     this.formatPrice,
     this.formatVolume,
     this.valueArea = .7,
@@ -116,27 +118,39 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
   late List<_ProfileBin> bins;
   late int pocIndex, lowArea, highArea;
   late double total, maxVolume;
-  String? _hoveredId;
+  final _focus = FocusNode();
+  final _anchor = GlobalKey();
+  final _anchorLink = LayerLink();
+  Offset? _pointer;
+  String? _lastPointerId;
+  bool _pointerDriven = false;
+  bool _keyboard = false;
+  bool _showFocus = false;
   bool _tooltipOpen = false;
-  String? get inspectedId => _tooltipOpen ? _hoveredId ?? activeId : null;
-  @override
-  void setActiveId(String? id) {
-    if (_tooltipOpen != (id != null)) {
-      setState(() => _tooltipOpen = id != null);
-    }
-    super.setActiveId(id);
+  String? get inspectedId => _tooltipOpen ? activeId : null;
+
+  void setTooltipOpen(bool open) {
+    if (_tooltipOpen != open) setState(() => _tooltipOpen = open);
   }
 
-  void hoverBin(String id) {
+  void showFocus(bool visible) {
+    final show = visible && _keyboard;
+    if (_showFocus != show) setState(() => _showFocus = show);
+  }
+
+  void hoverBin(String id, Offset pointer) {
     setActiveId(id);
-    if (_hoveredId != id) setState(() => _hoveredId = id);
+    setState(() {
+      _pointer = pointer;
+      _keyboard = false;
+    });
+    if (_lastPointerId != id) setTooltipOpen(true);
+    _lastPointerId = id;
   }
 
   void clearHoveredBin() {
-    setState(() {
-      _hoveredId = null;
-      _tooltipOpen = false;
-    });
+    _lastPointerId = null;
+    if (!_focus.hasFocus || _pointerDriven) setTooltipOpen(false);
   }
 
   @override
@@ -147,13 +161,26 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
   ValueChanged<String?>? get widgetOnActiveChange => widget.onActiveChange;
   @override
   Iterable<String> get knownIds => bins.map((b) => b.id);
+  String describe(int index) {
+    final bin = bins[index].bin;
+    final level = index == pocIndex
+        ? '. Point of control'
+        : lowArea >= 0 && index >= lowArea && index <= highArea
+        ? '. Inside value area'
+        : '';
+    return '${price(bin.priceLow)} to ${price(bin.priceHigh)}. ${volume(bin.volume)} ${widget.unit}. ${(total > 0 ? bin.volume / total * 100 : 0).toStringAsFixed(1)}% of total volume$level';
+  }
+
   bool handleInspectorKey(KeyEvent event) {
     if (event is! KeyDownEvent && event is! KeyRepeatEvent || bins.isEmpty) {
       return false;
     }
     final key = event.logicalKey;
+    _pointerDriven = false;
+    _keyboard = true;
+    showFocus(true);
     if (key == LogicalKeyboardKey.escape) {
-      clearHoveredBin();
+      setTooltipOpen(false);
       return true;
     }
     final current = math.max(0, bins.indexWhere((b) => b.id == activeId));
@@ -167,16 +194,23 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
       _ => -1,
     };
     if (next < 0) return false;
-    _hoveredId = null;
     setActiveId(bins[next].id);
+    setTooltipOpen(true);
     return true;
   }
 
   String Function(double) get price =>
       widget.formatPrice ??
-      (v) => beuiChartFormatNumber(v, maximumFractionDigits: 2);
+      (v) => beuiChartFormatNumber(
+        v,
+        maximumFractionDigits: 2,
+      ).replaceFirst(RegExp(r'\.?0+$'), '');
   String Function(double) get volume =>
-      widget.formatVolume ?? (v) => beuiChartFormatNumber(v, compact: true);
+      widget.formatVolume ??
+      (v) => beuiChartFormatNumber(
+        v,
+        maximumFractionDigits: 2,
+      ).replaceFirst(RegExp(r'\.?0+$'), '');
   @override
   void initState() {
     super.initState();
@@ -189,13 +223,14 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
     super.didUpdateWidget(old);
     if (old.data != widget.data || old.valueArea != widget.valueArea) {
       _rebuild();
-      if (_hoveredId != null && !bins.any((b) => b.id == _hoveredId) ||
-          bins.isEmpty) {
-        _hoveredId = null;
-        _tooltipOpen = false;
-        super.setActiveId(null);
-      }
+      if (activeId == null) super.setActiveId(null);
     }
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
   }
 
   void _rebuild() {
@@ -295,9 +330,8 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               BeuiVolumeProfilePlot(),
-              SizedBox(height: 12),
               BeuiVolumeProfileTooltip(),
-              SizedBox(height: 12),
+              SizedBox(height: 20),
               BeuiVolumeProfileSummary(),
             ],
           ),
@@ -337,9 +371,18 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
     final state = _ProfileScope.of(context);
     final colors = BeuiColors.resolve(context);
     if (state.bins.isEmpty) {
-      return SizedBox(
-        height: height,
-        child: const Center(child: Text('No volume data')),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 48),
+        child: Center(
+          child: Text(
+            'No volume data',
+            style: TextStyle(
+              fontSize: 14,
+              height: 20 / 14,
+              color: colors.mutedForeground,
+            ),
+          ),
+        ),
       );
     }
     final lo = state.bins.first.bin.priceLow;
@@ -466,38 +509,57 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                                 height: h,
                                 child: Align(
                                   alignment: Alignment.centerLeft,
-                                  child: BeuiChartSpring(
-                                    value: constraints.maxWidth * fraction,
-                                    builder: (context, w) => Container(
-                                      width: w,
-                                      height: math.max(0, h - 2),
-                                      decoration: BoxDecoration(
-                                        color: isPoc
-                                            ? pocColor.withValues(alpha: .9)
-                                            : barColor.withValues(
-                                                alpha:
-                                                    inArea || state.lowArea < 0
-                                                    ? .9
-                                                    : .3,
-                                              ),
-                                        borderRadius:
-                                            const BorderRadius.horizontal(
-                                              right: Radius.circular(2),
-                                            ),
-                                        border:
-                                            state.bins[i].id ==
-                                                state.inspectedId
-                                            ? Border.all(
-                                                color: colors.foreground,
-                                                width: 1.5,
-                                              )
-                                            : null,
+                                  child: BeuiChartTween(
+                                    from: 0,
+                                    value: isPoc || inArea || state.lowArea < 0
+                                        ? .9
+                                        : .3,
+                                    duration: const Duration(milliseconds: 180),
+                                    builder: (context, opacity) => Opacity(
+                                      opacity: opacity.clamp(0, 1),
+                                      child: BeuiChartSpring(
+                                        value: constraints.maxWidth * fraction,
+                                        builder: (context, w) => Container(
+                                          key: ValueKey(
+                                            'volume-bar-${state.bins[i].id}',
+                                          ),
+                                          width: w,
+                                          height: math.max(0, h - 2),
+                                          decoration: BoxDecoration(
+                                            color: isPoc ? pocColor : barColor,
+                                            borderRadius:
+                                                const BorderRadius.horizontal(
+                                                  right: Radius.circular(2),
+                                                ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               );
                             },
+                          ),
+                        for (var i = 0; i < state.bins.length; i++)
+                          Positioned(
+                            top: barTop(i),
+                            left: 0,
+                            right: 0,
+                            height: barHeight(i),
+                            child: BeuiChartTween(
+                              value: state.bins[i].id == state.inspectedId
+                                  ? 1
+                                  : 0,
+                              duration: const Duration(milliseconds: 100),
+                              builder: (context, opacity) => ColoredBox(
+                                key: ValueKey(
+                                  'volume-hover-${state.bins[i].id}',
+                                ),
+                                color: colors.foreground.withValues(
+                                  alpha: .05 * opacity.clamp(0, 1),
+                                ),
+                              ),
+                            ),
                           ),
                         if (state.pocIndex >= 0)
                           Positioned(
@@ -546,51 +608,160 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
                             ),
                           ),
                         Positioned.fill(
-                          child: MouseRegion(
-                            onHover: (event) {
-                              state.hoverBin(
-                                state
-                                    .bins[binIndexAt(event.localPosition.dy)]
-                                    .id,
-                              );
-                            },
-                            onExit: (_) => state.clearHoveredBin(),
-                            child: Focus(
-                              autofocus: false,
+                          child: Focus(
+                            canRequestFocus: false,
+                            onKeyEvent: (_, event) =>
+                                state.handleInspectorKey(event)
+                                ? KeyEventResult.handled
+                                : KeyEventResult.ignored,
+                            child: FocusableActionDetector(
+                              focusNode: state._focus,
+                              includeFocusSemantics: false,
+                              onShowFocusHighlight: state.showFocus,
                               onFocusChange: (focused) {
                                 if (focused) {
-                                  state.setActiveId(state.bins[index].id);
+                                  if (!state._pointerDriven) {
+                                    state._keyboard = true;
+                                    state.setActiveId(state.bins[index].id);
+                                    state.setTooltipOpen(true);
+                                  }
                                 } else {
-                                  state.clearHoveredBin();
+                                  state._pointerDriven = false;
+                                  state.setTooltipOpen(false);
                                 }
-                              },
-                              onKeyEvent: (_, event) {
-                                state._hoveredId = null;
-                                return state.handleInspectorKey(event)
-                                    ? KeyEventResult.handled
-                                    : KeyEventResult.ignored;
                               },
                               child: Semantics(
                                 slider: true,
                                 focusable: true,
+                                focused: state._focus.hasFocus,
+                                increasedValue: state.describe(
+                                  math.min(index + 1, state.bins.length - 1),
+                                ),
+                                decreasedValue: state.describe(
+                                  math.max(index - 1, 0),
+                                ),
+                                onIncrease: () {
+                                  state._keyboard = true;
+                                  state.setActiveId(
+                                    state
+                                        .bins[math.min(
+                                          index + 1,
+                                          state.bins.length - 1,
+                                        )]
+                                        .id,
+                                  );
+                                  state.setTooltipOpen(true);
+                                },
+                                onDecrease: () {
+                                  state._keyboard = true;
+                                  state.setActiveId(
+                                    state.bins[math.max(index - 1, 0)].id,
+                                  );
+                                  state.setTooltipOpen(true);
+                                },
                                 label:
                                     '${state.widget.label}: inspect price level',
-                                value: state.price(state.bins[index].bin.price),
-                                child: GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTapDown: (e) {
-                                    state.setActiveId(
+                                value: state.describe(index),
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.precise,
+                                  onEnter: (e) {
+                                    if (e.kind != PointerDeviceKind.touch) {
+                                      state.hoverBin(
+                                        state
+                                            .bins[binIndexAt(
+                                              e.localPosition.dy,
+                                            )]
+                                            .id,
+                                        e.localPosition,
+                                      );
+                                    }
+                                  },
+                                  onHover: (e) {
+                                    if (e.kind != PointerDeviceKind.touch) {
+                                      state.hoverBin(
+                                        state
+                                            .bins[binIndexAt(
+                                              e.localPosition.dy,
+                                            )]
+                                            .id,
+                                        e.localPosition,
+                                      );
+                                    }
+                                  },
+                                  onExit: (e) {
+                                    if (e.kind != PointerDeviceKind.touch) {
+                                      state.clearHoveredBin();
+                                    }
+                                  },
+                                  child: Listener(
+                                    behavior: HitTestBehavior.opaque,
+                                    onPointerDown: (e) {
+                                      state._pointerDriven = true;
+                                      state.showFocus(false);
+                                      state._lastPointerId = null;
+                                      state.hoverBin(
+                                        state
+                                            .bins[binIndexAt(
+                                              e.localPosition.dy,
+                                            )]
+                                            .id,
+                                        e.localPosition,
+                                      );
+                                      state._focus.requestFocus();
+                                    },
+                                    onPointerMove: (e) => state.hoverBin(
                                       state
                                           .bins[binIndexAt(e.localPosition.dy)]
                                           .id,
-                                    );
-                                  },
-                                  child: const SizedBox.expand(),
+                                      e.localPosition,
+                                    ),
+                                    onPointerUp: (_) =>
+                                        state._pointerDriven = false,
+                                    onPointerCancel: (_) {
+                                      state._pointerDriven = false;
+                                      state.setTooltipOpen(false);
+                                    },
+                                    child: const SizedBox.expand(),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
+                        Positioned(
+                          left: !state._keyboard && state._pointer != null
+                              ? state._pointer!.dx
+                              : constraints.maxWidth *
+                                    math.max(
+                                      .1,
+                                      state.maxVolume == 0
+                                          ? 0
+                                          : state.bins[index].bin.volume /
+                                                state.maxVolume /
+                                                2,
+                                    ),
+                          top: !state._keyboard && state._pointer != null
+                              ? state._pointer!.dy
+                              : barTop(index) + barHeight(index) / 2,
+                          width: 0,
+                          height: 0,
+                          child: IgnorePointer(
+                            child: CompositedTransformTarget(
+                              key: state._anchor,
+                              link: state._anchorLink,
+                              child: const SizedBox.shrink(),
+                            ),
+                          ),
+                        ),
+                        if (state._showFocus)
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: CustomPaint(
+                                key: const ValueKey('volume-focus-ring'),
+                                painter: _ProfileFocusRing(colors.ring),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -631,6 +802,24 @@ class _ProfileLines extends CustomPainter {
   bool shouldRepaint(_ProfileLines old) => color != old.color || poc != old.poc;
 }
 
+class _ProfileFocusRing extends CustomPainter {
+  const _ProfileFocusRing(this.color);
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size size) => canvas.drawRRect(
+    RRect.fromRectAndRadius(
+      (Offset.zero & size).inflate(5),
+      const Radius.circular(7),
+    ),
+    Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+  @override
+  bool shouldRepaint(_ProfileFocusRing old) => old.color != color;
+}
+
 /// Summary of the active bin and control levels.
 class BeuiVolumeProfileSummary extends StatelessWidget {
   /// Creates the summary.
@@ -640,10 +829,6 @@ class BeuiVolumeProfileSummary extends StatelessWidget {
     final s = _ProfileScope.of(context);
     final colors = BeuiColors.resolve(context);
     if (s.bins.isEmpty) return const SizedBox.shrink();
-    final selected = s.bins.where((b) => b.id == s.inspectedId).firstOrNull;
-    final bin =
-        selected?.bin ??
-        (s.pocIndex < 0 ? s.bins.first.bin : s.bins[s.pocIndex].bin);
     final areaVolume = s.lowArea < 0
         ? 0.0
         : s.bins
@@ -652,24 +837,114 @@ class BeuiVolumeProfileSummary extends StatelessWidget {
     final pocText = s.pocIndex < 0
         ? '—'
         : s.price(s.bins[s.pocIndex].bin.price);
-    return Wrap(
-      spacing: 16,
-      runSpacing: 4,
-      children: [
-        Text(
-          'POC $pocText',
-          style: TextStyle(color: colors.warning, fontSize: 12),
+    Widget cell(String label, String value, {Color? dot, String? detail}) =>
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                if (dot != null) ...[
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: dot,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const SizedBox.square(dimension: 6),
+                  ),
+                  const SizedBox(width: 6),
+                ],
+                Flexible(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      color: colors.mutedForeground,
+                      fontSize: 12,
+                      height: 4 / 3,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              style: TextStyle(
+                color: colors.foreground,
+                fontFamily: 'monospace',
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+                height: 4 / 3,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+            if (detail != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                detail,
+                style: TextStyle(
+                  color: colors.mutedForeground,
+                  fontSize: 12,
+                  height: 4 / 3,
+                ),
+              ),
+            ],
+          ],
+        );
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: colors.border)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 17),
+        child: LayoutBuilder(
+          builder: (context, box) {
+            final narrow = MediaQuery.sizeOf(context).width < 640;
+            final width =
+                (box.maxWidth - (narrow ? 16 : 32)) / (narrow ? 2 : 3);
+            return Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              children: [
+                SizedBox(
+                  width: width,
+                  child: cell(
+                    'Total volume',
+                    '${s.volume(s.total)} ${s.widget.unit}',
+                  ),
+                ),
+                SizedBox(
+                  width: width,
+                  child: cell(
+                    'Point of control',
+                    pocText,
+                    dot: beuiChartColor(
+                      s.widget.pocColor,
+                      colors,
+                      fallback: const Color(0xfff59e0b),
+                    ),
+                  ),
+                ),
+                if (s.lowArea >= 0)
+                  SizedBox(
+                    width: narrow ? box.maxWidth : width,
+                    child: cell(
+                      'Value area · ${((s.widget.valueArea as num) * 100).round()}% target',
+                      '${s.price(s.bins[s.lowArea].bin.priceLow)} – ${s.price(s.bins[s.highArea].bin.priceHigh)}',
+                      dot: beuiChartColor(
+                        s.widget.color,
+                        colors,
+                        fallback: const Color(0xff6366f1),
+                      ),
+                      detail:
+                          '${(s.total <= 0 ? 0 : areaVolume / s.total * 100).toStringAsFixed(1)}% of volume',
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
-        if (s.lowArea >= 0)
-          Text(
-            'Value area ${s.price(s.bins[s.lowArea].bin.priceLow)} – ${s.price(s.bins[s.highArea].bin.priceHigh)} (${s.total <= 0 ? '0%' : beuiChartPercent(areaVolume / s.total)})',
-            style: TextStyle(color: colors.mutedForeground, fontSize: 12),
-          ),
-        Text(
-          '${s.price(bin.price)} · ${s.volume(bin.volume)} ${s.widget.unit}',
-          style: const TextStyle(fontSize: 12),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -687,65 +962,101 @@ class BeuiVolumeProfileTooltip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = _ProfileScope.of(context);
-    final found = s.bins.where((b) => b.id == s.inspectedId).firstOrNull;
-    if (found == null) return const SizedBox.shrink();
-    final bin = found.bin;
-    final index = s.bins.indexOf(found);
-    final low = bin.priceLow;
-    final high = bin.priceHigh;
-    final share = s.total > 0 ? bin.volume / s.total : 0.0;
-    const tickerStyle = TextStyle(fontSize: 11);
-    return Semantics(
-      liveRegion: true,
-      label: '${s.price(bin.price)}, volume ${s.volume(bin.volume)}',
-      child: BeuiChartTooltipCard(
-        title: '${s.price(low)} – ${s.price(high)}',
-        titleWidget: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            BeuiChartTicker(
-              value: low,
-              format: (value) => s.price(value.toDouble()),
-              style: tickerStyle,
-            ),
-            const Text(' – '),
-            BeuiChartTicker(
-              value: high,
-              format: (value) => s.price(value.toDouble()),
-              style: tickerStyle,
-            ),
-          ],
-        ),
-        details: [
-          _profileTickerRow(
-            'Volume',
-            bin.volume,
-            (value) => '${s.volume(value.toDouble())} ${s.widget.unit}',
-          ),
-          if (bin.buy != null) Text('Buy ${s.volume(bin.buy!)}'),
-          if (bin.sell != null) Text('Sell ${s.volume(bin.sell!)}'),
-          _profileTickerRow(
-            'Share',
-            share * 100,
-            (value) => '${value.toStringAsFixed(1)}%',
-          ),
-          if (index == s.pocIndex) const Text('Point of control'),
-          if (s.lowArea >= 0 && index >= s.lowArea && index <= s.highArea)
-            const Text('Value area'),
-        ],
+    if (s.bins.isEmpty) return const SizedBox.shrink();
+    final found = s.bins.where((b) => b.id == s.activeId).firstOrNull;
+    final bin = found?.bin;
+    final index = found == null ? -1 : s.bins.indexOf(found);
+    final colors = BeuiColors.resolve(context);
+    const numberStyle = TextStyle(
+      fontFamily: 'monospace',
+      fontSize: 12,
+      height: 4 / 3,
+    );
+    Widget number(
+      double value,
+      String Function(double) format, {
+      bool title = false,
+    }) => BeuiChartTicker(
+      value: value,
+      format: (value) => format(value.toDouble()),
+      style: numberStyle.copyWith(
+        fontWeight: title ? FontWeight.w500 : FontWeight.w400,
       ),
+    );
+    return BeuiTooltip(
+      externalAnchor: s._anchor,
+      anchorLink: s._anchorLink,
+      side: beuiChartToTooltipSide(side),
+      open: s._tooltipOpen && bin != null,
+      onOpenChange: (open) {
+        if (!open) s.setTooltipOpen(false);
+      },
+      delay: Duration.zero,
+      content: bin == null
+          ? const SizedBox.shrink()
+          : ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 256),
+              child: DefaultTextStyle.merge(
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 4 / 3,
+                  color: colors.foreground,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        number(bin.priceLow, s.price, title: true),
+                        const SizedBox(width: 4),
+                        const Text('–'),
+                        const SizedBox(width: 4),
+                        number(bin.priceHigh, s.price, title: true),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        number(bin.volume, s.volume),
+                        const SizedBox(width: 4),
+                        Text(s.widget.unit),
+                        const SizedBox(width: 4),
+                        DefaultTextStyle.merge(
+                          style: TextStyle(color: colors.mutedForeground),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('·'),
+                              const SizedBox(width: 4),
+                              number(
+                                s.total > 0 ? bin.volume / s.total * 100 : 0,
+                                (v) => '${v.toStringAsFixed(1)}%',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (index == s.pocIndex ||
+                        s.lowArea >= 0 &&
+                            index >= s.lowArea &&
+                            index <= s.highArea) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        index == s.pocIndex
+                            ? 'Point of control'
+                            : 'Inside value area',
+                        style: TextStyle(color: colors.mutedForeground),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+      child: const SizedBox.shrink(),
     );
   }
 }
-
-Widget _profileTickerRow(
-  String label,
-  num value,
-  String Function(num) format,
-) => Row(
-  mainAxisSize: MainAxisSize.min,
-  children: [
-    Text('$label '),
-    BeuiChartTicker(value: value, format: format),
-  ],
-);
