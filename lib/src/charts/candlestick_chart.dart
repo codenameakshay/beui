@@ -1,9 +1,11 @@
 /// OHLC candles with volume, a last-price line, and a crosshair readout.
 library;
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/beui_colors.dart';
@@ -105,9 +107,11 @@ class _BeuiCandlestickChartState extends State<BeuiCandlestickChart>
 
   String Function(double) get price =>
       widget.formatPrice ??
-      (v) => beuiChartFormatNumber(v, maximumFractionDigits: 2);
-  String Function(double) get volume =>
-      widget.formatVolume ?? (v) => beuiChartFormatNumber(v, compact: true);
+      (v) => beuiChartFormatNumber(
+        v,
+        maximumFractionDigits: 2,
+      ).replaceFirst(RegExp(r'\.?0+$'), '');
+  String Function(double) get volume => widget.formatVolume ?? _candleVolume;
 
   @override
   void initState() {
@@ -163,12 +167,13 @@ class BeuiCandlestickLegend extends StatelessWidget {
     final candle =
         list.where((c) => c.id == state.activeId).firstOrNull ?? list.last;
     final colors = BeuiColors.resolve(context);
-    final tone = candle.close >= candle.open
-        ? colors.success
-        : colors.destructive;
     final change = candle.open == 0
         ? 0.0
         : (candle.close - candle.open) / candle.open * 100;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final tone = change >= 0
+        ? (dark ? const Color(0xff00d492) : const Color(0xff009966))
+        : (dark ? const Color(0xffff637e) : const Color(0xffec003f));
     return DefaultTextStyle.merge(
       style: const TextStyle(
         fontFamily: 'monospace',
@@ -189,33 +194,47 @@ class BeuiCandlestickLegend extends StatelessWidget {
             ('H', candle.high),
             ('L', candle.low),
             ('C', candle.close),
+            ('Vol', candle.volume),
           ])
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: '${entry.$1} ',
-                    style: TextStyle(color: colors.mutedForeground),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(entry.$1, style: TextStyle(color: colors.mutedForeground)),
+                const SizedBox(width: 4),
+                Text(
+                  entry.$1 == 'Vol'
+                      ? state.volume(entry.$2)
+                      : state.price(entry.$2),
+                  key: ValueKey('candle-legend-${entry.$1}'),
+                  style: TextStyle(
+                    color: entry.$1 == 'Vol' ? colors.foreground : tone,
                   ),
-                  TextSpan(
-                    text: state.price(entry.$2),
-                    style: TextStyle(color: tone),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           Text(
-            'Vol ${state.volume(candle.volume)}',
-            style: TextStyle(color: colors.mutedForeground, fontSize: 12),
-          ),
-          Text(
-            beuiChartSignedPercent(change, digits: 2),
+            '${change >= 0 ? '+' : '−'}${change.abs().toStringAsFixed(2)}%',
             style: TextStyle(color: tone, fontSize: 12),
           ),
         ],
       ),
     );
   }
+}
+
+String _candleVolume(double value) {
+  const suffixes = ['', 'K', 'M', 'B', 'T'];
+  var scaled = value;
+  var unit = 0;
+  while (scaled.abs() >= 1000 && unit < suffixes.length - 1) {
+    scaled /= 1000;
+    unit++;
+  }
+  if ((scaled.abs() * 10).round() >= 10000 && unit < suffixes.length - 1) {
+    scaled /= 1000;
+    unit++;
+  }
+  return '${beuiChartFormatNumber(scaled, maximumFractionDigits: 1).replaceFirst(RegExp(r'\.0$'), '')}${suffixes[unit]}';
 }
 
 /// Interactive candlestick plot with volume bars and a keyboard crosshair.
@@ -233,6 +252,8 @@ class BeuiCandlestickPlot extends StatefulWidget {
 class _BeuiCandlestickPlotState extends State<BeuiCandlestickPlot> {
   double? _pointerY;
   final _focus = FocusNode();
+  bool _showFocus = false;
+  bool _pointerFocus = false;
 
   double get height => widget.height;
 
@@ -295,14 +316,10 @@ class _BeuiCandlestickPlotState extends State<BeuiCandlestickPlot> {
           final candle = candles.isEmpty
               ? null
               : candles[index.clamp(0, candles.length - 1)];
+          String describe(BeuiCandle candle) =>
+              '${candle.time}: open ${state.price(candle.open)}, high ${state.price(candle.high)}, low ${state.price(candle.low)}, close ${state.price(candle.close)}';
           return Focus(
-            focusNode: _focus,
-            onFocusChange: (focused) {
-              if (!focused) {
-                state.setActiveId(null);
-                setState(() => _pointerY = null);
-              }
-            },
+            canRequestFocus: false,
             onKeyEvent: (_, event) {
               if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
                 return KeyEventResult.ignored;
@@ -310,6 +327,8 @@ class _BeuiCandlestickPlotState extends State<BeuiCandlestickPlot> {
               final ids = candles.map((c) => c.id).toList();
               if (ids.isEmpty) return KeyEventResult.ignored;
               final key = event.logicalKey;
+              _pointerFocus = false;
+              setState(() => _showFocus = true);
               var next = index;
               if (key == LogicalKeyboardKey.escape) {
                 state.setActiveId(null);
@@ -331,150 +350,142 @@ class _BeuiCandlestickPlotState extends State<BeuiCandlestickPlot> {
               setState(() => _pointerY = null);
               return KeyEventResult.handled;
             },
-            child: Semantics(
-              slider: true,
-              focusable: true,
-              label: state.widget.label,
-              value: candle == null
-                  ? null
-                  : '${candle.time}: open ${state.price(candle.open)}, high ${state.price(candle.high)}, low ${state.price(candle.low)}, close ${state.price(candle.close)}',
-              child: MouseRegion(
-                cursor: SystemMouseCursors.precise,
-                onEnter: (event) => inspect(event.localPosition),
-                onHover: (event) => inspect(event.localPosition),
-                onExit: (_) {
+            child: FocusableActionDetector(
+              focusNode: _focus,
+              includeFocusSemantics: false,
+              onShowFocusHighlight: (visible) {
+                setState(() => _showFocus = visible && !_pointerFocus);
+              },
+              onFocusChange: (focused) {
+                setState(() => _showFocus = focused && !_pointerFocus);
+                if (!focused) {
                   state.setActiveId(null);
                   setState(() => _pointerY = null);
-                },
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTapDown: (event) {
-                    _focus.requestFocus();
-                    inspect(event.localPosition);
-                  },
-                  child: BeuiChartSpring(
-                    key: ValueKey(state.widget.lastPrice == null),
-                    value: state.widget.lastPrice == null
-                        ? 0
-                        : y(state.widget.lastPrice!),
-                    builder: (context, priceY) {
-                      return Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          CustomPaint(
-                            size: Size(plotWidth, height),
-                            painter: _CandlePainter(
-                              candles: candles,
-                              width: plotWidth,
-                              height: height,
-                              priceHeight: priceHeight,
-                              min: minPrice - pad,
-                              range: range,
-                              maxVolume: candles.fold<double>(
-                                1,
-                                (m, c) => math.max(m, c.volume),
-                              ),
-                              lastPrice: state.widget.lastPrice == null
-                                  ? null
-                                  : minPrice -
-                                        pad +
-                                        (1 - priceY / priceHeight) * range,
-                              activeIndex: activeIndex,
-                              pointerY: _pointerY,
-                              colors: colors,
-                            ),
-                          ),
-                          for (var i = 0; i < candles.length; i++)
-                            Positioned.fill(
-                              key: ValueKey(candles[i].id),
-                              child: _AnimatedCandle(
-                                candle: candles[i],
-                                index: i,
-                                slot: candles.isEmpty
-                                    ? 0
-                                    : plotWidth / candles.length,
-                                height: height,
-                                priceHeight: priceHeight,
-                                y: y,
-                                maxVolume: candles.fold<double>(
-                                  1,
-                                  (m, c) => math.max(m, c.volume),
-                                ),
-                                dimmed: activeIndex >= 0 && activeIndex != i,
-                              ),
-                            ),
-                          for (final tick in ticks)
-                            Positioned(
-                              right: 4,
-                              top: y(tick) - 8,
-                              child: IgnorePointer(
-                                child: Text(
-                                  state.price(tick),
-                                  style: TextStyle(
-                                    color: colors.mutedForeground,
-                                    fontSize: 12,
-                                    height: 16 / 12,
-                                    fontFamily: 'monospace',
-                                    fontFeatures: const [
-                                      FontFeature.tabularFigures(),
-                                    ],
+                }
+              },
+              child: DecoratedBox(
+                key: const ValueKey('candle-focus-ring'),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: _showFocus
+                      ? Border.all(
+                          color: colors.ring,
+                          width: 2,
+                          strokeAlign: BorderSide.strokeAlignOutside,
+                        )
+                      : null,
+                ),
+                child: Semantics(
+                  slider: true,
+                  focusable: true,
+                  focused: _focus.hasFocus,
+                  increasedValue: candle == null
+                      ? null
+                      : describe(
+                          candles[math.min(index + 1, candles.length - 1)],
+                        ),
+                  decreasedValue: candle == null
+                      ? null
+                      : describe(candles[math.max(index - 1, 0)]),
+                  onIncrease: candles.isEmpty
+                      ? null
+                      : () => state.setActiveId(
+                          candles[math.min(index + 1, candles.length - 1)].id,
+                        ),
+                  onDecrease: candles.isEmpty
+                      ? null
+                      : () => state.setActiveId(
+                          candles[math.max(index - 1, 0)].id,
+                        ),
+                  label: state.widget.label,
+                  value: candle == null ? null : describe(candle),
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.precise,
+                    onEnter: (event) => inspect(event.localPosition),
+                    onHover: (event) => inspect(event.localPosition),
+                    onExit: (_) {
+                      state.setActiveId(null);
+                      setState(() => _pointerY = null);
+                    },
+                    child: Listener(
+                      behavior: HitTestBehavior.opaque,
+                      onPointerDown: (event) {
+                        _pointerFocus = true;
+                        setState(() => _showFocus = false);
+                        _focus.requestFocus();
+                      },
+                      onPointerMove: (event) => inspect(event.localPosition),
+                      onPointerUp: (event) {
+                        if (event.kind == PointerDeviceKind.touch) {
+                          state.setActiveId(null);
+                          setState(() => _pointerY = null);
+                        }
+                      },
+                      onPointerCancel: (_) {
+                        state.setActiveId(null);
+                        setState(() => _pointerY = null);
+                      },
+                      child: BeuiChartSpring(
+                        key: ValueKey(state.widget.lastPrice == null),
+                        value: state.widget.lastPrice == null
+                            ? 0
+                            : y(state.widget.lastPrice!),
+                        builder: (context, priceY) {
+                          return Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              CustomPaint(
+                                size: Size(plotWidth, height),
+                                painter: _CandlePainter(
+                                  candles: candles,
+                                  width: plotWidth,
+                                  height: height,
+                                  priceHeight: priceHeight,
+                                  min: minPrice - pad,
+                                  range: range,
+                                  maxVolume: candles.fold<double>(
+                                    1,
+                                    (m, c) => math.max(m, c.volume),
                                   ),
+                                  lastPrice: state.widget.lastPrice == null
+                                      ? null
+                                      : minPrice -
+                                            pad +
+                                            (1 - priceY / priceHeight) * range,
+                                  activeIndex: activeIndex,
+                                  pointerY: _pointerY,
+                                  colors: colors,
                                 ),
                               ),
-                            ),
-                          if (state.widget.lastPrice != null)
-                            Positioned(
-                              right: 0,
-                              top: priceY - 11,
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: colors.foreground,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 3,
-                                  ),
-                                  child: BeuiChartTicker(
-                                    value: state.widget.lastPrice!,
-                                    format: (v) => state.price(v.toDouble()),
-                                    style: TextStyle(
-                                      color: colors.background,
-                                      fontSize: 11,
-                                      fontFamily: 'monospace',
-                                      fontFeatures: const [
-                                        FontFeature.tabularFigures(),
-                                      ],
+                              for (var i = 0; i < candles.length; i++)
+                                Positioned.fill(
+                                  key: ValueKey(candles[i].id),
+                                  child: _AnimatedCandle(
+                                    candle: candles[i],
+                                    index: i,
+                                    slot: candles.isEmpty
+                                        ? 0
+                                        : plotWidth / candles.length,
+                                    height: height,
+                                    priceHeight: priceHeight,
+                                    y: y,
+                                    maxVolume: candles.fold<double>(
+                                      1,
+                                      (m, c) => math.max(m, c.volume),
                                     ),
+                                    dimmed:
+                                        activeIndex >= 0 && activeIndex != i,
                                   ),
                                 ),
-                              ),
-                            ),
-                          if (_pointerY != null)
-                            Positioned(
-                              right: 0,
-                              top: _pointerY! - 10,
-                              child: IgnorePointer(
-                                child: DecoratedBox(
-                                  key: const ValueKey('candle-pointer-price'),
-                                  decoration: BoxDecoration(
-                                    color: colors.muted,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 2,
-                                    ),
+                              for (final tick in ticks)
+                                Positioned(
+                                  right: 4,
+                                  top: y(tick) - 8,
+                                  child: IgnorePointer(
                                     child: Text(
-                                      state.price(
-                                        maxPrice +
-                                            pad -
-                                            _pointerY! / priceHeight * range,
-                                      ),
+                                      state.price(tick),
                                       style: TextStyle(
-                                        color: colors.foreground,
+                                        color: colors.mutedForeground,
                                         fontSize: 12,
                                         height: 16 / 12,
                                         fontFamily: 'monospace',
@@ -485,11 +496,83 @@ class _BeuiCandlestickPlotState extends State<BeuiCandlestickPlot> {
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
+                              if (state.widget.lastPrice != null)
+                                Positioned(
+                                  right: 0,
+                                  top: priceY - 10,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: colors.foreground,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      child: Text(
+                                        state.price(state.widget.lastPrice!),
+                                        key: const ValueKey(
+                                          'candle-last-price',
+                                        ),
+                                        style: TextStyle(
+                                          color: colors.background,
+                                          fontSize: 12,
+                                          height: 16 / 12,
+                                          fontFamily: 'monospace',
+                                          fontFeatures: const [
+                                            FontFeature.tabularFigures(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              if (_pointerY != null)
+                                Positioned(
+                                  right: 0,
+                                  top: _pointerY! - 10,
+                                  child: IgnorePointer(
+                                    child: DecoratedBox(
+                                      key: const ValueKey(
+                                        'candle-pointer-price',
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: colors.muted,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        child: Text(
+                                          state.price(
+                                            maxPrice +
+                                                pad -
+                                                _pointerY! /
+                                                    priceHeight *
+                                                    range,
+                                          ),
+                                          style: TextStyle(
+                                            color: colors.foreground,
+                                            fontSize: 12,
+                                            height: 16 / 12,
+                                            fontFamily: 'monospace',
+                                            fontFeatures: const [
+                                              FontFeature.tabularFigures(),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -617,12 +700,9 @@ class _AnimatedCandle extends StatelessWidget {
       Rect.fromLTWH(x - width / 2, height - volumeHeight, width, volumeHeight),
     ];
     return IgnorePointer(
-      child: BeuiChartTween(
-        from: 0,
+      child: _CandleOpacity(
         value: dimmed ? .45 : 1,
-        duration: const Duration(milliseconds: 300),
         delay: Duration(milliseconds: math.min(index * 12, 600)),
-        snapWhenReduced: true,
         builder: (context, opacity) => Opacity(
           opacity: opacity.clamp(0, 1),
           child: Stack(
@@ -646,6 +726,82 @@ class _AnimatedCandle extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CandleOpacity extends StatefulWidget {
+  const _CandleOpacity({
+    required this.value,
+    required this.delay,
+    required this.builder,
+  });
+  final double value;
+  final Duration delay;
+  final Widget Function(BuildContext, double) builder;
+
+  @override
+  State<_CandleOpacity> createState() => _CandleOpacityState();
+}
+
+class _CandleOpacityState extends State<_CandleOpacity> {
+  Timer? _timer;
+  late double _target;
+  late double _initial;
+  late double _current;
+  bool _initialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      _initialized = true;
+      _initial = MediaQuery.disableAnimationsOf(context) ? widget.value : 0;
+      _target = _initial;
+      _current = _initial;
+      _retarget();
+    } else if (MediaQuery.disableAnimationsOf(context)) {
+      _timer?.cancel();
+      _target = widget.value;
+    }
+  }
+
+  void _retarget() {
+    _timer?.cancel();
+    if (MediaQuery.disableAnimationsOf(context) ||
+        widget.delay == Duration.zero) {
+      _target = widget.value;
+    } else {
+      _target = _current;
+      _timer = Timer(
+        widget.delay,
+        () => setState(() => _target = widget.value),
+      );
+    }
+  }
+
+  @override
+  void didUpdateWidget(_CandleOpacity oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value || oldWidget.delay != widget.delay) {
+      _retarget();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => BeuiChartTween(
+    from: _initial,
+    value: _target,
+    duration: const Duration(milliseconds: 300),
+    builder: (context, value) {
+      _current = value;
+      return widget.builder(context, value);
+    },
+  );
 }
 
 class _CandleShapePainter extends CustomPainter {

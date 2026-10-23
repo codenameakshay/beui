@@ -109,31 +109,58 @@ class _CandlestickChartDemoState extends State<_CandlestickChartDemo> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: [
-                const Text(
-                  'ETH / USD · 5m',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(width: 8),
-                const Text('SIMULATED', style: TextStyle(fontSize: 9)),
-                const Spacer(),
-                BeuiButton(
-                  variant: BeuiButtonVariant.ghost,
-                  size: BeuiButtonSize.sm,
-                  onPressed: () => setState(() => _playing = !_playing),
-                  child: Text(_playing ? 'Pause' : 'Resume'),
-                ),
-                BeuiButton(
-                  variant: BeuiButtonVariant.ghost,
-                  size: BeuiButtonSize.sm,
-                  onPressed: () => setState(() {
-                    _playing = false;
-                    _advance();
-                  }),
-                  child: const Text('Step'),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Row(
+                children: [
+                  const Text(
+                    'ETH / USD · 5m',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(width: 8),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: BeuiColors.resolve(context).border,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      child: Text(
+                        'SIMULATED',
+                        style: TextStyle(
+                          fontSize: 9,
+                          height: 1.5,
+                          letterSpacing: .45,
+                          fontWeight: FontWeight.w400,
+                          color: BeuiColors.resolve(context).mutedForeground,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  BeuiButton(
+                    variant: BeuiButtonVariant.ghost,
+                    size: BeuiButtonSize.sm,
+                    onPressed: () => setState(() => _playing = !_playing),
+                    child: Text(_playing ? 'Pause' : 'Resume'),
+                  ),
+                  const SizedBox(width: 8),
+                  BeuiButton(
+                    variant: BeuiButtonVariant.ghost,
+                    size: BeuiButtonSize.sm,
+                    onPressed: () => setState(() {
+                      _playing = false;
+                      _advance();
+                    }),
+                    child: const Text('Step'),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 12),
             BeuiCandlestickChart(

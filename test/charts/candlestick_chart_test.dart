@@ -54,7 +54,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(beuiTestApp(_chart(lastPrice: 20)));
       await tester.pump();
-      for (final tick in ['19.60', '17.05', '14.50', '11.95', '9.40']) {
+      for (final tick in ['19.6', '17.05', '14.5', '11.95', '9.4']) {
         expect(find.text(tick), findsOneWidget);
       }
     },
@@ -116,8 +116,7 @@ void main() {
     );
     await tester.pump();
     expect(find.text('12:00'), findsOneWidget);
-    final plot = tester.getRect(find.byType(BeuiCandlestickPlot));
-    await tester.tapAt(Offset(plot.left + 10, plot.top + 10));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
@@ -131,16 +130,18 @@ void main() {
     expect(find.text('12:10'), findsOneWidget);
   });
 
-  testWidgets('last price is an animated badge on the plot', (tester) async {
+  testWidgets('last price is static text on the spring-positioned tag', (
+    tester,
+  ) async {
     await tester.pumpWidget(beuiTestApp(_chart(lastPrice: 12.75)));
     await tester.pump();
-    expect(find.byType(BeuiChartTicker), findsOneWidget);
-    expect(find.byType(BeuiNumberTicker), findsOneWidget);
+    expect(find.byType(BeuiChartTicker), findsNothing);
+    expect(find.byType(BeuiNumberTicker), findsNothing);
     await tester.pump(const Duration(milliseconds: 220));
-    final ticker = tester.widget<BeuiChartTicker>(find.byType(BeuiChartTicker));
-    expect(ticker.format(ticker.value), '12.75');
+    final tag = find.byKey(const ValueKey('candle-last-price'));
+    expect(tester.widget<Text>(tag).data, '12.75');
     expect(
-      tester.getTopLeft(find.byType(BeuiChartTicker)).dx,
+      tester.getTopLeft(tag).dx,
       greaterThan(tester.getRect(find.byType(BeuiCandlestickPlot)).left),
     );
     expect(find.textContaining('Last '), findsNothing);
@@ -168,7 +169,9 @@ void main() {
     await tester.pump();
 
     final plotTop = tester.getTopLeft(find.byType(BeuiCandlestickPlot)).dy;
-    final firstBadgeCenter = tester.getCenter(find.byType(BeuiChartTicker)).dy;
+    final firstBadgeCenter = tester
+        .getCenter(find.byKey(const ValueKey('candle-last-price')))
+        .dy;
     expect(firstBadgeCenter, closeTo(plotTop + 127.2, 2));
 
     await tester.pumpWidget(
@@ -176,7 +179,7 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 16));
     final animatedBadgeCenter = tester
-        .getCenter(find.byType(BeuiChartTicker))
+        .getCenter(find.byKey(const ValueKey('candle-last-price')))
         .dy;
     expect(animatedBadgeCenter, lessThan(firstBadgeCenter));
     expect(animatedBadgeCenter, greaterThan(plotTop + 82));
