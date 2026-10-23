@@ -344,6 +344,7 @@ class _RenderBreadcrumbWrap extends RenderWrap {
     if (reduce) return;
     RenderBox? child = firstChild;
     var index = 0;
+    var extent = size;
     while (child != null) {
       final data = child.parentData! as WrapParentData;
       final position = _positions.putIfAbsent(
@@ -352,8 +353,17 @@ class _RenderBreadcrumbWrap extends RenderWrap {
       );
       position.move(data.offset);
       data.offset = Offset(position.x.value, position.y.value);
+      extent = Size(
+        extent.width > data.offset.dx + child.size.width
+            ? extent.width
+            : data.offset.dx + child.size.width,
+        extent.height > data.offset.dy + child.size.height
+            ? extent.height
+            : data.offset.dy + child.size.height,
+      );
       child = data.nextSibling;
     }
+    size = constraints.constrain(extent);
   }
 }
 
