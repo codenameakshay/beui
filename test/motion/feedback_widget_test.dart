@@ -248,10 +248,15 @@ void main() {
     });
 
     testWidgets('a thrown submit routes to the retry view', (tester) async {
+      final semantics = tester.ensureSemantics();
       Object? reportedError;
+      final messages = <String>[];
       await tester.pumpWidget(
         _app(
-          onSubmit: (_) => throw StateError('nope'),
+          onSubmit: (data) {
+            messages.add(data.message);
+            if (messages.length == 1) throw StateError('nope');
+          },
           onSubmitError: (error, _) => reportedError = error,
         ),
       );
@@ -268,10 +273,29 @@ void main() {
       expect(find.text('Something went wrong'), findsOneWidget);
       expect(find.text('Try again'), findsOneWidget);
       expect(
+        tester.getSemantics(find.bySemanticsLabel('Try again')),
+        matchesSemantics(
+          isButton: true,
+          hasTapAction: true,
+          hasFocusAction: true,
+          isFocusable: true,
+          hasEnabledState: true,
+          isEnabled: true,
+          label: 'Try again',
+        ),
+      );
+      expect(
         reportedError,
         isA<StateError>(),
         reason: 'onSubmitError must be told about the thrown error',
       );
+      await tester.tap(find.bySemanticsLabel('Try again'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(messages, ['Broken', 'Broken']);
+      expect(find.text('Thanks!'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 3));
+      semantics.dispose();
     });
 
     testWidgets(

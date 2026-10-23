@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 Widget morphingSearchChipsDemo(BuildContext context) {
   final colors = BeuiColors.resolve(context);
   return SingleChildScrollView(
-    padding: const EdgeInsets.all(16),
     child: Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 672),
@@ -18,27 +17,40 @@ Widget morphingSearchChipsDemo(BuildContext context) {
         child: Stack(
           children: [
             Positioned.fill(
-              child: GridView.count(
-                crossAxisCount: 3,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  for (final color in const [
-                    Color(0x66fb7185),
-                    Color(0x6653c5e8),
-                    Color(0x6650d6a5),
-                    Color(0x66fbbf24),
-                    Color(0x66c084fc),
-                    Color(0x6662d5cf),
-                  ])
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                ],
+              child: LayoutBuilder(
+                builder: (context, constraints) => Opacity(
+                  opacity: 0.8,
+                  child: GridView.count(
+                    padding: EdgeInsets.zero,
+                    crossAxisCount: 3,
+                    childAspectRatio:
+                        ((constraints.maxWidth - 24) / 3) /
+                        ((constraints.maxHeight - 12) / 2),
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      for (final colors in const [
+                        [Color(0x66FF637E), Color(0x4DFFB86A)],
+                        [Color(0x6600BCFF), Color(0x4D7C86FF)],
+                        [Color(0x6600D492), Color(0x4D46ECD5)],
+                        [Color(0x66FFD230), Color(0x4DFFA1AD)],
+                        [Color(0x66A684FF), Color(0x4DF4A8FF)],
+                        [Color(0x6646ECD5), Color(0x4D74D4FF)],
+                      ])
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: colors,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
             const Align(

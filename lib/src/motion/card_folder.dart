@@ -8,6 +8,7 @@ import '../tokens/icons.dart';
 import '../tokens/motion.dart';
 import '_engine.dart';
 import 'digit_swap.dart';
+import 'tooltip.dart';
 
 const _purseMorph = CurvedMotion(Duration(milliseconds: 280), beuiEaseInOut);
 const _pressScale = 0.96;
@@ -56,6 +57,7 @@ class BeuiCardFolder extends StatefulWidget {
 }
 
 class _BeuiCardFolderState extends State<BeuiCardFolder> {
+  final _folderFocus = FocusNode();
   late bool _open = widget.defaultOpen;
   late bool _detailsVisible = widget.defaultDetailsVisible;
   bool _pressed = false;
@@ -63,6 +65,12 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
 
   bool get isOpen => widget.open ?? _open;
   bool get detailsVisible => widget.detailsVisible ?? _detailsVisible;
+
+  @override
+  void dispose() {
+    _folderFocus.dispose();
+    super.dispose();
+  }
 
   void _setOpen(bool value) {
     if (widget.disabled) return;
@@ -133,7 +141,7 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                         decoration: BoxDecoration(
                           color: colors.background,
                           border: Border.all(
-                            color: colors.foreground.withValues(alpha: 0.12),
+                            color: colors.foreground.withValues(alpha: 0.1),
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -176,7 +184,7 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                           decoration: BoxDecoration(
                             color: colors.background,
                             border: Border.all(
-                              color: colors.foreground.withValues(alpha: 0.12),
+                              color: colors.foreground.withValues(alpha: 0.1),
                             ),
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -207,11 +215,14 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                     );
                   }
                   return Semantics(
+                    container: true,
+                    explicitChildNodes: true,
                     button: true,
                     enabled: !widget.disabled,
                     expanded: isOpen,
                     label: accessibleLabel,
                     child: FocusableActionDetector(
+                      focusNode: _folderFocus,
                       enabled: !widget.disabled,
                       onShowFocusHighlight: (visible) =>
                           setState(() => _focusVisible = visible),
@@ -230,14 +241,10 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                           },
                         ),
                       },
-                      child: DecoratedBox(
-                        position: DecorationPosition.foreground,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: _focusVisible
-                              ? Border.all(color: colors.ring, width: 2)
-                              : null,
-                        ),
+                      child: CustomPaint(
+                        foregroundPainter: _focusVisible
+                            ? _FolderFocusPainter(colors.ring)
+                            : null,
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTapDown: widget.disabled
@@ -250,6 +257,7 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                           onTap: widget.disabled
                               ? null
                               : () {
+                                  _folderFocus.requestFocus();
                                   _setOpen(!isOpen);
                                   widget.onClick?.call();
                                 },
@@ -277,20 +285,28 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                                   left: width * 0.047,
                                   right: width * 0.047,
                                   top: 0,
-                                  height: width * 0.586,
+                                  height: width * 0.906 / 1.586,
                                   child: Transform.translate(
                                     offset: Offset(
                                       0,
-                                      reduce ? 0 : -height * 0.08 * lift,
+                                      reduce
+                                          ? 0
+                                          : -width *
+                                                0.906 /
+                                                1.586 *
+                                                0.08 *
+                                                lift,
                                     ),
                                     child: Transform.scale(
                                       scale: reduce ? 1 : 1 + 0.01 * lift,
                                       alignment: Alignment.bottomCenter,
                                       child: DecoratedBox(
                                         decoration: BoxDecoration(
-                                          color: colors.card,
+                                          color: colors.background,
                                           border: Border.all(
-                                            color: colors.border,
+                                            color: colors.foreground.withValues(
+                                              alpha: 0.1,
+                                            ),
                                           ),
                                           borderRadius: BorderRadius.circular(
                                             12,
@@ -333,7 +349,7 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                                       ),
                                       builder: (context, offset, child) =>
                                           Transform.translate(
-                                            offset: Offset(0, offset),
+                                            offset: Offset(0, offset - 20),
                                             child: child,
                                           ),
                                       child: IconButton(
@@ -366,6 +382,27 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
       },
     );
   }
+}
+
+class _FolderFocusPainter extends CustomPainter {
+  const _FolderFocusPainter(this.color);
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) => canvas.drawRRect(
+    RRect.fromRectAndRadius(
+      (Offset.zero & size).inflate(5),
+      const Radius.circular(21),
+    ),
+    Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
+
+  @override
+  bool shouldRepaint(_FolderFocusPainter oldDelegate) =>
+      color != oldDelegate.color;
 }
 
 class _Pocket extends StatelessWidget {
@@ -492,73 +529,109 @@ class _PocketDetails extends StatelessWidget {
   final BeuiColors colors;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-    child: Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Semantics(
-              button: true,
-              label: detailsVisible ? 'Hide card details' : 'Show card details',
-              child: IconButton(
-                onPressed: disabled ? null : onToggle,
-                tooltip: detailsVisible
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) => Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: constraints.maxWidth * 0.05,
+        vertical: 16,
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Semantics(
+                container: true,
+                button: true,
+                label: detailsVisible
                     ? 'Hide card details'
                     : 'Show card details',
-                icon: Icon(
-                  detailsVisible ? LucideIcons.eye_off : LucideIcons.eye,
-                  size: 16,
-                  color: colors.mutedForeground,
+                toggled: detailsVisible,
+                child: BeuiTooltip(
+                  disabled: disabled,
+                  content: Text(
+                    detailsVisible ? 'Hide card details' : 'Show card details',
+                  ),
+                  child: IconButton(
+                    onPressed: disabled ? null : onToggle,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 40,
+                      height: 40,
+                    ),
+                    icon: Icon(
+                      detailsVisible ? LucideIcons.eye_off : LucideIcons.eye,
+                      size: 16,
+                      color: colors.mutedForeground,
+                    ),
+                  ),
                 ),
               ),
-            ),
-            const Spacer(),
-            _MiniField(label: 'Expiry', value: expiry, colors: colors),
-            const SizedBox(width: 16),
-            _MiniField(label: 'CVV', value: cvv, colors: colors, animate: true),
-          ],
-        ),
-        const Spacer(),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, right: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _MiniField(label: 'Expiry', value: expiry, colors: colors),
+                    const SizedBox(width: 14),
+                    _MiniField(
+                      label: 'CVV',
+                      value: cvv,
+                      colors: colors,
+                      animate: true,
+                      revealed: detailsVisible,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 18,
+                    height: 1.25,
+                    fontWeight: FontWeight.w500,
+                    color: colors.foreground,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              BeuiDigitSwap(
+                value: cardNumber,
+                animationKey: detailsVisible ? 'revealed' : 'masked',
+                direction: detailsVisible
+                    ? BeuiDigitSwapDirection.up
+                    : BeuiDigitSwapDirection.down,
+                suffixLength: 4,
+                glyphStyle: TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 12,
+                  letterSpacing: 0.96,
+                  color: detailsVisible
+                      ? colors.foreground
+                      : colors.mutedForeground,
+                ),
+                suffixStyle: TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 12,
+                  letterSpacing: 0.96,
                   color: colors.foreground,
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            BeuiDigitSwap(
-              value: cardNumber,
-              animationKey: detailsVisible ? 'revealed' : 'masked',
-              direction: detailsVisible
-                  ? BeuiDigitSwapDirection.up
-                  : BeuiDigitSwapDirection.down,
-              suffixLength: 4,
-              glyphStyle: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 11,
-                letterSpacing: 0.6,
-                color: colors.mutedForeground,
-              ),
-              suffixStyle: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 11,
-                letterSpacing: 0.6,
-                color: colors.foreground,
-              ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -569,10 +642,12 @@ class _MiniField extends StatelessWidget {
     required this.value,
     required this.colors,
     this.animate = false,
+    this.revealed = false,
   });
   final String label, value;
   final BeuiColors colors;
   final bool animate;
+  final bool revealed;
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -581,17 +656,38 @@ class _MiniField extends StatelessWidget {
         label.toUpperCase(),
         style: TextStyle(
           fontSize: 9,
-          letterSpacing: 1,
+          height: 1.5,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 1.08,
           color: colors.mutedForeground.withValues(alpha: 0.65),
         ),
       ),
+      const SizedBox(height: 2),
       if (animate)
         BeuiDigitSwap(
           value: value,
-          glyphStyle: TextStyle(fontSize: 12, color: colors.foreground),
+          animationKey: revealed ? 'revealed' : 'masked',
+          direction: revealed
+              ? BeuiDigitSwapDirection.up
+              : BeuiDigitSwapDirection.down,
+          glyphStyle: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: colors.foreground,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
         )
       else
-        Text(value, style: TextStyle(fontSize: 12, color: colors.foreground)),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 12,
+            height: 16 / 12,
+            fontWeight: FontWeight.w500,
+            color: colors.foreground,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+        ),
     ],
   );
 }

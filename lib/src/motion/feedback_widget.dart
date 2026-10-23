@@ -1388,6 +1388,7 @@ class _ErrorView extends StatelessWidget {
     return Semantics(
       liveRegion: true,
       container: true,
+      explicitChildNodes: true,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         decoration: BoxDecoration(

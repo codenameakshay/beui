@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:beui/beui.dart';
 
@@ -132,7 +133,7 @@ class _PredictionMarketCardDemoState extends State<_PredictionMarketCardDemo> {
                                 _saved.remove(market.id);
                               }
                             }),
-                            icon: _MarketArtwork(
+                            icon: MarketArtwork(
                               url: market.images.first,
                               rates: market.rates,
                             ),
@@ -147,7 +148,7 @@ class _PredictionMarketCardDemoState extends State<_PredictionMarketCardDemo> {
                                   color: market.colors[i],
                                   icon: market.rates
                                       ? null
-                                      : _MarketArtwork(
+                                      : MarketArtwork(
                                           url: market.images[i],
                                           compact: true,
                                         ),
@@ -199,11 +200,12 @@ class _MarketData {
   final bool rates;
 }
 
-class _MarketArtwork extends StatelessWidget {
-  const _MarketArtwork({
+class MarketArtwork extends StatelessWidget {
+  const MarketArtwork({
     required this.url,
     this.compact = false,
     this.rates = false,
+    super.key,
   });
 
   final String url;
@@ -214,10 +216,12 @@ class _MarketArtwork extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     color: rates ? Colors.white : null,
     padding: EdgeInsets.all(compact ? 2 : 4),
-    child: Image.network(
-      url,
-      fit: BoxFit.contain,
-      webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
-    ),
+    child: rates
+        ? SvgPicture.network(url, fit: BoxFit.contain)
+        : Image.network(
+            url,
+            fit: BoxFit.contain,
+            webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+          ),
   );
 }

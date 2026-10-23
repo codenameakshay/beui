@@ -5,6 +5,48 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
 
 void main() {
+  testWidgets('slots use the active font zero advance and scale with text', (
+    tester,
+  ) async {
+    for (final scale in [1.0, 2.0]) {
+      await tester.pumpWidget(
+        beuiTestApp(
+          Builder(
+            builder: (context) => MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(scale)),
+              child: const BeuiDigitSwap(
+                value: '0 1',
+                style: TextStyle(fontFamily: 'Ahem', fontSize: 20),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(
+        tester.getSize(find.byType(BeuiDigitSwap)).width,
+        closeTo(54 * scale, 0.001),
+      );
+      expect(
+        tester.getSize(find.byType(BeuiDigitSwap)).height,
+        closeTo(22 * scale, 0.001),
+      );
+    }
+  });
+
+  testWidgets('non-BMP glyphs are not split into invalid surrogate slots', (
+    tester,
+  ) async {
+    await tester.pumpWidget(beuiTestApp(const BeuiDigitSwap(value: '🚀 1')));
+    expect(find.text('🚀'), findsOneWidget);
+    expect(find.bySemanticsLabel('🚀 1'), findsOneWidget);
+    await tester.pumpWidget(beuiTestApp(const BeuiDigitSwap(value: '🌙 2')));
+    await tester.pumpAndSettle();
+    expect(find.text('🌙'), findsOneWidget);
+    expect(find.text('2'), findsOneWidget);
+  });
+
   testWidgets('outgoing glyph rolls away opposite the incoming glyph', (
     tester,
   ) async {

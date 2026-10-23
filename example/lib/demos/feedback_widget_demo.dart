@@ -114,14 +114,7 @@ class _FeedbackWidgetDemoState extends State<_FeedbackWidgetDemo> {
                     children: [
                       Positioned.fill(child: fauxApp),
                       Positioned.fill(
-                        child: BeuiFeedbackWidget(
-                          onSubmit: _submit,
-                          // Off by default for source fidelity; the gallery
-                          // shows it on because one tap is a complete answer
-                          // and it is the highest-leverage friction fix the
-                          // widget offers.
-                          showSentiment: true,
-                        ),
+                        child: BeuiFeedbackWidget(onSubmit: _submit),
                       ),
                     ],
                   ),

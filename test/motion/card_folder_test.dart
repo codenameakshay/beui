@@ -1,5 +1,6 @@
 import 'package:beui/beui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -49,6 +50,98 @@ Widget _app({
 );
 
 void main() {
+  testWidgets('pointer activation transfers keyboard control to the folder', (
+    tester,
+  ) async {
+    final opens = <bool>[];
+    await tester.pumpWidget(_app(onOpenChange: opens.add));
+    await tester.tap(find.byType(BeuiCardFolder));
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(opens, [true, false]);
+  });
+
+  testWidgets(
+    'folder focus paints the source two-pixel ring beyond a four-pixel gap',
+    (tester) async {
+      await tester.pumpWidget(_app());
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      final painter = find
+          .descendant(
+            of: find.byType(BeuiCardFolder),
+            matching: find.byWidgetPredicate(
+              (w) => w is CustomPaint && w.foregroundPainter != null,
+            ),
+          )
+          .first;
+      expect(
+        tester.renderObject(painter),
+        paints..something((method, arguments) {
+          if (method != #drawRRect) return false;
+          final rect = arguments[0] as RRect;
+          final paint = arguments[1] as Paint;
+          return rect.left == -5 &&
+              rect.top == -5 &&
+              paint.strokeWidth == 2 &&
+              paint.style == PaintingStyle.stroke;
+        }),
+      );
+    },
+  );
+
+  for (final reduce in [false, true]) {
+    testWidgets(
+      'privacy uses the shared tooltip on hover and keyboard, reduce=$reduce',
+      (tester) async {
+        final semantics = tester.ensureSemantics();
+        final opens = <bool>[];
+        await tester.pumpWidget(_app(reduce: reduce, onOpenChange: opens.add));
+        final privacy = find.bySemanticsLabel('Show card details');
+        expect(find.byType(Tooltip), findsNothing);
+        final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await mouse.addPointer();
+        await mouse.moveTo(tester.getCenter(privacy));
+        await tester.pump(const Duration(milliseconds: 121));
+        await tester.pumpAndSettle();
+        expect(find.text('Show card details'), findsOneWidget);
+        await mouse.moveTo(Offset.zero);
+        await tester.pumpAndSettle();
+        expect(find.text('Show card details'), findsNothing);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump(const Duration(milliseconds: 121));
+        await tester.pumpAndSettle();
+        expect(find.text('Show card details'), findsOneWidget);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is Semantics && w.properties.label == 'Hide card details',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          tester
+              .getSemantics(
+                find.byWidgetPredicate(
+                  (w) =>
+                      w is Semantics &&
+                      w.properties.label == 'Hide card details',
+                ),
+              )
+              .label,
+          'Hide card details',
+        );
+        expect(opens, isEmpty);
+        expect(find.text('1'), findsWidgets);
+        await mouse.removePointer();
+        semantics.dispose();
+      },
+    );
+  }
+
   testWidgets('keyboard opens and closes the folder before privacy control', (
     tester,
   ) async {
@@ -98,14 +191,14 @@ void main() {
       _app(onDetailsVisibleChange: (next) => visible = next),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.byTooltip('Show card details'));
+    await tester.tap(find.bySemanticsLabel('Show card details'));
     await tester.pumpAndSettle();
     expect(visible, isTrue);
     expect(find.text('1'), findsWidgets);
     expect(find.text('2'), findsWidgets);
     expect(find.text('3'), findsWidgets);
     expect(find.text('4'), findsWidgets);
-    expect(find.byTooltip('Hide card details'), findsOneWidget);
+    expect(find.bySemanticsLabel('Hide card details'), findsOneWidget);
   });
 
   testWidgets('closed eye toggle reveals CVV and keeps expiry static', (
@@ -117,7 +210,7 @@ void main() {
 
     expect(find.text('08/29'), findsOneWidget);
     expect(find.text('123'), findsNothing);
-    await tester.tap(find.byTooltip('Show card details'));
+    await tester.tap(find.bySemanticsLabel('Show card details'));
     await tester.pumpAndSettle();
 
     expect(changes, [true]);
@@ -133,10 +226,10 @@ void main() {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byTooltip('Show card details'));
+    await tester.tap(find.bySemanticsLabel('Show card details'));
     await tester.pumpAndSettle();
 
-    expect(find.byTooltip('Hide card details'), findsOneWidget);
+    expect(find.bySemanticsLabel('Hide card details'), findsOneWidget);
     expect(find.text('1'), findsWidgets);
     expect(find.text('2'), findsWidgets);
     expect(find.text('3'), findsWidgets);
@@ -172,7 +265,7 @@ void main() {
         .dy;
 
     expect(glyph('•'), findsNWidgets(3));
-    await tester.tap(find.byTooltip('Show card details'));
+    await tester.tap(find.bySemanticsLabel('Show card details'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 60));
 
@@ -220,7 +313,7 @@ void main() {
         'Open Travel Card, card ending in 0806, expires 08/29',
       ),
     );
-    await tester.tap(find.byTooltip('Show card details'));
+    await tester.tap(find.bySemanticsLabel('Show card details'));
     await tester.pump();
     expect(changes, 0);
   });

@@ -68,6 +68,7 @@ class BeuiDigitSwap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = value.toString();
+    final characters = text.runes.map(String.fromCharCode).toList();
     final reduce = MediaQuery.disableAnimationsOf(context);
     final base = (style ?? DefaultTextStyle.of(context).style).merge(
       glyphStyle,
@@ -89,9 +90,9 @@ class BeuiDigitSwap extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            for (var i = 0; i < text.length; i++)
+            for (var i = 0; i < characters.length; i++)
               _GlyphSlot(
-                character: text[i],
+                character: characters[i],
                 replayKey: animationKey,
                 delay: reduce ? Duration.zero : stagger * i,
                 duration: fadeDuration,
@@ -129,11 +130,18 @@ class _GlyphSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     final fontSize =
         style.fontSize ?? DefaultTextStyle.of(context).style.fontSize ?? 14;
+    final metrics = TextPainter(
+      text: TextSpan(text: '0', style: style.copyWith(letterSpacing: 0)),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout();
+    final ch = metrics.width;
+    metrics.dispose();
     if (character == ' ') {
-      return SizedBox(width: fontSize * 0.42); // ~0.7ch
+      return SizedBox(width: ch * 0.7);
     }
-    final slotWidth = _isDigit ? fontSize * 0.6 : null; // ~1ch
-    final slotHeight = fontSize * 1.1;
+    final slotWidth = _isDigit ? ch : null;
+    final slotHeight = MediaQuery.textScalerOf(context).scale(fontSize) * 1.1;
     final glyphKey = ValueKey<Object?>('${replayKey ?? ''}-$character');
     final switcher = AnimatedSwitcher(
       duration: duration,
