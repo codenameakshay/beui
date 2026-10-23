@@ -517,7 +517,11 @@ class _ViewerControl extends StatelessWidget {
     label: label,
     child: IconButton(
       tooltip: label,
-      onPressed: enabled ? onPressed : null,
+      onPressed: enabled
+          ? () {
+              if (_ImageViewerScope.of(context).selectedId != null) onPressed();
+            }
+          : null,
       icon: Icon(icon, size: 18, color: Colors.white),
       style: IconButton.styleFrom(
         backgroundColor: Colors.white.withValues(alpha: 0.1),
@@ -545,6 +549,34 @@ class BeuiImageViewerContent extends StatefulWidget {
 
 class _BeuiImageViewerContentState extends State<BeuiImageViewerContent> {
   BeuiImageViewerImage? _lastImage;
+  final _viewerFocus = FocusNode(debugLabel: 'Image viewer content');
+  bool _wasOpen = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final scope = _ImageViewerScope.of(context);
+    final open = scope.images.any((image) => image.id == scope.selectedId);
+    if (open && !_wasOpen) _focusOpening();
+    _wasOpen = open;
+  }
+
+  void _focusOpening([int attempt = 0]) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_wasOpen) return;
+      if (_viewerFocus.context != null && _viewerFocus.canRequestFocus) {
+        _viewerFocus.requestFocus();
+      } else if (attempt < 3) {
+        _focusOpening(attempt + 1);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _viewerFocus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -581,6 +613,7 @@ class _BeuiImageViewerContentState extends State<BeuiImageViewerContent> {
                         MediaQuery.sizeOf(context).width < 640 ? 12 : 24,
                       ),
                       child: Focus(
+                        focusNode: _viewerFocus,
                         autofocus: true,
                         onKeyEvent: (_, event) {
                           if (HardwareKeyboard.instance.isAltPressed ||
@@ -796,6 +829,9 @@ class _ZoomableImageState extends State<_ZoomableImage> {
   Offset? _swipeCurrent;
   int _direction = 1;
 
+  bool get _interactive =>
+      _ImageViewerScope.of(context).selectedId == widget.image.id;
+
   @override
   void dispose() {
     _zoomFocus.dispose();
@@ -823,6 +859,7 @@ class _ZoomableImageState extends State<_ZoomableImage> {
     builder: (context, constraints) => GestureDetector(
       behavior: HitTestBehavior.opaque,
       onScaleStart: (details) {
+        if (!_interactive) return;
         _swipeStart = details.focalPoint;
         _swipeCurrent = details.focalPoint;
       },
@@ -831,6 +868,7 @@ class _ZoomableImageState extends State<_ZoomableImage> {
         final current = _swipeCurrent;
         _swipeStart = null;
         _swipeCurrent = null;
+        if (!_interactive) return;
         if (!_zoomed && start != null && current != null) {
           final dx = current.dx - start.dx;
           final dy = current.dy - start.dy;
@@ -841,6 +879,7 @@ class _ZoomableImageState extends State<_ZoomableImage> {
         }
       },
       onScaleUpdate: (details) {
+        if (!_interactive) return;
         _swipeCurrent = details.focalPoint;
         if (_zoomed) {
           setState(
@@ -912,7 +951,7 @@ class _ZoomableImageState extends State<_ZoomableImage> {
             bottom: 12,
             child: Focus(
               onKeyEvent: (_, event) {
-                if (!_zoomed || event is! KeyDownEvent) {
+                if (!_interactive || !_zoomed || event is! KeyDownEvent) {
                   return KeyEventResult.ignored;
                 }
                 final delta = switch (event.logicalKey) {
@@ -935,11 +974,14 @@ class _ZoomableImageState extends State<_ZoomableImage> {
                 child: IconButton.filled(
                   focusNode: _zoomFocus,
                   tooltip: _zoomed ? 'Zoom out' : 'Zoom in',
-                  onPressed: () => setState(() {
-                    _zoomFocus.requestFocus();
-                    _zoomed = !_zoomed;
-                    _pan = Offset.zero;
-                  }),
+                  onPressed: () {
+                    if (!_interactive) return;
+                    setState(() {
+                      _zoomFocus.requestFocus();
+                      _zoomed = !_zoomed;
+                      _pan = Offset.zero;
+                    });
+                  },
                   icon: Icon(_zoomed ? LucideIcons.minus : LucideIcons.plus),
                   style: IconButton.styleFrom(
                     backgroundColor: Colors.black54,
