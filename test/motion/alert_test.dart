@@ -88,7 +88,7 @@ void main() {
   });
 
   testWidgets(
-    'controlled close fades and collapses before unmounting on repeat',
+    'controlled close retains layout during exit before unmounting on repeat',
     (tester) async {
       final requests = <bool>[];
       Widget build(bool open) => _alert(open: open, onOpenChange: requests.add);
@@ -113,7 +113,7 @@ void main() {
         await tester.pump(const Duration(milliseconds: 40));
         expect(body, findsOneWidget);
         expect(tester.widget<Opacity>(fade).opacity, inExclusiveRange(0, 1));
-        expect(tester.getSize(alert).height, inExclusiveRange(0, openHeight));
+        expect(tester.getSize(alert).height, closeTo(openHeight, 0.01));
         await tester.pumpAndSettle();
         expect(body, findsNothing);
         expect(tester.getSize(alert).height, 0);
@@ -122,7 +122,7 @@ void main() {
         await tester.pump(const Duration(milliseconds: 40));
         expect(body, findsOneWidget);
         expect(tester.widget<Opacity>(fade).opacity, inExclusiveRange(0, 1));
-        expect(tester.getSize(alert).height, inExclusiveRange(0, openHeight));
+        expect(tester.getSize(alert).height, closeTo(openHeight, 0.01));
         final translation = tester
             .widget<Transform>(
               find

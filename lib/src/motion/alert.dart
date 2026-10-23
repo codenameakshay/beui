@@ -117,11 +117,14 @@ class _BeuiAlertState extends State<BeuiAlert> {
   Widget build(BuildContext context) {
     final movement = motionFor(context, beuiSpringLayout, isMovement: true);
     final colors = BeuiColors.resolve(context);
+    final dark = Theme.of(context).brightness == Brightness.dark;
     final color = switch (widget.variant) {
       BeuiAlertVariant.default_ => colors.foreground,
       BeuiAlertVariant.info => colors.primary,
-      BeuiAlertVariant.success => colors.success,
-      BeuiAlertVariant.warning => colors.warning,
+      BeuiAlertVariant.success =>
+        dark ? const Color(0xff00d492) : const Color(0xff007a55),
+      BeuiAlertVariant.warning =>
+        dark ? const Color(0xffffd230) : const Color(0xff973c00),
       BeuiAlertVariant.destructive => colors.destructive,
     };
     final role =
@@ -157,6 +160,11 @@ class _BeuiAlertState extends State<BeuiAlert> {
   }
 
   Widget _buildAlertSurface(Color color, Motion movement) {
+    final background = switch (widget.variant) {
+      BeuiAlertVariant.success => const Color(0xff00bc7d),
+      BeuiAlertVariant.warning => const Color(0xfffe9a00),
+      _ => color,
+    };
     final fade = SingleMotionBuilder(
       value: _open ? 1 : 0,
       from: _initialOpen ? 1 : 0,
@@ -164,22 +172,31 @@ class _BeuiAlertState extends State<BeuiAlert> {
         Duration(milliseconds: _open ? 180 : 120),
         beuiEaseOut,
       ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: widget.variant == BeuiAlertVariant.default_
-              ? BeuiColors.resolve(context).background
-              : color.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: DefaultTextStyle.merge(
-            style: TextStyle(color: color, fontSize: 14),
-            child: IconTheme.merge(
-              data: IconThemeData(color: color, size: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [for (final child in widget.children) child],
+      child: _AlertHeight(
+        reduce: movement is NoMotion,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: beuiEaseOut,
+          decoration: BoxDecoration(
+            color: widget.variant == BeuiAlertVariant.default_
+                ? BeuiColors.resolve(context).background
+                : background.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              curve: beuiEaseOut,
+              style: DefaultTextStyle.of(
+                context,
+              ).style.copyWith(color: color, fontSize: 14, height: 20 / 14),
+              child: IconTheme.merge(
+                data: IconThemeData(color: color, size: 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [for (final child in widget.children) child],
+                ),
               ),
             ),
           ),
@@ -201,24 +218,61 @@ class _BeuiAlertState extends State<BeuiAlert> {
     return SingleMotionBuilder(
       value: _open ? 1 : 0,
       from: _initialOpen ? 1 : 0,
-      motion: movement,
-      child: SingleMotionBuilder(
-        value: _open ? 1 : 0,
-        from: _initialOpen ? 1 : 0,
-        motion: CurvedMotion(
-          Duration(milliseconds: _open ? 200 : 120),
-          beuiEaseOut,
-        ),
-        child: fade,
-        builder: (context, progress, child) => Transform.translate(
-          offset: Offset(0, -6 * (1 - progress)),
-          child: child,
-        ),
+      motion: CurvedMotion(
+        Duration(milliseconds: _open ? 200 : 120),
+        beuiEaseOut,
       ),
-      builder: (context, height, child) => ClipRect(
-        child: Align(
+      child: fade,
+      builder: (context, progress, child) => Transform.translate(
+        offset: Offset(0, -6 * (1 - progress)),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _AlertHeight extends StatefulWidget {
+  const _AlertHeight({required this.child, required this.reduce});
+  final Widget child;
+  final bool reduce;
+  @override
+  State<_AlertHeight> createState() => _AlertHeightState();
+}
+
+class _AlertHeightState extends State<_AlertHeight> {
+  final _key = GlobalKey();
+  double? _height;
+  void _measure() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final box = _key.currentContext?.findRenderObject() as RenderBox?;
+      if (box != null && box.hasSize && _height != box.size.height) {
+        setState(() => _height = box.size.height);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _measure();
+    final child = NotificationListener<SizeChangedLayoutNotification>(
+      onNotification: (_) {
+        _measure();
+        return false;
+      },
+      child: SizeChangedLayoutNotifier(key: _key, child: widget.child),
+    );
+    if (_height == null || widget.reduce) return child;
+    return SingleMotionBuilder(
+      value: _height!,
+      motion: beuiSpringLayout,
+      child: child,
+      builder: (context, height, child) => SizedBox(
+        height: height,
+        child: OverflowBox(
           alignment: Alignment.topCenter,
-          heightFactor: height.clamp(0.0, 1.0),
+          minHeight: 0,
+          maxHeight: double.infinity,
           child: child,
         ),
       ),
@@ -262,17 +316,10 @@ class _BeuiAlertIconState extends State<BeuiAlertIcon> {
   @override
   Widget build(BuildContext context) {
     final state = _AlertScope.of(context, 'BeuiAlertIcon');
-    final colors = BeuiColors.resolve(context);
-    final color = switch (state.variant) {
-      BeuiAlertVariant.default_ || BeuiAlertVariant.info => colors.primary,
-      BeuiAlertVariant.success => colors.success,
-      BeuiAlertVariant.warning => colors.warning,
-      BeuiAlertVariant.destructive => colors.destructive,
-    };
     return Padding(
       padding: const EdgeInsets.only(top: 2, right: 12),
       child: IconTheme.merge(
-        data: IconThemeData(color: color, size: 16),
+        data: const IconThemeData(size: 16),
         child: SizedBox(
           width: 16,
           height: 16,
@@ -356,7 +403,7 @@ class BeuiAlertTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DefaultTextStyle.merge(
-    style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4),
+    style: const TextStyle(fontWeight: FontWeight.w500, height: 20 / 14),
     child: child,
   );
 }
@@ -372,7 +419,7 @@ class BeuiAlertDescription extends StatelessWidget {
     child: DefaultTextStyle.merge(
       style: TextStyle(
         color: BeuiColors.resolve(context).mutedForeground,
-        height: 1.5,
+        height: 1.625,
       ),
       child: child,
     ),
