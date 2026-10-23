@@ -35,7 +35,7 @@ Finder legend(String id) => find.byKey(ValueKey('bump-legend-$id'));
 Finder dot(String id, int period) =>
     find.byKey(ValueKey('bump-node-$id-$period'));
 bool pinned(WidgetTester tester, String id) =>
-    tester.widget<Semantics>(legend(id)).properties.toggled!;
+    tester.widget<Semantics>(legend(id)).properties.selected!;
 
 void main() {
   testWidgets(

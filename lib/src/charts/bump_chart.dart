@@ -366,7 +366,7 @@ class BeuiBumpPlot extends StatelessWidget {
                   for (var i = 0; i < scope.periods.length; i++)
                     Positioned(
                       left: x(i) - 28,
-                      top: height - 18 * scale,
+                      top: height - 19 * scale,
                       width: 56,
                       child: Text(
                         scope.periods[i],
@@ -672,7 +672,7 @@ class _BumpPathLayer extends StatelessWidget {
             if (points.lastOrNull case final last?)
               Positioned(
                 left: last.dx + 18 * scale,
-                top: last.dy - 8 * scale,
+                top: last.dy - 6 * scale,
                 child: IgnorePointer(
                   child: Text(
                     row.series.name.length > 12
@@ -872,7 +872,7 @@ class _BumpDotState extends State<_BumpDot> {
         child: Semantics(
           key: ValueKey('bump-node-${row.series.id}-${widget.period}'),
           button: true,
-          toggled: scope.activeId == row.series.id,
+          selected: scope.activeId == row.series.id,
           label:
               '${row.series.name}, ${scope.periods[widget.period]}: rank $rank',
           child: MouseRegion(
@@ -1182,7 +1182,7 @@ class _BumpLegendButtonState extends State<_BumpLegendButton> {
         child: Semantics(
           key: ValueKey('bump-legend-${row.series.id}'),
           button: true,
-          toggled: scope.activeId == row.series.id,
+          selected: scope.activeId == row.series.id,
           label: 'Highlight ${row.series.name}',
           excludeSemantics: true,
           onTap: select,

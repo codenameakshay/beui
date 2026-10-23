@@ -107,7 +107,7 @@ void main() {
       tester
           .widget<Semantics>(find.byKey(const ValueKey('bump-legend-studio')))
           .properties
-          .toggled,
+          .selected,
       isFalse,
     );
     expect(
@@ -127,7 +127,7 @@ void main() {
       tester
           .widget<Semantics>(find.byKey(const ValueKey('bump-node-studio-0')))
           .properties
-          .toggled,
+          .selected,
       isFalse,
     );
     await gesture.removePointer();
@@ -152,7 +152,7 @@ void main() {
       tester
           .widget<Semantics>(find.byKey(const ValueKey('bump-legend-studio')))
           .properties
-          .toggled,
+          .selected,
       isTrue,
     );
     await gesture.removePointer();
@@ -195,7 +195,7 @@ void main() {
       tester
           .widget<Semantics>(find.byKey(const ValueKey('bump-legend-studio')))
           .properties
-          .toggled,
+          .selected,
       isFalse,
     );
     await gesture.removePointer();

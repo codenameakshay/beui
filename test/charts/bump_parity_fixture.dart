@@ -28,6 +28,26 @@ class _Fixture extends StatefulWidget {
 class _FixtureState extends State<_Fixture> {
   bool updated = false;
   @override
+  void initState() {
+    super.initState();
+    HardwareKeyboard.instance.addHandler(_key);
+  }
+
+  bool _key(KeyEvent event) {
+    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.keyU) {
+      setState(() => updated = !updated);
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  void dispose() {
+    HardwareKeyboard.instance.removeHandler(_key);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final params = Uri.base.queryParameters;
     final variant = params['variant'] ?? 'default';
@@ -42,14 +62,6 @@ class _FixtureState extends State<_Fixture> {
         backgroundColor: colors.background,
         body: Focus(
           canRequestFocus: false,
-          onKeyEvent: (_, event) {
-            if (event is KeyDownEvent &&
-                event.logicalKey == LogicalKeyboardKey.keyU) {
-              setState(() => updated = !updated);
-              return KeyEventResult.handled;
-            }
-            return KeyEventResult.ignored;
-          },
           child: Align(
             alignment: Alignment.topCenter,
             child: Padding(
