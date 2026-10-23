@@ -4,6 +4,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../theme/beui_colors.dart';
+import '../tokens/motion.dart';
 import '_shared.dart';
 
 /// An order-book price level.
@@ -251,6 +252,9 @@ class _BeuiOrderBookState extends State<BeuiOrderBook>
       formatPrice: formatPrice,
       formatSize: formatSize,
       onActive: setActiveId,
+      onInspect: (id, on) {
+        if (on || activeId == id) setActiveId(on ? id : null);
+      },
       onSelect: widget.onLevelSelect,
       child:
           widget.child ??
@@ -265,13 +269,7 @@ class _BeuiOrderBookState extends State<BeuiOrderBook>
             ],
           ),
     );
-    return Focus(
-      autofocus: true,
-      onKeyEvent: (_, event) => handleInspectorKey(event)
-          ? KeyEventResult.handled
-          : KeyEventResult.ignored,
-      child: Semantics(container: true, label: widget.label, child: scope),
-    );
+    return Semantics(container: true, label: widget.label, child: scope);
   }
 }
 
@@ -378,6 +376,7 @@ class _OrderBookScope extends StatelessWidget {
     required this.formatPrice,
     required this.formatSize,
     required this.onActive,
+    required this.onInspect,
     required this.onSelect,
     required this.child,
   });
@@ -389,6 +388,7 @@ class _OrderBookScope extends StatelessWidget {
   final String baseSymbol, quoteSymbol;
   final String Function(double) formatPrice, formatSize;
   final ValueChanged<String?> onActive;
+  final void Function(String, bool) onInspect;
   final void Function(BeuiOrderBookDepthLevel, BeuiOrderBookSideKind)? onSelect;
   final Widget child;
   @override
@@ -470,120 +470,213 @@ class BeuiOrderBookSide extends StatelessWidget {
     }
     return Column(
       children: [
-        for (final row in rows)
-          Builder(
-            builder: (context) {
-              final isActive =
-                  s.active?.side == side && s.active?.price == row.price;
-              final inRange =
-                  s.active?.side == side &&
-                  (side == BeuiOrderBookSideKind.bid
-                      ? row.price >= s.active!.price
-                      : row.price <= s.active!.price);
-              return Semantics(
-                button: true,
-                selected: isActive,
-                label:
-                    '${side.name}, ${s.formatPrice(row.price)} ${s.quoteSymbol}, size ${s.formatSize(row.size)} ${s.baseSymbol}, total ${s.formatSize(row.total)}',
-                child: MouseRegion(
-                  onEnter: (_) => s.onActive('${side.name}:${row.price}'),
-                  onExit: (_) {
-                    if (isActive) s.onActive(null);
-                  },
-                  child: Focus(
-                    onFocusChange: (focused) => s.onActive(
-                      focused ? '${side.name}:${row.price}' : null,
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        s.onActive('${side.name}:${row.price}');
-                        s.onSelect?.call(row, side);
-                      },
-                      child: SizedBox(
-                        height: 29,
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: isActive
-                                      ? tint.withValues(alpha: .10)
-                                      : null,
-                                  border: isActive
-                                      ? Border(
-                                          left: BorderSide(
-                                            color: tint,
-                                            width: 2,
-                                          ),
-                                        )
-                                      : null,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: BeuiChartSpring(
-                                    value: s.maxTotal <= 0
-                                        ? 0
-                                        : row.total / s.maxTotal,
-                                    builder: (_, fraction) => FractionallySizedBox(
-                                      widthFactor: fraction.clamp(0, 1),
-                                      heightFactor: 1,
-                                      child: ColoredBox(
-                                        key: ValueKey(
-                                          'beui-order-bar-${side.name}-${row.price}',
-                                        ),
-                                        color: tint.withValues(
-                                          alpha: isActive
-                                              ? .55
-                                              : inRange
-                                              ? .45
-                                              : .38,
-                                        ),
-                                      ),
-                                    ),
+        for (var i = 0; i < rows.length; i++)
+          _OrderBookDepthRow(
+            key: ValueKey('${side.name}:${rows[i].price}'),
+            row: rows[i],
+            side: side,
+            index: i,
+            scope: s,
+            tint: tint,
+          ),
+      ],
+    );
+  }
+}
+
+class _OrderBookDepthRow extends StatefulWidget {
+  const _OrderBookDepthRow({
+    required this.row,
+    required this.side,
+    required this.index,
+    required this.scope,
+    required this.tint,
+    super.key,
+  });
+  final BeuiOrderBookDepthLevel row;
+  final BeuiOrderBookSideKind side;
+  final int index;
+  final _OrderBookScope scope;
+  final Color tint;
+  @override
+  State<_OrderBookDepthRow> createState() => _OrderBookDepthRowState();
+}
+
+class _OrderBookDepthRowState extends State<_OrderBookDepthRow>
+    with SingleTickerProviderStateMixin {
+  late final _flash = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 280),
+  );
+  double _flashStart = 0;
+  double get _highlight {
+    final ms = _flash.value * 280;
+    if (ms < 80) {
+      return _flashStart + (.1 - _flashStart) * beuiEaseOut.transform(ms / 80);
+    }
+    return .1 * (1 - beuiEaseOut.transform(((ms - 80) / 200).clamp(0.0, 1.0)));
+  }
+
+  @override
+  void didUpdateWidget(covariant _OrderBookDepthRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.row.size != widget.row.size) {
+      _flashStart = _flash.isAnimating ? _highlight : 0;
+      _flash.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _flash.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = widget.scope;
+    final row = widget.row;
+    final side = widget.side;
+    final tint = widget.tint;
+    final colors = BeuiColors.resolve(context);
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    final active = s.active?.side == side && s.active?.price == row.price;
+    final inRange =
+        s.active?.side == side &&
+        (side == BeuiOrderBookSideKind.bid
+            ? row.price >= s.active!.price
+            : row.price <= s.active!.price);
+    final fraction = s.maxTotal <= 0 ? 0.0 : row.total / s.maxTotal;
+    final delay = Duration(milliseconds: widget.index.clamp(0, 8) * 25);
+    void inspect(bool on) => s.onInspect('${side.name}:${row.price}', on);
+    return Semantics(
+      container: true,
+      label:
+          '${side.name}, ${s.formatPrice(row.price)}, size ${s.formatSize(row.size)}, total ${s.formatSize(row.total)}',
+      child: MouseRegion(
+        onEnter: (_) => inspect(true),
+        onExit: (_) => inspect(false),
+        child: BeuiChartTween(
+          from: 0,
+          value: 1,
+          duration: const Duration(milliseconds: 180),
+          delay: reduce ? Duration.zero : delay,
+          builder: (context, opacity) => Opacity(
+            opacity: opacity.clamp(0, 1),
+            child: SizedBox(
+              height: 32,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 1,
+                      ),
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: BeuiChartTween(
+                              from: fraction * .85,
+                              value: fraction,
+                              duration: const Duration(milliseconds: 300),
+                              delay: delay,
+                              motion: beuiSpringPanel,
+                              isMovement: true,
+                              builder: (_, value) => FractionallySizedBox(
+                                widthFactor: value.clamp(0, 1),
+                                heightFactor: 1,
+                                child: ColoredBox(
+                                  key: ValueKey(
+                                    'beui-order-bar-${side.name}-${row.price}',
                                   ),
+                                  color: tint.withValues(alpha: .12),
                                 ),
                               ),
                             ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    s.formatPrice(row.price),
-                                    style: TextStyle(
-                                      color: tint,
-                                      fontWeight: isActive
-                                          ? FontWeight.w700
-                                          : FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    s.formatSize(row.size),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    s.formatSize(row.total),
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                      color: colors.mutedForeground,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          ),
+                          AnimatedBuilder(
+                            animation: _flash,
+                            builder: (_, _) => ColoredBox(
+                              color: tint.withValues(
+                                alpha: reduce || !_flash.isAnimating
+                                    ? 0
+                                    : _highlight,
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            color: tint.withValues(
+                              alpha: inRange
+                                  ? .08
+                                  : active
+                                  ? .05
+                                  : 0,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: s.onSelect == null
+                                ? Text(
+                                    s.formatPrice(row.price),
+                                    style: TextStyle(color: tint),
+                                  )
+                                : Focus(
+                                    canRequestFocus: false,
+                                    onFocusChange: inspect,
+                                    child: TextButton(
+                                      key: ValueKey(
+                                        'beui-order-price-${side.name}-${row.price}',
+                                      ),
+                                      onPressed: () {
+                                        inspect(true);
+                                        s.onSelect?.call(row, side);
+                                      },
+                                      style: TextButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: Size.zero,
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        foregroundColor: tint,
+                                      ),
+                                      child: Text(s.formatPrice(row.price)),
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            s.formatSize(row.size),
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            s.formatSize(row.total),
+                            textAlign: TextAlign.right,
+                            style: TextStyle(color: colors.mutedForeground),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-      ],
+        ),
+      ),
     );
   }
 }

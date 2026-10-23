@@ -22,6 +22,7 @@ Widget _surface({
   BeuiOrderBookActiveLevel? defaultActive,
   ValueChanged<BeuiOrderBookActiveLevel?>? onChange,
   bool reduce = false,
+  void Function(BeuiOrderBookDepthLevel, BeuiOrderBookSideKind)? onSelect,
 }) => beuiTestApp(
   SizedBox(
     width: 640,
@@ -37,6 +38,7 @@ Widget _surface({
           activeLevel: active,
           defaultActiveLevel: defaultActive,
           onActiveLevelChange: onChange,
+          onLevelSelect: onSelect,
           child: const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -88,7 +90,9 @@ void main() {
     (tester) async {
       final changes = <BeuiOrderBookActiveLevel?>[];
       await tester.pumpWidget(_surface(onChange: changes.add));
-      await tester.tap(find.bySemanticsLabel(RegExp('bid, 98.00')));
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer();
+      await mouse.moveTo(tester.getCenter(find.text('98.00')));
       await tester.pump();
       expect(
         changes,
@@ -109,6 +113,7 @@ void main() {
         ),
       );
       expect(find.textContaining('Avg 101.60'), findsOneWidget);
+      await mouse.removePointer();
     },
   );
 
@@ -134,7 +139,7 @@ void main() {
     final bar = tester.getSize(
       find.byKey(const ValueKey('beui-order-bar-ask-102.0')),
     );
-    expect(bar.height, closeTo(29, 0.5));
+    expect(bar.height, 30);
     expect(bar.width, greaterThan(80));
   });
 
@@ -150,16 +155,19 @@ void main() {
     );
   });
 
-  testWidgets('keyboard Home and Escape inspect and clear levels', (
+  testWidgets('native price buttons inspect on Tab and ignore chart arrows', (
     tester,
   ) async {
-    await tester.pumpWidget(_surface());
-    await tester.tap(find.bySemanticsLabel(RegExp('bid, 98.00')));
+    await tester.pumpWidget(_surface(onSelect: (_, _) {}));
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    expect(find.textContaining('Avg 101.60'), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.home);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
-    expect(find.textContaining('Avg 99.00'), findsOneWidget);
-    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    expect(find.textContaining('Avg 101.60'), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.pump();
-    expect(find.text('Hover a level to inspect depth'), findsOneWidget);
+    expect(find.textContaining('Avg 101.00'), findsOneWidget);
   });
 }
