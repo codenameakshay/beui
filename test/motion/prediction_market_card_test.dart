@@ -49,6 +49,32 @@ Widget _app({
 );
 
 void main() {
+  testWidgets('keyboard focus paints the offset source ring', (tester) async {
+    await tester.pumpWidget(_app());
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    final paint = find
+        .ancestor(
+          of: find.bySemanticsLabel('Trade Celtics at 51%'),
+          matching: find.byType(CustomPaint),
+        )
+        .first;
+    expect(
+      tester.renderObject(paint),
+      paints..something((method, arguments) {
+        if (method != #drawRRect) return false;
+        final rect = arguments[0] as RRect;
+        final stroke = arguments[1] as Paint;
+        return rect.left == -3 &&
+            rect.top == -3 &&
+            stroke.color.toARGB32() == BeuiColors.light().ring.toARGB32() &&
+            stroke.style == PaintingStyle.stroke &&
+            stroke.strokeWidth == 2;
+      }),
+    );
+  });
+
   testWidgets('pointer activation moves the keyboard target to that outcome', (
     tester,
   ) async {

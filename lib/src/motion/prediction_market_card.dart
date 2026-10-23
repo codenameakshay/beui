@@ -577,11 +577,39 @@ class _OddsButtonState extends State<_OddsButton> {
           },
           canRequestFocus: false,
           overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-          child: scaled,
+          child: CustomPaint(
+            foregroundPainter: _focused
+                ? _OddsFocusRing(BeuiColors.resolve(context).ring)
+                : null,
+            child: scaled,
+          ),
         ),
       ),
     );
   }
+}
+
+class _OddsFocusRing extends CustomPainter {
+  const _OddsFocusRing(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        (Offset.zero & size).inflate(3),
+        const Radius.circular(15),
+      ),
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_OddsFocusRing oldDelegate) => color != oldDelegate.color;
 }
 
 class _BookmarkButton extends StatefulWidget {
