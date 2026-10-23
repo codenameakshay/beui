@@ -48,6 +48,35 @@ BeuiPriceTargetFan _chart({
 );
 
 void main() {
+  testWidgets('native mouse target focus survives exit before Tab', (
+    tester,
+  ) async {
+    final changes = <BeuiPriceTargetFanActive?>[];
+    await _pumpChart(tester, _chart(onActiveChange: changes.add), reduce: true);
+    final high = find.byKey(const ValueKey('price-target-target-High'));
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(high));
+    await mouse.down(tester.getCenter(high));
+    await mouse.up();
+    await mouse.moveTo(Offset.zero);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(changes.last, const BeuiPriceTargetFanActive.target('Mean'));
+    expect(find.text('Mean target'), findsNWidgets(2));
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(find.text('Analysts'), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text('Mean target'), findsNWidgets(2));
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    await tester.pumpAndSettle();
+    expect(find.text('Analysts'), findsNothing);
+    await mouse.removePointer();
+  });
+
   testWidgets('touch toggles on down while mouse activation keeps hover', (
     tester,
   ) async {
