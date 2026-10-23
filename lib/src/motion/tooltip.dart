@@ -27,15 +27,15 @@ class _TooltipProviderScope extends InheritedWidget {
 class BeuiTooltipProvider extends StatefulWidget {
   const BeuiTooltipProvider({
     required this.child,
-    this.delay = const Duration(milliseconds: 120),
-    this.closeDelay = Duration.zero,
-    this.skipDelay = const Duration(milliseconds: 300),
+    this.delay,
+    this.closeDelay,
+    this.skipDelay,
     super.key,
   });
 
-  final Duration delay;
-  final Duration closeDelay;
-  final Duration skipDelay;
+  final Duration? delay;
+  final Duration? closeDelay;
+  final Duration? skipDelay;
   final Widget child;
 
   @override
@@ -43,23 +43,63 @@ class BeuiTooltipProvider extends StatefulWidget {
 }
 
 class _TooltipProviderState extends State<BeuiTooltipProvider> {
+  _TooltipProviderState? _parent;
+  Duration get delay =>
+      widget.delay ?? _parent?.delay ?? const Duration(milliseconds: 120);
+  Duration get closeDelay =>
+      widget.closeDelay ?? _parent?.closeDelay ?? Duration.zero;
+  Duration get skipDelay =>
+      widget.skipDelay ??
+      _parent?.skipDelay ??
+      const Duration(milliseconds: 300);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _parent = _TooltipProviderScope.maybeOf(context);
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      _TooltipProviderScope(state: this, child: widget.child);
+}
+
+// Source timing providers configure delays. Ownership and the last close are
+// shared across providers and tooltips without a provider.
+final _tooltipSession = _TooltipSession();
+
+class _TooltipSession {
+  int clients = 0;
+  final pending = <Object, VoidCallback>{};
+
+  void detach(Object owner) {
+    release(owner);
+    if (--clients == 0) _closedAt = null;
+  }
+
   Object? _active;
   bool _activeVisible = false;
   VoidCallback? _closeActive;
-  DateTime? _warmUntil;
+  DateTime? _closedAt;
 
-  bool get _isWarm => _warmUntil != null && clock.now().isBefore(_warmUntil!);
+  bool isWarm(Duration skipDelay) =>
+      _closedAt != null && clock.now().difference(_closedAt!) < skipDelay;
 
-  bool claim(Object owner, VoidCallback close) {
-    final wasWarm = _isWarm || _activeVisible;
+  void claim(Object owner, VoidCallback close) {
+    final cancelled = pending.entries
+        .where((entry) => entry.key != owner)
+        .map((entry) => entry.value)
+        .toList();
+    pending.clear();
+    for (final cancel in cancelled) {
+      cancel();
+    }
     if (_active != owner) {
       _closeActive?.call();
       _activeVisible = false;
     }
     _active = owner;
     _closeActive = close;
-    _warmUntil = null;
-    return wasWarm;
   }
 
   void markVisible(Object owner) {
@@ -67,19 +107,14 @@ class _TooltipProviderState extends State<BeuiTooltipProvider> {
   }
 
   void release(Object owner, {bool warm = true}) {
+    pending.remove(owner);
     if (_active == owner) {
       _active = null;
       _closeActive = null;
-      _warmUntil = warm && _activeVisible
-          ? clock.now().add(widget.skipDelay)
-          : null;
+      if (warm && _activeVisible) _closedAt = clock.now();
       _activeVisible = false;
     }
   }
-
-  @override
-  Widget build(BuildContext context) =>
-      _TooltipProviderScope(state: this, child: widget.child);
 }
 
 /// The trigger slot of [BeuiTooltip.composed]. Child handlers remain intact.
@@ -161,6 +196,8 @@ class BeuiTooltip extends StatefulWidget {
     this.avoidCollisions = true,
     this.externalAnchor,
     this.anchorLink,
+    this.asLabel = false,
+    this.semanticLabel,
     super.key,
   }) : assert((externalAnchor == null) == (anchorLink == null));
 
@@ -178,6 +215,8 @@ class BeuiTooltip extends StatefulWidget {
     this.avoidCollisions = true,
     this.externalAnchor,
     this.anchorLink,
+    this.asLabel = false,
+    this.semanticLabel,
     super.key,
   }) : assert((externalAnchor == null) == (anchorLink == null)),
        child = trigger,
@@ -238,6 +277,13 @@ class BeuiTooltip extends StatefulWidget {
   /// remains the local interaction slot and does not become a second target.
   final LayerLink? anchorLink;
 
+  /// Use the tooltip text as an icon-only trigger's accessible name.
+  final bool asLabel;
+
+  /// Accessible text for rich content. Plain [Text] content is inferred.
+  /// Decorative shortcut text can be excluded from this label.
+  final String? semanticLabel;
+
   @override
   State<BeuiTooltip> createState() => _BeuiTooltipState();
 }
@@ -270,6 +316,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   @override
   void initState() {
     super.initState();
+    _tooltipSession.clients++;
     GestureBinding.instance.pointerRouter.addGlobalRoute(_onGlobalPointer);
     HardwareKeyboard.instance.addHandler(_onKeyboardModality);
   }
@@ -280,7 +327,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     GestureBinding.instance.pointerRouter.removeGlobalRoute(_onGlobalPointer);
     HardwareKeyboard.instance.removeHandler(_onKeyboardModality);
     _triggerFocus.dispose();
-    _provider?.release(_owner);
+    _tooltipSession.detach(_owner);
     super.dispose();
   }
 
@@ -303,7 +350,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
       _timer?.cancel();
       _timer = null;
       if (widget.open == null) _internalOpen = false;
-      _provider?.release(_owner, warm: false);
+      _tooltipSession.release(_owner, warm: false);
     }
     if (oldWidget.side != widget.side ||
         oldWidget.avoidCollisions != widget.avoidCollisions ||
@@ -320,17 +367,19 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     _timer?.cancel();
     _timer = null;
     if (_open) return;
-    final warm = _provider?.claim(_owner, _hideFromProvider) ?? false;
+    final warm = _tooltipSession.isWarm(
+      _provider?.skipDelay ?? const Duration(milliseconds: 300),
+    );
     final delay = immediate || warm
         ? Duration.zero
-        : widget.delay ??
-              _provider?.widget.delay ??
-              const Duration(milliseconds: 120);
+        : widget.delay ?? _provider?.delay ?? const Duration(milliseconds: 120);
+    _tooltipSession.pending[_owner] = _hideFromProvider;
     _timer = Timer(delay, () {
       _timer = null;
       if (mounted && !widget.disabled) {
-        _provider?.markVisible(_owner);
+        _tooltipSession.claim(_owner, _hideFromProvider);
         _commit(true);
+        if (_open) _tooltipSession.markVisible(_owner);
         _measureCollision();
       }
     });
@@ -339,7 +388,10 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   void _hideFromProvider() {
     _timer?.cancel();
     _timer = null;
-    if (_open && mounted) _commit(false);
+    if (_open && mounted) {
+      _tooltipSession.release(_owner);
+      _commit(false);
+    }
   }
 
   void _commit(bool next) {
@@ -353,7 +405,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     _timer = null;
     _grace = null;
     final closeDelay =
-        widget.closeDelay ?? _provider?.widget.closeDelay ?? Duration.zero;
+        widget.closeDelay ?? _provider?.closeDelay ?? Duration.zero;
     if (closeDelay > Duration.zero && _open) {
       _timer = Timer(closeDelay, _finishHide);
       return;
@@ -365,7 +417,7 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
     if (_open) {
       _commit(false);
     }
-    _provider?.release(_owner, warm: warm);
+    _tooltipSession.release(_owner, warm: warm);
   }
 
   Rect? _bounds(GlobalKey key) {
@@ -558,13 +610,23 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
                 _touchStart = null;
                 _hide();
               },
-              child: widget.child,
+              child: MergeSemantics(
+                child: Semantics(
+                  label: widget.asLabel ? _semanticText : null,
+                  tooltip: widget.asLabel ? null : _semanticText,
+                  child: widget.child,
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
   }
+
+  String? get _semanticText =>
+      widget.semanticLabel ??
+      (widget.content is Text ? (widget.content as Text).data : null);
 
   Widget _buildTooltip(
     BuildContext context,

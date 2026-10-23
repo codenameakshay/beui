@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 ///
 /// Mirrors `TooltipPreview`: four labeled triggers arranged as a cross.
 Widget tooltipDemo(BuildContext context) {
+  if (Uri.base.queryParameters['example'] == 'toolbar') {
+    return const _TooltipToolbar();
+  }
   final colors = Theme.of(context).extension<BeuiColors>()!;
   return BeuiTooltipProvider(
     child: Column(
@@ -47,6 +50,147 @@ Widget tooltipDemo(BuildContext context) {
       ],
     ),
   );
+}
+
+class _TooltipToolbar extends StatefulWidget {
+  const _TooltipToolbar();
+  @override
+  State<_TooltipToolbar> createState() => _TooltipToolbarState();
+}
+
+class _TooltipToolbarState extends State<_TooltipToolbar> {
+  final _active = <String>{'Bold'};
+  static const _actions = [
+    (label: 'Bold', shortcut: '⌘B', icon: LucideIcons.bold),
+    (label: 'Italic', shortcut: '⌘I', icon: LucideIcons.italic),
+    (label: 'Underline', shortcut: '⌘U', icon: LucideIcons.underline),
+    (label: 'Strikethrough', shortcut: '⌘⇧X', icon: LucideIcons.strikethrough),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    final colors = BeuiColors.resolve(context);
+    return BeuiTooltipProvider(
+      delay: const Duration(milliseconds: 300),
+      skipDelay: const Duration(milliseconds: 400),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: colors.card,
+                border: Border.all(color: colors.border),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 4,
+                children: [
+                  for (final action in _actions)
+                    BeuiTooltip.composed(
+                      asLabel: true,
+                      semanticLabel: action.label,
+                      trigger: BeuiTooltipTrigger(
+                        child: Semantics(
+                          toggled: _active.contains(action.label),
+                          child: IconButton(
+                            onPressed: () => setState(() {
+                              if (!_active.remove(action.label)) {
+                                _active.add(action.label);
+                              }
+                            }),
+                            constraints: const BoxConstraints.tightFor(
+                              width: 32,
+                              height: 32,
+                            ),
+                            padding: EdgeInsets.zero,
+                            style: IconButton.styleFrom(
+                              backgroundColor: _active.contains(action.label)
+                                  ? colors.muted
+                                  : Colors.transparent,
+                              foregroundColor: _active.contains(action.label)
+                                  ? colors.foreground
+                                  : colors.mutedForeground,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            icon: Icon(action.icon, size: 16),
+                          ),
+                        ),
+                      ),
+                      tooltip: BeuiTooltipContent(
+                        side: BeuiTooltipSide.bottom,
+                        arrow: true,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(action.label),
+                            const SizedBox(width: 8),
+                            ExcludeSemantics(
+                              child: Text(
+                                action.shortcut,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: colors.mutedForeground,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: SizedBox(
+                      height: 20,
+                      width: 1,
+                      child: ColoredBox(color: colors.border),
+                    ),
+                  ),
+                  BeuiTooltip(
+                    asLabel: true,
+                    semanticLabel: 'Insert link',
+                    disabled: _active.isEmpty,
+                    side: BeuiTooltipSide.bottom,
+                    align: BeuiTooltipAlign.end,
+                    arrow: true,
+                    content: const Text('Insert link'),
+                    child: IconButton(
+                      onPressed: _active.isEmpty ? null : () {},
+                      constraints: const BoxConstraints.tightFor(
+                        width: 32,
+                        height: 32,
+                      ),
+                      padding: EdgeInsets.zero,
+                      icon: Icon(
+                        LucideIcons.link_2,
+                        size: 16,
+                        color: colors.mutedForeground.withValues(
+                          alpha: _active.isEmpty ? .4 : 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: 320,
+              child: Text(
+                'The first label waits, the next ones open instantly. Click hides it until the pointer leaves.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: colors.mutedForeground),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 Widget _emptyCell() => const SizedBox(width: 80, height: 40);
@@ -94,6 +238,7 @@ class _TooltipTrigger extends StatelessWidget {
           color: colors.card,
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
+            onTap: () {},
             hoverColor: colors.muted,
             borderRadius: BorderRadius.circular(8),
             child: Container(

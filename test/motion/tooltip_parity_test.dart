@@ -34,6 +34,133 @@ Future<TestGesture> _open(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('a hovered tooltip replaces a focused tooltip across providers', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        Row(
+          children: [
+            BeuiTooltipProvider(
+              delay: const Duration(milliseconds: 200),
+              child: BeuiTooltip(
+                content: const Text('First context'),
+                child: TextButton(onPressed: () {}, child: const Text('First')),
+              ),
+            ),
+            BeuiTooltipProvider(
+              delay: const Duration(milliseconds: 200),
+              child: BeuiTooltip(
+                content: const Text('Second context'),
+                child: TextButton(
+                  onPressed: () {},
+                  child: const Text('Second'),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(find.text('First context'), findsOneWidget);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(find.text('Second')));
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.pumpAndSettle();
+    expect(find.text('Second context'), findsOneWidget);
+    expect(find.text('First context'), findsNothing);
+  });
+
+  testWidgets('unscoped tooltips share a warm window after an actual close', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      beuiTestApp(
+        Row(
+          children: [
+            for (final label in ['One', 'Two'])
+              BeuiTooltip(
+                delay: const Duration(milliseconds: 800),
+                content: Text('$label context'),
+                child: SizedBox(width: 100, height: 40, child: Text(label)),
+              ),
+          ],
+        ),
+      ),
+    );
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(find.text('One')));
+    await tester.pump(const Duration(milliseconds: 800));
+    await tester.pumpAndSettle();
+    expect(find.text('One context'), findsOneWidget);
+    await mouse.moveTo(tester.getCenter(find.text('Two')));
+    await tester.pump(const Duration(milliseconds: 1));
+    await tester.pumpAndSettle();
+    expect(find.text('Two context'), findsOneWidget);
+    expect(find.text('One context'), findsNothing);
+  });
+
+  testWidgets(
+    'nested timing inherits omitted delay and overrides close delay',
+    (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiTooltipProvider(
+            delay: Duration(milliseconds: 700),
+            child: BeuiTooltipProvider(
+              closeDelay: Duration(milliseconds: 200),
+              child: BeuiTooltip(
+                content: Text('Inherited context'),
+                child: SizedBox(key: _anchor, width: 80, height: 40),
+              ),
+            ),
+          ),
+        ),
+      );
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      addTearDown(mouse.removePointer);
+      await mouse.addPointer(location: Offset.zero);
+      await mouse.moveTo(tester.getCenter(find.byKey(_anchor)));
+      await tester.pump(const Duration(milliseconds: 699));
+      expect(find.text('Inherited context'), findsNothing);
+      await tester.pump(const Duration(milliseconds: 1));
+      await tester.pumpAndSettle();
+      expect(find.text('Inherited context'), findsOneWidget);
+      await mouse.moveTo(Offset.zero);
+      await tester.pump(const Duration(milliseconds: 199));
+      expect(find.text('Inherited context'), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.text('Inherited context'), findsNothing);
+    },
+  );
+
+  testWidgets('rich tooltip names an icon button without decorative shortcut', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiTooltip(
+          asLabel: true,
+          semanticLabel: 'Bold',
+          content: const Row(children: [Text('Bold'), Text('⌘B')]),
+          child: IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.format_bold),
+          ),
+        ),
+      ),
+    );
+    expect(tester.getSemantics(find.byType(IconButton)).label, 'Bold');
+    semantics.dispose();
+  });
+
   testWidgets('keyboard use restores a mouse-focused suppressed label', (
     tester,
   ) async {
