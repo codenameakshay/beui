@@ -815,7 +815,7 @@ const List<ExploreEntry> kBlocks = [
     section: ExploreSection.blocks,
     isNew: true,
     blurb:
-        'Feedback popover that keeps drafts, validates inline and morphs to success.',
+        'Feedback popover with sentiment, a required message and a success state.',
     builder: feedbackWidgetDemo,
   ),
   ExploreEntry(

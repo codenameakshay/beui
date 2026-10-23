@@ -3,6 +3,12 @@
 beUI 3.0.0 integrates the remaining v3 catalog families into one package:
 motion components, blocks, agents, and charts.
 
+### Compatibility changes
+
+* Prediction Market odds callbacks now report `side: "yes"` for every row, including rows displaying No, matching the source preview. The callback signature is unchanged.
+* Feedback rejects empty or whitespace-only submissions. Closing discards the draft and selected sentiment; a rejected submission keeps the draft for retry.
+* `BeuiTextTheme` defaults now name Geist and Geist Mono. Consumers must provide those fonts; the package still bundles no font assets.
+
 ### Components
 
 * Port Timeline, Animated Alert, Collapsible, Aspect Ratio, Arc Picker, Sortable List, Image Viewer, Date Range Picker, Card, Color Picker, Color Selector, Breadcrumb, Expandable Control, Adaptive Stepper, Combobox, Multi Select and File Tree.

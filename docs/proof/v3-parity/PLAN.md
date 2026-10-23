@@ -19,6 +19,10 @@ Preserve immutable reference and pre-change recordings. Attach labeled before/af
 
 ## Ownership
 
+The original family rounds are integrated and pushed through `a2942181`. Work resumed because that handoff did not complete the acceptance criteria. Current isolated owners are candle/volume on 18114, bump on 18115, composition/funnel on 18116, and agent-local repairs on 18117. The parent owns shared primitives and combined-build checks on 18118. A read-only worker reconciles remaining obligations in `resume-20261023/coverage-ledger.json`.
+
+The fresh combined-head checks are recorded in [GATES.md](resume-20261023/GATES.md). The 54 golden failures remain failures. Completion requires resolving the source implementation gaps and verifying the remaining states, not merely integrating the next handoff.
+
 | Slice | Work | Local port |
 | --- | --- | --- |
 | charts | Chart widgets, demos and tests | 8101 |
