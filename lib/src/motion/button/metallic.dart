@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
@@ -68,7 +69,7 @@ class _BeuiMetallicButtonState extends State<BeuiMetallicButton>
     with TickerProviderStateMixin {
   late final AnimationController _drift = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 8),
+    duration: const Duration(seconds: 4),
   );
   late final AnimationController _shimmer = AnimationController(
     vsync: this,
@@ -136,14 +137,6 @@ class _BeuiMetallicButtonState extends State<BeuiMetallicButton>
     final inherited = DefaultTextStyle.of(context).style;
     final still = _still;
 
-    if (!still && _hovered && !_shimmer.isAnimating) {
-      _shimmer.forward(from: 0);
-    }
-    if (still && _shimmer.isAnimating) {
-      _shimmer.stop();
-      _shimmer.value = 0;
-    }
-
     Widget content = DefaultTextStyle(
       style: TextStyle(
         fontFamily: inherited.fontFamily,
@@ -161,16 +154,25 @@ class _BeuiMetallicButtonState extends State<BeuiMetallicButton>
     Widget chrome = AnimatedBuilder(
       animation: Listenable.merge([_drift, _shimmer]),
       builder: (context, child) {
-        final driftT = still ? 0.0 : _drift.value;
-        final shimmerT = still || !_hovered ? 0.0 : _shimmer.value;
+        final driftT = still ? 0.0 : beuiEaseInOut.transform(_drift.value);
+        final shimmerT = still ? 0.0 : _shimmer.value;
         return Stack(
           children: [
             Positioned.fill(
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final w = constraints.maxWidth;
+                  final layerWidth = w * 1.36;
+                  final h = constraints.maxHeight;
+                  final dx = math.sin(105 * math.pi / 180);
+                  final dy = -math.cos(105 * math.pi / 180);
+                  final length = layerWidth * dx.abs() + h * dy.abs();
+                  final end = Alignment(
+                    dx * length / layerWidth,
+                    dy * length / h,
+                  );
                   return Transform.translate(
-                    offset: Offset(driftT * 0.13 * w, 0),
+                    offset: Offset(-0.18 * w + driftT * 0.13 * layerWidth, 0),
                     child: OverflowBox(
                       maxWidth: w * 1.36,
                       alignment: Alignment.centerLeft,
@@ -179,9 +181,9 @@ class _BeuiMetallicButtonState extends State<BeuiMetallicButton>
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             borderRadius: radius,
-                            gradient: const LinearGradient(
-                              begin: Alignment(-0.4, -1),
-                              end: Alignment(1, 1),
+                            gradient: LinearGradient(
+                              begin: Alignment(-end.x, -end.y),
+                              end: end,
                               colors: _silverStops,
                               stops: _silverPositions,
                             ),
@@ -198,7 +200,7 @@ class _BeuiMetallicButtonState extends State<BeuiMetallicButton>
                 builder: (context, constraints) {
                   final w = constraints.maxWidth;
                   return Transform.translate(
-                    offset: Offset(shimmerT * 3.1 * (w * 0.4), 0),
+                    offset: Offset(-0.58 * w + shimmerT * 3.1 * w * 0.52, 0),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
@@ -242,7 +244,7 @@ class _BeuiMetallicButtonState extends State<BeuiMetallicButton>
                     color: _hovered
                         ? colors.muted.withValues(alpha: 0.4)
                         : colors.background,
-                    borderRadius: BorderRadius.circular((height / 2) - 2),
+                    borderRadius: radius,
                     boxShadow: const [
                       BoxShadow(color: Color(0x47FFFFFF), offset: Offset(0, 1)),
                       BoxShadow(
@@ -255,7 +257,7 @@ class _BeuiMetallicButtonState extends State<BeuiMetallicButton>
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+              padding: EdgeInsets.symmetric(horizontal: padX),
               child: child,
             ),
           ],
@@ -267,15 +269,7 @@ class _BeuiMetallicButtonState extends State<BeuiMetallicButton>
     Widget box = SizedBox(
       height: height,
       width: isIcon ? height : null,
-      child: ClipRRect(
-        borderRadius: radius,
-        child: Padding(
-          padding: isIcon
-              ? EdgeInsets.zero
-              : EdgeInsets.symmetric(horizontal: padX),
-          child: chrome,
-        ),
-      ),
+      child: ClipRRect(borderRadius: radius, child: chrome),
     );
 
     box = DecoratedBox(
@@ -338,10 +332,12 @@ class _BeuiMetallicButtonState extends State<BeuiMetallicButton>
         onShowFocusHighlight: (v) => setState(() => _focusVisible = v),
         onShowHoverHighlight: (v) {
           setState(() => _hovered = v);
-          if (v && !still) {
-            _shimmer.forward(from: 0);
-          } else {
-            _shimmer.value = 0;
+          if (!still) {
+            _shimmer.animateTo(
+              v ? 1 : 0,
+              duration: const Duration(milliseconds: 2400),
+              curve: beuiEaseInOut,
+            );
           }
         },
         child: AnimatedOpacity(
