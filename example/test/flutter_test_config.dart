@@ -6,8 +6,8 @@
 // horizontal overflow in text-animation (246px), image-generation (16px) and
 // loading-states (55px) that does NOT exist in the browser at the same width.
 //
-// Registering the same families the app declares in pubspec.yaml (`Geist`, and
-// `monospace` backed by Geist Mono) makes those measurements real.
+// Registering the same families the app declares in pubspec.yaml (`Geist`,
+// `Geist Mono`, and its `monospace` alias) makes those measurements real.
 import 'dart:async';
 
 import 'package:flutter/services.dart';
@@ -33,6 +33,10 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   // The gallery registers Geist Mono under the generic `monospace` name so
   // code surfaces resolve on web; mirror that here.
   await _load('monospace', const [
+    'assets/fonts/GeistMono-Regular.ttf',
+    'assets/fonts/GeistMono-Medium.ttf',
+  ]);
+  await _load('Geist Mono', const [
     'assets/fonts/GeistMono-Regular.ttf',
     'assets/fonts/GeistMono-Medium.ttf',
   ]);
