@@ -113,6 +113,7 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
     if (_controlled && widget.value != oldWidget.value) {
       if (oldWidget.value != null && widget.value == null) _restoreFocus();
       if (widget.value != null) {
+        if (oldWidget.value == null) _returnId = widget.value;
         _sourceRect = widget.value == _pendingSourceImageId
             ? _pendingSourceRect
             : null;
@@ -141,7 +142,7 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
   }
 
   void _select(String? id) {
-    if (id != null && _selected == null) _returnId = id;
+    if (!_controlled && id != null && _selected == null) _returnId = id;
     if (id != null && id != _selected) {
       final key = _thumbnailKeys[id];
       final box = key?.currentContext?.findRenderObject() as RenderBox?;
@@ -568,71 +569,86 @@ class _BeuiImageViewerContentState extends State<BeuiImageViewerContent> {
         return AnimatedBuilder(
           animation: animation,
           builder: (context, _) {
-            return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(
-                  MediaQuery.sizeOf(context).width < 640 ? 12 : 24,
-                ),
-                child: Focus(
-                  autofocus: true,
-                  onKeyEvent: (_, event) {
-                    if (HardwareKeyboard.instance.isAltPressed ||
-                        HardwareKeyboard.instance.isControlPressed ||
-                        HardwareKeyboard.instance.isMetaPressed ||
-                        HardwareKeyboard.instance.isShiftPressed) {
-                      return KeyEventResult.ignored;
-                    }
-                    if (event is KeyDownEvent &&
-                        event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-                      scope.move(-1);
-                      return KeyEventResult.handled;
-                    }
-                    if (event is KeyDownEvent &&
-                        event.logicalKey == LogicalKeyboardKey.arrowRight) {
-                      scope.move(1);
-                      return KeyEventResult.handled;
-                    }
-                    return KeyEventResult.ignored;
-                  },
-                  child: Semantics(
-                    container: true,
-                    explicitChildNodes: true,
-                    scopesRoute: true,
-                    namesRoute: true,
-                    label: scope.label,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            widget.header ?? const BeuiImageViewerCounter(),
-                            if (widget.header == null)
-                              const BeuiImageViewerClose(),
-                          ],
-                        ),
-                        Expanded(
-                          child: _MorphingViewerImage(
-                            image: displayed,
-                            sourceRect: scope.sourceRect,
-                            opening: selected != null,
-                            reduce: reduce,
-                            colors: colors,
+            return IgnorePointer(
+              ignoring: selected == null,
+              child: ExcludeFocus(
+                excluding: selected == null,
+                child: ExcludeSemantics(
+                  excluding: selected == null,
+                  child: SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.all(
+                        MediaQuery.sizeOf(context).width < 640 ? 12 : 24,
+                      ),
+                      child: Focus(
+                        autofocus: true,
+                        onKeyEvent: (_, event) {
+                          if (HardwareKeyboard.instance.isAltPressed ||
+                              HardwareKeyboard.instance.isControlPressed ||
+                              HardwareKeyboard.instance.isMetaPressed ||
+                              HardwareKeyboard.instance.isShiftPressed) {
+                            return KeyEventResult.ignored;
+                          }
+                          if (event is KeyDownEvent &&
+                              event.logicalKey ==
+                                  LogicalKeyboardKey.arrowLeft) {
+                            scope.move(-1);
+                            return KeyEventResult.handled;
+                          }
+                          if (event is KeyDownEvent &&
+                              event.logicalKey ==
+                                  LogicalKeyboardKey.arrowRight) {
+                            scope.move(1);
+                            return KeyEventResult.handled;
+                          }
+                          return KeyEventResult.ignored;
+                        },
+                        child: Semantics(
+                          container: true,
+                          explicitChildNodes: true,
+                          scopesRoute: true,
+                          namesRoute: true,
+                          label: scope.label,
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  widget.header ??
+                                      const BeuiImageViewerCounter(),
+                                  if (widget.header == null)
+                                    const BeuiImageViewerClose(),
+                                ],
+                              ),
+                              Expanded(
+                                child: ClipRect(
+                                  child: _MorphingViewerImage(
+                                    image: displayed,
+                                    sourceRect: scope.sourceRect,
+                                    opening: selected != null,
+                                    reduce: reduce,
+                                    colors: colors,
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  if (widget.footer == null)
+                                    const BeuiImageViewerPrevious(),
+                                  Expanded(
+                                    child:
+                                        widget.footer ??
+                                        const BeuiImageViewerCaption(),
+                                  ),
+                                  if (widget.footer == null)
+                                    const BeuiImageViewerNext(),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        Row(
-                          children: [
-                            if (widget.footer == null)
-                              const BeuiImageViewerPrevious(),
-                            Expanded(
-                              child:
-                                  widget.footer ??
-                                  const BeuiImageViewerCaption(),
-                            ),
-                            if (widget.footer == null)
-                              const BeuiImageViewerNext(),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
