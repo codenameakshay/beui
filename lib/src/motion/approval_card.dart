@@ -1048,7 +1048,7 @@ class _SimpleBody extends StatelessWidget {
   }
 }
 
-class _QuestionBody extends StatelessWidget {
+class _QuestionBody extends StatefulWidget {
   const _QuestionBody({
     required this.question,
     required this.answer,
@@ -1068,51 +1068,71 @@ class _QuestionBody extends StatelessWidget {
   final VoidCallback onSingleSelect;
 
   @override
+  State<_QuestionBody> createState() => _QuestionBodyState();
+}
+
+enum _QuestionPhase { settled, exiting, entering }
+
+class _QuestionBodyState extends State<_QuestionBody>
+    with SingleTickerProviderStateMixin {
+  late _QuestionBody _shown = widget;
+  _QuestionPhase _phase = _QuestionPhase.settled;
+  late final _transition = AnimationController(
+    vsync: this,
+    duration: _stepDuration,
+    value: 1,
+  )..addStatusListener(_onTransition);
+
+  void _onTransition(AnimationStatus status) {
+    if (status != AnimationStatus.completed) return;
+    if (_phase == _QuestionPhase.exiting) {
+      setState(() {
+        _shown = widget;
+        _phase = _QuestionPhase.entering;
+      });
+      _transition.forward(from: 0);
+    } else if (_phase == _QuestionPhase.entering) {
+      setState(() => _phase = _QuestionPhase.settled);
+    }
+  }
+
+  @override
+  void didUpdateWidget(_QuestionBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.reduce) {
+      _phase = _QuestionPhase.settled;
+      _shown = widget;
+      _transition.stop();
+    } else if (widget.question.id == _shown.question.id) {
+      _shown = widget;
+    } else if (_phase != _QuestionPhase.exiting) {
+      _phase = _QuestionPhase.exiting;
+      _transition.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _transition.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // AnimatePresence mode="wait" step swap — enter x:+8, exit x:−6, 200ms
-    // EASE_OUT. DualTransitionBuilder gives asymmetric enter/exit offsets.
-    return AnimatedSwitcher(
-      duration: reduce ? Duration.zero : _stepDuration,
-      switchInCurve: beuiEaseOut,
-      switchOutCurve: beuiEaseOut,
-      layoutBuilder: (current, previous) => Stack(
-        alignment: Alignment.topLeft,
-        children: <Widget>[...previous, ?current],
-      ),
-      transitionBuilder: (child, animation) {
-        if (reduce) {
-          return FadeTransition(opacity: animation, child: child);
-        }
-        return DualTransitionBuilder(
-          animation: animation,
-          forwardBuilder: (context, anim, child) {
-            return FadeTransition(
-              opacity: anim,
-              child: AnimatedBuilder(
-                animation: anim,
-                builder: (context, child) => Transform.translate(
-                  offset: Offset(8 * (1 - anim.value), 0),
-                  child: child,
-                ),
-                child: child,
-              ),
-            );
-          },
-          reverseBuilder: (context, anim, child) {
-            // anim goes 0→1 during exit.
-            return AnimatedBuilder(
-              animation: anim,
-              builder: (context, child) => Opacity(
-                opacity: 1 - anim.value,
-                child: Transform.translate(
-                  offset: Offset(-6 * anim.value, 0),
-                  child: child,
-                ),
-              ),
-              child: child,
-            );
-          },
-          child: child,
+    final shown = _shown;
+    final question = shown.question;
+    return AnimatedBuilder(
+      animation: _transition,
+      builder: (context, child) {
+        final t = beuiEaseOut.transform(_transition.value);
+        final (opacity, x) = switch (_phase) {
+          _QuestionPhase.settled => (1.0, 0.0),
+          _QuestionPhase.exiting => (1 - t, -6 * t),
+          _QuestionPhase.entering => (t, 8 * (1 - t)),
+        };
+        return Opacity(
+          opacity: opacity,
+          child: Transform.translate(offset: Offset(x, 0), child: child),
         );
       },
       child: KeyedSubtree(
@@ -1127,16 +1147,16 @@ class _QuestionBody extends StatelessWidget {
                 child: Text(
                   question.description!,
                   style: BeuiAgentTheme.of(context).typography.description
-                      .copyWith(color: colors.mutedForeground),
+                      .copyWith(color: shown.colors.mutedForeground),
                 ),
               ),
             _QuestionOptions(
               question: question,
-              answer: answer,
-              disabled: busy,
-              colors: colors,
-              onChange: onChange,
-              onSingleSelect: onSingleSelect,
+              answer: shown.answer,
+              disabled: shown.busy,
+              colors: shown.colors,
+              onChange: shown.onChange,
+              onSingleSelect: shown.onSingleSelect,
             ),
           ],
         ),
@@ -1327,13 +1347,7 @@ class _DescribedRadioItemState extends State<BeuiRadioItem<String>> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 1),
-            child: BeuiRadioItem<String>(
-              value: item.value,
-              enabled: item.enabled,
-            ),
-          ),
+          BeuiRadioItem<String>(value: item.value, enabled: item.enabled),
           const SizedBox(width: 12),
           Expanded(
             child: GestureDetector(
@@ -1382,14 +1396,7 @@ class _ApprovalCheckboxOption extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 1),
-            child: BeuiCheckbox(
-              value: value,
-              enabled: enabled,
-              onChanged: onChanged,
-            ),
-          ),
+          BeuiCheckbox(value: value, enabled: enabled, onChanged: onChanged),
           const SizedBox(width: 12),
           Expanded(
             child: GestureDetector(

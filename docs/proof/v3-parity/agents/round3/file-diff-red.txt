@@ -1,0 +1,110 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart
+00:00 +0: copy belongs to the disclosure and survives reopen, reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: a value greater than or equal to <355.0>
+  Actual: <260.0>
+   Which: is not a value greater than or equal to <355.0>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart:53:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart line 53
+The test description was:
+  copy belongs to the disclosure and survives reopen, reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: copy belongs to the disclosure and survives reopen, reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: copy belongs to the disclosure and survives reopen, reduce=false
+  
+00:00 +0 -1: copy belongs to the disclosure and survives reopen, reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: a value greater than or equal to <355.0>
+  Actual: <260.0>
+   Which: is not a value greater than or equal to <355.0>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart:53:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart line 53
+The test description was:
+  copy belongs to the disclosure and survives reopen, reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: copy belongs to the disclosure and survives reopen, reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: copy belongs to the disclosure and survives reopen, reduce=true
+  
+00:00 +0 -2: source diff row washes and gutter offsets, dark=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <144.0>
+  Actual: <146.0>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart:76:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart line 76
+The test description was:
+  source diff row washes and gutter offsets, dark=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -3: source diff row washes and gutter offsets, dark=false [E]
+  Test failed. See exception logs above.
+  The test description was: source diff row washes and gutter offsets, dark=false
+  
+00:00 +0 -3: source diff row washes and gutter offsets, dark=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <144.0>
+  Actual: <146.0>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart:76:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart line 76
+The test description was:
+  source diff row washes and gutter offsets, dark=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -4: source diff row washes and gutter offsets, dark=true [E]
+  Test failed. See exception logs above.
+  The test description was: source diff row washes and gutter offsets, dark=true
+  
+00:00 +0 -4: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: copy belongs to the disclosure and survives reopen, reduce=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: copy belongs to the disclosure and survives reopen, reduce=true
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: source diff row washes and gutter offsets, dark=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9240cacb/test/motion/agents_round3_test.dart: source diff row washes and gutter offsets, dark=true
