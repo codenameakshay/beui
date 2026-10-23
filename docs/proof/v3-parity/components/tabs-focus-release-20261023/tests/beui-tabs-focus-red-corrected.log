@@ -1,0 +1,785 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: native pointer owns focus BeuiTabsVariant.pill reduce=false controlled=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.pill reduce=false controlled=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: native pointer owns focus BeuiTabsVariant.pill reduce=false controlled=false [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.pill reduce=false controlled=false
+  
+00:00 +0 -1: native pointer owns focus BeuiTabsVariant.pill reduce=false controlled=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.pill reduce=false controlled=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: native pointer owns focus BeuiTabsVariant.pill reduce=false controlled=true [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.pill reduce=false controlled=true
+  
+00:00 +0 -2: one Tab stop follows controlled selection BeuiTabsVariant.pill reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:160:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 160
+The test description was:
+  one Tab stop follows controlled selection BeuiTabsVariant.pill reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -3: one Tab stop follows controlled selection BeuiTabsVariant.pill reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: one Tab stop follows controlled selection BeuiTabsVariant.pill reduce=false
+  
+00:00 +0 -3: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.9608, green: 0.9608, blue: 0.9608, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.8510, green: 0.8510, blue: 0.8510, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -4: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=false
+  
+00:00 +0 -4: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.1098, green: 0.1098, blue: 0.1098, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.2000, green: 0.2000, blue: 0.2000, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -5: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=false
+  
+00:00 +0 -5: native pointer owns focus BeuiTabsVariant.pill reduce=true controlled=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.pill reduce=true controlled=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -6: native pointer owns focus BeuiTabsVariant.pill reduce=true controlled=false [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.pill reduce=true controlled=false
+  
+00:00 +0 -6: native pointer owns focus BeuiTabsVariant.pill reduce=true controlled=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.pill reduce=true controlled=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -7: native pointer owns focus BeuiTabsVariant.pill reduce=true controlled=true [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.pill reduce=true controlled=true
+  
+00:00 +0 -7: one Tab stop follows controlled selection BeuiTabsVariant.pill reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:160:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 160
+The test description was:
+  one Tab stop follows controlled selection BeuiTabsVariant.pill reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -8: one Tab stop follows controlled selection BeuiTabsVariant.pill reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: one Tab stop follows controlled selection BeuiTabsVariant.pill reduce=true
+  
+00:00 +0 -8: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.9608, green: 0.9608, blue: 0.9608, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.8510, green: 0.8510, blue: 0.8510, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -9: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=true
+  
+00:00 +0 -9: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.1098, green: 0.1098, blue: 0.1098, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.2000, green: 0.2000, blue: 0.2000, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -10: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=true
+  
+00:01 +0 -10: native pointer owns focus BeuiTabsVariant.segment reduce=false controlled=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.segment reduce=false controlled=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -11: native pointer owns focus BeuiTabsVariant.segment reduce=false controlled=false [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.segment reduce=false controlled=false
+  
+00:01 +0 -11: native pointer owns focus BeuiTabsVariant.segment reduce=false controlled=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.segment reduce=false controlled=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -12: native pointer owns focus BeuiTabsVariant.segment reduce=false controlled=true [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.segment reduce=false controlled=true
+  
+00:01 +0 -12: one Tab stop follows controlled selection BeuiTabsVariant.segment reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:160:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 160
+The test description was:
+  one Tab stop follows controlled selection BeuiTabsVariant.segment reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -13: one Tab stop follows controlled selection BeuiTabsVariant.segment reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: one Tab stop follows controlled selection BeuiTabsVariant.segment reduce=false
+  
+00:01 +0 -13: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=false reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.9608, green: 0.9608, blue: 0.9608, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.8510, green: 0.8510, blue: 0.8510, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.segment dark=false reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -14: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=false reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=false reduce=false
+  
+00:01 +0 -14: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=true reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.1098, green: 0.1098, blue: 0.1098, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.2000, green: 0.2000, blue: 0.2000, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.segment dark=true reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -15: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=true reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=true reduce=false
+  
+00:01 +0 -15: native pointer owns focus BeuiTabsVariant.segment reduce=true controlled=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.segment reduce=true controlled=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -16: native pointer owns focus BeuiTabsVariant.segment reduce=true controlled=false [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.segment reduce=true controlled=false
+  
+00:01 +0 -16: native pointer owns focus BeuiTabsVariant.segment reduce=true controlled=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.segment reduce=true controlled=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -17: native pointer owns focus BeuiTabsVariant.segment reduce=true controlled=true [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.segment reduce=true controlled=true
+  
+00:01 +0 -17: one Tab stop follows controlled selection BeuiTabsVariant.segment reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:160:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 160
+The test description was:
+  one Tab stop follows controlled selection BeuiTabsVariant.segment reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -18: one Tab stop follows controlled selection BeuiTabsVariant.segment reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: one Tab stop follows controlled selection BeuiTabsVariant.segment reduce=true
+  
+00:01 +0 -18: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=false reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.9608, green: 0.9608, blue: 0.9608, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.8510, green: 0.8510, blue: 0.8510, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.segment dark=false reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -19: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=false reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=false reduce=true
+  
+00:01 +0 -19: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=true reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.1098, green: 0.1098, blue: 0.1098, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.2000, green: 0.2000, blue: 0.2000, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.segment dark=true reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -20: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=true reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.segment dark=true reduce=true
+  
+00:01 +0 -20: native pointer owns focus BeuiTabsVariant.underline reduce=false controlled=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.underline reduce=false controlled=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -21: native pointer owns focus BeuiTabsVariant.underline reduce=false controlled=false [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.underline reduce=false controlled=false
+  
+00:01 +0 -21: native pointer owns focus BeuiTabsVariant.underline reduce=false controlled=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.underline reduce=false controlled=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -22: native pointer owns focus BeuiTabsVariant.underline reduce=false controlled=true [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.underline reduce=false controlled=true
+  
+00:01 +0 -22: one Tab stop follows controlled selection BeuiTabsVariant.underline reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:160:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 160
+The test description was:
+  one Tab stop follows controlled selection BeuiTabsVariant.underline reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -23: one Tab stop follows controlled selection BeuiTabsVariant.underline reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: one Tab stop follows controlled selection BeuiTabsVariant.underline reduce=false
+  
+00:01 +0 -23: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=false reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.9882, green: 0.9882, blue: 0.9882, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.8745, green: 0.8745, blue: 0.8745, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.underline dark=false reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -24: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=false reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=false reduce=false
+  
+00:01 +0 -24: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=true reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.0824, green: 0.0824, blue: 0.0824, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.1765, green: 0.1765, blue: 0.1765, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.underline dark=true reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -25: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=true reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=true reduce=false
+  
+00:01 +0 -25: native pointer owns focus BeuiTabsVariant.underline reduce=true controlled=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.underline reduce=true controlled=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -26: native pointer owns focus BeuiTabsVariant.underline reduce=true controlled=false [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.underline reduce=true controlled=false
+  
+00:01 +0 -26: native pointer owns focus BeuiTabsVariant.underline reduce=true controlled=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:84:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 84
+The test description was:
+  native pointer owns focus BeuiTabsVariant.underline reduce=true controlled=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -27: native pointer owns focus BeuiTabsVariant.underline reduce=true controlled=true [E]
+  Test failed. See exception logs above.
+  The test description was: native pointer owns focus BeuiTabsVariant.underline reduce=true controlled=true
+  
+00:01 +0 -27: one Tab stop follows controlled selection BeuiTabsVariant.underline reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:160:11)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 160
+The test description was:
+  one Tab stop follows controlled selection BeuiTabsVariant.underline reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -28: one Tab stop follows controlled selection BeuiTabsVariant.underline reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: one Tab stop follows controlled selection BeuiTabsVariant.underline reduce=true
+  
+00:01 +0 -28: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=false reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.9882, green: 0.9882, blue: 0.9882, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.8745, green: 0.8745, blue: 0.8745, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.underline dark=false reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -29: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=false reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=false reduce=true
+  
+00:01 +0 -29: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=true reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: Color:<Color(alpha: 1.0000, red: 0.0824, green: 0.0824, blue: 0.0824, colorSpace:
+ColorSpace.sRGB)>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.1765, green: 0.1765, blue: 0.1765, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart:238:13)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart line 238
+The test description was:
+  keyboard outline leaves interior clear BeuiTabsVariant.underline dark=true reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +0 -30: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=true reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: keyboard outline leaves interior clear BeuiTabsVariant.underline dark=true reduce=true
+  
+00:01 +0 -30: (tearDownAll)
+00:01 +0 -30: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=false reduce=true
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-9f35362c/test/motion/tabs_focus_test.dart: keyboard outline leaves interior clear BeuiTabsVariant.pill dark=true reduce=true
+  ... and 26 more
