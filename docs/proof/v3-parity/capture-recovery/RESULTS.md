@@ -28,7 +28,7 @@ The 160 by 112 Top-tooltip crop returned `motion_status: compared`, `motion_scor
 
 The supplied T3 failures were `Preview automation recordingStart timed out after 15000ms.`, `Preview automation client server-browser disconnected during recordingStart.`, and `No preview automation host is available for snapshot in environment e23d8eea-cfe5-4e10-8c25-ad814f8c088e.` The supplied CUA failure was `Browser is not available: iab`. This task used the authorized direct Chrome fallback; it did not repair T3 transport.
 
-Baseline run1 delivered zero compositor frames and failed `No usable compositor timestamps`. The screenshot backend then captured the same CanvasKit route. This isolates a recorder-path problem, but does not prove the underlying cause of Chrome's missing compositor frames. Other workers reported near-static Flutter content inside otherwise valid Playwright WebM; those videos need their own decoded-pixel checks.
+Baseline run1 had fewer than two compositor frames at validation and failed `No usable compositor timestamps`. Its failure record contains one frame, and two original PNGs ultimately reached disk because of the late-delivery race. Its first original PNG was inspected and was blank white. It produced no usable transition video. The screenshot backend then captured the same CanvasKit route. This isolates a recorder-path problem, but does not prove the underlying cause of Chrome's missing compositor transitions. Other workers reported near-static Flutter content inside otherwise valid Playwright WebM; those videos need their own decoded-pixel checks.
 
 Reference run3 saved 218 encoded frames but received another frame after the stop/encode boundary, causing `Encoded frame count differs from delivered frame count`. The late-listener race was removed. Reference run4 then completed with 223 encoded frames, 54.615 measured FPS, and a 183.930 ms maximum gap. Baseline run3 repeated successfully with 93 encoded frames, 22.654 measured FPS, and a 1002.574 ms maximum gap. The repeat is not better motion proof just because average FPS rose.
 
@@ -36,7 +36,7 @@ The native AVFoundation command requested 60 FPS and produced a real desktop vid
 
 No frame interpolation, `fps=60`, duplicate-frame insertion, or favorable-frame-only acceptance was used. No implementation, PR, existing proof, or other worker's original recording was changed.
 
-The later shared-width wrapper commit was not applied in this checkout. These baseline captures have no `previewWidth` query parameter and no modified stage wrapper. Repaired-head captures using that wrapper need explicit new provenance and fresh runs; they must not replace these originals.
+The later shared-width wrapper commit was not applied in this checkout. These baseline captures use the real explorer, not `visual_harness.dart`. They have no `previewWidth` query parameter and no modified stage wrapper. Equal physical crop sizes do not establish equal stage or widget layout. Repaired-head captures using a new wrapper need explicit new provenance and fresh runs; they must not replace these originals.
 
 ## Tooling decisions and checks
 
