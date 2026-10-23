@@ -157,18 +157,24 @@ class _HeaderCell<T> extends StatelessWidget {
         if (state.widget.reorderable)
           MouseRegion(
             cursor: SystemMouseCursors.grab,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onHorizontalDragStart: (_) => state._startReorder(column.key),
-              onHorizontalDragUpdate: (d) =>
-                  state._moveReorder(d.globalPosition.dx),
-              onHorizontalDragEnd: (_) => state._endReorder(),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Icon(
-                  LucideIcons.grip_vertical,
-                  size: 14,
-                  color: colors.mutedForeground.withValues(alpha: 0.6),
+            child: Semantics(
+              button: true,
+              label: 'Reorder ${column.key} column',
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                dragStartBehavior: DragStartBehavior.down,
+                onHorizontalDragDown: (_) => state._startReorder(column.key),
+                onHorizontalDragUpdate: (d) =>
+                    state._moveReorder(d.globalPosition.dx),
+                onHorizontalDragEnd: (_) => state._endReorder(),
+                onHorizontalDragCancel: state._endReorder,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Icon(
+                    LucideIcons.grip_vertical,
+                    size: 14,
+                    color: colors.mutedForeground.withValues(alpha: 0.6),
+                  ),
                 ),
               ),
             ),
@@ -212,14 +218,20 @@ class _HeaderCell<T> extends StatelessWidget {
               width: 6,
               child: MouseRegion(
                 cursor: SystemMouseCursors.resizeLeftRight,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onHorizontalDragStart: (d) =>
-                      state._startResize(column.key, d.globalPosition.dx),
-                  onHorizontalDragUpdate: (d) =>
-                      state._moveResize(d.globalPosition.dx),
-                  onHorizontalDragEnd: (_) => state._endResize(),
-                  child: const SizedBox.expand(),
+                child: Semantics(
+                  button: true,
+                  label: 'Resize ${column.key} column',
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    dragStartBehavior: DragStartBehavior.down,
+                    onHorizontalDragDown: (d) =>
+                        state._startResize(column.key, d.globalPosition.dx),
+                    onHorizontalDragUpdate: (d) =>
+                        state._moveResize(d.globalPosition.dx),
+                    onHorizontalDragEnd: (_) => state._endResize(),
+                    onHorizontalDragCancel: state._endResize,
+                    child: const SizedBox.expand(),
+                  ),
                 ),
               ),
             ),

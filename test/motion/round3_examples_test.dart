@@ -8,6 +8,47 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
 
 void main() {
+  testWidgets('one native move preserves the entire table resize delta', (
+    tester,
+  ) async {
+    double? resized;
+    await tester.pumpWidget(
+      beuiTestApp(
+        BeuiTable<String>(
+          data: const ['Ava'],
+          resizable: true,
+          columns: [
+            BeuiTableColumn(
+              key: 'name',
+              header: 'Name',
+              width: 200,
+              value: (row) => row,
+            ),
+            BeuiTableColumn(
+              key: 'role',
+              header: 'Role',
+              width: 200,
+              value: (_) => 'Owner',
+            ),
+          ],
+          onColumnResize: (key, width) => resized = width,
+        ),
+        width: 400,
+      ),
+    );
+    final handle = find.byWidgetPredicate(
+      (widget) =>
+          widget is Semantics &&
+          widget.properties.label == 'Resize name column',
+    );
+    final drag = await tester.startGesture(tester.getCenter(handle));
+    await drag.moveBy(const Offset(50, 0));
+    await tester.pump();
+    await drag.up();
+    await tester.pump();
+    expect(resized, 250);
+  });
+
   testWidgets('metallic rim fills the button without adding content padding', (
     tester,
   ) async {
@@ -165,6 +206,46 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(insertion, '0:before');
+    await mouse.removePointer();
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(milliseconds: 150));
+  });
+
+  testWidgets('table empty-state action restores a row after native deletion', (
+    tester,
+  ) async {
+    var rows = ['Ava'];
+    await tester.pumpWidget(
+      beuiTestApp(
+        StatefulBuilder(
+          builder: (context, setState) => BeuiTable<String>(
+            data: rows,
+            columns: [
+              BeuiTableColumn(key: 'name', header: 'Name', value: (row) => row),
+            ],
+            height: 240,
+            onDeleteRow: (_, index) => setState(() => rows = []),
+            emptyState: TextButton(
+              onPressed: () => setState(() => rows = ['New row']),
+              child: const Text('Insert first row'),
+            ),
+          ),
+        ),
+        width: 400,
+      ),
+    );
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    await mouse.moveTo(tester.getCenter(find.text('Ava')));
+    await tester.pump();
+    await tester.tap(find.byIcon(LucideIcons.ellipsis_vertical));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete row'));
+    await tester.pumpAndSettle();
+    expect(find.text('Insert first row'), findsOneWidget);
+    await tester.tap(find.text('Insert first row'));
+    await tester.pumpAndSettle();
+    expect(find.text('New row'), findsOneWidget);
     await mouse.removePointer();
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(milliseconds: 150));
