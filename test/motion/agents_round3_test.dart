@@ -66,6 +66,39 @@ Future<List<int>?> _pixel(WidgetTester tester, Offset point) => tester.runAsync(
 );
 
 void main() {
+  testWidgets(
+    'narrow diff keeps source single-line rows with horizontal access',
+    (tester) async {
+      const content =
+          'const configuration = buildConfiguration({ retries: 3, timeout: 30000 });';
+      await tester.pumpWidget(
+        beuiTestApp(
+          const BeuiFileDiff(
+            file: 'config.ts',
+            status: BeuiFileDiffStatus.complete,
+            lines: [BeuiFileDiffLine(id: 'one', content: content)],
+          ),
+          width: 358,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.getSize(find.text(content, findRichText: true)).height, 20);
+      final horizontal = find.byWidgetPredicate(
+        (w) =>
+            w is SingleChildScrollView && w.scrollDirection == Axis.horizontal,
+      );
+      expect(horizontal, findsOneWidget);
+      await tester.drag(horizontal, const Offset(-10000, 0));
+      await tester.pumpAndSettle();
+      final scrollable = tester.state<ScrollableState>(
+        find
+            .descendant(of: horizontal, matching: find.byType(Scrollable))
+            .first,
+      );
+      expect(scrollable.position.pixels, scrollable.position.maxScrollExtent);
+      expect(scrollable.position.pixels, greaterThan(100));
+    },
+  );
   testWidgets('approval badge retains the source card line height', (
     tester,
   ) async {

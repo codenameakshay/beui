@@ -151,8 +151,8 @@ const _minus = '−';
 /// [BeuiCodeBlock] uses. It previously carried its own forked copy, which had
 /// drifted far enough to paint added lines in the *deletion* red.
 ///
-/// **Wide lines.** One row per line with horizontal scroll by default, wrapping
-/// on narrow viewports — see [wrap]. The widget used to ellipsise instead, which
+/// **Wide lines.** One row per line with horizontal scroll by default. Wrapping
+/// and adaptive wrapping are opt-in through [wrap]. The widget used to ellipsise instead, which
 /// hid the end of exactly the lines a reviewer needs to see.
 ///
 /// **Motion.** Chevron rotates on [beuiSpringSwap]; presses scale to 0.97 on
@@ -184,7 +184,7 @@ class BeuiFileDiff extends StatefulWidget {
     this.collapseOnComplete = true,
     this.maxHeight = 220,
     this.language = BeuiCodeLanguage.typescript,
-    this.wrap = BeuiFileDiffWrap.adaptive,
+    this.wrap = BeuiFileDiffWrap.scroll,
     this.wrapBreakpoint = 480,
     this.copyText,
     this.copyable = true,
@@ -241,7 +241,7 @@ class BeuiFileDiff extends StatefulWidget {
   final BeuiCodeLanguage language;
 
   /// How lines wider than the viewport are handled. Defaults to
-  /// [BeuiFileDiffWrap.adaptive].
+  /// [BeuiFileDiffWrap.scroll], matching the source's single-line rows.
   ///
   /// Matches [BeuiCodeBlock.wrap] semantics: wrapping keeps everything on
   /// screen, scrolling keeps one line per row.
