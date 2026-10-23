@@ -72,3 +72,9 @@ Finish final signup combinations and inspected native recordings, independently 
 - Read-only design active: `node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-bump-semantics-boundary-repair-design-20261023`. Owns /tmp and optional18129; parent retains18127 fixture server for it.
 - Independent read-only review active: `node:delegated-task:command%3Amcp%3A88ccf142-fc2c-4907-a265-6141941bf107%3Adelegate-task%3Av3-tooltip-semantic-independent-review-20261023`. No repo writes delegated.
 - No parity or timing certification. Remaining coverage/table/font/pixel obligations unchanged.
+
+## Independent Tooltip review follow-up
+
+- Reviewer found R014: mouse modality survived exit/removal and suppressed a later accessibility semantic tap. Fixed in 2b1a8ae52 by clearing pointer kind on trigger exit. Original five reviewer tests pass unchanged; portable repository assertions also unchanged. Focused Tooltip/overlay/chart batch 323 pass, scoped analysis clean, release succeeds.
+- Fresh mouse/touch native contexts pass both motion preferences including repeated activation, Tab and Escape. Proof: tooltip-accessibility-followup. Real screen-reader transition remains unverified; semantic-action widget evidence is explicitly distinct.
+- Latest full-root count remains the f59e909b2 run, not a rerun after this one-line repair. Bump repair-design task remains active; no remaining defect waived.

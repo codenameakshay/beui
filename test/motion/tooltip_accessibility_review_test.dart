@@ -45,8 +45,9 @@ void main() {
           await t.pumpAndSettle();
           expect(find.text('Context'), findsNothing);
         }
-        if (history == 'mouse-exit-keyboard')
+        if (history == 'mouse-exit-keyboard') {
           await t.sendKeyEvent(LogicalKeyboardKey.shiftLeft);
+        }
         activate(t);
         await t.pumpAndSettle();
         expect(calls, 1, reason: 'child action must remain intact');
