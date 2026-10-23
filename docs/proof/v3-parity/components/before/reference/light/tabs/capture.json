@@ -1,0 +1,40 @@
+{
+  "phase": "before",
+  "origin": "reference",
+  "theme": "light",
+  "slug": "tabs",
+  "url": "https://beui.dev/components/motion/tabs",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "actions": [
+    {
+      "label": "Overview\nOverview",
+      "x": 504.65625,
+      "y": 403,
+      "hover": true,
+      "move": true,
+      "click": true
+    },
+    {
+      "label": "Activity\nActivity",
+      "x": 592.28125,
+      "y": 403,
+      "hover": true,
+      "move": true,
+      "click": true
+    },
+    {
+      "label": "Settings\nSettings",
+      "x": 676.5859375,
+      "y": 403,
+      "hover": true,
+      "move": true,
+      "click": true
+    }
+  ],
+  "title": "Animated Tabs for React with Framer Motion · beUI",
+  "body": "beUI Native is free — Pro mobile blocks and screens are in presale from $99\n\nReserve\nbeUI Pro for mobile\nbeUI\nComponents\nBlocks\nAgents\nCharts\nPlayground\nSponsors\nLight theme\nLight theme\nDark theme\nDark theme\nSystem theme\nSystem theme\n1.9k\nGet Pro\nAll\nAgents\nComponents\nBlocks\n\nINTRO\n\nHome\nChangelog\n\nGUIDES\n\nMotion Guides\nAgent Guide\nOpenUI\nReact Native Setup\nAI AGENTS\n18\nVoice Orb\nMessage Bubble\nMessage\nMessage Scroller\nPrompt Input\nTodo List\nCode Block\nApproval Card\nFile Diff\nTool Result\nStreaming Response\nImage Generation\nTool Approval\nCitations\nAgent Activity\nAgent Loading States\nAI Sidebar\nChat App\nCOMPONENTS\n54\nTimeline\nNEW\nAnimated Alert\nAnimated Collapsible\nAspect Ratio\nArc Picker\nSortable List\nImage Viewer\nDate Range Picker\nCard\nColor Picker\nAnimated Color Selector\nAnimated Breadcrumb\nTilt Card\nButton\nAnimated CTA Buttons\nExpandable Control\nAdaptive Stepper\nMarquee\nTabs\nSwitch\nInput\nSelect\nCombobox\nMulti Select\nCheckbox\nRadio Group\nBottom Sheet\nPull to Refresh\nShared Layout Background\nBounce Sidebar\nAnimated Sidebar\nFile Tree\nPreview Rail\nDock\nTooltip\nAnimated Context Menu\nPopover\nMorphing Modal\nCenter Morph Modal\nText Animation\nNumber Animation\nAnimated Badge\nAction Swap\nAnimated Toast Stack\nTheme Toggle\nBouncy Accordion\nDrawer\nScroll Animation\nRange Slider\nWheel Picker\nTable\nShader Background\nCylinder Carousel\nLoader\nBLOCKS\n23\nInfinite Masonry\nNotification Stack\nProject Folder\nCard Folder\nFixtures\nAvailability Scheduler\nMulti-chain Swap\nDynamic Island\nCommand Palette\nMorphing Search\nExpandable Action Bar\nOverflow Actions\nExpandable Tabs\nMorphing Tabs\nSwipeable List\nFile Upload\nPrediction Market\nWallet Card\nOTP Input\nSign Up Form\nBloom Menu\nFeedback Widget\n404 / Not Found\nComponents\nTabs\nTabs\nCopy Page\n\nPill, segment or underline tabs with a spring layoutId indicator and optional icons.\n\nPreview\nPreview\nPreview\nUsage\nUsage\nCode\nCode\nPILL\nOverview\nOverview\nActivity\nActivity\nSettings\nSettings\nPreferences.\nOVERFLOW\nOverview\nOverview\nActivity\nActivity\nAnalytics\nAnalytics\nMembers\nMembers\nBilling\nBilling\nSettings\nSettings\nSEGMENT\nDay\nDay\nWeek\nWeek\nMonth\nMonth\nICON ON SELECTED\nHome\nHome\nStats\nStats\nAlerts\nAlerts\nUNDERLINE\nAll\nOpen\nClosed\nInstall\n\nAdd it with the shadcn CLI, or copy the source manually.\n\nCLI\nCLI\nManual\nManual\nbun\nbun\nnpm\nnpm\npnpm\npnpm\nyarn\nyarn\n$ bunx --bun shadcn add @beui/\ntabs\ntabs\nAPI Reference\nTabs\ndefaultValue?\nstring\n—\nvalue?\nstring\n—\nonValueChange?\n((v: string) => void)\n—\nvariant?\n\"pill\" | \"underline\" | \"segment\"\npill\nicons?\n\"always\" | \"selected\"\n\nWith \"selected\", a trigger's icon springs open only on the selected tab and folds away when another is chosen. Defaults to \"always\".\n\nalways\nclassName?\nstring\n—\nTabsList\nclassName?\nstring\n—\nTabsTrigger\nclassName?\nstring\n—\nTabsContent\nvalue\nstring\n—\nclassName?\nstring\n—\nAlso on React Native. Pill, segment and underline with a gliding indicator.\nRelated components\nShared Layout Background\n\nA pill that glides between hovered items via motion's shared layout, with blur enter/exit.\n\nDock\n\nmacOS-style dock with grouped actions and a gliding active pill.\n\nScroll Animation\n\nScroll-driven motion: a Lenis smooth-scroll provider and a reading-progress indicator that reads from it.\n\nAbout Tabs\n\nTabs is an animated tabs component for React with a spring indicator that slides between triggers using Framer Motion. It comes in pill, segment and underline styles, supports icons on each trigger, and can show icons only on the selected tab so it springs open into a labeled pill. Long tab lists scroll horizontally with edge fades and arrow buttons.\n\nWhen to use it\nA settings page, dashboard or documentation page switches between related panels.\nA pricing or feature section toggles between options such as monthly and yearly.\nA toolbar needs a compact segmented control with icons.\nAccessibility\n\nTriggers render inside a tablist with the tab role and expose their selected state, and each panel has the tabpanel role labelled by its tab. Arrow keys move between enabled tabs (mirrored in right-to-left layouts), and Home and End jump to the first and last. The sliding indicator and scroll fades are decorative and hidden from assistive technology. With reduced motion enabled, panels switch without their slide.\n\nFAQ\nHow do I make animated tabs in React with Framer Motion?\nInstall the component, then compose Tabs, TabsList, TabsTrigger and TabsContent. The sliding indicator is built in, so there is no layoutId wiring to do yourself.\nCan I control the selected tab?\nYes. Pass value and onValueChange for controlled use, or defaultValue to let the component manage it.\nHow is this different from shadcn tabs?\nIt follows the same composition as shadcn tabs, so the markup will feel familiar, and adds the spring indicator, three visual variants, icons and scrollable overflow.\n\nUpdated Oct 18, 2026\n\nWeb\nWeb\nReact Native\nReact Native\nbeUI\nPro\nLimited Offer\n\n300+ blocks and premium motion components for React and Next.js.\n\n$179 lifetime access\n\nExplore beUI Pro\nSponsors\n\nDIAMOND\n\nTracwell\n\nVisitor insights for growth\n\nIllos\n\nAnimated illustrations for product sites\n\nBecome a sponsor",
+  "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before/reference/light/tabs/recording.webm"
+}
