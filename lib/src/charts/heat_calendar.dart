@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 
 import '../motion/_focus_ring.dart';
@@ -109,6 +110,10 @@ class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
   BeuiHeatCalendarCell? _dismissed;
   final _focus = <String, FocusNode>{};
   int? _filter;
+  bool _resumeAfterRemoval = false;
+  final _focusScope = FocusScopeNode(
+    traversalEdgeBehavior: TraversalEdgeBehavior.parentScope,
+  );
   BeuiHeatCalendarCell? get _tip =>
       _selection?.end ?? _hover ?? _selection?.start;
   BeuiHeatCalendarSelection? get _preview {
@@ -129,6 +134,7 @@ class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
 
   @override
   void dispose() {
+    _focusScope.dispose();
     for (final node in _focus.values) {
       node.dispose();
     }
@@ -164,6 +170,20 @@ class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
   @override
   void didUpdateWidget(covariant BeuiHeatCalendar oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (_hover != null && !_validCell(_hover!)) _hover = null;
+    if (_dismissed != null && !_validCell(_dismissed!)) _dismissed = null;
+    // Detaching a focused cell otherwise restores an earlier day from history.
+    for (final entry in _focus.entries) {
+      if (!_validCell(_decode(entry.key)!) && entry.value.hasFocus) {
+        _resumeAfterRemoval = true;
+        entry.value.unfocus();
+      }
+    }
+    if (widget.selection == null &&
+        (_rangeEnd != null && !_validCell(_rangeEnd!) ||
+            super.activeId == null)) {
+      setActiveId(null);
+    }
     if (oldWidget.defaultSelection != widget.defaultSelection &&
         widget.selection == null &&
         oldWidget.selection == null) {
@@ -199,6 +219,12 @@ class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
 
   DateTime _date(BeuiHeatCalendarCell c) =>
       _startDate().add(Duration(days: c.week * 7 + c.day));
+  bool _validCell(BeuiHeatCalendarCell c) =>
+      c.week >= 0 &&
+      c.week < widget.weeks &&
+      c.day >= 0 &&
+      c.day < 7 &&
+      !_future(c);
   bool _future(BeuiHeatCalendarCell c) => _date(c).isAfter(_utcEnd());
   double _level(BeuiHeatCalendarCell c) =>
       ((widget.values.length > c.week && widget.values[c.week].length > c.day
@@ -225,7 +251,13 @@ class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
   }
 
   BeuiHeatCalendarSelection? get _selection {
-    if (widget.selection != null) return widget.selection;
+    if (widget.selection != null) {
+      final selection = widget.selection!;
+      return _validCell(selection.start) &&
+              (selection.end == null || _validCell(selection.end!))
+          ? selection
+          : null;
+    }
     final start = _decode(super.activeId);
     return start == null
         ? null
@@ -265,26 +297,50 @@ class _BeuiHeatCalendarState extends State<BeuiHeatCalendar>
     }
   }
 
+  void _setFilter(int? level) => setState(() => _filter = level);
+
   void _toggleFilter(int level) =>
       setState(() => _filter = _filter == level ? null : level);
 
   @override
   Widget build(BuildContext context) => _HeatCalendarScope(
     state: this,
-    child: Semantics(
-      container: true,
-      label: 'Activity calendar',
-      child:
-          widget.child ??
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BeuiHeatCalendarGrid(),
-              SizedBox(height: 12),
-              BeuiHeatCalendarLegend(),
-            ],
-          ),
+    child: FocusScope(
+      node: _focusScope,
+      onFocusChange: (focused) {
+        if (!focused) _resumeAfterRemoval = false;
+      },
+      onKeyEvent: (node, event) {
+        if (!_resumeAfterRemoval ||
+            !node.hasPrimaryFocus ||
+            event is! KeyDownEvent ||
+            event.logicalKey != LogicalKeyboardKey.tab) {
+          return KeyEventResult.ignored;
+        }
+        _resumeAfterRemoval = false;
+        // Set the traversal origin on Tab. Focus notifications are deferred,
+        // so forward traversal only exposes the following control.
+        final last = _focus[inspectableIds.last];
+        if (last == null || last.context == null) return KeyEventResult.ignored;
+        last.requestFocus();
+        if (!HardwareKeyboard.instance.isShiftPressed) last.nextFocus();
+        return KeyEventResult.handled;
+      },
+      child: Semantics(
+        container: true,
+        label: 'Activity calendar',
+        child:
+            widget.child ??
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BeuiHeatCalendarGrid(),
+                SizedBox(height: 12),
+                BeuiHeatCalendarLegend(),
+              ],
+            ),
+      ),
     ),
   );
 }
@@ -416,108 +472,117 @@ class BeuiHeatCalendarGrid extends StatelessWidget {
                               ? first
                               : last;
                           final rangeEnd = first.isBefore(last) ? last : first;
-                          return SizedBox(
-                            width: cellSize,
-                            height: cellSize,
-                            child: BeuiChartTooltip(
-                              enabled: true,
-                              open:
-                                  state._tip == cell &&
-                                  state._dismissed != cell,
-                              onOpenChange: (open) {
-                                if (!open) state._dismiss(cell);
-                              },
-                              content: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  BeuiChartTicker(
-                                    value: days > 1 ? state._rangeTotal : count,
-                                    duration: const Duration(milliseconds: 350),
-                                    format: (value) => value.round().toString(),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(state.widget.unit),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    days > 1
-                                        ? '${_month[rangeStart.month - 1]} ${rangeStart.day} – ${_month[rangeEnd.month - 1]} ${rangeEnd.day}'
-                                        : '${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}',
-                                    style: TextStyle(
-                                      color: colors.mutedForeground,
+                          return Semantics(
+                            // Native web Tab follows semantics, not FocusTraversalOrder.
+                            sortKey: OrdinalSortKey(index.toDouble()),
+                            child: SizedBox(
+                              width: cellSize,
+                              height: cellSize,
+                              child: BeuiChartTooltip(
+                                enabled: true,
+                                open:
+                                    state._tip == cell &&
+                                    state._dismissed != cell,
+                                onOpenChange: (open) {
+                                  if (!open) state._dismiss(cell);
+                                },
+                                content: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    BeuiChartTicker(
+                                      value: days > 1
+                                          ? state._rangeTotal
+                                          : count,
+                                      duration: const Duration(
+                                        milliseconds: 350,
+                                      ),
+                                      format: (value) =>
+                                          value.round().toString(),
                                     ),
-                                  ),
-                                  if (days > 1)
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 6),
-                                      child: Text(
-                                        '$days days',
-                                        style: TextStyle(
-                                          color: colors.mutedForeground,
-                                        ),
+                                    const SizedBox(width: 4),
+                                    Text(state.widget.unit),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      days > 1
+                                          ? '${_month[rangeStart.month - 1]} ${rangeStart.day} – ${_month[rangeEnd.month - 1]} ${rangeEnd.day}'
+                                          : '${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}',
+                                      style: TextStyle(
+                                        color: colors.mutedForeground,
                                       ),
                                     ),
-                                ],
-                              ),
-                              child: Semantics(
-                                button: true,
-                                selected: pressed,
-                                label:
-                                    '$count ${state.widget.unit} on ${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}',
-                                child: FocusTraversalOrder(
-                                  order: NumericFocusOrder(index.toDouble()),
-                                  child: InkWell(
-                                    key: ValueKey('beui-heat-cell-$w-$d'),
-                                    focusNode: state._focus.putIfAbsent(
-                                      '$w:$d',
-                                      FocusNode.new,
-                                    ),
-                                    onHover: (on) =>
-                                        state._setHover(on ? cell : null),
-                                    onFocusChange: (on) =>
-                                        state._setHover(on ? cell : null),
-                                    onTap: () {
-                                      state._focus['$w:$d']!.requestFocus();
-                                      state._select(cell);
-                                    },
-                                    child: BeuiFocusRing(
-                                      focused: pressed,
-                                      borderRadius: BorderRadius.circular(3),
-                                      child: BeuiChartSpring(
-                                        value: pressed ? 1.12 : 1,
-                                        builder: (context, scale) =>
-                                            Transform.scale(
-                                              scale: scale,
-                                              child: BeuiChartFade(
-                                                opacity: filtered ? .25 : 1,
-                                                child: DecoratedBox(
-                                                  decoration: BoxDecoration(
-                                                    color: bucket == 0
-                                                        ? colors.foreground
-                                                              .withValues(
-                                                                alpha: .06,
-                                                              )
-                                                        : color.withValues(
-                                                            alpha: opacity,
-                                                          ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          3,
-                                                        ),
-                                                    border: inRange
-                                                        ? Border.all(
-                                                            color: colors
-                                                                .foreground
+                                    if (days > 1)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 6),
+                                        child: Text(
+                                          '$days days',
+                                          style: TextStyle(
+                                            color: colors.mutedForeground,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                child: Semantics(
+                                  button: true,
+                                  selected: pressed,
+                                  label:
+                                      '$count ${state.widget.unit} on ${_weekday[date.weekday - 1]}, ${_month[date.month - 1]} ${date.day}',
+                                  child: FocusTraversalOrder(
+                                    order: NumericFocusOrder(index.toDouble()),
+                                    child: InkWell(
+                                      key: ValueKey('beui-heat-cell-$w-$d'),
+                                      focusNode: state._focus.putIfAbsent(
+                                        '$w:$d',
+                                        FocusNode.new,
+                                      ),
+                                      onHover: (on) =>
+                                          state._setHover(on ? cell : null),
+                                      onFocusChange: (on) =>
+                                          state._setHover(on ? cell : null),
+                                      onTap: () {
+                                        state._focus['$w:$d']!.requestFocus();
+                                        state._select(cell);
+                                      },
+                                      child: BeuiFocusRing(
+                                        focused: pressed,
+                                        borderRadius: BorderRadius.circular(3),
+                                        child: BeuiChartSpring(
+                                          value: pressed ? 1.12 : 1,
+                                          builder: (context, scale) =>
+                                              Transform.scale(
+                                                scale: scale,
+                                                child: BeuiChartFade(
+                                                  opacity: filtered ? .25 : 1,
+                                                  child: DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                      color: bucket == 0
+                                                          ? colors.foreground
                                                                 .withValues(
-                                                                  alpha: .25,
-                                                                ),
-                                                          )
-                                                        : null,
+                                                                  alpha: .06,
+                                                                )
+                                                          : color.withValues(
+                                                              alpha: opacity,
+                                                            ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            3,
+                                                          ),
+                                                      border: inRange
+                                                          ? Border.all(
+                                                              color: colors
+                                                                  .foreground
+                                                                  .withValues(
+                                                                    alpha: .25,
+                                                                  ),
+                                                            )
+                                                          : null,
+                                                    ),
+                                                    child:
+                                                        const SizedBox.expand(),
                                                   ),
-                                                  child:
-                                                      const SizedBox.expand(),
                                                 ),
                                               ),
-                                            ),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -594,39 +659,61 @@ class BeuiHeatCalendarLegend extends StatelessWidget {
         '${_month[start.month - 1]} ${start.day} – ${_month[end.month - 1]} ${end.day}';
     final gridWidth = state.widget.weeks * 20.0 - 4;
     final labelStyle = TextStyle(fontSize: 10, color: colors.mutedForeground);
-    final scale = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text('less', style: labelStyle),
-        for (var level = 0; level < 5; level++)
-          Semantics(
-            button: true,
-            selected: state._filter == level,
-            label: 'Filter activity level $level',
-            child: GestureDetector(
-              onTap: () => state._toggleFilter(level),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: level == 0
-                        ? colors.foreground.withValues(alpha: .06)
-                        : hue.withValues(
-                            alpha: const [0.0, .24, .46, .70, .94][level],
-                          ),
-                    borderRadius: BorderRadius.circular(3),
-                    border: state._filter == level
-                        ? Border.all(color: colors.foreground)
-                        : null,
+    final scale = MouseRegion(
+      onExit: (_) => state._setFilter(null),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('less', style: labelStyle),
+          for (var level = 0; level < 5; level++)
+            Semantics(
+              button: true,
+              selected: state._filter == level,
+              label: 'Filter activity level $level',
+              child: MouseRegion(
+                onEnter: (_) => state._setFilter(level),
+                child: FocusableActionDetector(
+                  onFocusChange: (focused) =>
+                      state._setFilter(focused ? level : null),
+                  shortcuts: const {
+                    SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+                    SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+                  },
+                  actions: {
+                    ActivateIntent: CallbackAction<ActivateIntent>(
+                      onInvoke: (_) {
+                        state._toggleFilter(level);
+                        return null;
+                      },
+                    ),
+                  },
+                  child: GestureDetector(
+                    onTap: () => state._toggleFilter(level),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: level == 0
+                              ? colors.foreground.withValues(alpha: .06)
+                              : hue.withValues(
+                                  alpha: const [0.0, .24, .46, .70, .94][level],
+                                ),
+                          borderRadius: BorderRadius.circular(3),
+                          border: state._filter == level
+                              ? Border.all(color: colors.foreground)
+                              : null,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        Text('more', style: labelStyle),
-      ],
+          Text('more', style: labelStyle),
+        ],
+      ),
     );
     final rangeLabel = Text(range, style: labelStyle);
     if (gridWidth < 280) {
