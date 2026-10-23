@@ -452,7 +452,7 @@ class _BumpScrollRegionState extends State<_BumpScrollRegion> {
         onFocusChange: (_) => setState(() {}),
         onShowFocusHighlight: (value) => setState(() => _ring = value),
         child: _BumpFocusRing(
-          show: _ring,
+          show: _ring && _focus.hasPrimaryFocus,
           radius: 8,
           offset: 2,
           child: Semantics(
@@ -692,7 +692,16 @@ class _BumpPathLayer extends StatelessWidget {
               Positioned(
                 left: last.dx + 18 * scale,
                 top: last.dy - 6 * scale,
-                child: IgnorePointer(
+                child: MouseRegion(
+                  onEnter: (event) {
+                    if (event.kind != PointerDeviceKind.touch)
+                      scope.onHover(row.series.id);
+                  },
+                  onExit: (event) {
+                    if (event.kind != PointerDeviceKind.touch &&
+                        scope.hoveredId == row.series.id)
+                      scope.onHover(null);
+                  },
                   child: Text(
                     row.series.name.length > 12
                         ? '${row.series.name.substring(0, 11)}…'
@@ -787,7 +796,9 @@ class _BumpGrid extends CustomPainter {
         canvas.drawLine(
           Offset(x, y(rank)),
           Offset(math.min(x + 2 * scale, size.width - 100 * scale), y(rank)),
-          Paint()..color = color,
+          Paint()
+            ..color = color
+            ..strokeWidth = scale,
         );
       }
     }
@@ -926,7 +937,7 @@ class _BumpDotState extends State<_BumpDot> {
               open: _tooltipOpen,
               onOpenChange: (open) => setState(() => _tooltipOpen = open),
               content: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 132),
+                constraints: const BoxConstraints(minWidth: 134),
                 child: IntrinsicWidth(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,

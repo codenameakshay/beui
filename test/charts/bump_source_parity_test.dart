@@ -73,6 +73,31 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('source end label highlights its series without pinning it', (
+    tester,
+  ) async {
+    await tester.pumpWidget(surface());
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: Offset.zero);
+    addTearDown(mouse.removePointer);
+    await mouse.moveTo(tester.getCenter(find.text('Studio').first));
+    await tester.pumpAndSettle();
+    expect(pinned(tester, 'studio'), isFalse);
+    expect(
+      tester
+          .widget<Opacity>(
+            find
+                .descendant(
+                  of: legend('canvas'),
+                  matching: find.byType(Opacity),
+                )
+                .first,
+          )
+          .opacity,
+      .35,
+    );
+  });
   testWidgets(
     'native Tab is plot then row-major rank dots, not geometric rank order',
     (tester) async {
