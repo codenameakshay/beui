@@ -415,10 +415,12 @@ class _BumpScrollRegion extends StatefulWidget {
 
 class _BumpScrollRegionState extends State<_BumpScrollRegion> {
   final _scroll = ScrollController();
+  final _focus = FocusNode();
   bool _ring = false;
   @override
   void dispose() {
     _scroll.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -427,6 +429,7 @@ class _BumpScrollRegionState extends State<_BumpScrollRegion> {
     order: const NumericFocusOrder(0),
     child: Focus(
       canRequestFocus: false,
+      includeSemantics: false,
       onKeyEvent: (_, event) {
         if ((event is! KeyDownEvent && event is! KeyRepeatEvent) ||
             !_scroll.hasClients) {
@@ -444,6 +447,9 @@ class _BumpScrollRegionState extends State<_BumpScrollRegion> {
         return KeyEventResult.handled;
       },
       child: FocusableActionDetector(
+        focusNode: _focus,
+        includeFocusSemantics: false,
+        onFocusChange: (_) => setState(() {}),
         onShowFocusHighlight: (value) => setState(() => _ring = value),
         child: _BumpFocusRing(
           show: _ring,
@@ -452,6 +458,10 @@ class _BumpScrollRegionState extends State<_BumpScrollRegion> {
           child: Semantics(
             label: widget.label,
             container: true,
+            explicitChildNodes: true,
+            focusable: true,
+            focused: _focus.hasFocus,
+            onFocus: _focus.requestFocus,
             child: SingleChildScrollView(
               controller: _scroll,
               scrollDirection: Axis.horizontal,
@@ -832,6 +842,7 @@ class _BumpDotState extends State<_BumpDot> {
     void select() => scope.onToggle(row.series.id);
     return Focus(
       canRequestFocus: false,
+      includeSemantics: false,
       onKeyEvent: (_, event) {
         if (event is KeyDownEvent && _pointerFocus) {
           setState(() => _pointerFocus = false);
@@ -869,11 +880,12 @@ class _BumpDotState extends State<_BumpDot> {
       },
       child: FocusableActionDetector(
         focusNode: _focus,
+        includeFocusSemantics: false,
         onShowFocusHighlight: (value) => setState(() => _ring = value),
         onFocusChange: (focused) {
-          if (!focused || !_pointerFocus) {
-            setState(() => _tooltipOpen = focused);
-          }
+          setState(() {
+            if (!focused || !_pointerFocus) _tooltipOpen = focused;
+          });
           scope.onNodeFocus(row.series.id, _focus);
           if (!focused) _pointerFocus = false;
         },
@@ -881,6 +893,9 @@ class _BumpDotState extends State<_BumpDot> {
           key: ValueKey('bump-node-${row.series.id}-${widget.period}'),
           container: true,
           explicitChildNodes: true,
+          focusable: true,
+          focused: _focus.hasFocus,
+          onFocus: _focus.requestFocus,
           button: true,
           onTap: select,
           selected: scope.activeId == row.series.id,
@@ -1160,6 +1175,7 @@ class _BumpLegendButtonState extends State<_BumpLegendButton> {
     void select() => scope.onToggle(row.series.id);
     return Focus(
       canRequestFocus: false,
+      includeSemantics: false,
       onKeyEvent: (_, event) {
         if (event is KeyDownEvent && _pointerFocus) {
           setState(() => _pointerFocus = false);
@@ -1195,8 +1211,11 @@ class _BumpLegendButtonState extends State<_BumpLegendButton> {
       },
       child: FocusableActionDetector(
         focusNode: _focus,
+        includeFocusSemantics: false,
         onFocusChange: (focused) {
-          if (!focused) _pointerFocus = false;
+          setState(() {
+            if (!focused) _pointerFocus = false;
+          });
           scope.onNodeFocus(row.series.id, _focus);
         },
         onShowFocusHighlight: (value) => setState(() => _ring = value),
@@ -1205,6 +1224,9 @@ class _BumpLegendButtonState extends State<_BumpLegendButton> {
           key: ValueKey('bump-legend-${row.series.id}'),
           container: true,
           explicitChildNodes: true,
+          focusable: true,
+          focused: _focus.hasFocus,
+          onFocus: _focus.requestFocus,
           button: true,
           selected: scope.activeId == row.series.id,
           label: 'Highlight ${row.series.name}',
