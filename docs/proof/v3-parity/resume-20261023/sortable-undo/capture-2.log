@@ -1,0 +1,230 @@
+{
+  target: 'source',
+  reducedMotion: 'no-preference',
+  states: 38,
+  frames: 424,
+  decoded: 424,
+  checks: 158,
+  failures: []
+}
+{
+  target: 'source',
+  reducedMotion: 'reduce',
+  states: 38,
+  frames: 86,
+  decoded: 86,
+  checks: 158,
+  failures: []
+}
+FAIL candidate no-preference reject-move callbacks []
+FAIL candidate no-preference reject proposal payload []
+FAIL candidate no-preference reject-undo-attempt callbacks []
+FAIL candidate no-preference accept-move order ["A","B","C"]
+FAIL candidate no-preference accept-move callbacks []
+FAIL candidate no-preference accept-move Undo false
+FAIL candidate no-preference accept proposal payload []
+FAIL candidate no-preference accept-undo callbacks []
+FAIL candidate no-preference accept-undo focus {"tag":"FLUTTER-VIEW","label":null,"text":"Reorder AAReorder BBReorder CCUndo reorderAfter listflutter-"}
+FAIL candidate no-preference accept restoration DOM observation "- group \"Sortable Undo fixture\":\n  - group \"Sortable items\":\n    - group \"Sortable items\":\n      - button \"Reorder A\":\n        - button \"Reorder A\"\n      - text: A\n      - button \"Reorder B\":\n        - button \"Reorder B\"\n      - text: B\n      - button \"Reorder C\":\n        - button \"Reorder C\"\n      - text: C\n    - button \"Undo reorder\" [disabled]\n  - button \"After list\""
+FAIL candidate no-preference accept-end callbacks [["B","C","A"]]
+FAIL candidate no-preference accept-end focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate no-preference accept-last-boundary callbacks [["B","C","A"]]
+FAIL candidate no-preference accept-home callbacks [["B","C","A"],["A","B","C"]]
+FAIL candidate no-preference accept-home focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate no-preference accept-home-undo callbacks [["B","C","A"],["A","B","C"],["B","C","A"]]
+FAIL candidate no-preference accept-home-undo focus {"tag":"FLT-SEMANTICS","label":"Reorder A","text":"Reorder A"}
+FAIL candidate no-preference reset-move order ["A","B","C"]
+FAIL candidate no-preference reset-move callbacks []
+FAIL candidate no-preference reset-move Undo false
+FAIL candidate no-preference reset proposal payload []
+FAIL candidate no-preference external-reset callbacks []
+FAIL candidate no-preference reset-undo-attempt callbacks []
+FAIL candidate no-preference membership-move order ["A","B","C"]
+FAIL candidate no-preference membership-move callbacks []
+FAIL candidate no-preference membership-move Undo false
+FAIL candidate no-preference membership proposal payload []
+FAIL candidate no-preference membership-replaced order ["A","B","C"]
+FAIL candidate no-preference membership-replaced callbacks []
+FAIL candidate no-preference membership-reintroduced order ["A","B","C"]
+FAIL candidate no-preference membership-reintroduced callbacks []
+FAIL candidate no-preference membership-undo-attempt order ["A","B","C"]
+FAIL candidate no-preference membership-undo-attempt callbacks []
+FAIL candidate no-preference uncontrolled-move order ["A","B","C"]
+FAIL candidate no-preference uncontrolled-move callbacks []
+FAIL candidate no-preference uncontrolled-move Undo false
+FAIL candidate no-preference uncontrolled proposal payload []
+FAIL candidate no-preference uncontrolled-undo callbacks []
+FAIL candidate no-preference uncontrolled-undo focus {"tag":"FLUTTER-VIEW","label":null,"text":"Reorder AAReorder BBReorder CCUndo reorderAfter listflutter-"}
+FAIL candidate no-preference uncontrolled restoration DOM observation "- group \"Sortable Undo fixture\":\n  - group \"Sortable items\":\n    - group \"Sortable items\":\n      - button \"Reorder A\":\n        - button \"Reorder A\"\n      - text: A\n      - button \"Reorder B\":\n        - button \"Reorder B\"\n      - text: B\n      - button \"Reorder C\":\n        - button \"Reorder C\"\n      - text: C\n    - button \"Undo reorder\" [disabled]\n  - button \"After list\""
+FAIL candidate no-preference uncontrolled-end callbacks [["B","C","A"]]
+FAIL candidate no-preference uncontrolled-end focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate no-preference uncontrolled-last-boundary callbacks [["B","C","A"]]
+FAIL candidate no-preference uncontrolled-home callbacks [["B","C","A"],["A","B","C"]]
+FAIL candidate no-preference uncontrolled-home focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate no-preference uncontrolled-home-undo callbacks [["B","C","A"],["A","B","C"],["B","C","A"]]
+FAIL candidate no-preference uncontrolled-home-undo focus {"tag":"FLT-SEMANTICS","label":"Reorder A","text":"Reorder A"}
+FAIL candidate no-preference disabled focus excludes handles {"tag":"FLUTTER-VIEW","label":null,"text":"Reorder AAReorder BBReorder CCUndo reorderAfter listflutter-"}
+{
+  target: 'candidate',
+  reducedMotion: 'no-preference',
+  states: 38,
+  frames: 152,
+  decoded: 152,
+  checks: 158,
+  failures: [
+    'reject-move callbacks',
+    'reject proposal payload',
+    'reject-undo-attempt callbacks',
+    'accept-move order',
+    'accept-move callbacks',
+    'accept-move Undo',
+    'accept proposal payload',
+    'accept-undo callbacks',
+    'accept-undo focus',
+    'accept restoration DOM observation',
+    'accept-end callbacks',
+    'accept-end focus',
+    'accept-last-boundary callbacks',
+    'accept-home callbacks',
+    'accept-home focus',
+    'accept-home-undo callbacks',
+    'accept-home-undo focus',
+    'reset-move order',
+    'reset-move callbacks',
+    'reset-move Undo',
+    'reset proposal payload',
+    'external-reset callbacks',
+    'reset-undo-attempt callbacks',
+    'membership-move order',
+    'membership-move callbacks',
+    'membership-move Undo',
+    'membership proposal payload',
+    'membership-replaced order',
+    'membership-replaced callbacks',
+    'membership-reintroduced order',
+    'membership-reintroduced callbacks',
+    'membership-undo-attempt order',
+    'membership-undo-attempt callbacks',
+    'uncontrolled-move order',
+    'uncontrolled-move callbacks',
+    'uncontrolled-move Undo',
+    'uncontrolled proposal payload',
+    'uncontrolled-undo callbacks',
+    'uncontrolled-undo focus',
+    'uncontrolled restoration DOM observation',
+    'uncontrolled-end callbacks',
+    'uncontrolled-end focus',
+    'uncontrolled-last-boundary callbacks',
+    'uncontrolled-home callbacks',
+    'uncontrolled-home focus',
+    'uncontrolled-home-undo callbacks',
+    'uncontrolled-home-undo focus',
+    'disabled focus excludes handles'
+  ]
+}
+FAIL candidate reduce reject-move callbacks []
+FAIL candidate reduce reject proposal payload []
+FAIL candidate reduce reject-undo-attempt callbacks []
+FAIL candidate reduce accept-move order ["A","B","C"]
+FAIL candidate reduce accept-move callbacks []
+FAIL candidate reduce accept-move Undo false
+FAIL candidate reduce accept proposal payload []
+FAIL candidate reduce accept-undo callbacks []
+FAIL candidate reduce accept-undo focus {"tag":"FLUTTER-VIEW","label":null,"text":"Reorder AAReorder BBReorder CCUndo reorderAfter listflutter-"}
+FAIL candidate reduce accept restoration DOM observation "- group \"Sortable Undo fixture\":\n  - group \"Sortable items\":\n    - group \"Sortable items\":\n      - button \"Reorder A\":\n        - button \"Reorder A\"\n      - text: A\n      - button \"Reorder B\":\n        - button \"Reorder B\"\n      - text: B\n      - button \"Reorder C\":\n        - button \"Reorder C\"\n      - text: C\n    - button \"Undo reorder\" [disabled]\n  - button \"After list\""
+FAIL candidate reduce accept-end callbacks [["B","C","A"]]
+FAIL candidate reduce accept-end focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate reduce accept-last-boundary callbacks [["B","C","A"]]
+FAIL candidate reduce accept-home callbacks [["B","C","A"],["A","B","C"]]
+FAIL candidate reduce accept-home focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate reduce accept-home-undo callbacks [["B","C","A"],["A","B","C"],["B","C","A"]]
+FAIL candidate reduce accept-home-undo focus {"tag":"FLT-SEMANTICS","label":"Reorder A","text":"Reorder A"}
+FAIL candidate reduce reset-move order ["A","B","C"]
+FAIL candidate reduce reset-move callbacks []
+FAIL candidate reduce reset-move Undo false
+FAIL candidate reduce reset proposal payload []
+FAIL candidate reduce external-reset callbacks []
+FAIL candidate reduce reset-undo-attempt callbacks []
+FAIL candidate reduce membership-move order ["A","B","C"]
+FAIL candidate reduce membership-move callbacks []
+FAIL candidate reduce membership-move Undo false
+FAIL candidate reduce membership proposal payload []
+FAIL candidate reduce membership-replaced order ["A","B","C"]
+FAIL candidate reduce membership-replaced callbacks []
+FAIL candidate reduce membership-reintroduced order ["A","B","C"]
+FAIL candidate reduce membership-reintroduced callbacks []
+FAIL candidate reduce membership-undo-attempt order ["A","B","C"]
+FAIL candidate reduce membership-undo-attempt callbacks []
+FAIL candidate reduce uncontrolled-move order ["A","B","C"]
+FAIL candidate reduce uncontrolled-move callbacks []
+FAIL candidate reduce uncontrolled-move Undo false
+FAIL candidate reduce uncontrolled proposal payload []
+FAIL candidate reduce uncontrolled-undo callbacks []
+FAIL candidate reduce uncontrolled-undo focus {"tag":"FLUTTER-VIEW","label":null,"text":"Reorder AAReorder BBReorder CCUndo reorderAfter listflutter-"}
+FAIL candidate reduce uncontrolled restoration DOM observation "- group \"Sortable Undo fixture\":\n  - group \"Sortable items\":\n    - group \"Sortable items\":\n      - button \"Reorder A\":\n        - button \"Reorder A\"\n      - text: A\n      - button \"Reorder B\":\n        - button \"Reorder B\"\n      - text: B\n      - button \"Reorder C\":\n        - button \"Reorder C\"\n      - text: C\n    - button \"Undo reorder\" [disabled]\n  - button \"After list\""
+FAIL candidate reduce uncontrolled-end callbacks [["B","C","A"]]
+FAIL candidate reduce uncontrolled-end focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate reduce uncontrolled-last-boundary callbacks [["B","C","A"]]
+FAIL candidate reduce uncontrolled-home callbacks [["B","C","A"],["A","B","C"]]
+FAIL candidate reduce uncontrolled-home focus {"tag":"BODY","label":null,"text":""}
+FAIL candidate reduce uncontrolled-home-undo callbacks [["B","C","A"],["A","B","C"],["B","C","A"]]
+FAIL candidate reduce uncontrolled-home-undo focus {"tag":"FLT-SEMANTICS","label":"Reorder A","text":"Reorder A"}
+FAIL candidate reduce disabled focus excludes handles {"tag":"FLUTTER-VIEW","label":null,"text":"Reorder AAReorder BBReorder CCUndo reorderAfter listflutter-"}
+{
+  target: 'candidate',
+  reducedMotion: 'reduce',
+  states: 38,
+  frames: 95,
+  decoded: 95,
+  checks: 158,
+  failures: [
+    'reject-move callbacks',
+    'reject proposal payload',
+    'reject-undo-attempt callbacks',
+    'accept-move order',
+    'accept-move callbacks',
+    'accept-move Undo',
+    'accept proposal payload',
+    'accept-undo callbacks',
+    'accept-undo focus',
+    'accept restoration DOM observation',
+    'accept-end callbacks',
+    'accept-end focus',
+    'accept-last-boundary callbacks',
+    'accept-home callbacks',
+    'accept-home focus',
+    'accept-home-undo callbacks',
+    'accept-home-undo focus',
+    'reset-move order',
+    'reset-move callbacks',
+    'reset-move Undo',
+    'reset proposal payload',
+    'external-reset callbacks',
+    'reset-undo-attempt callbacks',
+    'membership-move order',
+    'membership-move callbacks',
+    'membership-move Undo',
+    'membership proposal payload',
+    'membership-replaced order',
+    'membership-replaced callbacks',
+    'membership-reintroduced order',
+    'membership-reintroduced callbacks',
+    'membership-undo-attempt order',
+    'membership-undo-attempt callbacks',
+    'uncontrolled-move order',
+    'uncontrolled-move callbacks',
+    'uncontrolled-move Undo',
+    'uncontrolled proposal payload',
+    'uncontrolled-undo callbacks',
+    'uncontrolled-undo focus',
+    'uncontrolled restoration DOM observation',
+    'uncontrolled-end callbacks',
+    'uncontrolled-end focus',
+    'uncontrolled-last-boundary callbacks',
+    'uncontrolled-home callbacks',
+    'uncontrolled-home focus',
+    'uncontrolled-home-undo callbacks',
+    'uncontrolled-home-undo focus',
+    'disabled focus excludes handles'
+  ]
+}

@@ -1,0 +1,27 @@
+Resolving dependencies...
+Downloading packages...
++ beui 3.0.0 from path ..
++ characters 1.4.1
++ clock 1.1.3
++ collection 1.19.1
++ equatable 2.1.0 (3.0.0 available)
++ flutter 0.0.0 from sdk flutter
++ flutter_lucide 1.61.0
++ material_color_utilities 0.13.0 (0.13.1 available)
++ meta 1.19.0
++ motor 1.1.0
++ sky_engine 0.0.0 from sdk flutter
++ vector_math 2.4.3
+Changed 12 dependencies!
+2 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+The --pwa-strategy option is deprecated and will be removed in a future Flutter release.
+For more information, see: https://github.com/flutter/flutter/issues/156910
+Compiling lib/main.dart for the Web...                          
+Wasm dry run succeeded. Consider building and testing your application with the `--wasm` flag. See docs for more info: https://docs.flutter.dev/platform-integration/web/wasm
+Use --no-wasm-dry-run to disable these warnings.
+Expected to find fonts for (packages/flutter_lucide/lucide, MaterialIcons, packages/cupertino_icons/CupertinoIcons), but found (MaterialIcons, packages/flutter_lucide/lucide). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 7736 bytes (99.5% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Font asset "lucide.ttf" was tree-shaken, reducing it from 932460 to 1260 bytes (99.9% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Compiling lib/main.dart for the Web...                             14.2s
+✓ Built build/web

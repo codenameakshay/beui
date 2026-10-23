@@ -1,0 +1,29 @@
+✘ [ERROR] Could not resolve "lucide-react"
+
+    components/motion/sortable-list.tsx:3:36:
+      3 │ import { GripVertical, Undo2 } from "lucide-react";
+        ╵                                     ~~~~~~~~~~~~~~
+
+  You can mark the path "lucide-react" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+/private/tmp/beui-charts-fixture-runtime-20261023/node_modules/esbuild/lib/main.js:1752
+  let error = new Error(text);
+              ^
+
+Error: Build failed with 1 error:
+components/motion/sortable-list.tsx:3:36: ERROR: Could not resolve "lucide-react"
+    at failureErrorWithLog (/private/tmp/beui-charts-fixture-runtime-20261023/node_modules/esbuild/lib/main.js:1752:15)
+    at /private/tmp/beui-charts-fixture-runtime-20261023/node_modules/esbuild/lib/main.js:1211:25
+    at /private/tmp/beui-charts-fixture-runtime-20261023/node_modules/esbuild/lib/main.js:1163:52
+    at buildResponseToResult (/private/tmp/beui-charts-fixture-runtime-20261023/node_modules/esbuild/lib/main.js:1209:7)
+    at /private/tmp/beui-charts-fixture-runtime-20261023/node_modules/esbuild/lib/main.js:1236:16
+    at responseCallbacks.<computed> (/private/tmp/beui-charts-fixture-runtime-20261023/node_modules/esbuild/lib/main.js:886:9)
+    at handleIncomingPacket (/private/tmp/beui-charts-fixture-runtime-20261023/node_modules/esbuild/lib/main.js:941:12)
+    at Socket.readFromStdout (/private/tmp/beui-charts-fixture-runtime-20261023/node_modules/esbuild/lib/main.js:864:7)
+    at Socket.emit (node:events:514:20)
+    at addChunk (node:internal/streams/readable:605:12) {
+  errors: [Getter/Setter],
+  warnings: [Getter/Setter]
+}
+
+Node.js v26.12.1

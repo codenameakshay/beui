@@ -1,0 +1,67 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading /private/tmp/beui-sortable-focus-red/test/motion/sortable_list_test.dart
+00:00 +0: Undo transfers keyboard ownership to first restored item (false)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'Reorder Explore the visual system'
+  Actual: <null>
+   Which: not an <Instance of 'String'>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/beui-sortable-focus-red/test/motion/sortable_list_test.dart:410:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/beui-sortable-focus-red/test/motion/sortable_list_test.dart line 410
+The test description was:
+  Undo transfers keyboard ownership to first restored item (false)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: Undo transfers keyboard ownership to first restored item (false) [E]
+  Test failed. See exception logs above.
+  The test description was: Undo transfers keyboard ownership to first restored item (false)
+  
+00:00 +0 -1: Undo transfers keyboard ownership to first restored item (true)
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'Reorder Explore the visual system'
+  Actual: <null>
+   Which: not an <Instance of 'String'>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///private/tmp/beui-sortable-focus-red/test/motion/sortable_list_test.dart:410:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///private/tmp/beui-sortable-focus-red/test/motion/sortable_list_test.dart line 410
+The test description was:
+  Undo transfers keyboard ownership to first restored item (true)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: Undo transfers keyboard ownership to first restored item (true) [E]
+  Test failed. See exception logs above.
+  The test description was: Undo transfers keyboard ownership to first restored item (true)
+  
+00:00 +0 -2: Some tests failed.
+
+Failing tests:
+  /private/tmp/beui-sortable-focus-red/test/motion/sortable_list_test.dart: Undo transfers keyboard ownership to first restored item (false)
+  /private/tmp/beui-sortable-focus-red/test/motion/sortable_list_test.dart: Undo transfers keyboard ownership to first restored item (true)

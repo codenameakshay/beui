@@ -1,0 +1,86 @@
+{
+  "integrity": "PASS",
+  "parity": "FAIL: rejected experiments, native engine blocker 194550",
+  "sealed_files": 1535,
+  "sealed_bytes": 132036661,
+  "original_frames": 409,
+  "reports": [
+    {
+      "report": "topology/attempt-1-no-sort-key/candidate-no-preference/results.json",
+      "original_frames": 31,
+      "decoded_frames": 31,
+      "recorded_failures": [
+        "move focus",
+        "end order",
+        "end callbacks",
+        "end focus",
+        "home order",
+        "home callbacks",
+        "home focus",
+        "home-undo order",
+        "home-undo callbacks",
+        "home-undo focus"
+      ]
+    },
+    {
+      "report": "topology/attempt-1-no-sort-key/candidate-reduce/results.json",
+      "original_frames": 14,
+      "decoded_frames": 14,
+      "recorded_failures": [
+        "move focus",
+        "end order",
+        "end callbacks",
+        "end focus",
+        "home order",
+        "home callbacks",
+        "home focus",
+        "home-undo order",
+        "home-undo callbacks",
+        "home-undo focus"
+      ]
+    },
+    {
+      "report": "topology/attempt-1-no-sort-key/source-no-preference/results.json",
+      "original_frames": 141,
+      "decoded_frames": 141,
+      "recorded_failures": []
+    },
+    {
+      "report": "topology/attempt-1-no-sort-key/source-reduce/results.json",
+      "original_frames": 16,
+      "decoded_frames": 16,
+      "recorded_failures": []
+    },
+    {
+      "report": "topology/attempt-2-column/candidate-no-preference/results.json",
+      "original_frames": 34,
+      "decoded_frames": 34,
+      "recorded_failures": [
+        "home focus"
+      ]
+    },
+    {
+      "report": "topology/attempt-2-column/candidate-reduce/results.json",
+      "original_frames": 16,
+      "decoded_frames": 16,
+      "recorded_failures": [
+        "home focus"
+      ]
+    },
+    {
+      "report": "topology/attempt-2-column/source-no-preference/results.json",
+      "original_frames": 141,
+      "decoded_frames": 141,
+      "recorded_failures": []
+    },
+    {
+      "report": "topology/attempt-2-column/source-reduce/results.json",
+      "original_frames": 16,
+      "decoded_frames": 16,
+      "recorded_failures": []
+    }
+  ],
+  "command": "python3 /tmp/sortable-dependency-regular-export-20261024/verify.py",
+  "exit_code": 0,
+  "scope": "Regular-file export before adding this receipt and resealing; final export rerun logged externally in /tmp/sortable-dependency-final-export.json."
+}
