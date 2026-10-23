@@ -24,6 +24,75 @@ Widget _app(Widget child, {bool reduce = false, double? width}) {
 }
 
 void main() {
+  for (final reduce in [false, true]) {
+    testWidgets(
+      'reflow extent settles after rapid resize and removal, RM=$reduce',
+      (tester) async {
+        var first = true;
+        var width = 180.0;
+        var activations = 0;
+        late StateSetter update;
+        await tester.pumpWidget(
+          _app(
+            StatefulBuilder(
+              builder: (context, setState) {
+                update = setState;
+                return SizedBox(
+                  width: width,
+                  child: BeuiBreadcrumbList(
+                    maxItems: null,
+                    children: [
+                      if (first)
+                        const BeuiBreadcrumbItem(
+                          key: ValueKey('first'),
+                          child: SizedBox(width: 100, height: 32),
+                        ),
+                      BeuiBreadcrumbItem(
+                        key: const ValueKey('kept'),
+                        child: SizedBox(
+                          width: 100,
+                          height: 32,
+                          child: BeuiBreadcrumbLink(
+                            onPressed: () => activations++,
+                            child: const Text('Kept route'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            reduce: reduce,
+          ),
+        );
+        await tester.pumpAndSettle();
+        final list = find.byType(BeuiBreadcrumbList);
+        expect(tester.getSize(list).height, 68);
+        var expectedActivations = 0;
+        for (final change in [
+          () => first = false,
+          () {
+            first = true;
+            width = 300;
+          },
+          () => width = 180,
+          () => first = false,
+        ]) {
+          update(change);
+          await tester.pump();
+          await tester.tapAt(tester.getCenter(find.text('Kept route')));
+          expect(activations, ++expectedActivations);
+          await tester.pump(const Duration(milliseconds: 50));
+        }
+        expect(activations, 4);
+        if (reduce) expect(tester.getSize(list).height, 32);
+        await tester.pumpAndSettle();
+        expect(tester.getSize(list).height, closeTo(32, .01));
+        expect(find.text('Kept route'), findsOneWidget);
+      },
+    );
+  }
   testWidgets('surviving segments spring from their painted layout position', (
     tester,
   ) async {
