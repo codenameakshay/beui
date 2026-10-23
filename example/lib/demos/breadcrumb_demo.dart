@@ -103,9 +103,13 @@ class _BreadcrumbDemoState extends State<_BreadcrumbDemo> {
                   ),
                 ),
                 child: _depth < _path.length - 1
-                    ? _NextPathButton(
-                        label: _path[_depth + 1],
-                        onPressed: () => _navigate(_depth + 1),
+                    ? Align(
+                        alignment: Alignment.topCenter,
+                        heightFactor: 1,
+                        child: _NextPathButton(
+                          label: _path[_depth + 1],
+                          onPressed: () => _navigate(_depth + 1),
+                        ),
                       )
                     : Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),

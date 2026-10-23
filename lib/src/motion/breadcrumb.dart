@@ -426,7 +426,9 @@ class BeuiBreadcrumbLink extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               visualDensity: VisualDensity.standard,
-              textStyle: const TextStyle(fontSize: 14, height: 20 / 14),
+              textStyle: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontSize: 14, height: 20 / 14),
               splashFactory: NoSplash.splashFactory,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6),
@@ -742,7 +744,7 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
             key: _triggerKey,
             focusNode: _triggerFocus,
             tooltip: widget.label,
-            visualDensity: VisualDensity.compact,
+            visualDensity: VisualDensity.standard,
             constraints: const BoxConstraints.tightFor(width: 32, height: 32),
             onPressed: () {
               if (_open) {
@@ -754,8 +756,14 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
                 setState(() => _open = true);
               }
             },
-            style: IconButton.styleFrom(foregroundColor: colors.mutedForeground)
-                .copyWith(
+            style:
+                IconButton.styleFrom(
+                  foregroundColor: colors.mutedForeground,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  minimumSize: const Size(32, 32),
+                  maximumSize: const Size(32, 32),
+                  padding: EdgeInsets.zero,
+                ).copyWith(
                   backgroundColor: WidgetStateProperty.resolveWith((states) {
                     return states.contains(WidgetState.hovered)
                         ? colors.muted.withValues(alpha: 0.6)
