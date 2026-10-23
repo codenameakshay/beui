@@ -7,6 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  for (final name in ['blue', 'Blue']) {
+    testWidgets('visual harness applies the $name palette', (tester) async {
+      await tester.pumpWidget(
+        VisualHarnessApp(
+          uri: Uri(queryParameters: {'slug': 'tooltip', 'color': name}),
+        ),
+      );
+      final context = tester.element(find.byType(Scaffold));
+      expect(
+        BeuiColors.resolve(context).primary,
+        BeuiColors.of(BeuiColorTheme.blue, Brightness.dark).primary,
+      );
+    });
+  }
+
   for (final scenario in [
     (query: '592', viewport: 1280.0, expected: 592.0),
     (query: '592', viewport: 390.0, expected: 294.0),

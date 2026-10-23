@@ -41,10 +41,7 @@ class VisualHarnessApp extends StatelessWidget {
     final brightness = params['theme'] == 'light'
         ? Brightness.light
         : Brightness.dark;
-    final colorTheme = BeuiColorTheme.values.firstWhere(
-      (t) => t.name == (params['color'] ?? 'defaultMono'),
-      orElse: () => BeuiColorTheme.defaultMono,
-    );
+    final colorTheme = explorerColorThemeFromUri(launchUri);
     final pad = double.tryParse(params['pad'] ?? '') ?? 48;
 
     final colors = BeuiColors.of(colorTheme, brightness);
