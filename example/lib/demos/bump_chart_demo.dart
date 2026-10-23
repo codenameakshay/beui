@@ -36,7 +36,7 @@ class _BumpChartDemoState extends State<_BumpChartDemo> {
   @override
   Widget build(BuildContext context) => Center(
     child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 672),
+      constraints: const BoxConstraints(maxWidth: 752),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

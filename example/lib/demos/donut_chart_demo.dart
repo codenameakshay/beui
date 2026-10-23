@@ -48,20 +48,34 @@ class _DonutChartDemoState extends State<_DonutChartDemo> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              height: 240,
-              child: Row(
-                children: [
-                  const SizedBox(
-                    width: 240,
-                    child: BeuiDonutPlot(
-                      child: BeuiDonutCenter(totalLabel: 'Monthly revenue'),
-                    ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final narrow = MediaQuery.sizeOf(context).width < 640;
+                final size = narrow ? 256.0 : 240.0;
+                final plot = SizedBox(
+                  width: size,
+                  height: size,
+                  child: const BeuiDonutPlot(
+                    child: BeuiDonutCenter(totalLabel: 'Monthly revenue'),
                   ),
-                  const SizedBox(width: 24),
-                  const Expanded(child: BeuiDonutLegend()),
-                ],
-              ),
+                );
+                return narrow
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          plot,
+                          const SizedBox(height: 24),
+                          const BeuiDonutLegend(),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          plot,
+                          const SizedBox(width: 24),
+                          const Expanded(child: BeuiDonutLegend()),
+                        ],
+                      );
+              },
             ),
             const SizedBox(height: 12),
             Semantics(

@@ -4,6 +4,8 @@
 /// `lib/src/motion/_engine.dart`. Colors come from [BeuiColors.resolve].
 library;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -309,6 +311,68 @@ class BeuiChartSpring extends StatelessWidget {
       value: value,
       motion: motion,
       builder: (context, v, _) => builder(context, v),
+    );
+  }
+}
+
+/// Source-timed chart entrance or emphasis. The delay runs only on mount.
+class BeuiChartTween extends StatefulWidget {
+  /// Animates a scalar using the source ease-out curve.
+  const BeuiChartTween({
+    required this.value,
+    required this.duration,
+    required this.builder,
+    this.from,
+    this.delay = Duration.zero,
+    this.isMovement = false,
+    this.snapWhenReduced = false,
+    this.motion,
+    super.key,
+  });
+
+  final double value;
+  final double? from;
+  final Duration duration;
+  final Duration delay;
+  final bool isMovement;
+  final bool snapWhenReduced;
+  final Motion? motion;
+  final Widget Function(BuildContext, double) builder;
+
+  @override
+  State<BeuiChartTween> createState() => _BeuiChartTweenState();
+}
+
+class _BeuiChartTweenState extends State<BeuiChartTween> {
+  Timer? _timer;
+  late bool _ready;
+
+  @override
+  void initState() {
+    super.initState();
+    _ready = widget.delay == Duration.zero;
+    if (!_ready) {
+      _timer = Timer(widget.delay, () => setState(() => _ready = true));
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    if (reduce && (widget.isMovement || widget.snapWhenReduced)) {
+      return widget.builder(context, widget.value);
+    }
+    return SingleMotionBuilder(
+      from: widget.from,
+      value: _ready || reduce ? widget.value : widget.from ?? widget.value,
+      motion: widget.motion ?? CurvedMotion(widget.duration, beuiEaseOut),
+      builder: (context, value, _) => widget.builder(context, value),
     );
   }
 }

@@ -51,7 +51,7 @@ void main() {
       ))!;
       expect(
         bytes.getUint8((19 * image.width + 100) * 4 + 3),
-        inInclusiveRange(165, 167),
+        inInclusiveRange(152, 154),
       );
       image.dispose();
     });

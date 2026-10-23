@@ -89,7 +89,10 @@ void main() {
     await tester.tap(find.text('Studio').last);
     await tester.pump();
     expect(changed, 'studio');
-    expect(find.bySemanticsLabel('Studio'), findsWidgets);
+    expect(
+      find.bySemanticsLabel(RegExp(r'^Studio(?:\nStudio)?$')),
+      findsOneWidget,
+    );
     semantics.dispose();
   });
 
@@ -120,7 +123,7 @@ void main() {
           .flagsCollection
           .isSelected
           .toString(),
-      contains('True'),
+      contains('False'),
     );
     await gesture.removePointer();
     semantics.dispose();
@@ -197,7 +200,10 @@ void main() {
       final semantics = tester.ensureSemantics();
       await tester.pumpWidget(_surface(active: 'canvas', reduce: true));
       await tester.pump();
-      expect(find.bySemanticsLabel('Canvas'), findsWidgets);
+      expect(
+        find.bySemanticsLabel(RegExp(r'^Canvas(?:\nCanvas)?$')),
+        findsOneWidget,
+      );
       await expectLater(
         find.byType(MaterialApp),
         matchesGoldenFile('goldens/beui_bump_chart.png'),

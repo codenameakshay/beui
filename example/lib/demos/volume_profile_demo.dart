@@ -99,8 +99,10 @@ class _VolumeProfileDemoState extends State<_VolumeProfileDemo> {
     final volumes = _sessions[_session]!;
     final data = [
       for (var i = 0; i < volumes.length; i++)
-        BeuiVolumeProfileBin(
-          price: 64050 + i * 100,
+        BeuiVolumeProfileBin.range(
+          id: 'price-${64000 + i * 100}',
+          priceLow: 64000 + i * 100,
+          priceHigh: 64100 + i * 100,
           volume: volumes[i].toDouble(),
         ),
     ];

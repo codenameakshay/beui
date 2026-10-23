@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/beui_colors.dart';
 import '../tokens/motion.dart';
+import '../motion/_scroll_geometry.dart';
 import '_shared.dart';
 
 /// A labeled donut slice.
@@ -118,13 +119,31 @@ class _BeuiDonutChartState extends State<BeuiDonutChart>
       label: widget.label,
       child:
           widget.child ??
-          const Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(width: 200, height: 200, child: BeuiDonutPlot()),
-              SizedBox(width: 20),
-              Expanded(child: BeuiDonutLegend()),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final size = math.min(256.0, constraints.maxWidth);
+              final plot = SizedBox(
+                width: size,
+                height: size,
+                child: const BeuiDonutPlot(),
+              );
+              return MediaQuery.sizeOf(context).width < 640
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        plot,
+                        const SizedBox(height: 24),
+                        const BeuiDonutLegend(),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        plot,
+                        const SizedBox(width: 24),
+                        const Expanded(child: BeuiDonutLegend()),
+                      ],
+                    );
+            },
           ),
     ),
   );
@@ -144,12 +163,35 @@ class _DonutScope extends InheritedWidget {
 }
 
 /// Ring plot with an optional center overlay.
-class BeuiDonutPlot extends StatelessWidget {
+class BeuiDonutPlot extends StatefulWidget {
   /// Creates a 200 by 200 ring plot.
   const BeuiDonutPlot({super.key, this.child});
 
   /// Center overlay.
   final Widget? child;
+  @override
+  State<BeuiDonutPlot> createState() => _BeuiDonutPlotState();
+}
+
+class _BeuiDonutPlotState extends State<BeuiDonutPlot>
+    with ScrollGeometryMixin {
+  bool _shown = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_shown && Scrollable.maybeOf(context) == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_shown) setState(() => _shown = true);
+      });
+    }
+  }
+
+  @override
+  void onScrollGeometryChanged() {
+    if (!_shown && (visibleFraction ?? 0) >= .4) setState(() => _shown = true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = _DonutScope.of(context);
@@ -184,43 +226,98 @@ class BeuiDonutPlot extends StatelessWidget {
       if (!select) state.setActiveId(null);
     }
 
-    return BeuiChartSpring(
-      value: total,
-      builder: (context, animatedTotal) => Semantics(
-        image: true,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox.expand(
-              child: CustomPaint(
-                painter: _DonutPainter(
-                  segments: segments,
-                  total: total,
-                  sweepProgress: total <= 0
-                      ? 1
-                      : (animatedTotal / total).clamp(0.0, 1.0),
-                  thickness: state.widget.thickness,
-                  gap: state.widget.gap,
-                  activeId: state.activeId,
-                  colors: colors,
-                ),
+    return Semantics(
+      image: true,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _DonutTrack(
+                thickness: state.widget.thickness,
+                color: colors.muted.withValues(alpha: .6),
               ),
             ),
-            if (child != null) SizedBox.expand(child: Center(child: child)),
-            if (child == null) const BeuiDonutCenter(),
-            Positioned.fill(
-              child: MouseRegion(
-                onHover: (event) => activateAt(event.localPosition),
-                onExit: (_) => state.setActiveId(null),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTapDown: (event) =>
-                      activateAt(event.localPosition, select: true),
-                ),
+          ),
+          Positioned.fill(
+            child: !_shown && !MediaQuery.disableAnimationsOf(context)
+                ? const SizedBox.expand()
+                : BeuiChartTween(
+                    key: const ValueKey('donut-ring-entrance'),
+                    from: 0,
+                    value: 1,
+                    duration: const Duration(milliseconds: 900),
+                    isMovement: true,
+                    builder: (context, entrance) => Opacity(
+                      opacity: entrance.clamp(0, 1),
+                      child: Transform.rotate(
+                        angle: -math.pi / 2 * (1 - entrance),
+                        child: Transform.scale(
+                          scale: .88 + .12 * entrance,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              for (var i = 0; i < segments.length; i++)
+                                Positioned.fill(
+                                  key: ValueKey(segments[i].id),
+                                  child: BeuiChartTween(
+                                    from: 0,
+                                    value:
+                                        state.activeId == null ||
+                                            state.activeId == segments[i].id
+                                        ? 1
+                                        : .3,
+                                    duration: const Duration(milliseconds: 400),
+                                    delay: Duration(milliseconds: 150 + i * 60),
+                                    snapWhenReduced: true,
+                                    builder: (context, opacity) => Opacity(
+                                      opacity: opacity.clamp(0, 1),
+                                      child: BeuiChartSpring(
+                                        value: state.activeId == segments[i].id
+                                            ? 1.05
+                                            : 1,
+                                        builder: (context, scale) =>
+                                            Transform.scale(
+                                              scale: scale,
+                                              child: CustomPaint(
+                                                painter: _DonutPainter(
+                                                  segments: segments,
+                                                  total: total,
+                                                  segmentIndex: i,
+                                                  thickness:
+                                                      state.widget.thickness,
+                                                  gap: state.widget.gap,
+                                                  colors: colors,
+                                                ),
+                                              ),
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+          if (widget.child != null)
+            SizedBox.expand(child: Center(child: widget.child)),
+          if (widget.child == null) const BeuiDonutCenter(),
+          Positioned.fill(
+            child: MouseRegion(
+              onHover: (event) => activateAt(event.localPosition),
+              onExit: (_) => state.setActiveId(null),
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTapDown: (event) =>
+                    activateAt(event.localPosition, select: true),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -484,75 +581,82 @@ class BeuiDonutLegend extends StatelessWidget {
   }
 }
 
+class _DonutTrack extends CustomPainter {
+  const _DonutTrack({required this.thickness, required this.color});
+  final double thickness;
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scale = math.min(size.width, size.height) / 200;
+    canvas.drawCircle(
+      size.center(Offset.zero),
+      (100 - thickness / 2 - 8) * scale,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = thickness * scale,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_DonutTrack old) =>
+      old.thickness != thickness || old.color != color;
+}
+
 class _DonutPainter extends CustomPainter {
-  _DonutPainter({
+  const _DonutPainter({
     required this.segments,
     required this.total,
-    required this.sweepProgress,
+    required this.segmentIndex,
     required this.thickness,
     required this.gap,
-    required this.activeId,
     required this.colors,
   });
   final List<BeuiDonutSegment> segments;
   final double total, thickness, gap;
-  final double sweepProgress;
-  final String? activeId;
+  final int segmentIndex;
   final BeuiColors colors;
   @override
   void paint(Canvas canvas, Size size) {
     final scale = math.min(size.width, size.height) / 200;
     final center = size.center(Offset.zero);
     final radius = (100 - thickness / 2 - 8) * scale;
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = colors.muted.withValues(alpha: .65)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = thickness * scale,
+    final segment = segments[segmentIndex];
+    final sweep = segment.value / total * math.pi * 2;
+    final cursor = segments
+        .take(segmentIndex)
+        .fold<double>(
+          -math.pi / 2,
+          (a, s) => a + s.value / total * math.pi * 2,
+        );
+    final inset = segments.length == 1
+        ? 0.0
+        : gap * math.pi / 360 + thickness * scale / 2 / radius;
+    final color = beuiChartColor(
+      segment.color,
+      colors,
+      fallback: beuiChartPalette[segmentIndex % beuiChartPalette.length],
     );
-    var cursor = -math.pi / 2;
-    var remaining = math.pi * 2 * sweepProgress;
-    for (var i = 0; i < segments.length; i++) {
-      final s = segments[i];
-      final sweep = total <= 0 ? 0.0 : s.value / total * math.pi * 2;
-      final visibleSweep = math.min(sweep, math.max(0.0, remaining));
-      if (visibleSweep <= 0) break;
-      final g = gap * math.pi / 180;
-      final inset = segments.length == 1
-          ? 0.0
-          : g / 2 + thickness * scale / 2 / radius;
-      final start = cursor + inset;
-      final span = math.max(.001, visibleSweep - inset * 2);
-      final color = beuiChartColor(
-        s.color,
-        colors,
-        fallback: beuiChartPalette[i % beuiChartPalette.length],
-      );
-      final active = activeId == s.id;
-      final r = radius * (active ? 1.05 : 1);
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: r),
-        start,
-        math.min(span, math.pi * 2 - .001),
-        false,
-        Paint()
-          ..color = color.withValues(alpha: activeId == null || active ? 1 : .3)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = thickness * scale * (active ? 1.05 : 1)
-          ..strokeCap = StrokeCap.round,
-      );
-      cursor += sweep;
-      remaining -= visibleSweep;
-    }
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      cursor + inset,
+      segments.length == 1
+          ? math.pi * 2
+          : math.max(.01 * math.pi / 180, sweep - inset * 2),
+      false,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = thickness * scale
+        ..strokeCap = StrokeCap.round,
+    );
   }
 
   @override
   bool shouldRepaint(_DonutPainter old) =>
       old.segments != segments ||
-      old.activeId != activeId ||
+      old.total != total ||
       old.thickness != thickness ||
       old.gap != gap ||
-      old.sweepProgress != sweepProgress;
+      old.colors != colors;
 }

@@ -31,33 +31,115 @@ class _FunnelChartDemoState extends State<_FunnelChartDemo> {
   @override
   Widget build(BuildContext context) => Center(
     child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 672),
+      constraints: const BoxConstraints(maxWidth: 752),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              const Expanded(child: Text('From first visit to first payment')),
-              TextButton(
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'From first visit to first payment',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Product conversion · Sample cohorts',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: BeuiColors.resolve(context).mutedForeground,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              BeuiButton(
+                variant: BeuiButtonVariant.ghost,
+                size: BeuiButtonSize.sm,
                 onPressed: () =>
                     setState(() => _cohort = (_cohort + 1) % _cohorts.length),
-                child: const Text('Next cohort'),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(LucideIcons.refresh_cw, size: 14),
+                    SizedBox(width: 8),
+                    Text('Next cohort'),
+                  ],
+                ),
               ),
             ],
           ),
-          Wrap(
-            spacing: 8,
-            children: [
-              for (final direction in BeuiFunnelDirection.values)
-                ChoiceChip(
-                  label: Text(direction.name),
-                  selected: _direction == direction,
-                  onSelected: (_) => setState(() => _direction = direction),
+          const SizedBox(height: 24),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Semantics(
+              label: 'Funnel direction',
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: BeuiColors.resolve(
+                    context,
+                  ).muted.withValues(alpha: .5),
+                  borderRadius: BorderRadius.circular(999),
                 ),
-            ],
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final direction in BeuiFunnelDirection.values)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Semantics(
+                          selected: _direction == direction,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: _direction == direction
+                                  ? BeuiColors.resolve(context).background
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(999),
+                              boxShadow: _direction == direction
+                                  ? const [
+                                      BoxShadow(
+                                        color: Color(0x0D000000),
+                                        blurRadius: 2,
+                                        offset: Offset(0, 1),
+                                      ),
+                                    ]
+                                  : null,
+                            ),
+                            child: BeuiButton(
+                              variant: BeuiButtonVariant.ghost,
+                              size: BeuiButtonSize.sm,
+                              onPressed: () =>
+                                  setState(() => _direction = direction),
+                              child: Text(
+                                direction == BeuiFunnelDirection.vertical
+                                    ? 'Vertical'
+                                    : 'Horizontal',
+                                style: TextStyle(
+                                  color: _direction == direction
+                                      ? BeuiColors.resolve(context).foreground
+                                      : BeuiColors.resolve(
+                                          context,
+                                        ).mutedForeground,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 24),
           BeuiFunnelChart(
             direction: _direction,
             stages: [
@@ -69,9 +151,14 @@ class _FunnelChartDemoState extends State<_FunnelChartDemo> {
                 ),
             ],
           ),
-          const Text(
+          const SizedBox(height: 24),
+          Text(
             'Inspect a stage to see conversion and drop-off',
             textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 11,
+              color: BeuiColors.resolve(context).mutedForeground,
+            ),
           ),
         ],
       ),

@@ -45,7 +45,7 @@ class _CompositionChartDemo extends StatelessWidget {
     ];
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 672),
+        constraints: const BoxConstraints(maxWidth: 752),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -54,15 +54,17 @@ class _CompositionChartDemo extends StatelessWidget {
               periods: periods,
               view: BeuiCompositionView.bar,
               label: 'Illustrative acquisition channel shares',
-              formatValue: (value) => '${value.round()} visits',
+              formatValue: (value) => '${beuiChartFormatNumber(value)} visits',
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
+            Divider(height: 1, color: BeuiColors.resolve(context).border),
+            const SizedBox(height: 40),
             BeuiCompositionChart(
               series: series,
               periods: periods,
               view: BeuiCompositionView.area,
               label: 'Illustrative acquisition channel shares',
-              formatValue: (value) => '${value.round()} visits',
+              formatValue: (value) => '${beuiChartFormatNumber(value)} visits',
             ),
           ],
         ),

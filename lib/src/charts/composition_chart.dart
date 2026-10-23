@@ -283,7 +283,7 @@ class _CompositionScope extends InheritedWidget {
 /// Stacked bars or areas with a keyboard-adjustable period range.
 class BeuiCompositionPlot extends StatelessWidget {
   /// Creates the plot.
-  const BeuiCompositionPlot({super.key, this.height = 240});
+  const BeuiCompositionPlot({super.key, this.height = 320});
 
   /// Plot height.
   final double height;
@@ -383,18 +383,25 @@ class BeuiCompositionPlot extends StatelessWidget {
                       onDecrease: index > 0
                           ? () => state.selectPeriod(columns[index - 1].period)
                           : null,
-                      child: CustomPaint(
-                        painter: _CompositionPainter(
-                          columns: columns,
-                          view: state.widget.view,
-                          colors: {
-                            for (final row in state.widget.series)
-                              row.id: beuiChartColor(row.color, colors),
-                          },
-                          highlight: highlight,
-                          reduce: MediaQuery.disableAnimationsOf(context),
+                      child: BeuiChartSpring(
+                        value: (index + .5) / columns.length,
+                        builder: (context, cursor) => CustomPaint(
+                          painter: _CompositionPainter(
+                            columns: columns,
+                            view: state.widget.view,
+                            colors: {
+                              for (final row in state.widget.series)
+                                row.id: beuiChartColor(row.color, colors),
+                            },
+                            highlight: highlight,
+                            reduce: MediaQuery.disableAnimationsOf(context),
+                            cursor: cursor,
+                            cursorColor: colors.foreground.withValues(
+                              alpha: .7,
+                            ),
+                          ),
+                          child: const SizedBox.expand(),
                         ),
-                        child: const SizedBox.expand(),
                       ),
                     ),
                   ),
@@ -453,6 +460,8 @@ class _CompositionPainter extends CustomPainter {
     required this.colors,
     required this.highlight,
     required this.reduce,
+    required this.cursor,
+    required this.cursorColor,
   });
 
   final List<BeuiCompositionColumn> columns;
@@ -460,6 +469,8 @@ class _CompositionPainter extends CustomPainter {
   final Map<String, Color> colors;
   final String? highlight;
   final bool reduce;
+  final double cursor;
+  final Color cursorColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -560,6 +571,16 @@ class _CompositionPainter extends CustomPainter {
         }
         flush();
       }
+    }
+    final x = cursor * size.width;
+    for (var y = 0.0; y < size.height; y += 6) {
+      canvas.drawLine(
+        Offset(x, y),
+        Offset(x, math.min(y + 3, size.height)),
+        Paint()
+          ..color = cursorColor
+          ..strokeWidth = 1,
+      );
     }
   }
 

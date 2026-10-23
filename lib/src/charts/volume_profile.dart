@@ -3,22 +3,45 @@ library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../theme/beui_colors.dart';
 import '_shared.dart';
 
 /// One pre-aggregated price bin.
 @immutable
 class BeuiVolumeProfileBin {
-  /// Creates a price bin.
+  /// Creates a legacy unit-width bin. Use [BeuiVolumeProfileBin.range] for
+  /// stable identity and explicit price geometry.
   const BeuiVolumeProfileBin({
-    required this.price,
+    required double price,
+    required this.volume,
+    this.buy,
+    this.sell,
+  }) : id = null,
+       priceLow = price - .5,
+       priceHigh = price + .5;
+
+  /// Creates a stable, explicitly bounded source price range.
+  const BeuiVolumeProfileBin.range({
+    required String this.id,
+    required this.priceLow,
+    required this.priceHigh,
     required this.volume,
     this.buy,
     this.sell,
   });
 
+  /// Stable identity across sessions, reorder, and replacement.
+  final String? id;
+
+  /// Inclusive lower price bound.
+  final double priceLow;
+
+  /// Upper price bound.
+  final double priceHigh;
+
   /// Representative price for this bin.
-  final double price;
+  double get price => priceLow + (priceHigh - priceLow) / 2;
 
   /// Executed volume.
   final double volume;
@@ -89,18 +112,31 @@ class BeuiVolumeProfile extends StatefulWidget {
 }
 
 class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
-    with BeuiChartActiveState<BeuiVolumeProfile>, BeuiChartInspectorKeys {
+    with BeuiChartActiveState<BeuiVolumeProfile> {
   late List<_ProfileBin> bins;
   late int pocIndex, lowArea, highArea;
   late double total, maxVolume;
   String? _hoveredId;
-  String? get inspectedId => _hoveredId ?? activeId;
+  bool _tooltipOpen = false;
+  String? get inspectedId => _tooltipOpen ? _hoveredId ?? activeId : null;
+  @override
+  void setActiveId(String? id) {
+    if (_tooltipOpen != (id != null)) {
+      setState(() => _tooltipOpen = id != null);
+    }
+    super.setActiveId(id);
+  }
+
   void hoverBin(String id) {
+    setActiveId(id);
     if (_hoveredId != id) setState(() => _hoveredId = id);
   }
 
   void clearHoveredBin() {
-    if (_hoveredId != null) setState(() => _hoveredId = null);
+    setState(() {
+      _hoveredId = null;
+      _tooltipOpen = false;
+    });
   }
 
   @override
@@ -111,8 +147,31 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
   ValueChanged<String?>? get widgetOnActiveChange => widget.onActiveChange;
   @override
   Iterable<String> get knownIds => bins.map((b) => b.id);
-  @override
-  List<String> get inspectableIds => bins.map((b) => b.id).toList();
+  bool handleInspectorKey(KeyEvent event) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent || bins.isEmpty) {
+      return false;
+    }
+    final key = event.logicalKey;
+    if (key == LogicalKeyboardKey.escape) {
+      clearHoveredBin();
+      return true;
+    }
+    final current = math.max(0, bins.indexWhere((b) => b.id == activeId));
+    final next = switch (key) {
+      LogicalKeyboardKey.home => 0,
+      LogicalKeyboardKey.end => bins.length - 1,
+      LogicalKeyboardKey.arrowUp ||
+      LogicalKeyboardKey.arrowRight => math.min(current + 1, bins.length - 1),
+      LogicalKeyboardKey.arrowDown ||
+      LogicalKeyboardKey.arrowLeft => math.max(current - 1, 0),
+      _ => -1,
+    };
+    if (next < 0) return false;
+    _hoveredId = null;
+    setActiveId(bins[next].id);
+    return true;
+  }
+
   String Function(double) get price =>
       widget.formatPrice ??
       (v) => beuiChartFormatNumber(v, maximumFractionDigits: 2);
@@ -129,16 +188,47 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
   void didUpdateWidget(BeuiVolumeProfile old) {
     super.didUpdateWidget(old);
     if (old.data != widget.data || old.valueArea != widget.valueArea) {
-      if (old.data != widget.data) _hoveredId = null;
       _rebuild();
+      if (_hoveredId != null && !bins.any((b) => b.id == _hoveredId) ||
+          bins.isEmpty) {
+        _hoveredId = null;
+        _tooltipOpen = false;
+        super.setActiveId(null);
+      }
     }
   }
 
   void _rebuild() {
     bins = [
       for (var i = 0; i < widget.data.length; i++)
-        _ProfileBin(id: '$i', bin: widget.data[i]),
-    ]..sort((a, b) => a.bin.price.compareTo(b.bin.price));
+        _ProfileBin(id: widget.data[i].id ?? '$i', bin: widget.data[i]),
+    ]..sort((a, b) => a.bin.priceLow.compareTo(b.bin.priceLow));
+    final target = widget.valueArea;
+    if (target != false &&
+        (target is! num || !target.isFinite || target <= 0 || target > 1)) {
+      throw ArgumentError(
+        'VolumeProfile: valueArea must be a fraction above 0 and at most 1, or false.',
+      );
+    }
+    final ids = <String>{};
+    for (var i = 0; i < bins.length; i++) {
+      final bin = bins[i].bin;
+      if (!ids.add(bins[i].id)) {
+        throw ArgumentError('VolumeProfile: duplicate bin ID "${bins[i].id}".');
+      }
+      if (!bin.priceLow.isFinite ||
+          !bin.priceHigh.isFinite ||
+          bin.priceHigh <= bin.priceLow ||
+          !bin.volume.isFinite ||
+          bin.volume < 0) {
+        throw ArgumentError(
+          'VolumeProfile: bins need finite increasing price bounds and nonnegative volume.',
+        );
+      }
+      if (i > 0 && bin.priceLow < bins[i - 1].bin.priceHigh) {
+        throw ArgumentError('VolumeProfile: price ranges must not overlap.');
+      }
+    }
     total = bins.fold(
       0,
       (s, b) =>
@@ -147,13 +237,19 @@ class _BeuiVolumeProfileState extends State<BeuiVolumeProfile>
     maxVolume = bins.fold(0, (m, b) => math.max(m, b.bin.volume));
     pocIndex = -1;
     for (var i = 0; i < bins.length; i++) {
-      if (pocIndex < 0 || bins[i].bin.volume > bins[pocIndex].bin.volume) {
+      if (bins[i].bin.volume > (pocIndex < 0 ? 0 : bins[pocIndex].bin.volume)) {
         pocIndex = i;
       }
     }
     lowArea = pocIndex;
     highArea = pocIndex;
-    final target = widget.valueArea;
+    if (!total.isFinite ||
+        (bins.isNotEmpty &&
+            !(bins.last.bin.priceHigh - bins.first.bin.priceLow).isFinite)) {
+      throw ArgumentError(
+        'VolumeProfile: the total volume and price span must remain finite.',
+      );
+    }
     if (target == 1 && total > 0 && pocIndex >= 0) {
       lowArea = 0;
       highArea = bins.length - 1;
@@ -232,7 +328,7 @@ class _ProfileScope extends InheritedWidget {
 /// Interactive horizontal volume bars with a vertical keyboard inspector.
 class BeuiVolumeProfilePlot extends StatelessWidget {
   /// Creates the plot.
-  const BeuiVolumeProfilePlot({super.key, this.height = 300});
+  const BeuiVolumeProfilePlot({super.key, this.height = 320});
 
   /// Plot height.
   final double height;
@@ -246,17 +342,22 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
         child: const Center(child: Text('No volume data')),
       );
     }
-    final prices = state.bins.map((b) => b.bin.price).toList();
-    final lo = prices.reduce(math.min);
-    final hi = prices.reduce(math.max);
-    final span = math.max(hi - lo, 1.0);
-    final barHeight = math.max(2.0, height / state.bins.length);
-    double barTop(int index) {
-      final top = state.bins.length == 1
-          ? 0.0
-          : ((hi - prices[index]) / span).clamp(0.0, 1.0) * height;
-      return top.clamp(0, math.max(0, height - barHeight));
-    }
+    final lo = state.bins.first.bin.priceLow;
+    final hi = state.bins.last.bin.priceHigh;
+    final span = hi - lo;
+    final axisStyle = TextStyle(
+      fontFamily: 'monospace',
+      fontSize: MediaQuery.sizeOf(context).width < 640 ? 10 : 12,
+      height: 4 / 3,
+      color: colors.mutedForeground,
+    );
+    final priceTicks = List.generate(5, (i) => state.price(hi - span * i / 4));
+    double barTop(int index) =>
+        (hi - state.bins[index].bin.priceHigh) / span * height;
+    double barHeight(int index) =>
+        (state.bins[index].bin.priceHigh - state.bins[index].bin.priceLow) /
+        span *
+        height;
 
     int binIndexAt(double y) {
       var closestIndex = 0;
@@ -264,9 +365,9 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
       var visibleIndex = -1;
       for (var i = 0; i < state.bins.length; i++) {
         final top = barTop(i);
-        if (y >= top && y <= top + barHeight) visibleIndex = i;
-        final distance = (y - top - barHeight / 2).abs();
-        if (distance <= closestDistance) {
+        if (y >= top && y <= top + barHeight(i)) visibleIndex = i;
+        final distance = (y - top - barHeight(i) / 2).abs();
+        if (distance < closestDistance) {
           closestIndex = i;
           closestDistance = distance;
         }
@@ -274,145 +375,225 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
       return visibleIndex < 0 ? closestIndex : visibleIndex;
     }
 
-    final active = state.bins.indexWhere((b) => b.id == state.inspectedId);
-    final index = active < 0
-        ? state.pocIndex.clamp(0, state.bins.length - 1)
-        : active;
+    final active = state.bins.indexWhere((b) => b.id == state.activeId);
+    final index = active < 0 ? 0 : active;
     final barColor = beuiChartColor(
       state.widget.color,
       colors,
-      fallback: colors.primary,
+      fallback: const Color(0xff6366f1),
     );
     final pocColor = beuiChartColor(
       state.widget.pocColor,
       colors,
-      fallback: colors.warning,
+      fallback: const Color(0xfff59e0b),
     );
     return SizedBox(
-      height: height,
-      child: Row(
+      height: height + 24,
+      child: Column(
         children: [
           SizedBox(
-            width: 72,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
+            height: height,
+            child: Row(
               children: [
-                Text(
-                  state.price(hi),
-                  style: TextStyle(fontSize: 10, color: colors.mutedForeground),
+                IntrinsicWidth(
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Opacity(
+                        opacity: 0,
+                        child: Column(
+                          children: [
+                            for (final tick in priceTicks)
+                              Text(tick, style: axisStyle),
+                          ],
+                        ),
+                      ),
+                      for (var i = 0; i < 5; i++)
+                        Positioned(
+                          right: 0,
+                          top: height * i / 4 - 8,
+                          child: Text(priceTicks[i], style: axisStyle),
+                        ),
+                    ],
+                  ),
                 ),
-                Text(
-                  state.price(lo),
-                  style: TextStyle(fontSize: 10, color: colors.mutedForeground),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) => Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  for (var i = 0; i < state.bins.length; i++)
-                    Builder(
-                      builder: (context) {
-                        final bin = state.bins[i].bin;
-                        final top = barTop(i);
-                        final h = barHeight;
-                        final isPoc = i == state.pocIndex;
-                        final inArea =
-                            i >= state.lowArea && i <= state.highArea;
-                        final fraction = state.maxVolume <= 0
-                            ? 0.0
-                            : (bin.volume / state.maxVolume).clamp(0, 1);
-                        return Positioned(
-                          top: top,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
                           left: 0,
                           right: 0,
-                          height: h,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: BeuiChartSpring(
-                              value: constraints.maxWidth * fraction,
-                              builder: (context, w) => Container(
-                                width: w,
-                                height: math.max(1, h - 1),
-                                decoration: BoxDecoration(
-                                  color: isPoc
-                                      ? pocColor
-                                      : barColor.withValues(
-                                          alpha: inArea || state.lowArea < 0
-                                              ? .82
-                                              : .3,
-                                        ),
-                                  borderRadius: const BorderRadius.horizontal(
-                                    right: Radius.circular(3),
+                          top: height + 8,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              for (final text in [
+                                '0',
+                                state.volume(state.maxVolume / 2),
+                                state.volume(state.maxVolume),
+                              ])
+                                Text(text, style: axisStyle),
+                            ],
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: _ProfileLines(
+                              color: colors.border.withValues(alpha: .6),
+                            ),
+                          ),
+                        ),
+                        for (var i = 0; i < state.bins.length; i++)
+                          Builder(
+                            builder: (context) {
+                              final bin = state.bins[i].bin;
+                              final top = barTop(i);
+                              final h = barHeight(i);
+                              final isPoc = i == state.pocIndex;
+                              final inArea =
+                                  i >= state.lowArea && i <= state.highArea;
+                              final fraction = state.maxVolume <= 0
+                                  ? 0.0
+                                  : (bin.volume / state.maxVolume).clamp(0, 1);
+                              return Positioned(
+                                key: ValueKey(state.bins[i].id),
+                                top: top,
+                                left: 0,
+                                right: 0,
+                                height: h,
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: BeuiChartSpring(
+                                    value: constraints.maxWidth * fraction,
+                                    builder: (context, w) => Container(
+                                      width: w,
+                                      height: math.max(0, h - 2),
+                                      decoration: BoxDecoration(
+                                        color: isPoc
+                                            ? pocColor.withValues(alpha: .9)
+                                            : barColor.withValues(
+                                                alpha:
+                                                    inArea || state.lowArea < 0
+                                                    ? .9
+                                                    : .3,
+                                              ),
+                                        borderRadius:
+                                            const BorderRadius.horizontal(
+                                              right: Radius.circular(2),
+                                            ),
+                                        border:
+                                            state.bins[i].id ==
+                                                state.inspectedId
+                                            ? Border.all(
+                                                color: colors.foreground,
+                                                width: 1.5,
+                                              )
+                                            : null,
+                                      ),
+                                    ),
                                   ),
-                                  border: state.bins[i].id == state.inspectedId
-                                      ? Border.all(
+                                ),
+                              );
+                            },
+                          ),
+                        if (state.pocIndex >= 0)
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            top:
+                                barTop(state.pocIndex) +
+                                barHeight(state.pocIndex) / 2,
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                CustomPaint(
+                                  size: Size(constraints.maxWidth, 1),
+                                  painter: _ProfileLines(
+                                    color: pocColor,
+                                    poc: true,
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  top: -9,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: colors.background,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      child: Text(
+                                        'POC',
+                                        style: TextStyle(
+                                          fontFamily: 'monospace',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 10,
+                                          height: 1.4,
                                           color: colors.foreground,
-                                          width: 1.5,
-                                        )
-                                      : null,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        Positioned.fill(
+                          child: MouseRegion(
+                            onHover: (event) {
+                              state.hoverBin(
+                                state
+                                    .bins[binIndexAt(event.localPosition.dy)]
+                                    .id,
+                              );
+                            },
+                            onExit: (_) => state.clearHoveredBin(),
+                            child: Focus(
+                              autofocus: false,
+                              onFocusChange: (focused) {
+                                if (focused) {
+                                  state.setActiveId(state.bins[index].id);
+                                } else {
+                                  state.clearHoveredBin();
+                                }
+                              },
+                              onKeyEvent: (_, event) {
+                                state._hoveredId = null;
+                                return state.handleInspectorKey(event)
+                                    ? KeyEventResult.handled
+                                    : KeyEventResult.ignored;
+                              },
+                              child: Semantics(
+                                slider: true,
+                                focusable: true,
+                                label:
+                                    '${state.widget.label}: inspect price level',
+                                value: state.price(state.bins[index].bin.price),
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTapDown: (e) {
+                                    state.setActiveId(
+                                      state
+                                          .bins[binIndexAt(e.localPosition.dy)]
+                                          .id,
+                                    );
+                                  },
+                                  child: const SizedBox.expand(),
                                 ),
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  Positioned.fill(
-                    child: MouseRegion(
-                      onHover: (event) {
-                        state.hoverBin(
-                          state.bins[binIndexAt(event.localPosition.dy)].id,
-                        );
-                      },
-                      onExit: (_) => state.clearHoveredBin(),
-                      child: Focus(
-                        autofocus: true,
-                        onKeyEvent: (_, event) =>
-                            state.handleInspectorKey(event)
-                            ? KeyEventResult.handled
-                            : KeyEventResult.ignored,
-                        child: Semantics(
-                          slider: true,
-                          focusable: true,
-                          label: '${state.widget.label}: inspect price level',
-                          value: state.price(state.bins[index].bin.price),
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTapDown: (e) {
-                              state.setActiveId(
-                                state.bins[binIndexAt(e.localPosition.dy)].id,
-                              );
-                            },
-                            child: const SizedBox.expand(),
-                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 80,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  state.volume(state.maxVolume),
-                  style: TextStyle(fontSize: 10, color: colors.mutedForeground),
-                ),
-                Text(
-                  'Volume ${state.widget.unit}',
-                  style: TextStyle(fontSize: 10, color: colors.mutedForeground),
                 ),
               ],
             ),
@@ -421,6 +602,33 @@ class BeuiVolumeProfilePlot extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ProfileLines extends CustomPainter {
+  const _ProfileLines({required this.color, this.poc = false});
+  final Color color;
+  final bool poc;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = color;
+    if (poc) {
+      for (var x = 0.0; x < size.width; x += 6) {
+        canvas.drawLine(
+          Offset(x, 0),
+          Offset(math.min(x + 3, size.width), 0),
+          paint,
+        );
+      }
+    } else {
+      for (var i = 0; i <= 4; i++) {
+        final x = size.width * i / 4;
+        canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_ProfileLines old) => color != old.color || poc != old.poc;
 }
 
 /// Summary of the active bin and control levels.
@@ -454,7 +662,7 @@ class BeuiVolumeProfileSummary extends StatelessWidget {
         ),
         if (s.lowArea >= 0)
           Text(
-            'Value area ${s.price(s.bins[s.lowArea].bin.price)} – ${s.price(s.bins[s.highArea].bin.price)} (${s.total <= 0 ? '0%' : beuiChartPercent(areaVolume / s.total)})',
+            'Value area ${s.price(s.bins[s.lowArea].bin.priceLow)} – ${s.price(s.bins[s.highArea].bin.priceHigh)} (${s.total <= 0 ? '0%' : beuiChartPercent(areaVolume / s.total)})',
             style: TextStyle(color: colors.mutedForeground, fontSize: 12),
           ),
         Text(
@@ -483,16 +691,8 @@ class BeuiVolumeProfileTooltip extends StatelessWidget {
     if (found == null) return const SizedBox.shrink();
     final bin = found.bin;
     final index = s.bins.indexOf(found);
-    final low = index == 0
-        ? bin.price -
-              (s.bins.length > 1 ? (s.bins[1].bin.price - bin.price) / 2 : 0)
-        : (s.bins[index - 1].bin.price + bin.price) / 2;
-    final high = index == s.bins.length - 1
-        ? bin.price +
-              (s.bins.length > 1
-                  ? (bin.price - s.bins[index - 1].bin.price) / 2
-                  : 0)
-        : (bin.price + s.bins[index + 1].bin.price) / 2;
+    final low = bin.priceLow;
+    final high = bin.priceHigh;
     final share = s.total > 0 ? bin.volume / s.total : 0.0;
     const tickerStyle = TextStyle(fontSize: 11);
     return Semantics(

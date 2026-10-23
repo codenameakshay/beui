@@ -6,6 +6,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme/beui_colors.dart';
+import '../motion/_engine.dart';
+import '../tokens/motion.dart';
+import 'package:flutter/services.dart';
 import '_shared.dart';
 
 /// A series of ranks, one per period. Null values leave gaps in its path.
@@ -251,175 +254,113 @@ class BeuiBumpPlot extends StatelessWidget {
     }
     return LayoutBuilder(
       builder: (context, constraints) {
-        final width = constraints.maxWidth.isFinite
-            ? constraints.maxWidth
-            : 560.0;
+        final width = math.max(
+          560.0,
+          math.max(
+            scope.periods.length * 64.0,
+            constraints.maxWidth.isFinite ? constraints.maxWidth : 560.0,
+          ),
+        );
         final scale = width / 560;
-        final left = 32 * scale,
-            right = 100 * scale,
-            top = 28 * scale,
-            bottom = 36 * scale;
         final height = scope.height * scale;
-        final plotWidth = math.max(1, width - left - right);
-        final plotHeight = height - top - bottom;
-        double x(int period) => scope.periods.length <= 1
-            ? left + plotWidth / 2
-            : left + period * plotWidth / (scope.periods.length - 1);
-        double y(int rank) => scope.maxRank <= 1
-            ? top + plotHeight / 2
-            : top + (rank - 1) * plotHeight / (scope.maxRank - 1);
-        return SizedBox(
-          height: height,
-          child: Stack(
-            children: [
-              CustomPaint(
-                size: Size(width, height),
-                painter: _BumpPainter(
-                  rows: scope.rows,
-                  maxRank: scope.maxRank,
-                  activeId: scope.highlightedId,
-                  left: left,
-                  right: right,
-                  top: top,
-                  bottom: bottom,
-                  colors: colors,
-                ),
-              ),
-              for (var i = 0; i < scope.rows.length; i++)
-                for (var j = 0; j < scope.periods.length; j++)
-                  if (scope.rows[i].ranks[j] case final rank?)
-                    Positioned(
-                      left: x(j) - 14,
-                      top: y(rank) - 14,
-                      width: 28,
-                      height: 28,
-                      child: Semantics(
-                        button: true,
-                        selected:
-                            scope.highlightedId == scope.rows[i].series.id,
-                        label:
-                            '${scope.rows[i].series.name}, ${scope.periods[j]}, rank $rank',
-                        child: MouseRegion(
-                          onEnter: (_) =>
-                              scope.onHover(scope.rows[i].series.id),
-                          onExit: (_) {
-                            if (scope.hoveredId == scope.rows[i].series.id) {
-                              scope.onHover(null);
-                            }
-                          },
-                          child: BeuiChartTooltip(
-                            content: BeuiChartTooltipCard(
-                              title:
-                                  '${scope.rows[i].series.name} · ${scope.periods[j]}',
-                              details: [
-                                BeuiChartTicker(
-                                  value: rank,
-                                  duration: const Duration(milliseconds: 350),
-                                  format: (value) => '#${value.round()}',
-                                ),
-                                Text(
-                                  j == 0 || scope.rows[i].ranks[j - 1] == null
-                                      ? 'No previous rank'
-                                      : scope.rows[i].ranks[j - 1] == rank
-                                      ? 'No change'
-                                      : '${scope.rows[i].ranks[j - 1]! > rank ? 'Up' : 'Down'} ${(scope.rows[i].ranks[j - 1]! - rank).abs()} ${(scope.rows[i].ranks[j - 1]! - rank).abs() == 1 ? 'place' : 'places'}',
-                                ),
-                                if (j > 0 && scope.rows[i].ranks[j - 1] != null)
-                                  Text(
-                                    'Previously #${scope.rows[i].ranks[j - 1]} in ${scope.periods[j - 1]}',
-                                  ),
-                              ],
-                            ),
-                            child: InkWell(
-                              key: ValueKey(
-                                'bump-node-${scope.rows[i].series.id}-$j',
-                              ),
-                              onFocusChange: (focused) => scope.onFocus(
-                                focused ? scope.rows[i].series.id : null,
-                              ),
-                              customBorder: const CircleBorder(),
-                              onTap: () => scope.onActive(
-                                scope.activeId == scope.rows[i].series.id
-                                    ? null
-                                    : scope.rows[i].series.id,
-                              ),
-                              child: Semantics(
-                                button: true,
-                                selected:
-                                    scope.highlightedId ==
-                                    scope.rows[i].series.id,
-                                label:
-                                    '${scope.rows[i].series.name}, ${scope.periods[j]}, rank $rank',
-                                child: Center(
-                                  child: Container(
-                                    width: 20,
-                                    height: 20,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: colors.background,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: scope.rows[i].color,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      '$rank',
-                                      style: TextStyle(
-                                        fontSize: 9,
-                                        fontFamily: 'monospace',
-                                        fontWeight: FontWeight.w500,
-                                        height: 1,
-                                        color: scope.rows[i].color,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+        double x(int i) =>
+            (32 +
+                (scope.periods.length <= 1
+                    ? 214
+                    : i * 428 / (scope.periods.length - 1))) *
+            scale;
+        double y(int rank) =>
+            (28 +
+                (scope.maxRank <= 1
+                    ? (scope.height - 64) / 2
+                    : (rank - 1) * (scope.height - 64) / (scope.maxRank - 1))) *
+            scale;
+        final targets = <(String, String), Offset>{
+          for (final row in scope.rows)
+            for (var i = 0; i < scope.periods.length; i++)
+              if (row.ranks[i] case final rank?)
+                (row.series.id, scope.periods[i]): Offset(x(i), y(rank)),
+        };
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: _BumpGeometry(
+              targets: targets,
+              reduce: MediaQuery.disableAnimationsOf(context),
+              builder: (positions) => Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  CustomPaint(
+                    size: Size(width, height),
+                    painter: _BumpGrid(
+                      ranks: scope.rows
+                          .expand((r) => r.ranks.whereType<int>())
+                          .toSet(),
+                      y: y,
+                      scale: scale,
+                      color: colors.border,
+                    ),
+                  ),
+                  for (var i = 0; i < scope.rows.length; i++)
+                    Positioned.fill(
+                      key: ValueKey(scope.rows[i].series.id),
+                      child: _BumpPathLayer(
+                        row: scope.rows[i],
+                        index: i,
+                        points: [
+                          for (final period in scope.periods)
+                            positions[(scope.rows[i].series.id, period)],
+                        ],
+                        scale: scale,
+                      ),
+                    ),
+                  for (var i = 0; i < scope.rows.length; i++)
+                    for (var j = 0; j < scope.periods.length; j++)
+                      if (positions[(scope.rows[i].series.id, scope.periods[j])]
+                          case final point?)
+                        Positioned(
+                          key: ValueKey((
+                            scope.rows[i].series.id,
+                            scope.periods[j],
+                          )),
+                          left: point.dx - 14,
+                          top: point.dy - 14,
+                          width: 28,
+                          height: 28,
+                          child: _BumpDot(
+                            row: scope.rows[i],
+                            period: j,
+                            seriesIndex: i,
                           ),
+                        ),
+                  for (var i = 0; i < scope.periods.length; i++)
+                    Positioned(
+                      left: x(i) - 28,
+                      top: height - 18 * scale,
+                      width: 56,
+                      child: Text(
+                        scope.periods[i],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 10 * scale,
+                          color: colors.mutedForeground,
                         ),
                       ),
                     ),
-              for (var i = 0; i < scope.periods.length; i++)
-                Positioned(
-                  left: x(i) - 28,
-                  top: height - 18 * scale,
-                  width: 56,
-                  child: Text(
-                    scope.periods[i],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: colors.mutedForeground,
+                  for (final row in scope.rows)
+                    Semantics(
+                      container: true,
+                      label:
+                          'Ranking data: ${row.series.name}. ${[for (var i = 0; i < scope.periods.length; i++)
+                            if (row.ranks[i] case final rank?) '${scope.periods[i]} rank $rank' else '${scope.periods[i]} no data'].join(', ')}',
+                      child: const SizedBox.shrink(),
                     ),
-                  ),
-                ),
-              for (final row in scope.rows)
-                if (row.ranks.lastOrNull case final rank?)
-                  Positioned(
-                    left: width - right + 18 * scale,
-                    top: y(rank) - 8,
-                    width: right - 18 * scale,
-                    child: Text(
-                      row.series.name,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: row.color,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-              for (final row in scope.rows)
-                Semantics(
-                  container: true,
-                  label:
-                      'Ranking data: ${row.series.name}. ${[for (var index = 0; index < scope.periods.length; index++)
-                        if (row.ranks[index] case final rank?) '${scope.periods[index]} rank $rank' else '${scope.periods[index]} no data'].join(', ')}',
-                  child: const SizedBox.shrink(),
-                ),
-            ],
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -427,86 +368,456 @@ class BeuiBumpPlot extends StatelessWidget {
   }
 }
 
-class _BumpPainter extends CustomPainter {
-  const _BumpPainter({
-    required this.rows,
-    required this.maxRank,
-    required this.activeId,
-    required this.left,
-    required this.right,
-    required this.top,
-    required this.bottom,
-    required this.colors,
+class _BumpGeometry extends StatefulWidget {
+  const _BumpGeometry({
+    required this.targets,
+    required this.reduce,
+    required this.builder,
   });
-  final List<_BumpRow> rows;
-  final int maxRank;
-  final String? activeId;
-  final double left, right, top, bottom;
-  final BeuiColors colors;
+  final Map<(String, String), Offset> targets;
+  final bool reduce;
+  final Widget Function(Map<(String, String), Offset>) builder;
+  @override
+  State<_BumpGeometry> createState() => _BumpGeometryState();
+}
+
+class _BumpGeometryState extends State<_BumpGeometry>
+    with TickerProviderStateMixin {
+  final _positions =
+      <(String, String), (SingleMotionController, SingleMotionController)>{};
+  void _changed() => setState(() {});
+  @override
+  void initState() {
+    super.initState();
+    _sync();
+  }
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final plotWidth = size.width - left - right;
-    final plotHeight = size.height - top - bottom;
-    double x(int period) => rows.first.ranks.length <= 1
-        ? left + plotWidth / 2
-        : left + period * plotWidth / (rows.first.ranks.length - 1);
-    double y(int rank) => maxRank <= 1
-        ? top + plotHeight / 2
-        : top + (rank - 1) * plotHeight / (maxRank - 1);
-    for (var rank = 1; rank <= maxRank; rank++) {
-      final yy = y(rank);
-      for (var xx = left; xx < size.width - right; xx += 7) {
-        canvas.drawLine(
-          Offset(xx, yy),
-          Offset(math.min(xx + 2, size.width - right), yy),
-          Paint()
-            ..color = colors.border
-            ..strokeWidth = 1,
-        );
+  void didUpdateWidget(_BumpGeometry old) {
+    super.didUpdateWidget(old);
+    _sync();
+  }
+
+  void _sync() {
+    for (final key in _positions.keys.toList()) {
+      if (!widget.targets.containsKey(key)) {
+        final pair = _positions.remove(key)!;
+        _targets.remove(pair.$1);
+        _targets.remove(pair.$2);
+        pair.$1.dispose();
+        pair.$2.dispose();
       }
     }
-    for (final row in rows) {
-      final path = Path();
-      Offset? previous;
-      for (var i = 0; i < row.ranks.length; i++) {
-        final rank = row.ranks[i];
-        if (rank == null) {
-          previous = null;
-          continue;
-        }
-        final point = Offset(x(i), y(rank));
-        if (previous == null) {
-          path.moveTo(point.dx, point.dy);
-        } else {
-          final middle = (previous.dx + point.dx) / 2;
-          path.cubicTo(
-            middle,
-            previous.dy,
-            middle,
-            point.dy,
-            point.dx,
-            point.dy,
-          );
-        }
-        previous = point;
-      }
-      final selected = activeId == row.series.id;
-      final dimmed = activeId != null && !selected;
-      canvas.drawPath(
-        path,
-        Paint()
-          ..color = row.color.withValues(alpha: dimmed ? .2 : 1)
-          ..strokeWidth = selected ? 3 : 2
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round,
+    for (final entry in widget.targets.entries) {
+      final pair = _positions.putIfAbsent(
+        entry.key,
+        () => (
+          SingleMotionController(
+            motion: beuiSpringLayout,
+            vsync: this,
+            initialValue: entry.value.dx,
+          )..addListener(_changed),
+          SingleMotionController(
+            motion: beuiSpringLayout,
+            vsync: this,
+            initialValue: entry.value.dy,
+          )..addListener(_changed),
+        ),
       );
+      for (final axis in [
+        (pair.$1, entry.value.dx),
+        (pair.$2, entry.value.dy),
+      ]) {
+        if (widget.reduce) {
+          axis.$1.stop();
+          if (axis.$1.value != axis.$2) axis.$1.value = axis.$2;
+        } else if (_targets[axis.$1] != axis.$2) {
+          axis.$1.animateTo(axis.$2);
+        }
+        _targets[axis.$1] = axis.$2;
+      }
+    }
+  }
+
+  final _targets = <SingleMotionController, double>{};
+  @override
+  void dispose() {
+    for (final pair in _positions.values) {
+      pair.$1.dispose();
+      pair.$2.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder({
+    for (final entry in _positions.entries)
+      entry.key: Offset(entry.value.$1.value, entry.value.$2.value),
+  });
+}
+
+Path _bumpPath(List<Offset?> points) {
+  final path = Path();
+  Offset? previous;
+  for (final point in points) {
+    if (point == null) {
+      previous = null;
+      continue;
+    }
+    if (previous == null) {
+      path.moveTo(point.dx, point.dy);
+    } else {
+      final middle = (previous.dx + point.dx) / 2;
+      path.cubicTo(middle, previous.dy, middle, point.dy, point.dx, point.dy);
+    }
+    previous = point;
+  }
+  return path;
+}
+
+class _BumpPathLayer extends StatelessWidget {
+  const _BumpPathLayer({
+    required this.row,
+    required this.index,
+    required this.points,
+    required this.scale,
+  });
+  final _BumpRow row;
+  final int index;
+  final List<Offset?> points;
+  final double scale;
+  @override
+  Widget build(BuildContext context) {
+    final scope = _BumpScope.of(context);
+    final active = scope.highlightedId == row.series.id;
+    final dimmed = scope.highlightedId != null && !active;
+    final path = _bumpPath(points);
+    return BeuiChartTween(
+      from: 0,
+      value: dimmed ? .22 : 1,
+      duration: const Duration(milliseconds: 180),
+      builder: (context, opacity) => Opacity(
+        opacity: opacity.clamp(0, 1),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: BeuiChartTween(
+                from: 0,
+                value: 1,
+                duration: const Duration(milliseconds: 280),
+                delay: Duration(milliseconds: math.min(index, 4) * 25),
+                isMovement: true,
+                builder: (context, reveal) => ClipRect(
+                  clipper: _BumpReveal(reveal),
+                  child: MouseRegion(
+                    hitTestBehavior: HitTestBehavior.translucent,
+                    onHover: (event) {
+                      // The source uses a 16px transparent stroke as the path hit target.
+                      final near = _nearBumpPath(
+                        path,
+                        event.localPosition,
+                        8 * scale,
+                      );
+                      if (near) {
+                        scope.onHover(row.series.id);
+                      } else if (scope.hoveredId == row.series.id) {
+                        scope.onHover(null);
+                      }
+                    },
+                    onExit: (_) {
+                      if (scope.hoveredId == row.series.id) scope.onHover(null);
+                    },
+                    child: BeuiChartTween(
+                      value: active ? .16 : 0,
+                      duration: const Duration(milliseconds: 180),
+                      builder: (context, glow) => CustomPaint(
+                        painter: _BumpPainter(
+                          path: path,
+                          color: row.color,
+                          glow: glow,
+                          scale: scale,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (points.lastOrNull case final last?)
+              Positioned(
+                left: last.dx + 18 * scale,
+                top: last.dy - 8 * scale,
+                child: IgnorePointer(
+                  child: Text(
+                    row.series.name.length > 12
+                        ? '${row.series.name.substring(0, 11)}…'
+                        : row.series.name,
+                    style: TextStyle(
+                      fontSize: 10 * scale,
+                      color: row.color,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+bool _nearBumpPath(Path path, Offset point, double tolerance) {
+  for (final metric in path.computeMetrics()) {
+    for (var d = 0.0; d <= metric.length; d += 3) {
+      if ((metric.getTangentForOffset(d)!.position - point).distance <=
+          tolerance) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+class _BumpReveal extends CustomClipper<Rect> {
+  const _BumpReveal(this.value);
+  final double value;
+  @override
+  Rect getClip(Size size) =>
+      Rect.fromLTWH(0, 0, size.width * value, size.height);
+  @override
+  bool shouldReclip(_BumpReveal old) => old.value != value;
+}
+
+class _BumpPainter extends CustomPainter {
+  const _BumpPainter({
+    required this.path,
+    required this.color,
+    required this.glow,
+    required this.scale,
+  });
+  final Path path;
+  final Color color;
+  final double glow;
+  final double scale;
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = color
+        ..strokeWidth = 2 * scale
+        ..style = PaintingStyle.stroke,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = color.withValues(alpha: glow)
+        ..strokeWidth = 5 * scale
+        ..style = PaintingStyle.stroke,
+    );
+  }
+
+  @override
+  bool? hitTest(Offset position) => _nearBumpPath(path, position, 8 * scale);
+  @override
+  bool shouldRepaint(_BumpPainter old) => true;
+}
+
+class _BumpGrid extends CustomPainter {
+  const _BumpGrid({
+    required this.ranks,
+    required this.y,
+    required this.scale,
+    required this.color,
+  });
+  final Set<int> ranks;
+  final double Function(int) y;
+  final double scale;
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final rank in ranks) {
+      for (var x = 32 * scale; x < size.width - 100 * scale; x += 7 * scale) {
+        canvas.drawLine(
+          Offset(x, y(rank)),
+          Offset(math.min(x + 2 * scale, size.width - 100 * scale), y(rank)),
+          Paint()..color = color,
+        );
+      }
     }
   }
 
   @override
-  bool shouldRepaint(_BumpPainter old) =>
-      rows != old.rows || maxRank != old.maxRank || activeId != old.activeId;
+  bool shouldRepaint(_BumpGrid old) => true;
+}
+
+class _BumpDot extends StatefulWidget {
+  const _BumpDot({
+    required this.row,
+    required this.period,
+    required this.seriesIndex,
+  });
+  final _BumpRow row;
+  final int period, seriesIndex;
+  @override
+  State<_BumpDot> createState() => _BumpDotState();
+}
+
+class _BumpDotState extends State<_BumpDot> {
+  bool _hovered = false;
+  final _focus = FocusNode();
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = _BumpScope.of(context);
+    final row = widget.row;
+    final rank = row.ranks[widget.period]!;
+    final previous = widget.period == 0 ? null : row.ranks[widget.period - 1];
+    final active = scope.highlightedId == row.series.id;
+    final dimmed = scope.highlightedId != null && !active;
+    final change = previous == null ? null : previous - rank;
+    final changeText = change == null
+        ? 'No previous rank'
+        : change == 0
+        ? 'No change'
+        : '${change > 0 ? 'Up' : 'Down'} ${change.abs()} ${change.abs() == 1 ? 'place' : 'places'}';
+    void select() =>
+        scope.onActive(scope.activeId == row.series.id ? null : row.series.id);
+    return Focus(
+      focusNode: _focus,
+      onFocusChange: (focused) => scope.onFocus(focused ? row.series.id : null),
+      onKeyEvent: (_, event) {
+        if (event is! KeyDownEvent) return KeyEventResult.ignored;
+        if (event.logicalKey == LogicalKeyboardKey.enter ||
+            event.logicalKey == LogicalKeyboardKey.space) {
+          select();
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.escape) {
+          scope.onActive(null);
+          scope.onFocus(null);
+          scope.onHover(null);
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: Semantics(
+        key: ValueKey('bump-node-${row.series.id}-${widget.period}'),
+        button: true,
+        selected: scope.activeId == row.series.id,
+        label:
+            '${row.series.name}, ${scope.periods[widget.period]}, rank $rank',
+        child: MouseRegion(
+          onEnter: (_) {
+            setState(() => _hovered = true);
+            scope.onHover(row.series.id);
+          },
+          onExit: (_) {
+            setState(() => _hovered = false);
+            scope.onHover(null);
+          },
+          child: BeuiChartTooltip(
+            content: BeuiChartTooltipCard(
+              title: '${row.series.name} · ${scope.periods[widget.period]}',
+              details: [
+                BeuiChartTicker(value: rank, format: (v) => '#$v'),
+                Text(changeText),
+                if (previous != null)
+                  Text(
+                    'Previously #$previous in ${scope.periods[widget.period - 1]}',
+                  ),
+              ],
+            ),
+            child: GestureDetector(
+              onTap: () {
+                _focus.requestFocus();
+                select();
+              },
+              child: BeuiChartTween(
+                from: .85,
+                value: _hovered ? 1.12 : 1,
+                duration: const Duration(milliseconds: 180),
+                motion: beuiSpringPress,
+                isMovement: true,
+                builder: (context, outerScale) => Transform.scale(
+                  scale: outerScale,
+                  child: BeuiChartTween(
+                    from: 0,
+                    value: dimmed ? .22 : 1,
+                    duration: const Duration(milliseconds: 180),
+                    builder: (context, opacity) => Opacity(
+                      opacity: opacity.clamp(0, 1),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          BeuiChartTween(
+                            value: active ? .12 : 0,
+                            duration: const Duration(milliseconds: 150),
+                            builder: (context, glow) => DecoratedBox(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: row.color.withValues(
+                                  alpha: glow.clamp(0, 1),
+                                ),
+                              ),
+                              child: const SizedBox.expand(),
+                            ),
+                          ),
+                          BeuiChartTween(
+                            from: .85,
+                            value: 1,
+                            motion: beuiSpringPress,
+                            duration: const Duration(milliseconds: 180),
+                            delay: Duration(
+                              milliseconds:
+                                  math.min(widget.period, 8) * 25 +
+                                  math.min(widget.seriesIndex, 4) * 15,
+                            ),
+                            isMovement: true,
+                            builder: (context, innerScale) => Transform.scale(
+                              scale: innerScale,
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: BeuiColors.resolve(context).background,
+                                  border: Border.all(
+                                    color: row.color,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Text(
+                                  '$rank',
+                                  style: TextStyle(
+                                    fontFamily: 'monospace',
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w500,
+                                    color: row.color,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// Toggleable series legend.

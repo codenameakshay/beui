@@ -19,7 +19,7 @@ void main() {
     await tester.pumpWidget(
       beuiTestApp(const BeuiVolumeProfile(data: _bins), reduce: true),
     );
-    expect(find.text('Value area 11.00 – 11.00 (40.0%)'), findsOneWidget);
+    expect(find.text('Value area 10.50 – 11.50 (40.0%)'), findsOneWidget);
   });
 
   testWidgets('a full value area includes empty edge bins', (tester) async {
@@ -36,7 +36,7 @@ void main() {
         reduce: true,
       ),
     );
-    expect(find.text('Value area 10.00 – 12.00 (100.0%)'), findsOneWidget);
+    expect(find.text('Value area 9.50 – 12.50 (100.0%)'), findsOneWidget);
   });
 
   testWidgets('renders profile, summary, tooltip data and slider semantics', (
@@ -56,7 +56,8 @@ void main() {
     await tester.pump();
     expect(find.byType(BeuiVolumeProfilePlot), findsOneWidget);
     expect(find.byType(BeuiVolumeProfileSummary), findsOneWidget);
-    expect(find.textContaining('POC'), findsOneWidget);
+    expect(find.text('POC'), findsOneWidget);
+    expect(find.text('POC 11.00'), findsOneWidget);
     expect(
       find.bySemanticsLabel('Test volume profile: inspect price level'),
       findsOneWidget,
@@ -76,7 +77,8 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
     await tester.pump();
     expect(changed, '2');
   });
