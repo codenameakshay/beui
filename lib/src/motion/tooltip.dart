@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:clock/clock.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../overlay/beui_overlay.dart';
 import '../theme/beui_colors.dart';
@@ -231,6 +232,9 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   final Object _owner = Object();
   final GlobalKey _triggerKey = GlobalKey();
   final GlobalKey _surfaceKey = GlobalKey();
+  final FocusNode _triggerFocus = FocusNode(
+    debugLabel: 'Tooltip trigger scope',
+  );
   late bool _internalOpen = widget.defaultOpen;
   bool get _open => !widget.disabled && (widget.open ?? _internalOpen);
   bool _focused = false;
@@ -249,14 +253,29 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
   void initState() {
     super.initState();
     GestureBinding.instance.pointerRouter.addGlobalRoute(_onGlobalPointer);
+    HardwareKeyboard.instance.addHandler(_onKeyboardModality);
   }
 
   @override
   void dispose() {
     _timer?.cancel();
     GestureBinding.instance.pointerRouter.removeGlobalRoute(_onGlobalPointer);
+    HardwareKeyboard.instance.removeHandler(_onKeyboardModality);
+    _triggerFocus.dispose();
     _provider?.release(_owner);
     super.dispose();
+  }
+
+  bool _onKeyboardModality(KeyEvent event) {
+    _pointerFocus = false;
+    if (event is KeyDownEvent &&
+        event.logicalKey != LogicalKeyboardKey.escape &&
+        _triggerFocus.hasFocus) {
+      _focused = true;
+      _suppressed = false;
+      _show(immediate: true);
+    }
+    return false;
   }
 
   @override
@@ -482,12 +501,9 @@ class _BeuiTooltipState extends State<BeuiTooltip> {
         },
         child: Focus(
           key: _triggerKey,
+          focusNode: _triggerFocus,
           canRequestFocus: false,
           skipTraversal: true,
-          onKeyEvent: (_, event) {
-            _pointerFocus = false;
-            return KeyEventResult.ignored;
-          },
           onFocusChange: (focused) {
             _focused = focused && !_pointerFocus;
             if (_focused) {

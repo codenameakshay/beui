@@ -34,6 +34,21 @@ Future<TestGesture> _open(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('keyboard use restores a mouse-focused suppressed label', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_tooltip());
+    final mouse = await _open(tester);
+    await mouse.down(tester.getCenter(find.byKey(_anchor)));
+    await mouse.up();
+    await tester.pumpAndSettle();
+    expect(find.text('Context'), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.pumpAndSettle();
+    expect(find.text('Context'), findsOneWidget);
+  });
+
   testWidgets('arrow overlaps the body without increasing its anchor gap', (
     tester,
   ) async {
