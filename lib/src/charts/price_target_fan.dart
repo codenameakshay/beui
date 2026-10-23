@@ -1,6 +1,7 @@
 /// Historical prices with high, mean and low analyst projections.
 library;
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -602,6 +603,7 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                               ? .3
                               : 1,
                           duration: const Duration(milliseconds: 250),
+                          snapWhenReduced: true,
                           builder: (context, opacity) => Opacity(
                             opacity: opacity.clamp(0, 1),
                             child: CustomPaint(
@@ -626,10 +628,10 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                 left:
                     (_BeuiPriceTargetFanState.width -
                             _BeuiPriceTargetFanState.right -
-                            6)
+                            8)
                         .clamp(0.0, 480.0),
                 top: (state._y(target.price) - 11).clamp(0.0, 214.0),
-                width: 50,
+                width: 72,
                 height: 22,
                 child: BeuiChartTooltip(
                   enabled: false,
@@ -681,17 +683,30 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                           onPressed: () => state.setActiveId('t:${target.key}'),
                           style: TextButton.styleFrom(
                             overlayColor: Colors.transparent,
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                            padding: const EdgeInsets.only(left: 18),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             alignment: Alignment.centerLeft,
                           ),
-                          child: Text(
-                            target.price.toStringAsFixed(0),
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: _targetColor(state, target, colors),
+                          child: BeuiChartTween(
+                            value:
+                                state._resolvedActive?.type == 'target' &&
+                                    state._resolvedActive?.key != target.key
+                                ? .3
+                                : 1,
+                            duration: const Duration(milliseconds: 250),
+                            snapWhenReduced: true,
+                            builder: (context, opacity) => Opacity(
+                              opacity: opacity.clamp(0, 1),
+                              child: Text(
+                                target.price.toStringAsFixed(0),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontFamily: 'monospace',
+                                  fontWeight: FontWeight.w600,
+                                  color: _targetColor(state, target, colors),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -857,16 +872,70 @@ class _PriceTargetHistoryHitTarget extends StatelessWidget {
 }
 
 /// Current-price guide.
-class BeuiPriceTargetNow extends StatelessWidget {
+class BeuiPriceTargetNow extends StatefulWidget {
   /// Creates the current price marker.
   const BeuiPriceTargetNow({super.key});
   @override
-  Widget build(BuildContext context) => CustomPaint(
-    painter: _PriceNowPainter(
-      _PriceTargetScope.of(context),
-      BeuiColors.resolve(context),
-    ),
-    size: const Size(520, 236),
+  State<BeuiPriceTargetNow> createState() => _BeuiPriceTargetNowState();
+}
+
+class _BeuiPriceTargetNowState extends State<BeuiPriceTargetNow> {
+  Timer? _pulseTimer;
+  bool? _reduced;
+  int _pulse = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final reduced = MediaQuery.disableAnimationsOf(context);
+    if (_reduced == reduced) return;
+    _reduced = reduced;
+    _pulseTimer?.cancel();
+    _pulse = 0;
+    if (!reduced) {
+      _pulseTimer = Timer(const Duration(milliseconds: 1600), () {
+        setState(() => _pulse++);
+        _pulseTimer = Timer.periodic(const Duration(milliseconds: 3800), (_) {
+          setState(() => _pulse++);
+        });
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulseTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => BeuiChartTween(
+    from: 0,
+    value: 1,
+    delay: const Duration(milliseconds: 850),
+    duration: const Duration(milliseconds: 300),
+    motion: beuiSpringPanel,
+    isMovement: true,
+    builder: (context, dot) {
+      Widget paint(double? pulse) => CustomPaint(
+        painter: _PriceNowPainter(
+          _PriceTargetScope.of(context),
+          BeuiColors.resolve(context),
+          dot: dot,
+          pulse: pulse,
+        ),
+        size: const Size(520, 236),
+      );
+      if (_reduced! || _pulse == 0) return paint(null);
+      return BeuiChartTween(
+        key: ValueKey(_pulse),
+        from: 0,
+        value: 1,
+        duration: const Duration(milliseconds: 2200),
+        isMovement: true,
+        builder: (context, pulse) => paint(pulse),
+      );
+    },
   );
 }
 
@@ -1290,32 +1359,68 @@ class _FanRevealClip extends CustomClipper<Rect> {
       start != old.start || progress != old.progress;
 }
 
+Paint _guidePaint(BeuiColors colors, double top, double bottom) => Paint()
+  ..shader = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      colors.borderStrong.withValues(alpha: 0),
+      colors.borderStrong,
+      colors.borderStrong,
+    ],
+    stops: const [0, .45, 1],
+  ).createShader(Rect.fromLTRB(0, top, 520, bottom))
+  ..strokeWidth = 1
+  ..style = PaintingStyle.stroke;
+
 class _PriceNowPainter extends CustomPainter {
-  _PriceNowPainter(this.state, this.colors) : widget = state.widget;
+  _PriceNowPainter(
+    this.state,
+    this.colors, {
+    required this.dot,
+    required this.pulse,
+  }) : widget = state.widget;
   final _BeuiPriceTargetFanState state;
   final BeuiColors colors;
   final BeuiPriceTargetFan widget;
+  final double dot;
+  final double? pulse;
   @override
   void paint(Canvas canvas, Size size) {
     final y = state._y(state.widget.current);
     final x = state._nowX;
-    final line = Paint()
-      ..color = colors.foreground.withValues(alpha: .35)
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke;
     final top = _BeuiPriceTargetFanState.top;
     final bottom =
         _BeuiPriceTargetFanState.height - _BeuiPriceTargetFanState.bottom;
+    final line = _guidePaint(colors, top, bottom);
     for (var yy = top; yy < bottom; yy += 6) {
       canvas.drawLine(Offset(x, yy), Offset(x, math.min(yy + 3, bottom)), line);
     }
-    canvas.drawCircle(Offset(x, y), 4.5, Paint()..color = colors.background);
-    canvas.drawCircle(Offset(x, y), 3, Paint()..color = colors.foreground);
+    canvas.drawCircle(
+      Offset(x, y),
+      3.2 * dot.clamp(0, double.infinity),
+      Paint()..color = colors.foreground.withValues(alpha: dot.clamp(0, 1)),
+    );
+    if (pulse != null) {
+      canvas.drawCircle(
+        Offset(x, y),
+        3.2 * (1 + 1.8 * pulse!),
+        Paint()
+          ..color = colors.foreground.withValues(
+            alpha: .45 * (1 - pulse!).clamp(0, 1),
+          )
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1,
+      );
+    }
   }
 
   @override
   bool shouldRepaint(_PriceNowPainter oldDelegate) =>
-      oldDelegate.widget != widget || oldDelegate.colors != colors;
+      oldDelegate.widget != widget ||
+      oldDelegate.colors != colors ||
+      oldDelegate.dot != dot ||
+      oldDelegate.pulse != pulse;
 }
 
 class _PriceCursorPainter extends CustomPainter {
@@ -1343,9 +1448,11 @@ class _PriceCursorPainter extends CustomPainter {
         x,
         _BeuiPriceTargetFanState.height - _BeuiPriceTargetFanState.bottom,
       ),
-      Paint()
-        ..color = colors.foreground.withValues(alpha: .25)
-        ..strokeWidth = 1,
+      _guidePaint(
+        colors,
+        _BeuiPriceTargetFanState.top,
+        _BeuiPriceTargetFanState.height - _BeuiPriceTargetFanState.bottom,
+      ),
     );
     canvas.drawCircle(Offset(x, y), 3.2, Paint()..color = colors.foreground);
     canvas.drawCircle(

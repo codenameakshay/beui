@@ -48,6 +48,76 @@ BeuiPriceTargetFan _chart({
 );
 
 void main() {
+  testWidgets(
+    'target labels start ten pixels after dots and dim with projections',
+    (tester) async {
+      await _pumpChart(
+        tester,
+        _chart(defaultActive: const BeuiPriceTargetFanActive.target('High')),
+        reduce: true,
+      );
+      final plot = tester.getRect(find.byType(BeuiPriceTargetSvg));
+      expect(tester.getRect(find.text('232')).left - plot.left, 422);
+      final muted = tester.widget<Opacity>(
+        find
+            .ancestor(of: find.text('205'), matching: find.byType(Opacity))
+            .first,
+      );
+      expect(muted.opacity, .3);
+    },
+  );
+
+  testWidgets(
+    'now dot lands after 850ms and tail pulse is absent when reduced',
+    (tester) async {
+      Widget chart({bool reduce = false}) => beuiTestApp(
+        const BeuiPriceTargetFan(
+          current: 100,
+          targets: [
+            BeuiPriceTarget(key: 'High', price: 140),
+            BeuiPriceTarget(key: 'Mean', price: 120),
+            BeuiPriceTarget(key: 'Low', price: 80),
+          ],
+          child: BeuiPriceTargetNow(),
+        ),
+        reduce: reduce,
+      );
+      List<List<Object?>> circles() {
+        final canvas = TestRecordingCanvas();
+        final paint = tester.widget<CustomPaint>(
+          find.descendant(
+            of: find.byType(BeuiPriceTargetNow),
+            matching: find.byType(CustomPaint),
+          ),
+        );
+        paint.painter!.paint(canvas, const Size(520, 236));
+        return canvas.invocations
+            .where((call) => call.invocation.memberName == #drawCircle)
+            .map((call) => call.invocation.positionalArguments)
+            .toList();
+      }
+
+      await tester.pumpWidget(chart());
+      expect(circles().single[1], 0);
+      await tester.pump(const Duration(milliseconds: 800));
+      expect(circles().single[1], 0);
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(circles().single[1] as double, inExclusiveRange(0, 3.2));
+      await tester.pump(const Duration(milliseconds: 650));
+      expect(circles(), hasLength(2));
+      await tester.pump(const Duration(milliseconds: 400));
+      final pulse = circles().last;
+      expect(pulse[1] as double, inExclusiveRange(3.2, 8.96));
+      expect((pulse[2] as Paint).color.a, inExclusiveRange(0, .45));
+      await tester.pumpWidget(chart(reduce: true));
+      expect(circles(), hasLength(1));
+      expect(circles().single[1], 3.2);
+      await tester.pump(const Duration(seconds: 4));
+      expect(circles(), hasLength(1));
+    },
+  );
+
   testWidgets('source grid uses four nice dashed levels within the domain', (
     tester,
   ) async {
