@@ -134,6 +134,8 @@ void main() {
 
       await tester.enterText(password, '');
       await tester.pump();
+      expect(find.textContaining('Password strength:'), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 181));
       expect(find.textContaining('Password strength:'), findsNothing);
       expect(
         find.byKey(const ValueKey('strength-segment-0-fill')),

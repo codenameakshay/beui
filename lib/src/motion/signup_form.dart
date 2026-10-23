@@ -73,11 +73,6 @@ const _emailPattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$';
 const _minimumPasswordLength = 8;
 const _strengthLabels = ['Too short', 'Weak', 'Fair', 'Good', 'Strong'];
 
-// Framer duration 0.3s, bounce 0 → ω=2π/duration and ζ=1−bounce.
-const _passwordRevealSpring = SpringMotion(
-  SpringDescription(mass: 1, stiffness: 438.65, damping: 41.89),
-);
-
 int beuiPasswordStrength(String password) {
   if (password.length < _minimumPasswordLength) return 0;
 
@@ -330,6 +325,7 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
                     height: 28 / 20,
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.5,
+                    color: colors.foreground,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -397,56 +393,67 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
                               : () => setState(
                                   () => _revealPassword = !_revealPassword,
                                 ),
-                          icon: _PasswordRevealGlyph(revealed: _revealPassword),
+                          icon: Icon(
+                            _revealPassword
+                                ? LucideIcons.eye_off
+                                : LucideIcons.eye,
+                            size: 16,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-                if (widget.strengthMeter && values.password.isNotEmpty)
-                  _SpringEntrance(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
-                      child: Semantics(
-                        liveRegion: true,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Row(
-                              children: List.generate(
-                                4,
-                                (index) => Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                      right: index == 3 ? 0 : 6,
-                                    ),
-                                    child: _StrengthSegment(
-                                      index: index,
-                                      filled: index < strength,
-                                      color: strength <= 1
-                                          ? colors.destructive
-                                          : strength == 2
-                                          ? colors.warning
-                                          : colors.success,
-                                      track: colors.mutedForeground.withValues(
-                                        alpha: 0.2,
+                _SignupPresence(
+                  duration: const Duration(milliseconds: 180),
+                  child: widget.strengthMeter && values.password.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 8, 4, 0),
+                          child: Semantics(
+                            liveRegion: true,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                  children: List.generate(
+                                    4,
+                                    (index) => Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                          right: index == 3 ? 0 : 6,
+                                        ),
+                                        child: _StrengthSegment(
+                                          index: index,
+                                          filled: index < strength,
+                                          color: strength <= 1
+                                              ? colors.destructive
+                                              : strength == 2
+                                              ? colors.warning
+                                              : colors.success,
+                                          track: colors.mutedForeground
+                                              .withValues(alpha: 0.2),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Password strength: ${_strengthLabels[strength]}',
+                                  style: Theme.of(context).textTheme.labelSmall
+                                      ?.copyWith(
+                                        fontSize: 12,
+                                        height: 16 / 12,
+                                        fontWeight: FontWeight.w400,
+                                        color: colors.mutedForeground,
+                                      ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Password strength: ${_strengthLabels[strength]}',
-                              style: Theme.of(context).textTheme.labelSmall
-                                  ?.copyWith(color: colors.mutedForeground),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                          ),
+                        )
+                      : null,
+                ),
                 const SizedBox(height: 4),
                 textField(
                   keyName: 'confirmPassword',
@@ -475,20 +482,15 @@ class _BeuiSignUpFormState extends State<BeuiSignUpForm> {
                     _touch('terms');
                   },
                 ),
-                if (shown('terms', errors.terms) case final message?)
-                  _AnimatedMessage(
-                    message: message,
-                    color: colors.destructive,
-                    alert: true,
-                  ),
-                if (widget.errorMessage case final message?) ...[
-                  const SizedBox(height: 12),
-                  _AnimatedMessage(
-                    message: message,
-                    color: colors.destructive,
-                    alert: true,
-                  ),
-                ],
+                _AnimatedMessage(
+                  message: shown('terms', errors.terms),
+                  color: colors.destructive,
+                ),
+                _AnimatedMessage(
+                  message: widget.errorMessage,
+                  color: colors.destructive,
+                  boxed: true,
+                ),
                 const SizedBox(height: 20),
                 Semantics(
                   hint: widget.errorMessage,
@@ -532,28 +534,50 @@ class _AnimatedMessage extends StatelessWidget {
   const _AnimatedMessage({
     required this.message,
     required this.color,
-    required this.alert,
+    this.boxed = false,
   });
 
-  final String message;
+  final String? message;
   final Color color;
-  final bool alert;
+  final bool boxed;
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      liveRegion: alert,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-        child: _SpringEntrance(
-          child: Text(
-            message,
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: color),
-          ),
-        ),
-      ),
+    final text = Text(
+      message ?? '',
+      style: TextStyle(fontSize: 12, height: 16 / 12, color: color),
+    );
+    return _SignupPresence(
+      duration: const Duration(milliseconds: 200),
+      blur: !boxed,
+      child: message == null
+          ? null
+          : Padding(
+              padding: EdgeInsets.only(top: boxed ? 20 : 6),
+              child: Semantics(
+                liveRegion: true,
+                child: boxed
+                    ? Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: .1),
+                          border: Border.all(
+                            color: color.withValues(alpha: .3),
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: text,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: text,
+                      ),
+              ),
+            ),
     );
   }
 }
@@ -611,66 +635,94 @@ class _StrengthSegment extends StatelessWidget {
   }
 }
 
-class _SpringEntrance extends StatelessWidget {
-  const _SpringEntrance({required this.child});
+class _SignupPresence extends StatefulWidget {
+  const _SignupPresence({
+    required this.child,
+    required this.duration,
+    this.blur = false,
+  });
 
-  final Widget child;
+  final Widget? child;
+  final Duration duration;
+  final bool blur;
 
   @override
-  Widget build(BuildContext context) {
-    final motion = motionFor(context, beuiSpringLayout, isMovement: true);
-    if (motion is NoMotion) {
-      return TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0, end: 1),
-        duration: const Duration(milliseconds: 140),
-        builder: (context, opacity, child) =>
-            Opacity(opacity: opacity, child: child),
-        child: child,
-      );
-    }
-    return SingleMotionBuilder(
-      value: 1,
-      from: 0,
-      motion: motion,
-      builder: (context, progress, child) => Opacity(
-        opacity: progress,
-        child: Transform.translate(
-          offset: Offset(0, (1 - progress) * -4),
-          child: ImageFiltered(
-            imageFilter: ImageFilter.blur(
-              sigmaX: (1 - progress) * 4,
-              sigmaY: (1 - progress) * 4,
-            ),
-            child: child,
-          ),
-        ),
-      ),
-      child: child,
-    );
-  }
+  State<_SignupPresence> createState() => _SignupPresenceState();
 }
 
-class _PasswordRevealGlyph extends StatelessWidget {
-  const _PasswordRevealGlyph({required this.revealed});
+class _SignupPresenceState extends State<_SignupPresence>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  Widget? _retainedChild;
+  late double _from;
+  late double _to;
 
-  final bool revealed;
+  double get _progress =>
+      _from + (_to - _from) * beuiEaseOut.transform(_controller.value);
+
+  @override
+  void initState() {
+    super.initState();
+    _retainedChild = widget.child;
+    _from = _to = widget.child == null ? 0 : 1;
+    _controller =
+        AnimationController(
+          vsync: this,
+          duration: widget.duration,
+          value: 1,
+          animationBehavior: AnimationBehavior.preserve,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed && widget.child == null) {
+            setState(() => _retainedChild = null);
+          }
+        });
+  }
+
+  @override
+  void didUpdateWidget(_SignupPresence oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _controller.duration = widget.duration;
+    if (widget.child != null) _retainedChild = widget.child;
+    if ((oldWidget.child == null) != (widget.child == null)) {
+      _from = _progress;
+      _to = widget.child == null ? 0 : 1;
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final motion = motionFor(context, _passwordRevealSpring, isMovement: true);
-    final icon = Icon(
-      revealed ? LucideIcons.eye_off : LucideIcons.eye,
-      size: 16,
-    );
-    if (motion is NoMotion) return icon;
-    return SingleMotionBuilder(
-      key: ValueKey(revealed),
-      value: 1,
-      from: 0,
-      motion: motion,
-      builder: (context, scale, child) =>
-          Transform.scale(scale: scale, child: child),
-      child: icon,
+    if (_retainedChild == null) return const SizedBox(width: double.infinity);
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final progress = _progress;
+        Widget result = child!;
+        if (!reduce) {
+          if (widget.blur && progress < 1) {
+            result = ImageFiltered(
+              imageFilter: ImageFilter.blur(
+                sigmaX: beuiBlurSigma(4) * (1 - progress),
+                sigmaY: beuiBlurSigma(4) * (1 - progress),
+              ),
+              child: result,
+            );
+          }
+          result = Transform.translate(
+            offset: Offset(0, -4 * (1 - progress)),
+            child: result,
+          );
+        }
+        return Opacity(opacity: progress, child: result);
+      },
+      child: _retainedChild,
     );
   }
 }
