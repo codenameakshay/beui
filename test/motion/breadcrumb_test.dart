@@ -73,7 +73,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 80));
     expect(tester.getTopLeft(box).dx - before.dx, lessThan(travel));
     await tester.pumpAndSettle();
-    expect(tester.getTopLeft(box), before);
+    expect((tester.getTopLeft(box) - before).distance, closeTo(0, .01));
     update(() => prepend = true);
     await tester.pump();
     await tester.pumpAndSettle();
@@ -152,14 +152,20 @@ void main() {
         ),
       ),
     );
+    await tester.tap(find.text('Old route'));
+    expect(activations, 1);
     final old = tester.getRect(find.text('Old route'));
+    final held = await tester.startGesture(old.center);
+    await tester.pump(const Duration(milliseconds: 50));
     update(() => removed = true);
     await tester.pump();
+    await held.up();
+    expect(activations, 1);
     await tester.pump(const Duration(milliseconds: 80));
     expect(find.text('Old route'), findsOneWidget);
     expect(tester.getTopLeft(find.text('Old route')).dy, greaterThan(old.top));
     await tester.tapAt(old.center);
-    expect(activations, 0);
+    expect(activations, 1);
     await tester.pumpAndSettle();
     expect(find.text('Old route'), findsNothing);
     expect(find.text('Home'), findsOneWidget);

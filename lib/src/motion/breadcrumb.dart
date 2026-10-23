@@ -171,7 +171,13 @@ class _BreadcrumbListState extends State<BeuiBreadcrumbList>
               Duration(milliseconds: 200),
               beuiEaseOut,
             ),
-            child: entry.child,
+            child: _BreadcrumbInteraction(
+              isEnabled: () =>
+                  mounted &&
+                  entry.exitRect == null &&
+                  _BreadcrumbInteraction.enabledOf(context),
+              child: entry.child,
+            ),
             builder: (context, p, child) => Opacity(
               opacity: p.clamp(0, 1),
               child: Transform.translate(
@@ -363,6 +369,21 @@ class BeuiBreadcrumbItem extends StatelessWidget {
   }
 }
 
+class _BreadcrumbInteraction extends InheritedWidget {
+  const _BreadcrumbInteraction({required this.isEnabled, required super.child});
+
+  final bool Function() isEnabled;
+
+  static bool enabledOf(BuildContext context) =>
+      context
+          .getInheritedWidgetOfExactType<_BreadcrumbInteraction>()
+          ?.isEnabled() ??
+      true;
+
+  @override
+  bool updateShouldNotify(_BreadcrumbInteraction oldWidget) => false;
+}
+
 /// An ancestor path segment. [onPressed] may update the current path.
 class BeuiBreadcrumbLink extends StatelessWidget {
   const BeuiBreadcrumbLink({
@@ -383,7 +404,11 @@ class BeuiBreadcrumbLink extends StatelessWidget {
       link: true,
       label: semanticLabel,
       child: TextButton(
-        onPressed: onPressed,
+        onPressed: onPressed == null
+            ? null
+            : () {
+                if (_BreadcrumbInteraction.enabledOf(context)) onPressed!();
+              },
         style:
             TextButton.styleFrom(
               foregroundColor: colors.mutedForeground,
@@ -628,44 +653,50 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
                                     ),
                                   ),
                           ),
-                          child: FocusScope(
-                            node: _panelFocus,
-                            child: Material(
-                              key: _panelKey,
-                              color: colors.background,
-                              elevation: 8,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(color: colors.border),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 224,
-                                  maxHeight: 256,
+                          child: _BreadcrumbInteraction(
+                            isEnabled: () =>
+                                mounted &&
+                                _open &&
+                                _BreadcrumbInteraction.enabledOf(this.context),
+                            child: FocusScope(
+                              node: _panelFocus,
+                              child: Material(
+                                key: _panelKey,
+                                color: colors.background,
+                                elevation: 8,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(color: colors.border),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6),
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        for (
-                                          var index = 0;
-                                          index < widget.children.length;
-                                          index++
-                                        )
-                                          Focus(
-                                            skipTraversal: true,
-                                            canRequestFocus: false,
-                                            focusNode: index == 0
-                                                ? _firstLinkFocus
-                                                : null,
-                                            child: widget.children[index],
-                                          ),
-                                      ],
+                                clipBehavior: Clip.antiAlias,
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 224,
+                                    maxHeight: 256,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          for (
+                                            var index = 0;
+                                            index < widget.children.length;
+                                            index++
+                                          )
+                                            Focus(
+                                              skipTraversal: true,
+                                              canRequestFocus: false,
+                                              focusNode: index == 0
+                                                  ? _firstLinkFocus
+                                                  : null,
+                                              child: widget.children[index],
+                                            ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
