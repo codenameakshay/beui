@@ -214,12 +214,10 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       final topLeft = stackBox.globalToLocal(box.localToGlobal(Offset.zero));
       final rect = topLeft & box.size;
       next = switch (widget.variant) {
-        // Source: `absolute -bottom-px left-0 right-0 h-px` — a 1px rule that
-        // sits 1px *below* the trigger box, so it rides under the list's
-        // `border-b` rather than covering it.
+        // Source `bottom-0 h-px` sits inside the trigger's final pixel.
         BeuiTabsVariant.underline => Rect.fromLTWH(
           rect.left,
-          rect.bottom,
+          rect.bottom - 1,
           rect.width,
           1,
         ),
@@ -288,8 +286,6 @@ class _BeuiTabsState<T> extends State<BeuiTabs<T>> {
       // list. Centre them, matching the source's `justify-center`. Harmless in
       // row mode, where the Stack is already the row's width.
       alignment: widget.wrap ? Alignment.center : AlignmentDirectional.topStart,
-      // The underline rule is deliberately 1px outside the list box (the
-      // source's `-bottom-px`), so it must not be clipped away.
       clipBehavior: variant == BeuiTabsVariant.underline
           ? Clip.none
           : Clip.hardEdge,
