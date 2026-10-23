@@ -1,0 +1,356 @@
+{
+  "id": "components/arc-picker",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/arc-picker",
+  "sourceFiles": [
+    {
+      "path": "components/motion/arc-picker.tsx",
+      "sha256": "cfef13d94ebef8c7202beabd0705989c59dd02f84f3a226b49cc52f9167d954c"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/arc-picker.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiArcPicker"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "top bottom left right curves",
+    "wheel drag inertia reverse and disabled items",
+    "bracket width through short and long labels"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "reference-light-arc-picker",
+      "slug": "arc-picker",
+      "origin": "reference",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-light-arc-picker.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-light-arc-picker",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743193257,
+        "backend": "screenshots",
+        "startMs": 2391.1198750000003,
+        "sequenceStartMs": 2391.2255,
+        "stopMs": 5549.309915999999,
+        "frames": 48,
+        "durationMs": 3114.9446964263916,
+        "measuredFps": 15.088550385475726,
+        "medianIntervalMs": 66.71881675720215,
+        "maxIntervalMs": 70.98031044006348,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 48
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-light-arc-picker/capture.mp4",
+        "bytes": 875077,
+        "sha256": "ecbb616a36011f213fadfda6ebf532dfa1f915bf6504be8fdb9d80078212346c"
+      }
+    },
+    {
+      "id": "reference-dark-arc-picker",
+      "slug": "arc-picker",
+      "origin": "reference",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-dark-arc-picker.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-dark-arc-picker",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743258247,
+        "backend": "screenshots",
+        "startMs": 2325.3263340000003,
+        "sequenceStartMs": 2325.422875,
+        "stopMs": 5484.420875,
+        "frames": 48,
+        "durationMs": 3100.759506225586,
+        "measuredFps": 15.157576685852355,
+        "medianIntervalMs": 67.13986396789551,
+        "maxIntervalMs": 70.46842575073242,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 48
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-dark-arc-picker/capture.mp4",
+        "bytes": 866051,
+        "sha256": "ad9ec5ac14e2d0cf41bc9c1e00f23c75488d94aa5f427e75bbf563f97bb8e600"
+      }
+    },
+    {
+      "id": "candidate-light-arc-picker",
+      "slug": "arc-picker",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-arc-picker.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-arc-picker",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743352777,
+        "backend": "screenshots",
+        "startMs": 5147.068625,
+        "sequenceStartMs": 5147.461499999999,
+        "stopMs": 8314.898541999999,
+        "frames": 134,
+        "durationMs": 3138.6237144470215,
+        "measuredFps": 42.37526129296854,
+        "medianIntervalMs": 17.298460006713867,
+        "maxIntervalMs": 40.16852378845215,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 134
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-arc-picker/capture.mp4",
+        "bytes": 932130,
+        "sha256": "c693245ad6023e99f50a18e14bbe270c2357df3b750734c669efce08acca6a2e"
+      }
+    },
+    {
+      "id": "candidate-dark-arc-picker",
+      "slug": "arc-picker",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-arc-picker.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-arc-picker",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743637841,
+        "backend": "screenshots",
+        "startMs": 5147.124833,
+        "sequenceStartMs": 5147.4287079999995,
+        "stopMs": 8308.647166,
+        "frames": 131,
+        "durationMs": 3139.188528060913,
+        "measuredFps": 41.41197600524535,
+        "medianIntervalMs": 17.06075668334961,
+        "maxIntervalMs": 50.87018013000488,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 131
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-arc-picker/capture.mp4",
+        "bytes": 892299,
+        "sha256": "ae7c8720c2b7afcc468bff9a19ac5592828f1be0b2de4a92241597e5d5355a12"
+      }
+    }
+  ],
+  "changeVideos": [
+    {
+      "slug": "arc-picker",
+      "theme": "light",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-interactions/candidate/light/arc-picker/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-arc-picker/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/arc-picker-light-before-after.mp4",
+      "change": "Expand bracket spacing by 6px and compress height by 8% during drag and wheel activity.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "215"
+              }
+            ],
+            "format": {
+              "duration": "8.600000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "215"
+              }
+            ],
+            "format": {
+              "duration": "8.600000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "134"
+              }
+            ],
+            "format": {
+              "duration": "3.138630"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "134"
+              }
+            ],
+            "format": {
+              "duration": "3.150000"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "349"
+          }
+        ],
+        "format": {
+          "duration": "11.750000"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    },
+    {
+      "slug": "arc-picker",
+      "theme": "dark",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-interactions/candidate/dark/arc-picker/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-arc-picker/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/arc-picker-dark-before-after.mp4",
+      "change": "Expand bracket spacing by 6px and compress height by 8% during drag and wheel activity.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "171"
+              }
+            ],
+            "format": {
+              "duration": "6.840000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "171"
+              }
+            ],
+            "format": {
+              "duration": "6.840000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "131"
+              }
+            ],
+            "format": {
+              "duration": "3.139193"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "131"
+              }
+            ],
+            "format": {
+              "duration": "3.150000"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "302"
+          }
+        ],
+        "format": {
+          "duration": "9.990000"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    }
+  ],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

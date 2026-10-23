@@ -31,6 +31,7 @@ Tooltip input-modality regression found by the full package test run.
 Behavioral success does not waive these visual failures. The existing
 `BEUI_SKIP_GOLDENS` switch is only a way to run behavior independently.
 No comparator, golden baseline, or comparison threshold changed in this slice.
+The 20 original failure images are copied unchanged to `golden-failures/`.
 
 ## Source and capture boundaries
 
@@ -58,3 +59,41 @@ The full 28-route inventory includes 223 state and example obligations before
 theme expansion. Default-route videos do not cover every install example,
 reduced-motion branch, interruption, drag, or keyboard state. No route has an
 exact-parity verdict.
+
+## Retained failed runs
+
+`release-measurements` and `release-measurements-run2` retain the exploratory
+1440px measurements. The first run used a Tooltip-specific stage selector and
+did not measure other stages. The second used a broader stage selector but
+still missed multi-example routes. `release-measurements-run3` measures all 28
+source stages at 1280px. Every measured width is 592px.
+
+The first `release-recordings` attempt passed a DOM role and the DOM's doubled
+text content through to the recorder. The recorder interpreted that pair as an
+accessible locator. Alert failed with the raw error below. The run and its
+`failure.json` remain untouched. The second run passes the measured rectangle
+without a locator role. This is a capture-config correction, not a widget or
+comparison change.
+
+```text
+locator.boundingBox: Timeout 20000ms exceeded.
+  - waiting for getByRole('tab', { name: 'SuccessSuccess', exact: true })
+```
+
+The second run uses screenshot capture for both implementations. Early runs
+measure roughly 12 to 15 FPS. They do not prove 60 FPS or resolve short entry
+and exit timing. Each final run retains its own measured cadence and maximum
+frame interval. The video dimensions, not the requested viewport dimensions,
+are authoritative for crop bounds.
+
+All 74 default-route captures in `release-recordings-run2` completed with exit
+code zero. Reference cadence ranges from 9.03 to 20.00 FPS. Candidate cadence
+ranges from 18.28 to 59.83 FPS. The largest delivered-frame gaps are 269.52ms
+and 617.72ms respectively. None of these ranges establishes native 60 FPS.
+Every run's own timeline remains the authority for its gaps.
+
+The final evidence audit rechecked all 300 original baseline records and all
+74 final video hashes. It decoded the originals and all 18 labeled change
+videos with FFprobe and found no missing or added frames. All 96 video-index
+links resolve locally. All 48 pinned source-file hashes still match.
+The final `flutter analyze` reports no issues. See `FINAL_AUDIT.md`.

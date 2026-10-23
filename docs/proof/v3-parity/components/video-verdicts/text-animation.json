@@ -1,0 +1,167 @@
+{
+  "id": "components/text-animation",
+  "owner": "blocks worker, coordinate existing text parts",
+  "newBadge": false,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/text-animation",
+  "sourceFiles": [
+    {
+      "path": "components/motion/text-reveal.tsx",
+      "sha256": "9d3e79870b33032a9680c64600bc1b2ffdf7c30ea56e1dd2f80c165dfcc8d8ba"
+    },
+    {
+      "path": "components/motion/chromatic-text-reveal.tsx",
+      "sha256": "35c1083998c295b008735174d7cbdd72f8bd043bc171b2a666f66a0b1d6e13c3"
+    },
+    {
+      "path": "components/motion/text-shimmer.tsx",
+      "sha256": "a8ae8ca2966009a4c9d14085985cb2e571af1b5c75e8e64cb1f4dd99f3fb3236"
+    },
+    {
+      "path": "components/motion/text-cascade.tsx",
+      "sha256": "fff61ff6b7a7d376dad25e0e0768d547cd89b81b3fb912b1c52338251d8e9ebb"
+    },
+    {
+      "path": "components/motion/text-scramble.tsx",
+      "sha256": "398bdea1bb7ec795068cc0ab7fd55d6775721a7ab42fc9504c15bf47aa1c7617"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/text-animation.preview.tsx",
+    "components/previews/motion/text-scramble.preview.tsx",
+    "components/previews/motion/chromatic-text-reveal.preview.tsx",
+    "components/previews/motion/text-reveal.preview.tsx",
+    "components/previews/motion/text-shimmer.preview.tsx",
+    "components/previews/motion/text-cascade.preview.tsx"
+  ],
+  "sourceExamples": [
+    {
+      "slug": "text-scramble",
+      "installSlug": "text-scramble",
+      "preview": "components/previews/motion/text-scramble.preview.tsx"
+    },
+    {
+      "slug": "chromatic-reveal",
+      "installSlug": "chromatic-text-reveal",
+      "preview": "components/previews/motion/chromatic-text-reveal.preview.tsx"
+    },
+    {
+      "slug": "reveal",
+      "installSlug": "text-reveal",
+      "preview": "components/previews/motion/text-reveal.preview.tsx"
+    },
+    {
+      "slug": "shimmer",
+      "installSlug": "text-shimmer",
+      "preview": "components/previews/motion/text-shimmer.preview.tsx"
+    },
+    {
+      "slug": "cascade",
+      "installSlug": "text-cascade",
+      "preview": "components/previews/motion/text-cascade.preview.tsx"
+    }
+  ],
+  "widgetParts": [
+    "BeuiChromaticTextReveal",
+    "BeuiTextCascade",
+    "BeuiTextReveal",
+    "BeuiTextScramble",
+    "BeuiTextShimmer"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "scramble reveal shimmer cascade chromatic all examples",
+    "scramble trigger repeat change text during animation",
+    "reveal prefix cycling word boundary and loop",
+    "example/text-scramble/text-scramble",
+    "example/chromatic-text-reveal/chromatic-reveal",
+    "example/text-reveal/reveal",
+    "example/text-shimmer/shimmer",
+    "example/text-cascade/cascade"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-text-animation",
+      "slug": "text-animation",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-text-animation.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-text-animation",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743546015,
+        "backend": "screenshots",
+        "startMs": 5235.189875,
+        "sequenceStartMs": 5235.447958999999,
+        "stopMs": 8391.485708999999,
+        "frames": 91,
+        "durationMs": 3113.4421825408936,
+        "measuredFps": 28.90691226086961,
+        "medianIntervalMs": 33.36286544799805,
+        "maxIntervalMs": 50.64654350280762,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 91
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-text-animation/capture.mp4",
+        "bytes": 586364,
+        "sha256": "41b826873149baebbcab73e86e80b958aabd5ea2d82f6aeed61b26aefa5f49be"
+      }
+    },
+    {
+      "id": "candidate-dark-text-animation",
+      "slug": "text-animation",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-text-animation.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-text-animation",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743827351,
+        "backend": "screenshots",
+        "startMs": 5224.822583,
+        "sequenceStartMs": 5224.965041,
+        "stopMs": 8386.768790999999,
+        "frames": 93,
+        "durationMs": 3149.1172313690186,
+        "measuredFps": 29.214536405176876,
+        "medianIntervalMs": 33.411264419555664,
+        "maxIntervalMs": 48.598527908325195,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 93
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-text-animation/capture.mp4",
+        "bytes": 591298,
+        "sha256": "0d4ad1e758068e008d3d6bdee4563d1b3682bae9c8bbdecb4bcdba2bc7cada5c"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

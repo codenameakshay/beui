@@ -1,0 +1,113 @@
+{
+  "id": "components/file-tree",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/file-tree",
+  "sourceFiles": [
+    {
+      "path": "components/motion/file-tree.tsx",
+      "sha256": "119f58c07143b515b979da8fdb478dec489febf457e8af80aa36bb7895733aaa"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/file-tree.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiFileTreeFolder",
+    "BeuiFileTreeFile",
+    "BeuiFileTree"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "folder open close nested selection file hover exit",
+    "arrow navigation home end typeahead focus-visible",
+    "folder file root parts controlled selection and disabled item"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-file-tree",
+      "slug": "file-tree",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-file-tree.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-file-tree",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743525990,
+        "backend": "screenshots",
+        "startMs": 5233.01675,
+        "sequenceStartMs": 5233.456875,
+        "stopMs": 8394.911583000001,
+        "frames": 105,
+        "durationMs": 3144.9453830718994,
+        "measuredFps": 33.06893676430576,
+        "medianIntervalMs": 32.784223556518555,
+        "maxIntervalMs": 54.311513900756836,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 105
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-file-tree/capture.mp4",
+        "bytes": 588208,
+        "sha256": "dfacd0a5b074baa60944e5df621ec11a20c7f2102d975489e0832dfdac0f5a8b"
+      }
+    },
+    {
+      "id": "candidate-dark-file-tree",
+      "slug": "file-tree",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-file-tree.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-file-tree",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743807631,
+        "backend": "screenshots",
+        "startMs": 5137.565417,
+        "sequenceStartMs": 5137.676709,
+        "stopMs": 8295.6355,
+        "frames": 105,
+        "durationMs": 3123.246669769287,
+        "measuredFps": 33.29868274787353,
+        "medianIntervalMs": 33.208370208740234,
+        "maxIntervalMs": 41.28861427307129,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 105
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-file-tree/capture.mp4",
+        "bytes": 584165,
+        "sha256": "db00040d0a435f5b16d7d295126010037f6bf0140c21124a95f066d97c478fba"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

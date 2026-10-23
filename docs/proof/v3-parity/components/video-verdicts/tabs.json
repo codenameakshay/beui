@@ -1,0 +1,356 @@
+{
+  "id": "components/tabs",
+  "owner": "components",
+  "newBadge": false,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/tabs",
+  "sourceFiles": [
+    {
+      "path": "components/motion/tabs.tsx",
+      "sha256": "bb7ea05c6c6250c76603fb226ad84633f8497023a74806f15e50a2a2aef4a53c"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/tabs.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiTabs"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "pill segment underline icons and overflow scroll",
+    "select first middle last and reverse indicator",
+    "panel entry exit and focus-visible vs pointer focus"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "repaired subset, see CHANGE_MANIFEST.md",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "reference-light-tabs",
+      "slug": "tabs",
+      "origin": "reference",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-light-tabs.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-light-tabs",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743229438,
+        "backend": "screenshots",
+        "startMs": 2452.7414169999997,
+        "sequenceStartMs": 2452.876875,
+        "stopMs": 6257.3880420000005,
+        "frames": 46,
+        "durationMs": 3764.746904373169,
+        "measuredFps": 11.952994754501965,
+        "medianIntervalMs": 83.36520195007324,
+        "maxIntervalMs": 92.89026260375977,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 46
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-light-tabs/capture.mp4",
+        "bytes": 823055,
+        "sha256": "294df8ccfe5fd8303e4c37e8a0d71bbafc8f35e3e7c946b81c76f97c87e86831"
+      }
+    },
+    {
+      "id": "reference-dark-tabs",
+      "slug": "tabs",
+      "origin": "reference",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/reference-dark-tabs.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/reference-dark-tabs",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743294309,
+        "backend": "screenshots",
+        "startMs": 2417.471916,
+        "sequenceStartMs": 2417.5863329999997,
+        "stopMs": 6221.647000000001,
+        "frames": 56,
+        "durationMs": 3755.6838989257812,
+        "measuredFps": 14.644469950128487,
+        "medianIntervalMs": 67.01302528381348,
+        "maxIntervalMs": 113.10887336730957,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 56
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/reference-dark-tabs/capture.mp4",
+        "bytes": 933048,
+        "sha256": "63e060e5633ee1a966ed34217f742f5801c66246e3e3e8ba7601fe159b477419"
+      }
+    },
+    {
+      "id": "candidate-light-tabs",
+      "slug": "tabs",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-tabs.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-tabs",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743463823,
+        "backend": "screenshots",
+        "startMs": 5262.159374999999,
+        "sequenceStartMs": 5262.294,
+        "stopMs": 9076.797083000001,
+        "frames": 130,
+        "durationMs": 3779.3753147125244,
+        "measuredFps": 34.13262490703766,
+        "medianIntervalMs": 25.292634963989258,
+        "maxIntervalMs": 114.22586441040039,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 130
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-tabs/capture.mp4",
+        "bytes": 788614,
+        "sha256": "bf4f1cb7ddf639d5e49a828f33d9b223a88c649c711a4e10be7256e357d00af3"
+      }
+    },
+    {
+      "id": "candidate-dark-tabs",
+      "slug": "tabs",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-tabs.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-tabs",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743748591,
+        "backend": "screenshots",
+        "startMs": 5161.155791,
+        "sequenceStartMs": 5161.343208,
+        "stopMs": 8975.136165999998,
+        "frames": 202,
+        "durationMs": 3794.6231365203857,
+        "measuredFps": 52.969687046264646,
+        "medianIntervalMs": 16.75271987915039,
+        "maxIntervalMs": 43.889522552490234,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 202
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-tabs/capture.mp4",
+        "bytes": 1154701,
+        "sha256": "5b172242fb53a24187d6110177b43ddfdfa728bbd2456175df669a1ba74bac99"
+      }
+    }
+  ],
+  "changeVideos": [
+    {
+      "slug": "tabs",
+      "theme": "light",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-interactions/candidate/light/tabs/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-tabs/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/tabs-light-before-after.mp4",
+      "change": "Use the pinned source indicator spring. The blocks worker owns overflow and panel-layout corrections.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "227"
+              }
+            ],
+            "format": {
+              "duration": "9.080000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "227"
+              }
+            ],
+            "format": {
+              "duration": "9.080000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "130"
+              }
+            ],
+            "format": {
+              "duration": "3.779371"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "130"
+              }
+            ],
+            "format": {
+              "duration": "3.803800"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "357"
+          }
+        ],
+        "format": {
+          "duration": "12.883800"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    },
+    {
+      "slug": "tabs",
+      "theme": "dark",
+      "before": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/before-interactions/candidate/dark/tabs/recording.webm",
+      "after": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-tabs/capture.mp4",
+      "video": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/change-videos/tabs-dark-before-after.mp4",
+      "change": "Use the pinned source indicator spring. The blocks worker owns overflow and panel-layout corrections.",
+      "frameProof": [
+        {
+          "phase": "BEFORE",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1000,
+                "nb_read_frames": "170"
+              }
+            ],
+            "format": {
+              "duration": "6.800000"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "170"
+              }
+            ],
+            "format": {
+              "duration": "6.800000"
+            }
+          }
+        },
+        {
+          "phase": "AFTER",
+          "original": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1280,
+                "height": 913,
+                "nb_read_frames": "202"
+              }
+            ],
+            "format": {
+              "duration": "3.794628"
+            }
+          },
+          "presentation": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1440,
+                "height": 1120,
+                "nb_read_frames": "202"
+              }
+            ],
+            "format": {
+              "duration": "3.816667"
+            }
+          }
+        }
+      ],
+      "decoded": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1440,
+            "height": 1120,
+            "nb_read_frames": "372"
+          }
+        ],
+        "format": {
+          "duration": "10.616667"
+        }
+      },
+      "comparison": "Presentation only. Different original viewport widths are labeled. No rescaling or interpolation."
+    }
+  ],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

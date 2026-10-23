@@ -5,6 +5,12 @@ No route in this slice has an exact-parity verdict. The independent audit at
 component routes and 223 state/example obligations before theme expansion.
 The text-animation and number routes coordinate with the blocks worker.
 
+The final default-route run contains 74 original videos, with 56 repaired
+candidate videos and 18 live-reference videos. There are 18 labeled change
+videos and four separate failed Tooltip keyboard-parity attempts.
+[VIDEO_INDEX.md](VIDEO_INDEX.md) links every route and presentation video.
+[FINAL_AUDIT.md](FINAL_AUDIT.md) records the final integrity checks.
+
 ## Provenance
 
 - Pristine component baseline is `5ec78ac30e1274727ddd185a883346e4d908e6c8`.
@@ -38,10 +44,11 @@ Each `capture.json` holds the actual labels, coordinates, URL, and actions.
 The exploratory script is frozen in `capture.mjs`. It does not record a complete
 monotonic event timeline or all required state reversals.
 
-The `before/` and `before-verified/` directories remain local and are excluded
-from Git to avoid adding 175MB of unreliable exploratory data. Their hashes
-are committed. The six-route interaction originals are committed unchanged.
-Do not treat a missing Git-tracked exploratory video as a deleted original.
+The `before/` directory and most `before-verified/` captures remain local and
+excluded from Git. Their hashes are committed. The card, breadcrumb, and
+image-viewer static originals in both themes are committed because they are
+inputs to the labeled change videos. The six-route interaction originals are
+also committed unchanged. No ignored exploratory original was deleted.
 
 ## T3 browser failures
 
@@ -86,5 +93,6 @@ choosing its candidate `previewWidth`; 592px is not a universal widget width.
 - Capture real 60 FPS and inspect frame cadence before short-motion review.
 - Run cropped pixel differences and Design Compare motion on event-aligned
   sequences. `static` and `capture_unreliable` do not pass.
-- Produce before/after presentation videos with change text without replacing
-  the original recordings. No such completed montage is claimed in this file.
+- The release-recording run now includes 56 repaired default-route videos and
+  18 reference videos. The video index links the labeled presentation copies
+  separately from the original recordings.

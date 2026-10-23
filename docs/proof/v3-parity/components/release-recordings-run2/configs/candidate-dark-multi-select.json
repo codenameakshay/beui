@@ -1,0 +1,61 @@
+{
+  "url": "http://localhost:8102/?slug=multi-select&theme=dark&color=blue&previewWidth=592",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "theme": "dark",
+  "reference": false,
+  "backend": "screenshots",
+  "loadWaitMs": 5000,
+  "finalHoldMs": 500,
+  "targets": {
+    "outside": {
+      "x": 300,
+      "y": 280
+    },
+    "control0": {
+      "x": 657.5003051757812,
+      "y": 452,
+      "width": 14,
+      "height": 14,
+      "measuredName": "Remove Design",
+      "measuredRole": "button"
+    }
+  },
+  "events": [
+    {
+      "atMs": 400,
+      "type": "move",
+      "target": "control0",
+      "observedTargetName": "Remove Design"
+    },
+    {
+      "atMs": 650,
+      "type": "click",
+      "target": "control0",
+      "observedTargetName": "Remove Design"
+    },
+    {
+      "atMs": 2300,
+      "type": "move",
+      "target": "outside"
+    },
+    {
+      "atMs": 2650,
+      "type": "key",
+      "key": "Escape"
+    }
+  ],
+  "provenance": {
+    "phase": "repaired release",
+    "implementationHead": "8ccb169aa6d6786c451456f756af2087d2672c89",
+    "baseline": "5ec78ac30e1274727ddd185a883346e4d908e6c8",
+    "referenceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": "unknown",
+    "sourceInnerWidth": 592,
+    "buildMode": "release",
+    "scope": "Default preview only. Missing targets are not exercised. Keyboard dispatch alone does not assert its outcome.",
+    "missingTargets": []
+  }
+}

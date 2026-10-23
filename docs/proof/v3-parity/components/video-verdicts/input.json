@@ -1,0 +1,111 @@
+{
+  "id": "components/input",
+  "owner": "components",
+  "newBadge": false,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/input",
+  "sourceFiles": [
+    {
+      "path": "components/motion/input.tsx",
+      "sha256": "4dd774bbada7f1c9ec283905586a4306593792ea570ae81caa71874d5bdb0b3d"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/input.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiInput"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "empty typed focused blurred error success disabled",
+    "reserveErrorLine false and true no layout jumps",
+    "error shake success draw and left right icons"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-input",
+      "slug": "input",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-input.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-input",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743474801,
+        "backend": "screenshots",
+        "startMs": 5225.920833,
+        "sequenceStartMs": 5226.245666000001,
+        "stopMs": 8405.870416,
+        "frames": 95,
+        "durationMs": 3143.5248851776123,
+        "measuredFps": 29.902737669814535,
+        "medianIntervalMs": 33.21647644042969,
+        "maxIntervalMs": 58.70676040649414,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 95
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-input/capture.mp4",
+        "bytes": 510680,
+        "sha256": "99e8aadabbc766e1c8e51d98bd0a2fcf450390f958022dd09eb9a115a6df44e1"
+      }
+    },
+    {
+      "id": "candidate-dark-input",
+      "slug": "input",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-input.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-input",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743759141,
+        "backend": "screenshots",
+        "startMs": 5145.90125,
+        "sequenceStartMs": 5146.021666,
+        "stopMs": 8300.49075,
+        "frames": 96,
+        "durationMs": 3165.283679962158,
+        "measuredFps": 30.01310770386803,
+        "medianIntervalMs": 33.40554237365723,
+        "maxIntervalMs": 35.25900840759277,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 96
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-input/capture.mp4",
+        "bytes": 512706,
+        "sha256": "d3add670fe95b22a3ba75a4671dc5a0a999e4ed8f57bb9065dd95682b78daad8"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

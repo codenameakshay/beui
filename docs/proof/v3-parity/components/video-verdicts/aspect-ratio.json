@@ -1,0 +1,112 @@
+{
+  "id": "components/aspect-ratio",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/aspect-ratio",
+  "sourceFiles": [
+    {
+      "path": "components/motion/aspect-ratio.tsx",
+      "sha256": "8301eb7c28ea5cc9feb05c4269cca80a5ac56dda7b7bd5056e514245a742b021"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/aspect-ratio.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiAspectRatio",
+    "BeuiAspectRatioImage"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "all preview ratios and responsive resize",
+    "image loading error and content-fit",
+    "ratio change while media remains mounted"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Inconclusive",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-aspect-ratio",
+      "slug": "aspect-ratio",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-aspect-ratio.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-aspect-ratio",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743343114,
+        "backend": "screenshots",
+        "startMs": 5157.521290999999,
+        "sequenceStartMs": 5157.744624999999,
+        "stopMs": 8332.887083,
+        "frames": 88,
+        "durationMs": 3136.915683746338,
+        "measuredFps": 27.73424878799998,
+        "medianIntervalMs": 33.55240821838379,
+        "maxIntervalMs": 52.33025550842285,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 88
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-aspect-ratio/capture.mp4",
+        "bytes": 2401114,
+        "sha256": "734e65c78e065cd943023973427e65aad9fc5fed2ffb01e17569e3c8feaba7ee"
+      }
+    },
+    {
+      "id": "candidate-dark-aspect-ratio",
+      "slug": "aspect-ratio",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-aspect-ratio.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-aspect-ratio",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743628103,
+        "backend": "screenshots",
+        "startMs": 5149.455833,
+        "sequenceStartMs": 5149.635625,
+        "stopMs": 8323.294750000001,
+        "frames": 92,
+        "durationMs": 3150.157928466797,
+        "measuredFps": 28.887440587555023,
+        "medianIntervalMs": 33.36977958679199,
+        "maxIntervalMs": 60.19020080566406,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 92
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-aspect-ratio/capture.mp4",
+        "bytes": 2367826,
+        "sha256": "ed2b8f2abe8a47708f3dbc37c626d3e368eadb56539d5ce29c744371bf12b2c3"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": null,
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

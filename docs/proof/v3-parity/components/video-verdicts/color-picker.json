@@ -1,0 +1,123 @@
+{
+  "id": "components/color-picker",
+  "owner": "components",
+  "newBadge": true,
+  "demoChanged": true,
+  "sourceUrl": "https://beui.dev/components/motion/color-picker",
+  "sourceFiles": [
+    {
+      "path": "components/motion/color-picker.tsx",
+      "sha256": "b10af7910e21273e4255233019ed847082dd1f8add12156499ddadcbf581651d"
+    }
+  ],
+  "sourcePreviews": [
+    "components/previews/motion/color-picker.preview.tsx"
+  ],
+  "sourceExamples": [],
+  "widgetParts": [
+    "BeuiColorPicker",
+    "BeuiColorPickerArea",
+    "BeuiColorPickerHue",
+    "BeuiColorPickerAlpha",
+    "BeuiColorPickerHex",
+    "BeuiColorPickerChannels",
+    "BeuiColorPickerEyeDropper",
+    "BeuiColorPickerPresets",
+    "BeuiColorPickerPreset",
+    "BeuiColorPickerTrigger",
+    "BeuiColorPickerContent",
+    "BeuiColorPickerSwatch"
+  ],
+  "states": [
+    "rest",
+    "hover-exit",
+    "keyboard",
+    "reduced-motion",
+    "trigger area morph open and close",
+    "saturation hue alpha drag loupe tilt release and commit",
+    "hex valid invalid channels RGB HSL greys retaining hue",
+    "presets swatch ring and EyeDropper available unavailable"
+  ],
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "verdict": "Known mismatch or failed visual gate",
+  "implementation": "not changed in this repair checkpoint",
+  "missing": "No complete matched-width 60 FPS reference/before/after state set or independent visual verdict.",
+  "captures": [
+    {
+      "id": "candidate-light-color-picker",
+      "slug": "color-picker",
+      "origin": "candidate",
+      "theme": "light",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-light-color-picker.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-light-color-picker",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743402922,
+        "backend": "screenshots",
+        "startMs": 5179.997792,
+        "sequenceStartMs": 5180.101417000001,
+        "stopMs": 8353.665417,
+        "frames": 76,
+        "durationMs": 3161.7870330810547,
+        "measuredFps": 23.720762725411976,
+        "medianIntervalMs": 33.05673599243164,
+        "maxIntervalMs": 617.7213191986084,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 76
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-light-color-picker/capture.mp4",
+        "bytes": 566758,
+        "sha256": "19ab697cadbb8f6005c43981421758226de0ea3217bfde20140ccc006af6b2ca"
+      }
+    },
+    {
+      "id": "candidate-dark-color-picker",
+      "slug": "color-picker",
+      "origin": "candidate",
+      "theme": "dark",
+      "code": 0,
+      "configPath": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/configs/candidate-dark-color-picker.json",
+      "runDirectory": "/Users/codenameakshay/.t3/worktrees/beui/t3-48d38279/docs/proof/v3-parity/components/release-recordings-run2/candidate-dark-color-picker",
+      "missingTargets": [],
+      "stats": {
+        "originEpochMs": 1792743688463,
+        "backend": "screenshots",
+        "startMs": 5165.908791999999,
+        "sequenceStartMs": 5166.032708,
+        "stopMs": 8320.346333000001,
+        "frames": 83,
+        "durationMs": 3130.742073059082,
+        "measuredFps": 26.191873391817587,
+        "medianIntervalMs": 33.37550163269043,
+        "maxIntervalMs": 291.35894775390625,
+        "reorderedDeliveries": 0,
+        "fastMotionVerdict": "inconclusive; inspect per-event gaps, not nominal frame rate",
+        "errors": [],
+        "video": {
+          "width": 1280,
+          "height": 913,
+          "decodedFrames": 83
+        }
+      },
+      "video": {
+        "path": "release-recordings-run2/candidate-dark-color-picker/capture.mp4",
+        "bytes": 663515,
+        "sha256": "badefbdaece9cebe35ebedb0208a2b4bb063802150f3b9fd48cfd8df4e46063d"
+      }
+    }
+  ],
+  "changeVideos": [],
+  "knownGaps": "Trigger-to-area morph is absent.",
+  "coverage": "Default preview recording only. No complete state or example parity certificate."
+}

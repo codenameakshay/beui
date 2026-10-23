@@ -23,6 +23,12 @@ The full-suite chart regression exposed a modality transition in Tooltip.
 Mouse dismissal now yields to subsequent keyboard use even when a child chart
 consumes the key. Commit `8ccb169` adds a global keyboard observer scoped by the
 trigger's actual focus node. Chart-owned files remain unchanged.
+This compatibility behavior is broader than the pinned source Tooltip's
+focus-in-only reveal. Its keydown handler only drops the touch gesture. The
+chart worker must replace the old uncontrolled shared Tooltip adapter with
+controlled visibility and external anchoring before this generic reopening
+behavior can be narrowed without breaking chart keyboard inspection. This is
+an explicit remaining source-parity difference, not a certified match.
 
 ## Named unresolved implementation gaps
 

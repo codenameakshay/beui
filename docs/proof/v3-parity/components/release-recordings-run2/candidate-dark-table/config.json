@@ -1,0 +1,81 @@
+{
+  "url": "http://localhost:8102/?slug=table&theme=dark&color=blue&previewWidth=592",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "theme": "dark",
+  "reference": false,
+  "backend": "screenshots",
+  "loadWaitMs": 5000,
+  "finalHoldMs": 500,
+  "targets": {
+    "outside": {
+      "x": 300,
+      "y": 280
+    },
+    "control0": {
+      "x": 585.3125,
+      "y": 383.5,
+      "width": 43.625,
+      "height": 20,
+      "measuredName": "Name",
+      "measuredRole": "button"
+    },
+    "control1": {
+      "x": 762.5,
+      "y": 383.5,
+      "width": 98,
+      "height": 20,
+      "measuredName": "Role",
+      "measuredRole": "button"
+    }
+  },
+  "events": [
+    {
+      "atMs": 400,
+      "type": "move",
+      "target": "control0",
+      "observedTargetName": "Name"
+    },
+    {
+      "atMs": 650,
+      "type": "click",
+      "target": "control0",
+      "observedTargetName": "Name"
+    },
+    {
+      "atMs": 1300,
+      "type": "move",
+      "target": "control1",
+      "observedTargetName": "Role"
+    },
+    {
+      "atMs": 1550,
+      "type": "click",
+      "target": "control1",
+      "observedTargetName": "Role"
+    },
+    {
+      "atMs": 2300,
+      "type": "move",
+      "target": "outside"
+    },
+    {
+      "atMs": 2650,
+      "type": "key",
+      "key": "Escape"
+    }
+  ],
+  "provenance": {
+    "phase": "repaired release",
+    "implementationHead": "8ccb169aa6d6786c451456f756af2087d2672c89",
+    "baseline": "5ec78ac30e1274727ddd185a883346e4d908e6c8",
+    "referenceRevision": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": "unknown",
+    "sourceInnerWidth": 592,
+    "buildMode": "release",
+    "scope": "Default preview only. Missing targets are not exercised. Keyboard dispatch alone does not assert its outcome.",
+    "missingTargets": []
+  }
+}
