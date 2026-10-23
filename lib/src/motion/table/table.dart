@@ -788,39 +788,68 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
               final contentWidth = resolved.tableWidth;
               final bodyHeight = math.max(
                 0.0,
-                widget.height - widget.rowHeight,
+                widget.height -
+                    widget.rowHeight -
+                    (widget.sizing == BeuiTableSizing.intrinsic
+                        ? _tableRuleWidth / 2
+                        : 0),
               );
 
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: SizedBox(
                   width: contentWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _TableHeader<T>(
-                        state: this,
-                        columns: cols,
-                        colors: colors,
-                        reduce: reduce,
-                        resolved: resolved,
-                        allSelected: allSelected,
-                        someSelected: someSelected,
-                        onToggleAll: () => _toggleAll(sortedRows),
-                        hasColumnMenu: hasColumnMenu,
-                      ),
-                      SizedBox(
-                        height: bodyHeight,
-                        child: _buildBody(
+                  child: CustomPaint(
+                    foregroundPainter:
+                        widget.sizing == BeuiTableSizing.intrinsic
+                        ? _TableGridRules(
+                            scroll: _vScroll,
+                            rowHeight: widget.rowHeight,
+                            rowCount: sortedRows.isEmpty && widget.loading
+                                ? math.max(
+                                    1,
+                                    (widget.height / widget.rowHeight).ceil(),
+                                  )
+                                : sortedRows.length +
+                                      (widget.loading
+                                          ? widget.skeletonRows
+                                          : 0),
+                            headerColor: _collapsedRule(colors),
+                            color: Color.alphaBlend(
+                              colors.border.withValues(
+                                alpha: colors.border.a * 0.6,
+                              ),
+                              colors.background,
+                            ),
+                          )
+                        : null,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _TableHeader<T>(
+                          state: this,
+                          columns: cols,
                           colors: colors,
                           reduce: reduce,
-                          cols: cols,
                           resolved: resolved,
-                          sortedRows: sortedRows,
-                          hasRowMenu: hasRowMenu,
+                          allSelected: allSelected,
+                          someSelected: someSelected,
+                          onToggleAll: () => _toggleAll(sortedRows),
+                          hasColumnMenu: hasColumnMenu,
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          height: bodyHeight,
+                          child: _buildBody(
+                            colors: colors,
+                            reduce: reduce,
+                            cols: cols,
+                            resolved: resolved,
+                            sortedRows: sortedRows,
+                            hasRowMenu: hasRowMenu,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -918,6 +947,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
         // the header row and rendered ~1 skeleton short.
         final count = math.max(1, (widget.height / widget.rowHeight).ceil());
         return SingleChildScrollView(
+          controller: _vScroll,
           child: Column(
             children: [
               for (var i = 0; i < count; i++)
@@ -928,6 +958,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
                   reduce: reduce,
                   rowHeight: widget.rowHeight,
                   selectable: widget.selectable,
+                  collapsed: widget.sizing == BeuiTableSizing.intrinsic,
                 ),
             ],
           ),
@@ -958,6 +989,7 @@ class _BeuiTableState<T> extends State<BeuiTable<T>> {
             reduce: reduce,
             rowHeight: widget.rowHeight,
             selectable: widget.selectable,
+            collapsed: widget.sizing == BeuiTableSizing.intrinsic,
           );
         }
         final entry = sortedRows[index];
@@ -1090,13 +1122,17 @@ class _DataRowState<T> extends State<_DataRow<T>> {
         height: w.state.widget.rowHeight,
         decoration: BoxDecoration(
           color: bg,
-          border: Border(
-            // `border-border/60` scales the token's own alpha (white/5%) — it
-            // does not replace it, which would paint a near-white rule.
-            bottom: BorderSide(
-              color: colors.border.withValues(alpha: colors.border.a * 0.6),
-            ),
-          ),
+          border: w.state.widget.sizing == BeuiTableSizing.intrinsic
+              ? null
+              : Border(
+                  // `border-border/60` scales the token's own alpha (white/5%) — it
+                  // does not replace it, which would paint a near-white rule.
+                  bottom: BorderSide(
+                    color: colors.border.withValues(
+                      alpha: colors.border.a * 0.6,
+                    ),
+                  ),
+                ),
         ),
         child: cells,
       ),

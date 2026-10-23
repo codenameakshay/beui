@@ -1,5 +1,62 @@
 part of 'table.dart';
 
+const _tableRuleWidth = 1.0;
+
+// Paint shared rules once, after all row backgrounds. Splitting a rule across
+// siblings introduces two antialiased edges at fractional row boundaries.
+class _TableGridRules extends CustomPainter {
+  _TableGridRules({
+    required this.scroll,
+    required this.rowHeight,
+    required this.rowCount,
+    required this.color,
+    required this.headerColor,
+  }) : super(repaint: scroll);
+
+  final ScrollController scroll;
+  final double rowHeight;
+  final int rowCount;
+  final Color color;
+  final Color headerColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final offset = scroll.hasClients ? scroll.offset : 0.0;
+    final first = math.max(
+      0,
+      ((offset - _tableRuleWidth) / rowHeight).ceil(),
+    );
+    final last = math.min(
+      rowCount,
+      ((offset + size.height - rowHeight) / rowHeight).ceil(),
+    );
+    canvas.save();
+    canvas.clipRect(Rect.fromLTRB(0, rowHeight, size.width, size.height));
+    final paint = Paint();
+    for (var i = first; i <= last; i++) {
+      paint.color = i == 0 ? headerColor : color;
+      canvas.drawRect(
+        Rect.fromLTWH(
+          0,
+          rowHeight + i * rowHeight - offset,
+          size.width,
+          _tableRuleWidth,
+        ),
+        paint,
+      );
+    }
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_TableGridRules old) =>
+      old.scroll != scroll ||
+      old.rowHeight != rowHeight ||
+      old.rowCount != rowCount ||
+      old.color != color ||
+      old.headerColor != headerColor;
+}
+
 /// The header/body rule under `border-collapse: collapse`.
 ///
 /// A collapsed border is painted on the grid line *between* the two cells, over
@@ -65,7 +122,9 @@ class _TableHeader<T> extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: colors.muted,
-              border: Border(bottom: BorderSide(color: _collapsedRule(colors))),
+              border: state.widget.sizing == BeuiTableSizing.intrinsic
+                  ? null
+                  : Border(bottom: BorderSide(color: _collapsedRule(colors))),
             ),
             child: SizedBox(
               width: state.widget.sizing == BeuiTableSizing.intrinsic
@@ -104,7 +163,9 @@ class _TableHeader<T> extends StatelessWidget {
             height: state.widget.rowHeight,
             decoration: BoxDecoration(
               color: colors.muted,
-              border: Border(bottom: BorderSide(color: _collapsedRule(colors))),
+              border: state.widget.sizing == BeuiTableSizing.intrinsic
+                  ? null
+                  : Border(bottom: BorderSide(color: _collapsedRule(colors))),
             ),
           ),
         ),
@@ -114,7 +175,13 @@ class _TableHeader<T> extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        headerRow,
+        if (state.widget.sizing == BeuiTableSizing.intrinsic)
+          SizedBox(
+            height: state.widget.rowHeight + _tableRuleWidth / 2,
+            child: Align(alignment: Alignment.topLeft, child: headerRow),
+          )
+        else
+          headerRow,
         if (indicatorX != null)
           Positioned(
             left: indicatorX - 1,
@@ -220,11 +287,21 @@ class _HeaderCell<T> extends StatelessWidget {
       height: state.widget.rowHeight,
       decoration: BoxDecoration(
         color: colors.muted,
-        border: Border(
-          bottom: BorderSide(color: _collapsedRule(colors)),
-          top: isActive ? BorderSide(color: colors.primary) : BorderSide.none,
-        ),
+        border: state.widget.sizing == BeuiTableSizing.intrinsic
+            ? null
+            : Border(
+                bottom: BorderSide(color: _collapsedRule(colors)),
+                top: isActive
+                    ? BorderSide(color: colors.primary)
+                    : BorderSide.none,
+              ),
       ),
+      foregroundDecoration:
+          state.widget.sizing == BeuiTableSizing.intrinsic && isActive
+          ? BoxDecoration(
+              border: Border(top: BorderSide(color: colors.primary)),
+            )
+          : null,
       child: Stack(
         clipBehavior: Clip.none,
         children: [

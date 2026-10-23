@@ -36,11 +36,19 @@ Header, body, skeleton and reorder geometry share the same resolved layout.
 
 This mode does not implement arbitrary CSS table layout. It does not certify
 Flutter/browser font raster correspondence, unsupported custom cells or exact
-source virtualization. The gallery has not yet opted in; native integrated
-geometry acceptance remains open.
+source virtualization. The DATA gallery opts in. Its archived native horizontal geometry checks cover
+rest, resize freeze and drag; they do not establish full-image parity.
 
 For runtime row-height updates, this API recalculates estimates immediately.
 The pinned TanStack source retains cached estimates until remeasurement; its
 Table does not explicitly request that remeasurement. Dynamic-height parity is
 therefore not claimed. Fixed-estimate range tests use the source dependency's
 actual boundary behavior, including equality at a row end.
+
+Intrinsic vertical geometry follows the collapsed grid: a full-height header
+content box advances by rowHeight plus half the one-pixel shared rule. Body
+content stays centered in full-height rows. A viewport foreground painter draws
+each rule once, after row backgrounds, and moves the shared grid with vertical
+scrolling. Header content stays fixed; its collapsed rule scrolls away. The
+visible rule range includes partially clipped strokes at fractional offsets.
+Default flex sizing retains its previous inset borders and header advance.

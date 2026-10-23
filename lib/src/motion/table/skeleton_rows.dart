@@ -14,6 +14,7 @@ class _SkeletonRow<T> extends StatefulWidget {
     required this.reduce,
     required this.rowHeight,
     required this.selectable,
+    required this.collapsed,
   });
 
   final List<BeuiTableColumn<T>> columns;
@@ -22,6 +23,7 @@ class _SkeletonRow<T> extends StatefulWidget {
   final bool reduce;
   final double rowHeight;
   final bool selectable;
+  final bool collapsed;
 
   @override
   State<_SkeletonRow<T>> createState() => _SkeletonRowState<T>();
@@ -99,14 +101,16 @@ class _SkeletonRowState<T> extends State<_SkeletonRow<T>>
     row = Container(
       height: w.rowHeight,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border(
-          // `border-border/60` scales the token's own alpha, never replaces it.
-          bottom: BorderSide(
-            color: colors.border.withValues(alpha: colors.border.a * 0.6),
-          ),
-        ),
-      ),
+      decoration: w.collapsed
+          ? null
+          : BoxDecoration(
+              border: Border(
+                // `border-border/60` scales the token's own alpha, never replaces it.
+                bottom: BorderSide(
+                  color: colors.border.withValues(alpha: colors.border.a * 0.6),
+                ),
+              ),
+            ),
       child: row,
     );
 

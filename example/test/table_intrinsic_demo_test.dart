@@ -2,6 +2,7 @@ import 'package:beui/beui.dart';
 import 'package:beui/src/motion/table/intrinsic_measurement.dart';
 import 'package:beui_example/demos/table_demo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -62,6 +63,44 @@ void main() {
     }
     await loader.load();
   });
+
+  testWidgets(
+    'collapsed grid preserves full content height and Geist baselines',
+    (tester) async {
+      await _pump(tester);
+      final headerTop = _headerRects(tester).first.top;
+      final row = tester.widget<Row>(_bodyRows().first);
+      final rowRect = tester.getRect(_bodyRows().first);
+      expect(rowRect.top - headerTop, 52.5);
+      expect(rowRect.height, 52);
+      final text = find
+          .descendant(
+            of: find.byWidget(row.children[1]),
+            matching: find.byType(RichText),
+          )
+          .first;
+      final paragraph = tester.renderObject<RenderParagraph>(text);
+      final baseline = paragraph
+          .localToGlobal(
+            Offset(
+              0,
+              paragraph.getDryBaseline(
+                paragraph.constraints,
+                TextBaseline.alphabetic,
+              )!,
+            ),
+          )
+          .dy;
+      // Source baseline: 83.5px. Flutter's loaded-Geist metric is 83.48005px.
+      // Allow subpixel font metric differences, not the original 1px shift.
+      expect(baseline - headerTop, closeTo(83.5, .05));
+      expect(
+        tester.getCenter(find.byType(BeuiCheckbox).at(1)).dy - headerTop,
+        78.5,
+      );
+      await _dispose(tester);
+    },
+  );
 
   testWidgets('first layout measures bounded sorted DATA with real fonts', (
     tester,
