@@ -241,135 +241,142 @@ class _BeuiCardFolderState extends State<BeuiCardFolder> {
                           },
                         ),
                       },
-                      child: CustomPaint(
-                        foregroundPainter: _focusVisible
-                            ? _FolderFocusPainter(colors.ring)
-                            : null,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTapDown: widget.disabled
-                              ? null
-                              : (_) => setState(() => _pressed = true),
-                          onTapUp: widget.disabled
-                              ? null
-                              : (_) => setState(() => _pressed = false),
-                          onTapCancel: () => setState(() => _pressed = false),
-                          onTap: widget.disabled
-                              ? null
-                              : () {
-                                  _folderFocus.requestFocus();
-                                  _setOpen(!isOpen);
-                                  widget.onClick?.call();
-                                },
-                          child: SingleMotionBuilder(
-                            value: _pressed && !reduce ? _pressScale : 1,
-                            from: 1,
-                            motion: motionFor(
-                              context,
-                              beuiSpringPress,
-                              isMovement: true,
-                            ),
-                            builder: (context, scale, child) =>
-                                Transform.scale(scale: scale, child: child),
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  top: height * 0.1,
-                                  bottom: 0,
-                                  child: purseBack,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTapDown: widget.disabled
+                            ? null
+                            : (_) => setState(() => _pressed = true),
+                        onTapUp: widget.disabled
+                            ? null
+                            : (_) => setState(() => _pressed = false),
+                        onTapCancel: () => setState(() => _pressed = false),
+                        onTap: widget.disabled
+                            ? null
+                            : () {
+                                _folderFocus.requestFocus();
+                                _setOpen(!isOpen);
+                                widget.onClick?.call();
+                              },
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Positioned.fill(
+                              child: SingleMotionBuilder(
+                                value: _pressed && !reduce ? _pressScale : 1,
+                                from: 1,
+                                motion: motionFor(
+                                  context,
+                                  beuiSpringPress,
+                                  isMovement: true,
                                 ),
-                                Positioned(
-                                  left: width * 0.047,
-                                  right: width * 0.047,
-                                  top: 0,
-                                  height: width * 0.906 / 1.586,
-                                  child: Transform.translate(
-                                    offset: Offset(
-                                      0,
-                                      reduce
-                                          ? 0
-                                          : -width *
-                                                0.906 /
-                                                1.586 *
-                                                0.08 *
-                                                lift,
+                                builder: (context, scale, child) =>
+                                    Transform.scale(
+                                      scale: scale,
+                                      child: CustomPaint(
+                                        foregroundPainter: _focusVisible
+                                            ? _FolderFocusPainter(colors.ring)
+                                            : null,
+                                        child: child,
+                                      ),
                                     ),
-                                    child: Transform.scale(
-                                      scale: reduce ? 1 : 1 + 0.01 * lift,
-                                      alignment: Alignment.bottomCenter,
-                                      child: DecoratedBox(
-                                        decoration: BoxDecoration(
-                                          color: colors.background,
-                                          border: Border.all(
-                                            color: colors.foreground.withValues(
-                                              alpha: 0.1,
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Positioned(
+                                      left: 0,
+                                      right: 0,
+                                      top: height * 0.1,
+                                      bottom: 0,
+                                      child: purseBack,
+                                    ),
+                                    Positioned(
+                                      left: width * 0.047,
+                                      right: width * 0.047,
+                                      top: 0,
+                                      height: width * 0.906 / 1.586,
+                                      child: Transform.translate(
+                                        offset: Offset(
+                                          0,
+                                          reduce
+                                              ? 0
+                                              : -width *
+                                                    0.906 /
+                                                    1.586 *
+                                                    0.08 *
+                                                    lift,
+                                        ),
+                                        child: Transform.scale(
+                                          scale: reduce ? 1 : 1 + 0.01 * lift,
+                                          alignment: Alignment.bottomCenter,
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              color: colors.background,
+                                              border: Border.all(
+                                                color: colors.foreground
+                                                    .withValues(alpha: 0.1),
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(11),
+                                              child: widget.card,
                                             ),
                                           ),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            11,
-                                          ),
-                                          child: widget.card,
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  top: height / 2,
-                                  bottom: 0,
-                                  child: ExcludeSemantics(
-                                    excluding: isOpen,
-                                    child: IgnorePointer(
-                                      ignoring: isOpen,
-                                      child: purseFront,
-                                    ),
-                                  ),
-                                ),
-                                if (widget.onAction != null)
-                                  Positioned(
-                                    right: width * 0.026,
-                                    top: height * 0.1,
-                                    child: SingleMotionBuilder(
-                                      value: isOpen && !reduce ? -14 : 0,
-                                      from: 0,
-                                      motion: motionFor(
-                                        context,
-                                        _purseMorph,
-                                        isMovement: true,
-                                      ),
-                                      builder: (context, offset, child) =>
-                                          Transform.translate(
-                                            offset: Offset(0, offset - 20),
-                                            child: child,
-                                          ),
-                                      child: IconButton(
-                                        tooltip:
-                                            widget.actionLabel ??
-                                            'Open actions for ${widget.title}',
-                                        onPressed: widget.disabled
-                                            ? null
-                                            : widget.onAction,
-                                        icon: Icon(
-                                          LucideIcons.ellipsis_vertical,
-                                          size: 16,
-                                          color: colors.foreground,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
+                              ),
                             ),
-                          ),
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              top: height / 2,
+                              bottom: 0,
+                              child: ExcludeSemantics(
+                                excluding: isOpen,
+                                child: IgnorePointer(
+                                  ignoring: isOpen,
+                                  child: purseFront,
+                                ),
+                              ),
+                            ),
+                            if (widget.onAction != null)
+                              Positioned(
+                                right: width * 0.026,
+                                top: height * 0.1,
+                                child: SingleMotionBuilder(
+                                  value: isOpen && !reduce ? -14 : 0,
+                                  from: 0,
+                                  motion: motionFor(
+                                    context,
+                                    _purseMorph,
+                                    isMovement: true,
+                                  ),
+                                  builder: (context, offset, child) =>
+                                      Transform.translate(
+                                        offset: Offset(0, offset - 20),
+                                        child: child,
+                                      ),
+                                  child: IconButton(
+                                    tooltip:
+                                        widget.actionLabel ??
+                                        'Open actions for ${widget.title}',
+                                    onPressed: widget.disabled
+                                        ? null
+                                        : widget.onAction,
+                                    icon: Icon(
+                                      LucideIcons.ellipsis_vertical,
+                                      size: 16,
+                                      color: colors.foreground,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     ),

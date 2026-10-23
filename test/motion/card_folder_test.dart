@@ -93,6 +93,63 @@ void main() {
 
   for (final reduce in [false, true]) {
     testWidgets(
+      'held card press leaves pocket and action stationary, reduce=$reduce',
+      (tester) async {
+        final opens = <bool>[];
+        var actions = 0;
+        await tester.pumpWidget(
+          _app(
+            reduce: reduce,
+            onOpenChange: opens.add,
+            onAction: () => actions++,
+          ),
+        );
+        await tester.pumpAndSettle();
+        final privacy = find.bySemanticsLabel('Show card details');
+        final action = find.byTooltip('Open actions for Travel Card');
+        final card = find.byType(ClipRRect).first;
+        final privacyBefore = tester.getTopLeft(privacy);
+        final actionBefore = tester.getTopLeft(action);
+        final cardBefore = tester.getTopLeft(card);
+        final bounds = tester.getRect(find.byType(BeuiCardFolder));
+        final point = Offset(
+          bounds.center.dx,
+          bounds.top + bounds.height * .12,
+        );
+        final gesture = await tester.startGesture(
+          point,
+          kind: PointerDeviceKind.mouse,
+        );
+        await tester.pump(const Duration(milliseconds: 150));
+        await tester.pump(const Duration(milliseconds: 600));
+        expect(tester.getTopLeft(privacy), privacyBefore);
+        expect(tester.getTopLeft(action), actionBefore);
+        if (reduce) {
+          expect(tester.getTopLeft(card), cardBefore);
+        } else {
+          expect(tester.getTopLeft(card).dx, greaterThan(cardBefore.dx + 6));
+          expect(tester.getTopLeft(card).dy, greaterThan(cardBefore.dy + 4));
+        }
+        await gesture.moveBy(const Offset(2, 2));
+        await tester.pump(const Duration(milliseconds: 200));
+        expect(tester.getTopLeft(privacy), privacyBefore);
+        await gesture.up();
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(opens, [true, false]);
+        await tester.tap(action);
+        await tester.pumpAndSettle();
+        expect(actions, 1);
+        expect(opens, [true, false]);
+        await tester.tap(privacy);
+        await tester.pumpAndSettle();
+        expect(find.bySemanticsLabel('Hide card details'), findsOneWidget);
+        expect(opens, [true, false]);
+      },
+    );
+
+    testWidgets(
       'privacy uses the shared tooltip on hover and keyboard, reduce=$reduce',
       (tester) async {
         final semantics = tester.ensureSemantics();
