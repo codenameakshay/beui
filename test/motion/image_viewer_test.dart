@@ -71,6 +71,73 @@ Rect _imageRect(WidgetTester tester, Color color) => tester.getRect(
 );
 
 void main() {
+  testWidgets(
+    'zoom button doubles the image and keyboard pans without paging',
+    (tester) async {
+      await tester.pumpWidget(_app(defaultValue: 'one'));
+      await tester.pumpAndSettle();
+      final rest = _imageRect(tester, const Color(0xffc54d4d));
+      await tester.tap(find.byTooltip('Zoom in'));
+      await tester.pumpAndSettle();
+      final zoomed = _imageRect(tester, const Color(0xffc54d4d));
+      expect(zoomed.width, closeTo(rest.width * 2, .05));
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      final panned = _imageRect(tester, const Color(0xffc54d4d));
+      expect(panned.center.dx - zoomed.center.dx, closeTo(40, .01));
+      expect(find.text('01 / Red study'), findsOneWidget);
+      await tester.tap(find.byTooltip('Zoom out'));
+      await tester.pumpAndSettle();
+      final restored = _imageRect(tester, const Color(0xffc54d4d));
+      expect(restored.width, closeTo(rest.width, .05));
+      expect((restored.center - rest.center).distance, lessThan(.05));
+    },
+  );
+
+  testWidgets('zoomed drag clamps and vertical swipe never pages', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app(defaultValue: 'one'));
+    await tester.pumpAndSettle();
+    final image = find
+        .byWidgetPredicate(
+          (widget) =>
+              widget is ColoredBox && widget.color == const Color(0xffc54d4d),
+        )
+        .last;
+    await tester.drag(image, const Offset(60, 100));
+    await tester.pumpAndSettle();
+    expect(find.text('01 / Red study'), findsOneWidget);
+    await tester.tap(find.byTooltip('Zoom in'));
+    await tester.pumpAndSettle();
+    await tester.dragFrom(const Offset(400, 300), const Offset(2000, 0));
+    await tester.pumpAndSettle();
+    final clamped = _imageRect(tester, const Color(0xffc54d4d));
+    await tester.dragFrom(const Offset(400, 300), const Offset(2000, 0));
+    await tester.pumpAndSettle();
+    expect(_imageRect(tester, const Color(0xffc54d4d)), clamped);
+    expect(find.text('01 / Red study'), findsOneWidget);
+  });
+
+  testWidgets(
+    'horizontal swipe pages and close restores the opening thumbnail',
+    (tester) async {
+      await tester.pumpWidget(_app());
+      await tester.tap(find.bySemanticsLabel('Open Red study'));
+      await tester.pumpAndSettle();
+      await tester.dragFrom(const Offset(400, 300), const Offset(-100, 0));
+      await tester.pumpAndSettle();
+      expect(find.text('02 / Blue study'), findsOneWidget);
+      await tester.tap(find.byTooltip('Close viewer'));
+      await tester.pumpAndSettle();
+      final focus = FocusManager.instance.primaryFocus!;
+      expect(focus.hasFocus, isTrue);
+      expect(find.text('02 / Blue study'), findsNothing);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.text('01 / Red study'), findsOneWidget);
+    },
+  );
   testWidgets('gallery fills three equal columns with the source gap', (
     tester,
   ) async {

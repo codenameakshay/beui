@@ -93,6 +93,7 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
   Rect? _sourceRect;
   Rect? _pendingSourceRect;
   String? _pendingSourceImageId;
+  String? _returnId;
 
   bool get _controlled => widget.isControlled || widget.value != null;
   String? get _selected => _controlled ? widget.value : _internalValue;
@@ -110,6 +111,7 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
     super.didUpdateWidget(oldWidget);
     _validateImages();
     if (_controlled && widget.value != oldWidget.value) {
+      if (oldWidget.value != null && widget.value == null) _restoreFocus();
       if (widget.value != null) {
         _sourceRect = widget.value == _pendingSourceImageId
             ? _pendingSourceRect
@@ -139,6 +141,7 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
   }
 
   void _select(String? id) {
+    if (id != null && _selected == null) _returnId = id;
     if (id != null && id != _selected) {
       final key = _thumbnailKeys[id];
       final box = key?.currentContext?.findRenderObject() as RenderBox?;
@@ -154,8 +157,21 @@ class _BeuiImageViewerState extends State<BeuiImageViewer> {
         _sourceRect = rect;
       }
     }
-    if (!_controlled) setState(() => _internalValue = id);
+    if (!_controlled) {
+      setState(() => _internalValue = id);
+      if (id == null) _restoreFocus();
+    }
     widget.onChanged?.call(id);
+  }
+
+  void _restoreFocus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _selected != null) return;
+      final target = _thumbnailKeys[_returnId]?.currentState;
+      if (target is _ImageViewerThumbnailButtonState) {
+        target._focus.requestFocus();
+      }
+    });
   }
 
   void _move(int delta) {
@@ -330,6 +346,13 @@ class _ImageViewerThumbnailButton extends StatefulWidget {
 class _ImageViewerThumbnailButtonState
     extends State<_ImageViewerThumbnailButton> {
   bool _pressed = false;
+  final _focus = FocusNode(debugLabel: 'Image thumbnail');
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -351,6 +374,7 @@ class _ImageViewerThumbnailButtonState
             borderRadius: BorderRadius.circular(16),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
+              focusNode: _focus,
               onTap: widget.onTap,
               onTapDown: (_) => setState(() => _pressed = true),
               onTapUp: (_) => setState(() => _pressed = false),
@@ -537,77 +561,78 @@ class _BeuiImageViewerContentState extends State<BeuiImageViewerContent> {
       barrierColor: Colors.black.withValues(alpha: 0.9),
       barrierEnterDuration: const Duration(milliseconds: 180),
       barrierExitDuration: const Duration(milliseconds: 120),
-      enterDuration: const Duration(milliseconds: 260),
-      exitDuration: const Duration(milliseconds: 160),
+      enterDuration: const Duration(milliseconds: 500),
+      exitDuration: const Duration(milliseconds: 500),
       overlayBuilder: (context, animation, _) {
         if (displayed == null) return const SizedBox.shrink();
         return AnimatedBuilder(
           animation: animation,
           builder: (context, _) {
-            final t = Curves.easeOutCubic.transform(animation.value);
-            return Opacity(
-              opacity: t,
-              child: Transform.scale(
-                scale: reduce ? 1 : 0.96 + (0.04 * t),
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Focus(
-                      autofocus: true,
-                      onKeyEvent: (_, event) {
-                        if (event is KeyDownEvent &&
-                            event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-                          scope.move(-1);
-                          return KeyEventResult.handled;
-                        }
-                        if (event is KeyDownEvent &&
-                            event.logicalKey == LogicalKeyboardKey.arrowRight) {
-                          scope.move(1);
-                          return KeyEventResult.handled;
-                        }
-                        return KeyEventResult.ignored;
-                      },
-                      child: Semantics(
-                        container: true,
-                        explicitChildNodes: true,
-                        scopesRoute: true,
-                        namesRoute: true,
-                        label: scope.label,
-                        child: Column(
+            return SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(
+                  MediaQuery.sizeOf(context).width < 640 ? 12 : 24,
+                ),
+                child: Focus(
+                  autofocus: true,
+                  onKeyEvent: (_, event) {
+                    if (HardwareKeyboard.instance.isAltPressed ||
+                        HardwareKeyboard.instance.isControlPressed ||
+                        HardwareKeyboard.instance.isMetaPressed ||
+                        HardwareKeyboard.instance.isShiftPressed) {
+                      return KeyEventResult.ignored;
+                    }
+                    if (event is KeyDownEvent &&
+                        event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+                      scope.move(-1);
+                      return KeyEventResult.handled;
+                    }
+                    if (event is KeyDownEvent &&
+                        event.logicalKey == LogicalKeyboardKey.arrowRight) {
+                      scope.move(1);
+                      return KeyEventResult.handled;
+                    }
+                    return KeyEventResult.ignored;
+                  },
+                  child: Semantics(
+                    container: true,
+                    explicitChildNodes: true,
+                    scopesRoute: true,
+                    namesRoute: true,
+                    label: scope.label,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                widget.header ?? const BeuiImageViewerCounter(),
-                                if (widget.header == null)
-                                  const BeuiImageViewerClose(),
-                              ],
-                            ),
-                            Expanded(
-                              child: _MorphingViewerImage(
-                                image: displayed,
-                                sourceRect: scope.sourceRect,
-                                opening: selected != null,
-                                reduce: reduce,
-                                colors: colors,
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                if (widget.footer == null)
-                                  const BeuiImageViewerPrevious(),
-                                Expanded(
-                                  child:
-                                      widget.footer ??
-                                      const BeuiImageViewerCaption(),
-                                ),
-                                if (widget.footer == null)
-                                  const BeuiImageViewerNext(),
-                              ],
-                            ),
+                            widget.header ?? const BeuiImageViewerCounter(),
+                            if (widget.header == null)
+                              const BeuiImageViewerClose(),
                           ],
                         ),
-                      ),
+                        Expanded(
+                          child: _MorphingViewerImage(
+                            image: displayed,
+                            sourceRect: scope.sourceRect,
+                            opening: selected != null,
+                            reduce: reduce,
+                            colors: colors,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            if (widget.footer == null)
+                              const BeuiImageViewerPrevious(),
+                            Expanded(
+                              child:
+                                  widget.footer ??
+                                  const BeuiImageViewerCaption(),
+                            ),
+                            if (widget.footer == null)
+                              const BeuiImageViewerNext(),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -648,9 +673,8 @@ class _MorphingViewerImageState extends State<_MorphingViewerImage> {
   @override
   void didUpdateWidget(covariant _MorphingViewerImage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.image.id != widget.image.id ||
-        oldWidget.sourceRect != widget.sourceRect) {
-      _sourceLocal = null;
+    if (oldWidget.sourceRect != widget.sourceRect) {
+      _scheduleMeasure();
     }
   }
 
@@ -676,7 +700,10 @@ class _MorphingViewerImageState extends State<_MorphingViewerImage> {
       final width = constraints.maxWidth;
       final height = constraints.maxHeight;
       final aspect = widget.image.width / widget.image.height;
-      final fittedWidth = math.min(width, height * aspect);
+      final fittedWidth = math.min(
+        width,
+        math.min(height, MediaQuery.sizeOf(context).height - 160) * aspect,
+      );
       final fittedHeight = fittedWidth / aspect;
       final destination = Rect.fromLTWH(
         (width - fittedWidth) / 2,
@@ -687,12 +714,13 @@ class _MorphingViewerImageState extends State<_MorphingViewerImage> {
       _scheduleMeasure();
       final sourceLocal = _sourceLocal;
       final target = widget.opening ? destination : sourceLocal ?? destination;
-      Widget positioned(Rect rect) => Positioned.fromRect(
-        rect: rect,
+      Widget positioned(Rect rect) => Positioned.fill(
         child: _ZoomableImage(
           image: widget.image,
           reduce: widget.reduce,
           colors: widget.colors,
+          viewport: Size(width, height),
+          rect: rect,
         ),
       );
 
@@ -701,17 +729,18 @@ class _MorphingViewerImageState extends State<_MorphingViewerImage> {
         clipBehavior: Clip.none,
         children: [
           if (widget.reduce || widget.sourceRect == null || sourceLocal == null)
-            Positioned.fromRect(
-              rect: destination,
+            Positioned.fill(
               child: _ZoomableImage(
                 image: widget.image,
                 reduce: widget.reduce,
                 colors: widget.colors,
+                viewport: Size(width, height),
+                rect: destination,
               ),
             )
           else
             MotionBuilder<Rect>(
-              key: ValueKey('image-viewer-morph-${widget.image.id}'),
+              key: const ValueKey('image-viewer-morph'),
               value: target,
               from: widget.opening ? sourceLocal : null,
               motion: beuiSpringLayout,
@@ -729,26 +758,44 @@ class _ZoomableImage extends StatefulWidget {
     required this.image,
     required this.reduce,
     required this.colors,
+    required this.viewport,
+    required this.rect,
   });
 
   final BeuiImageViewerImage image;
   final bool reduce;
   final BeuiColors colors;
+  final Size viewport;
+  final Rect rect;
 
   @override
   State<_ZoomableImage> createState() => _ZoomableImageState();
 }
 
 class _ZoomableImageState extends State<_ZoomableImage> {
+  final _zoomFocus = FocusNode(debugLabel: 'Image zoom');
   bool _zoomed = false;
   Offset _pan = Offset.zero;
   Offset? _swipeStart;
   Offset? _swipeCurrent;
+  int _direction = 1;
+
+  @override
+  void dispose() {
+    _zoomFocus.dispose();
+    super.dispose();
+  }
 
   @override
   void didUpdateWidget(covariant _ZoomableImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.image.id != widget.image.id) {
+      final images = _ImageViewerScope.of(context).images;
+      _direction =
+          images.indexWhere((image) => image.id == widget.image.id) <
+              images.indexWhere((image) => image.id == oldWidget.image.id)
+          ? -1
+          : 1;
       _zoomed = false;
       _pan = Offset.zero;
       _swipeStart = null;
@@ -770,20 +817,22 @@ class _ZoomableImageState extends State<_ZoomableImage> {
         _swipeCurrent = null;
         if (!_zoomed && start != null && current != null) {
           final dx = current.dx - start.dx;
-          if (dx.abs() > 50) {
+          final dy = current.dy - start.dy;
+          if (dx.abs() > 50 && dx.abs() > dy.abs() * 1.5) {
             final scope = _ImageViewerScope.of(context);
             scope.move(dx < 0 ? 1 : -1);
           }
         }
       },
-      onDoubleTap: () => setState(() {
-        _zoomed = !_zoomed;
-        _pan = Offset.zero;
-      }),
       onScaleUpdate: (details) {
         _swipeCurrent = details.focalPoint;
         if (_zoomed) {
-          setState(() => _pan += details.focalPointDelta);
+          setState(
+            () => _pan = _clampPan(
+              _pan + details.focalPointDelta,
+              widget.rect.size,
+            ),
+          );
         }
       },
       child: Stack(
@@ -791,39 +840,95 @@ class _ZoomableImageState extends State<_ZoomableImage> {
         children: [
           Center(
             child: Transform.translate(
-              offset: _zoomed ? _pan : Offset.zero,
-              child: Transform.scale(
-                scale: _zoomed ? 2 : 1,
+              offset:
+                  widget.rect.center -
+                  widget.viewport.center(Offset.zero) +
+                  (_zoomed ? _pan : Offset.zero),
+              child: SingleMotionBuilder(
+                value: _zoomed ? 2 : 1,
+                motion: motionFor(context, beuiSpringLayout, isMovement: true),
+                builder: (context, scale, child) =>
+                    Transform.scale(scale: scale, child: child),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: constraints.maxWidth,
-                    maxHeight: constraints.maxHeight,
+                    maxWidth: widget.rect.width,
+                    maxHeight: widget.rect.height,
                   ),
                   child: AspectRatio(
                     aspectRatio: widget.image.width / widget.image.height,
-                    child: widget.image.content,
+                    child: AnimatedSwitcher(
+                      duration: Duration(
+                        milliseconds: widget.reduce ? 100 : 280,
+                      ),
+                      switchInCurve: beuiEaseDrawer,
+                      switchOutCurve: beuiEaseDrawer.flipped,
+                      layoutBuilder: (current, previous) => Stack(
+                        fit: StackFit.expand,
+                        children: [...previous, ?current],
+                      ),
+                      transitionBuilder: (child, animation) => widget.reduce
+                          ? FadeTransition(opacity: animation, child: child)
+                          : SlideTransition(
+                              position: Tween<Offset>(
+                                begin: Offset(
+                                  (child.key == ValueKey(widget.image.id)
+                                          ? _direction
+                                          : -_direction)
+                                      .toDouble(),
+                                  0,
+                                ),
+                                end: Offset.zero,
+                              ).animate(animation),
+                              child: child,
+                            ),
+                      child: SizedBox.expand(
+                        key: ValueKey(widget.image.id),
+                        child: widget.image.content,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
           Positioned(
-            right: 8,
-            bottom: 8,
-            child: Semantics(
-              button: true,
-              toggled: _zoomed,
-              label: _zoomed ? 'Zoom out' : 'Zoom in',
-              child: IconButton.filled(
-                tooltip: _zoomed ? 'Zoom out' : 'Zoom in',
-                onPressed: () => setState(() {
-                  _zoomed = !_zoomed;
-                  _pan = Offset.zero;
-                }),
-                icon: Icon(_zoomed ? LucideIcons.minus : LucideIcons.plus),
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.black54,
-                  foregroundColor: Colors.white,
+            right: 12,
+            bottom: 12,
+            child: Focus(
+              onKeyEvent: (_, event) {
+                if (!_zoomed || event is! KeyDownEvent) {
+                  return KeyEventResult.ignored;
+                }
+                final delta = switch (event.logicalKey) {
+                  LogicalKeyboardKey.arrowLeft => const Offset(-40, 0),
+                  LogicalKeyboardKey.arrowRight => const Offset(40, 0),
+                  LogicalKeyboardKey.arrowUp => const Offset(0, -40),
+                  LogicalKeyboardKey.arrowDown => const Offset(0, 40),
+                  _ => Offset.zero,
+                };
+                if (delta == Offset.zero) return KeyEventResult.ignored;
+                setState(
+                  () => _pan = _clampPan(_pan + delta, widget.rect.size),
+                );
+                return KeyEventResult.handled;
+              },
+              child: Semantics(
+                button: true,
+                toggled: _zoomed,
+                label: _zoomed ? 'Zoom out' : 'Zoom in',
+                child: IconButton.filled(
+                  focusNode: _zoomFocus,
+                  tooltip: _zoomed ? 'Zoom out' : 'Zoom in',
+                  onPressed: () => setState(() {
+                    _zoomFocus.requestFocus();
+                    _zoomed = !_zoomed;
+                    _pan = Offset.zero;
+                  }),
+                  icon: Icon(_zoomed ? LucideIcons.minus : LucideIcons.plus),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.black54,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -832,4 +937,10 @@ class _ZoomableImageState extends State<_ZoomableImage> {
       ),
     ),
   );
+
+  Offset _clampPan(Offset value, Size image) {
+    final x = math.max(0.0, (image.width * 2 - widget.viewport.width) / 2);
+    final y = math.max(0.0, (image.height * 2 - widget.viewport.height) / 2);
+    return Offset(value.dx.clamp(-x, x), value.dy.clamp(-y, y));
+  }
 }
