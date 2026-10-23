@@ -715,18 +715,28 @@ class _ErrorMessage extends StatelessWidget {
               liveRegion: true,
               container: true,
               child: Padding(
-                padding: const EdgeInsetsDirectional.only(start: 4, top: 6),
+                padding: EdgeInsetsDirectional.only(
+                  start: 4,
+                  top: reserveErrorLine ? 0 : 6,
+                ),
                 child: Text(
                   message!,
-                  style: TextStyle(fontSize: 12, color: color),
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: reserveErrorLine ? 16 / 12 : null,
+                    color: color,
+                  ),
                 ),
               ),
             ),
     );
     if (reserveErrorLine) {
-      return ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 16),
-        child: body,
+      return Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 16),
+          child: body,
+        ),
       );
     }
     return AnimatedSize(
