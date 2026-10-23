@@ -26,6 +26,50 @@ const _segments = [
 
 void main() {
   testWidgets(
+    'center keeps full-size intrinsic digits outside its caption cap',
+    (tester) async {
+      await tester.pumpWidget(
+        beuiTestApp(
+          BeuiDonutChart(
+            segments: const [
+              BeuiDonutSegment(id: 'team', label: 'Team', value: 42900),
+              BeuiDonutSegment(id: 'business', label: 'Business', value: 31250),
+              BeuiDonutSegment(
+                id: 'enterprise',
+                label: 'Enterprise',
+                value: 22600,
+              ),
+              BeuiDonutSegment(id: 'starter', label: 'Starter', value: 18400),
+            ],
+            formatValue: (value) => '\$${beuiChartFormatNumber(value)}',
+            child: const SizedBox(
+              width: 240,
+              height: 240,
+              child: BeuiDonutPlot(child: BeuiDonutCenter()),
+            ),
+          ),
+          fontFamily: 'Ahem',
+          reduce: true,
+        ),
+      );
+      await tester.pumpAndSettle();
+      final center = tester.getRect(find.byType(BeuiDonutCenter));
+      final digits = tester.getRect(find.byType(BeuiDigitSwap));
+      final plot = tester.getRect(find.byType(BeuiDonutPlot));
+      expect(center.width, closeTo(134.4, .001));
+      expect(digits.width, greaterThan(center.width));
+      expect(digits.center.dx, closeTo(plot.center.dx, .001));
+      expect(digits.left, greaterThan(plot.left));
+      expect(digits.right, lessThan(plot.right));
+      final swap = tester.widget<BeuiDigitSwap>(find.byType(BeuiDigitSwap));
+      expect(swap.value, '\$115,150');
+      expect(swap.style!.fontSize, 24);
+      expect(find.byType(FittedBox), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'source legend rows are 48px with inset four-pixel share tracks',
     (tester) async {
       await tester.pumpWidget(
