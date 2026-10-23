@@ -59,6 +59,11 @@ void main() {
     testWidgets(
       'funnel hover tint follows the source 150ms curve, reduce=$reduce',
       (tester) async {
+        tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
+            FakeAccessibilityFeatures(disableAnimations: reduce);
+        addTearDown(
+          tester.binding.platformDispatcher.clearAccessibilityFeaturesTestValue,
+        );
         await tester.pumpWidget(
           beuiTestApp(
             const RepaintBoundary(
