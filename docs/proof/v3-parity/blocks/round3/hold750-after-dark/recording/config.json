@@ -1,0 +1,58 @@
+{
+  "url": "http://127.0.0.1:8108/?slug=card-folder&theme=dark&previewWidth=592&captureProbe=1",
+  "viewport": {
+    "width": 1280,
+    "height": 1200
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "reference": false,
+  "requireFlutterProbe": true,
+  "servedJs": {
+    "url": "http://127.0.0.1:8108/main.dart.js",
+    "sha256": "4a569eff30943ab8948631516c5bd4bd505a2dd597a0bb24f2f7052051dba38d",
+    "revision": "bdd7ea07 app code plus Tooltip dependency 12155d8e blob54c1fa7a899bd52ddb0e9e89b7858eab3077c425; fabdd710 tests-only"
+  },
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 1000,
+  "targets": {
+    "privacy": {
+      "x": 619.7000122070312,
+      "y": 500,
+      "measuredBounds": {
+        "x": 599.7000122070312,
+        "y": 480,
+        "width": 40,
+        "height": 40
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "move",
+      "target": "privacy"
+    },
+    {
+      "atMs": 900,
+      "type": "down"
+    },
+    {
+      "atMs": 1650,
+      "type": "up"
+    },
+    {
+      "atMs": 2600,
+      "type": "key",
+      "key": "Enter"
+    }
+  ],
+  "provenance": {
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "wrapper": "d831524 width592 captureProbe1. Original baseline untouched.",
+    "dependency": "12155d8e1fa7776086e6f1b9334fecbf1ccd414e",
+    "limitation": "Separate observed behavioral run. Decoded recording state inspection also required. No exact timing or 60fps claim."
+  }
+}

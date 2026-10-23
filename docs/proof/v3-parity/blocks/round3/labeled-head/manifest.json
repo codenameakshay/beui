@@ -1,0 +1,390 @@
+[
+  {
+    "name": "feedback-policy-dark",
+    "inputs": [
+      "policy-before-recovered-dark/candidate-feedback-widget-dark-no-preference/capture.mp4",
+      "policy-head-dark/candidate-feedback-widget-dark-no-preference/capture.mp4"
+    ],
+    "labels": [
+      "Before: empty submit enabled, draft retained on close. Original 5ec78ac remains untouched.",
+      "After: empty/whitespace disabled; Cancel and Escape discard drafts. Same width592 wrapper."
+    ],
+    "probes": [
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "361"
+          }
+        ],
+        "format": {
+          "duration": "9.199108"
+        }
+      },
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "266"
+          }
+        ],
+        "format": {
+          "duration": "9.182390"
+        }
+      }
+    ],
+    "result": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1178,
+          "nb_read_frames": "627"
+        }
+      ],
+      "format": {
+        "duration": "18.407050"
+      }
+    },
+    "inputFrames": 627,
+    "outputFrames": 627,
+    "file": "labeled-head/feedback-policy-dark.mp4",
+    "sha256": "9a552c269e2c65c002cfbc52db6b6857ce1cf4716f81819c4871679c5d4205b5",
+    "method": "Original pixels not resized. Black label band and padding only. Sequential edit, not aligned comparison. No interpolation or generated motion samples."
+  },
+  {
+    "name": "card-privacy-dark",
+    "inputs": [
+      "policy-before-recovered-dark/candidate-card-folder-dark-no-preference/capture.mp4",
+      "policy-head-dark/candidate-card-folder-dark-no-preference/capture.mp4"
+    ],
+    "labels": [
+      "Before: instant eye swap, shared Tooltip composition. Width592, d831524 wrapper.",
+      "After: 40px control; opacity/scale/blur eye swap. Sparse capture is not exact timing proof."
+    ],
+    "probes": [
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "96"
+          }
+        ],
+        "format": {
+          "duration": "3.399350"
+        }
+      },
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "81"
+          }
+        ],
+        "format": {
+          "duration": "3.458127"
+        }
+      }
+    ],
+    "result": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1178,
+          "nb_read_frames": "177"
+        }
+      ],
+      "format": {
+        "duration": "6.893259"
+      }
+    },
+    "inputFrames": 177,
+    "outputFrames": 177,
+    "file": "labeled-head/card-privacy-dark.mp4",
+    "sha256": "dde7d9fa4996a24dce102700944bfbd044615bb99a71bdb713a43547c8cb6246",
+    "method": "Original pixels not resized. Black label band and padding only. Sequential edit, not aligned comparison. No interpolation or generated motion samples."
+  },
+  {
+    "name": "feedback-source-light-reduced",
+    "inputs": [
+      "policy-final-light-reduced/reference-feedback-widget-light-reduce/capture.mp4",
+      "policy-head-light-reduced-ready/candidate-feedback-widget-light-reduce/capture.mp4"
+    ],
+    "labels": [
+      "Source live deployment unknown. Light, browser reduced motion. Pinned checkout a76e57c9 separate.",
+      "Candidate: effective Flutter reduced motion verified. Sequential viewing edit, not pixel equivalence."
+    ],
+    "probes": [
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "270"
+          }
+        ],
+        "format": {
+          "duration": "9.188968"
+        }
+      },
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "232"
+          }
+        ],
+        "format": {
+          "duration": "9.218349"
+        }
+      }
+    ],
+    "result": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1178,
+          "nb_read_frames": "502"
+        }
+      ],
+      "format": {
+        "duration": "18.441476"
+      }
+    },
+    "inputFrames": 502,
+    "outputFrames": 502,
+    "file": "labeled-head/feedback-source-light-reduced.mp4",
+    "sha256": "2afc36887cb7c1c5e12af098aaf6f5dea2888210ba9e4545bd273b843a37fa04",
+    "method": "Original pixels not resized. Black label band and padding only. Sequential edit, not aligned comparison. No interpolation or generated motion samples."
+  },
+  {
+    "name": "card-source-light-reduced",
+    "inputs": [
+      "policy-final-light-reduced/reference-card-folder-light-reduce/capture.mp4",
+      "policy-head-light-reduced-ready/candidate-card-folder-light-reduce/capture.mp4"
+    ],
+    "labels": [
+      "Source: light reduced-motion privacy flow. Actual measured target coordinates retained.",
+      "Candidate: opacity-only eye fade, 120ms. No movement blur. Not exact image/motion certification."
+    ],
+    "probes": [
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "98"
+          }
+        ],
+        "format": {
+          "duration": "3.432768"
+        }
+      },
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "32"
+          }
+        ],
+        "format": {
+          "duration": "3.434867"
+        }
+      }
+    ],
+    "result": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1178,
+          "nb_read_frames": "130"
+        }
+      ],
+      "format": {
+        "duration": "6.903023"
+      }
+    },
+    "inputFrames": 130,
+    "outputFrames": 130,
+    "file": "labeled-head/card-source-light-reduced.mp4",
+    "sha256": "b9f819b1be1be53c29d7ce7fe1b3c4bc4f573fc603fda833fafb454cbf28eab5",
+    "method": "Original pixels not resized. Black label band and padding only. Sequential edit, not aligned comparison. No interpolation or generated motion samples."
+  },
+  {
+    "name": "glyph-readiness",
+    "inputs": [
+      "../round2/press-reduced/candidate-dark-reduce/capture.mp4",
+      "glyph-head-ready/recording/capture.mp4"
+    ],
+    "labels": [
+      "FAILED ORIGINAL: missing Lucide and monospace glyphs. Original files unchanged.",
+      "Replacement: font bodies hashed before first screenshot. Decoded glyph inspection required. Historical trigger unproven."
+    ],
+    "probes": [
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "136"
+          }
+        ],
+        "format": {
+          "duration": "4.981400"
+        }
+      },
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "110"
+          }
+        ],
+        "format": {
+          "duration": "5.056377"
+        }
+      }
+    ],
+    "result": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1178,
+          "nb_read_frames": "246"
+        }
+      ],
+      "format": {
+        "duration": "10.074675"
+      }
+    },
+    "inputFrames": 246,
+    "outputFrames": 246,
+    "file": "labeled-head/glyph-readiness.mp4",
+    "sha256": "8a5e9c6db17fdaec68ad3163774bc8efec4d2cbbcbe56b97b8a58671e6c33dc8",
+    "method": "Original pixels not resized. Black label band and padding only. Sequential edit, not aligned comparison. No interpolation or generated motion samples."
+  },
+  {
+    "name": "controls-dark",
+    "inputs": [
+      "controls-dark-final/recording/capture.mp4"
+    ],
+    "labels": [
+      "New contract fixture: held optional action, Enter callback, privacy reversal, disabled controls and missing SVG. Not reference wrapper."
+    ],
+    "probes": [
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "325"
+          }
+        ],
+        "format": {
+          "duration": "6.997481"
+        }
+      }
+    ],
+    "result": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1178,
+          "nb_read_frames": "325"
+        }
+      ],
+      "format": {
+        "duration": "6.997481"
+      }
+    },
+    "inputFrames": 325,
+    "outputFrames": 325,
+    "file": "labeled-head/controls-dark.mp4",
+    "sha256": "a52ac08a7e8489314d9246256944dd3d984a66d5f0c8ff5837b83434587cbd8d",
+    "method": "Original pixels not resized. Black label band and padding only. Sequential edit, not aligned comparison. No interpolation or generated motion samples."
+  },
+  {
+    "name": "controls-light-reduced",
+    "inputs": [
+      "controls-light-reduced-final/recording/capture.mp4"
+    ],
+    "labels": [
+      "New light/reduced contract fixture. Effective Flutter preference observed. No exact parity or native 60fps claim."
+    ],
+    "probes": [
+      {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1280,
+            "height": 1113,
+            "nb_read_frames": "260"
+          }
+        ],
+        "format": {
+          "duration": "7.018400"
+        }
+      }
+    ],
+    "result": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 1178,
+          "nb_read_frames": "260"
+        }
+      ],
+      "format": {
+        "duration": "7.018400"
+      }
+    },
+    "inputFrames": 260,
+    "outputFrames": 260,
+    "file": "labeled-head/controls-light-reduced.mp4",
+    "sha256": "5ac57cf5ea48cfdac7bd2bb4c3da10eb32f63c0a2cd4abdc3c6b51971490ad88",
+    "method": "Original pixels not resized. Black label band and padding only. Sequential edit, not aligned comparison. No interpolation or generated motion samples."
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "url": "https://beui.dev/components/blocks/card-folder",
+  "viewport": {
+    "width": 1280,
+    "height": 1200
+  },
+  "theme": "light",
+  "reducedMotion": "reduce",
+  "reference": true,
+  "requireFlutterProbe": false,
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 1000,
+  "targets": {
+    "privacy": {
+      "x": 447.1875,
+      "y": 590.453125,
+      "measuredBounds": {
+        "x": 427.1875,
+        "y": 570.453125,
+        "width": 40,
+        "height": 40
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "privacy"
+    },
+    {
+      "atMs": 1500,
+      "type": "click",
+      "target": "privacy"
+    },
+    {
+      "atMs": 2400,
+      "type": "key",
+      "key": "Tab"
+    }
+  ],
+  "provenance": {
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "wrapper": "d831524 previewWidth592 background 21dark/252light, captureProbe1. Original 5ec78ac untouched.",
+    "assertions": "Separate browser run, recorded states require decoded inspection."
+  }
+}

@@ -11,6 +11,12 @@ It includes native decoding and sizing regressions, source-layer held-press repa
 Original round1 PNGs, frozen-before hashes and invalid foreign-build records remain unchanged.
 No exact-parity or native 60fps verdict changed.
 
+## Integration and policy follow-up
+
+The [round3 report](round3/README.md) records the actual duplicate Card semantics tree, contained SVG network and decode failures, and source Feedback draft policy.
+It adds independent Card control states, eye scale and blur transitions, font-body readiness diagnostics, and decoded 750ms privacy-release footage with shared Tooltip dependency `12155d8e`.
+Original records and failed parity verdicts remain unchanged.
+
 ## Integration commits
 
 The owned implementation commits are:

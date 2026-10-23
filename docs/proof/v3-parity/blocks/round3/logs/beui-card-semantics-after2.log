@@ -1,0 +1,233 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart
+00:00 +0: privacy has one accessible toggle node after reveal
+SemanticsNode#0
+ │ Rect.fromLTRB(0.0, 0.0, 2400.0, 1800.0)
+ │
+ └─SemanticsNode#1
+   │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) scaled by 3.0x
+   │ textDirection: ltr
+   │
+   └─SemanticsNode#2
+     │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+     │ sortKey: OrdinalSortKey#81f4b(order: 0.0)
+     │
+     └─SemanticsNode#3
+       │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+       │ flags: scopesRoute
+       │
+       └─SemanticsNode#4
+         │ Rect.fromLTRB(208.0, 189.5, 592.0, 410.5)
+         │ flags: isButton, hasEnabledState, isEnabled, hasExpandedState
+         │ label: "Open Travel Card, card ending in 0806, expires 08/29"
+         │ textDirection: ltr
+         │
+         └─SemanticsNode#5
+           │ Rect.fromLTRB(0.0, 0.0, 384.0, 220.9)
+           │ actions: focus, tap
+           │ flags: isFocusable
+           │ label:
+           │   "•••• •••• •••• 0806
+           │   EXPIRY
+           │   08/29
+           │   CVV
+           │   123
+           │   Travel Card
+           │   3745 6987 4096 0806"
+           │ textDirection: ltr
+           │
+           └─SemanticsNode#6
+               Rect.fromLTRB(0.0, 0.0, 48.0, 48.0) with transform
+               [[1.0,0.0,-0.16,19.200000000000003];
+               [0.0,1.0,-0.1841010689990282,126.46064139941691];
+               [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+               actions: tap
+               flags: isButton, hasEnabledState, isEnabled, hasToggledState,
+                 isToggled
+               label: "Hide card details"
+               textDirection: ltr
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: an object with length of <1>
+  Actual: [
+            SemanticsNode:SemanticsNode#6(Rect.fromLTRB(0.0, 0.0, 48.0, 48.0) with transform
+[[1.0,0.0,-0.16,19.200000000000003]; [0.0,1.0,-0.1841010689990282,126.46064139941691];
+[0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]], actions: [tap], flags: [isButton,
+hasEnabledState, isEnabled, hasToggledState, isToggled], label: "Hide card details", textDirection:
+ltr),
+            SemanticsNode:SemanticsNode#8(Rect.fromLTRB(0.0, 0.0, 800.0, 600.0), actions: [focus],
+flags: [isFocusable], label: "Hide card details", textDirection: ltr)
+          ]
+   Which: has length of <2>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:70:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 70
+The test description was:
+  privacy has one accessible toggle node after reveal
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: privacy has one accessible toggle node after reveal [E]
+  Test failed. See exception logs above.
+  The test description was: privacy has one accessible toggle node after reveal
+  
+00:00 +0 -1: pointer activation transfers keyboard control to the folder
+00:00 +1 -1: folder focus paints the source two-pixel ring beyond a four-pixel gap
+00:00 +2 -1: held card press leaves pocket and action stationary, reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _ElementPredicateWidgetFinder:<Found 2 widgets with a semantics label named "Hide card
+details": [
+            Semantics(container: true, properties: SemanticsProperties, label: "Hide card details",
+dependencies: [Directionality], renderObject: RenderSemanticsAnnotations#5a5a1
+relayoutBoundary=up2),
+            Semantics(container: false, properties: SemanticsProperties, renderObject:
+RenderSemanticsAnnotations#f6027),
+          ]>
+   Which: is too many
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:174:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 174
+The test description was:
+  held card press leaves pocket and action stationary, reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +2 -2: held card press leaves pocket and action stationary, reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: held card press leaves pocket and action stationary, reduce=false
+  
+00:00 +2 -2: privacy uses the shared tooltip on hover and keyboard, reduce=false
+00:01 +3 -2: held card press leaves pocket and action stationary, reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _ElementPredicateWidgetFinder:<Found 2 widgets with a semantics label named "Hide card
+details": [
+            Semantics(container: true, properties: SemanticsProperties, label: "Hide card details",
+dependencies: [Directionality], renderObject: RenderSemanticsAnnotations#ebb11
+relayoutBoundary=up2),
+            Semantics(container: false, properties: SemanticsProperties, renderObject:
+RenderSemanticsAnnotations#5bdd5),
+          ]>
+   Which: is too many
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:174:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 174
+The test description was:
+  held card press leaves pocket and action stationary, reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +3 -3: held card press leaves pocket and action stationary, reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: held card press leaves pocket and action stationary, reduce=true
+  
+00:01 +3 -3: privacy uses the shared tooltip on hover and keyboard, reduce=true
+00:01 +4 -3: keyboard opens and closes the folder before privacy control
+00:01 +5 -3: closed rest state masks details and retains last four
+00:01 +6 -3: folder tap reports open state
+00:01 +7 -3: details toggle reveals number and CVV
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _ElementPredicateWidgetFinder:<Found 2 widgets with a semantics label named "Hide card
+details": [
+            Semantics(container: true, properties: SemanticsProperties, label: "Hide card details",
+dependencies: [Directionality], renderObject: RenderSemanticsAnnotations#ff1b6
+relayoutBoundary=up2),
+            Semantics(container: false, properties: SemanticsProperties, renderObject:
+RenderSemanticsAnnotations#1da55),
+          ]>
+   Which: is too many
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:285:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 285
+The test description was:
+  details toggle reveals number and CVV
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +7 -4: details toggle reveals number and CVV [E]
+  Test failed. See exception logs above.
+  The test description was: details toggle reveals number and CVV
+  
+00:01 +7 -4: closed eye toggle reveals CVV and keeps expiry static
+00:01 +8 -4: details toggle is active while the folder is closed
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _ElementPredicateWidgetFinder:<Found 2 widgets with a semantics label named "Hide card
+details": [
+            Semantics(container: true, properties: SemanticsProperties, label: "Hide card details",
+dependencies: [Directionality], renderObject: RenderSemanticsAnnotations#cba53
+relayoutBoundary=up2),
+            Semantics(container: false, properties: SemanticsProperties, renderObject:
+RenderSemanticsAnnotations#86d75),
+          ]>
+   Which: is too many
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:316:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 316
+The test description was:
+  details toggle is active while the folder is closed
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +8 -5: details toggle is active while the folder is closed [E]
+  Test failed. See exception logs above.
+  The test description was: details toggle is active while the folder is closed
+  
+00:01 +8 -5: CVV reveal retains outgoing glyphs and rolls incoming glyphs
+00:01 +9 -5: action fires without toggling the folder
+00:01 +10 -5: disabled folder ignores tap and detail toggle
+00:01 +11 -5: reduced motion does not lift the card
+00:01 +12 -5: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: details toggle is active while the folder is closed
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: details toggle reveals number and CVV
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: held card press leaves pocket and action stationary, reduce=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: held card press leaves pocket and action stationary, reduce=true
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy has one accessible toggle node after reveal

@@ -1,0 +1,88 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart
+00:00 +0: privacy has one accessible toggle node after reveal
+SemanticsNode#0
+ │ Rect.fromLTRB(0.0, 0.0, 2400.0, 1800.0)
+ │
+ └─SemanticsNode#1
+   │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) scaled by 3.0x
+   │ textDirection: ltr
+   │
+   └─SemanticsNode#2
+     │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+     │ sortKey: OrdinalSortKey#d91f3(order: 0.0)
+     │
+     └─SemanticsNode#3
+       │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+       │ flags: scopesRoute
+       │
+       └─SemanticsNode#4
+         │ Rect.fromLTRB(208.0, 189.5, 592.0, 410.5)
+         │ flags: isButton, hasEnabledState, isEnabled, hasExpandedState
+         │ label: "Open Travel Card, card ending in 0806, expires 08/29"
+         │ textDirection: ltr
+         │
+         └─SemanticsNode#5
+           │ Rect.fromLTRB(0.0, 0.0, 384.0, 220.9)
+           │ actions: focus, tap
+           │ flags: isFocusable
+           │ label:
+           │   "•••• •••• •••• 0806
+           │   EXPIRY
+           │   08/29
+           │   CVV
+           │   123
+           │   Travel Card
+           │   3745 6987 4096 0806"
+           │ textDirection: ltr
+           │
+           └─SemanticsNode#6
+               Rect.fromLTRB(0.0, 0.0, 48.0, 48.0) with transform
+               [[1.0,0.0,-0.16,19.200000000000003];
+               [0.0,1.0,-0.1841010689990282,126.46064139941691];
+               [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+               actions: tap
+               flags: isButton, hasEnabledState, isEnabled, hasToggledState,
+                 isToggled
+               label: "Hide card details"
+               textDirection: ltr
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+A SemanticsHandle was active at the end of the test.
+All SemanticsHandle instances must be disposed by calling dispose() on the SemanticsHandle.
+
+When the exception was thrown, this was the stack:
+#0      WidgetTester._verifySemanticsHandlesWereDisposed (package:flutter_test/src/widget_tester.dart:1074:7)
+#1      WidgetTester._endOfTestVerifications (package:flutter_test/src/widget_tester.dart:1063:5)
+#2      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1969:22)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  privacy has one accessible toggle node after reveal
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: privacy has one accessible toggle node after reveal [E]
+  Test failed. See exception logs above.
+  The test description was: privacy has one accessible toggle node after reveal
+  
+00:00 +0 -1: pointer activation transfers keyboard control to the folder
+00:00 +1 -1: folder focus paints the source two-pixel ring beyond a four-pixel gap
+00:00 +2 -1: held card press leaves pocket and action stationary, reduce=false
+00:00 +3 -1: privacy uses the shared tooltip on hover and keyboard, reduce=false
+00:00 +4 -1: held card press leaves pocket and action stationary, reduce=true
+00:00 +5 -1: privacy uses the shared tooltip on hover and keyboard, reduce=true
+00:00 +6 -1: keyboard opens and closes the folder before privacy control
+00:00 +7 -1: closed rest state masks details and retains last four
+00:01 +8 -1: folder tap reports open state
+00:01 +9 -1: details toggle reveals number and CVV
+00:01 +10 -1: closed eye toggle reveals CVV and keeps expiry static
+00:01 +11 -1: details toggle is active while the folder is closed
+00:01 +12 -1: CVV reveal retains outgoing glyphs and rolls incoming glyphs
+00:01 +13 -1: action fires without toggling the folder
+00:01 +14 -1: disabled folder ignores tap and detail toggle
+00:01 +15 -1: reduced motion does not lift the card
+00:01 +16 -1: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy has one accessible toggle node after reveal

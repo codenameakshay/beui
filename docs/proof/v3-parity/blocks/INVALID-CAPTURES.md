@@ -6,6 +6,10 @@ Round2 retains its additional failed locator attempts, a merged feedback-semanti
 Their exact dispositions and repaired successors are in the [round2 report](round2/README.md#invalid-and-inconclusive-attempts).
 No foreign-build record below was removed or reclassified.
 
+The [round3 dispositions](round3/README.md#failed-and-intermediate-attempts) retain startup-probe failures, locator failures, intermediate labels, intentional font faults, and the pre-fix 750ms cancelled privacy release.
+The historical round2 missing-glyph trigger remains unproven even though blocked font requests reproduce its visible symptoms.
+No original capture is replaced by the font-observed or shared-Tooltip replacement runs.
+
 | Directory | Status | Reason |
 | --- | --- | --- |
 | `after-width592` | Invalid foreign build | `localhost:8103` reached Dart PID 9455 in `t3-d825aa5b/example`, not this worker's frozen release. Old tab widths and fake market artwork were visible. |

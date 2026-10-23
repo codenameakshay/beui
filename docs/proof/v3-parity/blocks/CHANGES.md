@@ -14,6 +14,12 @@ The remaining-gap section below describes the round1 endpoint. Round2 fixes do n
 | Digit Swap | Outgoing digits roll opposite incoming digits. Pending stagger timers cancel on replacement. Same-value style changes refresh. | `lib/src/motion/digit_swap.dart`, `test/motion/digit_swap_test.dart` |
 | Text Scramble | Ticker elapsed time no longer restarts through a zero sentinel. Nonpositive durations finish immediately. | `lib/src/motion/text_scramble.dart`, `test/motion/text_scramble_test.dart` |
 
+## Integration and policy follow-up
+
+The [round3 report](round3/README.md) adds actual Card semantics-node ownership, SVG failure containment, source Feedback empty-submit and draft-close behavior, independent Card controls, and privacy eye transitions.
+Its 750ms privacy-release tests and videos use shared Tooltip fix `12155d8e` as a dependency only.
+The report preserves historical glyph failures and distinguishes the supported font-availability mechanism from the unproven historical trigger.
+
 ## Callback contract and compatibility
 
 At pinned source revision `a76e57c9bbc2837e96420b2610e9c82a3271bb05`, `components/motion/prediction-market-card.tsx` lines 161 through 166 pass `positive={index % 2 === 0}` and always call `onOutcomeClick?.({ outcomeId: outcome.id, side: "yes" })`. Lines 290 through 306 display `No` for an odd outcome. The styling and displayed action are independent of the callback side in upstream.

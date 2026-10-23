@@ -1,0 +1,74 @@
+Resolving dependencies...
+Downloading packages...
+  equatable 2.1.0 (3.0.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/example/test/block_parity_round2_test.dart
+00:00 +0: rates artwork retains its slot on invalid SVG response 400
+unhandled element <html/>; Picture key: Svg loader
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: Invalid SVG data
+
+When the exception was thrown, this was the stack:
+#0      SvgParser._parseTree (package:vector_graphics_compiler/src/svg/parser.dart:800:7)
+#1      SvgParser.parse (package:vector_graphics_compiler/src/svg/parser.dart:807:5)
+#2      parse (package:vector_graphics_compiler/vector_graphics_compiler.dart:72:17)
+#3      encodeSvg (package:vector_graphics_compiler/vector_graphics_compiler.dart:137:5)
+#4      SvgLoader._load.<anonymous closure>.<anonymous closure> (package:flutter_svg/src/loaders.dart:162:16)
+#5      _testCompute (package:flutter_svg/src/utilities/compute.dart:14:38)
+#6      SvgLoader._load.<anonymous closure> (package:flutter_svg/src/loaders.dart:159:21)
+<asynchronous suspension>
+#12     _VectorGraphicWidgetState._loadPicture.<anonymous closure> (package:vector_graphics/src/vector_graphics.dart:372:15)
+<asynchronous suspension>
+#13     _VectorGraphicWidgetState._loadPicture.<anonymous closure> (package:vector_graphics/src/vector_graphics.dart:381:15)
+<asynchronous suspension>
+#14     _VectorGraphicWidgetState._loadAssetBytes (package:vector_graphics/src/vector_graphics.dart:422:33)
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  rates artwork retains its slot on invalid SVG response 400
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: rates artwork retains its slot on invalid SVG response 400 [E]
+  Test failed. See exception logs above.
+  The test description was: rates artwork retains its slot on invalid SVG response 400
+  
+00:00 +0 -1: rates artwork retains its slot on invalid SVG response 200
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: Invalid SVG data
+
+When the exception was thrown, this was the stack:
+#0      SvgParser._parseTree (package:vector_graphics_compiler/src/svg/parser.dart:800:7)
+#1      SvgParser.parse (package:vector_graphics_compiler/src/svg/parser.dart:807:5)
+#2      parse (package:vector_graphics_compiler/vector_graphics_compiler.dart:72:17)
+#3      encodeSvg (package:vector_graphics_compiler/vector_graphics_compiler.dart:137:5)
+#4      SvgLoader._load.<anonymous closure>.<anonymous closure> (package:flutter_svg/src/loaders.dart:162:16)
+#5      _testCompute (package:flutter_svg/src/utilities/compute.dart:14:38)
+#6      SvgLoader._load.<anonymous closure> (package:flutter_svg/src/loaders.dart:159:21)
+<asynchronous suspension>
+#12     _VectorGraphicWidgetState._loadPicture.<anonymous closure> (package:vector_graphics/src/vector_graphics.dart:372:15)
+<asynchronous suspension>
+#13     _VectorGraphicWidgetState._loadPicture.<anonymous closure> (package:vector_graphics/src/vector_graphics.dart:381:15)
+<asynchronous suspension>
+#14     _VectorGraphicWidgetState._loadAssetBytes (package:vector_graphics/src/vector_graphics.dart:422:33)
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  rates artwork retains its slot on invalid SVG response 200
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -2: rates artwork retains its slot on invalid SVG response 200 [E]
+  Test failed. See exception logs above.
+  The test description was: rates artwork retains its slot on invalid SVG response 200
+  
+00:00 +0 -2: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/example/test/block_parity_round2_test.dart: rates artwork retains its slot on invalid SVG response 200
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/example/test/block_parity_round2_test.dart: rates artwork retains its slot on invalid SVG response 400

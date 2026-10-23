@@ -1,0 +1,49 @@
+{
+  "name": "candidate-card-folder-dark-no-preference",
+  "url": "http://127.0.0.1:8108/?slug=card-folder&theme=dark&previewWidth=592&captureProbe=1",
+  "targets": {
+    "privacy": {
+      "x": 619.7000122070312,
+      "y": 500,
+      "measuredBounds": {
+        "x": 599.7000122070312,
+        "y": 480,
+        "width": 40,
+        "height": 40
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "privacy"
+    },
+    {
+      "atMs": 1500,
+      "type": "click",
+      "target": "privacy"
+    }
+  ],
+  "observations": [],
+  "probe": {
+    "disableAnimations": false,
+    "platformDisableAnimations": false,
+    "motionOverride": null,
+    "backgroundArgb": 4279571733,
+    "constraints": {
+      "minWidth": 0,
+      "maxWidth": 592,
+      "minHeight": 0,
+      "maxHeight": null
+    },
+    "rect": {
+      "x": 476.5,
+      "y": 317.5393586005831,
+      "width": 592,
+      "height": 292.92128279883383
+    }
+  },
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('switch', { name: 'Hide card details', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <flt-semantics role=\"switch\" aria-checked=\"true\" id=\"flt-semantic-node-71\" aria-label=\"Hide card details\" aria-owns=\"flt-semantic-node-73\">…</flt-semantics>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <flt-semantics tabindex=\"0\" id=\"flt-semantic-node-74\">…</flt-semantics> from <flt-semantics id=\"flt-semantic-node-73\">…</flt-semantics> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <flt-semantics tabindex=\"0\" id=\"flt-semantic-node-74\">…</flt-semantics> from <flt-semantics id=\"flt-semantic-node-73\">…</flt-semantics> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <flt-semantics tabindex=\"0\" id=\"flt-semantic-node-74\">…</flt-semantics> from <flt-semantics id=\"flt-semantic-node-73\">…</flt-semantics> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at click (/Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/docs/proof/v3-parity/blocks/round3/policy-flow.mjs:36:23)\n    at async file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/docs/proof/v3-parity/blocks/round3/policy-flow.mjs:83:11",
+  "pass": false
+}

@@ -1,0 +1,199 @@
+00:00 +0: loading /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart
+00:00 +0: privacy has one accessible toggle node after reveal
+SemanticsNode#0
+ │ Rect.fromLTRB(0.0, 0.0, 2400.0, 1800.0)
+ │
+ └─SemanticsNode#1
+   │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0) scaled by 3.0x
+   │ textDirection: ltr
+   │
+   └─SemanticsNode#2
+     │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+     │ sortKey: OrdinalSortKey#e52c1(order: 0.0)
+     │
+     └─SemanticsNode#3
+       │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+       │ flags: scopesRoute
+       │
+       └─SemanticsNode#4
+         │ Rect.fromLTRB(208.0, 189.5, 592.0, 410.5)
+         │ flags: isButton, hasEnabledState, isEnabled, hasExpandedState
+         │ label: "Open Travel Card, card ending in 0806, expires 08/29"
+         │ textDirection: ltr
+         │
+         └─SemanticsNode#5
+           │ Rect.fromLTRB(0.0, 0.0, 384.0, 220.9)
+           │ actions: focus, longPress, tap
+           │ flags: isFocusable
+           │ traversalParentIdentifier: _OverlayPortalState#0cfce
+           │ label:
+           │   "•••• •••• •••• 0806
+           │   EXPIRY
+           │   08/29
+           │   CVV
+           │   123
+           │   Travel Card
+           │   3745 6987 4096 0806"
+           │ textDirection: ltr
+           │
+           ├─SemanticsNode#6
+           │ │ merge boundary ⛔️
+           │ │ Rect.fromLTRB(0.0, 0.0, 48.0, 48.0) with transform
+           │ │ [[1.0,0.0,-0.16,19.200000000000003];
+           │ │ [0.0,1.0,-0.1841010689990282,126.46064139941691];
+           │ │ [0.0,0.0,1.0,0.0]; [0.0,0.0,-0.0008333333333333334,1.0]]
+           │ │
+           │ └─SemanticsNode#7
+           │   │ merged up ⬆️
+           │   │ Rect.fromLTRB(0.0, 0.0, 48.0, 48.0)
+           │   │ flags: isButton, hasToggledState, isToggled
+           │   │ label: "Hide card details"
+           │   │ textDirection: ltr
+           │   │
+           │   └─SemanticsNode#8
+           │       merged up ⬆️
+           │       Rect.fromLTRB(0.0, 0.0, 48.0, 48.0)
+           │       actions: focus, tap
+           │       flags: isButton, hasEnabledState, isEnabled, isFocusable
+           │
+           └─SemanticsNode#9
+             │ Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+             │ traversalChildIdentifier: _OverlayPortalState#0cfce
+             │
+             └─SemanticsNode#10
+                 Rect.fromLTRB(0.0, 0.0, 800.0, 600.0)
+                 actions: focus
+                 flags: isFocusable
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:71:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 71
+The test description was:
+  privacy has one accessible toggle node after reveal
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +0 -1: privacy has one accessible toggle node after reveal [E]
+  Test failed. See exception logs above.
+  The test description was: privacy has one accessible toggle node after reveal
+  
+00:00 +0 -1: pointer activation transfers keyboard control to the folder
+00:00 +1 -1: folder focus paints the source two-pixel ring beyond a four-pixel gap
+00:00 +2 -1: held card press leaves pocket and action stationary, reduce=false
+00:00 +3 -1: privacy uses the shared tooltip on hover and keyboard, reduce=false
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'Hide card details'
+  Actual: ''
+   Which: is different. Both strings start the same, but the actual value is missing the following
+trailing characters: Hide card  ...
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:209:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 209
+The test description was:
+  privacy uses the shared tooltip on hover and keyboard, reduce=false
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:00 +3 -2: privacy uses the shared tooltip on hover and keyboard, reduce=false [E]
+  Test failed. See exception logs above.
+  The test description was: privacy uses the shared tooltip on hover and keyboard, reduce=false
+  
+00:00 +3 -2: held card press leaves pocket and action stationary, reduce=true
+00:01 +4 -2: privacy uses the shared tooltip on hover and keyboard, reduce=true
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: 'Hide card details'
+  Actual: ''
+   Which: is different. Both strings start the same, but the actual value is missing the following
+trailing characters: Hide card  ...
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:209:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart line 209
+The test description was:
+  privacy uses the shared tooltip on hover and keyboard, reduce=true
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +4 -3: privacy uses the shared tooltip on hover and keyboard, reduce=true [E]
+  Test failed. See exception logs above.
+  The test description was: privacy uses the shared tooltip on hover and keyboard, reduce=true
+  
+00:01 +4 -3: keyboard opens and closes the folder before privacy control
+00:01 +5 -3: closed rest state masks details and retains last four
+00:01 +6 -3: folder tap reports open state
+00:01 +7 -3: details toggle reveals number and CVV
+00:01 +8 -3: closed eye toggle reveals CVV and keeps expiry static
+00:01 +9 -3: details toggle is active while the folder is closed
+00:01 +10 -3: CVV reveal retains outgoing glyphs and rolls incoming glyphs
+00:01 +11 -3: action fires without toggling the folder
+00:01 +12 -3: disabled folder ignores tap and detail toggle
+00:01 +13 -3: reduced motion does not lift the card
+00:01 +14 -3: rest-state golden
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown while running async test code:
+Golden "goldens/beui_card_folder.png": Pixel test failed, 2.25%, 10808px diff detected.
+Failure feedback can be found at
+/Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/failures
+
+When the exception was thrown, this was the stack:
+#0      LocalFileComparator.compare (package:flutter_test/src/_goldens_io.dart:108:5)
+<asynchronous suspension>
+#1      MatchesGoldenFile.matchAsync.<anonymous closure> (package:flutter_test/src/_matchers_io.dart:124:32)
+<asynchronous suspension>
+<asynchronous suspension>
+#3      _expect.<anonymous closure> (package:matcher/src/expect/expect.dart:153:17)
+<asynchronous suspension>
+<asynchronous suspension>
+#5      expectLater.<anonymous closure> (package:flutter_test/src/widget_tester.dart:508:19)
+<asynchronous suspension>
+#6      main.<anonymous closure> (file:///Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart:418:5)
+<asynchronous suspension>
+#7      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#8      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 3 frames from dart:async and package:stack_trace)
+
+The exception was caught asynchronously.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +14 -4: rest-state golden [E]
+  Test failed. See exception logs above.
+  The test description was: rest-state golden
+  
+00:01 +14 -4: Some tests failed.
+
+Failing tests:
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy has one accessible toggle node after reveal
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy uses the shared tooltip on hover and keyboard, reduce=false
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: privacy uses the shared tooltip on hover and keyboard, reduce=true
+  /Users/codenameakshay/.t3/worktrees/beui/t3-5c0570f2/test/motion/card_folder_test.dart: rest-state golden

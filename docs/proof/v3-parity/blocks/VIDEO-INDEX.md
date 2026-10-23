@@ -29,6 +29,12 @@ The first five rows use `recovered-dark`. Other rows use `recovered-expanded`. T
 | Signup Form | BeuiSignUpForm | [Video](recovered-expanded/candidate-signup-form/capture.mp4) | Rest and two Tab events only | Recovered video is not a form-flow test. Earlier action attempts remain in before and after interaction reports. Valid submit, validation, reveal, focus, light and reduced motion remain. |
 | Infinite Masonry | BeuiInfiniteMasonry | [Video](recovered-expanded/candidate-infinite-masonry/capture.mp4) | Rest and pointer movement only | Recorder lacks wheel events. This is not scrolling proof. Virtualization, image load, scroll reversal, all examples and reduced motion remain. |
 
+## Integration and policy videos
+
+The [round3 video index](round3/README.md#labeled-videos-and-decoded-checks) adds labeled Feedback policy, privacy eye, action and disabled controls, font-readiness, and 750ms held privacy-release recordings.
+The final held-release recordings use shared Tooltip dependency `12155d8e` and a new served JavaScript hash.
+They do not replace the original parity failures or certify the full route inventory.
+
 ## Reference and before videos
 
 The preserved first seven source and baseline sequences are in `before/interactions/{reference,candidate}/<slug>/interaction.webm`. Expanded block sequences are in `before-expanded-actions/interactions/{reference,candidate}/<slug>/interaction.webm`. Reports retain locator and navigation errors.

@@ -1,0 +1,114 @@
+{
+  "url": "http://127.0.0.1:8108/?slug=feedback-widget&theme=dark&previewWidth=592&captureProbe=1",
+  "viewport": {
+    "width": 1280,
+    "height": 1200
+  },
+  "theme": "dark",
+  "reducedMotion": "no-preference",
+  "reference": false,
+  "requireFlutterProbe": true,
+  "servedJs": {
+    "url": "http://127.0.0.1:8108/main.dart.js",
+    "sha256": "9ca7c5cf2e105bfd6215df557a46ea2ddf55fd117b40885fa1079104eef01b36",
+    "revision": "2b91ea0f plus owned round3 dirty code and parent Tooltip d12867eac1ed7a24e1708448f079161cebe12482"
+  },
+  "backend": "screenshots",
+  "loadWaitMs": 3500,
+  "finalHoldMs": 1000,
+  "targets": {
+    "open": {
+      "x": 955.5,
+      "y": 596,
+      "measuredBounds": {
+        "x": 931.5,
+        "y": 572,
+        "width": 48,
+        "height": 48
+      }
+    },
+    "field": {
+      "x": 822.5,
+      "y": 486.5,
+      "measuredBounds": {
+        "x": 683.5,
+        "y": 452,
+        "width": 278,
+        "height": 69
+      }
+    },
+    "cancel": {
+      "x": 743.5,
+      "y": 588,
+      "measuredBounds": {
+        "x": 671.5,
+        "y": 568,
+        "width": 144,
+        "height": 40
+      }
+    }
+  },
+  "events": [
+    {
+      "atMs": 600,
+      "type": "click",
+      "target": "open"
+    },
+    {
+      "atMs": 1400,
+      "type": "click",
+      "target": "field"
+    },
+    {
+      "atMs": 2200,
+      "type": "text",
+      "text": "   "
+    },
+    {
+      "atMs": 2900,
+      "type": "key",
+      "key": "ControlOrMeta+A"
+    },
+    {
+      "atMs": 3100,
+      "type": "text",
+      "text": "A draft to discard"
+    },
+    {
+      "atMs": 4000,
+      "type": "click",
+      "target": "cancel"
+    },
+    {
+      "atMs": 4900,
+      "type": "click",
+      "target": "open"
+    },
+    {
+      "atMs": 5800,
+      "type": "click",
+      "target": "field"
+    },
+    {
+      "atMs": 6500,
+      "type": "text",
+      "text": "Discard on Escape"
+    },
+    {
+      "atMs": 7300,
+      "type": "key",
+      "key": "Escape"
+    },
+    {
+      "atMs": 8200,
+      "type": "click",
+      "target": "open"
+    }
+  ],
+  "provenance": {
+    "source": "a76e57c9bbc2837e96420b2610e9c82a3271bb05",
+    "liveDeploymentRevision": null,
+    "wrapper": "d831524 previewWidth592 background 21dark/252light, captureProbe1. Original 5ec78ac untouched.",
+    "assertions": "Separate browser run, recorded states require decoded inspection."
+  }
+}
