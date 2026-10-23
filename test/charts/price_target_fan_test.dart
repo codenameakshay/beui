@@ -48,6 +48,81 @@ BeuiPriceTargetFan _chart({
 );
 
 void main() {
+  testWidgets('source grid uses four nice dashed levels within the domain', (
+    tester,
+  ) async {
+    await _pumpChart(
+      tester,
+      const BeuiPriceTargetFan(
+        current: 100,
+        targets: [
+          BeuiPriceTarget(key: 'High', price: 140),
+          BeuiPriceTarget(key: 'Mean', price: 120),
+          BeuiPriceTarget(key: 'Low', price: 80),
+        ],
+      ),
+    );
+    final canvas = TestRecordingCanvas();
+    final paint = tester.widget<CustomPaint>(
+      find.descendant(
+        of: find.byType(BeuiPriceTargetAxes),
+        matching: find.byType(CustomPaint),
+      ),
+    );
+    paint.painter!.paint(canvas, const Size(520, 236));
+    final lines = canvas.invocations
+        .where((call) => call.invocation.memberName == #drawLine)
+        .map((call) => call.invocation.positionalArguments);
+    final rows = lines.map((line) => (line[0] as Offset).dy).toSet().toList()
+      ..sort();
+    expect(rows, hasLength(4));
+    for (var i = 0; i < rows.length; i++) {
+      expect(
+        rows[i],
+        closeTo([26.285714, 83.428571, 140.571429, 197.714286][i], .00001),
+      );
+    }
+    expect(lines.first[0], Offset(36, rows.last));
+    expect(lines.first[1], Offset(38, rows.last));
+    expect(lines.elementAt(1)[0], Offset(43, rows.last));
+    expect(lines.last[1], Offset(409, rows.first));
+  });
+
+  testWidgets(
+    'source tooltip has a 148px surface and static right-aligned metrics',
+    (tester) async {
+      await _pumpChart(
+        tester,
+        _chart(defaultActive: BeuiPriceTargetFanActive.target('High')),
+      );
+      final title = find.text('High target · Sep 2027');
+      final content = find.ancestor(
+        of: title,
+        matching: find.byWidgetPredicate(
+          (widget) => widget is SizedBox && widget.width == 126,
+        ),
+      );
+      expect(content, findsOneWidget);
+      expect(tester.getSize(content).width + 22, 148);
+      expect(tester.widget<Text>(title).style!.fontSize, 10);
+      expect(find.text(r'$232.00'), findsOneWidget);
+      final analysts = find.descendant(of: content, matching: find.text('9'));
+      expect(analysts, findsOneWidget);
+      expect(
+        find.descendant(of: content, matching: find.byType(BeuiNumberTicker)),
+        findsNothing,
+      );
+      expect(
+        tester.widget<Text>(find.text(r'$232.00')).style!.fontFamily,
+        'monospace',
+      );
+      expect(
+        tester.getRect(find.text(r'$232.00')).right,
+        tester.getRect(analysts).right,
+      );
+    },
+  );
+
   testWidgets('renders accessible plot, history, and target buttons', (
     tester,
   ) async {

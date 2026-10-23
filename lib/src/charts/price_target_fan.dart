@@ -680,6 +680,7 @@ class BeuiPriceTargetTargets extends StatelessWidget {
                           key: ValueKey('price-target-target-${target.key}'),
                           onPressed: () => state.setActiveId('t:${target.key}'),
                           style: TextButton.styleFrom(
+                            overlayColor: Colors.transparent,
                             padding: const EdgeInsets.symmetric(horizontal: 2),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -944,14 +945,15 @@ class BeuiPriceTargetTooltip extends StatelessWidget {
                 ? _fanTargetCard(context, state, target)
                 : point != null
                 ? SizedBox(
-                    width: 148,
-                    child: BeuiChartTooltipCard(
-                      title: _scrubDate(point.date),
-                      titleWidget: _mutedTooltipTitle(
-                        context,
-                        _scrubDate(point.date),
-                      ),
-                      details: [_priceMetric(context, point.price)],
+                    width: 126,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _mutedTooltipTitle(context, _scrubDate(point.date)),
+                        const SizedBox(height: 6),
+                        _priceMetric(context, point.price),
+                      ],
                     ),
                   )
                 : const SizedBox.shrink(),
@@ -969,22 +971,23 @@ Widget _priceMetric(BuildContext context, double price) =>
 String _scrubDate(String iso) {
   final date = _historyDate(iso);
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  return '${days[date.weekday - 1]}, ${months[date.month - 1]} ${date.day}';
+  return '${days[date.weekday - 1]}, ${_months[date.month - 1]} ${date.day}';
 }
+
+const _months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 DateTime _historyDate(String iso) =>
     DateTime.parse(iso.length == 10 ? '${iso}T00:00:00Z' : iso).toUtc();
@@ -997,20 +1000,27 @@ Widget _fanTargetCard(
   final horizon = state.widget.dates.horizon;
   final title = '${target.key} target${horizon == null ? '' : ' · $horizon'}';
   return SizedBox(
-    width: 148,
-    child: BeuiChartTooltipCard(
-      title: title,
-      titleWidget: _mutedTooltipTitle(context, title),
-      details: [
+    width: 126,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _mutedTooltipTitle(context, title),
+        const SizedBox(height: 6),
         _priceMetric(context, target.price),
+        const SizedBox(height: 4),
         _metricRow(context, 'Analysts', '${target.analysts}'),
-        const Divider(height: 12),
+        const Padding(
+          padding: EdgeInsets.only(top: 6, bottom: 6),
+          child: Divider(height: 1),
+        ),
         _metricRow(
           context,
           'vs now',
           beuiChartSignedPercent(
             (target.price / state.widget.current - 1) * 100,
           ),
+          valueColor: _targetColor(state, target, BeuiColors.resolve(context)),
         ),
       ],
     ),
@@ -1020,20 +1030,44 @@ Widget _fanTargetCard(
 Widget _mutedTooltipTitle(BuildContext context, String title) => Text(
   title,
   style: TextStyle(
-    fontSize: 11,
-    fontWeight: FontWeight.w500,
+    fontSize: 10,
+    fontWeight: FontWeight.w400,
     color: BeuiColors.resolve(context).mutedForeground,
   ),
 );
 
-Widget _metricRow(BuildContext context, String label, String value) {
+Widget _metricRow(
+  BuildContext context,
+  String label,
+  String value, {
+  Color? valueColor,
+}) {
   final foreground = BeuiColors.resolve(context).foreground;
   return Row(
-    mainAxisSize: MainAxisSize.min,
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(label, style: TextStyle(color: foreground)),
+      Flexible(
+        child: Text(
+          label,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: foreground,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
       const SizedBox(width: 12),
-      Text(value, style: TextStyle(color: foreground)),
+      Text(
+        value,
+        style: TextStyle(
+          color: valueColor ?? foreground,
+          fontSize: 12,
+          fontFamily: 'monospace',
+          fontFeatures: const [FontFeature.tabularFigures()],
+          fontWeight: FontWeight.w400,
+        ),
+      ),
     ],
   );
 }
@@ -1060,58 +1094,72 @@ class _PriceAxesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final grid = Paint()
-      ..color = colors.border.withValues(alpha: .65)
+      ..color = colors.border
       ..strokeWidth = 1;
     final values = state._domain;
-    for (var i = 0; i <= 4; i++) {
-      final y =
-          _BeuiPriceTargetFanState.top +
-          i *
-              (_BeuiPriceTargetFanState.height -
-                  _BeuiPriceTargetFanState.top -
-                  _BeuiPriceTargetFanState.bottom) /
-              4;
-      canvas.drawLine(
-        Offset(_BeuiPriceTargetFanState.left, y),
-        Offset(
-          _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right,
-          y,
-        ),
-        grid,
-      );
+    final span = values[1] - values[0];
+    final magnitude = math
+        .pow(10, (math.log(span / 3.2) / math.ln10).floor())
+        .toDouble();
+    final step = [1, 2, 2.5, 5, 10]
+        .map((multiple) => multiple * magnitude)
+        .firstWhere((step) => span / step <= 4.2, orElse: () => 10 * magnitude);
+    for (
+      var value = (values[0] / step).ceil() * step;
+      value <= values[1];
+      value += step
+    ) {
+      final y = state._y(value);
+      for (var x = _BeuiPriceTargetFanState.left; x < 412; x += 7) {
+        canvas.drawLine(Offset(x, y), Offset(math.min(x + 2, 412), y), grid);
+      }
       _drawText(
         canvas,
-        '\$${(values[1] - i * (values[1] - values[0]) / 4).toStringAsFixed(0)}',
+        value.toStringAsFixed(step >= 1 ? 0 : 1),
         Offset(0, y - 7),
         colors.mutedForeground,
         9,
-        width: 30,
+        width: 28,
         align: TextAlign.right,
       );
     }
     final date = state.widget.dates;
+    String axisDate(String iso) {
+      final parsed = _historyDate(iso);
+      return '${_months[parsed.month - 1]} ${parsed.year}';
+    }
+
+    final history = state.widget.history;
+    final middle = history.length ~/ 2;
     final labels = [
-      date.start ??
-          (state.widget.history.isEmpty ? '' : state.widget.history.first.date),
-      if (date.mid != null) date.mid!,
-      'Now',
-      date.horizon ?? 'Target',
+      if (history.isNotEmpty)
+        (
+          x: state._historyX(0),
+          text: date.start ?? axisDate(history.first.date),
+          align: TextAlign.left,
+        ),
+      if (history.length > 2)
+        (
+          x: state._historyX(middle),
+          text: date.mid ?? axisDate(history[middle].date),
+          align: TextAlign.center,
+        ),
+      (x: state._nowX, text: 'Now', align: TextAlign.center),
+      (
+        x: _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right,
+        text: date.horizon ?? 'Target',
+        align: TextAlign.center,
+      ),
     ];
-    final xs = [
-      _BeuiPriceTargetFanState.left,
-      if (date.mid != null) (_BeuiPriceTargetFanState.left + state._nowX) / 2,
-      state._nowX,
-      _BeuiPriceTargetFanState.width - _BeuiPriceTargetFanState.right,
-    ];
-    for (var i = 0; i < labels.length; i++) {
+    for (final label in labels) {
       _drawText(
         canvas,
-        labels[i],
-        Offset(xs[i] - 24, 212),
+        label.text,
+        Offset(label.x - (label.align == TextAlign.left ? 0 : 40), 219),
         colors.mutedForeground,
         9,
-        width: 55,
-        align: TextAlign.center,
+        width: 80,
+        align: label.align,
       );
     }
   }
@@ -1340,6 +1388,6 @@ void _drawText(
     ),
     textDirection: TextDirection.ltr,
     textAlign: align,
-  )..layout(maxWidth: width);
+  )..layout(minWidth: width, maxWidth: width);
   painter.paint(canvas, offset);
 }
