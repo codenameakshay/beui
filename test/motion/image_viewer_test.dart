@@ -71,6 +71,16 @@ Rect _imageRect(WidgetTester tester, Color color) => tester.getRect(
 );
 
 void main() {
+  testWidgets('modal image viewport keeps the source 12px control gaps', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app(defaultValue: 'one'));
+    await tester.pumpAndSettle();
+    final zoom = tester.getRect(find.byTooltip('Zoom in'));
+    final previous = tester.getRect(find.byTooltip('Previous image'));
+    expect(previous.top - zoom.bottom, 24);
+    expect(zoom.size, const Size(40, 40));
+  });
   testWidgets(
     'zoom button doubles the image and keyboard pans without paging',
     (tester) async {

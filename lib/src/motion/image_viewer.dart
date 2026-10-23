@@ -527,6 +527,8 @@ class _ViewerControl extends StatelessWidget {
         backgroundColor: Colors.white.withValues(alpha: 0.1),
         minimumSize: const Size(40, 40),
         fixedSize: const Size(40, 40),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.standard,
       ),
     ),
   );
@@ -654,6 +656,7 @@ class _BeuiImageViewerContentState extends State<BeuiImageViewerContent> {
                                     const BeuiImageViewerClose(),
                                 ],
                               ),
+                              const SizedBox(height: 12),
                               Expanded(
                                 child: ClipRect(
                                   child: _MorphingViewerImage(
@@ -665,6 +668,7 @@ class _BeuiImageViewerContentState extends State<BeuiImageViewerContent> {
                                   ),
                                 ),
                               ),
+                              const SizedBox(height: 12),
                               Row(
                                 children: [
                                   if (widget.footer == null)
@@ -984,6 +988,10 @@ class _ZoomableImageState extends State<_ZoomableImage> {
                   },
                   icon: Icon(_zoomed ? LucideIcons.minus : LucideIcons.plus),
                   style: IconButton.styleFrom(
+                    fixedSize: const Size(40, 40),
+                    minimumSize: const Size(40, 40),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.standard,
                     backgroundColor: Colors.black54,
                     foregroundColor: Colors.white,
                   ),
