@@ -1,5 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:vector_graphics_compiler/vector_graphics_compiler.dart'
+    as compiler;
 
 import 'package:beui/beui.dart';
 
@@ -218,11 +225,60 @@ class MarketArtwork extends StatelessWidget {
     color: rates ? Colors.white : null,
     padding: EdgeInsets.all(compact ? 2 : 4),
     child: rates
-        ? SvgPicture.network(url, fit: BoxFit.contain)
+        ? SvgPicture(
+            _MarketSvgLoader(url),
+            fit: BoxFit.contain,
+            excludeFromSemantics: true,
+            errorBuilder: (context, error, stackTrace) => const SizedBox.expand(
+              key: ValueKey('market-artwork-unavailable'),
+            ),
+          )
         : Image.network(
             url,
             fit: BoxFit.contain,
             webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+            excludeFromSemantics: true,
+            errorBuilder: (context, error, stackTrace) => const SizedBox.expand(
+              key: ValueKey('market-artwork-unavailable'),
+            ),
           ),
   );
 }
+
+// SvgLoader's cache leaves an unhandled derived future on decode failure.
+// Keep remote artwork failures inside the picture's errorBuilder instead.
+class _MarketSvgLoader extends BytesLoader {
+  const _MarketSvgLoader(this.url);
+
+  final String url;
+
+  @override
+  Future<ByteData> loadBytes(BuildContext? context) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw http.ClientException(
+        'Artwork HTTP ${response.statusCode}',
+        Uri.parse(url),
+      );
+    }
+    return compute(_compileMarketSvg, utf8.decode(response.bodyBytes));
+  }
+
+  @override
+  int get hashCode => url.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      other is _MarketSvgLoader && other.url == url;
+}
+
+ByteData _compileMarketSvg(String xml) => compiler
+    .encodeSvg(
+      xml: xml,
+      debugName: 'Market artwork',
+      enableClippingOptimizer: false,
+      enableMaskingOptimizer: false,
+      enableOverdrawOptimizer: false,
+    )
+    .buffer
+    .asByteData();
