@@ -8,35 +8,53 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support.dart';
 
 void main() {
-  testWidgets('stepped disabled drag cannot bypass the pointer-down guard', (
-    tester,
-  ) async {
-    for (final enabled in [true, false]) {
-      final changes = <double>[];
-      await tester.pumpWidget(
-        beuiTestApp(
-          BeuiRangeSlider(
+  for (final design in ['stepped', 'wave', 'bubble']) {
+    testWidgets('$design disabled drag cannot bypass the pointer-down guard', (
+      tester,
+    ) async {
+      for (final enabled in [true, false]) {
+        final changes = <double>[];
+        final Widget slider = switch (design) {
+          'wave' => BeuiWaveSlider(
             key: ValueKey(enabled),
             defaultValue: 40,
             enabled: enabled,
             onChanged: changes.add,
           ),
-          width: 200,
-        ),
-      );
-      final rect = tester.getRect(find.byType(BeuiRangeSlider));
-      await tester.dragFrom(
-        Offset(rect.left + 20, rect.center.dy),
-        const Offset(160, 0),
-      );
-      await tester.pump(const Duration(milliseconds: 300));
-      if (enabled) {
-        expect(changes.last, 90);
-      } else {
-        expect(changes, isEmpty);
+          'bubble' => BeuiBubbleSlider(
+            key: ValueKey(enabled),
+            defaultValue: 40,
+            enabled: enabled,
+            onChanged: changes.add,
+          ),
+          _ => BeuiRangeSlider(
+            key: ValueKey(enabled),
+            defaultValue: 40,
+            enabled: enabled,
+            onChanged: changes.add,
+          ),
+        };
+        await tester.pumpWidget(beuiTestApp(slider, width: 200));
+        final hitArea = find
+            .descendant(
+              of: find.byWidget(slider),
+              matching: find.byType(GestureDetector),
+            )
+            .first;
+        final rect = tester.getRect(hitArea);
+        await tester.dragFrom(
+          Offset(rect.left + rect.width * .1, rect.center.dy),
+          Offset(rect.width * .8, 0),
+        );
+        await tester.pump(const Duration(milliseconds: 300));
+        if (enabled) {
+          expect(changes.last, 90);
+        } else {
+          expect(changes, isEmpty);
+        }
       }
-    }
-  });
+    });
+  }
 
   testWidgets('one native move preserves the entire table resize delta', (
     tester,
