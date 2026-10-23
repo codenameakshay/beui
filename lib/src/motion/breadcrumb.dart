@@ -438,84 +438,94 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
       onDismiss: _close,
       enterDuration: const Duration(milliseconds: 500),
       exitDuration: const Duration(milliseconds: 500),
-      overlayBuilder: (context, animation, link) => Stack(
-        children: [
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: CompositedTransformFollower(
-                link: link,
-                showWhenUnlinked: false,
-                offset: _panelOffset,
-                child: MouseRegion(
-                  onEnter: (_) => _cancelClose(),
-                  onExit: (_) => _scheduleClose(),
-                  child: SingleMotionBuilder(
-                    value: _open ? 1 : 0,
-                    from: 0,
-                    motion: motionFor(
-                      context,
-                      beuiSpringPanel,
-                      isMovement: true,
-                      reducedFallback: const CurvedMotion(
-                        Duration(milliseconds: 120),
-                      ),
-                    ),
-                    builder: (context, p, child) => Opacity(
-                      opacity: p.clamp(0, 1),
-                      child: MediaQuery.disableAnimationsOf(context)
-                          ? child
-                          : Transform.scale(
-                              scale: .96 + .04 * p,
-                              alignment: _above
-                                  ? Alignment.bottomLeft
-                                  : Alignment.topLeft,
-                              child: ClipPath(
-                                clipper: _BreadcrumbMorphClip(
-                                  p.clamp(0, 1),
-                                  _above,
-                                ),
-                                child: child,
-                              ),
+      overlayBuilder: (context, animation, link) => IgnorePointer(
+        ignoring: !_open,
+        child: ExcludeFocus(
+          excluding: !_open,
+          child: ExcludeSemantics(
+            excluding: !_open,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: CompositedTransformFollower(
+                      link: link,
+                      showWhenUnlinked: false,
+                      offset: _panelOffset,
+                      child: MouseRegion(
+                        onEnter: (_) => _cancelClose(),
+                        onExit: (_) => _scheduleClose(),
+                        child: SingleMotionBuilder(
+                          value: _open ? 1 : 0,
+                          from: 0,
+                          motion: motionFor(
+                            context,
+                            beuiSpringPanel,
+                            isMovement: true,
+                            reducedFallback: const CurvedMotion(
+                              Duration(milliseconds: 120),
                             ),
-                    ),
-                    child: FocusScope(
-                      node: _panelFocus,
-                      child: Material(
-                        key: _panelKey,
-                        color: colors.background,
-                        elevation: 8,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: colors.border),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxWidth: 224,
-                            maxHeight: 256,
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  for (
-                                    var index = 0;
-                                    index < widget.children.length;
-                                    index++
-                                  )
-                                    Focus(
-                                      skipTraversal: true,
-                                      canRequestFocus: false,
-                                      focusNode: index == 0
-                                          ? _firstLinkFocus
-                                          : null,
-                                      child: widget.children[index],
+                          builder: (context, p, child) => Opacity(
+                            opacity: p.clamp(0, 1),
+                            child: MediaQuery.disableAnimationsOf(context)
+                                ? child
+                                : Transform.scale(
+                                    scale: .96 + .04 * p,
+                                    alignment: _above
+                                        ? Alignment.bottomLeft
+                                        : Alignment.topLeft,
+                                    child: ClipPath(
+                                      clipper: _BreadcrumbMorphClip(
+                                        p.clamp(0, 1),
+                                        _above,
+                                      ),
+                                      child: child,
                                     ),
-                                ],
+                                  ),
+                          ),
+                          child: FocusScope(
+                            node: _panelFocus,
+                            child: Material(
+                              key: _panelKey,
+                              color: colors.background,
+                              elevation: 8,
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(color: colors.border),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 224,
+                                  maxHeight: 256,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6),
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        for (
+                                          var index = 0;
+                                          index < widget.children.length;
+                                          index++
+                                        )
+                                          Focus(
+                                            skipTraversal: true,
+                                            canRequestFocus: false,
+                                            focusNode: index == 0
+                                                ? _firstLinkFocus
+                                                : null,
+                                            child: widget.children[index],
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -524,10 +534,10 @@ class _BeuiBreadcrumbEllipsisState extends State<BeuiBreadcrumbEllipsis> {
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
       child: Focus(
         onKeyEvent: (node, event) {
