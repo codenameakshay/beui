@@ -410,41 +410,45 @@ class _BeuiInputState extends State<BeuiInput>
                     left: hasLeft ? 0 : 14,
                     right: hasRight ? 0 : 14,
                   ),
-              child: TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                enabled: widget.enabled,
-                obscureText: widget.obscureText,
-                keyboardType: widget.keyboardType,
-                onChanged: widget.onChanged,
-                onSubmitted: widget.onSubmitted,
-                cursorColor: colors.foreground,
-                style: fieldTextStyle,
-                autofillHints: widget.autofillHints,
-                textInputAction: widget.textInputAction,
-                textCapitalization: widget.textCapitalization,
-                maxLength: widget.maxLength,
-                inputFormatters: widget.inputFormatters,
-                onEditingComplete: widget.onEditingComplete,
-                readOnly: widget.readOnly,
-                enableSuggestions: widget.enableSuggestions,
-                autofocus: widget.autofocus,
-                decoration: InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  hintText: widget.placeholder,
-                  hintStyle: fieldTextStyle.copyWith(
-                    color: s?.placeholderColor ?? colors.mutedForeground,
+              child: Semantics(
+                label: widget.semanticLabel ?? widget.label,
+                hint: _errorMessage,
+                child: TextField(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  enabled: widget.enabled,
+                  obscureText: widget.obscureText,
+                  keyboardType: widget.keyboardType,
+                  onChanged: widget.onChanged,
+                  onSubmitted: widget.onSubmitted,
+                  cursorColor: colors.foreground,
+                  style: fieldTextStyle,
+                  autofillHints: widget.autofillHints,
+                  textInputAction: widget.textInputAction,
+                  textCapitalization: widget.textCapitalization,
+                  maxLength: widget.maxLength,
+                  inputFormatters: widget.inputFormatters,
+                  onEditingComplete: widget.onEditingComplete,
+                  readOnly: widget.readOnly,
+                  enableSuggestions: widget.enableSuggestions,
+                  autofocus: widget.autofocus,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    isCollapsed: true,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    hintText: widget.placeholder,
+                    hintStyle: fieldTextStyle.copyWith(
+                      color: s?.placeholderColor ?? colors.mutedForeground,
+                    ),
+                    // Material would append a character counter under the
+                    // field when `maxLength` is set. The pill is a
+                    // fixed-height single line with no room for one, and the
+                    // source has no counter — suppress it and leave the
+                    // remaining-character affordance to the caller.
+                    counterText: '',
                   ),
-                  // Material would append a character counter under the
-                  // field when `maxLength` is set. The pill is a
-                  // fixed-height single line with no room for one, and the
-                  // source has no counter — suppress it and leave the
-                  // remaining-character affordance to the caller.
-                  counterText: '',
                 ),
               ),
             ),
@@ -523,44 +527,21 @@ class _BeuiInputState extends State<BeuiInput>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // The visible label and the field are one semantics node, so a screen
-        // reader announces "Email, edit box, hello" instead of a stray "Email"
-        // followed by an anonymous text field — the association a `<label for>`
-        // gives you for free on the web and Flutter gives you not at all.
-        // `semanticLabel` names the field when there is no visible label.
-        MergeSemantics(
-          child: Semantics(
-            label: widget.semanticLabel ?? widget.label,
-            // Read after the value on focus, so a user who tabs back into a
-            // rejected field hears why it was rejected. The live region below
-            // covers the moment the error *arrives*; this covers every visit
-            // afterwards.
-            hint: _errorMessage,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (widget.label != null)
-                  // Excluded because the name is supplied above; left in the
-                  // tree it would be read twice.
-                  ExcludeSemantics(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 4, bottom: 6),
-                      child: Text(
-                        widget.label!,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: colors.foreground,
-                        ),
-                      ),
-                    ),
-                  ),
-                field,
-              ],
+        if (widget.label != null)
+          ExcludeSemantics(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 6),
+              child: Text(
+                widget.label!,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: colors.foreground,
+                ),
+              ),
             ),
           ),
-        ),
+        field,
         // Error message reveal / removal — slide-down + unblur, opacity-only
         // under reduced motion.
         _ErrorMessage(
