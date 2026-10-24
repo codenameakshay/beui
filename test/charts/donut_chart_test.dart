@@ -389,6 +389,26 @@ void main() {
       ),
     );
     await tester.pump();
+    await pumpFrames(tester, 20, frame: const Duration(milliseconds: 100));
+    final arcs = find.byWidgetPredicate(
+      (widget) =>
+          widget is CustomPaint &&
+          widget.painter.runtimeType.toString() == '_DonutPainter',
+    );
+    expect(arcs, findsNWidgets(3));
+    for (var index = 0; index < 3; index++) {
+      final arc = arcs.at(index);
+      expect(arc, paints..arc(style: PaintingStyle.stroke));
+      for (final opacity in tester.widgetList<Opacity>(
+        find.ancestor(of: arc, matching: find.byType(Opacity)),
+      )) {
+        expect(
+          opacity.opacity,
+          1,
+          reason: 'Every colored ring segment must be visible.',
+        );
+      }
+    }
     await expectLater(
       find.byType(BeuiDonutChart),
       matchesGoldenFile('goldens/beui_donut-chart.png'),

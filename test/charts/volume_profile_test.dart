@@ -261,6 +261,25 @@ void main() {
       ),
     );
     await tester.pump();
+    await pumpFrames(tester, 20, frame: const Duration(milliseconds: 100));
+    for (var index = 0; index < _bins.length; index++) {
+      final bar = find.byKey(ValueKey('volume-bar-$index'));
+      expect(tester.getSize(bar).width, greaterThan(100));
+      expect(tester.getSize(bar).height, greaterThan(20));
+      expect(
+        (tester.widget<Container>(bar).decoration! as BoxDecoration).color!.a,
+        greaterThan(0),
+      );
+      expect(
+        tester
+            .widget<Opacity>(
+              find.ancestor(of: bar, matching: find.byType(Opacity)).first,
+            )
+            .opacity,
+        index == 1 ? .9 : .3,
+        reason: 'All four volume bins must finish their entrance fade.',
+      );
+    }
     await expectLater(
       find.byType(BeuiVolumeProfile),
       matchesGoldenFile('goldens/beui_volume-profile.png'),

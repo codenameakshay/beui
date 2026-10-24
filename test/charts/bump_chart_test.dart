@@ -208,6 +208,27 @@ void main() {
       await tester.pumpWidget(_surface(active: 'canvas', reduce: true));
       await tester.pump();
       expect(find.bySemanticsLabel('Highlight Canvas'), findsOneWidget);
+      await pumpFrames(tester, 10, frame: const Duration(milliseconds: 100));
+      final paths = find.byWidgetPredicate(
+        (widget) =>
+            widget is CustomPaint &&
+            widget.painter.runtimeType.toString() == '_BumpPainter',
+      );
+      expect(paths, findsNWidgets(2));
+      for (final path in paths.evaluate()) {
+        final finder = find.byWidget(path.widget);
+        expect(finder, paints..path(style: PaintingStyle.stroke));
+        final opacity = tester
+            .widget<Opacity>(
+              find.ancestor(of: finder, matching: find.byType(Opacity)).first,
+            )
+            .opacity;
+        expect(
+          opacity,
+          anyOf(1.0, .22),
+          reason: 'Both ranking paths must finish their entrance fade.',
+        );
+      }
       await expectLater(
         find.byType(MaterialApp),
         matchesGoldenFile('goldens/beui_bump_chart.png'),

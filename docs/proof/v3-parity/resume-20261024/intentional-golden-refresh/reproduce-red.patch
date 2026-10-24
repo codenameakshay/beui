@@ -1,0 +1,50 @@
+--- a/test/charts/bump_chart_test.dart
++++ b/test/charts/bump_chart_test.dart
+@@ -208,7 +208,6 @@
+       await tester.pumpWidget(_surface(active: 'canvas', reduce: true));
+       await tester.pump();
+       expect(find.bySemanticsLabel('Highlight Canvas'), findsOneWidget);
+-      await pumpFrames(tester, 10, frame: const Duration(milliseconds: 100));
+       final paths = find.byWidgetPredicate(
+         (widget) =>
+             widget is CustomPaint &&
+--- a/test/charts/candlestick_chart_test.dart
++++ b/test/charts/candlestick_chart_test.dart
+@@ -243,7 +243,6 @@
+       ),
+     );
+     await tester.pump();
+-    await pumpFrames(tester, 20, frame: const Duration(milliseconds: 100));
+     final shapes = find.byWidgetPredicate(
+       (widget) =>
+           widget is CustomPaint &&
+--- a/test/charts/donut_chart_test.dart
++++ b/test/charts/donut_chart_test.dart
+@@ -389,7 +389,6 @@
+       ),
+     );
+     await tester.pump();
+-    await pumpFrames(tester, 20, frame: const Duration(milliseconds: 100));
+     final arcs = find.byWidgetPredicate(
+       (widget) =>
+           widget is CustomPaint &&
+--- a/test/charts/order_book_test.dart
++++ b/test/charts/order_book_test.dart
+@@ -149,7 +149,6 @@
+     await tester.pumpWidget(_surface(reduce: true));
+     await tester.pump();
+     expect(find.byType(BeuiOrderBookBalance), findsOneWidget);
+-    await pumpFrames(tester, 10, frame: const Duration(milliseconds: 100));
+     for (final entry in {
+       'ask': [102.0, 101.0],
+       'bid': [99.0, 98.0, 97.0],
+--- a/test/charts/volume_profile_test.dart
++++ b/test/charts/volume_profile_test.dart
+@@ -261,7 +261,6 @@
+       ),
+     );
+     await tester.pump();
+-    await pumpFrames(tester, 20, frame: const Duration(milliseconds: 100));
+     for (var index = 0; index < _bins.length; index++) {
+       final bar = find.byKey(ValueKey('volume-bar-$index'));
+       expect(tester.getSize(bar).width, greaterThan(100));

@@ -243,6 +243,26 @@ void main() {
       ),
     );
     await tester.pump();
+    await pumpFrames(tester, 20, frame: const Duration(milliseconds: 100));
+    final shapes = find.byWidgetPredicate(
+      (widget) =>
+          widget is CustomPaint &&
+          widget.painter.runtimeType.toString() == '_CandleShapePainter',
+    );
+    expect(shapes, findsNWidgets(9));
+    for (var index = 0; index < 9; index++) {
+      final shape = shapes.at(index);
+      expect(shape, index % 3 == 0 ? (paints..line()) : (paints..rect()));
+      expect(
+        tester
+            .widget<Opacity>(
+              find.ancestor(of: shape, matching: find.byType(Opacity)).first,
+            )
+            .opacity,
+        1,
+        reason: 'Every candle wick, body and volume bar must be visible.',
+      );
+    }
     await expectLater(
       find.byType(BeuiCandlestickChart),
       matchesGoldenFile('goldens/beui_candlestick-chart.png'),

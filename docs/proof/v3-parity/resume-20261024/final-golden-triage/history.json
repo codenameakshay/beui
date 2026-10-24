@@ -1,0 +1,899 @@
+[
+  {
+    "identity": "charts/bump_chart_test.dart: controlled selection follows its owner and reduced-motion golden matches",
+    "file": "test/charts/bump_chart_test.dart",
+    "golden": "test/charts/goldens/beui_bump_chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "059b4dbdb fix(bump): match computed rank border width",
+      "7eeee00de style(bump): brace label pointer guards",
+      "eaeb9fc98 fix(bump): align grid and focused plot visuals",
+      "cfaf09675 fix(bump): focus the labeled native controls",
+      "57c6213a1 fix(bump): validate source seeds and demo sizing",
+      "05405414d fix(bump): bound readouts and native hit targets",
+      "a3bafd063 fix(bump): toggle from current chart ownership",
+      "5189cd7ef fix(bump): match repeated keys and reduced entrance",
+      "a60f47946 fix(bump): retain button roles and align labels",
+      "bcd5ef640 fix(bump): match source legend and native keys",
+      "8e77b9021 fix(charts): control anchored tooltip visibility",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "ae09b802a fix(charts): align plots and source demo behavior",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/candlestick_chart_test.dart: rest-state golden",
+    "file": "test/charts/candlestick_chart_test.dart",
+    "golden": "test/charts/goldens/beui_candlestick-chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "742101cd6 fix(charts): retain native volume focus",
+      "31eac9a54 fix(charts): match native volume geometry and touch",
+      "1583ca671 test(charts): cover candle and volume source behavior",
+      "2420167cc fix(charts): match candle legend and inspection",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "ae09b802a fix(charts): align plots and source demo behavior",
+      "25254ce94 style: format charts files that failed CI",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/composition_chart_test.dart: resting composition chart matches its golden",
+    "file": "test/charts/composition_chart_test.dart",
+    "golden": "test/charts/goldens/beui_composition_chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "8eed11643 fix(composition): allow measured percentage text to grow",
+      "bb41eecc7 fix(charts): retain touch release across deferred focus",
+      "0f81fada6 fix(charts): omit spacing for absent empty parts",
+      "834e3ca39 fix(charts): align owned tooltip anchors and focus ink",
+      "dd34a7745 fix(charts): match native inspection focus and fade curves",
+      "09cff48a8 fix(charts): preserve composition height and focus outlines",
+      "ce3a48f47 fix(charts): match composition geometry and input",
+      "8e77b9021 fix(charts): control anchored tooltip visibility",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/donut_chart_test.dart: rest-state golden",
+    "file": "test/charts/donut_chart_test.dart",
+    "golden": "test/charts/goldens/beui_donut-chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "edb2b3cdc fix(charts): retain controlled donut focus destination",
+      "1406647f8 fix(charts): preserve intrinsic donut center digits",
+      "8e25cf5d7 test(charts): pin intrinsic donut center readout",
+      "97329fccc fix(charts): match native donut legend inspection",
+      "784a2f58d fix(charts): use directional donut digit swaps",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "ae09b802a fix(charts): align plots and source demo behavior",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/funnel_chart_test.dart: resting funnel matches its golden",
+    "file": "test/charts/funnel_chart_test.dart",
+    "golden": "test/charts/goldens/beui_funnel_chart.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "0f81fada6 fix(charts): omit spacing for absent empty parts",
+      "6d3824f83 fix(charts): preserve source tint under reduced motion",
+      "0219e2845 fix(charts): match funnel hover tint timing",
+      "834e3ca39 fix(charts): align owned tooltip anchors and focus ink",
+      "dd34a7745 fix(charts): match native inspection focus and fade curves",
+      "8d2eb9232 fix(charts): retain finite funnel counts at decimal extremes",
+      "ca0562e0a fix(charts): match funnel paths and stage inspection",
+      "25254ce94 style: format charts files that failed CI",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/heat_calendar_test.dart: reduced motion renders a stable rest state and golden",
+    "file": "test/charts/heat_calendar_test.dart",
+    "golden": "test/charts/goldens/beui_heat_calendar.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "d74fae552 fix(charts): preserve heat calendar focus and range lifecycle",
+      "a35bb4dd0 fix(charts): constrain returns and sort heat spans",
+      "bf12ab39c fix(charts): match native calendar inspection",
+      "4d30d67cf fix(charts): wrap heat legend and apply filters",
+      "ec0513ce8 fix(charts): match rest bars, heat legend, and returns rounding",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/liquidity_heatmap_test.dart: renders under reduced motion and matches rest-state golden",
+    "file": "test/charts/liquidity_heatmap_test.dart",
+    "golden": "test/charts/goldens/beui_liquidity_heatmap.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "ffb962872 fix(charts): match liquidity grid and trace",
+      "8eedf6248 fix(charts): correct liquidity trace and readouts",
+      "ec0513ce8 fix(charts): match rest bars, heat legend, and returns rounding",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/order_book_test.dart: reduced-motion bars render and rest state matches golden",
+    "file": "test/charts/order_book_test.dart",
+    "golden": "test/charts/goldens/beui_order_book.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "7d5cfaeef fix(charts): spring depth and focus price buttons",
+      "ec0513ce8 fix(charts): match rest bars, heat legend, and returns rounding",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/price_target_fan_test.dart: reduced-motion rest state matches golden",
+    "file": "test/charts/price_target_fan_test.dart",
+    "golden": "test/charts/goldens/beui_price_target_fan.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "d97f0d923 fix(charts): retain native fan target focus",
+      "27b51b2eb test(charts): reproduce native fan mouse focus loss",
+      "d62463332 fix(charts): ignore web touch hover after fan taps",
+      "db7840709 test(charts): reproduce web touch-up hover ordering",
+      "dcdc8f8e5 fix(charts): toggle fan targets on touch pointer down",
+      "84e984a3c fix(charts): land fan now marker and target labels",
+      "f55abfc33 fix(charts): match fan axes and static readout",
+      "00aa71fab fix(charts): inspect the full fan projection",
+      "e8335ba42 fix(charts): restore fan slider and reveal",
+      "25254ce94 style: format charts files that failed CI",
+      "c08b427e7 fix(charts): tighten parity interactions",
+      "c13194a45 fix(charts): keep price-target plot width cap under tight parents"
+    ]
+  },
+  {
+    "identity": "charts/returns_calendar_test.dart: reduced motion rest state matches golden",
+    "file": "test/charts/returns_calendar_test.dart",
+    "golden": "test/charts/goldens/beui_returns_calendar.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "d8688c53f fix(charts): preserve returns calendar identity and focus ownership",
+      "28943b965 fix(charts): preserve source readout ink and spacing",
+      "a35bb4dd0 fix(charts): constrain returns and sort heat spans",
+      "bf12ab39c fix(charts): match native calendar inspection",
+      "ec0513ce8 fix(charts): match rest bars, heat legend, and returns rounding",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/treemap_test.dart: BeuiTreemap rest-state golden",
+    "file": "test/charts/treemap_test.dart",
+    "golden": "test/charts/goldens/beui_treemap.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "28943b965 fix(charts): preserve source readout ink and spacing",
+      "a2c8b3e3d fix(charts): align status and treemap inspection",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "charts/volume_profile_test.dart: rest-state golden",
+    "file": "test/charts/volume_profile_test.dart",
+    "golden": "test/charts/goldens/beui_volume-profile.png",
+    "author_commit": "44452dc6e70b1a0d358b4118b3e8b3e86a492b7a",
+    "date": "2026-10-22 14:26:01 +0530",
+    "subject": "feat(charts): port beui.dev charts family",
+    "changes": [
+      "d24249b6c fix(volume): fit the default profile within constrained height",
+      "742101cd6 fix(charts): retain native volume focus",
+      "043c4152a fix(charts): acquire volume focus before key input",
+      "5406d9dcd fix(charts): preserve scaled volume bar corners",
+      "5fa39a88b fix(charts): match source volume tooltip spacing",
+      "31eac9a54 fix(charts): match native volume geometry and touch",
+      "af5e510a6 fix(charts): match volume tooltip and summary",
+      "0444124ce fix(charts): restore motion and price-range parity",
+      "ae09b802a fix(charts): align plots and source demo behavior",
+      "25254ce94 style: format charts files that failed CI",
+      "c08b427e7 fix(charts): tighten parity interactions"
+    ]
+  },
+  {
+    "identity": "motion/adaptive_stepper_test.dart: rest-state golden",
+    "file": "test/motion/adaptive_stepper_test.dart",
+    "golden": "test/motion/goldens/beui_adaptive_stepper.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "421e9271e fix(stepper): render liquid silhouette and elastic separation",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/agent_activity_test.dart: golden \u2014 complete summary, open stream, and a failed card",
+    "file": "test/motion/agent_activity_test.dart",
+    "golden": "test/motion/goldens/beui_agent_activity.png",
+    "author_commit": "0182784564a257449261b2be0545791ecc3c2807",
+    "date": "2026-08-18 14:55:18 +0530",
+    "subject": "feat(motion): finish the agent work-surface audit fixes",
+    "changes": [
+      "08a006498 test: extend beuiTestApp and adopt it in the a-p motion tests",
+      "53e4c398e refactor(motion): resolve reduced motion through motionFor in a-a",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "ca170525f refactor: drop a mirrored status field, a null-check flag, and unused params",
+      "b16548109 test(approval-card+agent-activity): drop reduce test, adopt beuiTestApp",
+      "7d1612b47 refactor(agent): dedupe sidebar canContain, chevron, and stale comments",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "d31e17854 fix(motion): make reduced-motion reveals actually arrive",
+      "68cd7801b feat(theme): fill the agent-strings gaps left by the cluster passes"
+    ]
+  },
+  {
+    "identity": "motion/alert_test.dart: rest-state info alert golden",
+    "file": "test/motion/alert_test.dart",
+    "golden": "test/motion/goldens/beui_alert.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "6c86802ae fix(alert): align neutral close control with source margins",
+      "317cf233d fix(alert): honor controlled focus and tone overrides",
+      "7e764e018 fix(alert): match tone colors and retained layout exit",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/approval_card_test.dart: BeuiApprovalCard theming golden \u2014 pending, expandable, and rejected",
+    "file": "test/motion/approval_card_test.dart",
+    "golden": "test/motion/goldens/beui_approval_card.png",
+    "author_commit": "7cda4f75388ec932ed97e781d4b38a0e6a8e0a83",
+    "date": "2026-08-18 14:48:02 +0530",
+    "subject": "fix(motion): make the approval hit targets real, and add the goldens",
+    "changes": [
+      "c729381b2 fix(agents): match approval badge and counter styles",
+      "eca6b142a fix(agents): match diff and question transitions",
+      "5a93293c9 fix(input): match approval placeholder states",
+      "4e4693e38 fix(input): support approval field styling",
+      "a3c2491fa fix(agents): match source examples and chat flow",
+      "118b24944 test: adopt beuiTestApp in more component-specific motion hosts",
+      "53e4c398e refactor(motion): resolve reduced motion through motionFor in a-a",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "b16548109 test(approval-card+agent-activity): drop reduce test, adopt beuiTestApp",
+      "51cd68ac0 refactor(approval-card): drop aliases and duplicated spin/motion logic",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "e1a564946 fix(motion): resolve widget copy defaults through the strings role",
+      "018278456 feat(motion): finish the agent work-surface audit fixes"
+    ]
+  },
+  {
+    "identity": "motion/availability_scheduler_test.dart: rest-state golden (default week)",
+    "file": "test/motion/availability_scheduler_test.dart",
+    "golden": "test/motion/goldens/beui_availability_scheduler.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "ee5b75559 fix(scheduler): support safe keyboard copying",
+      "7a961c603 test: adopt beuiTestApp in animated-number, availability-scheduler and text-cascade tests",
+      "4244e5171 refactor(scheduler): hoist scroll controller, pass BeuiDayKey not label",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "922145eb7 docs: resolve 15 broken dartdoc references"
+    ]
+  },
+  {
+    "identity": "motion/breadcrumb_test.dart: rest-state golden",
+    "file": "test/motion/breadcrumb_test.dart",
+    "golden": "test/motion/goldens/beui_breadcrumb.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "240ce487a fix(breadcrumb): retain nonmodal hover ownership",
+      "8597186fa fix(breadcrumb): preserve source font and caller control metrics",
+      "0f0b2381b test(breadcrumb): cover interrupted extent and reduced-motion settling",
+      "282a61a1c fix(breadcrumb): retain hit-test extent during wrapped reflow",
+      "36bcfe0b8 fix(breadcrumb): reject held route presses after dismissal",
+      "fee57512d fix(breadcrumb): spring surviving route positions through layout",
+      "c0c1591e0 fix(breadcrumb): make retained overflow exits inert",
+      "cbe08f160 fix(breadcrumb): retain exits and morph overflow with focus",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/button_test.dart: BeuiMetallicButton rest-state golden",
+    "file": "test/motion/button_test.dart",
+    "golden": "test/motion/goldens/beui_metallic_button.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "ecea1d400 fix(button): match preview states and chrome layers"
+    ]
+  },
+  {
+    "identity": "motion/card_folder_test.dart: rest-state golden",
+    "file": "test/motion/card_folder_test.dart",
+    "golden": "test/motion/goldens/beui_card_folder.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "fa7fed3bb test(card): cover held privacy release",
+      "a6483b8b7 fix(card): focus controls on semantic activation",
+      "ac7d684c7 fix(card): separate controls and animate privacy eye",
+      "25e2c9903 test(card): cover controls and privacy transitions",
+      "d96f9432a fix(card): expose one actionable privacy toggle",
+      "9d1ad028a test(blocks): cover integration regressions",
+      "bf736bc0b fix(blocks): isolate the card press layer",
+      "9d08a1c6f fix(blocks): align privacy and demo rendering",
+      "f0cb706cd fix(blocks): align v3 card, tab, and text behavior with source",
+      "63f73656b fix(ship): align card-folder CVV test with shared DigitSwap",
+      "e9d35c944 Merge branch 'akshay/v3-blocks' into akshay/v3-ship",
+      "aace02b0a fix(blocks): harden v3 block interactions",
+      "cc633f91f chore: beui 3.0.0 family integration"
+    ]
+  },
+  {
+    "identity": "motion/card_test.dart: rest-state golden",
+    "file": "test/motion/card_test.dart",
+    "golden": "test/motion/goldens/beui_card.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/checkbox_test.dart: rest-state golden (checked / unchecked / indeterminate / disabled)",
+    "file": "test/motion/checkbox_test.dart",
+    "golden": "test/motion/goldens/beui_checkbox.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "ac90d0bcf fix(checkbox): wrap long labels within available width",
+      "118b24944 test: adopt beuiTestApp in more component-specific motion hosts",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ]
+  },
+  {
+    "identity": "motion/citations_test.dart: settled golden (open panel, static rows)",
+    "file": "test/motion/citations_test.dart",
+    "golden": "test/motion/goldens/beui_citations.png",
+    "author_commit": "a3465674930c0254f205a4208c58f343f6999857",
+    "date": "2026-08-18 15:12:29 +0530",
+    "subject": "test: cover the citations, rail, sidebar and image remediations",
+    "changes": [
+      "7695b5ba2 test: adopt beuiTestApp in citations, carousel, dock and file-diff tests",
+      "28e0f4fa3 feat!: remove the deprecated API for 2.0",
+      "2c00e1ed8 fix: theme the external-link glyph and cascade by grapheme",
+      "e4d7e8821 refactor(citations): share the disclosure chevron and collapse duplicate test hosts",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ]
+  },
+  {
+    "identity": "motion/code_block_test.dart: settled golden (complete, line numbers, highlight)",
+    "file": "test/motion/code_block_test.dart",
+    "golden": "test/motion/goldens/beui_code_block.png",
+    "author_commit": "a3465674930c0254f205a4208c58f343f6999857",
+    "date": "2026-08-18 15:12:29 +0530",
+    "subject": "test: cover the citations, rail, sidebar and image remediations",
+    "changes": [
+      "08a006498 test: extend beuiTestApp and adopt it in the a-p motion tests",
+      "28e0f4fa3 feat!: remove the deprecated API for 2.0",
+      "9c36ae64a refactor(code-block,file-diff): share the streaming status icon and disclosure chevron",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "e1a564946 fix(motion): resolve widget copy defaults through the strings role"
+    ]
+  },
+  {
+    "identity": "motion/color_picker_test.dart: rest-state golden",
+    "file": "test/motion/color_picker_test.dart",
+    "golden": "test/motion/goldens/beui_color_picker.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "a487dacf1 fix(color-picker): expose assistive slider actions and source hue steps",
+      "1d3695207 fix(color-picker): preserve lowercase trigger hex text",
+      "1845409eb fix(color-picker): clamp within the root overlay coordinate space",
+      "cfe381654 fix(color-picker): match source format composition and field geometry",
+      "312220e43 fix(color-picker): handle custom triggers focus and viewport edges",
+      "7492c0b3f fix(color-picker): morph trigger chip into spectrum",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/color_selector_test.dart: rest-state golden",
+    "file": "test/motion/color_selector_test.dart",
+    "golden": "test/motion/goldens/beui_color_selector.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "93ebe4787 fix(color-selector): scale selected ring on press",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/combobox_test.dart: rest-state golden",
+    "file": "test/motion/combobox_test.dart",
+    "golden": "test/motion/goldens/beui_combobox.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "21e5fd33b fix(combobox): reopen on edits after Escape",
+      "b898cbd55 fix(combobox): retain exit filtering and opacity",
+      "5b749f5a6 fix(combobox): keep search input editable",
+      "81120f68b fix(inputs): match source workspace and date triggers",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: chat app shell",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_chat_app.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ]
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: chat app shell below the sidebar breakpoint",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_chat_app_narrow.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ]
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: message bubble variants (dark)",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_message_bubble_variants_dark.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ]
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: message bubble variants (light)",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_message_bubble_variants.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ]
+  },
+  {
+    "identity": "motion/conversation_core_golden_test.dart: streaming response endings",
+    "file": "test/motion/conversation_core_golden_test.dart",
+    "golden": "test/motion/goldens/beui_streaming_response_endings.png",
+    "author_commit": "c2e4dc7fe5e0c9bffa574d530e8509eb023ac32b",
+    "date": "2026-08-18 15:00:21 +0530",
+    "subject": "test(motion): add the cluster's first goldens",
+    "changes": [
+      "70b6de737 docs: drop audit ticket ids from comments"
+    ]
+  },
+  {
+    "identity": "motion/date_range_picker_test.dart: rest-state golden shows a selected range and date controls",
+    "file": "test/motion/date_range_picker_test.dart",
+    "golden": "test/motion/goldens/beui_date_range_picker.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "baf7b62b0 fix(date-range): inherit Geist and match tabular trigger width",
+      "87d8456f3 fix(date-range): match source trigger dimensions and typography",
+      "3122ad6b0 fix(date-range): omit repeated year in completed range trigger",
+      "81120f68b fix(inputs): match source workspace and date triggers",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/digit_swap_test.dart: rest-state golden",
+    "file": "test/motion/digit_swap_test.dart",
+    "golden": "test/motion/goldens/beui_digit_swap.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "9d08a1c6f fix(blocks): align privacy and demo rendering",
+      "f0cb706cd fix(blocks): align v3 card, tab, and text behavior with source",
+      "cc633f91f chore: beui 3.0.0 family integration"
+    ]
+  },
+  {
+    "identity": "motion/expandable_control_test.dart: rest-state golden (one expanded and one collapsed)",
+    "file": "test/motion/expandable_control_test.dart",
+    "golden": "test/motion/goldens/beui_expandable_control.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/feedback_widget_test.dart: rest-state golden (collapsed trigger)",
+    "file": "test/motion/feedback_widget_test.dart",
+    "golden": "test/motion/goldens/beui_feedback_widget.png",
+    "author_commit": "c54f39ffbe77fb8b1158bee3d953f9b44304723b",
+    "date": "2026-07-14 18:23:39 +0530",
+    "subject": "feat: port 11 more beUI v2 components",
+    "changes": [
+      "cfa7e0b5e fix(feedback): reset drafts and disable empty submit",
+      "92437bddb test(feedback): pin source draft and submit policy",
+      "9d08a1c6f fix(blocks): align privacy and demo rendering",
+      "78bd313c8 feat(feedback-widget): surface submit errors instead of swallowing them",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "3ffcca79c fix(feedback): keep the draft, announce the outcome, reach the controls",
+      "cd99fed29 fix(theme): pin text tracking to normal, matching the Tailwind source",
+      "d4f0efe9e wip: visual-pass fidelity edits against beui.dev (UNVERIFIED)",
+      "c6cfb0be5 style: dart format touched barrel and test files",
+      "5428781bd test(feedback-widget): assert the morph blur on the observable view swap"
+    ]
+  },
+  {
+    "identity": "motion/file_diff_test.dart: settled golden (complete, open, tinted rows)",
+    "file": "test/motion/file_diff_test.dart",
+    "golden": "test/motion/goldens/beui_file_diff.png",
+    "author_commit": "a3465674930c0254f205a4208c58f343f6999857",
+    "date": "2026-08-18 15:12:29 +0530",
+    "subject": "test: cover the citations, rail, sidebar and image remediations",
+    "changes": [
+      "ad9adb944 ci: exclude proof fixtures from static gates",
+      "4e441e295 fix(agents): retain single-line diffs on narrow views",
+      "4fdec936f fix(agents): align diff tokens and replay layout",
+      "eca6b142a fix(agents): match diff and question transitions",
+      "7695b5ba2 test: adopt beuiTestApp in citations, carousel, dock and file-diff tests",
+      "28e0f4fa3 feat!: remove the deprecated API for 2.0",
+      "9c36ae64a refactor(code-block,file-diff): share the streaming status icon and disclosure chevron",
+      "229d20053 refactor: route every blur through beuiBlurSigma and share test helpers",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "4e9517765 test: cover the unified pill, the pinned tool result, and the new strings",
+      "aa1b9e214 fix(motion): keep the tool-result scroll position across the overflow fade",
+      "be6a40cac fix(motion): theme the diff hunk copy and grow its hit target"
+    ]
+  },
+  {
+    "identity": "motion/file_tree_test.dart: rest-state golden",
+    "file": "test/motion/file_tree_test.dart",
+    "golden": "test/motion/goldens/beui_file_tree.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "a4bbd37ee fix(file-tree): expose disabled row actions",
+      "6f97bc3da fix(components): repair motion and state",
+      "86e2484c9 fix(components): hold demo width caps and file-tree dispose"
+    ]
+  },
+  {
+    "identity": "motion/image_viewer_test.dart: rest-state golden (thumbnail gallery)",
+    "file": "test/motion/image_viewer_test.dart",
+    "golden": "test/motion/goldens/beui_image_viewer.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "066901f76 fix(image-viewer): match modal viewport and control spacing",
+      "4c066de99 fix(image-viewer): guard held gestures and refocus retained reopen",
+      "7c7675490 fix(image-viewer): isolate dismissed controls and accepted focus owner",
+      "1479c7d57 fix(image-viewer): restore zoom gestures focus and morph timing",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/knockout_bracket_test.dart: rest-state golden",
+    "file": "test/motion/knockout_bracket_test.dart",
+    "golden": "test/motion/goldens/beui_knockout_bracket.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "e8d0be8e1 test(knockout): sample real transforms instead of engine widget types",
+      "2d1527b87 refactor(knockout): dedupe initials, share the delayed-fade timer",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "922145eb7 docs: resolve 15 broken dartdoc references"
+    ]
+  },
+  {
+    "identity": "motion/loader_test.dart: grid golden (all variants at first frame)",
+    "file": "test/motion/loader_test.dart",
+    "golden": "test/motion/goldens/beui_loader.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "3c3832581 test: adopt beuiTestApp in image-generation, masonry, loader and scroller tests",
+      "dd8ab33a9 test: trim render-only variant loops in loader/loading_states",
+      "dfec58de3 refactor: share the glyph-scramble reveal across loader/reasoning/404",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ]
+  },
+  {
+    "identity": "motion/morphing_search_chips_test.dart: closed rest state matches golden",
+    "file": "test/motion/morphing_search_chips_test.dart",
+    "golden": "test/motion/goldens/beui_morphing_search_chips.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "aace02b0a fix(blocks): harden v3 block interactions"
+    ]
+  },
+  {
+    "identity": "motion/morphing_tabs_test.dart: BeuiMorphingTabs rest state matches the reference golden",
+    "file": "test/motion/morphing_tabs_test.dart",
+    "golden": "test/motion/goldens/beui_morphing_tabs.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "3a74c8572 fix(blocks): remove duplicate CTA focus stops",
+      "f0cb706cd fix(blocks): align v3 card, tab, and text behavior with source",
+      "aace02b0a fix(blocks): harden v3 block interactions"
+    ]
+  },
+  {
+    "identity": "motion/popover_morph_test.dart: open-state golden",
+    "file": "test/motion/popover_morph_test.dart",
+    "golden": "test/motion/goldens/beui_popover_morph.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "b7977d4d1 test: adopt beuiTestApp in popover and preview-rail tests",
+      "2e4a38fd0 refactor(popover): route panel-reveal motion through motionFor",
+      "1fd439ef5 test(popover-morph): read the scale matrix instead of Transform presence",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ]
+  },
+  {
+    "identity": "motion/prediction_market_card_test.dart: rest-state golden",
+    "file": "test/motion/prediction_market_card_test.dart",
+    "golden": "test/motion/goldens/beui_prediction_market_card.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "c8ef8a2cb fix(blocks): restore the CTA keyboard focus ring",
+      "a244fe35a fix(blocks): retain the clicked outcome for keyboard",
+      "3a74c8572 fix(blocks): remove duplicate CTA focus stops",
+      "f0cb706cd fix(blocks): align v3 card, tab, and text behavior with source",
+      "aace02b0a fix(blocks): harden v3 block interactions"
+    ]
+  },
+  {
+    "identity": "motion/prompt_input_test.dart: rest-state golden",
+    "file": "test/motion/prompt_input_test.dart",
+    "golden": "test/motion/goldens/beui_prompt_input.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "08a006498 test: extend beuiTestApp and adopt it in the a-p motion tests",
+      "701f63e3d refactor(prompt-input): drop redundant reduce ternary on pre-resolved motion",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "a07a7bfcb refactor(prompt-input): drop dead dim branch, share composer metrics",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "e1a564946 fix(motion): resolve widget copy defaults through the strings role",
+      "afc1e8ccc test(prompt-input): cover the keyboard and attachment paths",
+      "3ffcca79c fix(feedback): keep the draft, announce the outcome, reach the controls",
+      "adc04b134 fix(prompt-input): keyboard, attachments, and an Enter that does something",
+      "e2e319708 feat: add BeuiAgentTheme and expandable approval cards"
+    ]
+  },
+  {
+    "identity": "motion/select_test.dart: rest-state golden (default + morph closed)",
+    "file": "test/motion/select_test.dart",
+    "golden": "test/motion/goldens/beui_select.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "c750374ba refactor(select, table): route panel/chevron reduce swaps through motionFor",
+      "2b152ebf8 refactor(select): share state between BeuiSelect and BeuiMorphSelect",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "6f9f3c516 feat(select): let an option carry a leading icon"
+    ]
+  },
+  {
+    "identity": "motion/signup_form_test.dart: rest-state golden",
+    "file": "test/motion/signup_form_test.dart",
+    "golden": "test/motion/goldens/beui_signup_form.png",
+    "author_commit": "4b9137f3ee46f52c048499341f035fb2353f5b87",
+    "date": "2026-10-22 14:22:01 +0530",
+    "subject": "feat(blocks): port six missing v3 catalog blocks",
+    "changes": [
+      "1dca20f4c fix(signup): retain source message exits and timing",
+      "250a649c0 fix(signup): retain the confirmation field gap",
+      "af4522f83 fix(signup): match source typography and field spacing",
+      "25b395e71 fix(signup): associate terms label with its checkbox",
+      "e81e9cc2d fix(signup): announce password reveal once",
+      "ea2024e3b fix(input): expose signup reveal as an independent action",
+      "aace02b0a fix(blocks): harden v3 block interactions"
+    ]
+  },
+  {
+    "identity": "motion/sortable_list_test.dart: rest-state golden",
+    "file": "test/motion/sortable_list_test.dart",
+    "golden": "test/motion/goldens/beui_sortable_list.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "91819aa8e fix(sortable): correct undo and handle focus",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/table_test.dart: rest-state golden (data table with selection + sort)",
+    "file": "test/motion/table_test.dart",
+    "golden": "test/motion/goldens/beui_table.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "ad9adb944 ci: exclude proof fixtures from static gates",
+      "450699dec fix(table): preserve collapsed vertical grid geometry",
+      "3e1c3f4bb fix(table): sample fractional source viewport ranges",
+      "4e4065cd0 fix(table): match source intrinsic header geometry",
+      "654f5a218 feat(table): add opt-in intrinsic sizing",
+      "d0ca87794 fix(table): retain initial drag displacement",
+      "47e05f46e fix(table): preserve menus and native keyboard input",
+      "c750374ba refactor(select, table): route panel/chevron reduce swaps through motionFor",
+      "4388cb976 refactor(table): merge the row/column handle and inline text field pairs",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "6193390a4 fix: pin flutter_lucide to a version the referenced glyphs exist in",
+      "922145eb7 docs: resolve 15 broken dartdoc references"
+    ]
+  },
+  {
+    "identity": "motion/tabs_test.dart: rest-state golden (all three variants)",
+    "file": "test/motion/tabs_test.dart",
+    "golden": "test/motion/goldens/beui_tabs.png",
+    "author_commit": "0c80b0a48c8718d367da8af9d1acc0f8d1b3831b",
+    "date": "2026-10-22 14:50:43 +0530",
+    "subject": "feat(components): port remaining v3 motion widgets",
+    "changes": [
+      "aa0a372f6 fix(tabs): retain native focus without filling triggers",
+      "dfe5bd4e5 fix(tabs): paint underline inside the trigger",
+      "b0a025f76 fix(motion): align v3 component behavior and demos",
+      "6f97bc3da fix(components): repair motion and state"
+    ]
+  },
+  {
+    "identity": "motion/todo_list_test.dart: golden \u2014 in-flight plan with all four row states",
+    "file": "test/motion/todo_list_test.dart",
+    "golden": "test/motion/goldens/beui_todo_list.png",
+    "author_commit": "0182784564a257449261b2be0545791ecc3c2807",
+    "date": "2026-08-18 14:55:18 +0530",
+    "subject": "feat(motion): finish the agent work-surface audit fixes",
+    "changes": [
+      "2b19e1c21 test: adopt beuiTestApp in tilt-card and todo-list tests",
+      "c89dc8a21 refactor(todo-list, tool-approval): route reduce swaps through motionFor",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "cd6f6e952 refactor(streaming-response): move action press/hover state into _ResponseAction",
+      "2a729aa00 refactor: share the disclosure chevron and compress changelog comments",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "d31e17854 fix(motion): make reduced-motion reveals actually arrive",
+      "68cd7801b feat(theme): fill the agent-strings gaps left by the cluster passes"
+    ]
+  },
+  {
+    "identity": "motion/tool_approval_test.dart: BeuiToolApproval golden \u2014 pending, destructive, and approved tiers",
+    "file": "test/motion/tool_approval_test.dart",
+    "golden": "test/motion/goldens/beui_tool_approval.png",
+    "author_commit": "7cda4f75388ec932ed97e781d4b38a0e6a8e0a83",
+    "date": "2026-08-18 14:48:02 +0530",
+    "subject": "fix(motion): make the approval hit targets real, and add the goldens",
+    "changes": [
+      "4ca1c6193 test: adopt beuiTestApp throughout tool_approval_test.dart",
+      "c89dc8a21 refactor(todo-list, tool-approval): route reduce swaps through motionFor",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "f9d9f4773 refactor(tool-approval): drop the file-wide lint ignore and share the chevron",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "68cd7801b feat(theme): fill the agent-strings gaps left by the cluster passes"
+    ]
+  },
+  {
+    "identity": "motion/tool_result_test.dart: BeuiToolResult golden \u2014 completed result with actions",
+    "file": "test/motion/tool_result_test.dart",
+    "golden": "test/motion/goldens/beui_tool_result.png",
+    "author_commit": "0182784564a257449261b2be0545791ecc3c2807",
+    "date": "2026-08-18 14:55:18 +0530",
+    "subject": "feat(motion): finish the agent work-surface audit fixes",
+    "changes": [
+      "553917f96 test: adopt beuiTestApp throughout tool_result_test.dart",
+      "5eb393a0d fix(prompt-input): key the row-measurement cache on maxRows",
+      "cd6f6e952 refactor(streaming-response): move action press/hover state into _ResponseAction",
+      "2a729aa00 refactor: share the disclosure chevron and compress changelog comments",
+      "70b6de737 docs: drop audit ticket ids from comments",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "4e9517765 test: cover the unified pill, the pinned tool result, and the new strings",
+      "aa1b9e214 fix(motion): keep the tool-result scroll position across the overflow fade",
+      "259751479 feat(motion): unify the jump pill and pin the tool-result viewport"
+    ]
+  },
+  {
+    "identity": "motion/wallet_card_test.dart: rest-state golden",
+    "file": "test/motion/wallet_card_test.dart",
+    "golden": "test/motion/goldens/beui_wallet_card.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "a5dafb055 test: adopt beuiTestApp in tooltip, viewport-follow, wallet-card and wheel-picker tests",
+      "fab9a0433 refactor(swap, wallet-card): route reduce swaps and active flags through motionFor",
+      "477a77db6 fix(wallet): keep search results tappable",
+      "ca0a0e7ad fix(wallet): restore the panel entrance morph",
+      "5ee8730d1 test(wallet-card): dedupe and parameterise the balance/switcher tests",
+      "73ac23ace refactor(wallet-card): port MorphPanel onto BeuiOverlay",
+      "abd436dec refactor(swap): privatise internal helpers, share formatting, add BeuiSpinner",
+      "229d20053 refactor: route every blur through beuiBlurSigma and share test helpers",
+      "e0f6d8dcb refactor: use stdlib and shared tokens instead of per-file copies",
+      "6252d6d67 refactor: resolve BeuiColors through one helper",
+      "842087063 fix(wallet-card): replace removed LucideIcons.history with rotate_ccw_clock",
+      "922145eb7 docs: resolve 15 broken dartdoc references"
+    ]
+  },
+  {
+    "identity": "motion/wheel_picker_test.dart: rest-state golden",
+    "file": "test/motion/wheel_picker_test.dart",
+    "golden": "test/motion/goldens/beui_wheel_picker.png",
+    "author_commit": "cd99fed29310ec5b24137c5d95f5c3b778d7ef62",
+    "date": "2026-08-07 15:48:42 +0530",
+    "subject": "fix(theme): pin text tracking to normal, matching the Tailwind source",
+    "changes": [
+      "a5dafb055 test: adopt beuiTestApp in tooltip, viewport-follow, wallet-card and wheel-picker tests",
+      "8fb822cba refactor: small dead-code and stdlib cleanups across motion widgets",
+      "6252d6d67 refactor: resolve BeuiColors through one helper"
+    ]
+  }
+]

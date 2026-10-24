@@ -149,6 +149,27 @@ void main() {
     await tester.pumpWidget(_surface(reduce: true));
     await tester.pump();
     expect(find.byType(BeuiOrderBookBalance), findsOneWidget);
+    await pumpFrames(tester, 10, frame: const Duration(milliseconds: 100));
+    for (final entry in {
+      'ask': [102.0, 101.0],
+      'bid': [99.0, 98.0, 97.0],
+    }.entries) {
+      for (final price in entry.value) {
+        final bar = find.byKey(ValueKey('beui-order-bar-${entry.key}-$price'));
+        expect(tester.getSize(bar).width, greaterThan(80));
+        expect(tester.getSize(bar).height, 30);
+        expect(tester.widget<ColoredBox>(bar).color.a, greaterThan(0));
+        expect(
+          tester
+              .widget<Opacity>(
+                find.ancestor(of: bar, matching: find.byType(Opacity)).first,
+              )
+              .opacity,
+          1,
+          reason: 'All five cumulative depth fills must be visible.',
+        );
+      }
+    }
     await expectLater(
       find.byType(MaterialApp),
       matchesGoldenFile('goldens/beui_order_book.png'),
