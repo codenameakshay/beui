@@ -353,7 +353,9 @@ void main() {
       await tester.pumpWidget(_diff(dark: dark));
       await tester.pumpAndSettle();
       final box = tester.getRect(find.byType(BeuiFileDiff));
-      final headerIcon = tester.getRect(find.byIcon(LucideIcons.file_code_corner));
+      final headerIcon = tester.getRect(
+        find.byIcon(LucideIcons.file_code_corner),
+      );
       expect(headerIcon.left, box.left);
       final context = tester.getRect(find.textContaining('context'));
       expect(context.left - box.left, 24 + 36 + 36 + 16 + 6);

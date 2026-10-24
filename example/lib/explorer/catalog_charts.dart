@@ -22,7 +22,8 @@ const List<ExploreEntry> kCharts = [
     slug: 'sankey-chart',
     section: ExploreSection.charts,
     isNew: true,
-    blurb: 'Weighted flows between stages that draw in and morph with your data.',
+    blurb:
+        'Weighted flows between stages that draw in and morph with your data.',
     builder: sankeyChartDemo,
   ),
   ExploreEntry(

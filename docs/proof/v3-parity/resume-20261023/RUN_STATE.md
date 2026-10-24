@@ -1,3 +1,10 @@
+## User final scope: only four steps
+
+1. Combobox engine prototype r9 rejected, no safe repair. Native causal engine trace r10 running in isolation; no shared SDK or production workaround authorized.
+2. All56goldens triage worker final-golden-triage-r1 running; no regeneration before intentional visual rationale.
+3. Whole-tree flutter analyze passes with docs/proof/** exclusion. Four requested files formatted. Package414 and example158 format checks pass. CI package formatting scoped lib/test/tool to preserve archived bytes; example job unchanged. Static gates commit pending.
+4. Final parity statement only after1–3 complete and CI22–26 green.22–25 green at observed heads;26failed formatting before this correction. No merges or new component work.
+
 ## 2026-10-24 engine activation gap reproduced
 
 Isolated engine r8 executed instrumented and original-source deterministic Chrome tests: four expected retention failures, five passes each. Trace proves P arrives with zero editing subscriptions, then activate attaches listeners and replays stored empty/selected-label state over P. Activated-before-input control preserves P then Pr exactly once. This proves imposed engine ordering, not retrospective native-gallery causality.

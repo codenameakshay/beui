@@ -22,10 +22,7 @@ class _TableGridRules extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final offset = scroll.hasClients ? scroll.offset : 0.0;
-    final first = math.max(
-      0,
-      ((offset - _tableRuleWidth) / rowHeight).ceil(),
-    );
+    final first = math.max(0, ((offset - _tableRuleWidth) / rowHeight).ceil());
     final last = math.min(
       rowCount,
       ((offset + size.height - rowHeight) / rowHeight).ceil(),

@@ -603,7 +603,10 @@ void main() {
       final colors = BeuiColors.resolve(
         tester.element(find.byType(BeuiFileDiff)),
       );
-      expect(gutter.style!.color, colors.mutedForeground.withValues(alpha: 0.4));
+      expect(
+        gutter.style!.color,
+        colors.mutedForeground.withValues(alpha: 0.4),
+      );
     });
   });
 
