@@ -1,3 +1,24 @@
+## 2026-10-24 partial rapid-input fix accepted, engine delivery unresolved
+
+Independent r7 accepts production `ef7c79680a7208f9c593287a50fc30949b78e359b640a97aa78f9f7e4d316d97` / tests `008bee629eded2697d5c29b9e873418bc3c886fe967c97401c6b4ecd75a34f95`. Both original failing-first Escape cases reproduced;30focused and6 independent cases pass. Parent archive integrity passes60contexts/3513frames. Initial entry still5/6 with Product becoming duct; partial fix not overall acceptance. Minimum3.44.2 unavailable for this diff.
+
+Research finds deferred semantics input-listener activation and stale framework-state replay; missing component delivery proven, listener absence not yet. Upstream194186 reports same boundary; no verified supported fix. Read-only report preserved in combobox-rapid-review-r7/initial-editing-diagnosis.md. Isolated engine regression task `v3-semantics-initial-edit-engine-repro-20261024-r8` (current8fbbf4ef tool prefix) running, no shared SDK/production changes or external posting.
+
+## 2026-10-24 rapid-input partial repair after server restart
+
+Worker r6 completed and stopped its owned server. Historical cancelled background servers are obsolete and were not restarted. Partial Combobox production `ef7c79680a7208f9c593287a50fc30949b78e359b640a97aa78f9f7e4d316d97`, tests `008bee629eded2697d5c29b9e873418bc3c886fe967c97401c6b4ecd75a34f95`: stale captured-open callback traced and fixed, with empty grouped registrations explaining empty reset.30focused pass/analyzer clean. Native rapid6/6,ArrowDown12/12,initial5/6; missing Product prefix remains on final uninstrumented build. Buffered trace shows browser input without Dart editing callback. Overall acceptance blocked; no speculative workaround. Minimum SDK unavailable, not substituted with earlier proof.
+
+New independent tasks, prefix `node:delegated-task:command%3Amcp%3A8fbbf4ef-002e-40db-b760-de7c2d712bd4%3Adelegate-task%3A`:
+- `v3-combobox-rapid-independent-review-20261024-r7`: partial component review.
+- `v3-combobox-initial-editing-boundary-20261024-r7`: read-only engine/component delivery diagnosis.
+Parent archive verifier session31762 completed exit0:60contexts/3513original frames; log `/tmp/beui-combobox-rapid-parent-verify.log`. Integrity passes, initial editor-delivery acceptance remains blocked. Evidence `../resume-20261024/combobox-rapid-input/REPORT.md`. No commit/push.
+
+## 2026-10-24 resumed after checking both completed agents
+
+Both native integration r2 and rapid diagnosis r5 are completed, no pending child runs. Native archive pushed at `6a9e699d8`. Diagnosis preserved in `../resume-20261024/combobox-rapid-diagnosis/REPORT.md`. Captured-scope open state is a concrete hypothesis, not proven runtime attribution. `Pro` correctly matches all four options; prior all-options observations are not a filtering defect. Empty/closed and initial reduced typing failures remain unresolved.
+
+Disk now154GiB free, so prior capacity restriction is cleared. New implementation task `node:delegated-task:command%3Amcp%3Ab025ab90-8b4f-4ff6-ad03-94e2ba46f4fe%3Adelegate-task%3Av3-combobox-rapid-input-repair-20261024-r6` owns Combobox code/tests and new evidence; must trace and reproduce native sequence before repair, preserve sealed archives, validate actual gallery and controlled ownership. No other implementation worker active.
+
 ## 2026-10-24 native gallery observations and next diagnosis
 
 Fresh final gallery build served `27f85b5e40e2528bbc787be0e0a2af23fea6e081f4bdfe87c6c01e68a36a0aed`. Collapsible/Scheduler bounded checks pass both preferences. Scheduler pointer deselection moves focus to checkbox; Enter does not mutate background, without proving retained-focus fixture case. Combobox ordinary interactions pass but rapid Escape/type/filter remains inconsistent: run-1 empty/closed, followup sometimes Pro with all options. No unconditional native acceptance.

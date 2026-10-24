@@ -170,9 +170,11 @@ class _BeuiComboboxState extends State<BeuiCombobox> {
     if (next) {
       _measureTrigger();
       _syncActive();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && _open) _inputFocus.requestFocus();
-      });
+      if (!_inputFocus.hasFocus) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _open) _inputFocus.requestFocus();
+        });
+      }
     } else {
       _setQuery('');
       _activeValue = null;
@@ -648,7 +650,7 @@ class BeuiComboboxInput extends StatelessWidget {
         enabled: !state.widget.disabled,
         onTap: () => state._setOpen(true),
         onChanged: (query) {
-          if (!scope.open) state._setOpen(true);
+          state._setOpen(true);
           state._setQuery(query);
         },
         style: TextStyle(fontSize: 14, color: scope.colors.foreground),

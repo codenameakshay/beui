@@ -1,0 +1,8 @@
+FAIL combobox no-preference filtered retained {"tag":"INPUT","role":null,"label":null,"text":"","value":"duct","node":4}
+FAIL combobox no-preference filtered exact options ["Design studio","Product team"]
+{
+  target: 'combobox',
+  reducedMotion: 'no-preference',
+  failures: [ 'filtered retained', 'filtered exact options' ]
+}
+{ target: 'combobox', reducedMotion: 'reduce', failures: [] }

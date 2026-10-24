@@ -1,0 +1,15 @@
+FAIL combobox no-preference sequence completed "TimeoutError: locator.boundingBox: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('textbox', { name: 'Search workspaces', exact: true })\u001b[22m\n"
+{
+  target: 'combobox',
+  reducedMotion: 'no-preference',
+  failures: [ 'sequence completed' ]
+}
+FAIL combobox reduce sequence completed "Error: locator.boundingBox: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for getByRole('textbox', { name: 'Search workspaces', exact: true })\u001b[22m\n"
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+page.waitForTimeout: Target page, context or browser has been closed
+    at /private/tmp/beui-rapid-input-20261024/capture-initial.mjs:40:64
+
+Node.js v26.12.1

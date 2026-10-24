@@ -92,6 +92,117 @@ Widget _combobox({
 
 void main() {
   group('BeuiCombobox interactions', () {
+    for (final reduce in <bool>[false, true]) {
+      testWidgets('typing before the Escape rebuild reopens ($reduce)', (
+        tester,
+      ) async {
+        await tester.pumpWidget(
+          _combobox(defaultValue: 'apple', reduce: reduce),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextField));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField), 'zzzz');
+        await tester.pumpAndSettle();
+        expect(find.text('Nothing found'), findsOneWidget);
+        await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+        tester.testTextInput.updateEditingValue(
+          const TextEditingValue(
+            text: 'ban',
+            selection: TextSelection.collapsed(offset: 3),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final field = tester.widget<TextField>(find.byType(TextField));
+        expect(field.controller!.text, 'ban');
+        expect(field.focusNode!.hasFocus, isTrue);
+        expect(find.text('Banana'), findsOneWidget);
+        expect(find.text('Apple'), findsNothing);
+        expect(find.text('Cherry'), findsNothing);
+      });
+    }
+    for (final acceptOpen in <bool>[false, true]) {
+      for (final acceptQuery in <bool>[false, true]) {
+        testWidgets(
+          'typing respects owner open=$acceptOpen query=$acceptQuery',
+          (tester) async {
+            var open = false;
+            var query = '';
+            final events = <String>[];
+            await tester.pumpWidget(
+              StatefulBuilder(
+                builder: (context, update) => _combobox(
+                  open: open,
+                  query: query,
+                  onOpenChange: (next) {
+                    events.add('open:$next');
+                    if (acceptOpen) update(() => open = next);
+                  },
+                  onQueryChange: (next) {
+                    events.add('query:$next');
+                    if (acceptQuery) update(() => query = next);
+                  },
+                ),
+              ),
+            );
+            await tester.pumpAndSettle();
+            await tester.tap(find.byType(TextField));
+            await tester.pumpAndSettle();
+            events.clear();
+            tester.testTextInput.updateEditingValue(
+              const TextEditingValue(
+                text: 'ban',
+                selection: TextSelection.collapsed(offset: 3),
+              ),
+            );
+            await tester.pumpAndSettle();
+            expect(events, <String>['open:true', 'query:ban']);
+            final field = tester.widget<TextField>(find.byType(TextField));
+            expect(
+              field.controller!.text,
+              acceptOpen && acceptQuery ? 'ban' : '',
+            );
+            expect(field.focusNode!.hasFocus, isTrue);
+            expect(
+              find.text('Banana'),
+              acceptOpen ? findsOneWidget : findsNothing,
+            );
+            expect(
+              find.text('Apple'),
+              acceptOpen && !acceptQuery ? findsOneWidget : findsNothing,
+            );
+          },
+        );
+      }
+    }
+    testWidgets('typing does not reclaim focus moved before the next frame', (
+      tester,
+    ) async {
+      final outside = FocusNode();
+      addTearDown(outside.dispose);
+      await tester.pumpWidget(
+        _testApp(
+          Column(
+            children: <Widget>[
+              Focus(focusNode: outside, child: const Text('Outside')),
+              Expanded(child: _combobox()),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+      tester.testTextInput.updateEditingValue(
+        const TextEditingValue(
+          text: 'ban',
+          selection: TextSelection.collapsed(offset: 3),
+        ),
+      );
+      outside.requestFocus();
+      await tester.pumpAndSettle();
+      expect(outside.hasFocus, isTrue);
+    });
     testWidgets('selected input stays editable and opens on keyboard focus', (
       tester,
     ) async {
