@@ -464,11 +464,17 @@ class _SelectionRingState extends State<_SelectionRing>
     with SingleTickerProviderStateMixin {
   late Rect _from = widget.target;
   late Rect _to = widget.target;
-  late final SingleMotionController _progress = SingleMotionController(
-    motion: beuiSpringLayout,
-    vsync: this,
-    initialValue: 1,
-  );
+  late final SingleMotionController _progress;
+
+  @override
+  void initState() {
+    super.initState();
+    _progress = SingleMotionController(
+      motion: beuiSpringLayout,
+      vsync: this,
+      initialValue: 1,
+    );
+  }
 
   Rect _atProgress(double progress) {
     final t = progress.clamp(0.0, 1.0);

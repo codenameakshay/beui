@@ -1,0 +1,23 @@
+00:00 +0: loading /private/tmp/beui-color-selector-ci/test/motion/color_selector_test.dart
+00:00 +0: selected ring contracts with its swatch during press and recovers
+00:00 +1: disabled choices reject taps and arrows skip them
+00:00 +2: Tab enters the checked choice and then leaves the group
+00:00 +3: label sits above its swatch list
+00:00 +4: selection ring hops above the row and settles on its swatch
+00:00 +5: space activates a focused unselected swatch
+00:00 +6: tap selects an option
+00:00 +7: arrow keys move selection and focus
+00:00 +8: keyboard navigation uses only live children in child order
+00:00 +9: controlled selection can transition to null
+00:00 +10: controlled selection can clear while children become empty
+00:00 +11: empty choices can repopulate and select again
+00:00 +12: controlled rejection keeps checked state and permits retry
+00:00 +13: removing the selected child removes its ring
+00:00 +14: reordering retained const children updates keyboard order
+00:00 +15: changing a selected item value drops its stale ring
+00:00 +16: changing selected swatch color updates ring without moving it
+00:00 +17: reduced motion snaps the ring and never scales a pressed swatch
+00:00 +18: selection ring is 52px in swatch color, reduced: false
+00:00 +19: selection ring is 52px in swatch color, reduced: true
+00:00 +20: rest-state golden
+00:00 +21: All tests passed!
