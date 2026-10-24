@@ -1,0 +1,294 @@
+--- a/lib/src/engine/text_editing/text_editing.dart
++++ b/lib/src/engine/text_editing/text_editing.dart
+@@ -1063,6 +1063,7 @@
+   ///
+   ///  * [applyTextToDomElement], which is used for non-focused elements.
+   void applyToDomElement(DomHTMLElement? domElement) {
++    traceInitialEdit('DOM.apply', {'old': domElement is DomHTMLInputElement ? domElement.value : null, 'new': text, 'base': baseOffset, 'extent': extentOffset});
+     if (domElement != null && domElement.isA<DomHTMLInputElement>()) {
+       final element = domElement as DomHTMLInputElement;
+       element.value = text;
+@@ -1598,6 +1599,7 @@
+ 
+   @override
+   void setEditingState(EditingState? editingState) {
++    traceInitialEdit('strategy.setEditingState', {'enabled': isEnabled, 'text': editingState?.text});
+     lastEditingState = editingState;
+     if (!isEnabled || !editingState!.isValid) {
+       return;
+@@ -1615,6 +1617,7 @@
+   }
+ 
+   void handleChange(DomEvent event) {
++    traceInitialEdit('handleChange.enter', {'type': event.type});
+     assert(isEnabled);
+ 
+     var newEditingState = EditingState.fromDomElement(activeDomElement);
+@@ -1632,6 +1635,7 @@
+       );
+     }
+ 
++    traceInitialEdit('handleChange.compare', {'equal': newEditingState == lastEditingState, 'text': newEditingState.text});
+     if (newEditingState != lastEditingState) {
+       lastEditingState = newEditingState;
+       _editingDeltaState = newTextEditingDeltaState;
+@@ -2541,6 +2545,14 @@
+   }
+ }
+ 
++final List<Map<String, Object?>> initialEditTrace = <Map<String, Object?>>[];
++final Stopwatch initialEditClock = Stopwatch()..start();
++void traceInitialEdit(String event, [Map<String, Object?> detail = const {}]) {
++  if (initialEditTrace.length < 200) {
++    initialEditTrace.add(<String, Object?>{'us': initialEditClock.elapsedMicroseconds, 'event': event, ...detail});
++  }
++}
++
+ /// Text editing singleton.
+ final HybridTextEditing textEditing = HybridTextEditing();
+ 
+@@ -2607,7 +2619,9 @@
+     if (_debugPrintTextInputCommands) {
+       print('flutter/textinput channel command: ${command.runtimeType}');
+     }
++    traceInitialEdit('channel.command', {'type': command.runtimeType.toString(), 'clientBefore': _clientId});
+     command.run(this);
++    traceInitialEdit('channel.command.done', {'clientAfter': _clientId});
+     callback();
+   }
+ 
+--- a/lib/src/engine/semantics/text_field.dart
++++ b/lib/src/engine/semantics/text_field.dart
+@@ -56,6 +56,7 @@
+     required OnChangeCallback onChange,
+     required OnActionCallback onAction,
+   }) {
++    traceInitialEdit('semantics.enable');
+     this.inputConfig = inputConfig;
+     this.onChange = onChange;
+     this.onAction = onAction;
+@@ -67,6 +68,7 @@
+   /// This method must be called after [enable] to name sure that [inputConfig],
+   /// [onChange], and [onAction] are not null.
+   void activate(SemanticTextField textField) {
++    traceInitialEdit('semantics.activate', {'node': textField.semanticsObject.id});
+     assert(
+       inputConfig != null && onChange != null && onAction != null,
+       '"enable" should be called before "enableFromSemantics" and initialize input configuration',
+@@ -99,6 +101,7 @@
+ 
+   @override
+   void disable() {
++    traceInitialEdit('semantics.disable', {'enabled': isEnabled, 'listeners': subscriptions.length});
+     // We don't want to remove the DOM element because the caller is responsible
+     // for that. However we still want to stop editing, cleanup the handlers.
+     if (!isEnabled) {
+@@ -122,6 +125,7 @@
+ 
+   @override
+   void addEventHandlers() {
++    traceInitialEdit('listeners.add');
+     if (inputConfiguration.autofillGroup != null) {
+       subscriptions.addAll(inputConfiguration.autofillGroup!.addInputEventListeners());
+     }
+@@ -289,6 +293,7 @@
+       createDomEventListener((DomEvent event) {
+         // IMPORTANT: because this event listener can be triggered by either or
+         // both a "focus" and a "click" DOM events, this code must be idempotent.
++        traceInitialEdit('DOM.focus.action', {'node': semanticsObject.id});
+         EnginePlatformDispatcher.instance.invokeOnSemanticsAction(
+           viewId,
+           semanticsObject.id,
+--- /dev/null
++++ b/test/engine/semantics/initial_edit_boundary_test.dart
+@@ -0,0 +1,190 @@
++import 'dart:convert';
++import 'dart:typed_data';
++
++import 'package:test/bootstrap/browser.dart';
++import 'package:test/test.dart';
++import 'package:ui/src/engine.dart';
++import 'package:ui/ui.dart' as ui;
++
++import '../../common/test_initialization.dart';
++import 'text_field_test.dart' as existing;
++
++const MethodCodec codec = JSONMethodCodec();
++void main() => internalBootstrapBrowserTest(() => testMain);
++
++void testMain() {
++  setUpImplicitView();
++  for (final initial in <String>['', 'Design studio']) {
++    for (final emptyUpdate in <bool>[false, true]) {
++      for (final characterize in <bool>[false, true]) {
++        test(
++          '${characterize ? "old-behavior" : "retention-contract"} initial="$initial" emptyUpdate=$emptyUpdate',
++          () {
++            runBoundary(initial, emptyUpdate, characterize: characterize);
++          },
++        );
++      }
++    }
++  }
++  test('activated-before-input control retains P then Pr', () {
++    runBoundary('', false, activateFirst: true);
++  });
++}
++
++void runBoundary(
++  String initial,
++  bool emptyUpdate, {
++  bool characterize = false,
++  bool activateFirst = false,
++}) {
++  EngineSemantics.debugResetSemantics();
++  initialEditTrace.clear();
++  initialEditClock.reset();
++  final editing = HybridTextEditing();
++  final strategy = SemanticsTextEditingStrategy.ensureInitialized(editing);
++  editing.debugTextEditingStrategyOverride = strategy;
++  EngineSemantics.instance.semanticsEnabled = true;
++  final dispatcher = EnginePlatformDispatcher.instance;
++  final saved = dispatcher.onPlatformMessage;
++  final updates = <Map<String, dynamic>>[];
++  dispatcher.onPlatformMessage =
++      (
++        String channel,
++        ByteData? data,
++        ui.PlatformMessageResponseCallback? reply,
++      ) {
++        if (channel == 'flutter/textinput' && data != null) {
++          final call = codec.decodeMethodCall(data);
++          traceInitialEdit('client.receive', {
++            'method': call.method,
++            'args': call.arguments,
++          });
++          if (call.method == 'TextInputClient.updateEditingState') {
++            final args = call.arguments as List<dynamic>;
++            expect(args[0], 42);
++            updates.add(Map<String, dynamic>.from(args[1] as Map));
++          }
++        }
++        reply?.call(null);
++      };
++  addTearDown(() {
++    if (editing.isEditing) editing.stopEditing();
++    dispatcher.onPlatformMessage = saved;
++    EngineSemantics.instance.semanticsEnabled = false;
++    domDocument.activeElement?.blur();
++    print(
++      'INITIAL_EDIT_TRACE ${jsonEncode({'initial': initial, 'emptyUpdate': emptyUpdate, 'characterize': characterize, 'activateFirst': activateFirst, 'trace': initialEditTrace})}',
++    );
++  });
++  void send(String method, [dynamic args]) {
++    traceInitialEdit('framework.send', {'method': method, 'args': args});
++    existing.sendFrameworkMessage(
++      codec.encodeMethodCall(MethodCall(method, args)),
++      editing,
++    );
++  }
++
++  Map<String, dynamic> state(String text) => <String, dynamic>{
++    'text': text,
++    'selectionBase': text.length,
++    'selectionExtent': text.length,
++    'composingBase': -1,
++    'composingExtent': -1,
++  };
++  final node = existing.createTextFieldSemantics(value: initial);
++  final role = node.semanticRole! as SemanticTextField;
++  final input = role.editableElement as DomHTMLInputElement;
++  expect(input.disabled, isFalse);
++  input.focusWithoutScroll();
++  expect(domDocument.activeElement, input);
++  expect(strategy.isEnabled, isFalse);
++  send('TextInput.setClient', <dynamic>[
++    42,
++    <String, dynamic>{
++      'viewId': kImplicitViewId,
++      'inputType': <String, dynamic>{'name': 'TextInputType.text'},
++      'inputAction': 'TextInputAction.done',
++      'textCapitalization': 'TextCapitalization.none',
++    },
++  ]);
++  send('TextInput.setEditingState', state(initial));
++  send('TextInput.show');
++  void activate() {
++    traceInitialEdit('test.releaseFocusedSemantics');
++    final updated = existing.createTextFieldSemantics(
++      value: emptyUpdate ? '' : initial,
++      isFocused: true,
++    );
++    expect(
++      (updated.semanticRole! as SemanticTextField).editableElement,
++      same(input),
++    );
++  }
++
++  if (activateFirst) activate();
++  // Replace the selected label, as select-all followed by P would do.
++  input.value = 'P';
++  input.setSelectionRange(1, 1);
++  traceInitialEdit('test.DOM.input', {
++    'node': 0,
++    'text': input.value,
++    'enabled': strategy.isEnabled,
++    'listeners': strategy.subscriptions.length,
++  });
++  input.dispatchEvent(createDomEvent('Event', 'input'));
++  final before = updates.map((e) => e['text']).toList();
++  traceInitialEdit('test.beforeActivation', {'delivered': before});
++  if (characterize) expect(before, isEmpty);
++  if (emptyUpdate) send('TextInput.setEditingState', state(''));
++  if (!activateFirst) activate();
++  final atActivation = input.value!;
++  final selection = <int?>[
++    input.selectionStart?.toInt(),
++    input.selectionEnd?.toInt(),
++  ];
++  final pCount = updates.where((e) => e['text'] == 'P').length;
++  final insertion = input.selectionStart!.toInt();
++  input.value =
++      atActivation.substring(0, insertion) +
++      'r' +
++      atActivation.substring(input.selectionEnd!.toInt());
++  input.setSelectionRange(insertion + 1, insertion + 1);
++  input.dispatchEvent(createDomEvent('Event', 'input'));
++  // A repeated focused update and selection notification must not deliver twice.
++  activate();
++  domDocument.dispatchEvent(createDomEvent('Event', 'selectionchange'));
++  expect(domDocument.activeElement, input);
++  final actual = <String, dynamic>{
++    'atActivation': atActivation,
++    'selection': selection,
++    'pCount': pCount,
++    'afterR': input.value,
++    'delivered': updates.map((e) => e['text']).toList(),
++    'finalSelection': <int?>[
++      input.selectionStart?.toInt(),
++      input.selectionEnd?.toInt(),
++    ],
++  };
++  traceInitialEdit('test.result', actual);
++  final stale = emptyUpdate ? '' : initial;
++  expect(
++    actual,
++    characterize
++        ? <String, dynamic>{
++            'atActivation': stale,
++            'selection': <int>[stale.length, stale.length],
++            'pCount': 0,
++            'afterR': '${stale}r',
++            'delivered': <String>['${stale}r'],
++            'finalSelection': <int>[stale.length + 1, stale.length + 1],
++          }
++        : <String, dynamic>{
++            'atActivation': 'P',
++            'selection': <int>[1, 1],
++            'pCount': 1,
++            'afterR': 'Pr',
++            'delivered': <String>['P', 'Pr'],
++            'finalSelection': <int>[2, 2],
++          },
++  );
++}

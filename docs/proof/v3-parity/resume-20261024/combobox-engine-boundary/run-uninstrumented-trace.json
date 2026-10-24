@@ -1,0 +1,932 @@
+[
+  {
+    "initial": "",
+    "emptyUpdate": false,
+    "characterize": false,
+    "activateFirst": false,
+    "trace": [
+      {
+        "us": 4800,
+        "event": "framework.send",
+        "method": "TextInput.setClient",
+        "args": [
+          42,
+          {
+            "viewId": 0,
+            "inputType": {
+              "name": "TextInputType.text"
+            },
+            "inputAction": "TextInputAction.done",
+            "textCapitalization": "TextCapitalization.none"
+          }
+        ]
+      },
+      {
+        "us": 5500,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "",
+          "selectionBase": 0,
+          "selectionExtent": 0,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 5600,
+        "event": "framework.send",
+        "method": "TextInput.show",
+        "args": null
+      },
+      {
+        "us": 5900,
+        "event": "test.DOM.input",
+        "node": 0,
+        "text": "P",
+        "enabled": false,
+        "listeners": 0
+      },
+      {
+        "us": 6000,
+        "event": "test.beforeActivation",
+        "delivered": []
+      },
+      {
+        "us": 6000,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 6600,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "r",
+            "selectionBase": 1,
+            "selectionExtent": 1,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 6600,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 6800,
+        "event": "test.result",
+        "atActivation": "",
+        "selection": [
+          0,
+          0
+        ],
+        "pCount": 0,
+        "afterR": "r",
+        "delivered": [
+          "r"
+        ],
+        "finalSelection": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "initial": "",
+    "emptyUpdate": false,
+    "characterize": true,
+    "activateFirst": false,
+    "trace": [
+      {
+        "us": 500,
+        "event": "framework.send",
+        "method": "TextInput.setClient",
+        "args": [
+          42,
+          {
+            "viewId": 0,
+            "inputType": {
+              "name": "TextInputType.text"
+            },
+            "inputAction": "TextInputAction.done",
+            "textCapitalization": "TextCapitalization.none"
+          }
+        ]
+      },
+      {
+        "us": 600,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "",
+          "selectionBase": 0,
+          "selectionExtent": 0,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 600,
+        "event": "framework.send",
+        "method": "TextInput.show",
+        "args": null
+      },
+      {
+        "us": 700,
+        "event": "test.DOM.input",
+        "node": 0,
+        "text": "P",
+        "enabled": false,
+        "listeners": 0
+      },
+      {
+        "us": 700,
+        "event": "test.beforeActivation",
+        "delivered": []
+      },
+      {
+        "us": 700,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 900,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "r",
+            "selectionBase": 1,
+            "selectionExtent": 1,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 900,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 1000,
+        "event": "test.result",
+        "atActivation": "",
+        "selection": [
+          0,
+          0
+        ],
+        "pCount": 0,
+        "afterR": "r",
+        "delivered": [
+          "r"
+        ],
+        "finalSelection": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "initial": "",
+    "emptyUpdate": true,
+    "characterize": false,
+    "activateFirst": false,
+    "trace": [
+      {
+        "us": 400,
+        "event": "framework.send",
+        "method": "TextInput.setClient",
+        "args": [
+          42,
+          {
+            "viewId": 0,
+            "inputType": {
+              "name": "TextInputType.text"
+            },
+            "inputAction": "TextInputAction.done",
+            "textCapitalization": "TextCapitalization.none"
+          }
+        ]
+      },
+      {
+        "us": 500,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "",
+          "selectionBase": 0,
+          "selectionExtent": 0,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 600,
+        "event": "framework.send",
+        "method": "TextInput.show",
+        "args": null
+      },
+      {
+        "us": 600,
+        "event": "test.DOM.input",
+        "node": 0,
+        "text": "P",
+        "enabled": false,
+        "listeners": 0
+      },
+      {
+        "us": 600,
+        "event": "test.beforeActivation",
+        "delivered": []
+      },
+      {
+        "us": 600,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "",
+          "selectionBase": 0,
+          "selectionExtent": 0,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 600,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 700,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "r",
+            "selectionBase": 1,
+            "selectionExtent": 1,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 700,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 800,
+        "event": "test.result",
+        "atActivation": "",
+        "selection": [
+          0,
+          0
+        ],
+        "pCount": 0,
+        "afterR": "r",
+        "delivered": [
+          "r"
+        ],
+        "finalSelection": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "initial": "",
+    "emptyUpdate": true,
+    "characterize": true,
+    "activateFirst": false,
+    "trace": [
+      {
+        "us": 500,
+        "event": "framework.send",
+        "method": "TextInput.setClient",
+        "args": [
+          42,
+          {
+            "viewId": 0,
+            "inputType": {
+              "name": "TextInputType.text"
+            },
+            "inputAction": "TextInputAction.done",
+            "textCapitalization": "TextCapitalization.none"
+          }
+        ]
+      },
+      {
+        "us": 500,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "",
+          "selectionBase": 0,
+          "selectionExtent": 0,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 500,
+        "event": "framework.send",
+        "method": "TextInput.show",
+        "args": null
+      },
+      {
+        "us": 500,
+        "event": "test.DOM.input",
+        "node": 0,
+        "text": "P",
+        "enabled": false,
+        "listeners": 0
+      },
+      {
+        "us": 500,
+        "event": "test.beforeActivation",
+        "delivered": []
+      },
+      {
+        "us": 500,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "",
+          "selectionBase": 0,
+          "selectionExtent": 0,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 600,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 700,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "r",
+            "selectionBase": 1,
+            "selectionExtent": 1,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 700,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 700,
+        "event": "test.result",
+        "atActivation": "",
+        "selection": [
+          0,
+          0
+        ],
+        "pCount": 0,
+        "afterR": "r",
+        "delivered": [
+          "r"
+        ],
+        "finalSelection": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "initial": "Design studio",
+    "emptyUpdate": false,
+    "characterize": false,
+    "activateFirst": false,
+    "trace": [
+      {
+        "us": 400,
+        "event": "framework.send",
+        "method": "TextInput.setClient",
+        "args": [
+          42,
+          {
+            "viewId": 0,
+            "inputType": {
+              "name": "TextInputType.text"
+            },
+            "inputAction": "TextInputAction.done",
+            "textCapitalization": "TextCapitalization.none"
+          }
+        ]
+      },
+      {
+        "us": 400,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "Design studio",
+          "selectionBase": 13,
+          "selectionExtent": 13,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 500,
+        "event": "framework.send",
+        "method": "TextInput.show",
+        "args": null
+      },
+      {
+        "us": 500,
+        "event": "test.DOM.input",
+        "node": 0,
+        "text": "P",
+        "enabled": false,
+        "listeners": 0
+      },
+      {
+        "us": 500,
+        "event": "test.beforeActivation",
+        "delivered": []
+      },
+      {
+        "us": 500,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 700,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "Design studior",
+            "selectionBase": 14,
+            "selectionExtent": 14,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 700,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 800,
+        "event": "test.result",
+        "atActivation": "Design studio",
+        "selection": [
+          13,
+          13
+        ],
+        "pCount": 0,
+        "afterR": "Design studior",
+        "delivered": [
+          "Design studior"
+        ],
+        "finalSelection": [
+          14,
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "initial": "Design studio",
+    "emptyUpdate": false,
+    "characterize": true,
+    "activateFirst": false,
+    "trace": [
+      {
+        "us": 400,
+        "event": "framework.send",
+        "method": "TextInput.setClient",
+        "args": [
+          42,
+          {
+            "viewId": 0,
+            "inputType": {
+              "name": "TextInputType.text"
+            },
+            "inputAction": "TextInputAction.done",
+            "textCapitalization": "TextCapitalization.none"
+          }
+        ]
+      },
+      {
+        "us": 400,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "Design studio",
+          "selectionBase": 13,
+          "selectionExtent": 13,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 500,
+        "event": "framework.send",
+        "method": "TextInput.show",
+        "args": null
+      },
+      {
+        "us": 500,
+        "event": "test.DOM.input",
+        "node": 0,
+        "text": "P",
+        "enabled": false,
+        "listeners": 0
+      },
+      {
+        "us": 500,
+        "event": "test.beforeActivation",
+        "delivered": []
+      },
+      {
+        "us": 500,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 500,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "Design studior",
+            "selectionBase": 14,
+            "selectionExtent": 14,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 500,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 600,
+        "event": "test.result",
+        "atActivation": "Design studio",
+        "selection": [
+          13,
+          13
+        ],
+        "pCount": 0,
+        "afterR": "Design studior",
+        "delivered": [
+          "Design studior"
+        ],
+        "finalSelection": [
+          14,
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "initial": "Design studio",
+    "emptyUpdate": true,
+    "characterize": false,
+    "activateFirst": false,
+    "trace": [
+      {
+        "us": 200,
+        "event": "framework.send",
+        "method": "TextInput.setClient",
+        "args": [
+          42,
+          {
+            "viewId": 0,
+            "inputType": {
+              "name": "TextInputType.text"
+            },
+            "inputAction": "TextInputAction.done",
+            "textCapitalization": "TextCapitalization.none"
+          }
+        ]
+      },
+      {
+        "us": 200,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "Design studio",
+          "selectionBase": 13,
+          "selectionExtent": 13,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 200,
+        "event": "framework.send",
+        "method": "TextInput.show",
+        "args": null
+      },
+      {
+        "us": 200,
+        "event": "test.DOM.input",
+        "node": 0,
+        "text": "P",
+        "enabled": false,
+        "listeners": 0
+      },
+      {
+        "us": 200,
+        "event": "test.beforeActivation",
+        "delivered": []
+      },
+      {
+        "us": 200,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "",
+          "selectionBase": 0,
+          "selectionExtent": 0,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 200,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 300,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "r",
+            "selectionBase": 1,
+            "selectionExtent": 1,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 400,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 400,
+        "event": "test.result",
+        "atActivation": "",
+        "selection": [
+          0,
+          0
+        ],
+        "pCount": 0,
+        "afterR": "r",
+        "delivered": [
+          "r"
+        ],
+        "finalSelection": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "initial": "Design studio",
+    "emptyUpdate": true,
+    "characterize": true,
+    "activateFirst": false,
+    "trace": [
+      {
+        "us": 200,
+        "event": "framework.send",
+        "method": "TextInput.setClient",
+        "args": [
+          42,
+          {
+            "viewId": 0,
+            "inputType": {
+              "name": "TextInputType.text"
+            },
+            "inputAction": "TextInputAction.done",
+            "textCapitalization": "TextCapitalization.none"
+          }
+        ]
+      },
+      {
+        "us": 300,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "Design studio",
+          "selectionBase": 13,
+          "selectionExtent": 13,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 300,
+        "event": "framework.send",
+        "method": "TextInput.show",
+        "args": null
+      },
+      {
+        "us": 400,
+        "event": "test.DOM.input",
+        "node": 0,
+        "text": "P",
+        "enabled": false,
+        "listeners": 0
+      },
+      {
+        "us": 400,
+        "event": "test.beforeActivation",
+        "delivered": []
+      },
+      {
+        "us": 400,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "",
+          "selectionBase": 0,
+          "selectionExtent": 0,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 400,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 500,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "r",
+            "selectionBase": 1,
+            "selectionExtent": 1,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 500,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 600,
+        "event": "test.result",
+        "atActivation": "",
+        "selection": [
+          0,
+          0
+        ],
+        "pCount": 0,
+        "afterR": "r",
+        "delivered": [
+          "r"
+        ],
+        "finalSelection": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "initial": "",
+    "emptyUpdate": false,
+    "characterize": false,
+    "activateFirst": true,
+    "trace": [
+      {
+        "us": 300,
+        "event": "framework.send",
+        "method": "TextInput.setClient",
+        "args": [
+          42,
+          {
+            "viewId": 0,
+            "inputType": {
+              "name": "TextInputType.text"
+            },
+            "inputAction": "TextInputAction.done",
+            "textCapitalization": "TextCapitalization.none"
+          }
+        ]
+      },
+      {
+        "us": 400,
+        "event": "framework.send",
+        "method": "TextInput.setEditingState",
+        "args": {
+          "text": "",
+          "selectionBase": 0,
+          "selectionExtent": 0,
+          "composingBase": -1,
+          "composingExtent": -1
+        }
+      },
+      {
+        "us": 400,
+        "event": "framework.send",
+        "method": "TextInput.show",
+        "args": null
+      },
+      {
+        "us": 400,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 500,
+        "event": "test.DOM.input",
+        "node": 0,
+        "text": "P",
+        "enabled": true,
+        "listeners": 6
+      },
+      {
+        "us": 500,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "P",
+            "selectionBase": 1,
+            "selectionExtent": 1,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 500,
+        "event": "test.beforeActivation",
+        "delivered": [
+          "P"
+        ]
+      },
+      {
+        "us": 600,
+        "event": "client.receive",
+        "method": "TextInputClient.updateEditingState",
+        "args": [
+          42,
+          {
+            "text": "Pr",
+            "selectionBase": 2,
+            "selectionExtent": 2,
+            "composingBase": -1,
+            "composingExtent": -1
+          }
+        ]
+      },
+      {
+        "us": 600,
+        "event": "test.releaseFocusedSemantics"
+      },
+      {
+        "us": 600,
+        "event": "test.result",
+        "atActivation": "P",
+        "selection": [
+          1,
+          1
+        ],
+        "pCount": 1,
+        "afterR": "Pr",
+        "delivered": [
+          "P",
+          "Pr"
+        ],
+        "finalSelection": [
+          2,
+          2
+        ]
+      }
+    ]
+  }
+]

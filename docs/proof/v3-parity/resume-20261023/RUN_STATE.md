@@ -1,3 +1,9 @@
+## 2026-10-24 engine activation gap reproduced
+
+Isolated engine r8 executed instrumented and original-source deterministic Chrome tests: four expected retention failures, five passes each. Trace proves P arrives with zero editing subscriptions, then activate attaches listeners and replays stored empty/selected-label state over P. Activated-before-input control preserves P then Pr exactly once. This proves imposed engine ordering, not retrospective native-gallery causality.
+
+Evidence `../resume-20261024/combobox-engine-boundary/REPORT.md`; parent verified SHA256SUMS. Shared SDK/production unchanged. Initial default pub-cache resolution deviation documented. New isolated prototype task `v3-semantics-initial-edit-engine-prototype-20261024-r9` (8fbbf4ef prefix) running with requirements for client binding, IME/selection, authoritative owner writes and exactly-once delivery. No production workaround or external issue posting. Overall initial-entry acceptance remains blocked.
+
 ## 2026-10-24 partial rapid-input fix accepted, engine delivery unresolved
 
 Independent r7 accepts production `ef7c79680a7208f9c593287a50fc30949b78e359b640a97aa78f9f7e4d316d97` / tests `008bee629eded2697d5c29b9e873418bc3c886fe967c97401c6b4ecd75a34f95`. Both original failing-first Escape cases reproduced;30focused and6 independent cases pass. Parent archive integrity passes60contexts/3513frames. Initial entry still5/6 with Product becoming duct; partial fix not overall acceptance. Minimum3.44.2 unavailable for this diff.

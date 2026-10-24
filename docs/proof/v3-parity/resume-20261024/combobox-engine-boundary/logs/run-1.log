@@ -1,0 +1,169 @@
+Current git branch (null) is not "main" or "master", so golden files are not checked.
+Created SkiaGoldClient. Dimensions: {Browser: chrome, Renderer: canvaskit, CanvasKitVariant: chromium}
+[chrome-dart2js-canvaskit-engine] Running...
+00:00 +0: loading semantics/initial_edit_boundary_test.dart                                                                                                                                            00:01 +0: loading semantics/initial_edit_boundary_test.dart                                                                                                                                            00:02 +0: loading semantics/initial_edit_boundary_test.dart                                                                                                                                            00:03 +0: loading semantics/initial_edit_boundary_test.dart                                                                                                                                            00:04 +0: loading semantics/initial_edit_boundary_test.dart                                                                                                                                            00:05 +0: loading semantics/initial_edit_boundary_test.dart                                                                                                                                            00:05 +0: loading semantics/initial_edit_boundary_test.dart                                                                                                                                            
+[CHROME STDERR]:
+[CHROME STDERR]:DevTools listening on ws://127.0.0.1:12345/devtools/browser/b7b72ed2-f136-49dd-8d7c-3578638cdec6
+00:06 +0: retention-contract initial="" emptyUpdate=false                                                                                                                                              00:06 +0 -1: retention-contract initial="" emptyUpdate=false [E]                                                                                                                                       
+  TypeError: null: type 'JSNull' is not a subtype of type 'String'
+  org-dartlang-sdk:///lib/_internal/js_shared/lib/rti.dart 1717:3                                                  Object._asString
+  ../../lib/src/engine/util.dart 612:31                                                                            Object.JsonExtensions.readString
+  ../../lib/src/engine/text_editing/text_editing.dart 1136:35                                                      Object.fromFrameworkMessage
+  ../../lib/src/engine/text_editing/text_editing.dart 2409:45                                                      TextEditingChannel.handleTextInput
+  semantics/text_field_test.dart 661:27                                                                            Object.sendFrameworkMessage
+  semantics/initial_edit_boundary_test.dart 63:14                                                                  runBoundary.send
+  semantics/initial_edit_boundary_test.dart 76:3                                                                   Object.runBoundary
+  semantics/initial_edit_boundary_test.dart 21:11                                                                  testMain.<fn>
+  ../tmp/beui-initial-edit-engine-r8/pub-cache/hosted/pub.dev/test_api-0.7.7/lib/src/backend/declarer.dart 242:15  <fn>
+  org-dartlang-sdk:///lib/_internal/js_runtime/lib/async_patch.dart 339:19                                         _wrapJsFunctionForAsync.closure.$protected
+  
+INITIAL_EDIT_TRACE {"initial":"","emptyUpdate":false,"characterize":false,"activateFirst":false,"trace":[{"us":6300,"event":"DOM.focus.action","node":0},{"us":6800,"event":"framework.send","method":"TextInput.setClient","args":[42,{"viewId":0,"inputType":{"name":"TextInputType.text"},"inputAction":"TextInputAction.done"}]}]}
+
+To run this test again: /tmp/beui-initial-edit-engine-r8/dart-sdk/bin/dart test semantics/initial_edit_boundary_test.dart -p chrome --plain-name 'retention-contract initial="" emptyUpdate=false'
+00:06 +0 -1: old-behavior initial="" emptyUpdate=false                                                                                                                                                 00:06 +0 -2: old-behavior initial="" emptyUpdate=false [E]                                                                                                                                             
+  TypeError: null: type 'JSNull' is not a subtype of type 'String'
+  org-dartlang-sdk:///lib/_internal/js_shared/lib/rti.dart 1717:3                                                  Object._asString
+  ../../lib/src/engine/util.dart 612:31                                                                            Object.JsonExtensions.readString
+  ../../lib/src/engine/text_editing/text_editing.dart 1136:35                                                      Object.fromFrameworkMessage
+  ../../lib/src/engine/text_editing/text_editing.dart 2409:45                                                      TextEditingChannel.handleTextInput
+  semantics/text_field_test.dart 661:27                                                                            Object.sendFrameworkMessage
+  semantics/initial_edit_boundary_test.dart 63:14                                                                  runBoundary.send
+  semantics/initial_edit_boundary_test.dart 76:3                                                                   Object.runBoundary
+  semantics/initial_edit_boundary_test.dart 21:11                                                                  testMain.<fn>
+  ../tmp/beui-initial-edit-engine-r8/pub-cache/hosted/pub.dev/test_api-0.7.7/lib/src/backend/declarer.dart 242:15  <fn>
+  org-dartlang-sdk:///lib/_internal/js_runtime/lib/async_patch.dart 339:19                                         _wrapJsFunctionForAsync.closure.$protected
+  
+INITIAL_EDIT_TRACE {"initial":"","emptyUpdate":false,"characterize":true,"activateFirst":false,"trace":[{"us":600,"event":"DOM.focus.action","node":0},{"us":800,"event":"framework.send","method":"TextInput.setClient","args":[42,{"viewId":0,"inputType":{"name":"TextInputType.text"},"inputAction":"TextInputAction.done"}]}]}
+
+To run this test again: /tmp/beui-initial-edit-engine-r8/dart-sdk/bin/dart test semantics/initial_edit_boundary_test.dart -p chrome --plain-name 'old-behavior initial="" emptyUpdate=false'
+00:06 +0 -2: retention-contract initial="" emptyUpdate=true                                                                                                                                            00:06 +0 -3: retention-contract initial="" emptyUpdate=true [E]                                                                                                                                        
+  TypeError: null: type 'JSNull' is not a subtype of type 'String'
+  org-dartlang-sdk:///lib/_internal/js_shared/lib/rti.dart 1717:3                                                  Object._asString
+  ../../lib/src/engine/util.dart 612:31                                                                            Object.JsonExtensions.readString
+  ../../lib/src/engine/text_editing/text_editing.dart 1136:35                                                      Object.fromFrameworkMessage
+  ../../lib/src/engine/text_editing/text_editing.dart 2409:45                                                      TextEditingChannel.handleTextInput
+  semantics/text_field_test.dart 661:27                                                                            Object.sendFrameworkMessage
+  semantics/initial_edit_boundary_test.dart 63:14                                                                  runBoundary.send
+  semantics/initial_edit_boundary_test.dart 76:3                                                                   Object.runBoundary
+  semantics/initial_edit_boundary_test.dart 21:11                                                                  testMain.<fn>
+  ../tmp/beui-initial-edit-engine-r8/pub-cache/hosted/pub.dev/test_api-0.7.7/lib/src/backend/declarer.dart 242:15  <fn>
+  org-dartlang-sdk:///lib/_internal/js_runtime/lib/async_patch.dart 339:19                                         _wrapJsFunctionForAsync.closure.$protected
+  
+INITIAL_EDIT_TRACE {"initial":"","emptyUpdate":true,"characterize":false,"activateFirst":false,"trace":[{"us":500,"event":"DOM.focus.action","node":0},{"us":600,"event":"framework.send","method":"TextInput.setClient","args":[42,{"viewId":0,"inputType":{"name":"TextInputType.text"},"inputAction":"TextInputAction.done"}]}]}
+
+To run this test again: /tmp/beui-initial-edit-engine-r8/dart-sdk/bin/dart test semantics/initial_edit_boundary_test.dart -p chrome --plain-name 'retention-contract initial="" emptyUpdate=true'
+00:06 +0 -3: old-behavior initial="" emptyUpdate=true                                                                                                                                                  00:06 +0 -4: old-behavior initial="" emptyUpdate=true [E]                                                                                                                                              
+  TypeError: null: type 'JSNull' is not a subtype of type 'String'
+  org-dartlang-sdk:///lib/_internal/js_shared/lib/rti.dart 1717:3                                                  Object._asString
+  ../../lib/src/engine/util.dart 612:31                                                                            Object.JsonExtensions.readString
+  ../../lib/src/engine/text_editing/text_editing.dart 1136:35                                                      Object.fromFrameworkMessage
+  ../../lib/src/engine/text_editing/text_editing.dart 2409:45                                                      TextEditingChannel.handleTextInput
+  semantics/text_field_test.dart 661:27                                                                            Object.sendFrameworkMessage
+  semantics/initial_edit_boundary_test.dart 63:14                                                                  runBoundary.send
+  semantics/initial_edit_boundary_test.dart 76:3                                                                   Object.runBoundary
+  semantics/initial_edit_boundary_test.dart 21:11                                                                  testMain.<fn>
+  ../tmp/beui-initial-edit-engine-r8/pub-cache/hosted/pub.dev/test_api-0.7.7/lib/src/backend/declarer.dart 242:15  <fn>
+  org-dartlang-sdk:///lib/_internal/js_runtime/lib/async_patch.dart 339:19                                         _wrapJsFunctionForAsync.closure.$protected
+  
+INITIAL_EDIT_TRACE {"initial":"","emptyUpdate":true,"characterize":true,"activateFirst":false,"trace":[{"us":700,"event":"DOM.focus.action","node":0},{"us":700,"event":"framework.send","method":"TextInput.setClient","args":[42,{"viewId":0,"inputType":{"name":"TextInputType.text"},"inputAction":"TextInputAction.done"}]}]}
+
+To run this test again: /tmp/beui-initial-edit-engine-r8/dart-sdk/bin/dart test semantics/initial_edit_boundary_test.dart -p chrome --plain-name 'old-behavior initial="" emptyUpdate=true'
+00:06 +0 -4: retention-contract initial="Design studio" emptyUpdate=false                                                                                                                              00:06 +0 -5: retention-contract initial="Design studio" emptyUpdate=false [E]                                                                                                                          
+  TypeError: null: type 'JSNull' is not a subtype of type 'String'
+  org-dartlang-sdk:///lib/_internal/js_shared/lib/rti.dart 1717:3                                                  Object._asString
+  ../../lib/src/engine/util.dart 612:31                                                                            Object.JsonExtensions.readString
+  ../../lib/src/engine/text_editing/text_editing.dart 1136:35                                                      Object.fromFrameworkMessage
+  ../../lib/src/engine/text_editing/text_editing.dart 2409:45                                                      TextEditingChannel.handleTextInput
+  semantics/text_field_test.dart 661:27                                                                            Object.sendFrameworkMessage
+  semantics/initial_edit_boundary_test.dart 63:14                                                                  runBoundary.send
+  semantics/initial_edit_boundary_test.dart 76:3                                                                   Object.runBoundary
+  semantics/initial_edit_boundary_test.dart 21:11                                                                  testMain.<fn>
+  ../tmp/beui-initial-edit-engine-r8/pub-cache/hosted/pub.dev/test_api-0.7.7/lib/src/backend/declarer.dart 242:15  <fn>
+  org-dartlang-sdk:///lib/_internal/js_runtime/lib/async_patch.dart 339:19                                         _wrapJsFunctionForAsync.closure.$protected
+  
+INITIAL_EDIT_TRACE {"initial":"Design studio","emptyUpdate":false,"characterize":false,"activateFirst":false,"trace":[{"us":600,"event":"DOM.focus.action","node":0},{"us":700,"event":"framework.send","method":"TextInput.setClient","args":[42,{"viewId":0,"inputType":{"name":"TextInputType.text"},"inputAction":"TextInputAction.done"}]}]}
+
+To run this test again: /tmp/beui-initial-edit-engine-r8/dart-sdk/bin/dart test semantics/initial_edit_boundary_test.dart -p chrome --plain-name 'retention-contract initial="Design studio" emptyUpdate=false'
+00:06 +0 -5: old-behavior initial="Design studio" emptyUpdate=false                                                                                                                                    00:06 +0 -6: old-behavior initial="Design studio" emptyUpdate=false [E]                                                                                                                                
+  TypeError: null: type 'JSNull' is not a subtype of type 'String'
+  org-dartlang-sdk:///lib/_internal/js_shared/lib/rti.dart 1717:3                                                  Object._asString
+  ../../lib/src/engine/util.dart 612:31                                                                            Object.JsonExtensions.readString
+  ../../lib/src/engine/text_editing/text_editing.dart 1136:35                                                      Object.fromFrameworkMessage
+  ../../lib/src/engine/text_editing/text_editing.dart 2409:45                                                      TextEditingChannel.handleTextInput
+  semantics/text_field_test.dart 661:27                                                                            Object.sendFrameworkMessage
+  semantics/initial_edit_boundary_test.dart 63:14                                                                  runBoundary.send
+  semantics/initial_edit_boundary_test.dart 76:3                                                                   Object.runBoundary
+  semantics/initial_edit_boundary_test.dart 21:11                                                                  testMain.<fn>
+  ../tmp/beui-initial-edit-engine-r8/pub-cache/hosted/pub.dev/test_api-0.7.7/lib/src/backend/declarer.dart 242:15  <fn>
+  org-dartlang-sdk:///lib/_internal/js_runtime/lib/async_patch.dart 339:19                                         _wrapJsFunctionForAsync.closure.$protected
+  
+INITIAL_EDIT_TRACE {"initial":"Design studio","emptyUpdate":false,"characterize":true,"activateFirst":false,"trace":[{"us":300,"event":"DOM.focus.action","node":0},{"us":400,"event":"framework.send","method":"TextInput.setClient","args":[42,{"viewId":0,"inputType":{"name":"TextInputType.text"},"inputAction":"TextInputAction.done"}]}]}
+
+To run this test again: /tmp/beui-initial-edit-engine-r8/dart-sdk/bin/dart test semantics/initial_edit_boundary_test.dart -p chrome --plain-name 'old-behavior initial="Design studio" emptyUpdate=false'
+00:06 +0 -6: retention-contract initial="Design studio" emptyUpdate=true                                                                                                                               00:06 +0 -7: retention-contract initial="Design studio" emptyUpdate=true [E]                                                                                                                           
+  TypeError: null: type 'JSNull' is not a subtype of type 'String'
+  org-dartlang-sdk:///lib/_internal/js_shared/lib/rti.dart 1717:3                                                  Object._asString
+  ../../lib/src/engine/util.dart 612:31                                                                            Object.JsonExtensions.readString
+  ../../lib/src/engine/text_editing/text_editing.dart 1136:35                                                      Object.fromFrameworkMessage
+  ../../lib/src/engine/text_editing/text_editing.dart 2409:45                                                      TextEditingChannel.handleTextInput
+  semantics/text_field_test.dart 661:27                                                                            Object.sendFrameworkMessage
+  semantics/initial_edit_boundary_test.dart 63:14                                                                  runBoundary.send
+  semantics/initial_edit_boundary_test.dart 76:3                                                                   Object.runBoundary
+  semantics/initial_edit_boundary_test.dart 21:11                                                                  testMain.<fn>
+  ../tmp/beui-initial-edit-engine-r8/pub-cache/hosted/pub.dev/test_api-0.7.7/lib/src/backend/declarer.dart 242:15  <fn>
+  org-dartlang-sdk:///lib/_internal/js_runtime/lib/async_patch.dart 339:19                                         _wrapJsFunctionForAsync.closure.$protected
+  
+INITIAL_EDIT_TRACE {"initial":"Design studio","emptyUpdate":true,"characterize":false,"activateFirst":false,"trace":[{"us":400,"event":"DOM.focus.action","node":0},{"us":500,"event":"framework.send","method":"TextInput.setClient","args":[42,{"viewId":0,"inputType":{"name":"TextInputType.text"},"inputAction":"TextInputAction.done"}]}]}
+
+To run this test again: /tmp/beui-initial-edit-engine-r8/dart-sdk/bin/dart test semantics/initial_edit_boundary_test.dart -p chrome --plain-name 'retention-contract initial="Design studio" emptyUpdate=true'
+00:06 +0 -7: old-behavior initial="Design studio" emptyUpdate=true                                                                                                                                     00:06 +0 -8: old-behavior initial="Design studio" emptyUpdate=true [E]                                                                                                                                 
+  TypeError: null: type 'JSNull' is not a subtype of type 'String'
+  org-dartlang-sdk:///lib/_internal/js_shared/lib/rti.dart 1717:3                                                  Object._asString
+  ../../lib/src/engine/util.dart 612:31                                                                            Object.JsonExtensions.readString
+  ../../lib/src/engine/text_editing/text_editing.dart 1136:35                                                      Object.fromFrameworkMessage
+  ../../lib/src/engine/text_editing/text_editing.dart 2409:45                                                      TextEditingChannel.handleTextInput
+  semantics/text_field_test.dart 661:27                                                                            Object.sendFrameworkMessage
+  semantics/initial_edit_boundary_test.dart 63:14                                                                  runBoundary.send
+  semantics/initial_edit_boundary_test.dart 76:3                                                                   Object.runBoundary
+  semantics/initial_edit_boundary_test.dart 21:11                                                                  testMain.<fn>
+  ../tmp/beui-initial-edit-engine-r8/pub-cache/hosted/pub.dev/test_api-0.7.7/lib/src/backend/declarer.dart 242:15  <fn>
+  org-dartlang-sdk:///lib/_internal/js_runtime/lib/async_patch.dart 339:19                                         _wrapJsFunctionForAsync.closure.$protected
+  
+INITIAL_EDIT_TRACE {"initial":"Design studio","emptyUpdate":true,"characterize":true,"activateFirst":false,"trace":[{"us":500,"event":"DOM.focus.action","node":0},{"us":700,"event":"framework.send","method":"TextInput.setClient","args":[42,{"viewId":0,"inputType":{"name":"TextInputType.text"},"inputAction":"TextInputAction.done"}]}]}
+
+To run this test again: /tmp/beui-initial-edit-engine-r8/dart-sdk/bin/dart test semantics/initial_edit_boundary_test.dart -p chrome --plain-name 'old-behavior initial="Design studio" emptyUpdate=true'
+00:06 +0 -8: activated-before-input control retains P then Pr                                                                                                                                          00:06 +0 -9: activated-before-input control retains P then Pr [E]                                                                                                                                      
+  TypeError: null: type 'JSNull' is not a subtype of type 'String'
+  org-dartlang-sdk:///lib/_internal/js_shared/lib/rti.dart 1717:3                                                  Object._asString
+  ../../lib/src/engine/util.dart 612:31                                                                            Object.JsonExtensions.readString
+  ../../lib/src/engine/text_editing/text_editing.dart 1136:35                                                      Object.fromFrameworkMessage
+  ../../lib/src/engine/text_editing/text_editing.dart 2409:45                                                      TextEditingChannel.handleTextInput
+  semantics/text_field_test.dart 661:27                                                                            Object.sendFrameworkMessage
+  semantics/initial_edit_boundary_test.dart 63:14                                                                  runBoundary.send
+  semantics/initial_edit_boundary_test.dart 76:3                                                                   Object.runBoundary
+  semantics/initial_edit_boundary_test.dart 27:5                                                                   testMain.<fn>
+  ../tmp/beui-initial-edit-engine-r8/pub-cache/hosted/pub.dev/test_api-0.7.7/lib/src/backend/declarer.dart 242:15  <fn>
+  org-dartlang-sdk:///lib/_internal/js_runtime/lib/async_patch.dart 339:19                                         _wrapJsFunctionForAsync.closure.$protected
+  
+INITIAL_EDIT_TRACE {"initial":"","emptyUpdate":false,"characterize":false,"activateFirst":true,"trace":[{"us":500,"event":"DOM.focus.action","node":0},{"us":500,"event":"framework.send","method":"TextInput.setClient","args":[42,{"viewId":0,"inputType":{"name":"TextInputType.text"},"inputAction":"TextInputAction.done"}]}]}
+
+To run this test again: /tmp/beui-initial-edit-engine-r8/dart-sdk/bin/dart test semantics/initial_edit_boundary_test.dart -p chrome --plain-name 'activated-before-input control retains P then Pr'
+00:06 +0 -9: Some tests failed.                                                                                                                                                                        
+
+Consider enabling the flag chain-stack-traces to receive more detailed exceptions.
+For example, 'dart test --chain-stack-traces'.
+[chrome-dart2js-canvaskit-engine] Some tests failed.
+Pipeline experienced the following failures:
+  "run_suite": Some unit tests failed in suite chrome-dart2js-canvaskit-engine.
+#0      RunSuiteStep.run (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/steps/run_suite_step.dart:129:7)
+<asynchronous suspension>
+#1      Pipeline.run (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/pipeline.dart:136:9)
+<asynchronous suspension>
+#2      TestCommand.run (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/test_runner.dart:405:7)
+<asynchronous suspension>
+#3      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#4      main (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/felt.dart:41:26)
+<asynchronous suspension>
+
+Test pipeline failed.

@@ -1,0 +1,78 @@
+Building /private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/web_sdk/web_engine_tester/lib/static/host.dart.
+Resolving dependencies...
+Downloading packages...
++ _fe_analyzer_shared 91.0.0 (110.0.0 available)
++ analyzer 8.4.1 (14.6.0 available)
++ args 2.7.0
++ async 2.13.1
++ boolean_selector 2.1.2
++ cli_config 0.2.0
++ cli_util 0.6.0
++ collection 1.19.1
++ convert 3.1.2
++ coverage 1.16.0
++ crypto 3.0.7
++ ffi 2.2.0
++ file 7.0.1
++ frontend_server_client 4.2.0
++ glob 2.2.0
++ http_multi_server 3.2.3
++ http_parser 4.1.2
++ io 1.1.0
++ js 0.7.2
++ logging 1.3.0
++ matcher 0.12.17 (0.12.20 available)
++ meta 1.19.0
++ mime 2.1.0
++ node_preamble 2.0.2
++ package_config 2.2.0 (3.0.0 available)
++ path 1.9.1
++ pool 1.5.3
++ pub_semver 2.2.1
++ shelf 1.4.3
++ shelf_packages_handler 3.0.2
++ shelf_static 1.2.0
++ shelf_web_socket 3.0.0
++ source_map_stack_trace 2.1.2
++ source_maps 0.10.14
++ source_span 1.10.2
++ stack_trace 1.12.1 (1.12.2 available)
++ stream_channel 2.1.4
++ string_scanner 1.4.1
++ term_glyph 1.2.2
++ test 1.26.3 (1.33.0 available)
++ test_api 0.7.7 (0.7.15 available)
++ test_core 0.6.12 (0.6.21 available)
++ typed_data 1.4.0
++ ui 0.0.0 from path ../../lib/web_ui
++ vm_service 15.4.0
++ watcher 1.2.1
++ web 1.1.2
++ web_locale_keymap 0.0.0 from path ../../third_party/web_locale_keymap
++ web_socket 1.0.1
++ web_socket_channel 3.0.3
++ web_test_fonts 0.0.0 from path ../../third_party/web_test_fonts
++ webkit_inspection_protocol 1.2.1
++ yaml 3.1.4
+Changed 53 dependencies!
+8 packages have newer versions incompatible with dependency constraints.
+Try `dart pub outdated` for more information.
+Compiled 15,442,120 input bytes (10,011,833 characters source) to 606,399 characters JavaScript in 1.10 seconds
+Pipeline experienced the following failures:
+  "copy_artifacts": PathNotFoundException: Directory listing failed, path = '/private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/third_party/google_fonts_for_unit_tests/' (OS Error: No such file or directory, errno = 2)
+#0      _Directory._fillWithDirectoryListing (dart:io-patch/directory_patch.dart:49:4)
+#1      _Directory.listSync (dart:io/directory_impl.dart:259:5)
+#2      CopyArtifactsStep.copyTestFonts (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/steps/copy_artifacts_step.dart:199:52)
+<asynchronous suspension>
+#3      CopyArtifactsStep.run (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/steps/copy_artifacts_step.dart:115:5)
+<asynchronous suspension>
+#4      Pipeline.run (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/pipeline.dart:136:9)
+<asynchronous suspension>
+#5      TestCommand.run (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/test_runner.dart:405:7)
+<asynchronous suspension>
+#6      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#7      main (file:///private/tmp/beui-initial-edit-engine-r8/engine/src/flutter/lib/web_ui/dev/felt.dart:41:26)
+<asynchronous suspension>
+
+Test pipeline failed.
