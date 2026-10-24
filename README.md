@@ -2,9 +2,9 @@
 
 # beUI
 
-**Motion components for Flutter** — a one-to-one port of [beUI v2](https://beui.dev) (`starc007/ui-components`).
+**Motion components for Flutter** — a one-to-one port of [beUI](https://beui.dev) (`starc007/ui-components`).
 
-Spring-physics UI primitives and composed blocks, built on the [`motor`](https://pub.dev/packages/motor) motion engine so the original's *exact* spring feel carries over — not just its look.
+Spring-physics UI primitives, composed blocks, AI-agent surfaces and animated charts, built on the [`motor`](https://pub.dev/packages/motor) motion engine so the original's *exact* spring feel carries over — not just its look.
 
 [![Live gallery](https://img.shields.io/badge/demo-live%20gallery-14b8a6?style=flat-square)](https://codenameakshay.github.io/beui/)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.44.2-02569B?style=flat-square&logo=flutter)](https://flutter.dev)
@@ -30,20 +30,26 @@ The port's defining goal is **motion fidelity**. Framer Motion springs are param
 - 🧩 **Native APIs** — controlled/uncontrolled `value` + `onChanged` pairs, framework-native `IconData`/`Widget` icon props, variants as Dart enums.
 - 🪟 **One overlay foundation** — every floating surface (tooltip, drawer, sheet, modal, command palette) builds on a shared `BeuiOverlay`.
 
-> **Status:** 3.0.0. Remaining motion widgets, six catalog blocks, Voice Orb, and the charts family ship in this release. 1.2.0 remediates the chat/agent UX audit — honest failure states, keyboard and screen-reader contracts, AA contrast, composer attachments — and adds `BeuiColors.focusRing` plus localizable `BeuiAgentStrings`.
+> **Status:** 3.0.0. This release adds 17 motion components, six blocks, Voice Orb, and a new Charts family of 14 animated charts. It requires Flutter 3.44.2 or later. See the [changelog](CHANGELOG.md) for compatibility changes and the one known issue.
 
-## What's new in 1.2.0
+## What's new in 3.0.0
 
 <table>
   <tr>
-    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/chat-app.gif" alt="Chat App workspace" /><br/><sub><b>Chat App</b> — composed workspace with a responsive sidebar</sub></td>
-    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/tool-approval.gif" alt="Tool approval severity tiers" /><br/><sub><b>Tool Approval</b> — details open by default, destructive severity tier</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3/voice-orb.gif" alt="Voice Orb" /><br/><sub><b>Voice Orb</b> — breathing liquid voice visualization</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3/sankey-chart.gif" alt="Sankey Chart" /><br/><sub><b>Sankey Chart</b> — weighted flows with hover inspection</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3/treemap.gif" alt="Treemap" /><br/><sub><b>Treemap</b> — proportional tiles with path tooltips</sub></td>
   </tr>
   <tr>
-    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/prompt-input.gif" alt="Prompt input model picker" /><br/><sub><b>Prompt Input</b> — attachment chips and a keyboarded model picker</sub></td>
-    <td width="50%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/streaming-response.gif" alt="Streaming response failed state" /><br/><sub><b>Streaming Response</b> — failed and stopped are no longer silent</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3/donut-chart.gif" alt="Donut Chart" /><br/><sub><b>Donut Chart</b> — sweep-in ring with a live center</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3/color-picker.gif" alt="Color Picker" /><br/><sub><b>Color Picker</b> — trigger chip that morphs into a spectrum</sub></td>
+    <td width="33%"><img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/gifs/v3/card-folder.gif" alt="Card Folder" /><br/><sub><b>Card Folder</b> — card in a stitched pocket with DigitSwap details</sub></td>
   </tr>
 </table>
+
+The gallery now has a **Charts** section next to Components, Blocks and AI Agents:
+
+<img src="https://raw.githubusercontent.com/codenameakshay/beui/main/.github/screenshots/09-charts-dark.png" alt="Charts index" width="880" />
 
 ## Live gallery
 
@@ -70,7 +76,7 @@ The [`example/`](example) app is a beui.dev-style component explorer — sidebar
 
 ```yaml
 dependencies:
-  beui: ^1.2.0
+  beui: ^3.0.0
 ```
 
 Or from Git:
@@ -166,7 +172,7 @@ BeuiShaderBackground(
 
 ## Component catalog
 
-Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added in beUI v2.
+Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries new in 3.0.0.
 
 ### Components — motion primitives
 
@@ -232,12 +238,12 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 
 | Block | Widget | What it does |
 | --- | --- | --- |
-| Infinite Masonry ✨ | `BeuiInfiniteMasonry` | Masonry grid that lazily appends tiles as you scroll |
-| Notification Stack ✨ | `BeuiNotificationStack` | Collapsed notification stack that expands with layout-aware motion |
+| Infinite Masonry | `BeuiInfiniteMasonry` | Masonry grid that lazily appends tiles as you scroll |
+| Notification Stack | `BeuiNotificationStack` | Collapsed notification stack that expands with layout-aware motion |
 | Project Folder ✨ | `BeuiProjectFolder` | Folder that fans file previews on hover or focus, then morphs into an overlay grid |
 | Card Folder ✨ | `BeuiCardFolder` | Landscape card tucked in a stitched purse pocket, with DigitSwap details |
-| Fixtures ✨ | `BeuiKnockoutBracket`, `BeuiKnockoutWheel` | Tournament fixtures: a paging knockout bracket and a wheel around the champion |
-| Availability Scheduler ✨ | `BeuiAvailabilityScheduler` | Weekly availability grid with per-day time ranges |
+| Fixtures | `BeuiKnockoutBracket`, `BeuiKnockoutWheel` | Tournament fixtures: a paging knockout bracket and a wheel around the champion |
+| Availability Scheduler | `BeuiAvailabilityScheduler` | Weekly availability grid with per-day time ranges |
 | Multi-chain Swap | `BeuiMultiChainSwap` | Token swap card with chain switching and an animated quote |
 | Dynamic Island | `BeuiDynamicIsland` | iOS-style island that morphs between compact and expanded views |
 | Command Palette | `BeuiCommandPalette` | ⌘K palette with fuzzy search and spring-animated results |
@@ -248,12 +254,12 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Morphing Tabs ✨ | `BeuiMorphingTabs` | Reorderable tabs whose selected item grows into a cream content surface |
 | Swipeable List | `BeuiSwipeableList` | List rows with spring-backed swipe-to-reveal actions |
 | File Upload | `BeuiAttachmentUpload`, `BeuiFileUpload` | Attachment workspace plus a progress queue with retry and removal |
-| Prediction Market | `BeuiPredictionMarketCard`, `BeuiPredictionMarket` | Listing cards with percent-to-Yes/No odds pills and bookmarks, plus a trade ticket |
-| Wallet Card ✨ | `BeuiWalletCard` | Wallet card with an account switcher and morphing search |
+| Prediction Market ✨ | `BeuiPredictionMarketCard`, `BeuiPredictionMarket` | Listing cards with percent-to-Yes/No odds pills and bookmarks, plus a trade ticket |
+| Wallet Card | `BeuiWalletCard` | Wallet card with an account switcher and morphing search |
 | OTP Input | `BeuiOtpInput` | One-time-code field with per-cell focus and a success check |
 | Sign Up Form ✨ | `BeuiSignUpForm` | Registration form with punish-late errors, strength meter, and stateful submit |
-| Bloom Menu ✨ | `BeuiBloomMenu` | Radial action menu that blooms open from a floating trigger |
-| Feedback Widget ✨ | `BeuiFeedbackWidget` | Feedback popover that keeps drafts, validates inline and morphs to a success state |
+| Bloom Menu | `BeuiBloomMenu` | Radial action menu that blooms open from a floating trigger |
+| Feedback Widget | `BeuiFeedbackWidget` | Feedback popover that keeps drafts, validates inline and morphs to a success state |
 | 404 / Not Found | `BeuiNotFoundGlitch`, `…Magnetic`, `…Spotlight`, `…Stacked`, `…Terminal` | Five expressive 404 treatments |
 
 ### AI Agents — conversational and agent-reasoning interfaces
@@ -277,13 +283,16 @@ Mirrors the [beui.dev](https://beui.dev) sidebar order. ✨ marks entries added 
 | Approval Card | `BeuiApprovalCard` | Human-in-the-loop surface for approvals, questions, and compact-to-expanded proposals |
 | AI Sidebar | `BeuiAiSidebar` | Workspace sidebar for folders, projects, files and bookmarks with inline rename |
 | Chat App | `BeuiChatApp` | A complete conversation workspace composing the widgets above, with a responsive sidebar |
-| Voice Orb | `BeuiVoiceOrb` | Breathing liquid voice visualization with custom pigments, a voice-reactive silhouette, and a `size` override |
+| Voice Orb ✨ | `BeuiVoiceOrb` | Breathing liquid voice visualization with custom pigments, a voice-reactive silhouette, and a `size` override |
 | Agent Theme | — | Gallery route that installs a custom `BeuiAgentTheme` on the real widgets |
 
 ### Charts — animated data visualizations
 
+The whole family is new in 3.0.0.
+
 | Chart | Widget(s) | What it does |
 | --- | --- | --- |
+| Sankey Chart | `BeuiSankeyChart`, `BeuiSankeyData`, `BeuiSankeyNode`, `BeuiSankeyLink` | Weighted flows between stages that draw in and morph with the data |
 | Treemap | `BeuiTreemap`, `BeuiTreemapPlot`, `BeuiTreemapTooltip`, `BeuiTreemapLegend` | Proportional tiles that morph with the data, with value and share tooltips |
 | Candlestick Chart | `BeuiCandlestickChart`, `BeuiCandlestickPlot`, `BeuiCandlestickLegend` | OHLC candles with a live last price and volume |
 | Donut Chart | `BeuiDonutChart`, `BeuiDonutPlot`, `BeuiDonutCenter`, `BeuiDonutLegend` | Round-capped ring with a live center and sweep-in motion |

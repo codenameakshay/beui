@@ -8,6 +8,7 @@ motion components, blocks, agents, and charts.
 * Prediction Market odds callbacks now report `side: "yes"` for every row, including rows displaying No, matching the source preview. The callback signature is unchanged.
 * Feedback rejects empty or whitespace-only submissions. Closing discards the draft and selected sentiment; a rejected submission keeps the draft for retry.
 * `BeuiTextTheme` defaults now name Geist and Geist Mono. Consumers must provide those fonts; the package still bundles no font assets.
+* The minimum Flutter version is now 3.44.2 (was 3.44.0).
 
 ### Components
 
@@ -18,6 +19,11 @@ motion components, blocks, agents, and charts.
 * Input gains `reserveErrorLine` so validation does not shift nearby content.
 * Table gallery adds editable and async bands (`onCellEdit`, `onEndReached`).
 * Reorder the motion gallery to match beui.dev (New first, then All).
+* Table gains opt-in intrinsic sizing (`BeuiTableSizing`, `BeuiTableIntrinsicSample`). It also keeps collapsed grid geometry, menus, native keyboard input and the initial drag displacement.
+* Tooltip supports controlled external anchors and keeps focus and dismissal correct when assistive technology activates it.
+* Availability Scheduler's copy menu works from the keyboard: arrow keys move, Space toggles a day, and a disabled Apply never activates the schedule behind it.
+* Range sliders match the source's pointer and keyboard input, and disabled wave and bubble sliders ignore drags.
+* Number Ticker measures source digit slots and text baselines. Checkbox wraps long labels within the available width.
 * Fix stale component lifecycle and gesture-release state, reduced-motion geometry, Alert exit continuity, Card gallery control names, Number gallery overflow, and Image Viewer demo opening.
 
 ### Blocks
@@ -36,12 +42,14 @@ motion components, blocks, agents, and charts.
   highlights, custom pigments, a voice-reactive silhouette, a caller-owned
   analyser, offscreen pause, a reduced-motion freeze, and a `size` override
   (default `w-64` / 256; the live preview uses `sm:w-72` / 288).
+* Approval Card and its Input fields match the source's badge, counter and placeholder styles. File Diff keeps single-line diffs on narrow views.
 * Gallery order now matches the source agents page clusters, then extras
   (AI Sidebar, Chat App, Voice Orb, Agent Theme).
 
 ### Charts
 
 * Chart tooltip numeric labels use `BeuiChartTicker` for digit animation.
+* `BeuiSankeyChart` — weighted flows between stages that draw in and morph with the data, with hover and keyboard inspection.
 * `BeuiTreemap` — order-preserving binary tiles that spring to new sizes, with path tooltips and a group legend.
 * `BeuiCandlestickChart` — OHLC candles with a live last price, volume, and keyboard inspection.
 * `BeuiDonutChart` — round-capped ring with a live center, legend, and sweep-in motion.
@@ -55,6 +63,10 @@ motion components, blocks, agents, and charts.
 * `BeuiHeatCalendar` — GitHub-style contribution heatmap with range selection; filtered cells fade; 16-week legends place the date range opposite less/more.
 * `BeuiReturnsCalendar` — monthly returns grid with gain/loss tint and compounded totals; month labels use JS `Math.round`.
 * `BeuiPriceTargetFan` — high/mean/low target fan over a history path.
+
+### Known issues
+
+* Combobox can lose the first characters typed into its search field on Flutter web. The cause is in the Flutter engine: it attaches text-editing listeners after the first input arrives. No safe fix is available yet.
 
 ## 2.0.0
 
