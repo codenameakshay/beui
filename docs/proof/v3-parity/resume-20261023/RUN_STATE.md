@@ -1,3 +1,35 @@
+## Final scoped delivery after CI diagnosis
+
+Step 2 independently accepted: exactly 35 intentional PNG updates and five chart capture tests. All 21 drift references and 41 non-allowlisted goldens remain unchanged. Root 2,731 passes use BEUI_SKIP_GOLDENS=1; gallery 66 passes. This does not mean all goldens pass.
+
+Step 3 whole-tree analysis and formatting pass. CI on ad9adb944 found three ColorSelector reduced-motion teardown failures. The isolated 3.44.4 baseline reproduces all three; eager controller initialization fixes them. All 21 focused tests pass on 3.44.4 and 3.47.1, and the enabled 3.47.1 golden comparison passes.
+
+Step 1 remains blocked. Actual gallery traces prove the engine activation gap, but both prototype rounds failed their safety criteria. No production workaround or shared SDK modification was applied. Step 4 final parity cannot be claimed while this remains unresolved. No merge.
+
+## Final step2 implementation complete, independent review pending
+
+Golden worker updated exactly35 intentional PNGs plus five chart timing/content tests. Parent independently verified exact40changed paths/hashes and all other golden bytes unchanged.35no-update pass; classified21drift references remain unchanged. Root2731pass uses BEUI_SKIP_GOLDENS=1, not full golden-green claim; example66pass. Analyzer/formatter pass. Original failed setup run retained.
+
+Independent `v3-final-golden-refresh-review-20261024-r3` (8fbbf4ef prefix) running for per-image rationale, clipping and timing/content checks. Step1 still blocked at architectural boundary; no safe production workaround or sharedSDK change authorized. No final parity claim or merge.
+
+## Final step1 architectural boundary reached
+
+r11 completed with no safe candidate. Original sources157pass/12fail/5skip include11boundary contract failures and1existing CSS assertion. Attach-time identity arrives after possible pre-client input. Legacy empty writes cannot distinguish initialization from intentional owner rejection. Proposed pre-publication field/client initialization transaction crosses framework semantics, EditableText, engine lifecycle and owner initialization; it is not implemented/validated. No production workaround or SDK changes applied. Native causal link remains proven by r10; initial-entry blocker remains.
+
+Do not present step1 or final parity as complete. Golden refresh r2 still running; static gates completed locally/pushed, hosted CI watcher active. User scope remains exactly four steps, no merges.
+
+## Final step1 native causal link proven, safe repair still pending
+
+r10 actual compiled gallery trace proves same DOM trusted input before editing listener installation, followed by activation replay of empty framework state. Subsequent input reaches channel/controller/Combobox.5/14instrumented and1/14untouched initial captures fail; later Escape/type passes. Parent verifier exited0; log `/tmp/beui-engine-native-cause-parent-verify.log`. Timing sample limitations disclosed; not a safe repair.
+
+r11 `v3-engine-initialization-protocol-20261024-r11` (8fbbf4ef prefix) now owns isolated explicit field/client initialization protocol experiment, no shared SDK/production changes. Must preserve owner authority, IME/deltas/selection/client lifetime and then actual gallery sequences. Stop with concrete blocker if no safe bounded candidate. Production workaround still requires explicit user approval. Golden selective refresh remains active; no unrelated work or merges.
+
+## Final step2 golden triage checkpoint accepted for bounded implementation
+
+All56mapped:21 environment/toolchain drift,35 intentional visual changes, no demonstrated production regression. Author/current controls on3.44.4 are pixel-identical for21drift cases;5historical references match,16retain2–58old environment pixels.32October references reproduce at author commits on3.47.1. Exact historical macOS provenance remains unknown. Five charts require timed rest-state capture before refresh; Signup bounds require inspection.
+
+Worker `v3-intentional-golden-refresh-20261024-r2` (8fbbf4ef prefix) owns only five chart fixture tests, optional Signup capture test, allowlisted35intentional PNGs, new refresh proof.21drift references must remain unchanged. Uses exact3.47.1 with per-image intentional reason; full non-golden root/gallery validation afterward. Parent reviewed report/reasons and sheets1/6. Step1 native causal trace remains active. No new work or merges.
+
 ## User final scope: only four steps
 
 1. Combobox engine prototype r9 rejected, no safe repair. Native causal engine trace r10 running in isolation; no shared SDK or production workaround authorized.
