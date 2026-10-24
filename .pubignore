@@ -52,3 +52,14 @@ example/assets/fonts/
 
 # Example parity evidence (captured frames and GIFs) — repo-only.
 example/proof/
+
+# Internal design notes and visual-parity tooling — repo-only. Nothing the
+# published library or the example app's main.dart imports.
+lib/src/motion/table/INTRINSIC_SIZING.md
+example/lib/block_parity_probe.dart
+example/lib/visual_harness.dart
+example/lib/voice_orb_preview.dart
+example/lib/demos/agents_capture.dart
+example/lib/demos/agents_capture_probe.dart
+example/lib/demos/agents_capture_publish.dart
+example/lib/demos/agents_capture_publish_web.dart
